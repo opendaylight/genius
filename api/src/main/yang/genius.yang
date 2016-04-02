@@ -1,0 +1,9 @@
+module genius {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:genius";
+    prefix "genius";
+
+    revision "2015-01-05" {
+        description "Initial revision of genius model";
+    }
+}
