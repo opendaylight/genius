@@ -1,0 +1,35 @@
+module interfacemanager-impl {
+    yang-version 1;
+    namespace "urn:opendaylight:genius:interfacemanager:impl";
+    prefix "interfacemanager-impl";
+
+    import config { prefix config; revision-date 2013-04-05; }
+    import opendaylight-md-sal-binding { prefix md-sal-binding; revision-date 2013-10-28;}
+
+    description
+        "Service definition for interfacemanager project";
+
+    revision "2016-06-04" {
+        description
+            "Initial revision";
+    }
+
+    identity interfacemanager-impl {
+        base config:module-type;
+        config:java-name-prefix InterfaceManager;
+    }
+
+    augment "/config:modules/config:module/config:configuration" {
+        case genius {
+            when "/config:modules/config:module/config:type = 'interfacemanager-impl'";
+            container broker {
+                uses config:service-ref {
+                    refine type {
+                        mandatory true;
+                        config:required-identity md-sal-binding:binding-broker-osgi-registry;
+                    }
+                }
+            }
+        }
+    }
+}
