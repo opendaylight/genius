@@ -1,0 +1,504 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a4c51b2_38cac44f",
+        "filename": "deploy-site.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "What is this for? Shouldn\u0027t artifact-id be 0.1.0?",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 15,
+        "endChar": 35
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_18c70847",
+        "filename": "deploy-site.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "hardcoded versions are never a good idea.",
+      "range": {
+        "startLine": 28,
+        "startChar": 18,
+        "endLine": 28,
+        "endChar": 21
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_58c1902d",
+        "filename": "deploy-site.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 36,
+        "startChar": 17,
+        "endLine": 36,
+        "endChar": 20
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_38d124fc",
+        "filename": "features/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 3,
+        "startChar": 90,
+        "endLine": 3,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_18cee85a",
+        "filename": "features/src/main/features/features.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 4,
+        "startChar": 90,
+        "endLine": 4,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_f8e7bce2",
+        "filename": "features/src/main/features/features.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "shouldn\u0027t order be swapped?",
+      "range": {
+        "startLine": 29,
+        "startChar": 4,
+        "endLine": 30,
+        "endChar": 65
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_d8ec80ca",
+        "filename": "features/src/main/features/features.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 33,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 64
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_78dbac1b",
+        "filename": "interfacemanager/interfacemanager-api/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 3,
+        "startChar": 90,
+        "endLine": 3,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_58d8701d",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 4,
+        "startChar": 90,
+        "endLine": 4,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_b804147f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/config/default-config.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "update to recent date.",
+      "range": {
+        "startLine": 12,
+        "startChar": 98,
+        "endLine": 12,
+        "endChar": 108
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_98095898",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/config/maven-metadata-local.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "this should not be checked in.",
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_f8fe9c6a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/impl/InterfaceManagerProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 2,
+        "startChar": 93,
+        "endLine": 2,
+        "endChar": 348
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_38f8047c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/yang/gen/v1/urn/opendaylight/params/xml/ns/yang/genius/impl/rev141210/InterfaceManagerModule.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 2,
+        "startChar": 93,
+        "endLine": 2,
+        "endChar": 348
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_98303858",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/yang/gen/v1/urn/opendaylight/params/xml/ns/yang/genius/impl/rev141210/InterfaceManagerModuleFactory.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 2,
+        "startChar": 93,
+        "endLine": 2,
+        "endChar": 348
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_f835fc46",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/yang/gen/v1/urn/opendaylight/params/xml/ns/yang/genius/impl/rev141210/InterfaceManagerModuleFactoryTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 2,
+        "startChar": 93,
+        "endLine": 2,
+        "endChar": 348
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_d83ac035",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/yang/gen/v1/urn/opendaylight/params/xml/ns/yang/genius/impl/rev141210/InterfaceManagerModuleTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 2,
+        "startChar": 93,
+        "endLine": 2,
+        "endChar": 245
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_383f6427",
+        "filename": "interfacemanager/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be 1.7.0?",
+      "range": {
+        "startLine": 13,
+        "startChar": 12,
+        "endLine": 13,
+        "endChar": 27
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_7849eccf",
+        "filename": "it/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 3,
+        "startChar": 90,
+        "endLine": 3,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_5846b0c0",
+        "filename": "it/src/test/java/org/opendaylight/genius/it/InterfaceManagerIT.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 2,
+        "startChar": 93,
+        "endLine": 2,
+        "endChar": 348
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_b81254b2",
+        "filename": "karaf/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 3,
+        "startChar": 90,
+        "endLine": 3,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_b879b4fe",
+        "filename": "pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 3,
+        "startChar": 90,
+        "endLine": 3,
+        "endChar": 344
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_7820ccf7",
+        "filename": "pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-04-05T13:15:08Z",
+      "side": 1,
+      "message": "Genius",
+      "range": {
+        "startLine": 32,
+        "startChar": 44,
+        "endLine": 32,
+        "endChar": 45
+      },
+      "revId": "fa28610e2dfa35d67329619b0c11ceea36202924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
