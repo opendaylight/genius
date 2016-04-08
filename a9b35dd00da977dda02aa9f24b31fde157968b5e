@@ -22,6 +22,30 @@
       "revId": "a9b35dd00da977dda02aa9f24b31fde157968b5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a4c51b2_14d7c8c2",
+        "filename": "deploy-site.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2759
+      },
+      "writtenOn": "2016-04-08T04:19:11Z",
+      "side": 1,
+      "message": "This does not matter at all. This file is not released. It\u0027s used only to deploy your project\u0027s Maven Site and is not actually part of the build in any way.",
+      "parentUuid": "3a4c51b2_14606831",
+      "range": {
+        "startLine": 13,
+        "startChar": 2,
+        "endLine": 15,
+        "endChar": 35
+      },
+      "revId": "a9b35dd00da977dda02aa9f24b31fde157968b5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
