@@ -15,21 +15,30 @@ module idmanager-impl {
     }
 
     identity idmanager-impl {
-        base config:module-type;
-        config:java-name-prefix IdManager;
-    }
+            base config:module-type;
+            config:java-name-prefix IdmanagerImpl;
+        }
 
-    augment "/config:modules/config:module/config:configuration" {
-        case genius {
-            when "/config:modules/config:module/config:type = 'idmanager-impl'";
-            container broker {
-                uses config:service-ref {
-                    refine type {
-                        mandatory true;
-                        config:required-identity md-sal-binding:binding-broker-osgi-registry;
+        augment "/config:modules/config:module/config:configuration" {
+            case idmanager-impl {
+                when "/config:modules/config:module/config:type = 'idmanager-impl'";
+                container broker {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity md-sal-binding:binding-broker-osgi-registry;
+                        }
                     }
                 }
+                container rpc-registry {
+                     uses config:service-ref {
+                          refine type {
+                             mandatory true;
+                             config:required-identity md-sal-binding:binding-rpc-registry;
+                          }
+                     }
+                }
+
             }
         }
-    }
 }
