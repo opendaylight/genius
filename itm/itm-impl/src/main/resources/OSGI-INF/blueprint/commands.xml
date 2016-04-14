@@ -1,0 +1,70 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <reference id="itmProviderRef" interface="org.opendaylight.genius.itm.api.IITMProvider" availability="optional" />
+    <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepAdd">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepDelete">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepShow">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepCommit">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepShowState">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepConfigureTunnelType">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepMonitor">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepDeleteDatastore">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.VtepSchemaAdd">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.VtepSchemaShow">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.VtepSchemaUpdate">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.VtepSchemaDelete">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.org.opendaylight.genius.itm.cli.TepEnableTunnelMonitor">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+    </command-bundle>
+</blueprint>

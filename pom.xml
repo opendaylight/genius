@@ -34,6 +34,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   </scm>
 
   <modules>
+    <module>commons/binding-parent</module>
+    <module>commons/config-parent</module>
     <module>interfacemanager</module>
     <module>itm</module>
     <module>lockmanager</module>
