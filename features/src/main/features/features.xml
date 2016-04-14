@@ -12,10 +12,20 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <repository>mvn:org.opendaylight.yangtools/features-yangtools/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.controller/features-mdsal/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.mdsal.model/features-mdsal-model/{{VERSION}}/xml/features</repository>
+  <repository>mvn:org.opendaylight.openflowplugin/features-openflowplugin/{{VERSION}}/xml/features</repository>
+  <repository>mvn:org.opendaylight.openflowplugin/features-openflowplugin-extension/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.netconf/features-restconf/{{VERSION}}/xml/features</repository>
+  <repository>mvn:org.opendaylight.ovsdb/southbound-features/{{VERSION}}/xml/features</repository>
+  <repository>mvn:org.opendaylight.ovsdb/hwvtepsouthbound-features/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.dlux/features-dlux/{{VERSION}}/xml/features</repository>
   <feature name='odl-genius-api' version='${project.version}' description='OpenDaylight :: genius :: api'>
+    <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
     <feature version='${mdsal.model.version}'>odl-mdsal-models</feature>
+    <feature version="${ovsdb.version}">odl-ovsdb-southbound-api</feature>
+    <feature version='${ovsdb.version}'>odl-ovsdb-hwvtepsouthbound-api</feature>
+    <feature version='${openflowplugin.version}'>odl-openflowplugin-nsf-model</feature>
+    <feature version="${openflowplugin.version}">odl-openflowplugin-nxm-extensions</feature>
+    <bundle>mvn:org.opendaylight.controller/liblldp/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/lockmanager-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/idmanager-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/mdsalutil-api/{{VERSION}}</bundle>
@@ -27,6 +37,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <feature name='odl-genius' version='${project.version}' description='OpenDaylight :: genius'>
     <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
     <feature version='${project.version}'>odl-genius-api</feature>
+    <feature version="${ovsdb.version}">odl-ovsdb-southbound-impl</feature>
+    <feature version='${ovsdb.version}'>odl-ovsdb-hwvtepsouthbound-impl</feature>
+    <feature version="${openflowplugin.version}">odl-openflowplugin-southbound</feature>
+    <feature version="${openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+    <bundle>mvn:commons-net/commons-net/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/idmanager-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}</bundle>
