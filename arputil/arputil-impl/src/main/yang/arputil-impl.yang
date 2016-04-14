@@ -4,32 +4,67 @@ module arputil-impl {
     prefix "arputil-impl";
 
     import config { prefix config; revision-date 2013-04-05; }
-    import opendaylight-md-sal-binding { prefix md-sal-binding; revision-date 2013-10-28;}
+        import opendaylight-md-sal-binding { prefix md-sal-binding; revision-date 2013-10-28;}
+        import opendaylight-sal-binding-broker-impl { prefix md-sal-binding-impl; revision-date 2013-10-28;}
+        import odl-mdsalutil { prefix odl-mdsal; revision-date 2016-04-06;}
+        import ietf-inet-types { prefix inet; }
+        import ietf-yang-types { prefix yang;}
 
-    description
-        "Service definition for arputil project";
-
-    revision "2016-04-06" {
         description
-            "Initial revision";
-    }
+            "Service definition for mdsal project";
 
-    identity arputil-impl {
-        base config:module-type;
-        config:java-name-prefix Arputil;
-    }
+        revision "2016-04-06" {
+            description
+                "Initial revision";
+        }
 
-    augment "/config:modules/config:module/config:configuration" {
-        case genius {
-            when "/config:modules/config:module/config:type = 'arputil-impl'";
-            container broker {
-                uses config:service-ref {
-                    refine type {
-                        mandatory true;
-                        config:required-identity md-sal-binding:binding-broker-osgi-registry;
+        identity arputil-impl {
+           base config:module-type;
+        }
+
+        augment "/config:modules/config:module/config:configuration" {
+            case arputil-impl {
+                when "/config:modules/config:module/config:type = 'arputil-impl'";
+                container broker {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity md-sal-binding:binding-broker-osgi-registry;
+                        }
+                    }
+                }
+                container rpc-registry {
+                     uses config:service-ref {
+                          refine type {
+                             mandatory true;
+                             config:required-identity md-sal-binding:binding-rpc-registry;
+                          }
+                     }
+                }
+                container mdsalutil {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity odl-mdsal:odl-mdsalutil;
+                        }
+                    }
+                }
+                container notification-publish-service {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity md-sal-binding-impl:binding-new-notification-publish-service;
+                        }
+                    }
+                }
+                container notification-service {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity md-sal-binding-impl:binding-new-notification-service;
+                        }
                     }
                 }
             }
         }
-    }
 }

@@ -22,8 +22,29 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <type xmlns:binding="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding">binding:binding-broker-osgi-registry</type>
             <name>binding-osgi-broker</name>
           </broker>
+          <mdsalutil>
+            <type xmlns:mdsalutil="urn:opendaylight:params:xml:ns:yang:mdsalutil:api">mdsalutil:odl-mdsalutil</type>
+            <name>mdsalutil-service</name>
+          </mdsalutil>
+          <notification-service>
+            <type xmlns:bindingimpl="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl">bindingimpl:binding-new-notification-service</type>
+            <name>binding-notification-adapter</name>
+          </notification-service>
+          <rpc-registry>
+            <type xmlns:binding="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding">binding:binding-rpc-registry</type>
+            <name>binding-rpc-broker</name>
+          </rpc-registry>
         </module>
       </modules>
+      <services xmlns="urn:opendaylight:params:xml:ns:yang:controller:config">
+        <service>
+          <type xmlns:prefix="urn:opendaylight:vpnservice:interfacemgr">prefix:odl-interface</type>
+          <instance>
+            <name>interfacemgr-service</name>
+            <provider>/modules/module[type='interfacemgr-impl'][name='interfacemgr-default']</provider>
+          </instance>
+        </service>
+      </services>
     </data>
   </configuration>
 </snapshot>
