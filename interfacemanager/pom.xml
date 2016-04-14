@@ -27,6 +27,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <modules>
     <module>interfacemanager-api</module>
     <module>interfacemanager-impl</module>
+    <module>interfacemanager-shell</module>
   </modules>
   <!-- DO NOT install or deploy the repo root pom as it's only needed to initiate a build -->
   <build>

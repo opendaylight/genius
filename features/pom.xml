@@ -26,11 +26,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   </prerequisites>
 
   <properties>
+    <openflowplugin.version>0.3.0-SNAPSHOT</openflowplugin.version>
+    <ovsdb.version>1.3.0-SNAPSHOT</ovsdb.version>
     <mdsal.model.version>0.9.0-SNAPSHOT</mdsal.model.version>
     <mdsal.version>1.4.0-SNAPSHOT</mdsal.version>
     <restconf.version>1.4.0-SNAPSHOT</restconf.version>
     <yangtools.version>1.0.0-SNAPSHOT</yangtools.version>
     <dlux.version>0.4.0-SNAPSHOT</dlux.version>
+    <liblldp.version>0.11.0-SNAPSHOT</liblldp.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
   </properties>
 
@@ -96,6 +99,46 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <artifactId>features-dlux</artifactId>
       <classifier>features</classifier>
       <version>${dlux.version}</version>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>southbound-features</artifactId>
+      <version>${ovsdb.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>hwvtepsouthbound-features</artifactId>
+      <version>${ovsdb.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.openflowplugin</groupId>
+      <artifactId>features-openflowplugin</artifactId>
+      <classifier>features</classifier>
+      <version>${openflowplugin.version}</version>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.openflowplugin</groupId>
+      <artifactId>features-openflowplugin-extension</artifactId>
+      <classifier>features</classifier>
+      <version>${openflowplugin.version}</version>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.netconf</groupId>
+      <artifactId>features-restconf</artifactId>
+      <classifier>features</classifier>
+      <version>${restconf.version}</version>
       <type>xml</type>
       <scope>runtime</scope>
     </dependency>
