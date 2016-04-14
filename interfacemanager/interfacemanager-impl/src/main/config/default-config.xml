@@ -8,8 +8,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 -->
 <snapshot>
   <required-capabilities>
+      <capability>urn:opendaylight:genius:interfacemanager?module=odl-interface&amp;revision=2016-04-06</capability>
       <capability>urn:opendaylight:genius:interfacemanager:impl?module=interfacemanager-impl&amp;revision=2016-04-06</capability>
       <capability>urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding?module=opendaylight-md-sal-binding&amp;revision=2013-10-28</capability>
+      <capability>urn:opendaylight:genius:mdsalutil?module=odl-mdsalutil&amp;revision=2016-04-06</capability>
+      <capability>urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl?module=opendaylight-sal-binding-broker-impl&amp;revision=2013-10-28</capability>
   </required-capabilities>
   <configuration>
 
@@ -22,8 +25,29 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <type xmlns:binding="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding">binding:binding-broker-osgi-registry</type>
             <name>binding-osgi-broker</name>
           </broker>
+          <mdsalutil>
+            <type xmlns:mdsalutil="urn:opendaylight:genius:mdsalutil">mdsalutil:odl-mdsalutil</type>
+            <name>mdsalutil-service</name>
+          </mdsalutil>
+          <notification-service>
+            <type xmlns:bindingimpl="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl">bindingimpl:binding-new-notification-service</type>
+            <name>binding-notification-adapter</name>
+          </notification-service>
+          <rpc-registry>
+            <type xmlns:binding="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding">binding:binding-rpc-registry</type>
+            <name>binding-rpc-broker</name>
+          </rpc-registry>
         </module>
       </modules>
+      <services xmlns="urn:opendaylight:params:xml:ns:yang:controller:config">
+        <service>
+          <type xmlns:prefix="urn:opendaylight:genius:interfacemanager">prefix:odl-interface</type>
+          <instance>
+            <name>interfacemgr-service</name>
+            <provider>/modules/module[type='interfacemanager-impl'][name='interfacemanager-default']</provider>
+          </instance>
+        </service>
+      </services>
     </data>
   </configuration>
 </snapshot>

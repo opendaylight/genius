@@ -4,32 +4,60 @@ module interfacemanager-impl {
     prefix "interfacemanager-impl";
 
     import config { prefix config; revision-date 2013-04-05; }
-    import opendaylight-md-sal-binding { prefix md-sal-binding; revision-date 2013-10-28;}
+        import opendaylight-sal-binding-broker-impl { prefix md-sal-binding-impl; revision-date 2013-10-28;}
+        import opendaylight-md-sal-binding { prefix md-sal-binding; revision-date 2013-10-28;}
+        import odl-interface {prefix odlif; revision-date 2016-04-06;}
+        import odl-mdsalutil { prefix odl-mdsal; revision-date 2016-04-06;}
 
-    description
-        "Service definition for interfacemanager project";
-
-    revision "2016-06-04" {
         description
-            "Initial revision";
-    }
+            "Service definition for interfacemgr project";
 
-    identity interfacemanager-impl {
-        base config:module-type;
-        config:java-name-prefix InterfaceManager;
-    }
+        revision "2016-04-06" {
+            description
+                "Initial revision";
+        }
 
-    augment "/config:modules/config:module/config:configuration" {
-        case genius {
-            when "/config:modules/config:module/config:type = 'interfacemanager-impl'";
-            container broker {
-                uses config:service-ref {
-                    refine type {
-                        mandatory true;
-                        config:required-identity md-sal-binding:binding-broker-osgi-registry;
+        identity interfacemanager-impl {
+            base config:module-type;
+            config:provided-service odlif:odl-interface;
+            config:java-name-prefix InterfacemgrImpl;
+        }
+
+        augment "/config:modules/config:module/config:configuration" {
+            case interfacemanager-impl {
+                when "/config:modules/config:module/config:type = 'interfacemanager-impl'";
+                container broker {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity md-sal-binding:binding-broker-osgi-registry;
+                        }
                     }
+                }
+                container mdsalutil {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity odl-mdsal:odl-mdsalutil;
+                        }
+                    }
+                }
+                container rpc-registry {
+                    uses config:service-ref {
+                        refine type {
+                            mandatory true;
+                            config:required-identity md-sal-binding:binding-rpc-registry;
+                        }
+                    }
+                }
+                container notification-service {
+                     uses config:service-ref {
+                         refine type {
+                             mandatory true;
+                             config:required-identity md-sal-binding-impl:binding-new-notification-service;
+                         }
+                     }
                 }
             }
         }
-    }
 }
