@@ -1,4 +1,7 @@
 package org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.impl.rev160406;
+
+import org.opendaylight.genius.itm.impl.ItmProvider;
+
 public class ItmModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.impl.rev160406.AbstractItmModule {
     public ItmModule(org.opendaylight.controller.config.api.ModuleIdentifier identifier, org.opendaylight.controller.config.api.DependencyResolver dependencyResolver) {
         super(identifier, dependencyResolver);
@@ -15,8 +18,13 @@ public class ItmModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.gen
 
     @Override
     public java.lang.AutoCloseable createInstance() {
-        // TODO:implement
-        throw new java.lang.UnsupportedOperationException();
+        ItmProvider provider = new ItmProvider();
+        provider.setMdsalApiManager(getMdsalutilDependency());
+        provider.setNotificationPublishService(getNotificationPublishServiceDependency());
+        provider.setNotificationService(getNotificationServiceDependency());
+        provider.setRpcProviderRegistry(getRpcregistryDependency());
+        getBrokerDependency().registerProvider(provider);
+        return provider;
     }
 
 }
