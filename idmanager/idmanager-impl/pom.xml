@@ -10,10 +10,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.opendaylight.controller</groupId>
+    <groupId>org.opendaylight.genius</groupId>
     <artifactId>config-parent</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
-    <relativePath/>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../../commons/config-parent</relativePath>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
@@ -23,9 +23,19 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>interfacemanager-api</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-api</artifactId>
+      <version>${genius.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>lockmanager-api</artifactId>
+      <version>${genius.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>mdsalutil-api</artifactId>
+      <version>${genius.version}</version>
     </dependency>
 
     <!-- Testing Dependencies -->

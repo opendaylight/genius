@@ -22,6 +22,18 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <type xmlns:binding="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding">binding:binding-broker-osgi-registry</type>
             <name>binding-osgi-broker</name>
           </broker>
+          <rpc-registry>
+            <type xmlns:binding="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding">binding:binding-rpc-registry</type>
+            <name>binding-rpc-broker</name>
+          </rpc-registry>
+          <notification-publish-service>
+            <type xmlns:bindingimpl="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl">bindingimpl:binding-new-notification-publish-service</type>
+            <name>binding-notification-publish-adapter</name>
+          </notification-publish-service>
+          <notification-service>
+            <type xmlns:bindingimpl="urn:opendaylight:params:xml:ns:yang:controller:md:sal:binding:impl">bindingimpl:binding-new-notification-service</type>
+            <name>binding-notification-adapter</name>
+          </notification-service>
         </module>
       </modules>
     </data>

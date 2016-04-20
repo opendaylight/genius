@@ -1,4 +1,7 @@
 package org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.impl.rev160406;
+
+import org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorProvider;
+
 public class AlivenessMonitorModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.impl.rev160406.AbstractAlivenessMonitorModule {
     public AlivenessMonitorModule(org.opendaylight.controller.config.api.ModuleIdentifier identifier, org.opendaylight.controller.config.api.DependencyResolver dependencyResolver) {
         super(identifier, dependencyResolver);
@@ -15,8 +18,11 @@ public class AlivenessMonitorModule extends org.opendaylight.yang.gen.v1.urn.ope
 
     @Override
     public java.lang.AutoCloseable createInstance() {
-        // TODO:implement
-        throw new java.lang.UnsupportedOperationException();
+        AlivenessMonitorProvider provider = new AlivenessMonitorProvider(getRpcRegistryDependency());
+        provider.setNotificationPublishService(getNotificationPublishServiceDependency());
+        provider.setNotificationService(getNotificationServiceDependency());
+        getBrokerDependency().registerProvider(provider);
+        return provider;
     }
 
 }
