@@ -19,7 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList ;
 
 public interface IITMProvider {
-	// APIs used by i
+    // APIs used by i
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask, String gatewayIp, String transportZone);
 
     public void commitTeps();
@@ -31,11 +31,11 @@ public interface IITMProvider {
     public void showState(TunnelList tunnels);
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                    String gatewayIp, String transportZone);
-   // public void showState(TunnelsState tunnelsState);
+                           String gatewayIp, String transportZone);
+    // public void showState(TunnelsState tunnelsState);
     public void configureTunnelType(String transportZone, String tunnelType);
 
-    
+
     /**
      * Adds the vtep config schema.
      *

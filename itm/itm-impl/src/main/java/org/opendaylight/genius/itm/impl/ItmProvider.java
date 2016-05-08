@@ -21,10 +21,8 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.listeners.TransportZoneListener;
-import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
-import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
-import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
+import org.opendaylight.genius.itm.listeners.*;
+import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -46,10 +44,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.VtepConfigSchemas;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.config.schemas.VtepConfigSchema;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.config.schemas.VtepConfigSchemaBuilder;
-
 public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMProvider /*,ItmStateService */{
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
@@ -66,8 +60,10 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     private TunnelMonitorChangeListener tnlToggleListener;
     private TunnelMonitorIntervalListener tnlIntervalListener;
     private VtepConfigSchemaListener vtepConfigSchemaListener;
+    private InterfaceStateListener ifStateListener;
     private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor itmStatusMonitor = ITMStatusMonitor.getInstance();
+    private ItmTunnelEventListener itmStateListener;
     static short flag = 0;
 
     public ItmProvider() {
@@ -95,6 +91,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tzChangeListener = new TransportZoneListener(dataBroker, idManager) ;
             itmRpcService = new ItmManagerRpcService(dataBroker, idManager);
             vtepConfigSchemaListener = new VtepConfigSchemaListener(dataBroker);
+            this.ifStateListener = new InterfaceStateListener(dataBroker);
             tnlToggleListener = new TunnelMonitorChangeListener(dataBroker);
             tnlIntervalListener = new TunnelMonitorIntervalListener(dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
@@ -110,6 +107,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tnlToggleListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
             tepCommandHelper.setInterfaceManager(interfaceManager);
+            itmStateListener =new ItmTunnelEventListener(dataBroker);
             createIdPool();
             itmStatusMonitor.reportStatus("OPERATIONAL");
         } catch (Exception e) {
@@ -125,7 +123,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     public void setNotificationPublishService(NotificationPublishService notificationPublishService) {
         this.notificationPublishService = notificationPublishService;
     }
-    
+
     public void setMdsalApiManager(IMdsalApiManager mdsalMgr) {
         this.mdsalManager = mdsalMgr;
     }
@@ -152,10 +150,10 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
 
     private void createIdPool() {
         CreateIdPoolInput createPool = new CreateIdPoolInputBuilder()
-            .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-            .setLow(ITMConstants.ITM_IDPOOL_START)
-            .setHigh(new BigInteger(ITMConstants.ITM_IDPOOL_SIZE).longValue())
-            .build();
+                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
+                .setLow(ITMConstants.ITM_IDPOOL_START)
+                .setHigh(new BigInteger(ITMConstants.ITM_IDPOOL_SIZE).longValue())
+                .build();
         try {
             Future<RpcResult<Void>> result = idManager.createIdPool(createPool);
             if ((result != null) && (result.get().isSuccessful())) {
@@ -183,8 +181,8 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     @Override
     public void commitTeps() {
         try {
-                tepCommandHelper.deleteOnCommit();
-                tepCommandHelper.buildTeps();
+            tepCommandHelper.deleteOnCommit();
+            tepCommandHelper.buildTeps();
         } catch (Exception e) {
             LOG.debug("unable to configure teps" + e.toString());
         }
@@ -198,7 +196,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
 
     public void showState(TunnelList tunnels) {
         if (tunnels != null)
-           tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS());
+            tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS());
         else
             LOG.debug("No tunnels available");
     }
@@ -206,7 +204,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
                            String gatewayIp, String transportZone) {
         try {
-           tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,14 +216,6 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         tepCommandHelper.configureTunnelType(transportZone,tunnelType);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.opendaylight.genius.itm.api.IITMProvider#addVtepConfigSchema(org.
-     * opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.
-     * rev151102.vtep.config.schemas.VtepConfigSchema)
-     */
     @Override
     public void addVtepConfigSchema(VtepConfigSchema vtepConfigSchema) {
         VtepConfigSchema validatedSchema = ItmUtils.validateForAddVtepConfigSchema(vtepConfigSchema,
@@ -241,13 +231,6 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         LOG.debug("Vtep config schema {} added to config DS", schemaName);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.opendaylight.genius.itm.api.IITMProvider#getVtepConfigSchema(java
-     * .lang.String)
-     */
     @Override
     public VtepConfigSchema getVtepConfigSchema(String schemaName) {
         Optional<VtepConfigSchema> schema = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
@@ -258,13 +241,6 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.opendaylight.genius.itm.api.IITMProvider#getAllVtepConfigSchemas(
-     * )
-     */
     @Override
     public List<VtepConfigSchema> getAllVtepConfigSchemas() {
         Optional<VtepConfigSchemas> schemas = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
@@ -275,13 +251,6 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.opendaylight.genius.itm.api.IITMProvider#updateVtepSchema(java.
-     * lang.String, java.util.List, java.util.List)
-     */
     @Override
     public void updateVtepSchema(String schemaName, List<BigInteger> lstDpnsForAdd, List<BigInteger> lstDpnsForDelete) {
         LOG.trace("Updating VTEP schema {} by adding DPN's {} and deleting DPN's {}.", schemaName, lstDpnsForAdd,
@@ -311,12 +280,6 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         LOG.debug("Vtep config schema {} updated to config DS with DPN's {}", schemaName, ItmUtils.getDpnIdList(schema.getDpnIds()));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.opendaylight.genius.itm.api.IITMProvider#deleteAllVtepSchemas()
-     */
     @Override
     public void deleteAllVtepSchemas() {
         List<VtepConfigSchema> lstSchemas = getAllVtepConfigSchemas();

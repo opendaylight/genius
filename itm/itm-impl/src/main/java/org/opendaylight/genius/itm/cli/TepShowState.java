@@ -22,7 +22,7 @@ import java.util.List;
 
 @Command(scope = "tep", name = "show-state", description="Monitors tunnel state")
 
-    public class TepShowState extends OsgiCommandSupport {
+public class TepShowState extends OsgiCommandSupport {
 
     private IITMProvider itmProvider;
 
@@ -32,7 +32,7 @@ import java.util.List;
 
     @Override
     protected Object doExecute() throws Exception {
-        
+
         DataBroker broker = itmProvider.getDataBroker();
         List<String> result = new ArrayList<String>();
         InstanceIdentifier<TunnelList> path = InstanceIdentifier.builder(TunnelList.class).build();

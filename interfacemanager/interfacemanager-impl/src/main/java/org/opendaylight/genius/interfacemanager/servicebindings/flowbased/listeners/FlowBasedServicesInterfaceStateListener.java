@@ -38,6 +38,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
+        LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererStateInterfaceUnbindWorker stateUnbindWorker =
                 new RendererStateInterfaceUnbindWorker(interfaceStateOld);
@@ -46,16 +47,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        if (interfaceStateNew.getOperStatus() == Interface.OperStatus.Down) {
-            RendererStateInterfaceUnbindWorker stateUnbindWorker =
-                    new RendererStateInterfaceUnbindWorker(interfaceStateNew);
-            coordinator.enqueueJob(interfaceStateNew.getName(), stateUnbindWorker);
-            return;
-        }
-
-        RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker(interfaceStateNew);
-        coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker);
+        LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
     }
 
     @Override
@@ -64,7 +56,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
             LOG.info("Interface: {} operstate is down when adding. Not Binding services", interfaceStateNew.getName());
             return;
         }
-
+        LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker(interfaceStateNew);
         coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker);

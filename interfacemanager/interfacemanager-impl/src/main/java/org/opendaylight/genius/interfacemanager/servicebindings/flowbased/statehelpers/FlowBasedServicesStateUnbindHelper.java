@@ -34,21 +34,23 @@ public class FlowBasedServicesStateUnbindHelper {
     public static List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState,
                                                                            DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-
+        LOG.debug("unbinding services on interface {}", ifaceState.getName());
         ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), dataBroker);
         if (servicesInfo == null) {
+            LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;
         }
 
         List<BoundServices> allServices = servicesInfo.getBoundServices();
         if (allServices == null || allServices.isEmpty()) {
+            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
             return futures;
         }
 
         if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
             return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
-             return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
+            return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         }
         return futures;
     }
@@ -100,7 +102,7 @@ public class FlowBasedServicesStateUnbindHelper {
         BoundServices highestPriority = allServices.remove(0);
         FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, t, IfmConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
         }
         futures.add(t.submit());
         return futures;

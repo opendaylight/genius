@@ -28,6 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
@@ -105,7 +106,7 @@ public class FlowBasedServicesConfigurationTest {
                 .setIfIndex(ifIndexval)
                 .setLowerLayerIf(lowerLayerIfList)
                 .setKey(IfmUtil.getStateInterfaceKeyFromName(InterfaceManagerTestUtil.interfaceName))
-                .setName(InterfaceManagerTestUtil.interfaceName);
+                .setName(InterfaceManagerTestUtil.interfaceName).setType(L2vlan.class);
 
         stypeOpenflow = InterfaceManagerTestUtil.buildStypeOpenflow(dpId, flowPriority,NwConstants.LPORT_DISPATCHER_TABLE,instructions);
         boundServiceNew = InterfaceManagerTestUtil.buildBoundServices(serviceName, key, new BoundServicesKey(key), stypeOpenflow);

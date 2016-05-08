@@ -31,6 +31,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.TableKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.flow.capable.port.State;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.flow.capable.port.StateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadata;
@@ -87,9 +90,20 @@ import java.util.*;
 
 public class InterfaceManagerTestUtil {
     public static final String interfaceName = "s1-eth1";
-    public static final String interfaceName2 = "s1-eth2";
+    public static final String childInterface = "s1-eth1-trunk";
     public static final String tunnelInterfaceName = "s2-gre1";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
+
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface buildStateInterface(String ifaceName, String physAddress,
+                                                                                                                                                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opState){
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder ifaceBuilder = new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder();
+        if(physAddress != null) {
+            ifaceBuilder.setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress.getDefaultInstance(physAddress));
+        }
+        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(ifaceName));
+        ifaceBuilder.setOperStatus(opState);
+        return ifaceBuilder.build();
+    }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface buildStateInterface(
             String ifName, NodeConnectorId ncId) {
@@ -110,11 +124,11 @@ public class InterfaceManagerTestUtil {
 
     public static InstanceIdentifier<Flow> getFlowInstanceIdentifier(BigInteger dpId,short key,FlowKey flowKey){
 
-        Node nodeDpn;
+        org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node nodeDpn;
         NodeId nodeId = new NodeId("openflow:" + dpId);
         nodeDpn = InterfaceManagerTestUtil.buildNode(nodeId,new NodeKey(nodeId));
         return InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class,nodeDpn.getKey())
+                .child(org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node.class,nodeDpn.getKey())
                 .augmentation(FlowCapableNode.class).child(Table.class, new TableKey(key)).child(Flow.class, flowKey).build();
     }
 
@@ -144,7 +158,7 @@ public class InterfaceManagerTestUtil {
     }
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled, Class<? extends TunnelTypeBase> tunType,
-                                           String remoteIpStr, String localIpStr) {
+                                                 String remoteIpStr, String localIpStr) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
@@ -152,7 +166,7 @@ public class InterfaceManagerTestUtil {
         IpAddress remoteIp = new IpAddress(Ipv4Address.getDefaultInstance(remoteIpStr));
         IpAddress localIp =  new IpAddress(Ipv4Address.getDefaultInstance(localIpStr));
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(localIp).setTunnelSource(localIp)
-                    .setTunnelInterfaceType( tunType).setInternal(true).setMonitorEnabled(false).build();
+                .setTunnelInterfaceType( tunType).setInternal(true).setMonitorEnabled(false).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
     }
@@ -192,8 +206,8 @@ public class InterfaceManagerTestUtil {
         return builder.build();
     }
 
-    public static  Node buildNode(NodeId nodeId , NodeKey nodeKey){
-        Node nodeDpn;
+    public static  org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node buildNode(NodeId nodeId , NodeKey nodeKey){
+        org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node nodeDpn;
         nodeDpn = new org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder().setId(nodeId).setKey(nodeKey).build();
         return nodeDpn;
     }
@@ -221,14 +235,22 @@ public class InterfaceManagerTestUtil {
         return ncBuilder.build();
     }
 
+    public static FlowCapableNodeConnector buildFlowCapableNodeConnector(boolean isPortDown, boolean isLive, String macAddress) {
+        PortConfig portConfig = new PortConfig(false, false, false, isPortDown);
+        State state = new StateBuilder().setBlocked(true).setLinkDown(false).setLive(isLive).build();
+        FlowCapableNodeConnectorBuilder fcNodeConnector = new FlowCapableNodeConnectorBuilder().
+                setHardwareAddress(MacAddress.getDefaultInstance(macAddress)).setConfiguration(portConfig).setState(state);
+        return fcNodeConnector.build();
+    }
+
     public static NodeConnectorId buildNodeConnectorId(BigInteger dpn, long portNo) {
         return new NodeConnectorId(buildNodeConnectorString(dpn, portNo));
     }
 
     public static String buildNodeConnectorString(BigInteger dpn, long portNo){
-       return new StringBuffer().append(IfmConstants.OF_URI_PREFIX).
-               append(dpn).append(IfmConstants.OF_URI_SEPARATOR).
-               append(portNo).toString();
+        return new StringBuffer().append(IfmConstants.OF_URI_PREFIX).
+                append(dpn).append(IfmConstants.OF_URI_SEPARATOR).
+                append(portNo).toString();
     }
 
     public static InstanceIdentifier<BridgeInterfaceEntry> buildBridgeEntryId(BigInteger dpn, String interfaceName){
@@ -276,8 +298,8 @@ public class InterfaceManagerTestUtil {
     }
 
     public static TerminationPoint getTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
-                                            String portName, int vlanId, Class type,
-                                            Interface iface) {
+                                                       String portName, int vlanId, Class type,
+                                                       Interface iface) {
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node.class)), portName);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();

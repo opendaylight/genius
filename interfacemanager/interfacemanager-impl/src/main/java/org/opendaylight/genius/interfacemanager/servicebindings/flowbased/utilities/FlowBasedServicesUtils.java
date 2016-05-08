@@ -73,6 +73,23 @@ public class FlowBasedServicesUtils {
         return null;
     }
 
+    public static NodeConnectorId getNodeConnectorIdFromInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        if(ifState != null) {
+            List<String> ofportIds = ifState.getLowerLayerIf();
+            return new NodeConnectorId(ofportIds.get(0));
+        }
+        return null;
+    }
+
+    public static BigInteger getDpnIdFromInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        NodeConnectorId nodeConnectorId = null;
+        if(ifState != null) {
+            List<String> ofportIds = ifState.getLowerLayerIf();
+            nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
+        }
+        return new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+    }
+
     public static List<MatchInfo> getMatchInfoForVlanPortAtIngressTable(BigInteger dpId, long portNo, Interface iface) {
         List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] {dpId, BigInteger.valueOf(portNo)}));
@@ -87,40 +104,19 @@ public class FlowBasedServicesUtils {
         return matches;
     }
 
-    public static List<MatchInfo> getMatchInfoForTunnelPortAtIngressTable(BigInteger dpId, long portNo, Interface iface) {
+    public static List<MatchInfo> getMatchInfoForTunnelPortAtIngressTable(BigInteger dpId, long portNo) {
         List<MatchInfo> matches = new ArrayList<MatchInfo>();
         matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[]{dpId, BigInteger.valueOf(portNo)}));
         return matches;
     }
 
-    public static List<MatchInfo> getMatchInfoForDispatcherTable(BigInteger dpId, Interface iface,
+    public static List<MatchInfo> getMatchInfoForDispatcherTable(BigInteger dpId,
                                                                  int interfaceTag, short servicePriority) {
         List<MatchInfo> matches = new ArrayList<MatchInfo>();
         matches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
                 MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, servicePriority),
                 MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
         return matches;
-    }
-
-    public static Long getLPortTag(Interface iface, DataBroker dataBroker) {
-        /*ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-        String portName = parentRefs.getParentInterface();
-        BigInteger dpIdFromInterface = parentRefs.getDatapathNodeIdentifier();
-        String portKey = FlowBasedServicesUtils.getInterfaceRefInfo(dpIdFromInterface.toString(), portName);
-        if (iface.getType().isAssignableFrom(L2vlan.class)) {
-            InterfacesMetaKey interfacesMetaKey = new InterfacesMetaKey(portKey);
-            InterfacesInfoKey interfacesInfoKey = new InterfacesInfoKey(iface.getName());
-            InterfacesInfo interfacesInfo = VlanInterfaceUtilities.getInterfacesInfoFromConfigDS(interfacesMetaKey,
-                    interfacesInfoKey, dataBroker);
-            return interfacesInfo.getLporttag();
-        } else if (iface.getType().isAssignableFrom(Tunnel.class)) {
-            TunnelInterfaceRefInfoKey tunnelInterfaceRefInfoKey = new TunnelInterfaceRefInfoKey(portKey);
-            TunnelInterfaceEntries tunnelInterfaceEntries =
-                    TunnelInterfaceUtilities.getTunnelInterfaceRefEntriesFromConfigDs(
-                            tunnelInterfaceRefInfoKey, iface.getName(), dataBroker);
-            return tunnelInterfaceEntries.getLportTag();
-        } */
-        return 0L;
     }
 
     public static void installInterfaceIngressFlow(BigInteger dpId, Interface iface,
@@ -201,11 +197,11 @@ public class FlowBasedServicesUtils {
         return nodeDpn;
     }
 
-    public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, Interface iface,
+    public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
                                                   WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
-        LOG.debug("Installing LPort Dispatcher Flows {}, {}", dpId, iface);
+        LOG.debug("Installing LPort Dispatcher Flows {}, {}", dpId, interfaceName);
         String serviceRef = boundService.getServiceName();
-        List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId, iface,
+        List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId,
                 interfaceTag, currentServiceIndex);
 
         // Get the metadata and mask from the service's write metadata instruction
@@ -230,7 +226,7 @@ public class FlowBasedServicesUtils {
         }
 
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, iface.getName(), boundService, currentServiceIndex);
+        String flowRef = getFlowRef(dpId, interfaceName, boundService, currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
         installFlow(dpId, ingressFlow, t);
@@ -277,14 +273,14 @@ public class FlowBasedServicesUtils {
      * @param currentServiceInfo
      * @return
      */
- public static BoundServices[] getHighAndLowPriorityService(
-         List<BoundServices> serviceInfos, BoundServices currentServiceInfo) {
-    BoundServices higher = null; // this will be used to hold the immediate higher service priority with respect to the currentServiceInfo
-    BoundServices lower = null; // this will be used to hold the immediate lower service priority with respect to the currentServiceInfo
+    public static BoundServices[] getHighAndLowPriorityService(
+            List<BoundServices> serviceInfos, BoundServices currentServiceInfo) {
+        BoundServices higher = null; // this will be used to hold the immediate higher service priority with respect to the currentServiceInfo
+        BoundServices lower = null; // this will be used to hold the immediate lower service priority with respect to the currentServiceInfo
         if (serviceInfos == null || serviceInfos.isEmpty()) {
             return new BoundServices[]{lower, higher};
         }
-        List<BoundServices> availableServiceInfos = new ArrayList<BoundServices>(serviceInfos);
+        List <BoundServices> availableServiceInfos = new ArrayList<BoundServices>(serviceInfos);
         Collections.sort(availableServiceInfos, new Comparator<BoundServices>() {
             @Override
             public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {
@@ -303,7 +299,7 @@ public class FlowBasedServicesUtils {
     }
 
     public static BoundServices getHighestPriorityService(List<BoundServices> serviceInfos) {
-        List<BoundServices> availableServiceInfos = new ArrayList<BoundServices>(serviceInfos);
+        List <BoundServices> availableServiceInfos = new ArrayList<BoundServices>(serviceInfos);
         if (availableServiceInfos.isEmpty()) {
             return null;
         }
@@ -340,7 +336,7 @@ public class FlowBasedServicesUtils {
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
                 IfmConstants.VLAN_TABLE_COOKIE, matches, instructions);
         installFlow(dpId, ingressFlow, t);
-}
+    }
 
     public static String getFlowRef(short tableId, BigInteger dpnId, String infName) {
         return String.format("%d:%s:%s", tableId, dpnId, infName);

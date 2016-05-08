@@ -25,18 +25,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-/**
- * Created by eanraju on 23-Mar-16.
- */
+
 public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger logger = LoggerFactory.getLogger(ItmMonitorToggleWorker.class) ;
     private DataBroker dataBroker;
     private String tzone;
     private boolean enabled;
     private List<HwVtep> hwVteps;
-    private Boolean exists;
+    private  Boolean exists;
 
-  public  ItmMonitorToggleWorker(List<HwVtep> hwVteps, String tzone, boolean enabled, DataBroker dataBroker, Boolean exists){
+    public  ItmMonitorToggleWorker(List<HwVtep> hwVteps,String tzone,boolean enabled, DataBroker dataBroker, Boolean exists){
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.enabled = enabled;
@@ -45,8 +43,7 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and toggleBoolean {}",tzone,enabled );
     }
 
-    @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    @Override public List<ListenableFuture<Void>> call() throws Exception {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         logger.debug("Invoking Tunnel Monitor Worker tzone = {} enabled {}",tzone,enabled );
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
@@ -55,7 +52,7 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         return futures;
     }
 
-    private void toggleTunnelMonitoring(List<HwVtep> hwVteps, Boolean enabled, String tzone, WriteTransaction t, Boolean exists) {
+    private void toggleTunnelMonitoring(List<HwVtep> hwVteps,Boolean enabled, String tzone, WriteTransaction t,Boolean exists) {
         //exists means hwVteps exist for this tzone
 
         List<String> TunnelList = ItmUtils.getTunnelsofTzone(hwVteps,tzone,dataBroker,exists);
@@ -70,7 +67,7 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
             IfTunnel tunnel = new IfTunnelBuilder().setMonitorEnabled(enabled).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
-                            .addAugmentation(IfTunnel.class, tunnel);
+                    .addAugmentation(IfTunnel.class, tunnel);
             t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
         }
     }

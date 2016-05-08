@@ -28,29 +28,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorEnabled, TunnelMonitorChangeListener>
-                implements AutoCloseable {
+        implements  AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorChangeListener.class);
     private final DataBroker broker;
-   // private final IInterfaceManager interfaceManager;
+    // private final IInterfaceManager interfaceManager;
 
     public TunnelMonitorChangeListener(final DataBroker db) {
         super(TunnelMonitorEnabled.class, TunnelMonitorChangeListener.class);
         broker = db;
-       // interfaceManager = ifManager;
-       // registerListener(db);
+        // interfaceManager = ifManager;
+        // registerListener(db);
     }
 
-   /* private void registerListener(final DataBroker db) {
-        try {
-            TunnelMonitorChangeListener monitorEnabledChangeListener = new TunnelMonitorChangeListener();
-            monitorEnabledListenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.CONFIGURATION,
-                    monitorEnabledChangeListener.getWildCardPath(), monitorEnabledChangeListener, DataChangeScope.SUBTREE);
-        } catch (final Exception e) {
-            LOG.error("ITM Monitor Interfaces DataChange listener registration fail!", e);
-            throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
-        }
-    }
-*/    @Override
+    /* private void registerListener(final DataBroker db) {
+         try {
+             TunnelMonitorChangeListener monitorEnabledChangeListener = new TunnelMonitorChangeListener();
+             monitorEnabledListenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.CONFIGURATION,
+                     monitorEnabledChangeListener.getWildCardPath(), monitorEnabledChangeListener, DataChangeScope.SUBTREE);
+         } catch (final Exception e) {
+             LOG.error("ITM Monitor Interfaces DataChange listener registration fail!", e);
+             throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
+         }
+     }
+ */    @Override
     public void close() throws Exception {
        /* if (monitorEnabledListenerRegistration != null) {
             try {
@@ -73,8 +73,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
         LOG.info("Tunnel Monitor listeners Closed");
     }
 
-    @Override
-    protected InstanceIdentifier<TunnelMonitorEnabled> getWildCardPath() {
+    @Override protected InstanceIdentifier<TunnelMonitorEnabled> getWildCardPath() {
         return InstanceIdentifier.create(TunnelMonitorEnabled.class);
     }
 
@@ -96,8 +95,8 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                             hwVtepsExist = true;
                             for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
                                 HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                                deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                                tzone.getTunnelType(), tzone);
+                                        deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
+                                        tzone.getTunnelType(), tzone);
                                 hwVteps.add(hwVtep);
                             }
                         }
@@ -105,17 +104,16 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                 }
                 LOG.debug("Remove:Calling TunnelMonitorToggleWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.isEnabled());
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(hwVteps, tzone.getZoneName(),
-                                false, broker, hwVtepsExist);
+                        false, broker, hwVtepsExist);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
 
 
-    @Override
-    protected void update(InstanceIdentifier<TunnelMonitorEnabled> key,
-                          TunnelMonitorEnabled dataObjectModificationBefore,
-                          TunnelMonitorEnabled dataObjectModificationAfter) {
+    @Override protected void update(InstanceIdentifier<TunnelMonitorEnabled> key,
+                                    TunnelMonitorEnabled dataObjectModificationBefore,
+                                    TunnelMonitorEnabled dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorChangeListener called with {}",dataObjectModificationAfter.isEnabled());
         List<HwVtep> hwVteps = new ArrayList<HwVtep>();
         Boolean hwVtepsExist = false;
@@ -134,8 +132,8 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                             LOG.debug("Update:Calling TunnelMonitorToggleWorker with tzone = {} and hwtepExist",tzone.getZoneName());
                             for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
                                 HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                                deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                                tzone.getTunnelType(), tzone);
+                                        deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
+                                        tzone.getTunnelType(), tzone);
                                 hwVteps.add(hwVtep);
                             }
                         }
@@ -143,7 +141,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                 }
                 LOG.debug("Update:Calling TunnelMonitorToggleWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModificationAfter.isEnabled());
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(hwVteps, tzone.getZoneName(),
-                                dataObjectModificationAfter.isEnabled(), broker, hwVtepsExist);
+                        dataObjectModificationAfter.isEnabled(), broker, hwVtepsExist);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -168,8 +166,8 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                             hwVtepsExist = true;
                             for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
                                 HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                                deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                                tzone.getTunnelType(), tzone);
+                                        deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
+                                        tzone.getTunnelType(), tzone);
                                 hwVteps.add(hwVtep);
                             }
                         }
@@ -177,14 +175,13 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                 }
                 LOG.debug("Add:Calling TunnelMonitorToggleWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.isEnabled());
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(hwVteps, tzone.getZoneName(),
-                                dataObjectModification.isEnabled(), broker, hwVtepsExist);
+                        dataObjectModification.isEnabled(), broker, hwVtepsExist);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
 
-    @Override
-    protected TunnelMonitorChangeListener getDataTreeChangeListener() {
+    @Override protected TunnelMonitorChangeListener getDataTreeChangeListener() {
         return TunnelMonitorChangeListener.this;
     }
 

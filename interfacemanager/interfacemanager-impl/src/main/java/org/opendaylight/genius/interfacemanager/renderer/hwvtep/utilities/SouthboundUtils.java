@@ -95,20 +95,8 @@ public class SouthboundUtils {
         return (InstanceIdentifier<Node>) physicalSwitchAugmentation.getManagedBy().getValue();
     }
 
-    public static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodekey,
-                                                                                                String portName){
-        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier
-                .create(NetworkTopology.class)
-                .child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
-                .child(Node.class,nodekey)
-                .child(TerminationPoint.class, new TerminationPointKey(new TpId(portName)));
-
-        LOG.debug("Termination point InstanceIdentifier generated : {}",terminationPointPath);
-        return terminationPointPath;
-    }
-
     public static InstanceIdentifier<TerminationPoint> createTEPInstanceIdentifier
-            (InstanceIdentifier<Node> nodeIid, IpAddress ipAddress) {
+            (InstanceIdentifier<Node> nodeIid,  IpAddress ipAddress) {
         TerminationPointKey localTEP = SouthboundUtils.getTerminationPointKey(ipAddress.getIpv4Address().getValue());
         return createInstanceIdentifier(nodeIid, localTEP);
     }
@@ -161,22 +149,12 @@ public class SouthboundUtils {
         return tpKey;
     }
 
-    public static TerminationPoint getTEPFromConfigDS(InstanceIdentifier<TerminationPoint> tpPath,
-                                                      DataBroker dataBroker) {
-        Optional<TerminationPoint> terminationPointOptional =
-                IfmUtil.read(LogicalDatastoreType.CONFIGURATION, tpPath, dataBroker);
-        if (!terminationPointOptional.isPresent()) {
-            return null;
-        }
-        return terminationPointOptional.get();
-    }
-
     public static void setDstIp(HwvtepPhysicalLocatorAugmentationBuilder tpAugmentationBuilder, IpAddress ipAddress) {
         IpAddress ip = new IpAddress(ipAddress);
         tpAugmentationBuilder.setDstIp(ip);
     }
 
-    public static void addStateEntry(Interface interfaceInfo, IfTunnel ifTunnel, WriteTransaction transaction) {
+    public static void addStateEntry(Interface interfaceInfo,  IfTunnel ifTunnel, WriteTransaction transaction) {
         LOG.debug("adding tep interface state for {}", interfaceInfo.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus =
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up;

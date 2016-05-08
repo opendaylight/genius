@@ -28,61 +28,61 @@ module itm {
     /* Configuration data */
 
     container transport-zones {
-      list transport-zone {
-      ordered-by user;
-        key zone-name;
-        leaf zone-name {
-            type string;
-        }
-        leaf tunnel-type {
-            type identityref {
-                base odlif:tunnel-type-base;
+          list transport-zone {
+          ordered-by user;
+            key zone-name;
+            leaf zone-name {
+                type string;
             }
-        }
+            leaf tunnel-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+            }
 
-        list subnets {
-            key "prefix";
-            leaf prefix {
-                type inet:ip-prefix;
-            }
-            leaf gateway-ip {
-                type inet:ip-address;
-            }
-            leaf vlan-id {
-                type uint16{
-                range "0..4094";
-            }
-            }
-            list vteps {
-                key "dpn-id portname";
-                leaf dpn-id {
-                    type uint64;
+            list subnets {
+                key "prefix";
+                leaf prefix {
+                    type inet:ip-prefix;
                 }
-                leaf portname {
-                    type string;
-                }
-                leaf ip-address {
+                leaf gateway-ip {
                     type inet:ip-address;
                 }
-            }
-             list device-vteps {
-              key "node-id ip-address";
-                     leaf topology-id {
+                leaf vlan-id {
+                    type uint16{
+                    range "0..4094";
+                }
+                }
+                list vteps {
+                    key "dpn-id portname";
+                    leaf dpn-id {
+                        type uint64;
+                    }
+                    leaf portname {
                         type string;
-                     }
-                     leaf node-id {
-                       type string;
-                     }
-                     leaf ip-address {
-                     type inet:ip-address;
-                   }
-           }
+                    }
+                    leaf ip-address {
+                        type inet:ip-address;
+                    }
+                }
+                 list device-vteps {
+                  key "node-id ip-address";
+                         leaf topology-id {
+                            type string;
+                         }
+                         leaf node-id {
+                           type string;
+                         }
+                         leaf ip-address {
+                         type inet:ip-address;
+                       }
+               }
 
+            }
+          }
         }
-      }
-    }
-    identity itm {
-        base "config:service-type";
-        config:java-class "org.opendaylight.genius.itm.api.IITMProvider";
-    }
+        identity itm {
+            base "config:service-type";
+            config:java-class "org.opendaylight.genius.itm.api.IITMProvider";
+        }
 }

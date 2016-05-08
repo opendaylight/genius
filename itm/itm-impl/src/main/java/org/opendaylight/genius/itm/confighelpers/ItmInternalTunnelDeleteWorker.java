@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItmInternalTunnelDeleteWorker {
-   private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelDeleteWorker.class) ;
+    private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelDeleteWorker.class) ;
 
-    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService, IMdsalApiManager mdsalManager,
+    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService,IMdsalApiManager mdsalManager,
                                                              List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList)
     {
         logger.trace( "TEPs to be deleted {} " , dpnTepsList );
@@ -52,7 +52,12 @@ public class ItmInternalTunnelDeleteWorker {
             }
             for (DPNTEPsInfo srcDpn : dpnTepsList) {
                 logger.trace("Processing srcDpn " + srcDpn);
-                List<TunnelEndPoints> meshedEndPtCache = new ArrayList<TunnelEndPoints>(srcDpn.getTunnelEndPoints()) ;
+                List<TunnelEndPoints> meshedEndPtCache = new ArrayList<TunnelEndPoints>(ItmUtils.getTEPsForDpn(srcDpn.getDPNID(), meshedDpnList)) ;
+                if(meshedEndPtCache == null ) {
+                    logger.debug("No Tunnel End Point configured for this DPN {}", srcDpn.getDPNID());
+                    continue ;
+                }
+                logger.debug( "Entries in meshEndPointCache {} ", meshedEndPtCache.size() );
                 for (TunnelEndPoints srcTep : srcDpn.getTunnelEndPoints()) {
                     logger.trace("Processing srcTep " + srcTep);
                     String srcTZone = srcTep.getTransportZone();
@@ -64,9 +69,9 @@ public class ItmInternalTunnelDeleteWorker {
                                 logger.trace("Processing dstTep " + dstTep);
                                 if (dstTep.getTransportZone().equals(srcTZone)) {
                                     if( checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(), srcTep.getTunnelType(),dataBroker)) {
-                                    // remove all trunk interfaces
-                                    logger.trace("Invoking removeTrunkInterface between source TEP {} , Destination TEP {} " ,srcTep , dstTep);
-                                    removeTrunkInterface(dataBroker, idManagerService, srcTep, dstTep, srcDpn.getDPNID(), dstDpn.getDPNID(), t, futures);
+                                        // remove all trunk interfaces
+                                        logger.trace("Invoking removeTrunkInterface between source TEP {} , Destination TEP {} " ,srcTep , dstTep);
+                                        removeTrunkInterface(dataBroker, idManagerService, srcTep, dstTep, srcDpn.getDPNID(), dstDpn.getDPNID(), t, futures);
                                     }
                                 }
                             }
@@ -75,17 +80,17 @@ public class ItmInternalTunnelDeleteWorker {
 
                     // removing vtep / dpn from Tunnels OpDs.
                     InstanceIdentifier<TunnelEndPoints> tepPath =
-                                    InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
-                                                    .child(TunnelEndPoints.class, srcTep.getKey()).build();
+                            InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
+                                    .child(TunnelEndPoints.class, srcTep.getKey()).build();
 
-                    logger.trace("Tep Removal from DPNTEPSINFO CONFIG DS " + srcTep);
+                    logger.trace("Tep Removal of TEP {} from DPNTEPSINFO CONFIG DS with Key {} " + srcTep, srcTep.getKey());
                     t.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
                     // remove the tep from the cache
                     meshedEndPtCache.remove(srcTep) ;
-                    
+
                     InstanceIdentifier<DPNTEPsInfo> dpnPath =
-                                    InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
-                                                    .build();
+                            InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
+                                    .build();
                     /*
                     Optional<DPNTEPsInfo> dpnOptional =
                                     ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dpnPath, dataBroker);
@@ -94,24 +99,24 @@ public class ItmInternalTunnelDeleteWorker {
                     if( meshedEndPtCache.isEmpty()) {
                         //DPNTEPsInfo dpnRead = dpnOptional.get();
                         // remove dpn if no vteps exist on dpn
-                      //  if (dpnRead.getTunnelEndPoints() == null || dpnRead.getTunnelEndPoints().size() == 0) {
-                            logger.debug( "Removing Terminating Service Table Flow ") ;
-                           ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager,false);
-                            logger.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
-                            t.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
-                            InstanceIdentifier<DpnEndpoints> tnlContainerPath =
-                                            InstanceIdentifier.builder(DpnEndpoints.class).build();
-                            Optional<DpnEndpoints> containerOptional =
-                                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
-                                                            tnlContainerPath, dataBroker);
-                            // remove container if no DPNs are present
-                            if (containerOptional.isPresent()) {
-                               DpnEndpoints deps = containerOptional.get();
-                                if (deps.getDPNTEPsInfo() == null || deps.getDPNTEPsInfo().isEmpty()) {
-                                    logger.trace("Container Removal from DPNTEPSINFO CONFIG DS");
-                                    t.delete(LogicalDatastoreType.CONFIGURATION, tnlContainerPath);
-                                }
+                        //  if (dpnRead.getTunnelEndPoints() == null || dpnRead.getTunnelEndPoints().size() == 0) {
+                        logger.debug( "Removing Terminating Service Table Flow ") ;
+                        ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager,false);
+                        logger.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
+                        t.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
+                        InstanceIdentifier<DpnEndpoints> tnlContainerPath =
+                                InstanceIdentifier.builder(DpnEndpoints.class).build();
+                        Optional<DpnEndpoints> containerOptional =
+                                ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                                        tnlContainerPath, dataBroker);
+                        // remove container if no DPNs are present
+                        if (containerOptional.isPresent()) {
+                            DpnEndpoints deps = containerOptional.get();
+                            if (deps.getDPNTEPsInfo() == null || deps.getDPNTEPsInfo().isEmpty()) {
+                                logger.trace("Container Removal from DPNTEPSINFO CONFIG DS");
+                                t.delete(LogicalDatastoreType.CONFIGURATION, tnlContainerPath);
                             }
+                        }
                         //}
                     }
                 }
@@ -127,54 +132,55 @@ public class ItmInternalTunnelDeleteWorker {
                                              TunnelEndPoints srcTep, TunnelEndPoints dstTep, BigInteger srcDpnId, BigInteger dstDpnId,
                                              WriteTransaction t, List<ListenableFuture<Void>> futures) {
         String trunkfwdIfName =
-                        ItmUtils.getTrunkInterfaceName( idManagerService, srcTep.getInterfaceName(),
-                                                        srcTep.getIpAddress().getIpv4Address().getValue(),
-                                                        dstTep.getIpAddress().getIpv4Address().getValue(),
-                                                        srcTep.getTunnelType().getName());
+                ItmUtils.getTrunkInterfaceName( idManagerService, srcTep.getInterfaceName(),
+                        srcTep.getIpAddress().getIpv4Address().getValue(),
+                        dstTep.getIpAddress().getIpv4Address().getValue(),
+                        srcTep.getTunnelType().getName());
         logger.trace("Removing forward Trunk Interface " + trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
         logger.debug(  " Removing Trunk Interface Name - {} , Id - {} from Config DS ", trunkfwdIfName, trunkIdentifier ) ;
         t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-
+        ItmUtils.itmCache.removeInterface(trunkfwdIfName);
         // also update itm-state ds -- Delete the forward tunnel-interface from the tunnel list
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
                 TunnelList.class)
-                    .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, srcTep.getTunnelType()));
+                .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, srcTep.getTunnelType()));
         t.delete(LogicalDatastoreType.CONFIGURATION,path) ;
+        ItmUtils.itmCache.removeInternalTunnel(trunkfwdIfName);
         // Release the Ids for the forward trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(idManagerService,srcTep.getInterfaceName(), srcTep.getIpAddress()
                 .getIpv4Address().getValue(), dstTep.getIpAddress().getIpv4Address()
-                .getValue() );
+                .getValue(), srcTep.getTunnelType().getName() );
 
         String trunkRevIfName =
-                        ItmUtils.getTrunkInterfaceName( idManagerService, dstTep.getInterfaceName(),
-                                                        dstTep.getIpAddress().getIpv4Address().getValue(),
-                                                        srcTep.getIpAddress().getIpv4Address().getValue(),
-                                                        srcTep.getTunnelType().getName());
+                ItmUtils.getTrunkInterfaceName( idManagerService, dstTep.getInterfaceName(),
+                        dstTep.getIpAddress().getIpv4Address().getValue(),
+                        srcTep.getIpAddress().getIpv4Address().getValue(),
+                        srcTep.getTunnelType().getName());
         logger.trace("Removing Reverse Trunk Interface " + trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
         logger.debug(  " Removing Trunk Interface Name - {} , Id - {} from Config DS ", trunkRevIfName, trunkIdentifier ) ;
         t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
-     // also update itm-state ds -- Delete the reverse tunnel-interface from the tunnel list
+        // also update itm-state ds -- Delete the reverse tunnel-interface from the tunnel list
         path = InstanceIdentifier.create(
                 TunnelList.class)
-                    .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, srcTep.getTunnelType()));
+                .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, srcTep.getTunnelType()));
         t.delete(LogicalDatastoreType.CONFIGURATION,path) ;
-        
-     // Release the Ids for the reverse trunk interface Name
+
+        // Release the Ids for the reverse trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(), dstTep.getIpAddress()
                 .getIpv4Address().getValue(), srcTep.getIpAddress().getIpv4Address()
-                .getValue());
+                .getValue(),dstTep.getTunnelType().getName());
     }
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
         boolean existsFlag = false ;
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
                 TunnelList.class)
-                    .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType));
+                .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType));
         Optional<InternalTunnel> internalTunnels = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker) ;
         if( internalTunnels.isPresent())
             existsFlag = true ;
-           return existsFlag ;
+        return existsFlag ;
     }
 }

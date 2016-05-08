@@ -24,5 +24,6 @@ public class ITMConstants{
   public static final String DUMMY_IP_ADDRESS = "0.0.0.0";
   public static final String TUNNEL_TYPE_VXLAN = "VXLAN";
   public static final String TUNNEL_TYPE_GRE = "GRE";
+  public static final String TUNNEL_TYPE_MPLS_OVER_GRE = "MPLS_OVER_GRE";
+  public static final String TUNNEL_TYPE_INVALID = "Invalid";
 }
-

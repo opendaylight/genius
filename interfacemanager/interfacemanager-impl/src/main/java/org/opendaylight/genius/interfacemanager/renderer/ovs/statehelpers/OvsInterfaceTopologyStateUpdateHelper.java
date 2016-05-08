@@ -28,6 +28,7 @@ import java.util.List;
 
 public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
+
     /*
      *  This code is used to handle only a dpnId change scenario for a particular change,
      * which is not expected to happen in usual cases.
@@ -65,6 +66,9 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                                                                  OvsdbTerminationPointAugmentation terminationPointOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
 
+        if (InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker) == null) {
+            return futures;
+        }
         // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
         LOG.debug("updating tunnel state for interface {}", terminationPointNew.getName());
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();

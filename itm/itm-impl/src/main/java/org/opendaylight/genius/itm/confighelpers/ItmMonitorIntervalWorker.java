@@ -34,9 +34,9 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
     private String tzone;
     private Integer interval;
     private List<HwVtep> hwVteps;
-    private Boolean exists;
+    private  Boolean exists;
 
-    public ItmMonitorIntervalWorker(List<HwVtep> hwVteps, String tzone, Integer interval, DataBroker dataBroker, Boolean exists){
+    public ItmMonitorIntervalWorker(List<HwVtep> hwVteps,String tzone,Integer interval, DataBroker dataBroker, Boolean exists){
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.interval = interval;
@@ -45,8 +45,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval );
     }
 
-    @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    @Override public List<ListenableFuture<Void>> call() throws Exception {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         logger.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval );
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
@@ -55,7 +54,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         return futures;
     }
 
-    private void toggleTunnelMonitoring(List<HwVtep> hwVteps, Integer interval, String tzone, WriteTransaction t, Boolean exists) {
+    private void toggleTunnelMonitoring(List<HwVtep> hwVteps,Integer interval, String tzone, WriteTransaction t,Boolean exists) {
         //exists means hwVteps exist for this tzone
 
         //List<String> TunnelList = ItmUtils.getTunnelsofTzone(hwVteps, tzone, dataBroker, exists);
@@ -72,7 +71,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
             IfTunnel tunnel = new IfTunnelBuilder().setMonitorInterval(interval.longValue() * 1000).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
-                            .addAugmentation(IfTunnel.class, tunnel);
+                    .addAugmentation(IfTunnel.class, tunnel);
             t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
         }
     }
