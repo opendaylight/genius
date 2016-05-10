@@ -1,0 +1,56 @@
+{
+	"id": "7ef83c69-3dfc-0599-d388-2dcfec90c93d",
+	"name": "ITM",
+	"description": "",
+	"order": [
+		"6fb72e1a-5743-65ba-061e-3ee477ba73db",
+		"b55700ab-6b81-81c6-2a5d-9dc53b97807f"
+	],
+	"folders": [],
+	"timestamp": 1462863363643,
+	"owner": "",
+	"remoteLink": "",
+	"public": false,
+	"requests": [
+		{
+			"id": "6fb72e1a-5743-65ba-061e-3ee477ba73db",
+			"headers": "Authorization: Basic YWRtaW46YWRtaW4=\nContent-Type: application/json\n",
+			"url": "http://localhost:8181/restconf/config/itm:transport-zones/",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1462863370386,
+			"name": "create itm transport zone",
+			"description": "create a full mesh of tunnels between the specified datapath node identifiers",
+			"collectionId": "7ef83c69-3dfc-0599-d388-2dcfec90c93d",
+			"responses": [],
+			"rawModeData": "{\r\n        \"transport-zone\": [\r\n            {\r\n                \"zone-name\": \"TZA\",\r\n                \"subnets\": [\r\n                    {\r\n                        \"prefix\": \"192.168.56.0/24\",\r\n                        \"vlan-id\": 0,\r\n                        \"vteps\": [\r\n                            {\r\n                                \"dpn-id\": 1,\r\n                                \"portname\": \"s1-vxlan1\",\r\n                                \"ip-address\": \"192.168.56.101\"\r\n                            },\r\n                            {\r\n                                \"dpn-id\": 2,\r\n                                \"portname\": \"s1-vxlan2\",\r\n                                \"ip-address\": \"192.168.56.102\"\r\n                            }\r\n                        ],\r\n                        \"gateway-ip\": \"0.0.0.0\"\r\n                    }\r\n                ],\r\n                \"tunnel-type\": \"odl-interface:tunnel-type-vxlan\"\r\n            }\r\n        ]\r\n}\r\n"
+		},
+		{
+			"id": "b55700ab-6b81-81c6-2a5d-9dc53b97807f",
+			"headers": "Authorization: Basic YWRtaW46YWRtaW4=\nContent-Type: application/json\n",
+			"url": "http://localhost:8181/restconf/config/itm:transport-zones/",
+			"preRequestScript": null,
+			"pathVariables": {},
+			"method": "DELETE",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1462863467634,
+			"name": "delete  itm transport zone",
+			"description": "delete full mesh of tunnels between the specified datapath node identifiers",
+			"collectionId": "7ef83c69-3dfc-0599-d388-2dcfec90c93d",
+			"responses": [],
+			"rawModeData": ""
+		}
+	]
+}
