@@ -83,7 +83,7 @@ public class InterfaceTopologyStateListener extends AsyncDataChangeListenerBase<
                 identifier, bridgeNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue() + bridgeNew.getDatapathId(), rendererStateAddWorker);
+        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker);
     }
 
     private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {

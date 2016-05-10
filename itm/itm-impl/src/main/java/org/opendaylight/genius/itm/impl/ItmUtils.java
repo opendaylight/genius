@@ -29,11 +29,13 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
@@ -90,14 +92,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.genius._interface.service.rev150602._interface.service.info.ServiceInfo;
-
 public class ItmUtils {
 
     public static final String DUMMY_IP_ADDRESS = "0.0.0.0";
     public static final String TUNNEL_TYPE_VXLAN = "VXLAN";
     public static final String TUNNEL_TYPE_GRE = "GRE";
     public static final String TUNNEL = "TUNNEL";
+    public static ItmCache itmCache = new ItmCache();
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
@@ -146,15 +147,15 @@ public class ItmUtils {
         tx.delete(datastoreType, path);
         Futures.addCallback(tx.submit(), callback);
     }
-    public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker, final LogicalDatastoreType datastoreType,
+    public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,final LogicalDatastoreType datastoreType,
                                                               List<InstanceIdentifier<T>> pathList, FutureCallback<Void> callback) {
-    if (!pathList.isEmpty()) {
-      WriteTransaction tx = broker.newWriteOnlyTransaction();
-      for (InstanceIdentifier<T> path : pathList) {
-         tx.delete(datastoreType, path);
-      }
-      Futures.addCallback(tx.submit(), callback);
-    }
+        if (!pathList.isEmpty()) {
+            WriteTransaction tx = broker.newWriteOnlyTransaction();
+            for (InstanceIdentifier<T> path : pathList) {
+                tx.delete(datastoreType, path);
+            }
+            Futures.addCallback(tx.submit(), callback);
+        }
     }
 
     public static String getInterfaceName(final BigInteger datapathid, final String portName, final Integer vlanId) {
@@ -176,14 +177,20 @@ public class ItmUtils {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
         String trunkInterfaceName = String.format(  "%s:%s:%s:%s", parentInterfaceName, localHostName,
-                                                    remoteHostName, tunnelTypeStr);
+                remoteHostName, tunnelTypeStr);
         LOG.trace("trunk interface name is {}", trunkInterfaceName);
         trunkInterfaceName = String.format("%s:%s", TUNNEL, getUniqueId(idManager, trunkInterfaceName));
         return trunkInterfaceName;
     }
 
-    public static void releaseIdForTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName, String localHostName, String remoteHostName) {
-        String trunkInterfaceName = String.format("%s:%s:%s", parentInterfaceName, localHostName, remoteHostName);
+    public static void releaseIdForTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName, String localHostName, String remoteHostName, String tunnelType) {
+        String tunnelTypeStr;
+        if(tunnelType.contains("TunnelTypeGre")) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
+        } else {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
+        }
+        String trunkInterfaceName = String.format("%s:%s:%s:%s", parentInterfaceName, localHostName, remoteHostName, tunnelTypeStr);
         LOG.trace("Releasing Id for trunkInterface - {}", trunkInterfaceName );
         releaseId(idManager, trunkInterfaceName) ;
     }
@@ -194,8 +201,8 @@ public class ItmUtils {
 
     public static InstanceIdentifier<DPNTEPsInfo> getDPNTEPInstance(BigInteger dpIdKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<DPNTEPsInfo> dpnTepInfoBuilder =
-                        InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
-                                        new DPNTEPsInfoKey(dpIdKey));
+                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
+                        new DPNTEPsInfoKey(dpIdKey));
         InstanceIdentifier<DPNTEPsInfo> dpnInfo = dpnTepInfoBuilder.build();
         return dpnInfo;
     }
@@ -206,11 +213,11 @@ public class ItmUtils {
     }
 
     public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName, int vlanId,
-                                                        IpPrefix prefix, IpAddress gwAddress, String zoneName, Class<? extends TunnelTypeBase> tunnel_type) {
+                                                        IpPrefix prefix, IpAddress gwAddress, String zoneName, Class<? extends TunnelTypeBase>  tunnel_type) {
         // when Interface Mgr provides support to take in Dpn Id
-        return new TunnelEndPointsBuilder().setKey(new TunnelEndPointsKey(ipAddress, portName, vlanId))
-                        .setSubnetMask(prefix).setGwIpAddress(gwAddress).setTransportZone(zoneName)
-                        .setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId)).setTunnelType(tunnel_type).build();
+        return new TunnelEndPointsBuilder().setKey(new TunnelEndPointsKey(ipAddress, portName,tunnel_type, vlanId))
+                .setSubnetMask(prefix).setGwIpAddress(gwAddress).setTransportZone(zoneName)
+                .setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId)).setTunnelType(tunnel_type).build();
     }
 
     public static DpnEndpoints createDpnEndpoints(List<DPNTEPsInfo> dpnTepInfo) {
@@ -225,9 +232,9 @@ public class ItmUtils {
     }
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled, Class<? extends TunnelTypeBase> tunType,
-                                                 IpAddress localIp, IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId, boolean internal, Boolean monitorEnabled, Integer monitorInterval) {
+                                                 IpAddress localIp, IpAddress remoteIp, IpAddress gatewayIp,Integer vlanId, boolean internal, Boolean monitorEnabled, Integer monitorInterval) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
-                        .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
+                .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
         if( vlanId > 0) {
@@ -241,9 +248,9 @@ public class ItmUtils {
         if(monitorEnabled!=null  )
             monitoringEnabled = monitorEnabled;
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(
-                        gatewayIp).setTunnelSource(localIp)
-                        .setTunnelInterfaceType(tunType).setInternal(internal).setMonitorEnabled(
-                                        monitoringEnabled).setMonitorInterval(monitoringInterval).build();
+                gatewayIp).setTunnelSource(localIp)
+                .setTunnelInterfaceType(tunType).setInternal(internal).setMonitorEnabled(
+                        monitoringEnabled).setMonitorInterval(monitoringInterval).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
     }
@@ -252,12 +259,12 @@ public class ItmUtils {
                                                    String node_id, Class<? extends TunnelTypeBase> tunType, IpAddress srcIp, IpAddress destIp,
                                                    IpAddress gWIp, Boolean monitor_enabled, Integer monitor_interval){
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelIfName)).setName(
-                        tunnelIfName).setDescription(desc).
-                        setEnabled(enabled).setType(Tunnel.class);
+                tunnelIfName).setDescription(desc).
+                setEnabled(enabled).setType(Tunnel.class);
         List<NodeIdentifier> nodeIds = new ArrayList<NodeIdentifier>();
         NodeIdentifier hWnode = new NodeIdentifierBuilder().setKey(new NodeIdentifierKey(topo_id)).setTopologyId(
-                        topo_id).
-                        setNodeId(node_id).build();
+                topo_id).
+                setNodeId(node_id).build();
         nodeIds.add(hWnode);
         ParentRefs parent = new ParentRefsBuilder().setNodeIdentifier(nodeIds).build();
         builder.addAugmentation(ParentRefs.class, parent);
@@ -268,20 +275,20 @@ public class ItmUtils {
         if(monitor_enabled!=null  )
             monitoringEnabled = monitor_enabled;
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(destIp).setTunnelGateway(gWIp).setTunnelSource(
-                        srcIp).setMonitorEnabled(monitoringEnabled).setMonitorInterval(100L).
-                        setTunnelInterfaceType(tunType).setInternal(false).build();
+                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorInterval(100L).
+                setTunnelInterfaceType(tunType).setInternal(false).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         LOG.trace("iftunnel {} built from hwvtep {} ", tunnel, node_id);
         return builder.build();
     }
 
 
-    public static InternalTunnel buildInternalTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
-                                                     Class<? extends TunnelTypeBase> tunType,
-                                                     String trunkInterfaceName) {
+    public static InternalTunnel buildInternalTunnel( BigInteger srcDpnId, BigInteger dstDpnId,
+                                                      Class<? extends TunnelTypeBase> tunType,
+                                                      String trunkInterfaceName) {
         InternalTunnel tnl = new InternalTunnelBuilder().setKey(new InternalTunnelKey(dstDpnId, srcDpnId, tunType)).setDestinationDPN(dstDpnId)
-                        .setSourceDPN(srcDpnId).setTransportType(tunType)
-            .setTunnelInterfaceName(trunkInterfaceName).build();
+                .setSourceDPN(srcDpnId).setTransportType(tunType)
+                .setTunnelInterfaceName(trunkInterfaceName).build();
         return tnl ;
     }
 
@@ -289,10 +296,10 @@ public class ItmUtils {
                                                      Class<? extends TunnelTypeBase> tunType,
                                                      String trunkInterfaceName) {
         ExternalTunnel extTnl = new ExternalTunnelBuilder().setKey(
-                        new ExternalTunnelKey(dstNode, srcNode, tunType))
-                                .setSourceDevice(srcNode).setDestinationDevice(dstNode)
-                                .setTunnelInterfaceName(trunkInterfaceName)
-                                .setTransportType(tunType).build();
+                new ExternalTunnelKey(dstNode, srcNode, tunType))
+                .setSourceDevice(srcNode).setDestinationDevice(dstNode)
+                .setTunnelInterfaceName(trunkInterfaceName)
+                .setTransportType(tunType).build();
         return extTnl ;
     }
 
@@ -304,18 +311,18 @@ public class ItmUtils {
         InstanceIdentifier<DpnEndpoints> deps = depBuilder.build();
         Optional<DpnEndpoints> dpnEps = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, deps, dataBroker);
         if (dpnEps.isPresent()) {
-           DpnEndpoints tn= dpnEps.get() ;
-           dpnTEPs = tn.getDPNTEPsInfo();
+            DpnEndpoints tn= dpnEps.get() ;
+            dpnTEPs = tn.getDPNTEPsInfo();
             LOG.debug( "Read from CONFIGURATION datastore - No. of Dpns " , dpnTEPs.size() );
         }else
             LOG.debug( "No Dpn information in CONFIGURATION datastore "  );
-         return dpnTEPs ;
+        return dpnTEPs ;
     }
 
     public static int getUniqueId(IdManagerService idManager, String idKey) {
         AllocateIdInput getIdInput = new AllocateIdInputBuilder()
-            .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-            .setIdKey(idKey).build();
+                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
+                .setIdKey(idKey).build();
 
         try {
             Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(getIdInput);
@@ -333,7 +340,7 @@ public class ItmUtils {
 
     public static void releaseId(IdManagerService idManager, String idKey) {
         ReleaseIdInput idInput =
-                        new ReleaseIdInputBuilder().setPoolName(ITMConstants.ITM_IDPOOL_NAME).setIdKey(idKey).build();
+                new ReleaseIdInputBuilder().setPoolName(ITMConstants.ITM_IDPOOL_NAME).setIdKey(idKey).build();
         try {
             Future<RpcResult<Void>> result = idManager.releaseId(idInput);
             RpcResult<Void> rpcResult = result.get();
@@ -349,11 +356,11 @@ public class ItmUtils {
         List<DPNTEPsInfo> meshedDpnList = getTunnelMeshInfo(dataBroker) ;
         List<DPNTEPsInfo> cfgDpnList = new ArrayList<DPNTEPsInfo>();
         if( null != meshedDpnList) {
-           for(BigInteger dpnId : dpnIds) {
-              for( DPNTEPsInfo teps : meshedDpnList ) {
-                 if( dpnId.equals(teps.getDPNID()))
-                 cfgDpnList.add( teps) ;
-              }
+            for(BigInteger dpnId : dpnIds) {
+                for( DPNTEPsInfo teps : meshedDpnList ) {
+                    if( dpnId.equals(teps.getDPNID()))
+                        cfgDpnList.add( teps) ;
+                }
             }
         }
         return cfgDpnList;
@@ -375,17 +382,17 @@ public class ItmUtils {
 
             List<InstructionInfo> mkInstructions = new ArrayList<InstructionInfo>();
             mkInstructions.add(new InstructionInfo(InstructionType.apply_actions,
-                   listActionInfo));
+                    listActionInfo));
 
             FlowEntity terminatingServiceTableFlowEntity = MDSALUtil
                     .buildFlowEntity(
-                             dpnId,
-                             NwConstants.INTERNAL_TUNNEL_TABLE,
+                            dpnId,
+                            NwConstants.INTERNAL_TUNNEL_TABLE,
                             getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,
-                                   ITMConstants.LLDP_SERVICE_ID), 5, String.format("%s:%d","ITM Flow Entry ",ITMConstants.LLDP_SERVICE_ID),
+                                    ITMConstants.LLDP_SERVICE_ID), 5, String.format("%s:%d","ITM Flow Entry ",ITMConstants.LLDP_SERVICE_ID),
                             0, 0, ITMConstants.COOKIE_ITM
                                     .add(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)),
-                                    mkMatches, mkInstructions);
+                            mkMatches, mkInstructions);
             if(addFlag)
                 mdsalManager.installFlow(terminatingServiceTableFlowEntity);
             else
@@ -400,7 +407,7 @@ public class ItmUtils {
     }
     public static InstanceIdentifier<VtepConfigSchema> getVtepConfigSchemaIdentifier(String schemaName) {
         return InstanceIdentifier.builder(VtepConfigSchemas.class)
-                        .child(VtepConfigSchema.class, new VtepConfigSchemaKey(schemaName)).build();
+                .child(VtepConfigSchema.class, new VtepConfigSchemaKey(schemaName)).build();
     }
 
     public static InstanceIdentifier<VtepConfigSchema> getVtepConfigSchemaIdentifier() {
@@ -414,7 +421,7 @@ public class ItmUtils {
                 .build();
     }
     public static VtepConfigSchema validateForAddVtepConfigSchema(VtepConfigSchema schema,
-            List<VtepConfigSchema> existingSchemas) {
+                                                                  List<VtepConfigSchema> existingSchemas) {
         VtepConfigSchema validSchema = validateVtepConfigSchema(schema);
         for (VtepConfigSchema existingSchema : emptyIfNull(existingSchemas)) {
             if (!StringUtils.equalsIgnoreCase(schema.getSchemaName(), existingSchema.getSchemaName())
@@ -427,7 +434,7 @@ public class ItmUtils {
         if (isNotEmpty(getDpnIdList(validSchema.getDpnIds()))) {
             String tzone = validSchema.getTransportZoneName();
             List<BigInteger> lstDpns = getConflictingDpnsAlreadyConfiguredWithTz(validSchema.getSchemaName(), tzone,
-            		getDpnIdList(validSchema.getDpnIds()), existingSchemas);
+                    getDpnIdList(validSchema.getDpnIds()), existingSchemas);
             if (!lstDpns.isEmpty()) {
                 Preconditions.checkArgument(false,
                         new StringBuilder("DPN's ").append(lstDpns).append(" already configured for transport zone ")
@@ -484,7 +491,7 @@ public class ItmUtils {
             tunnelType = StringUtils.upperCase(tunnelType);
             String error = new StringBuilder("Invalid tunnel type. Valid values: ")
                     .append(ITMConstants.TUNNEL_TYPE_VXLAN).append(" | ").append(ITMConstants.TUNNEL_TYPE_GRE)
-                            .toString();
+                    .toString();
             Preconditions.checkArgument(ITMConstants.TUNNEL_TYPE_VXLAN.equals(tunnelType)
                     || ITMConstants.TUNNEL_TYPE_GRE.equals(tunnelType), error);
         }
@@ -506,7 +513,7 @@ public class ItmUtils {
         return lstConflictingDpns;
     }
     public static VtepConfigSchema constructVtepConfigSchema(String schemaName, String portName, Integer vlanId,
-                                                             String subnetMask, String gatewayIp, String transportZone, String tunnelType, List<BigInteger> dpnIds,
+                                                             String subnetMask, String gatewayIp, String transportZone,String tunnelType, List<BigInteger> dpnIds,
                                                              String excludeIpFilter) {
         IpAddress gatewayIpObj = StringUtils.isBlank(gatewayIp) ? null : new IpAddress(gatewayIp.toCharArray());
         IpPrefix subnet = StringUtils.isBlank(subnetMask) ? null : new IpPrefix(subnetMask.toCharArray());
@@ -673,19 +680,19 @@ public class ItmUtils {
         }
     }
 
-    public static List<BigInteger> getDpnIdList(List<DpnIds> dpnIds ) {
+    public static List<BigInteger> getDpnIdList( List<DpnIds> dpnIds ) {
         List<BigInteger> dpnList = new ArrayList<BigInteger>() ;
         for( DpnIds dpn : dpnIds) {
-           dpnList.add(dpn.getDPN()) ;
+            dpnList.add(dpn.getDPN()) ;
         }
         return dpnList ;
     }
 
-    public static List<DpnIds> getDpnIdsListFromBigInt(List<BigInteger> dpnIds) {
+    public static List<DpnIds> getDpnIdsListFromBigInt( List<BigInteger> dpnIds) {
         List<DpnIds> dpnIdList = new ArrayList<DpnIds>() ;
         DpnIdsBuilder builder = new DpnIdsBuilder() ;
         for( BigInteger dpnId : dpnIds) {
-              dpnIdList.add(builder.setKey(new DpnIdsKey(dpnId)).setDPN(dpnId).build() );
+            dpnIdList.add(builder.setKey(new DpnIdsKey(dpnId)).setDPN(dpnId).build() );
         }
         return dpnIdList;
     }
@@ -693,16 +700,16 @@ public class ItmUtils {
     public static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> buildStateInterfaceId(String interfaceName) {
         InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> idBuilder =
                 InstanceIdentifier.builder(InterfacesState.class)
-                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
+                        .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
                                 new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
-                                                interfaceName));
+                                        interfaceName));
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder.build();
         return id;
     }
     public static Boolean readMonitoringStateFromDS(DataBroker dataBroker) {
         InstanceIdentifier<TunnelMonitorEnabled> iid = InstanceIdentifier.create(TunnelMonitorEnabled.class);
         Optional<TunnelMonitorEnabled> tunnelMonitorEnabledOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
-                        iid, dataBroker);
+                iid, dataBroker);
         if(tunnelMonitorEnabledOptional.isPresent())
             return tunnelMonitorEnabledOptional.get().isEnabled();
         return null;
@@ -721,7 +728,7 @@ public class ItmUtils {
 
         List<String> tunnels = new ArrayList<String>();
         InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).
-                        child(TransportZone.class, new TransportZoneKey(tzone)).build();
+                child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         Class<? extends TunnelTypeBase> tunType = tZoneOptional.get().getTunnelType();
         if (tZoneOptional.isPresent()) {
@@ -733,10 +740,10 @@ public class ItmUtils {
                                 if (!vtepLocal.equals(vtepRemote)) {
                                     InternalTunnelKey key = new InternalTunnelKey(vtepRemote.getDpnId(), vtepLocal.getDpnId(), tunType);
                                     InstanceIdentifier<InternalTunnel> intIID =
-                                                    InstanceIdentifier.builder(TunnelList.class).
-                                                                    child(InternalTunnel.class, key).build();
+                                            InstanceIdentifier.builder(TunnelList.class).
+                                                    child(InternalTunnel.class, key).build();
                                     Optional<InternalTunnel> TunnelsOptional =
-                                                    ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
+                                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
                                     if (TunnelsOptional.isPresent()) {
                                         LOG.trace("Internal Tunnel added {}",TunnelsOptional.get().getTunnelInterfaceName());
                                         tunnels.add(TunnelsOptional.get().getTunnelInterfaceName());
@@ -746,9 +753,9 @@ public class ItmUtils {
                             if(hwVteps!= null && !hwVteps.isEmpty()) {
                                 for (HwVtep hwVtep : hwVteps) {
                                     tunnels.add(getExtTunnel(hwVtep.getNode_id(), vtepLocal.getDpnId().toString(),
-                                                    tunType, dataBroker));
+                                            tunType, dataBroker));
                                     tunnels.add(getExtTunnel(vtepLocal.getDpnId().toString(), hwVtep.getNode_id(),
-                                                    tunType, dataBroker));
+                                            tunType, dataBroker));
                                 }
                             }
                         }
@@ -773,7 +780,7 @@ public class ItmUtils {
         List<String> tunnels = new ArrayList<String>();
         LOG.trace("Getting internal tunnels of {}",tzone);
         InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).
-                        child(TransportZone.class, new TransportZoneKey(tzone)).build();
+                child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         if (tZoneOptional.isPresent()) {
             if (tZoneOptional.get().getSubnets() != null && !tZoneOptional.get().getSubnets().isEmpty()) {
@@ -784,13 +791,13 @@ public class ItmUtils {
                                 if (!vtepLocal.equals(vtepRemote)) {
                                     InternalTunnelKey key = new InternalTunnelKey(vtepRemote.getDpnId(), vtepLocal.getDpnId(), tZoneOptional.get().getTunnelType());
                                     InstanceIdentifier<InternalTunnel> intIID =
-                                                    InstanceIdentifier.builder(TunnelList.class).
-                                                                    child(InternalTunnel.class, key).build();
+                                            InstanceIdentifier.builder(TunnelList.class).
+                                                    child(InternalTunnel.class, key).build();
                                     Optional<InternalTunnel> TunnelsOptional =
-                                                    ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
+                                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
                                     if (TunnelsOptional.isPresent()) {
                                         LOG.trace("Internal Tunnel added {}",
-                                                        TunnelsOptional.get().getTunnelInterfaceName());
+                                                TunnelsOptional.get().getTunnelInterfaceName());
                                         tunnels.add(TunnelsOptional.get().getTunnelInterfaceName());
                                     }
                                 }
@@ -803,13 +810,13 @@ public class ItmUtils {
         return tunnels;
     }
 
-    private static String getExtTunnel(String node_id, String dpId, Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
+    private static String getExtTunnel(String node_id, String dpId,Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
         LOG.trace("getting ext tunnel for {} and dpId {}",node_id,dpId);
         ExternalTunnelKey key = getExternalTunnelKey(dpId,node_id, tunType);
         InstanceIdentifier<ExternalTunnel> intIID = InstanceIdentifier.builder(ExternalTunnelList.class).
-                        child(ExternalTunnel.class, key).build();
+                child(ExternalTunnel.class, key).build();
         Optional<ExternalTunnel> TunnelsOptional =
-                        ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
+                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
         if (TunnelsOptional.isPresent()) {
             LOG.trace("ext tunnel returned {} ",TunnelsOptional.get().getTunnelInterfaceName());
             return TunnelsOptional.get().getTunnelInterfaceName();
@@ -825,5 +832,137 @@ public class ItmUtils {
         }
         return new ExternalTunnelKey(dst, src, tunType);
     }
-}
 
+    public static List<TunnelEndPoints> getTEPsForDpn( BigInteger srcDpn, List<DPNTEPsInfo> dpnList) {
+        for (DPNTEPsInfo dpn : dpnList) {
+            if( dpn.getDPNID().equals(srcDpn)) {
+                return dpn.getTunnelEndPoints() ;
+            }
+        }
+        return null ;
+    }
+    public static TunnelList getAllInternalTunnels(DataBroker broker) {
+        InstanceIdentifier<TunnelList> tunnelListInstanceIdentifier = InstanceIdentifier.builder(TunnelList.class).build();
+        Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, tunnelListInstanceIdentifier, broker);
+        if (tunnelList.isPresent()) {
+            return tunnelList.get();
+        }
+        return null;
+    }
+    public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
+        InternalTunnel internalTunnel = null;
+        TunnelList tunnelList = getAllInternalTunnels(broker);
+        if (tunnelList != null && tunnelList.getInternalTunnel() != null) {
+            List<InternalTunnel> internalTunnels = tunnelList.getInternalTunnel();
+            for (InternalTunnel tunnel : internalTunnels) {
+                if (tunnel.getTunnelInterfaceName().equalsIgnoreCase(interfaceName)) {
+                    internalTunnel = tunnel;
+                    break;
+                }
+            }
+        }
+        return internalTunnel;
+    }
+    public static ExternalTunnel getExternalTunnel(String interfaceName, DataBroker broker) {
+        ExternalTunnel externalTunnel = null;
+        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
+        for (ExternalTunnel tunnel : externalTunnels) {
+            if (StringUtils.equalsIgnoreCase(interfaceName, tunnel.getTunnelInterfaceName())) {
+                externalTunnel = tunnel;
+                break;
+            }
+        }
+        return externalTunnel;
+    }
+    public static List<ExternalTunnel> getAllExternalTunnels(DataBroker broker) {
+        List<ExternalTunnel> result = null;
+        InstanceIdentifier<ExternalTunnelList> id = InstanceIdentifier.builder(ExternalTunnelList.class).build();
+        Optional<ExternalTunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, id, broker);
+        if (tunnelList.isPresent()) {
+            result = tunnelList.get().getExternalTunnel();
+        }
+        if (result == null) {
+            result = Collections.emptyList();
+        }
+        return result;
+    }
+    public static String convertTunnelTypetoString(Class<? extends TunnelTypeBase> tunType ) {
+        String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        if( tunType.equals(TunnelTypeVxlan.class))
+            tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+        else if( tunType.equals(TunnelTypeGre.class) )
+            tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
+        else if (tunnelType.equals(TunnelTypeMplsOverGre.class))
+            tunnelType = ITMConstants.TUNNEL_TYPE_MPLS_OVER_GRE;
+        return tunnelType ;
+    }
+
+
+    public static boolean isItmIfType(Class<? extends InterfaceType> ifType) {
+        if( (ifType != null) && (ifType.isAssignableFrom(Tunnel.class)) ) {
+            return true;
+        }
+        return false;
+    }
+
+    public static StateTunnelListKey getTunnelStateKey(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
+        StateTunnelListKey key = null;
+        if(isItmIfType(iface.getType())) {
+            key = new StateTunnelListKey(iface.getName());
+        }
+        return key;
+    }
+
+    public static void updateTunnelsCache(DataBroker broker) {
+        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker, LogicalDatastoreType.CONFIGURATION);
+        for (InternalTunnel tunnel : internalTunnels) {
+            itmCache.addInternalTunnel(tunnel);
+        }
+        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker, LogicalDatastoreType.CONFIGURATION);
+        for (ExternalTunnel tunnel : externalTunnels) {
+            itmCache.addExternalTunnel(tunnel);
+        }
+    }
+
+    public static List<ExternalTunnel> getAllExternalTunnels(DataBroker dataBroker, LogicalDatastoreType datastoreType) {
+        List<ExternalTunnel> result = null;
+        InstanceIdentifier<ExternalTunnelList> iid = InstanceIdentifier.builder(ExternalTunnelList.class).build();
+        Optional<ExternalTunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
+        if (tunnelList.isPresent()) {
+            result = tunnelList.get().getExternalTunnel();
+        }
+        if (result == null) {
+            result = Collections.emptyList();
+        }
+        return result;
+    }
+
+    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker, LogicalDatastoreType datastoreType) {
+        List<InternalTunnel> result = null;
+        InstanceIdentifier<TunnelList> iid = InstanceIdentifier.builder(TunnelList.class).build();
+        Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
+        if (tunnelList.isPresent()) {
+            result = tunnelList.get().getInternalTunnel();
+        }
+        if (result == null) {
+            result = Collections.emptyList();
+        }
+        return result;
+    }
+
+    public static Interface getInterface(
+            String name, DataBroker broker) {
+        Interface result = itmCache.getInterface(name);
+        if (result == null) {
+            InstanceIdentifier<Interface> iid =
+                    InstanceIdentifier.builder(Interfaces.class)
+                            .child(Interface.class, new InterfaceKey(name)).build();
+            Optional<Interface> optInterface = read(LogicalDatastoreType.CONFIGURATION, iid, broker);
+            if (optInterface.isPresent()) {
+                result = optInterface.get();
+                itmCache.addInterface(result);
+            }
+        }
+        return result;
+    }
+}

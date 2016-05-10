@@ -131,24 +131,29 @@ public class OvsInterfaceConfigRemoveHelper {
             t.delete(LogicalDatastoreType.CONFIGURATION, tpIid);
 
             // delete tunnel ingress flow
-            LOG.debug("removing tunnel ingress flow for {}",interfaceOld.getName());
             NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(interfaceOld, dataBroker);
-            long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
-            InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
-                    interfaceOld.getAugmentation(IfTunnel.class),
-                    dpId, portNo, interfaceOld, -1,
-                    NwConstants.DEL_FLOW);
+            if(ncId == null){
+                LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
+            }else{
+                long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
+                InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
+                        interfaceOld.getAugmentation(IfTunnel.class),
+                        dpId, portNo, interfaceOld, -1,
+                        NwConstants.DEL_FLOW);
+            }
         }
 
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         InstanceIdentifier<BridgeEntry> bridgeEntryIid = InterfaceMetaUtils.getBridgeEntryIdentifier(bridgeEntryKey);
         BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryIid, dataBroker);
         if (bridgeEntry == null) {
+            LOG.debug("Bridge Entry not present for dpn: {}", dpId);
             return;
         }
 
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
         if (bridgeInterfaceEntries == null) {
+            LOG.debug("Bridge Interface Entries not present for dpn : {}", dpId);
             return;
         }
 

@@ -44,7 +44,7 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
 
     private InstanceIdentifier<NodeConnector> getNodeConnectorId(String interfaceName) {
         InstanceIdentifier<Interface> id =  InstanceIdentifier.builder(Interfaces.class)
-                                      .child(Interface.class, new InterfaceKey(interfaceName)).build();
+                .child(Interface.class, new InterfaceKey(interfaceName)).build();
 
         Optional<Interface> port = read(LogicalDatastoreType.CONFIGURATION, id);
         if(port.isPresent()) {
@@ -52,9 +52,9 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
             NodeId nodeId = getNodeIdFromNodeConnectorId(ncId);
 
             InstanceIdentifier<NodeConnector> ncIdentifier =
-                                          InstanceIdentifier.builder(Nodes.class)
-                                                      .child(Node.class, new NodeKey(nodeId))
-                                                      .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
+                    InstanceIdentifier.builder(Nodes.class)
+                            .child(Node.class, new NodeKey(nodeId))
+                            .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
             return ncIdentifier;
         }
         return null;
@@ -65,11 +65,11 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
         Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> output =  serviceProvider.getInterfaceManager().getNodeconnectorIdFromInterface(input);
         RpcResult<GetNodeconnectorIdFromInterfaceOutput> result = null;
         try {
-             result = output.get();
-             if(result.isSuccessful()) {
-                 GetNodeconnectorIdFromInterfaceOutput ncIdOutput = result.getResult();
-                 return ncIdOutput.getNodeconnectorId();
-             }
+            result = output.get();
+            if(result.isSuccessful()) {
+                GetNodeconnectorIdFromInterfaceOutput ncIdOutput = result.getResult();
+                return ncIdOutput.getNodeconnectorId();
+            }
         } catch(ExecutionException | InterruptedException e) {
             //TODO: Handle exception
         }

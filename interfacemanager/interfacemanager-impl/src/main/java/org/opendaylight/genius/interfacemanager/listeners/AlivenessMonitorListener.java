@@ -35,23 +35,17 @@ public class AlivenessMonitorListener implements org.opendaylight.yang.gen.v1.ur
     @Override
     public void onMonitorEvent(MonitorEvent notification) {
         Long monitorId = notification.getEventData().getMonitorId();
-        String trunkInterfaceName = AlivenessMonitorUtils.getInterfaceFromMonitorId(dataBroker, monitorId);
-        if (trunkInterfaceName == null) {
-            LOG.debug("Either monitoring for interface - {} not started by Interfacemgr or it is not LLDP monitoring", trunkInterfaceName);
+        String tunnelInterface = AlivenessMonitorUtils.getInterfaceFromMonitorId(dataBroker, monitorId);
+        if (tunnelInterface == null) {
+            LOG.debug("Either monitoring for interface - {} not started by Interfacemgr or it is not LLDP monitoring", tunnelInterface);
             return;
         }
         LivenessState livenessState = notification.getEventData().getMonitorState();
-        Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(trunkInterfaceName),
-                dataBroker);
-        IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
-        // Not handling monitoring event if it is GRE Trunk Interface.
-        if (tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeGre.class)) {
-            return;
-        }
+        LOG.debug("received monitor event for {} with livenessstate {}", tunnelInterface, livenessState);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opState =
                 livenessState == LivenessState.Up ? org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up :
                         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
-        InterfaceManagerCommonUtils.setOpStateForInterface(dataBroker, trunkInterfaceName, opState);
+        InterfaceManagerCommonUtils.setOpStateForInterface(dataBroker, tunnelInterface, opState);
     }
 
 }

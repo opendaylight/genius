@@ -46,12 +46,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.VtepConfigSchemas;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.config.schemas.VtepConfigSchema;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.config.schemas.VtepConfigSchemaBuilder;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.ip.pools.VtepIpPool;
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.ip.pools.VtepIpPoolBuilder;
-
 /**
  * The listener class interested in processing data change on
  * {@code VtepConfigSchema} objects.
@@ -270,7 +264,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      *            the updated dpn ids
      */
     private void handleNewlyAddedDpnsToSchema(VtepConfigSchema original, List<DpnIds> originalDpnIds,
-            List<DpnIds> updatedDpnIds) {
+                                              List<DpnIds> updatedDpnIds) {
         LOG.trace("Handle Addition of DPNs from VTEP Original Dpn: {}. Updated Dpn: {}", originalDpnIds, updatedDpnIds) ;
         ArrayList<DpnIds> newlyAddedDpns = new ArrayList<>(updatedDpnIds);
         newlyAddedDpns.removeAll(originalDpnIds);
@@ -295,7 +289,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      *            the updated dpn ids
      */
     private void handleDeletedDpnsFromSchema(VtepConfigSchema original, List<DpnIds> originalDpnIds,
-            List<DpnIds> updatedDpnIds) {
+                                             List<DpnIds> updatedDpnIds) {
         ArrayList<DpnIds> deletedDpns = new ArrayList<>(originalDpnIds);
         deletedDpns.removeAll(updatedDpnIds);
         LOG.debug("DPNs to be removed DPNs {} from VTEP config schema [{}].", deletedDpns, original.getSchemaName());

@@ -44,13 +44,13 @@ public class TepAdd extends OsgiCommandSupport {
     protected Object doExecute() {
         try {
             if (dpnId == null || portName == null || vlanId == null || ipAddress == null || subnetMask == null
-                            || transportZone == null) {
+                    || transportZone == null) {
                 System.out.println("Insufficient Arguments");
                 System.out.println("Correct Usage : exec tep-add dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
                 return null;
             }
             LOG.debug("Executing create TEP command" + "\t" + dpnId + "\t" + portName + "\t" + vlanId + "\t"
-                            + ipAddress + "\t" + subnetMask + "\t" + gatewayIp + "\t" + transportZone);
+                    + ipAddress + "\t" + subnetMask + "\t" + gatewayIp + "\t" + transportZone);
             itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

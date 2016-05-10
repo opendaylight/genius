@@ -45,17 +45,17 @@ public class AlivenessMonitorUtils {
     private static final long MONITORING_WINDOW = 4;
 
     public static void startLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                            Interface trunkInterface) {
+                                           Interface trunkInterface) {
         //LLDP monitoring for the trunk interface
         String trunkInterfaceName = trunkInterface.getName();
         IfTunnel ifTunnel = trunkInterface.getAugmentation(IfTunnel.class);
         if(ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class) && ifTunnel.isInternal()) {
-        MonitorStartInput lldpMonitorInput = new MonitorStartInputBuilder().setConfig(new ConfigBuilder()
-             .setSource(new SourceBuilder().setEndpointType(getInterfaceForMonitoring(trunkInterfaceName,
-                     ifTunnel.getTunnelSource())).build())
-             .setMode(MonitoringMode.OneOne)
-             .setProfileId(allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD, ifTunnel.getMonitorInterval(), MONITORING_WINDOW,
-                     EtherTypes.Lldp)).build()).build();
+            MonitorStartInput lldpMonitorInput = new MonitorStartInputBuilder().setConfig(new ConfigBuilder()
+                    .setSource(new SourceBuilder().setEndpointType(getInterfaceForMonitoring(trunkInterfaceName,
+                            ifTunnel.getTunnelSource())).build())
+                    .setMode(MonitoringMode.OneOne)
+                    .setProfileId(allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD, ifTunnel.getMonitorInterval(), MONITORING_WINDOW,
+                            EtherTypes.Lldp)).build()).build();
             try {
                 Future<RpcResult<MonitorStartOutput>> result = alivenessMonitorService.monitorStart(lldpMonitorInput);
                 RpcResult<MonitorStartOutput> rpcResult = result.get();
@@ -80,6 +80,7 @@ public class AlivenessMonitorUtils {
         if(!(ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)&& ifTunnel.isInternal())){
             return;
         }
+        LOG.debug("stop LLDP monitoring for {}", trunkInterface.getName());
         List<Long> monitorIds = getMonitorIdForInterface(dataBroker, trunkInterface.getName());
         if (monitorIds == null) {
             LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
@@ -143,23 +144,20 @@ public class AlivenessMonitorUtils {
             return;
         }
         LOG.debug("handling tunnel monitoring updates for interface {}", interfaceName);
-        // Restart LLDP monitoring only if it's started already
-        List<Long> monitorIds = getMonitorIdForInterface(dataBroker, interfaceName);
-        if (monitorIds != null && !monitorIds.isEmpty()) {
-                stopLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceOld);
-                if(ifTunnelNew.isMonitorEnabled()) {
-                    startLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceNew);
 
-                    // Delete old profile from Aliveness Manager
-                    IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
-                    if(ifTunnelNew.getMonitorInterval() != ifTunnelOld.getMonitorInterval()) {
-                        LOG.debug("deleting older monitor profile for interface {}", interfaceName);
-                        long profileId = allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp);
-                        MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder().setProfileId(profileId).build();
-                        alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
-                    }
-                }
+        stopLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceOld);
+        if(ifTunnelNew.isMonitorEnabled()) {
+            startLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceNew);
+
+            // Delete old profile from Aliveness Manager
+            IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
+            if(ifTunnelNew.getMonitorInterval() != ifTunnelOld.getMonitorInterval()) {
+                LOG.debug("deleting older monitor profile for interface {}", interfaceName);
+                long profileId = allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp);
+                MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder().setProfileId(profileId).build();
+                alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
             }
+        }
     }
 
 
@@ -188,7 +186,7 @@ public class AlivenessMonitorUtils {
         }
     }
 
-    public static void createOrUpdateMonitorIdInterfaceMap(DataBroker broker, String infName, long monitorId) {
+    public static void createOrUpdateMonitorIdInterfaceMap(DataBroker broker,String infName,  long monitorId) {
         MonitorIdInterface monitorIdInterfaceInstance;
         String existinginterfaceName;
         MonitorIdInterfaceBuilder monitorIdInterfaceBuilder = new MonitorIdInterfaceBuilder();
@@ -245,7 +243,8 @@ public class AlivenessMonitorUtils {
 
     private static MonitorProfileGetInput buildMonitorGetProfile(long monitorInterval, long monitorWindow, long failureThreshold, EtherTypes protocolType){
         MonitorProfileGetInputBuilder buildGetProfile = new MonitorProfileGetInputBuilder();
-        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder = new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
+        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder =
+                new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
         profileBuilder.setFailureThreshold(failureThreshold);
         profileBuilder.setMonitorInterval(monitorInterval);
         profileBuilder.setMonitorWindow(monitorWindow);
@@ -255,7 +254,7 @@ public class AlivenessMonitorUtils {
     };
 
     public static long allocateProfile(AlivenessMonitorService alivenessMonitor, long FAILURE_THRESHOLD, long MONITORING_INTERVAL,
-                                              long MONITORING_WINDOW, EtherTypes etherTypes) {
+                                       long MONITORING_WINDOW, EtherTypes etherTypes) {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder().
                 setProfile(new ProfileBuilder().setFailureThreshold(FAILURE_THRESHOLD)
                         .setMonitorInterval(MONITORING_INTERVAL).setMonitorWindow(MONITORING_WINDOW).
@@ -273,7 +272,7 @@ public class AlivenessMonitorUtils {
         ProfileBuilder profileBuilder = new ProfileBuilder();
         profileBuilder.setProtocolType(etherType);
         profileBuilder.setFailureThreshold(FAILURE_THRESHOLD)
-                    .setMonitorInterval(MONITORING_INTERVAL).setMonitorWindow(MONITORING_WINDOW).setProtocolType(etherType);
+                .setMonitorInterval(MONITORING_INTERVAL).setMonitorWindow(MONITORING_WINDOW).setProtocolType(etherType);
         return profileBuilder.build();
     }
 }

@@ -35,20 +35,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItmInternalTunnelAddWorker {
-     private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
-     private static final FutureCallback<Void> DEFAULT_CALLBACK =
-             new FutureCallback<Void>() {
-                 public void onSuccess(Void result) {
-                     logger.debug("Success in Datastore operation");
-                 }
+    private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
+    private static final FutureCallback<Void> DEFAULT_CALLBACK =
+            new FutureCallback<Void>() {
+                public void onSuccess(Void result) {
+                    logger.debug("Success in Datastore operation");
+                }
 
-                 public void onFailure(Throwable error) {
-                     logger.error("Error in Datastore operation", error);
-                 };
-             };
+                public void onFailure(Throwable error) {
+                    logger.error("Error in Datastore operation", error);
+                };
+            };
 
 
-    public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker, IdManagerService idManagerService, IMdsalApiManager mdsalManager,
+    public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker, IdManagerService idManagerService,IMdsalApiManager mdsalManager,
                                                                  List<DPNTEPsInfo> cfgdDpnList, List<DPNTEPsInfo> meshedDpnList) {
         logger.trace( "Building tunnels with DPN List {} " , cfgdDpnList );
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -56,7 +56,7 @@ public class ItmInternalTunnelAddWorker {
         if( null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             logger.error(" Build Tunnels was invoked with empty list");
             return futures;
-         }
+        }
 
         for( DPNTEPsInfo dpn : cfgdDpnList) {
             //#####if dpn is not in meshedDpnList
@@ -81,7 +81,7 @@ public class ItmInternalTunnelAddWorker {
         t.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder, true);
     }
 
-    private static void build_tunnel_from(DPNTEPsInfo srcDpn, List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker, IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
+    private static void build_tunnel_from( DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
         logger.trace( "Building tunnels from DPN {} " , srcDpn );
 
         if( null == meshedDpnList || 0 == meshedDpnList.size()) {
@@ -90,13 +90,13 @@ public class ItmInternalTunnelAddWorker {
         }
         for( DPNTEPsInfo dstDpn: meshedDpnList) {
             if ( ! srcDpn.equals(dstDpn) )
-                    wireUpWithinTransportZone(srcDpn, dstDpn, dataBroker, idManagerService, mdsalManager, t, futures) ;
+                wireUpWithinTransportZone(srcDpn, dstDpn, dataBroker, idManagerService, mdsalManager, t, futures) ;
         }
 
-   }
+    }
 
-    private static void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, DataBroker dataBroker,
-                                                  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
+    private static void wireUpWithinTransportZone( DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, DataBroker dataBroker,
+                                                   IdManagerService idManagerService, IMdsalApiManager mdsalManager,WriteTransaction t, List<ListenableFuture<Void>> futures) {
         logger.trace( "Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn );
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
         List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
@@ -104,32 +104,32 @@ public class ItmInternalTunnelAddWorker {
         for( TunnelEndPoints srcte : srcEndPts) {
             for( TunnelEndPoints dstte : dstEndPts ) {
                 // Compare the Transport zones
-              if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
-                if( (srcte.getTransportZone().equals(dstte.getTransportZone()))) {
-                     // wire them up
-                     wireUpBidirectionalTunnel( srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), dataBroker, idManagerService,  mdsalManager, t, futures );
-                     // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
-                     break ;
+                if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
+                    if( (srcte.getTransportZone().equals(dstte.getTransportZone()))) {
+                        // wire them up
+                        wireUpBidirectionalTunnel( srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), dataBroker, idManagerService,  mdsalManager, t, futures );
+                        // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
+                        break ;
+                    }
                 }
-              }
             }
-         }
+        }
     }
 
-    private static void wireUpBidirectionalTunnel(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
-                                                  DataBroker dataBroker, IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
-       // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
-         ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
-         ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
+    private static void wireUpBidirectionalTunnel( TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
+                                                   DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
+        // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
+        ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
+        ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
 
         // Create the forward direction tunnel
         if(!wireUp( srcte, dstte, srcDpnId, dstDpnId, dataBroker, idManagerService, t, futures ))
-           logger.error("Could not build tunnel between end points {}, {} " , srcte, dstte );
+            logger.error("Could not build tunnel between end points {}, {} " , srcte, dstte );
 
         // CHECK IF FORWARD IS NOT BUILT , REVERSE CAN BE BUILT
-      // Create the tunnel for the reverse direction
-       if(! wireUp( dstte, srcte, dstDpnId, srcDpnId, dataBroker, idManagerService, t, futures ))
-          logger.error("Could not build tunnel between end points {}, {} " , dstte, srcte);
+        // Create the tunnel for the reverse direction
+        if(! wireUp( dstte, srcte, dstDpnId, srcDpnId, dataBroker, idManagerService, t, futures ))
+            logger.error("Could not build tunnel between end points {}, {} " , dstte, srcte);
     }
 
     private static boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId ,
@@ -141,9 +141,9 @@ public class ItmInternalTunnelAddWorker {
         String tunTypeStr = srcte.getTunnelType().getName();
         // Form the trunk Interface Name
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName( idManagerService, interfaceName,
-                                                                    srcte.getIpAddress().getIpv4Address().getValue(),
-                                                                    dstte.getIpAddress().getIpv4Address().getValue(),
-                                                                    tunTypeStr) ;
+                srcte.getIpAddress().getIpv4Address().getValue(),
+                dstte.getIpAddress().getIpv4Address().getValue(),
+                tunTypeStr) ;
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = ( srcte.getSubnetMask().equals(dstte.getSubnetMask()) ) ? gatewayIpObj : srcte.getGwIpAddress() ;
         logger.debug(  " Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",trunkInterfaceName, interfaceName, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
@@ -151,19 +151,21 @@ public class ItmInternalTunnelAddWorker {
         Integer monitorInterval = ItmUtils.readMonitorIntervalfromDS(dataBroker);
         if(monitorInterval == null)
             monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
-        Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName, String.format( "%s %s",tunTypeStr, "Trunk Interface"), true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true, monitorEnabled, monitorInterval*1000);
+        Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName, String.format( "%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"), true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true, monitorEnabled, monitorInterval*1000);
         logger.debug(  " Trunk Interface builder - {} ", iface ) ;
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         logger.debug(  " Trunk Interface Identifier - {} ", trunkIdentifier ) ;
         logger.trace(  " Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface ) ;
         t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
+        ItmUtils.itmCache.addInterface(iface);
         // also update itm-state ds?
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
                 TunnelList.class)
-                    .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType)); 
+                .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType));
         InternalTunnel tnl = ItmUtils.buildInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName);
         //ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tnl, dataBroker, DEFAULT_CALLBACK);
         t.merge(LogicalDatastoreType.CONFIGURATION,path, tnl, true) ;
+        ItmUtils.itmCache.addInternalTunnel(tnl);
         return true;
     }
 }

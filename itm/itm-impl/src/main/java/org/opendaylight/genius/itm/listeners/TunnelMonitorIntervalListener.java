@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorInterval, TunnelMonitorIntervalListener>
-                implements AutoCloseable {
+        implements  AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorIntervalListener.class);
     private ListenerRegistration<DataChangeListener> monitorIntervalListenerRegistration;
     private final DataBroker broker;
@@ -38,8 +38,7 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
         broker = db;
     }
 
-    @Override
-    protected InstanceIdentifier<TunnelMonitorInterval> getWildCardPath() {
+    @Override protected InstanceIdentifier<TunnelMonitorInterval> getWildCardPath() {
         return InstanceIdentifier.create(TunnelMonitorInterval.class);
     }
 
@@ -73,16 +72,15 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
                 //if you remove configuration, the last configured interval is only set i.e no change
                 LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(hwVteps, tzone.getZoneName(),
-                                dataObjectModification.getInterval(), broker, hwVtepsExist);
+                        dataObjectModification.getInterval(), broker, hwVtepsExist);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
 
-    @Override
-    protected void update(InstanceIdentifier<TunnelMonitorInterval> key,
-                          TunnelMonitorInterval dataObjectModificationBefore,
-                          TunnelMonitorInterval dataObjectModificationAfter) {
+    @Override protected void update(InstanceIdentifier<TunnelMonitorInterval> key,
+                                    TunnelMonitorInterval dataObjectModificationBefore,
+                                    TunnelMonitorInterval dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorIntervalListener called with {}",dataObjectModificationAfter.getInterval());
         List<HwVtep> hwVteps = new ArrayList<HwVtep>();
         Boolean hwVtepsExist = false;
@@ -110,7 +108,7 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
                 }*/
                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModificationAfter.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(hwVteps, tzone.getZoneName(),
-                                dataObjectModificationAfter.getInterval(), broker, hwVtepsExist);
+                        dataObjectModificationAfter.getInterval(), broker, hwVtepsExist);
                 coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
         }
@@ -145,15 +143,14 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
                 }*/
                 LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(hwVteps, tzone.getZoneName(),
-                                dataObjectModification.getInterval(), broker, hwVtepsExist);
+                        dataObjectModification.getInterval(), broker, hwVtepsExist);
                 //conversion to milliseconds done while writing to i/f-mgr config DS
                 coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
         }
     }
 
-    @Override
-    protected TunnelMonitorIntervalListener getDataTreeChangeListener() {
+    @Override protected TunnelMonitorIntervalListener getDataTreeChangeListener() {
         return TunnelMonitorIntervalListener.this;
     }
 }

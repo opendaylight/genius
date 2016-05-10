@@ -197,7 +197,7 @@ public class TepCommandHelper {
     }
 
     private void validateForDuplicateAndSingleGreTep(Vteps inputVtep, boolean isConfiguredTepGreType, boolean isGreType,
-            List<Vteps> vtepList) {
+                                                     List<Vteps> vtepList) {
         if (ItmUtils.isEmpty(vtepList)) {
             return;
         }
@@ -226,9 +226,9 @@ public class TepCommandHelper {
         TransportZones tZones = getAllTransportZones();
         Map<String, TransportZone> tZoneMap = new HashMap<>();
         if( null != tZones) {
-           for (TransportZone tzone : ItmUtils.emptyIfNull(tZones.getTransportZone())) {
-             tZoneMap.put(tzone.getZoneName(), tzone);
-           }
+            for (TransportZone tzone : ItmUtils.emptyIfNull(tZones.getTransportZone())) {
+                tZoneMap.put(tzone.getZoneName(), tzone);
+            }
         }
         return tZoneMap;
     }
@@ -250,7 +250,7 @@ public class TepCommandHelper {
         }
         */
         if( (tzone != null) && (tzone.getTunnelType()).equals(TunnelTypeGre.class) ) {
-           return true;
+            return true;
         }
         return false;
     }
@@ -331,10 +331,10 @@ public class TepCommandHelper {
 
         // check in DS
         InstanceIdentifier<TransportZone> tzonePath =
-                        InstanceIdentifier.builder(TransportZones.class)
-                                        .child(TransportZone.class, new TransportZoneKey(tzone)).build();
+                InstanceIdentifier.builder(TransportZones.class)
+                        .child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> tZoneOptional =
-                        ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
+                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
         if (tZoneOptional.isPresent()) {
             TransportZone tz = tZoneOptional.get();
             if (tz.getSubnets() == null || tz.getSubnets().isEmpty())
@@ -367,38 +367,38 @@ public class TepCommandHelper {
                         LOG.debug("subnets" + subOb.get_prefix());
                         List<Vteps> vtepList = subVtepMapTemp.get(subOb);
                         Subnets subnet =
-                                        new SubnetsBuilder().setGatewayIp(subOb.get_gatewayIp())
-                                                        .setKey(subOb.get_key()).setPrefix(subOb.get_prefix())
-                                                        .setVlanId(subOb.get_vlanId()).setVteps(vtepList).build();
+                                new SubnetsBuilder().setGatewayIp(subOb.get_gatewayIp())
+                                        .setKey(subOb.get_key()).setPrefix(subOb.get_prefix())
+                                        .setVlanId(subOb.get_vlanId()).setVteps(vtepList).build();
                         subnetList.add(subnet);
                         LOG.debug("vteps" + vtepList);
                     }
                     InstanceIdentifier<TransportZone> tZonepath =
-                                    InstanceIdentifier.builder(TransportZones.class)
-                                                    .child(TransportZone.class, new TransportZoneKey(tZ)).build();
+                            InstanceIdentifier.builder(TransportZones.class)
+                                    .child(TransportZone.class, new TransportZoneKey(tZ)).build();
                     Optional<TransportZone> tZoneOptional =
-                                    ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tZonepath, dataBroker);
+                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tZonepath, dataBroker);
                     LOG.debug("read container from DS");
                     if (tZoneOptional.isPresent()) {
                         TransportZone tzoneFromDs = tZoneOptional.get();
                         LOG.debug("read tzone container" + tzoneFromDs.toString());
                         if (tzoneFromDs.getTunnelType() == null
-                                        || (tzoneFromDs.getTunnelType()).equals(TunnelTypeVxlan.class)) {
+                                || (tzoneFromDs.getTunnelType()).equals(TunnelTypeVxlan.class)) {
                             tZone =
-                                            new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
-                                                            .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList)
-                                                            .setZoneName(tZ).build();
+                                    new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
+                                            .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList)
+                                            .setZoneName(tZ).build();
                         } else if ((tzoneFromDs.getTunnelType()).equals(TunnelTypeGre.class)) {
                             tZone =
-                                            new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
-                                                            .setTunnelType(TunnelTypeGre.class).setSubnets(subnetList)
-                                                            .setZoneName(tZ).build();
+                                    new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
+                                            .setTunnelType(TunnelTypeGre.class).setSubnets(subnetList)
+                                            .setZoneName(tZ).build();
                         }
                     } else {
                         tZone =
-                                        new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
-                                                        .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList).setZoneName(tZ)
-                                                        .build();
+                                new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
+                                        .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList).setZoneName(tZ)
+                                        .build();
                     }
                     LOG.debug("tzone object" + tZone);
                     tZoneList.add(tZone);
@@ -407,7 +407,7 @@ public class TepCommandHelper {
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
                 LOG.debug("InstanceIdentifier" + path);
                 ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tZonesBuilt, dataBroker,
-                                ItmUtils.DEFAULT_CALLBACK);
+                        ItmUtils.DEFAULT_CALLBACK);
                 LOG.debug("wrote to Config DS" + tZonesBuilt);
                 tZones.clear();
                 tZoneList.clear();
@@ -437,7 +437,7 @@ public class TepCommandHelper {
             result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval));
             result.add(System.lineSeparator());
             result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", "TransportZone", "TunnelType", "SubnetMask",
-                            "GatewayIP", "VlanID", "DpnID", "IPAddress", "PortName"));
+                    "GatewayIP", "VlanID", "DpnID", "IPAddress", "PortName"));
             result.add("------------------------------------------------------------------------------------------------------------------------------");
             for (TransportZone tZ : tZones.getTransportZone()) {
                 if (tZ.getSubnets() == null || tZ.getSubnets().isEmpty()) {
@@ -453,13 +453,13 @@ public class TepCommandHelper {
                         flag = true;
                         String strTunnelType ;
                         if( (tZ.getTunnelType()).equals(TunnelTypeGre.class) )
-                          strTunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
+                            strTunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
                         else
-                          strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+                            strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
                         result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", tZ.getZoneName(), strTunnelType, sub
-                                        .getPrefix().getIpv4Prefix().getValue(), sub.getGatewayIp().getIpv4Address()
-                                        .getValue(), sub.getVlanId().toString(), vtep.getDpnId().toString(), vtep
-                                        .getIpAddress().getIpv4Address().getValue(), vtep.getPortname().toString()));
+                                .getPrefix().getIpv4Prefix().getValue(), sub.getGatewayIp().getIpv4Address()
+                                .getValue(), sub.getVlanId().toString(), vtep.getDpnId().toString(), vtep
+                                .getIpAddress().getIpv4Address().getValue(), vtep.getPortname().toString()));
                     }
                 }
             }
@@ -509,10 +509,10 @@ public class TepCommandHelper {
         Subnets subCli = null;
 
         InstanceIdentifier<Vteps> vpath =
-                        InstanceIdentifier.builder(TransportZones.class)
-                                        .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                        .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
- 
+                InstanceIdentifier.builder(TransportZones.class)
+                        .child(TransportZone.class, new TransportZoneKey(transportZone))
+                        .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
+
         // check if present in tzones and delete from cache
         boolean existsInCache = isInCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
         if (!existsInCache) {
@@ -521,23 +521,23 @@ public class TepCommandHelper {
                 vtepCli = vtepOptional.get();
                 if(vtepCli.getIpAddress().equals(ipAddressObj)){
                     InstanceIdentifier<Subnets> spath =
-                                    InstanceIdentifier
-                                                    .builder(TransportZones.class)
-                                                    .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                                    .child(Subnets.class, subnetsKey).build();
+                            InstanceIdentifier
+                                    .builder(TransportZones.class)
+                                    .child(TransportZone.class, new TransportZoneKey(transportZone))
+                                    .child(Subnets.class, subnetsKey).build();
                     Optional<Subnets> subOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, spath, dataBroker);
                     if (subOptional.isPresent()) {
                         subCli = subOptional.get();
                         if(subCli.getGatewayIp().equals(gatewayIpObj) && subCli.getVlanId().equals(vlanId)){
-                    vtepDelCommitList.add(vtepCli);
-                      }
+                            vtepDelCommitList.add(vtepCli);
+                        }
                         else
                             System.out.println(String.format("vtep with this vlan or gateway doesnt exist"));
-                        }
+                    }
                 }
-                else 
+                else
                     System.out.println(String.format("Vtep with this ipaddress doesnt exist"));
-                } else {
+            } else {
                 System.out.println(String.format("Vtep Doesnt exist"));
             }
         }
@@ -555,7 +555,7 @@ public class TepCommandHelper {
             if (vtepDelCommitList != null && !vtepDelCommitList.isEmpty()) {
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
                 Optional<TransportZones> tZonesOptional =
-                                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+                        ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
                 if (tZonesOptional.isPresent()) {
                     TransportZones tZones = tZonesOptional.get();
                     for (TransportZone tZ : tZones.getTransportZone()) {
@@ -565,11 +565,11 @@ public class TepCommandHelper {
                             vtepDelList.addAll(vtepDelCommitList);
                             for (Vteps vtep : vtepDelList) {
                                 InstanceIdentifier<T> vpath =
-                                                (InstanceIdentifier<T>) InstanceIdentifier
-                                                                .builder(TransportZones.class)
-                                                                .child(TransportZone.class, tZ.getKey())
-                                                                .child(Subnets.class, sub.getKey())
-                                                                .child(Vteps.class, vtep.getKey()).build();
+                                        (InstanceIdentifier<T>) InstanceIdentifier
+                                                .builder(TransportZones.class)
+                                                .child(TransportZone.class, tZ.getKey())
+                                                .child(Subnets.class, sub.getKey())
+                                                .child(Vteps.class, vtep.getKey()).build();
                                 if (sub.getVteps().remove(vtep)) {
                                     vtepPaths.add(vpath);
                                     if (sub.getVteps().size() == 0 || sub.getVteps() == null) {
@@ -587,10 +587,10 @@ public class TepCommandHelper {
                         for (Subnets sub : subDelList) {
                             if (tZ.getSubnets().remove(sub)) {
                                 InstanceIdentifier<T> spath =
-                                                (InstanceIdentifier<T>) InstanceIdentifier
-                                                                .builder(TransportZones.class)
-                                                                .child(TransportZone.class, tZ.getKey())
-                                                                .child(Subnets.class, sub.getKey()).build();
+                                        (InstanceIdentifier<T>) InstanceIdentifier
+                                                .builder(TransportZones.class)
+                                                .child(TransportZone.class, tZ.getKey())
+                                                .child(Subnets.class, sub.getKey()).build();
                                 subnetPaths.add(spath);
                                 if (tZ.getSubnets() == null || tZ.getSubnets().size() == 0) {
                                     tzDelList.add(tZ);
@@ -602,12 +602,12 @@ public class TepCommandHelper {
                     for (TransportZone tZ : tzDelList) {
                         if (tZones.getTransportZone().remove(tZ)) {
                             InstanceIdentifier<T> tpath =
-                                            (InstanceIdentifier<T>) InstanceIdentifier.builder(TransportZones.class)
-                                                            .child(TransportZone.class, tZ.getKey()).build();
+                                    (InstanceIdentifier<T>) InstanceIdentifier.builder(TransportZones.class)
+                                            .child(TransportZone.class, tZ.getKey()).build();
                             tzPaths.add(tpath);
                             if (tZones.getTransportZone() == null || tZones.getTransportZone().size() == 0) {
                                 MDSALDataStoreUtils.asyncRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, path,
-                                                ItmUtils.DEFAULT_CALLBACK);
+                                        ItmUtils.DEFAULT_CALLBACK);
                                 return;
                             }
                         }
@@ -616,7 +616,7 @@ public class TepCommandHelper {
                     allPaths.addAll(subnetPaths);
                     allPaths.addAll(tzPaths);
                     ItmUtils.asyncBulkRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, allPaths,
-                                    ItmUtils.DEFAULT_CALLBACK);
+                            ItmUtils.DEFAULT_CALLBACK);
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -642,44 +642,44 @@ public class TepCommandHelper {
         }
         String displayFormat = "%-16s  %-16s  %-16s  %-16s  %-16s  %-8s  %-10s  %-10s";
         System.out.println(String.format(displayFormat, "Tunnel Name", "Source-DPN",
-                        "Destination-DPN", "Source-IP", "Destination-IP", "Vlan Id", "Trunk-State", "Transport Type"));
+                "Destination-DPN", "Source-IP", "Destination-IP", "Vlan Id", "Trunk-State", "Transport Type"));
         System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
 
         for (InternalTunnel tunnel : tunnelLists) {
             String tunnelInterfaceName = tunnel.getTunnelInterfaceName();
             LOG.trace("tunnelInterfaceName::: {}", tunnelInterfaceName);
-            
+
             InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
                     ItmUtils.buildStateInterfaceId(tunnelInterfaceName);
             Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateOptional =
-                  ItmUtils.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker);
+                    ItmUtils.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker);
             String tunnelState = "DOWN" ;
             if (ifStateOptional.isPresent()) {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface = ifStateOptional.get() ;
                 if(iface.getAdminStatus() == AdminStatus.Up && iface.getOperStatus() == OperStatus.Up)
-                tunnelState = "UP" ;
+                    tunnelState = "UP" ;
             }
-                InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
-                Optional<Interface> ifaceObj = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, dataBroker) ;
-                if (ifaceObj.isPresent()) {
-                    l2Vlan = (IfL2vlan) ifaceObj.get().getAugmentation(IfL2vlan.class);
-                    tunnelInterface = (IfTunnel) ifaceObj.get().getAugmentation(IfTunnel.class);
-                }
+            InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
+            Optional<Interface> ifaceObj = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, dataBroker) ;
+            if (ifaceObj.isPresent()) {
+                l2Vlan = (IfL2vlan) ifaceObj.get().getAugmentation(IfL2vlan.class);
+                tunnelInterface = (IfTunnel) ifaceObj.get().getAugmentation(IfTunnel.class);
+            }
 
-                Class<? extends TunnelTypeBase> tunType = tunnelInterface.getTunnelInterfaceType();
-                String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
-                if( tunType.equals(TunnelTypeVxlan.class))
-                    tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
-                else if( tunType.equals(TunnelTypeGre.class) )
-                    tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
-                int vlanId = 0;
-                if( l2Vlan != null ) {
-                   vlanId = l2Vlan.getVlanId().getValue() ;
-                }
-                System.out.println(String.format(displayFormat, tunnel.getTunnelInterfaceName(), tunnel
-                                .getSourceDPN().toString(), tunnel.getDestinationDPN().toString(), tunnelInterface.getTunnelSource().getIpv4Address().getValue(), tunnelInterface.getTunnelDestination().getIpv4Address().getValue(),vlanId, tunnelState ,
-                                tunnelType));
-         }
+            Class<? extends TunnelTypeBase> tunType = tunnelInterface.getTunnelInterfaceType();
+            String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+            if( tunType.equals(TunnelTypeVxlan.class))
+                tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+            else if( tunType.equals(TunnelTypeGre.class) )
+                tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
+            int vlanId = 0;
+            if( l2Vlan != null ) {
+                vlanId = l2Vlan.getVlanId().getValue() ;
+            }
+            System.out.println(String.format(displayFormat, tunnel.getTunnelInterfaceName(), tunnel
+                            .getSourceDPN().toString(), tunnel.getDestinationDPN().toString(), tunnelInterface.getTunnelSource().getIpv4Address().getValue(), tunnelInterface.getTunnelDestination().getIpv4Address().getValue(),vlanId, tunnelState ,
+                    tunnelType));
+        }
     }
 
     // deletes from ADD-cache if it exists.
@@ -697,8 +697,8 @@ public class TepCommandHelper {
         }
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
         Vteps vtepCli =
-                        new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
-                                        .setPortname(portName).build();
+                new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
+                        .setPortname(portName).build();
         SubnetObject subObCli = new SubnetObject(gatewayIpObj, subnetsKey, subnetMaskObj, vlanId);
 
         if (tZones.containsKey(transportZone)) {
@@ -767,7 +767,7 @@ public class TepCommandHelper {
      * @param tunnelType
      *            the tunnel type
      */
-    private void validateTunnelType(String tZoneName, String tunnelType, TransportZone tZoneFromConfigDS) {
+    private void validateTunnelType(String tZoneName, String tunnelType,TransportZone tZoneFromConfigDS) {
         /*
         String strTunnelType = ItmUtils.validateTunnelType(tunnelType);
 
@@ -787,18 +787,18 @@ public class TepCommandHelper {
         Class<? extends TunnelTypeBase> tunType ;
         if( strTunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN))
             tunType = TunnelTypeVxlan.class ;
-        else 
+        else
             tunType = TunnelTypeGre.class ;
         //TransportZone tZone = getTransportZone(tZoneName);
-       // if (tZone != null) {
-        if (tZoneFromConfigDS != null) {  
-        if( (!tZoneFromConfigDS.getTunnelType().equals(tunType))  && ItmUtils.isNotEmpty(tZoneFromConfigDS.getSubnets())) {
-              String errorMsg = new StringBuilder("Changing the tunnel type from ").append(tZoneFromConfigDS.getTunnelType())
-                       .append(" to ").append(strTunnelType)
-                       .append(" is not allowed for already configured transport zone [").append(tZoneName)
-                       .append("].").toString();
-               Preconditions.checkArgument(false, errorMsg);
-           }
+        // if (tZone != null) {
+        if (tZoneFromConfigDS != null) {
+            if( (!tZoneFromConfigDS.getTunnelType().equals(tunType))  && ItmUtils.isNotEmpty(tZoneFromConfigDS.getSubnets())) {
+                String errorMsg = new StringBuilder("Changing the tunnel type from ").append(tZoneFromConfigDS.getTunnelType())
+                        .append(" to ").append(strTunnelType)
+                        .append(" is not allowed for already configured transport zone [").append(tZoneName)
+                        .append("].").toString();
+                Preconditions.checkArgument(false, errorMsg);
+            }
         }
     }
 
@@ -808,7 +808,7 @@ public class TepCommandHelper {
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().isEnabled() != monitorEnabled) {
             TunnelMonitorEnabled tunnelMonitor = new TunnelMonitorEnabledBuilder().setEnabled(monitorEnabled).build();
             ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                                            ItmUtils.DEFAULT_CALLBACK);
+                    ItmUtils.DEFAULT_CALLBACK);
         }
     }
 
@@ -818,7 +818,7 @@ public class TepCommandHelper {
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                                            ItmUtils.DEFAULT_CALLBACK);
+                    ItmUtils.DEFAULT_CALLBACK);
         }
     }
 }

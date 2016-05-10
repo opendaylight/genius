@@ -38,7 +38,7 @@ import java.util.concurrent.Callable;
  * If PortName is not unique across DPNs, this implementation can have problems.
  */
 
-public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> implements AutoCloseable {
+public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> implements AutoCloseable{
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private DataBroker dataBroker;
     private IdManagerService idManager;
@@ -67,7 +67,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
 
     @Override
     protected AsyncDataBroker.DataChangeScope getDataChangeScope() {
-        return AsyncDataBroker.DataChangeScope.BASE;
+        return AsyncDataBroker.DataChangeScope.ONE;
     }
 
     @Override
@@ -125,8 +125,8 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
         public Object call() throws Exception {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
-             return OvsInterfaceStateAddHelper.addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId,
-                     portName, fcNodeConnectorNew);
+            return OvsInterfaceStateAddHelper.addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId,
+                    portName, fcNodeConnectorNew);
         }
 
         @Override

@@ -84,7 +84,7 @@ public class OvsInterfaceStateRemoveHelper {
 
         //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
         InterfaceChildEntry higherlayerChild = interfaceParentEntry.getInterfaceChildEntry().get(0);
-        InstanceIdentifier<Interface>
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
                 higerLayerChildIfStateId = IfmUtil.buildStateInterfaceId(higherlayerChild.getChildInterface());
         Interface higherLayerIfChildState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(higherlayerChild.getChildInterface(), dataBroker);
         if (interfaceState != null && higherLayerIfChildState != null) {
@@ -99,7 +99,7 @@ public class OvsInterfaceStateRemoveHelper {
 
         if(higherLayerParent != null && higherLayerParent.getInterfaceChildEntry() != null) {
             for (InterfaceChildEntry interfaceChildEntry : higherLayerParent.getInterfaceChildEntry()) {
-                InstanceIdentifier<Interface> ifChildStateId =
+                InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
                         IfmUtil.buildStateInterfaceId(interfaceChildEntry.getChildInterface());
                 Interface childInterfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceChildEntry.getChildInterface(), dataBroker);
                 if (childInterfaceState != null) {
@@ -108,27 +108,6 @@ public class OvsInterfaceStateRemoveHelper {
                 }
             }
         }
-
-
-       /* Below code will be needed if we want to update the vlan-trunk in the of-port.
-       NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-
-        BridgeRefEntryKey BridgeRefEntryKey = new BridgeRefEntryKey(dpId);
-        InstanceIdentifier<BridgeRefEntry> dpnBridgeEntryIid =
-                InterfaceMetaUtils.getBridgeRefEntryIdentifier(BridgeRefEntryKey);
-        BridgeRefEntry bridgeRefEntry =
-                InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnBridgeEntryIid, dataBroker);
-        if (bridgeRefEntry == null) {
-            futures.add(t.submit());
-            return futures;
-        }
-
-        InstanceIdentifier<?> bridgeIid = bridgeRefEntry.getBridgeReference().getValue();
-        InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
-                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceOld.getName());
-        t.delete(LogicalDatastoreType.CONFIGURATION, tpIid); */
-
         futures.add(transaction.submit());
         return futures;
     }
