@@ -11,6 +11,7 @@ package org.opendaylight.genius.mdsalutil.internal;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -18,6 +19,7 @@ import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataCh
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataChangeListenerBase;
 import org.opendaylight.genius.mdsalutil.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -64,7 +66,7 @@ public class MDSALManager implements AutoCloseable {
     private ListenerRegistration<DataChangeListener> groupListenerRegistration;
     private ListenerRegistration<DataChangeListener> flowListenerRegistration;
     private ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<FlowInfoKey, Runnable>();
-    private ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<GroupInfoKey, Runnable>();
+    private ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<GroupInfoKey, Runnable> ();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
@@ -92,12 +94,10 @@ public class MDSALManager implements AutoCloseable {
 
     private void registerListener(DataBroker db) {
         try {
-            flowListenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, getWildCardFlowPath(),
-                                                                        new FlowListener(),
-                                                                        DataChangeScope.SUBTREE);
-            groupListenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, getWildCardGroupPath(),
-                                                                        new GroupListener(),
-                                                                        DataChangeScope.SUBTREE);
+            FlowListener flowListener = new FlowListener();
+            GroupListener groupListener = new GroupListener();
+            flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
+            groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
         } catch (final Exception e) {
             s_logger.error("GroupEventHandler: DataChange listener registration fail!", e);
             throw new IllegalStateException("GroupEventHandler: registration Listener failed.", e);
@@ -118,7 +118,7 @@ public class MDSALManager implements AutoCloseable {
             s_logger.trace("InstallFlow for flowEntity {} ", flowEntity);
 
             if (flowEntity.getCookie() == null) {
-               flowEntity.setCookie(new BigInteger("0110000", 16));
+                flowEntity.setCookie(new BigInteger("0110000", 16));
             }
 
             FlowKey flowKey = new FlowKey( new FlowId(flowEntity.getFlowId()) );
@@ -152,7 +152,7 @@ public class MDSALManager implements AutoCloseable {
                         // Failed because of concurrent transaction modifying same data
                         s_logger.error( "Install Flow -- Failed because of concurrent transaction modifying same data ") ;
                     } else {
-                       // Some other type of TransactionCommitFailedException
+                        // Some other type of TransactionCommitFailedException
                         s_logger.error( "Install Flow -- Some other type of TransactionCommitFailedException " + t) ;
                     }
                 }
@@ -204,12 +204,12 @@ public class MDSALManager implements AutoCloseable {
                         // Failed because of concurrent transaction modifying same data
                         s_logger.error( "Install Group -- Failed because of concurrent transaction modifying same data ") ;
                     } else {
-                       // Some other type of TransactionCommitFailedException
+                        // Some other type of TransactionCommitFailedException
                         s_logger.error( "Install Group -- Some other type of TransactionCommitFailedException " + t) ;
                     }
                 }
-             });
-           } catch (Exception e) {
+            });
+        } catch (Exception e) {
             s_logger.error("Could not install Group: {}", groupEntity, e);
             throw e;
         }
@@ -225,31 +225,31 @@ public class MDSALManager implements AutoCloseable {
                     .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
 
 
-                WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
-                modification.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
+            WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
+            modification.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
 
-                CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = modification.submit();
+            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = modification.submit();
 
-                Futures.addCallback(submitFuture, new FutureCallback<Void>() {
-                    @Override
-                    public void onSuccess(final Void result) {
-                        // Commited successfully
-                        s_logger.debug( "Delete Flow -- Committedsuccessfully ") ;
+            Futures.addCallback(submitFuture, new FutureCallback<Void>() {
+                @Override
+                public void onSuccess(final Void result) {
+                    // Commited successfully
+                    s_logger.debug( "Delete Flow -- Committedsuccessfully ") ;
+                }
+
+                @Override
+                public void onFailure(final Throwable t) {
+                    // Transaction failed
+                    if(t instanceof OptimisticLockFailedException) {
+                        // Failed because of concurrent transaction modifying same data
+                        s_logger.error( "Delete Flow -- Failed because of concurrent transaction modifying same data ") ;
+                    } else {
+                        // Some other type of TransactionCommitFailedException
+                        s_logger.error( "Delete Flow -- Some other type of TransactionCommitFailedException " + t) ;
                     }
+                }
 
-                    @Override
-                    public void onFailure(final Throwable t) {
-                        // Transaction failed
-                        if(t instanceof OptimisticLockFailedException) {
-                            // Failed because of concurrent transaction modifying same data
-                            s_logger.error( "Delete Flow -- Failed because of concurrent transaction modifying same data ") ;
-                        } else {
-                           // Some other type of TransactionCommitFailedException
-                            s_logger.error( "Delete Flow -- Some other type of TransactionCommitFailedException " + t) ;
-                        }
-                    }
-
-                });
+            });
         } catch (Exception e) {
             s_logger.error("Could not remove Flow: {}", flowEntity, e);
         }
@@ -260,9 +260,9 @@ public class MDSALManager implements AutoCloseable {
         Node nodeDpn = buildDpnNode(dpnId);
         FlowKey flowKey = new FlowKey(flowEntity.getId());
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                    .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
-        WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
+        WriteTransaction  modification = m_dataBroker.newWriteOnlyTransaction();
         modification.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId );
         return modification.submit();
     }
@@ -294,7 +294,7 @@ public class MDSALManager implements AutoCloseable {
                         // Failed because of concurrent transaction modifying same data
                         s_logger.error( "Install Group -- Failed because of concurrent transaction modifying same data ") ;
                     } else {
-                       // Some other type of TransactionCommitFailedException
+                        // Some other type of TransactionCommitFailedException
                         s_logger.error( "Install Group -- Some other type of TransactionCommitFailedException " + t) ;
                     }
                 }
@@ -359,39 +359,31 @@ public class MDSALManager implements AutoCloseable {
     }
 
     public void syncSetUpFlow(FlowEntity flowEntity, long delay, boolean isRemove) {
-        s_logger.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
+        if (s_logger.isTraceEnabled()) {
+            s_logger.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
+        }
         if (flowEntity.getCookie() == null) {
             flowEntity.setCookie(new BigInteger("0110000", 16));
         }
         Flow flow = flowEntity.getFlowBuilder().build();
         String flowId = flowEntity.getFlowId();
         BigInteger dpId = flowEntity.getDpnId();
-        short tableId = flowEntity.getTableId();
-        Match matches = flow.getMatch();
         FlowKey flowKey = new FlowKey( new FlowId(flowId));
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
-        Runnable notifyTask = new NotifyTask();
-        FlowInfoKey flowInfoKey = new FlowInfoKey(dpId, tableId, matches, flowId);
-        synchronized (flowInfoKey.toString().intern()) {
-            flowMap.put(flowInfoKey, notifyTask);
-            if (isRemove) {
-                MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-            } else {
-                MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow);
-            }
-            synchronized (notifyTask) {
-                try {
-                    notifyTask.wait(delay);
-                } catch (InterruptedException e){}
-            }
+        if (isRemove) {
+            MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        } else {
+            MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow);
         }
     }
 
     public void syncSetUpGroup(GroupEntity groupEntity, long delayTime, boolean isRemove) {
-        s_logger.trace("syncSetUpGroup for groupEntity {} ", groupEntity);
+        if (s_logger.isTraceEnabled()) {
+            s_logger.trace("syncSetUpGroup for groupEntity {} ", groupEntity);
+        }
         Group group = groupEntity.getGroupBuilder().build();
         BigInteger dpId = groupEntity.getDpnId();
         Node nodeDpn = buildDpnNode(dpId);
@@ -400,21 +392,10 @@ public class MDSALManager implements AutoCloseable {
         InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Group.class, groupKey).build();
-        Runnable notifyTask = new NotifyTask();
-        GroupInfoKey groupInfoKey = new GroupInfoKey(dpId, groupId);
-        synchronized (groupInfoKey.toString().intern()) {
-            s_logger.trace("syncsetupGroupKey groupKey {}", groupInfoKey);
-            groupMap.put(groupInfoKey, notifyTask);
-            if (isRemove) {
-                MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
-            } else {
-                MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
-            }
-            synchronized (notifyTask) {
-                try {
-                    notifyTask.wait(delayTime);
-                } catch (InterruptedException e){}
-            }
+        if (isRemove) {
+            MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        } else {
+            MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
         }
     }
 
@@ -426,28 +407,17 @@ public class MDSALManager implements AutoCloseable {
         InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Group.class, groupKey).build();
-        Runnable notifyTask = new NotifyTask();
-        GroupInfoKey groupInfoKey = new GroupInfoKey(dpId, groupId);
-        synchronized (groupInfoKey.toString().intern()) {
-            s_logger.trace("syncsetupGroupKey groupKey {}", groupInfoKey);
-            groupMap.put(groupInfoKey, notifyTask);
-            if (isRemove) {
-                MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
-            } else {
-                MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
-            }
-            synchronized (notifyTask) {
-                try {
-                    notifyTask.wait(delayTime);
-                } catch (InterruptedException e){}
-            }
+        if (isRemove) {
+            MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        } else {
+            MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
         }
     }
 
-    class GroupListener extends AbstractDataChangeListener<Group> {
+    class GroupListener extends AsyncClusteredDataChangeListenerBase<Group,GroupListener> {
 
         public GroupListener() {
-            super(Group.class);
+            super(Group.class,GroupListener.class);
         }
 
         @Override
@@ -476,12 +446,27 @@ public class MDSALManager implements AutoCloseable {
             BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, add);
         }
+
+        @Override
+        protected InstanceIdentifier<Group> getWildCardPath() {
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Group.class);
+        }
+
+        @Override
+        protected ClusteredDataChangeListener getDataChangeListener() {
+            return GroupListener.this;
+        }
+
+        @Override
+        protected DataChangeScope getDataChangeScope() {
+            return DataChangeScope.SUBTREE;
+        }
     }
-    
-    class FlowListener extends AbstractDataChangeListener<Flow> {
+
+    class FlowListener extends AsyncClusteredDataChangeListenerBase<Flow,FlowListener> {
 
         public FlowListener() {
-            super(Flow.class);
+            super(Flow.class, FlowListener.class);
         }
 
         @Override
@@ -508,8 +493,23 @@ public class MDSALManager implements AutoCloseable {
             BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
             notifyTaskIfRequired(dpId, add);
         }
+
+        @Override
+        protected InstanceIdentifier<Flow> getWildCardPath() {
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class);
+        }
+
+        @Override
+        protected ClusteredDataChangeListener getDataChangeListener() {
+            return FlowListener.this;
+        }
+
+        @Override
+        protected DataChangeScope getDataChangeScope() {
+            return DataChangeScope.SUBTREE;
+        }
     }
-    
+
     private BigInteger getDpnFromString(String dpnString) {
         String[] split = dpnString.split(":");
         return new BigInteger(split[1]);

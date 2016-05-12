@@ -8,6 +8,7 @@
 
 package org.opendaylight.genius.utils.hwvtep;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -16,6 +17,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepGlobalAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepNodeName;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepPhysicalLocatorAugmentation;
@@ -62,12 +64,19 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> addLogicalSwitch(DataBroker broker, NodeId nodeId,
-            LogicalSwitches logicalSwitch) {
+                                                          LogicalSwitches logicalSwitch) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
-        putLogicalSwitch(transaction, nodeId, logicalSwitch);
+        putLogicalSwitch(transaction,LogicalDatastoreType.CONFIGURATION, nodeId, logicalSwitch);
         return transaction.submit();
     }
 
+    public static ListenableFuture<Void> addLogicalSwitch(DataBroker broker, LogicalDatastoreType logicalDatastoreType,
+                                                          NodeId nodeId,
+                                                          LogicalSwitches logicalSwitch) {
+        WriteTransaction transaction = broker.newWriteOnlyTransaction();
+        putLogicalSwitch(transaction,logicalDatastoreType, nodeId, logicalSwitch);
+        return transaction.submit();
+    }
     /**
      * Put the logical switches in the transaction.
      *
@@ -79,10 +88,10 @@ public final class HwvtepUtils {
      *            the lst switches
      */
     public static void putLogicalSwitches(final WriteTransaction transaction, final NodeId nodeId,
-            final List<LogicalSwitches> lstSwitches) {
+                                          final List<LogicalSwitches> lstSwitches) {
         if (lstSwitches != null) {
             for (LogicalSwitches logicalSwitch : lstSwitches) {
-                putLogicalSwitch(transaction, nodeId, logicalSwitch);
+                putLogicalSwitch(transaction,LogicalDatastoreType.CONFIGURATION, nodeId, logicalSwitch);
             }
         }
     }
@@ -97,11 +106,11 @@ public final class HwvtepUtils {
      * @param logicalSwitch
      *            the logical switch
      */
-    public static void putLogicalSwitch(final WriteTransaction transaction, final NodeId nodeId,
-            final LogicalSwitches logicalSwitch) {
+    public static void putLogicalSwitch(final WriteTransaction transaction,LogicalDatastoreType logicalDatastoreType,
+                                        final NodeId nodeId, final LogicalSwitches logicalSwitch) {
         InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils.createLogicalSwitchesInstanceIdentifier(nodeId,
                 logicalSwitch.getHwvtepNodeName());
-        transaction.put(LogicalDatastoreType.CONFIGURATION, iid, logicalSwitch, true);
+        transaction.put(logicalDatastoreType, iid, logicalSwitch, true);
     }
 
     /**
@@ -116,7 +125,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> deleteLogicalSwitch(DataBroker broker, NodeId nodeId,
-            String logicalSwitchName) {
+                                                             String logicalSwitchName) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteLogicalSwitch(transaction, nodeId, logicalSwitchName);
         return transaction.submit();
@@ -133,7 +142,7 @@ public final class HwvtepUtils {
      *            the logical switch name
      */
     public static void deleteLogicalSwitch(final WriteTransaction transaction, final NodeId nodeId,
-            final String logicalSwitchName) {
+                                           final String logicalSwitchName) {
         transaction.delete(LogicalDatastoreType.CONFIGURATION, HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName)));
     }
@@ -148,7 +157,7 @@ public final class HwvtepUtils {
      * @return the logical switch
      */
     public static LogicalSwitches getLogicalSwitch(DataBroker broker, LogicalDatastoreType datastoreType, NodeId nodeId,
-            String logicalSwitchName) {
+                                                   String logicalSwitchName) {
         final InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName));
         Optional<LogicalSwitches> optLogicalSwitch = MDSALUtil.read(broker, datastoreType, iid);
@@ -194,7 +203,7 @@ public final class HwvtepUtils {
      *            the lst physical locator
      */
     public static void putPhysicalLocators(WriteTransaction transaction, NodeId nodeId,
-            List<HwvtepPhysicalLocatorAugmentation> lstPhysicalLocator) {
+                                           List<HwvtepPhysicalLocatorAugmentation> lstPhysicalLocator) {
         if (lstPhysicalLocator != null) {
             for (HwvtepPhysicalLocatorAugmentation phyLocator : lstPhysicalLocator) {
                 putPhysicalLocator(transaction, nodeId, phyLocator);
@@ -213,7 +222,7 @@ public final class HwvtepUtils {
      *            the phy locator
      */
     public static void putPhysicalLocator(final WriteTransaction transaction, final NodeId nodeId,
-            final HwvtepPhysicalLocatorAugmentation phyLocator) {
+                                          final HwvtepPhysicalLocatorAugmentation phyLocator) {
         InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createPhysicalLocatorInstanceIdentifier(nodeId,
                 phyLocator);
         TerminationPoint terminationPoint = new TerminationPointBuilder()
@@ -237,7 +246,7 @@ public final class HwvtepUtils {
      * @return the physical locator
      */
     public static HwvtepPhysicalLocatorAugmentation getPhysicalLocator(DataBroker broker,
-            LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
+                                                                       LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
                 .createHwvtepPhysicalLocatorAugmentation(String.valueOf(phyLocatorIp.getValue()));
         InstanceIdentifier<HwvtepPhysicalLocatorAugmentation> iid = HwvtepSouthboundUtils
@@ -262,7 +271,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> addRemoteUcastMacs(DataBroker broker, NodeId nodeId,
-            List<RemoteUcastMacs> lstRemoteUcastMacs) {
+                                                            List<RemoteUcastMacs> lstRemoteUcastMacs) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putRemoteUcastMacs(transaction, nodeId, lstRemoteUcastMacs);
         return transaction.submit();
@@ -279,7 +288,7 @@ public final class HwvtepUtils {
      *            the lst remote ucast macs
      */
     public static void putRemoteUcastMacs(final WriteTransaction transaction, final NodeId nodeId,
-            final List<RemoteUcastMacs> lstRemoteUcastMacs) {
+                                          final List<RemoteUcastMacs> lstRemoteUcastMacs) {
         if (lstRemoteUcastMacs != null && !lstRemoteUcastMacs.isEmpty()) {
             for (RemoteUcastMacs remoteUcastMac : lstRemoteUcastMacs) {
                 putRemoteUcastMac(transaction, nodeId, remoteUcastMac);
@@ -298,7 +307,7 @@ public final class HwvtepUtils {
      *            the remote ucast mac
      */
     public static void putRemoteUcastMac(final WriteTransaction transaction, final NodeId nodeId,
-            RemoteUcastMacs remoteUcastMac) {
+                                         RemoteUcastMacs remoteUcastMac) {
         InstanceIdentifier<RemoteUcastMacs> iid = HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)
                 .augmentation(HwvtepGlobalAugmentation.class).child(RemoteUcastMacs.class,
                         new RemoteUcastMacsKey(remoteUcastMac.getLogicalSwitchRef(), remoteUcastMac.getMacEntryKey()));
@@ -317,7 +326,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> deleteRemoteUcastMac(DataBroker broker, NodeId nodeId,
-            String logicalSwitchName, MacAddress mac) {
+                                                              String logicalSwitchName, MacAddress mac) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteUcastMac(transaction, nodeId, logicalSwitchName, mac);
         return transaction.submit();
@@ -335,7 +344,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> deleteRemoteUcastMacs(DataBroker broker, NodeId nodeId,
-            String logicalSwitchName, List<MacAddress> lstMac) {
+                                                               String logicalSwitchName, List<MacAddress> lstMac) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteUcastMacs(transaction, nodeId, logicalSwitchName, lstMac);
         return transaction.submit();
@@ -352,7 +361,7 @@ public final class HwvtepUtils {
      *            the lst mac
      */
     public static void deleteRemoteUcastMacs(final WriteTransaction transaction, final NodeId nodeId,
-            String logicalSwitchName, final List<MacAddress> lstMac) {
+                                             String logicalSwitchName, final List<MacAddress> lstMac) {
         if (lstMac != null && !lstMac.isEmpty()) {
             for (MacAddress mac : lstMac) {
                 deleteRemoteUcastMac(transaction, nodeId, logicalSwitchName, mac);
@@ -371,7 +380,7 @@ public final class HwvtepUtils {
      *            the mac
      */
     public static void deleteRemoteUcastMac(final WriteTransaction transaction, final NodeId nodeId,
-            String logialSwitchName, final MacAddress mac) {
+                                            String logialSwitchName, final MacAddress mac) {
         transaction.delete(LogicalDatastoreType.CONFIGURATION,
                 HwvtepSouthboundUtils.createRemoteUcastMacsInstanceIdentifier(nodeId, logialSwitchName, mac));
     }
@@ -388,7 +397,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> addRemoteMcastMacs(DataBroker broker, NodeId nodeId,
-            List<RemoteMcastMacs> lstRemoteMcastMacs) {
+                                                            List<RemoteMcastMacs> lstRemoteMcastMacs) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putRemoteMcastMacs(transaction, nodeId, lstRemoteMcastMacs);
         return transaction.submit();
@@ -405,7 +414,7 @@ public final class HwvtepUtils {
      *            the lst remote mcast macs
      */
     public static void putRemoteMcastMacs(final WriteTransaction transaction, final NodeId nodeId,
-            final List<RemoteMcastMacs> lstRemoteMcastMacs) {
+                                          final List<RemoteMcastMacs> lstRemoteMcastMacs) {
         if (lstRemoteMcastMacs != null && !lstRemoteMcastMacs.isEmpty()) {
             for (RemoteMcastMacs remoteMcastMac : lstRemoteMcastMacs) {
                 putRemoteMcastMac(transaction, nodeId, remoteMcastMac);
@@ -424,12 +433,19 @@ public final class HwvtepUtils {
      *            the remote mcast mac
      */
     public static void putRemoteMcastMac(final WriteTransaction transaction, final NodeId nodeId,
-            RemoteMcastMacs remoteMcastMac) {
+                                         RemoteMcastMacs remoteMcastMac) {
         InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
                 remoteMcastMac.getKey());
         transaction.put(LogicalDatastoreType.CONFIGURATION, iid, remoteMcastMac, true);
     }
 
+    public static void putRemoteMcastMac(final WriteTransaction transaction,LogicalDatastoreType logicalDatastoreType,
+                                         final NodeId nodeId,
+                                         RemoteMcastMacs remoteMcastMac) {
+        InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
+                remoteMcastMac.getKey());
+        transaction.put(logicalDatastoreType, iid, remoteMcastMac, true);
+    }
     /**
      * Gets the remote mcast mac.
      *
@@ -444,7 +460,7 @@ public final class HwvtepUtils {
      * @return the remote mcast mac
      */
     public static RemoteMcastMacs getRemoteMcastMac(DataBroker broker, LogicalDatastoreType datastoreType,
-            NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey) {
+                                                    NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey) {
         final InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils
                 .createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey);
         Optional<RemoteMcastMacs> optRemoteMcastMac = MDSALUtil.read(broker, datastoreType, iid);
@@ -466,7 +482,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> deleteRemoteMcastMac(DataBroker broker, NodeId nodeId,
-            RemoteMcastMacsKey remoteMcastMacsKey) {
+                                                              RemoteMcastMacsKey remoteMcastMacsKey) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMac(transaction, nodeId, remoteMcastMacsKey);
         return transaction.submit();
@@ -484,7 +500,7 @@ public final class HwvtepUtils {
      * @return the listenable future
      */
     public static ListenableFuture<Void> deleteRemoteMcastMacs(DataBroker broker, NodeId nodeId,
-            List<RemoteMcastMacsKey> lstRemoteMcastMacsKey) {
+                                                               List<RemoteMcastMacsKey> lstRemoteMcastMacsKey) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMacs(transaction, nodeId, lstRemoteMcastMacsKey);
         return transaction.submit();
@@ -501,7 +517,7 @@ public final class HwvtepUtils {
      *            the lst remote mcast macs key
      */
     public static void deleteRemoteMcastMacs(final WriteTransaction transaction, final NodeId nodeId,
-            final List<RemoteMcastMacsKey> lstRemoteMcastMacsKey) {
+                                             final List<RemoteMcastMacsKey> lstRemoteMcastMacsKey) {
         if (lstRemoteMcastMacsKey != null && !lstRemoteMcastMacsKey.isEmpty()) {
             for (RemoteMcastMacsKey mac : lstRemoteMcastMacsKey) {
                 deleteRemoteMcastMac(transaction, nodeId, mac);
@@ -520,7 +536,7 @@ public final class HwvtepUtils {
      *            the remote mcast macs key
      */
     public static void deleteRemoteMcastMac(final WriteTransaction transaction, final NodeId nodeId,
-            final RemoteMcastMacsKey remoteMcastMacsKey) {
+                                            final RemoteMcastMacsKey remoteMcastMacsKey) {
         transaction.delete(LogicalDatastoreType.CONFIGURATION,
                 HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey));
     }
@@ -540,7 +556,7 @@ public final class HwvtepUtils {
      *            the vlan bindings
      */
     public static void mergeVlanBindings(final WriteTransaction transaction, final NodeId nodeId,
-            final String phySwitchName, final String phyPortName, final List<VlanBindings> vlanBindings) {
+                                         final String phySwitchName, final String phyPortName, final List<VlanBindings> vlanBindings) {
         NodeId physicalSwitchNodeId = HwvtepSouthboundUtils.createManagedNodeId(nodeId, phySwitchName);
         mergeVlanBindings(transaction, physicalSwitchNodeId, phyPortName, vlanBindings);
     }
@@ -558,7 +574,7 @@ public final class HwvtepUtils {
      *            the vlan bindings
      */
     public static void mergeVlanBindings(final WriteTransaction transaction, final NodeId physicalSwitchNodeId,
-            final String phyPortName, final List<VlanBindings> vlanBindings) {
+                                         final String phyPortName, final List<VlanBindings> vlanBindings) {
         HwvtepPhysicalPortAugmentation phyPortAug = new HwvtepPhysicalPortAugmentationBuilder()
                 .setHwvtepNodeName(new HwvtepNodeName(phyPortName)).setVlanBindings(vlanBindings).build();
 
@@ -580,7 +596,7 @@ public final class HwvtepUtils {
      *            the vlan id
      */
     public static void deleteVlanBinding(WriteTransaction transaction, NodeId physicalSwitchNodeId, String phyPortName,
-            Integer vlanId) {
+                                         Integer vlanId) {
         InstanceIdentifier<VlanBindings> iid = HwvtepSouthboundUtils
                 .createVlanBindingInstanceIdentifier(physicalSwitchNodeId, phyPortName, vlanId);
         transaction.delete(LogicalDatastoreType.CONFIGURATION, iid);
@@ -605,4 +621,37 @@ public final class HwvtepUtils {
         }
         return null;
     }
+
+    /**
+     * Installs a list of Mac Addresses as remote Ucast address in an external
+     * device using the hwvtep-southbound.
+     *
+     * @param deviceNodeId
+     *            NodeId if the ExternalDevice where the macs must be installed
+     *            in.
+     * @param macAddresses
+     *            List of Mac addresses to be installed in the external device.
+     * @param logicalSwitchName
+     *            the logical switch name
+     * @param remoteVtepIp
+     *            VTEP's IP in this CSS used for the tunnel with external
+     *            device.
+     */
+    public static ListenableFuture<Void> installUcastMacs(DataBroker broker,
+                                                          String deviceNodeId, List<PhysAddress> macAddresses,
+                                                          String logicalSwitchName, IpAddress remoteVtepIp) {
+        NodeId nodeId = new NodeId(deviceNodeId);
+        HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
+                .createHwvtepPhysicalLocatorAugmentation(String.valueOf(remoteVtepIp.getValue()));
+        List<RemoteUcastMacs> macs = new ArrayList<RemoteUcastMacs>();
+        for (PhysAddress mac : macAddresses) {
+            // TODO: Query ARP cache to get IP address corresponding to
+            // the MAC
+            IpAddress ipAddress = null;
+            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId, mac.getValue(), ipAddress, logicalSwitchName,
+                    phyLocatorAug));
+        }
+        return HwvtepUtils.addRemoteUcastMacs(broker, nodeId, macs);
+    }
+
 }

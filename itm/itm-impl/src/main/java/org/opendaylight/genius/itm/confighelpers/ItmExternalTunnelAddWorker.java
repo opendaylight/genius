@@ -136,6 +136,9 @@ public class ItmExternalTunnelAddWorker {
                             for (Subnets sub : tZone.getSubnets()) {
                                 if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
                                     for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
+                                        //dont mesh if hwVteps and CSS-tep have same ip-address
+                                        if(hwVtepDS.getIpAddress().equals(tep.getIpAddress()))
+                                            continue;
                                         String cssID = dpn.getDPNID().toString();
                                         String nodeId = hwVtepDS.getNodeId();
                                         //CSS-TOR
@@ -192,6 +195,8 @@ public class ItmExternalTunnelAddWorker {
                         }
                         if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
                             for (Vteps vtep : sub.getVteps()) {
+                                if(vtep.getIpAddress().equals(hwTep.getHwIp()))
+                                    continue;
                                 //TOR-CSS
                                 String cssID = vtep.getDpnId().toString();
                                 Boolean monitorEnabled = ItmUtils.readMonitoringStateFromDS(dataBroker);

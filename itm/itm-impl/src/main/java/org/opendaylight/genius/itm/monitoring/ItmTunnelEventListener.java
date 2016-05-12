@@ -42,7 +42,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
     private void registerListener(final DataBroker db) {
         try {
             listenerRegistration = broker.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL,
-                            getWildCardPath(), ItmTunnelEventListener.this, AsyncDataBroker.DataChangeScope.SUBTREE);
+                    getWildCardPath(), ItmTunnelEventListener.this, AsyncDataBroker.DataChangeScope.SUBTREE);
         } catch (final Exception e) {
             logger.error("ITM Monitor Interfaces DataChange listener registration fail!", e);
             throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
@@ -93,8 +93,8 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                 }else {
                     logger.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
                     StringBuilder alarmText = new StringBuilder();
-                    alarmText.append("Data Path Connectivity is lost between ").append("openflow:").append(srcDpId).append(" and openflow:")
-                                    .append(dstDpId).append(" for tunnelType:").append(tunnelType);
+                    alarmText.append("Data Path Connectivity is lost b/w ").append("openflow:").append(srcDpId).append(" and openflow:")
+                            .append(dstDpId).append(" for tunnelType:").append(tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType,alarmText.toString());
                 }
             }else{
@@ -116,8 +116,9 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                     }else {
                         logger.trace("ITM Tunnel State is DOWN b/w srcNode: {} and dstNode: {}", srcNode, dstNode);
                         StringBuilder alarmText = new StringBuilder();
-                        alarmText.append("Data Path Connectivity is lost between ").append(srcNode).append(" and ").append(
-                                        dstNode).append(" for tunnelType:").append(tunnelType);
+                        alarmText.append("DataPath lost b/w").append(srcNode).append(" and ").append(dstNode);
+                        //alarmText.append("Data Path Connectivity is lost between ").append(srcNode).append(" and ").append(
+                        //              dstNode).append(" for tunnelType:").append(tunnelType);
                         raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType,alarmText.toString());
                     }
                 }
@@ -137,8 +138,8 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                 if(!isTunnelInterfaceUp(add)) {
                     logger.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId, tunnelType);
                     StringBuilder alarmText = new StringBuilder();
-                    alarmText.append("Data Path Connection is down between ").append("openflow:").append(srcDpId).append(" and openflow:")
-                                    .append(dstDpId).append(" for tunnelType:").append(tunnelType).append(" during initial state");
+                    alarmText.append("DataPath is down between ").append("openflow:").append(srcDpId).append(" and openflow:")
+                            .append(dstDpId).append(" for ").append(tunnelType).append("tunnel initially");
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText.toString());
                 }
             }else {
@@ -156,7 +157,8 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                     if(!isTunnelInterfaceUp(add)) {
                         logger.trace("ITM Tunnel State during tep add is DOWN b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode, tunnelType);
                         StringBuilder alarmText = new StringBuilder();
-                        alarmText.append("Data Path Connection is down between ").append(srcNode).append(" and ").append(dstNode).append(" for tunnelType:").append(tunnelType).append(" during initial state");
+                        //alarmText.append("DataPath is down between ").append(srcNode).append(" and ").append(dstNode).append(" for ").append(tunnelType).append("tunnel initially");
+                        alarmText.append("Path down").append(srcNode).append(" and ").append(dstNode).append(" initially");
                         raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType,alarmText.toString());
                     }
                 }
