@@ -62,8 +62,8 @@ public class TCP extends Packet {
         /* Setting all remaining header field values to
          * default value of 0.  These maybe changed as needed
          */
-        setSourcePort((short) 0);
-        setDestinationPort((short) 0);
+        setSourcePort((short)0);
+        setDestinationPort((short)0);
         setSequenceNumber(0);
         setAckNumber(0);
         setDataOffset((byte) 0);

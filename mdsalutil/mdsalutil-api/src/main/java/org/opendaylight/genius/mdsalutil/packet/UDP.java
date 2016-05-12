@@ -8,6 +8,7 @@
 
 package org.opendaylight.genius.mdsalutil.packet;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,8 +47,8 @@ public class UDP extends Packet {
         /* Setting all remaining header field values to
          * default value of 0.  These maybe changed as needed
          */
-        setSourcePort((short) 0);
-        setDestinationPort((short) 0);
+        setSourcePort(0);
+        setDestinationPort(0);
         setChecksum((short) 0);
     }
 
@@ -59,8 +60,8 @@ public class UDP extends Packet {
         /* Setting all remaining header field values to
          * default value of 0.  These maybe changed as needed
          */
-        setSourcePort((short) 0);
-        setDestinationPort((short) 0);
+        setSourcePort(0);
+        setDestinationPort(0);
         setChecksum((short) 0);
     }
 
@@ -75,18 +76,18 @@ public class UDP extends Packet {
       }*/
     /**
      * Get the stored source port
-     * @return short - the sourcePort
+     * @return int - the sourcePort
      */
-    public short getSourcePort() {
-        return (BitBufferHelper.getShort(fieldValues.get(SRCPORT)));
+    public int getSourcePort() {
+        return (BitBufferHelper.getInt(fieldValues.get(SRCPORT)));
     }
 
     /**
      * Get the stored destination port
-     * @return short - the destinationPort
+     * @return int - the destinationPort
      */
-    public short getDestinationPort() {
-        return (BitBufferHelper.getShort(fieldValues.get(DESTPORT)));
+    public int getDestinationPort() {
+        return (BitBufferHelper.getInt(fieldValues.get(DESTPORT)));
     }
 
     /**
@@ -115,24 +116,27 @@ public class UDP extends Packet {
 
     /**
      * Sets the sourcePort value for the current UDP object instance
-     * @param udpSourcePort short source port to set
+     * @param udpSourcePort int source port to set
      * @return UDP
      */
-    public UDP setSourcePort(short udpSourcePort) {
-        byte[] sourcePort = BitBufferHelper.toByteArray(udpSourcePort);
-        fieldValues.put(SRCPORT, sourcePort);
+    public UDP setSourcePort(int udpSourcePort) {
+        byte[] sourcePort = BitBufferHelper
+                .toByteArray(udpSourcePort);
+        byte[] port = Arrays.copyOfRange(sourcePort, 2, 4);
+        fieldValues.put(SRCPORT, port);
         return this;
     }
 
     /**
      * Sets the destinationPort value for the current UDP object instance
-     * @param udpDestinationPort short destination port to set
+     * @param udpDestinationPort int destination port to set
      * @return UDP
      */
-    public UDP setDestinationPort(short udpDestinationPort) {
+    public UDP setDestinationPort(int udpDestinationPort) {
         byte[] destinationPort = BitBufferHelper
                 .toByteArray(udpDestinationPort);
-        fieldValues.put(DESTPORT, destinationPort);
+        byte[] port = Arrays.copyOfRange(destinationPort, 2, 4);
+        fieldValues.put(DESTPORT, port);
         return this;
     }
 

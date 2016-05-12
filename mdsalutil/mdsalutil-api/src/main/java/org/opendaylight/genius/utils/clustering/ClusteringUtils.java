@@ -27,25 +27,36 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 
 public class ClusteringUtils {
 
+    static DataStoreJobCoordinator dataStoreJobCoordinator;
+
+    static DataStoreJobCoordinator getDataStoreJobCoordinator() {
+        if (dataStoreJobCoordinator == null) {
+            dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
+        }
+        return dataStoreJobCoordinator;
+    }
+    public static void setDataStoreJobCoordinator(DataStoreJobCoordinator ds) {
+        dataStoreJobCoordinator = ds;
+    }
+
     public static ListenableFuture<Boolean> checkNodeEntityOwner(EntityOwnershipService entityOwnershipService,
-            String entityType, String nodeId) {
+                                                                 String entityType, String nodeId) {
         return checkNodeEntityOwner(entityOwnershipService, new Entity(entityType, nodeId),
                 SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
     }
 
     public static ListenableFuture<Boolean> checkNodeEntityOwner(EntityOwnershipService entityOwnershipService,
-            String entityType, YangInstanceIdentifier nodeId) {
+                                                                 String entityType, YangInstanceIdentifier nodeId) {
         return checkNodeEntityOwner(entityOwnershipService, new Entity(entityType, nodeId),
                 SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
     }
 
     public static ListenableFuture<Boolean> checkNodeEntityOwner(EntityOwnershipService entityOwnershipService,
-            Entity entity, long sleepBetweenRetries, int maxRetries) {
+                                                                 Entity entity, long sleepBetweenRetries, int maxRetries) {
         SettableFuture<Boolean> checkNodeEntityfuture = SettableFuture.create();
-        DataStoreJobCoordinator dataStoreCoordinator = DataStoreJobCoordinator.getInstance();
         CheckEntityOwnerTask checkEntityOwnerTask = new CheckEntityOwnerTask(entityOwnershipService, entity,
                 checkNodeEntityfuture, sleepBetweenRetries, maxRetries);
-        dataStoreCoordinator.enqueueJob(entityOwnershipService.toString(), checkEntityOwnerTask);
+        getDataStoreJobCoordinator().enqueueJob(entityOwnershipService.toString(), checkEntityOwnerTask);
         return checkNodeEntityfuture;
     }
 
@@ -57,7 +68,7 @@ public class ClusteringUtils {
         int retries;
 
         public CheckEntityOwnerTask(EntityOwnershipService entityOwnershipService, Entity entity,
-                SettableFuture<Boolean> checkNodeEntityfuture, long sleepBetweenRetries, int retries) {
+                                    SettableFuture<Boolean> checkNodeEntityfuture, long sleepBetweenRetries, int retries) {
             this.entityOwnershipService = entityOwnershipService;
             this.entity = entity;
             this.checkNodeEntityfuture = checkNodeEntityfuture;
