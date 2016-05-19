@@ -68,4 +68,18 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <feature version="${dlux.version}">odl-dlux-yangui</feature>
   </feature>
 
+  <feature name='odl-genius-fcaps-framework' version='${project.version}' description='OpenDaylight :: genius :: fcapsframework'>
+    <bundle>mvn:org.opendaylight.genius/fcaps-api/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/alarmmanager/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/countermanager/{{VERSION}}</bundle>
+  </feature>
+  <!--
+  <feature name='odl-genius-fcaps-application' version='${project.version}' description='OpenDaylight :: genius :: fcapsapp'>
+    <feature version="${openflowplugin.version}">odl-openflowplugin-all</feature>
+    <bundle>mvn:org.opendaylight.genius/fcapsapplication-jmxapi/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}</bundle>
+    <configfile finalname="etc/opendaylight/karaf/73-fcaps-app.xml">mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}/xml/config
+    </configfile>
+  </feature>
+  -->
 </features>
