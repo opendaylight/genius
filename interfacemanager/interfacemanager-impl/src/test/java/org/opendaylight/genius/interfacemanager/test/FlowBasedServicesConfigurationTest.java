@@ -106,7 +106,7 @@ public class FlowBasedServicesConfigurationTest {
                 .setIfIndex(ifIndexval)
                 .setLowerLayerIf(lowerLayerIfList)
                 .setKey(IfmUtil.getStateInterfaceKeyFromName(InterfaceManagerTestUtil.interfaceName))
-                .setName(InterfaceManagerTestUtil.interfaceName).setType(L2vlan.class);
+                .setName(InterfaceManagerTestUtil.interfaceName).setType(interfaceEnabled.getType());
 
         stypeOpenflow = InterfaceManagerTestUtil.buildStypeOpenflow(dpId, flowPriority,NwConstants.LPORT_DISPATCHER_TABLE,instructions);
         boundServiceNew = InterfaceManagerTestUtil.buildBoundServices(serviceName, key, new BoundServicesKey(key), stypeOpenflow);

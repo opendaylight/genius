@@ -80,23 +80,56 @@ public class SouthboundUtils {
     public static void addAllPortsToBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
                                            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
                                            OvsdbBridgeAugmentation bridgeNew,
-                                           WriteTransaction writeTransaction){
+                                           List<ListenableFuture<Void>> futures){
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
-        for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
-            String portName = bridgeInterfaceEntry.getInterfaceName();
-            InterfaceKey interfaceKey = new InterfaceKey(portName);
-            Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
-            if(iface != null){
-                IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-                if (ifTunnel != null) {
-                    addTunnelPortToBridge(ifTunnel, bridgeIid, iface, bridgeNew, bridgeName, portName, dataBroker, writeTransaction);
+        if(bridgeInterfaceEntries != null) {
+            for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
+                String portName = bridgeInterfaceEntry.getInterfaceName();
+                InterfaceKey interfaceKey = new InterfaceKey(portName);
+                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+                if (iface != null) {
+                    IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+                    if (ifTunnel != null) {
+                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, bridgeNew, bridgeName, portName, dataBroker, writeTransaction);
+                    }
+                } else {
+                    LOG.debug("Interface {} not found in config DS", portName);
                 }
-            }else{
-                LOG.debug("Interface {} not found in config DS", portName);
             }
         }
+        futures.add(writeTransaction.submit());
+    }
+
+    /*
+     *  add all tunnels ports corresponding to the bridge to the topology config DS
+     */
+    public static void removeAllPortsFromBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
+                                                InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+                                                OvsdbBridgeAugmentation bridgeNew,
+                                                List<ListenableFuture<Void>> futures){
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        String bridgeName = bridgeNew.getBridgeName().getValue();
+        LOG.debug("removing all ports from bridge: {}", bridgeName);
+        List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
+        if(bridgeInterfaceEntries != null) {
+            for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
+                String portName = bridgeInterfaceEntry.getInterfaceName();
+                InterfaceKey interfaceKey = new InterfaceKey(portName);
+                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+                if (iface != null) {
+                    IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+                    if (ifTunnel != null) {
+                        removeTerminationEndPoint(futures, dataBroker, bridgeIid, iface.getName());
+                    }
+                } else {
+                    LOG.debug("Interface {} not found in config DS", portName);
+                }
+            }
+        }
+        futures.add(writeTransaction.submit());
     }
 
     private static void addVlanPortToBridge(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan, IfTunnel ifTunnel,
@@ -229,5 +262,15 @@ public class SouthboundUtils {
 
         LOG.debug("Termination point InstanceIdentifier generated : {}",terminationPointPath);
         return terminationPointPath;
+    }
+
+    public static void removeTerminationEndPoint(List<ListenableFuture<Void>> futures, DataBroker dataBroker, InstanceIdentifier<?> bridgeIid,
+                                                 String interfaceName) {
+        LOG.debug("removing termination point for {}", interfaceName);
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
+                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
+        transaction.delete(LogicalDatastoreType.CONFIGURATION, tpIid);
+        futures.add(transaction.submit());
     }
 }

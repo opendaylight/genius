@@ -25,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -134,7 +135,7 @@ public class InterfaceManagerCommonUtils {
                     InstructionType.write_metadata, new BigInteger[] {
                     MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
                     MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG}));
-            short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class) ? NwConstants.L3_LFIB_TABLE :
+            short tableId = (tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)) ? NwConstants.L3_LFIB_TABLE :
                     tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
             mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[] {tableId}));
         }
@@ -245,17 +246,17 @@ public class InterfaceManagerCommonUtils {
         // install ingress flow
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-        if(interfaceInfo != null && interfaceInfo.isEnabled() && ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
+        if(interfaceInfo != null && interfaceInfo.isEnabled() &&
+                ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, interfaceInfo);
             FlowBasedServicesUtils.installVlanFlow(dpId, portNo, interfaceInfo, transaction, matches, ifIndex);
         }
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-    addStateEntry(Interface interfaceInfo, String portName, WriteTransaction transaction, IdManagerService idManager,
-                  PhysAddress physAddress, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
-                  org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus,
-                  NodeConnectorId nodeConnectorId) {
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(Interface interfaceInfo, String portName, WriteTransaction transaction, IdManagerService idManager,
+                                                                                                                                              PhysAddress physAddress, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
+                                                                                                                                              org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus,
+                                                                                                                                              NodeConnectorId nodeConnectorId) {
         LOG.debug("adding interface state for {}",portName);
         if (interfaceInfo != null && !interfaceInfo.isEnabled()) {
             operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
@@ -275,18 +276,35 @@ public class InterfaceManagerCommonUtils {
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(portName));
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder.build();
-        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId,ifState , true);
+        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState , true);
 
         // allocate lport tag and set in if-index
         InterfaceMetaUtils.createLportTagInterfaceMap(transaction, portName, ifIndex);
+
+        // install ingress flow if this is an l2vlan interface
+        if(InterfaceManagerCommonUtils.isVlanInterface(interfaceInfo) && interfaceInfo.isEnabled() &&
+                ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
+            BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+            long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+            List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, interfaceInfo);
+            FlowBasedServicesUtils.installVlanFlow(dpId, portNo, interfaceInfo, transaction, matches, ifIndex);
+        }
         return ifState;
     }
 
     public static void deleteStateEntry(String interfaceName, WriteTransaction transaction) {
-        LOG.debug("removing interface state for {}",interfaceName);
+        LOG.debug("removing interface state entry for {}",interfaceName);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
                 IfmUtil.buildStateInterfaceId(interfaceName);
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
+    }
+
+    public static void deleteInterfaceStateInformation(String interfaceName, WriteTransaction transaction, IdManagerService idManagerService) {
+        LOG.debug("removing interface state information for {}",interfaceName);
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
+                IfmUtil.buildStateInterfaceId(interfaceName);
+        transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
+        InterfaceMetaUtils.removeLportTagInterfaceMap(idManagerService, transaction, interfaceName);
     }
 
     // For trunk interfaces, binding to a parent interface which is already bound to another trunk interface should not
@@ -321,28 +339,6 @@ public class InterfaceManagerCommonUtils {
         return true;
     }
 
-    public static void deleteInterfaceChildEntry(WriteTransaction transaction, DataBroker dataBroker, String parentInterface, String childInterface){
-        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
-        InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid =
-                InterfaceMetaUtils.getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryIid, dataBroker);
-
-        if(interfaceParentEntry == null){
-            return;
-        }
-
-        List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
-        if (interfaceChildEntries.size() <= 1) {
-            transaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
-        } else {
-            InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
-            InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid =
-                    InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-            transaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
-        }
-    }
-
     /*
      * update operational state of interface based on events like tunnel monitoring
      */
@@ -354,6 +350,20 @@ public class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(operStatus);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+    }
+
+    public static boolean isTunnelInterface(Interface interfaceInfo){
+        if(interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isVlanInterface(Interface interfaceInfo){
+        if(interfaceInfo != null && interfaceInfo.getAugmentation(IfL2vlan.class) != null){
+            return true;
+        }
+        return false;
     }
 
 }

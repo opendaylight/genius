@@ -38,6 +38,7 @@ import java.util.concurrent.*;
 public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
 
     private static final Logger logger = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
+    private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
     private static final int THREAD_POOL_SIZE = 4;
     private static final int NO_DELAY = 0;
     public static final PMAgentForNodeConnectorCounters pmagent = new PMAgentForNodeConnectorCounters();
@@ -85,6 +86,10 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
      * PortStat request task is started when first DPN gets connected
      */
     private void schedulePortStatRequestTask() {
+        if (!Boolean.getBoolean(STATS_POLL_FLAG)) {
+            logger.info("Port statistics is turned off");
+            return;
+        }
         logger.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
         scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, NO_DELAY, 10000, TimeUnit.MILLISECONDS);

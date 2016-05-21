@@ -77,30 +77,17 @@ public class OvsInterfaceStateUpdateHelper {
             ifaceBuilder.setPhysAddress(physAddress);
         }
 
+        // modify the attributes in interface operational DS
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 handleInterfaceStateUpdates(portName, nodeConnectorId,
                         transaction, dataBroker, ifaceBuilder, opstateModified, operStatusNew);
 
-        InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(portName, dataBroker);
-        if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
-            for (InterfaceChildEntry higherlayerChild : interfaceParentEntry.getInterfaceChildEntry()) {
-                handleInterfaceStateUpdates(higherlayerChild.getChildInterface(),
-                        nodeConnectorId, transaction, dataBroker, ifaceBuilder, opstateModified, operStatusNew);
-                InterfaceParentEntry higherLayerParent =
-                        InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(higherlayerChild.getChildInterface(), dataBroker);
-                if (higherLayerParent != null && higherLayerParent.getInterfaceChildEntry() != null) {
-                    for (InterfaceChildEntry interfaceChildEntry : higherLayerParent.getInterfaceChildEntry()) {
-                        //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
-                        handleInterfaceStateUpdates(interfaceChildEntry.getChildInterface(), nodeConnectorId,
-                                transaction, dataBroker, ifaceBuilder, opstateModified, operStatusNew);
-                    }
-                }
-            }
-        }else {
-            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface, operStatusNew, opstateModified);
+        // start/stop monitoring based on opState
+        if(modifyTunnel(iface, opstateModified)){
+            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface, operStatusNew);
         }
+
         futures.add(transaction.submit());
         return futures;
     }
@@ -133,11 +120,7 @@ public class OvsInterfaceStateUpdateHelper {
 
     public static void handleTunnelMonitoringUpdates(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
                                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
-                                                     Interface.OperStatus operStatus, boolean opStateModified){
-        // start/stop monitoring based on opState
-        if(!modifyTunnel(iface, opStateModified)){
-            return;
-        }
+                                                     Interface.OperStatus operStatus){
 
         LOG.debug("handling tunnel monitoring updates for {} due to opstate modification", iface.getName());
         if (operStatus == Interface.OperStatus.Down)

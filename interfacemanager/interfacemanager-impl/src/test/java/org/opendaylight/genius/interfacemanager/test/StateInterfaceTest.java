@@ -162,7 +162,6 @@ public class StateInterfaceTest {
     public void testAddStateInterface() {
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         AllocateIdOutput expectedId = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
-        AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("200")).build();
         Optional<InterfaceParentEntry>expectedParentEntry = Optional.of(interfaceParentEntry);
         Optional<InterfaceParentEntry> higherLayerParentOptional = Optional.of(higherLayerInterfaceParentEntry);
         Optional<Interface> expectedChildInterface = Optional.of(childVlanInterfaceEnabled);
@@ -244,7 +243,7 @@ public class StateInterfaceTest {
 
         doReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build())).when(idManager).releaseId(getIdInput);
 
-        removeHelper.removeState(idManager, mdsalManager, alivenessMonitorService, fcNodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
+        removeHelper.removeInterfaceStateConfiguration(idManager, mdsalManager, alivenessMonitorService, fcNodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
 
@@ -255,13 +254,23 @@ public class StateInterfaceTest {
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
                 expectedStateInterface = Optional.of(stateInterface);
         Optional<Interface> expectedInterface = Optional.of(tunnelInterfaceEnabled);
+        AllocateIdOutput expectedId = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
+        Future<RpcResult<AllocateIdOutput>> idOutputOptional = RpcResultBuilder.success(expectedId).buildFuture();
+        AllocateIdInput getIdInput = new AllocateIdInputBuilder()
+                .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(InterfaceManagerTestUtil.interfaceName).build();
+        doReturn(idOutputOptional).when(idManager).allocateId(getIdInput);
+        ReleaseIdInput releaseIdInput = new ReleaseIdInputBuilder()
+                .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(InterfaceManagerTestUtil.interfaceName).build();
 
+        doReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build())).when(idManager).releaseId(releaseIdInput);
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
 
-        removeHelper.removeState(idManager, mdsalManager, alivenessMonitorService, fcNodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
+        removeHelper.removeInterfaceStateConfiguration(idManager, mdsalManager, alivenessMonitorService, fcNodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
 
     }
 
@@ -297,6 +306,5 @@ public class StateInterfaceTest {
         updateHelper.updateState(fcNodeConnectorId, alivenessMonitorService, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier,parentInterface);
-        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL,childInterfaceStateIdentifier,childInterface);
     }
 }

@@ -55,7 +55,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             futures.add(writeTransaction.submit());
             return futures;
         }
-        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, writeTransaction);
+        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
 
         futures.add(writeTransaction.submit());
         return futures;
