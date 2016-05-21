@@ -61,35 +61,37 @@ public class OvsInterfaceConfigRemoveHelper {
             removeTunnelConfiguration(alivenessMonitorService, parentRefs, dataBroker, interfaceOld,
                     idManager, mdsalApiManager, futures);
         }else {
-            removeVlanConfiguration(dataBroker, parentRefs, interfaceOld, t);
+            removeVlanConfiguration(dataBroker, parentRefs, interfaceOld, t, idManager);
             futures.add(t.submit());
         }
         return futures;
     }
 
-    private static void removeVlanConfiguration(DataBroker dataBroker, ParentRefs parentRefs, Interface interfaceOld, WriteTransaction transaction) {
-        LOG.debug("removing vlan configuration for {}",interfaceOld.getName());
+    private static void removeVlanConfiguration(DataBroker dataBroker, ParentRefs parentRefs, Interface interfaceOld,
+                                                WriteTransaction transaction, IdManagerService idManagerService) {
         IfL2vlan ifL2vlan = interfaceOld.getAugmentation(IfL2vlan.class);
-        if (ifL2vlan == null || (IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode())) {
+        if (parentRefs == null || ifL2vlan == null ||
+                (IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() &&
+                        IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode())) {
             return;
         }
+        LOG.debug("removing vlan configuration for {}",interfaceOld.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceOld.getName(), dataBroker);
         if (ifState == null) {
             LOG.debug("could not fetch interface state corresponding to {}",interfaceOld.getName());
-            return;
+            //return;
         }
 
-        InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), transaction);
+        InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(), transaction, idManagerService);
 
         BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
         FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, transaction);
         InterfaceManagerCommonUtils.deleteParentInterfaceEntry(transaction, parentRefs.getParentInterface());
         // For Vlan-Trunk Interface, remove the trunk-member operstates as well...
 
-        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceOld.getName());
         InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
+                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceOld.getName(), dataBroker);
         if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
             return;
         }
@@ -97,7 +99,7 @@ public class OvsInterfaceConfigRemoveHelper {
         //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
         for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
             LOG.debug("removing interface state for  vlan trunk member {}",interfaceChildEntry.getChildInterface());
-            InterfaceManagerCommonUtils.deleteStateEntry(interfaceChildEntry.getChildInterface(), transaction);
+            InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(), transaction, idManagerService);
             FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, transaction);
         }
     }
@@ -107,7 +109,7 @@ public class OvsInterfaceConfigRemoveHelper {
                                                   IdManagerService idManager, IMdsalApiManager mdsalApiManager,
                                                   List<ListenableFuture<Void>> futures) {
         LOG.debug("removing tunnel configuration for {}",interfaceOld.getName());
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = null;
         if (parentRefs != null) {
             dpId = parentRefs.getDatapathNodeIdentifier();
@@ -117,32 +119,15 @@ public class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
-        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
-        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid =
-                InterfaceMetaUtils.getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         BridgeRefEntry bridgeRefEntry =
-                InterfaceMetaUtils.getBridgeRefEntryFromOperDS(bridgeRefEntryIid, dataBroker);
-
+                InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
         if (bridgeRefEntry != null) {
-            LOG.debug("removing termination point for {}",interfaceOld.getName());
-            InstanceIdentifier<?> bridgeIid = bridgeRefEntry.getBridgeReference().getValue();
-            InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
-                    InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceOld.getName());
-            t.delete(LogicalDatastoreType.CONFIGURATION, tpIid);
-
+            SouthboundUtils.removeTerminationEndPoint(futures, dataBroker, bridgeRefEntry.getBridgeReference().getValue(), interfaceOld.getName());
             // delete tunnel ingress flow
-            NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(interfaceOld, dataBroker);
-            if(ncId == null){
-                LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
-            }else{
-                long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
-                InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
-                        interfaceOld.getAugmentation(IfTunnel.class),
-                        dpId, portNo, interfaceOld, -1,
-                        NwConstants.DEL_FLOW);
-            }
+            removeTunnelIngressFlow(futures, dataBroker, interfaceOld, mdsalApiManager, dpId);
         }
 
+        // delete bridge to tunnel interface mappings
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         InstanceIdentifier<BridgeEntry> bridgeEntryIid = InterfaceMetaUtils.getBridgeEntryIdentifier(bridgeEntryKey);
         BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryIid, dataBroker);
@@ -156,19 +141,24 @@ public class OvsInterfaceConfigRemoveHelper {
             LOG.debug("Bridge Interface Entries not present for dpn : {}", dpId);
             return;
         }
-
-        if (bridgeInterfaceEntries.size() <= 1) {
-            t.delete(LogicalDatastoreType.CONFIGURATION, bridgeEntryIid);
-        } else {
-            BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
-                    new BridgeInterfaceEntryKey(interfaceOld.getName());
-            InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
-                    InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey,
-                            bridgeInterfaceEntryKey);
-            t.delete(LogicalDatastoreType.CONFIGURATION, bridgeInterfaceEntryIid);
-        }
-        futures.add(t.submit());
+        InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid, transaction, interfaceOld);
+        InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceOld.getName());
+        futures.add(transaction.submit());
         // stop LLDP monitoring for the tunnel interface
         AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceOld);
+    }
+
+    public static void removeTunnelIngressFlow(List<ListenableFuture<Void>> futures,
+                                               DataBroker dataBroker, Interface interfaceOld, IMdsalApiManager mdsalApiManager, BigInteger dpId){
+        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(interfaceOld, dataBroker);
+        if(ncId == null){
+            LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
+        }else{
+            long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
+            InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
+                    interfaceOld.getAugmentation(IfTunnel.class),
+                    dpId, portNo, interfaceOld, -1,
+                    NwConstants.DEL_FLOW);
+        }
     }
 }

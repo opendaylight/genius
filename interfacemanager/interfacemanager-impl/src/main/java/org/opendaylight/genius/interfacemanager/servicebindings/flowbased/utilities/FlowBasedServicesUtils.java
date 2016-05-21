@@ -343,7 +343,10 @@ public class FlowBasedServicesUtils {
     }
 
     public static void removeIngressFlow(String interfaceName, BigInteger dpId, WriteTransaction t) {
-        LOG.debug("Removing Ingress Flows");
+        if(dpId == null){
+            return;
+        }
+        LOG.debug("Removing Ingress Flows for {}", interfaceName);
         String flowKeyStr = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, interfaceName);
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);

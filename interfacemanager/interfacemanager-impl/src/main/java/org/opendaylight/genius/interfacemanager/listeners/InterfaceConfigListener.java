@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
@@ -65,9 +66,15 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
         LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
         String ifName = interfaceOld.getName();
         ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
+        if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            LOG.warn("parent refs not specified for {}", interfaceOld.getName());
+            return;
+        }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld, ifName, parentRefs);
-        coordinator.enqueueJob(ifName, configWorker, MAX_RETRIES);
+        String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld) ?
+                parentRefs.getDatapathNodeIdentifier().toString() : interfaceOld.getName();
+        coordinator.enqueueJob(synchronizationKey, configWorker, MAX_RETRIES);
     }
 
     @Override
@@ -76,7 +83,7 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
         String ifNameNew = interfaceNew.getName();
         ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-            LOG.error("parent refs not specified for {}",interfaceNew.getName());
+            LOG.warn("parent refs not specified for {}", interfaceNew.getName());
             return;
         }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -90,7 +97,7 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
         String ifName = interfaceNew.getName();
         ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-            LOG.error("parent refs not specified for {}",interfaceNew.getName());
+            LOG.warn("parent refs not specified for {}", interfaceNew.getName());
             return;
         }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();

@@ -24,6 +24,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdManager;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.*;
@@ -31,12 +32,10 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
@@ -141,9 +140,9 @@ public class VlanInterfaceConfigurationTest {
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
 
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
-                        LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
+                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
-               LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
@@ -206,14 +205,19 @@ public class VlanInterfaceConfigurationTest {
         Optional<NodeConnector> expectedNc = Optional.of(nodeConnector);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateIf = Optional.of(stateInterface);
         doReturn(Futures.immediateCheckedFuture(expected)).when(mockReadTx).read(
-                        LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
+                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedNc)).when(mockReadTx).read(
-                        LogicalDatastoreType.OPERATIONAL, nodeConnectorInstanceIdentifier);
+                LogicalDatastoreType.OPERATIONAL, nodeConnectorInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedStateIf)).when(mockReadTx).read(
-                        LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
+        ReleaseIdInput getIdInput = new ReleaseIdInputBuilder()
+                .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(InterfaceManagerTestUtil.interfaceName).build();
+
+        doReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build())).when(idManager).releaseId(getIdInput);
         removeHelper.removeConfiguration(dataBroker,alivenessMonitorService, vlanInterfaceEnabled, idManager,
                 mdsalApiManager, vlanInterfaceEnabled.getAugmentation(ParentRefs.class));
 

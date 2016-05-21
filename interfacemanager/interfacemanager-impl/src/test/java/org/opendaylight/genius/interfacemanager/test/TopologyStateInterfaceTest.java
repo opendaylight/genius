@@ -141,8 +141,14 @@ public class TopologyStateInterfaceTest {
     @Test
     public void testDeleteTopologyStateInterface()
     {
+        Optional<BridgeEntry> expectedBridgeEntry = Optional.of(bridgeEntry);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL, bridgeIid);
+        doReturn(Futures.immediateCheckedFuture(expectedBridgeEntry)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION,bridgeEntryIid);
+        Optional<Interface> expectedInterface = Optional.of(tunnelInterfaceEnabled);
+        doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         OvsdbBridgeAugmentationBuilder ovsdbBridgeAugmentation = new OvsdbBridgeAugmentationBuilder(bridgeOld);
         ovsdbBridgeAugmentation.setDatapathId(DatapathId.getDefaultInstance("00:00:00:00:00:00:00:01"));
         ovsdbBridgeAugmentation.setBridgeName(OvsdbBridgeName.getDefaultInstance("b"));

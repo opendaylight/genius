@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableBiMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -61,6 +62,12 @@ public class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final int INVALID_ID = 0;
 
+    public static final ImmutableBiMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType> TUNNEL_TYPE_MAP =
+            new ImmutableBiMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
+                    .put(TunnelTypeGre.class, InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE)
+                    .put(TunnelTypeMplsOverGre.class, InterfaceInfo.InterfaceType.MPLS_OVER_GRE)
+                    .put(TunnelTypeVxlan.class, InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE)
+                    .build();
 
 
     public static String getDpnFromNodeConnectorId(NodeConnectorId portId) {
@@ -112,20 +119,20 @@ public class IfmUtil {
     public static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> buildStateInterfaceId(String interfaceName) {
         InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> idBuilder =
                 InstanceIdentifier.builder(InterfacesState.class)
-                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
-                        new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(interfaceName));
+                        .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
+                                new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(interfaceName));
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder.build();
         return id;
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey getStateInterfaceKeyFromName(
-                    String name) {
+            String name) {
         return new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(name);
     }
 
     public static InstanceIdentifier<IdPool> getPoolId(String poolName){
         InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idBuilder =
-                        InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName));
+                InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName));
         InstanceIdentifier<IdPool> id = idBuilder.build();
         return id;
     }
@@ -192,7 +199,7 @@ public class IfmUtil {
         return actionsList;
     }
 
-    public static List<ActionInfo> getEgressActionInfosForInterface(String interfaceName,
+    public static List<ActionInfo> getEgressActionInfosForInterface(String     interfaceName,
                                                                     int        actionKeyStart,
                                                                     DataBroker dataBroker) {
         return getEgressActionInfosForInterface(interfaceName, null, actionKeyStart, dataBroker);
@@ -207,8 +214,8 @@ public class IfmUtil {
      * @param dataBroker
      * @return
      */
-    public static List<ActionInfo> getEgressActionInfosForInterface(String interfaceName,
-                                                                    Long tunnelKey,
+    public static List<ActionInfo> getEgressActionInfosForInterface(String     interfaceName,
+                                                                    Long       tunnelKey,
                                                                     int        actionKeyStart,
                                                                     DataBroker dataBroker) {
         List<ActionInfo> result = new ArrayList<ActionInfo>();
@@ -232,7 +239,7 @@ public class IfmUtil {
                     result.add(new ActionInfo(ActionType.push_vlan, new String[] {}, actionKeyStart));
                     actionKeyStart++;
                     result.add(new ActionInfo(ActionType.set_field_vlan_vid,
-                               new String[] { Long.toString(vlanVid) }, actionKeyStart));
+                            new String[] { Long.toString(vlanVid) }, actionKeyStart));
                     actionKeyStart++;
                 }
                 result.add(new ActionInfo(ActionType.output, new String[] {portNo}, actionKeyStart));
@@ -243,8 +250,8 @@ public class IfmUtil {
             case GRE_TRUNK_INTERFACE:
                 if(tunnelKey != null) {
                     result.add(new ActionInfo(ActionType.set_field_tunnel_id,
-                                                  new BigInteger[] { BigInteger.valueOf(tunnelKey.longValue()) },
-                                                  actionKeyStart) );
+                            new BigInteger[] { BigInteger.valueOf(tunnelKey.longValue()) },
+                            actionKeyStart) );
                     actionKeyStart++;
                 }
 
@@ -320,11 +327,8 @@ public class IfmUtil {
     public static BigInteger getDpnId(DatapathId datapathId){
         if (datapathId != null) {
             // Adding logs for a random issue spotted during datapath id conversion
-            LOG.info("Received datapathId {}",datapathId.getValue());
             String dpIdStr = datapathId.getValue().replace(":", "");
-            LOG.info("Received datapathId {}",dpIdStr);
             BigInteger dpnId =  new BigInteger(dpIdStr, 16);
-            LOG.info("After conversion datapathId {}",dpnId);
             return dpnId;
         }
         return null;
@@ -359,24 +363,27 @@ public class IfmUtil {
     public static InterfaceInfo.InterfaceType getInterfaceType(Interface iface) {
         InterfaceInfo.InterfaceType interfaceType =
                 org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
-        Class<? extends InterfaceType> ifType = iface.getType();
+        Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType> ifType = iface.getType();
 
         if (ifType.isAssignableFrom(L2vlan.class)) {
             interfaceType =  org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
         } else if (ifType.isAssignableFrom(Tunnel.class)) {
             IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
             Class<? extends  org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel.getTunnelInterfaceType();
-            if (tunnelType.isAssignableFrom(TunnelTypeVxlan.class)) {
+            interfaceType = TUNNEL_TYPE_MAP.get(tunnelType);
+            /*if (tunnelType.isAssignableFrom(TunnelTypeVxlan.class)) {
                 interfaceType = InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
             } else if (tunnelType.isAssignableFrom(TunnelTypeGre.class)) {
                 interfaceType = InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
             } else if(tunnelType.isAssignableFrom(TunnelTypeMplsOverGre.class)){
                 interfaceType = InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
-            }
+            } else if(tunnelType.isAssignableFrom(TunnelTypeMplsOverUdp.class)){
+                interfaceType = InterfaceInfo.InterfaceType.MPLS_OVER_UDP;
+            }*/
         }
         // TODO: Check if the below condition is still needed/valid
         //else if (ifType.isAssignableFrom(InterfaceGroup.class)) {
-        //    interfaceType =  org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
+        //    interfaceType =  org.opendaylight.vpnservice.interfacemgr.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
         //}
         return interfaceType;
     }

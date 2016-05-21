@@ -45,10 +45,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public class InterfaceMetaUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceMetaUtils.class);
-
     public static InstanceIdentifier<BridgeRefEntry> getBridgeRefEntryIdentifier(BridgeRefEntryKey bridgeRefEntryKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<BridgeRefEntry> bridgeRefEntryInstanceIdentifierBuilder =
                 InstanceIdentifier.builder(BridgeRefInfo.class)
@@ -64,6 +64,14 @@ public class InterfaceMetaUtils {
             return null;
         }
         return bridgeRefEntryOptional.get();
+    }
+
+    public static BridgeRefEntry getBridgeRefEntryFromOperDS(BigInteger dpId,
+                                                             DataBroker dataBroker) {
+        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
+        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid =
+                InterfaceMetaUtils.getBridgeRefEntryIdentifier(bridgeRefEntryKey);
+        return getBridgeRefEntryFromOperDS(bridgeRefEntryIid, dataBroker);
     }
 
     public static BridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo,
@@ -89,7 +97,6 @@ public class InterfaceMetaUtils {
         }
         return false;
     }
-
     public static InstanceIdentifier<BridgeEntry> getBridgeEntryIdentifier(BridgeEntryKey bridgeEntryKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<BridgeEntry> bridgeEntryIdBuilder =
                 InstanceIdentifier.builder(BridgeInterfaceInfo.class).child(BridgeEntry.class, bridgeEntryKey);
@@ -198,14 +205,23 @@ public class InterfaceMetaUtils {
     }
 
     public static void createLportTagInterfaceMap(WriteTransaction t, String infName, Integer ifIndex) {
-        LOG.debug("creating lport tag to interface map for {}", infName);
+        LOG.debug("creating lport tag to interface map for {}",infName);
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         IfIndexInterface ifIndexInterface = new IfIndexInterfaceBuilder().setIfIndex(ifIndex).setKey(new IfIndexInterfaceKey(ifIndex)).setInterfaceName(infName).build();
         t.put(LogicalDatastoreType.OPERATIONAL, id, ifIndexInterface, true);
     }
 
+    public static void removeLportTagInterfaceMap(IdManagerService idManager, WriteTransaction t, String infName) {
+        // workaround to get the id to remove from lport tag interface map
+        Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, infName);
+        IfmUtil.releaseId(idManager, IfmConstants.IFM_IDPOOL_NAME, infName);
+        LOG.debug("removing lport tag to interface map for {}",infName);
+        InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
+        t.delete(LogicalDatastoreType.OPERATIONAL, id);
+    }
+
     public static void createBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid,
-                                            WriteTransaction tx) {
+                                            WriteTransaction tx){
         LOG.debug("Creating bridge ref entry for dpn: {} bridge: {}",
                 dpnId, bridgeIid);
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
@@ -216,7 +232,6 @@ public class InterfaceMetaUtils {
                         .setBridgeReference(new OvsdbBridgeRef(bridgeIid));
         tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), true);
     }
-
     public static void deleteBridgeRefEntry(BigInteger dpnId,
                                             WriteTransaction tx) {
         LOG.debug("Deleting bridge ref entry for dpn: {}",
@@ -230,7 +245,7 @@ public class InterfaceMetaUtils {
     public static void createTunnelToInterfaceMap(String tunnelInstanceId,
                                                   String infName,
                                                   WriteTransaction transaction) {
-        LOG.debug("creating tunnel instance identifier to interface map for {}", infName);
+        LOG.debug("creating tunnel instance identifier to interface map for {}",infName);
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class).
                 child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
         TunnelInstanceInterface tunnelInstanceInterface = new TunnelInstanceInterfaceBuilder().
@@ -239,9 +254,9 @@ public class InterfaceMetaUtils {
 
     }
 
-    public static void createTunnelToInterfaceMap(String infName, InstanceIdentifier<Node> nodeId,
+    public static void createTunnelToInterfaceMap(String infName,InstanceIdentifier<Node> nodeId,
                                                   WriteTransaction transaction,
-                                                  IfTunnel ifTunnel) {
+                                                  IfTunnel ifTunnel){
         InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.
                 createTunnelsInstanceIdentifier(nodeId,
                         ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
@@ -250,7 +265,7 @@ public class InterfaceMetaUtils {
 
     public static void removeTunnelToInterfaceMap(InstanceIdentifier<Node> nodeId,
                                                   WriteTransaction transaction,
-                                                  IfTunnel ifTunnel) {
+                                                  IfTunnel ifTunnel){
         InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.
                 createTunnelsInstanceIdentifier(nodeId,
                         ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
@@ -262,10 +277,24 @@ public class InterfaceMetaUtils {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class).
                 child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
         Optional<TunnelInstanceInterface> tunnelInstanceInterfaceOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
-        if (tunnelInstanceInterfaceOptional.isPresent()) {
+        if(tunnelInstanceInterfaceOptional.isPresent()){
             return tunnelInstanceInterfaceOptional.get().getInterfaceName();
         }
         return null;
     }
 
+    public static void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey, List<BridgeInterfaceEntry> bridgeInterfaceEntries,
+                                                  InstanceIdentifier<BridgeEntry> bridgeEntryIid,
+                                                  WriteTransaction transaction, Interface interfaceOld){
+        BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
+                new BridgeInterfaceEntryKey(interfaceOld.getName());
+        InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
+                InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey,
+                        bridgeInterfaceEntryKey);
+        transaction.delete(LogicalDatastoreType.CONFIGURATION, bridgeInterfaceEntryIid);
+
+        if (bridgeInterfaceEntries.size() <= 1) {
+            transaction.delete(LogicalDatastoreType.CONFIGURATION, bridgeEntryIid);
+        }
+    }
 }

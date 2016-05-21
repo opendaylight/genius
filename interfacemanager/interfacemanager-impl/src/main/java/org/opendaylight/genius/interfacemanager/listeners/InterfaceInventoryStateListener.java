@@ -11,12 +11,16 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
@@ -27,6 +31,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -38,7 +44,7 @@ import java.util.concurrent.Callable;
  * If PortName is not unique across DPNs, this implementation can have problems.
  */
 
-public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> implements AutoCloseable{
+public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private DataBroker dataBroker;
     private IdManagerService idManager;
@@ -61,13 +67,8 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
     }
 
     @Override
-    protected DataChangeListener getDataChangeListener() {
+    protected InterfaceInventoryStateListener getDataTreeChangeListener() {
         return InterfaceInventoryStateListener.this;
-    }
-
-    @Override
-    protected AsyncDataBroker.DataChangeScope getDataChangeScope() {
-        return AsyncDataBroker.DataChangeScope.ONE;
     }
 
     @Override
@@ -77,9 +78,17 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
         String portName = flowCapableNodeConnectorOld.getName();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
-        InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
+        // Fetch all interfaces on this port and trigger remove worker for each of them
+        List<String> interfaceChildEntries = getInterfaceChildEntries(dataBroker, portName);
+        for(String interfaceName : interfaceChildEntries){
+            InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
+                    key, flowCapableNodeConnectorOld, interfaceName);
+            coordinator.enqueueJob(interfaceChildEntries.get(0), interfaceStateRemoveWorker);
+        }
+
+        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                 key, flowCapableNodeConnectorOld, portName);
-        coordinator.enqueueJob(portName, interfaceStateRemoveWorker);
+        coordinator.enqueueJob(portName, portStateRemoveWorker);
     }
 
     @Override
@@ -89,9 +98,15 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
         String portName = fcNodeConnectorNew.getName();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
-        InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
+        InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
                 fcNodeConnectorNew, portName);
-        coordinator.enqueueJob(portName, interfaceStateUpdateWorker);
+        coordinator.enqueueJob(portName, portStateUpdateWorker);
+        List<String> interfaceChildEntries = getInterfaceChildEntries(dataBroker, portName);
+        for(String interfaceName : interfaceChildEntries){
+            InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
+                    fcNodeConnectorNew, interfaceName);
+            coordinator.enqueueJob(interfaceChildEntries.get(0), interfaceStateUpdateWorker);
+        }
     }
 
     @Override
@@ -99,17 +114,23 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         String portName = fcNodeConnectorNew.getName();
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+
         InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
                 fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, ifStateAddWorker);
+        List<String> interfaceChildEntries = getInterfaceChildEntries(dataBroker, portName);
+        for(String interfaceName : interfaceChildEntries){
+            InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
+                    fcNodeConnectorNew, interfaceName);
+            coordinator.enqueueJob(interfaceChildEntries.get(0), interfaceStateAddWorker);
+        }
     }
 
     private class InterfaceStateAddWorker implements Callable {
         private final NodeConnectorId nodeConnectorId;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
-        private final String portName;
+        private final String interfaceName;
         private final IdManagerService idManager;
 
         public InterfaceStateAddWorker(IdManagerService idManager, NodeConnectorId nodeConnectorId,
@@ -117,7 +138,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
                                        String portName) {
             this.nodeConnectorId = nodeConnectorId;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
-            this.portName = portName;
+            this.interfaceName = portName;
             this.idManager = idManager;
         }
 
@@ -126,7 +147,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceStateAddHelper.addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId,
-                    portName, fcNodeConnectorNew);
+                    interfaceName, fcNodeConnectorNew);
         }
 
         @Override
@@ -134,7 +155,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
             return "InterfaceStateAddWorker{" +
                     "nodeConnectorId=" + nodeConnectorId +
                     ", fcNodeConnectorNew=" + fcNodeConnectorNew +
-                    ", portName='" + portName + '\'' +
+                    ", interfaceName='" + interfaceName + '\'' +
                     '}';
         }
     }
@@ -143,7 +164,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
         private InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
-        private String portName;
+        private String interfaceName;
 
 
         public InterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
@@ -153,14 +174,14 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
             this.key = key;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
-            this.portName = portName;
+            this.interfaceName = portName;
         }
 
         @Override
         public Object call() throws Exception {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            return OvsInterfaceStateUpdateHelper.updateState(key, alivenessMonitorService, dataBroker, portName,
+            return OvsInterfaceStateUpdateHelper.updateState(key, alivenessMonitorService, dataBroker, interfaceName,
                     fcNodeConnectorNew, fcNodeConnectorOld);
         }
 
@@ -170,7 +191,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
                     "key=" + key +
                     ", fcNodeConnectorOld=" + fcNodeConnectorOld +
                     ", fcNodeConnectorNew=" + fcNodeConnectorNew +
-                    ", portName='" + portName + '\'' +
+                    ", interfaceName='" + interfaceName + '\'' +
                     '}';
         }
     }
@@ -178,7 +199,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
     private class InterfaceStateRemoveWorker implements Callable {
         InstanceIdentifier<FlowCapableNodeConnector> key;
         FlowCapableNodeConnector fcNodeConnectorOld;
-        private final String portName;
+        private final String interfaceName;
         private final IdManagerService idManager;
 
         public InterfaceStateRemoveWorker(IdManagerService idManager,
@@ -187,7 +208,7 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
                                           String portName) {
             this.key = key;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
-            this.portName = portName;
+            this.interfaceName = portName;
             this.idManager = idManager;
         }
 
@@ -195,8 +216,8 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
         public Object call() throws Exception {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            return OvsInterfaceStateRemoveHelper.removeState(idManager, mdsalApiManager, alivenessMonitorService,
-                    key, dataBroker, portName, fcNodeConnectorOld);
+            return OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager, alivenessMonitorService,
+                    key, dataBroker, interfaceName, fcNodeConnectorOld);
         }
 
         @Override
@@ -204,8 +225,27 @@ public class InterfaceInventoryStateListener extends AsyncDataChangeListenerBase
             return "InterfaceStateRemoveWorker{" +
                     "key=" + key +
                     ", fcNodeConnectorOld=" + fcNodeConnectorOld +
-                    ", portName='" + portName + '\'' +
+                    ", interfaceName='" + interfaceName + '\'' +
                     '}';
         }
+    }
+
+    public static List<String> getInterfaceChildEntries(DataBroker dataBroker,  String portName){
+        List<String> interfaceChildEntries = new ArrayList();
+        InterfaceParentEntry interfaceParentEntry =
+                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(portName, dataBroker);
+        if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
+            for(InterfaceChildEntry trunkInterface : interfaceParentEntry.getInterfaceChildEntry()){
+                interfaceChildEntries.add(trunkInterface.getChildInterface());
+                InterfaceParentEntry interfaceTrunkEntry =
+                        InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(trunkInterface.getChildInterface(), dataBroker);
+                if(interfaceTrunkEntry != null && interfaceTrunkEntry.getInterfaceChildEntry() != null) {
+                    for (InterfaceChildEntry trunkMemberInterface : interfaceTrunkEntry.getInterfaceChildEntry()) {
+                        interfaceChildEntries.add(trunkMemberInterface.getChildInterface());
+                    }
+                }
+            }
+        }
+        return interfaceChildEntries;
     }
 }

@@ -54,7 +54,7 @@ public class OvsVlanMemberConfigRemoveHelper {
         List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
         InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid =
-                    InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
+                InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         t.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
         //If this is the last child, remove the interface parent info as well.
         if (interfaceChildEntries.size() <= 1) {
@@ -64,30 +64,6 @@ public class OvsVlanMemberConfigRemoveHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
         if (ifState != null) {
-            /* FIXME -- The below code is needed if vlan-trunks should be updated in the of-port
-
-            String lowerLayerIf = ifState.getLowerLayerIf().get(0);
-            NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-            BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-
-            BridgeRefEntryKey BridgeRefEntryKey = new BridgeRefEntryKey(dpId);
-            InstanceIdentifier<BridgeRefEntry> dpnBridgeEntryIid =
-                    InterfaceMetaUtils.getBridgeRefEntryIdentifier(BridgeRefEntryKey);
-            BridgeRefEntry bridgeRefEntry =
-                    InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnBridgeEntryIid, dataBroker);
-            if (bridgeRefEntry != null) {
-                InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
-                        (InstanceIdentifier<OvsdbBridgeAugmentation>)bridgeRefEntry.getBridgeReference().getValue();
-                Optional<OvsdbBridgeAugmentation> bridgeNodeOptional =
-                        IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeIid, dataBroker);
-                if (bridgeNodeOptional.isPresent()) {
-                    OvsdbBridgeAugmentation ovsdbBridgeAugmentation = bridgeNodeOptional.get();
-                    String bridgeName = ovsdbBridgeAugmentation.getBridgeName().getValue();
-                    VlanTrunkSouthboundUtils.updateVlanMemberInTrunk(bridgeIid, ifL2vlan,
-                            ovsdbBridgeAugmentation, bridgeName, parentRefs.getParentInterface(), dataBroker, t);
-                }
-            } */
-
             LOG.debug("delete vlan member interface state {}",interfaceOld.getName());
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
             InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =

@@ -40,75 +40,45 @@ import java.util.List;
 public class OvsInterfaceStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeState(IdManagerService idManager, IMdsalApiManager mdsalApiManager,
-                                                           AlivenessMonitorService alivenessMonitorService,
-                                                           InstanceIdentifier<FlowCapableNodeConnector> key,
-                                                           DataBroker dataBroker, String portName, FlowCapableNodeConnector fcNodeConnectorOld) {
-        LOG.debug("Removing interface-state for port: {}", portName);
+    public static List<ListenableFuture<Void>> removeInterfaceStateConfiguration(IdManagerService idManager, IMdsalApiManager mdsalApiManager,
+                                                                                 AlivenessMonitorService alivenessMonitorService,
+                                                                                 InstanceIdentifier<FlowCapableNodeConnector> key,
+                                                                                 DataBroker dataBroker, String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld) {
+        LOG.debug("Removing interface-state information for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
 
-        InstanceIdentifier<Interface> ifStateId = IfmUtil.buildStateInterfaceId(portName);
-
         // delete the port entry from interface operational DS
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface interfaceState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(portName, dataBroker);
-        transaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
+        InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
 
-        InterfaceKey interfaceKey = new InterfaceKey(portName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
-                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
-
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-        // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
+                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
         if(iface != null) {
-            IfTunnel tunnel = iface.getAugmentation(IfTunnel.class);
-            if (tunnel != null) {
-                long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-                InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, tunnel, dpId, portNo, iface, -1,
-                        NwConstants.DEL_FLOW);
-                futures.add(transaction.submit());
-                AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, iface);
+            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+            BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+            // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
+            if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
+                handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId, iface, transaction,
+                        nodeConnectorId, futures);
                 return futures;
+            } else {
+                FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
             }
         }
 
-        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(portName);
-        InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
-        if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
-            futures.add(transaction.submit());
-            return futures;
-        }
-
-        //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
-        InterfaceChildEntry higherlayerChild = interfaceParentEntry.getInterfaceChildEntry().get(0);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
-                higerLayerChildIfStateId = IfmUtil.buildStateInterfaceId(higherlayerChild.getChildInterface());
-        Interface higherLayerIfChildState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(higherlayerChild.getChildInterface(), dataBroker);
-        if (interfaceState != null && higherLayerIfChildState != null) {
-            transaction.delete(LogicalDatastoreType.OPERATIONAL, higerLayerChildIfStateId);
-            FlowBasedServicesUtils.removeIngressFlow(higherLayerIfChildState.getName(), dpId, transaction);
-        }
-        // If this interface maps to a Vlan trunk entity, operational states of all the vlan-trunk-members
-        // should also be created here.
-        InterfaceParentEntryKey higherLayerParentEntryKey = new InterfaceParentEntryKey(higherlayerChild.getChildInterface());
-        InterfaceParentEntry higherLayerParent =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(higherLayerParentEntryKey, dataBroker);
-
-        if(higherLayerParent != null && higherLayerParent.getInterfaceChildEntry() != null) {
-            for (InterfaceChildEntry interfaceChildEntry : higherLayerParent.getInterfaceChildEntry()) {
-                InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
-                        IfmUtil.buildStateInterfaceId(interfaceChildEntry.getChildInterface());
-                Interface childInterfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceChildEntry.getChildInterface(), dataBroker);
-                if (childInterfaceState != null) {
-                    transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
-                    FlowBasedServicesUtils.removeIngressFlow(childInterfaceState.getName(), dpId, transaction);
-                }
-            }
-        }
         futures.add(transaction.submit());
         return futures;
+    }
+
+    public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService, IMdsalApiManager mdsalApiManager,
+                                                     DataBroker dataBroker, BigInteger dpId,
+                                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface, WriteTransaction transaction,
+                                                     NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures){
+        long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, iface.getAugmentation(IfTunnel.class), dpId, portNo, iface, -1,
+                NwConstants.DEL_FLOW);
+        futures.add(transaction.submit());
+        AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, iface);
     }
 }
