@@ -97,18 +97,29 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         //TODO: Check if the below fields are required
         if (!Strings.isNullOrEmpty(sTmp) && sTmp.contains("#")) {
             String[] asTmp = sTmp.split("#");
-            interfaceName = asTmp[0];
-            packetId = Integer.parseInt(asTmp[1]);
-            LOG.debug("Custom LLDP Value on received packet: " + sTmp);
-        }
+            if(!Strings.isNullOrEmpty(asTmp[0]) && (!Strings.isNullOrEmpty(asTmp[1]) && isInteger(asTmp[1]))) {
+                interfaceName = asTmp[0];
+                packetId = Integer.parseInt(asTmp[1]);
+                LOG.debug("Custom LLDP Value on received packet: " + sTmp);
+                String monitorKey = new StringBuilder().append(interfaceName).append(EtherTypes.LLDP).toString();
+                return monitorKey;
+            } else {
+                LOG.debug("No associated interface found to handle received LLDP Packet");
+            }
 
-        if(!Strings.isNullOrEmpty(interfaceName)) {
-            String monitorKey = new StringBuilder().append(interfaceName).append(EtherTypes.LLDP).toString();
-            return monitorKey;
-        } else {
-            LOG.debug("No associated interface found to handle received LLDP Packet");
         }
         return null;
+    }
+
+   private boolean isInteger(String s) {
+        boolean isValidInteger = false;
+        try {
+            Integer.parseInt(s);
+            isValidInteger = true;
+        } catch (NumberFormatException ex) {
+            LOG.debug("The input string is not integer");
+        }
+        return isValidInteger;
     }
 
     @Override
