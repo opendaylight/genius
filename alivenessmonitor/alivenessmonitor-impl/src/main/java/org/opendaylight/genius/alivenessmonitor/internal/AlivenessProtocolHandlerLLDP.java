@@ -98,7 +98,6 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         if (!Strings.isNullOrEmpty(sTmp) && sTmp.contains("#")) {
             String[] asTmp = sTmp.split("#");
             interfaceName = asTmp[0];
-            packetId = Integer.parseInt(asTmp[1]);
             LOG.debug("Custom LLDP Value on received packet: " + sTmp);
         }
 
