@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_41b9942d",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessProtocolHandlerLLDP.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5448
+      },
+      "writtenOn": "2016-06-06T04:19:00Z",
+      "side": 1,
+      "message": "In order to minimize the changes while resolving this issue, packetId assignment can be removed since the packetId local variable is not used anywhere.",
+      "range": {
+        "startLine": 102,
+        "startChar": 16,
+        "endLine": 102,
+        "endChar": 24
+      },
+      "revId": "64fb59e17ff996aa88bcbed6efc8235d2c4fb843",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
