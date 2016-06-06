@@ -103,7 +103,8 @@ public class IdManager implements IdManagerService, AutoCloseable{
         long newIdValue = -1;
         AllocateIdOutputBuilder output = new AllocateIdOutputBuilder();
         try {
-            newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey);
+            //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtatined by get(0)
+            newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
             output.setIdValue(newIdValue);
             allocateIdRpcBuilder = RpcResultBuilder.success();
             allocateIdRpcBuilder.withResult(output.build());
@@ -113,6 +114,29 @@ public class IdManager implements IdManagerService, AutoCloseable{
             allocateIdRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
         }
         return Futures.immediateFuture(allocateIdRpcBuilder.build());
+    }
+
+    @Override
+    public Future<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input){
+        LOG.debug("AllocateIdRange called with input {}", input);
+        String idKey = input.getIdKey();
+        String poolName = input.getPoolName();
+        long size = input.getSize();
+        String localPoolName = IdUtils.getLocalPoolName(poolName);
+        RpcResultBuilder<AllocateIdRangeOutput> allocateIdRangeRpcBuilder;
+        List<Long> newIdValuesList = new ArrayList<>();
+        AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
+        try {
+            newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
+            output.setIdValues(newIdValuesList);
+            allocateIdRangeRpcBuilder = RpcResultBuilder.success();
+            allocateIdRangeRpcBuilder.withResult(output.build());
+        } catch (Exception ex) {
+            LOG.error("Allocate id in pool {} failed due to {}", poolName, ex);
+            allocateIdRangeRpcBuilder = RpcResultBuilder.failed();
+            allocateIdRangeRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
+        }
+        return Futures.immediateFuture(allocateIdRangeRpcBuilder.build());
     }
 
     @Override
@@ -160,9 +184,10 @@ public class IdManager implements IdManagerService, AutoCloseable{
         return Futures.immediateFuture(releaseIdRpcBuilder.build());
     }
 
-    private long allocateIdFromLocalPool(String parentPoolName, String localPoolName, String idKey) {
+    private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName, String idKey, long size) {
         LOG.trace("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
         long newIdValue = -1;
+        List<Long> newIdValuesList = new ArrayList<>();
         InstanceIdentifier<IdPool> localIdPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
         localPoolName = localPoolName.intern();
         synchronized (localPoolName) {
@@ -195,17 +220,21 @@ public class IdManager implements IdManagerService, AutoCloseable{
                 InstanceIdentifier<IdEntries> existingId = IdUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
                 Optional<IdEntries> existingIdEntry = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, existingId);
                 if (existingIdEntry.isPresent()) {
-                    newIdValue = existingIdEntry.get().getIdValue();
-                    LOG.debug("Existing id {} for the key {} ", idKey, newIdValue);
+                    newIdValuesList = existingIdEntry.get().getIdValue();
+                    LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
                     InstanceIdentifier<ReleasedIdsHolder> releasedIdsHolderInstanceIdentifier = InstanceIdentifier
                             .builder(IdPools.class).child(IdPool.class, new IdPoolKey(localPoolName)).child(ReleasedIdsHolder.class).build();
                     MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdsHolderInstanceIdentifier, releasedIds.build());
-                    return newIdValue;
+                    return newIdValuesList;
                 }
             }
-            newIdValue = getIdFromPool(localPool, availableIds, releasedIds);
-            LOG.debug("The newIdValue {} for the idKey {}", newIdValue, idKey);
-            newIdEntry = IdUtils.createIdEntries(idKey, newIdValue);
+            while(size > 0){
+                newIdValue = getIdFromPool(localPool, availableIds, releasedIds);
+                newIdValuesList.add(newIdValue);
+                size--;
+            }
+            LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
+            newIdEntry = IdUtils.createIdEntries(idKey, newIdValuesList);
             idEntries.add(newIdEntry);
             LOG.debug("The availablelIds are {}", availableIds.build());
             localPool = new IdPoolBuilder(localPool).setAvailableIdsHolder(availableIds.build())
@@ -224,7 +253,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
                 IdUtils.unlockPool(lockManager, parentPoolName);
             }
         }
-        return newIdValue;
+        return newIdValuesList;
     }
 
     private long getIdFromPool(IdPool pool, AvailableIdsHolderBuilder availableIds, ReleasedIdsHolderBuilder releasedIds) {
@@ -428,18 +457,22 @@ public class IdManager implements IdManagerService, AutoCloseable{
                 throw new RuntimeException(String.format("Specified Id key %s does not exist in id pool %s", idKey, poolName));
             }
             IdEntries existingIdEntry = existingIdEntryObject.get();
-            long idValue = existingIdEntry.getIdValue();
+            List<Long> idValuesList = existingIdEntry.getIdValue();
             boolean isRemoved = newIdEntries.remove(existingIdEntry);
             LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
             ReleasedIdsHolderBuilder releasedIds = IdUtils.getReleaseIdsHolderBuilder(localPool);
             AvailableIdsHolderBuilder availableIds = IdUtils.getAvailableIdsHolderBuilder(localPool);
             long delayTime = System.currentTimeMillis() / 1000 + releasedIds.getDelayedTimeSec();
-            DelayedIdEntries delayedIdEntry = IdUtils.createDelayedIdEntry(idValue, delayTime);
             List<DelayedIdEntries> delayedIdEntries = releasedIds.getDelayedIdEntries();
             if (delayedIdEntries == null) {
                 delayedIdEntries = new LinkedList<DelayedIdEntries>();
             }
-            delayedIdEntries.add(delayedIdEntry);
+
+            for(long idValue : idValuesList) {
+                DelayedIdEntries delayedIdEntry = IdUtils.createDelayedIdEntry(idValue, delayTime);
+                delayedIdEntries.add(delayedIdEntry);
+            }
+
             long availableIdCount = releasedIds
                     .getAvailableIdCount() == null ? 0
                     : releasedIds.getAvailableIdCount();
@@ -451,7 +484,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
                     .setAvailableIdsHolder(availableIds.build())
                     .setReleasedIdsHolder(releasedIds.build()).build();
             MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, localIdPoolInstanceIdentifier, localPool);
-            LOG.debug("Released id ({}, {}) from pool {}", idKey, idValue, poolName);
+            LOG.trace("Released ids ({}, {}) from pool {}", idKey, idValuesList, poolName);
             //Updating id entries in the parent pool. This will be used for restart scenario
             IdUtils.lockPool(lockManager, parentPoolName);
             try {

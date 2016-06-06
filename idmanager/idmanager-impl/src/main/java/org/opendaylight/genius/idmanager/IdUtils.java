@@ -52,9 +52,9 @@ class IdUtils {
         return idEntry;
     }
 
-    protected static IdEntries createIdEntries(String idKey, long newIdVal) {
+    protected static IdEntries createIdEntries(String idKey, List<Long> newIdVals) {
         return new IdEntriesBuilder().setKey(new IdEntriesKey(idKey))
-                .setIdKey(idKey).setIdValue(newIdVal).build();
+                .setIdKey(idKey).setIdValue(newIdVals).build();
     }
 
     protected static DelayedIdEntries createDelayedIdEntry(long idValue, long delayTime) {
