@@ -37,7 +37,9 @@ module id-manager {
             description "Id entry for the given Id Pool, where id-key is used to identify the id entry";
             key "id-key";
             leaf id-key { type string;}
-            leaf id-value { type uint32;}
+            leaf-list id-value {
+            type uint32;
+            }
         }
         container available-ids-holder {
             uses available-ids;
@@ -131,5 +133,24 @@ module id-manager {
                 type string;
              }
         }
+    }
+
+    rpc allocateIdRange {
+        input {
+             leaf pool-name {
+                type string;
+             }
+             leaf id-key {
+                type string;
+             }
+             leaf size {
+                type uint32;
+             }
+        }
+        output {
+             leaf-list id-values{
+             type uint32;
+             }
+            }
     }
 }

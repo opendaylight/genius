@@ -94,7 +94,7 @@ public class IdManagerTest {
     int idEnd = 200;
     int blockSize = 2;
     String idKey2 = "test-key2";
-    int idValue = 25;
+    long idValue = 25;
 
     @Before
     public void setUp() throws Exception {
@@ -163,7 +163,9 @@ public class IdManagerTest {
     {
         AllocateIdInput allocateIdInput = buildAllocateId(globalPoolName, idKey);
         List<IdEntries> idEntries = new ArrayList<IdEntries>();
-        idEntries.add(buildIdEntry(idKey2, idValue));
+        List<Long> idValuesList = new ArrayList<>();
+        idValuesList.add(idValue);
+        idEntries.add(buildIdEntry(idKey2, idValuesList));
         Optional<IdPool> expectedLocalPool = Optional.of(buildLocalIdPool(blockSize, localPoolName, globalPoolName).build());
         IdPool globalIdPool = buildGlobalIdPool(globalPoolName, idStart, idEnd, blockSize, buildChildPool(localPoolName)).setIdEntries(idEntries).build();
         Optional<IdPool> expectedGlobalPool = Optional.of(globalIdPool);
@@ -205,7 +207,9 @@ public class IdManagerTest {
     public void testReleaseId() throws Exception {
         ReleaseIdInput releaseIdInput = createReleaseIdInput(globalPoolName, idKey);
         List<IdEntries> idEntries = new ArrayList<IdEntries>();
-        idEntries.add(buildIdEntry(idKey, idValue));
+        List<Long> idValuesList = new ArrayList<>();
+        idValuesList.add(idValue);
+        idEntries.add(buildIdEntry(idKey, idValuesList));
         Optional<IdPool> expectedLocalPool = Optional.of(buildLocalIdPool(blockSize, localPoolName, globalPoolName).build());
         IdPool globalIdPool = buildGlobalIdPool(globalPoolName, idStart, idEnd, blockSize, buildChildPool(localPoolName)).setIdEntries(idEntries).build();
         Optional<IdPool> expectedGlobalPool = Optional.of(globalIdPool);
@@ -214,7 +218,8 @@ public class IdManagerTest {
         doReturn(Futures.immediateCheckedFuture(expectedLocalPool)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, childIdentifier);
         InstanceIdentifier<IdEntries> idEntriesIdentifier = buildIdEntriesIdentifier(idKey);
-        Optional<IdEntries> expectedIdEntry = Optional.of(buildIdEntry(idKey, idValue));
+        idValuesList.add(idValue);
+        Optional<IdEntries> expectedIdEntry = Optional.of(buildIdEntry(idKey, idValuesList));
         doReturn(Futures.immediateCheckedFuture(expectedIdEntry)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, idEntriesIdentifier);
         Future<RpcResult<Void>> result = idManager.releaseId(releaseIdInput);
@@ -239,7 +244,9 @@ public class IdManagerTest {
         Optional<ReleasedIdsHolder> expected = Optional.of(createReleasedIdsHolder(0, null, 0));
         long[] excessIds = new long[] { 1, 2, 3, 4, 5 };
         List<IdEntries> idEntries = new ArrayList<IdEntries>();
-        idEntries.add(buildIdEntry(idKey2, idValue));
+        List<Long> idValuesList = new ArrayList<>();
+        idValuesList.add(idValue);
+        idEntries.add(buildIdEntry(idKey2, idValuesList));
         ReleasedIdsHolder excessReleasedIds = createReleasedIdsHolder(0, buildDelayedIdEntries(excessIds), (long) 30);
         Optional<IdPool> expectedLocalPool = Optional.of(buildLocalIdPool(blockSize, localPoolName, globalPoolName)
                 .setReleasedIdsHolder(excessReleasedIds)
@@ -365,8 +372,8 @@ public class IdManagerTest {
         return new ReleaseIdInputBuilder().setIdKey(idKey).setPoolName(poolName).build();
     }
 
-    private IdEntries buildIdEntry(String idKey, long idValue) {
-        return new IdEntriesBuilder().setIdKey(idKey).setIdValue(idValue).build();
+    private IdEntries buildIdEntry(String idKey, List<Long> idValuesList) {
+        return new IdEntriesBuilder().setIdKey(idKey).setIdValue(idValuesList).build();
     }
 
     private InstanceIdentifier<IdEntries> buildIdEntriesIdentifier(String idKey) {
