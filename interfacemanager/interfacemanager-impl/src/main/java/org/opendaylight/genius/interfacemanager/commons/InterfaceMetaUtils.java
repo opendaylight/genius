@@ -285,9 +285,9 @@ public class InterfaceMetaUtils {
 
     public static void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey, List<BridgeInterfaceEntry> bridgeInterfaceEntries,
                                                   InstanceIdentifier<BridgeEntry> bridgeEntryIid,
-                                                  WriteTransaction transaction, Interface interfaceOld){
+                                                  WriteTransaction transaction, String interfaceName){
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
-                new BridgeInterfaceEntryKey(interfaceOld.getName());
+                new BridgeInterfaceEntryKey(interfaceName);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey,
                         bridgeInterfaceEntryKey);

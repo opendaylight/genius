@@ -155,10 +155,13 @@ public class OvsInterfaceConfigAddHelper {
                     NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                     if(ncId != null) {
                         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
-                        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, interfaceNew.getAugmentation(IfTunnel.class),
-                                dpId, portNo, interfaceNew, ifState.getIfIndex(), NwConstants.ADD_FLOW);
+                        IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+                        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel,
+                                dpId, portNo, interfaceNew.getName(),
+                                ifState.getIfIndex(), NwConstants.ADD_FLOW);
                         // start LLDP monitoring for the tunnel interface
-                        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceNew);
+                        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
+                                ifTunnel, interfaceNew.getName());
                     }
                 }
             }

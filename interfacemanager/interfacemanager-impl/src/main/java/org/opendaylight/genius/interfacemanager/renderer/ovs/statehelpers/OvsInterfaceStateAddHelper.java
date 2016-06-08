@@ -68,8 +68,8 @@ public class OvsInterfaceStateAddHelper {
 
         // If this interface is a tunnel interface, create the tunnel ingress flow,and start tunnel monitoring
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-            handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService, nodeConnectorId, transaction,
-                    ifState.getIfIndex(), iface);
+            handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
+                    nodeConnectorId, transaction, ifState.getIfIndex(), iface.getAugmentation(IfTunnel.class), interfaceName);
             return futures;
         }
 
@@ -80,12 +80,12 @@ public class OvsInterfaceStateAddHelper {
     public static void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
                                                       IMdsalApiManager mdsalApiManager,AlivenessMonitorService alivenessMonitorService,
                                                       NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifindex,
-                                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface){
+                                                      IfTunnel ifTunnel, String interfaceName){
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, iface.getAugmentation(IfTunnel.class), dpId, portNo, iface,
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName,
                 ifindex, NwConstants.ADD_FLOW);
         futures.add(transaction.submit());
-        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, iface);
+        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }
 }

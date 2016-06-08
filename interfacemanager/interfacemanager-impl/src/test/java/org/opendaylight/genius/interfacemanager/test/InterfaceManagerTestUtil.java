@@ -93,6 +93,7 @@ public class InterfaceManagerTestUtil {
     public static final String childInterface = "s1-eth1-trunk";
     public static final String tunnelInterfaceName = "s2-gre1";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
+    public static final NodeKey nodeKey = new NodeKey(new NodeId("openflow:1"));
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface buildStateInterface(String ifaceName, String physAddress,
                                                                                                                                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opState){

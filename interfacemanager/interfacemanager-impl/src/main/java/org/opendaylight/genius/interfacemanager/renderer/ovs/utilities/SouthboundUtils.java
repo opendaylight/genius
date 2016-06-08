@@ -49,10 +49,21 @@ public class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
 
     public static final String BFD_PARAM_ENABLE = "enable";
-    public static final String BFD_PARAM_INTERVAL = "min_tx";
+    static final String BFD_PARAM_MIN_TX = "min_tx";
+    static final String BFD_PARAM_MIN_RX = "min_rx";
+    static final String BFD_PARAM_DECAY_MIN_RX = "decay_min_rx";
+    static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
+    static final String BFD_PARAM_CPATH_DOWN = "cpath_down";
+    static final String BFD_PARAM_CHECK_TNL_KEY = "check_tnl_key";
     // bfd params
     public static final String BFD_OP_STATE = "state";
     public static final String BFD_STATE_UP = "up";
+    private static final String BFD_MIN_RX_VAL = "1000";
+    private static final String BFD_MIN_TX_VAL = "100";
+    private static final String BFD_DECAY_MIN_RX_VAL = "200";
+    private static final String BFD_FORWARDING_IF_RX_VAL = "true";
+    private static final String BFD_CPATH_DOWN_VAL = "false";
+    private static final String BFD_CHECK_TNL_KEY_VAL = "false";
 
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 
@@ -160,7 +171,7 @@ public class SouthboundUtils {
         }
 
         Map<String, String> options = Maps.newHashMap();
-        if((!ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class) )){
+        if((!ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class) ) ){
             options.put("key", "flow");
         }
 
@@ -176,20 +187,18 @@ public class SouthboundUtils {
     // Update is allowed only for tunnel monitoring attributes
     public static void updateBfdParamtersForTerminationPoint(InstanceIdentifier<?> bridgeIid, IfTunnel ifTunnel, String portName,
                                                              WriteTransaction transaction){
-        if( !ifTunnel.isInternal() && ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlan.class) ) {
-            InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
-                    InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
-            LOG.debug("update bfd parameters for interface {}", tpIid);
-            OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
-            List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
-            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+        InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
+                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
+        LOG.debug("update bfd parameters for interface {}", tpIid);
+        OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
+        List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
+        tpAugmentationBuilder.setInterfaceBfd(bfdParams);
 
-            TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
-            tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
-            tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-            transaction.merge(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
-        }
+        transaction.merge(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
     }
 
     private static void addTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
@@ -223,7 +232,7 @@ public class SouthboundUtils {
         }
 
 
-        if( !ifTunnel.isInternal() && ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlan.class) ) {
+        if(bfdMonitoringEnabled(ifTunnel)) {
             List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
             tpAugmentationBuilder.setInterfaceBfd(bfdParams);
         }
@@ -238,10 +247,13 @@ public class SouthboundUtils {
 
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
         List<InterfaceBfd> bfdParams = new ArrayList<>();
-        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,
-                Boolean.toString(ifTunnel.isMonitorEnabled())));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_INTERVAL,
-                ifTunnel.getMonitorInterval().toString()));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() :"false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_RX, BFD_MIN_RX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_DECAY_MIN_RX, BFD_DECAY_MIN_RX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_CPATH_DOWN, BFD_CPATH_DOWN_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_CHECK_TNL_KEY, BFD_CHECK_TNL_KEY_VAL));
         return bfdParams;
     }
 
@@ -272,5 +284,20 @@ public class SouthboundUtils {
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
         transaction.delete(LogicalDatastoreType.CONFIGURATION, tpIid);
         futures.add(transaction.submit());
+    }
+
+    public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel){
+        if(ifTunnel.isMonitorEnabled() && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isMonitorProtocolBfd(IfTunnel ifTunnel){
+        if(TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) {
+            return true;
+        }
+        return false;
+
     }
 }

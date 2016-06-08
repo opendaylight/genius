@@ -38,6 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.Fl
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnectorBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.flow.capable.port.StateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
@@ -52,6 +53,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -99,6 +101,7 @@ public class StateInterfaceTest {
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock AlivenessMonitorService alivenessMonitorService;
+    @Mock org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node mockNode;
 
     OvsInterfaceStateAddHelper addHelper;
     OvsInterfaceStateRemoveHelper removeHelper;
@@ -223,6 +226,8 @@ public class StateInterfaceTest {
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<InterfaceParentEntry>expectedParentEntry = Optional.of(interfaceParentEntry);
         Optional<InterfaceParentEntry> higherLayerParentOptional = Optional.of(higherLayerInterfaceParentEntry);
+        InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class, InterfaceManagerTestUtil.nodeKey).build();
+        Optional<Node> nodeOptional = Optional.of(mockNode);
 
         doReturn(Futures.immediateCheckedFuture(expectedIfindexInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL, ifIndexId);
@@ -236,6 +241,8 @@ public class StateInterfaceTest {
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
         doReturn(Futures.immediateCheckedFuture(higherLayerParentOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, higherLevelInterfaceParentEntryIdentifier);
+        doReturn(Futures.immediateCheckedFuture(nodeOptional)).when(mockReadTx).read(
+                LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier);
 
         ReleaseIdInput getIdInput = new ReleaseIdInputBuilder()
                 .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
@@ -254,6 +261,8 @@ public class StateInterfaceTest {
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
                 expectedStateInterface = Optional.of(stateInterface);
         Optional<Interface> expectedInterface = Optional.of(tunnelInterfaceEnabled);
+        InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class, InterfaceManagerTestUtil.nodeKey).build();
+        Optional<Node> nodeOptional = Optional.of(mockNode);
         AllocateIdOutput expectedId = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
         Future<RpcResult<AllocateIdOutput>> idOutputOptional = RpcResultBuilder.success(expectedId).buildFuture();
         AllocateIdInput getIdInput = new AllocateIdInputBuilder()
@@ -269,6 +278,8 @@ public class StateInterfaceTest {
                 LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(nodeOptional)).when(mockReadTx).read(
+                LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier);
 
         removeHelper.removeInterfaceStateConfiguration(idManager, mdsalManager, alivenessMonitorService, fcNodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
 

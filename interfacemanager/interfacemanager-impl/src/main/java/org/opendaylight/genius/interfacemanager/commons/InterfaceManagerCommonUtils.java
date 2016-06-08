@@ -67,6 +67,17 @@ public class InterfaceManagerCommonUtils {
         return nodeConnectorOptional.get();
     }
 
+    public static boolean isNodePresent(DataBroker dataBroker, NodeConnectorId nodeConnectorId){
+        NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
+        InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(nodeID)).build();
+        Optional<Node> node = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, dataBroker);
+
+        if(node.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
     public static InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<Interface> interfaceInstanceIdentifierBuilder =
                 InstanceIdentifier.builder(Interfaces.class).child(Interface.class, interfaceKey);
@@ -123,9 +134,9 @@ public class InterfaceManagerCommonUtils {
         return ifStateOptional.get();
     }
     public static void makeTunnelIngressFlow(List<ListenableFuture<Void>> futures, IMdsalApiManager mdsalApiManager,
-                                             IfTunnel tunnel, BigInteger dpnId, long portNo, Interface iface, int ifIndex, int addOrRemoveFlow) {
-        LOG.debug("make tunnel ingress flow for {}",iface.getName());
-        String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName());
+                                             IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
+        LOG.debug("make tunnel ingress flow for {}",interfaceName);
+        String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
         List<MatchInfo> matches = new ArrayList<MatchInfo>();
         List<InstructionInfo> mkInstructions = new ArrayList<InstructionInfo>();
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
@@ -142,7 +153,7 @@ public class InterfaceManagerCommonUtils {
 
         BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
         FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,
-                IfmConstants.DEFAULT_FLOW_PRIORITY, iface.getName(), 0, 0, COOKIE_VM_INGRESS_TABLE, matches, mkInstructions);
+                IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, COOKIE_VM_INGRESS_TABLE, matches, mkInstructions);
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
             futures.add(mdsalApiManager.installFlow(dpnId, flowEntity));
         } else {
@@ -301,9 +312,9 @@ public class InterfaceManagerCommonUtils {
 
     public static void deleteInterfaceStateInformation(String interfaceName, WriteTransaction transaction, IdManagerService idManagerService) {
         LOG.debug("removing interface state information for {}",interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
                 IfmUtil.buildStateInterfaceId(interfaceName);
-        transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
+        transaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
         InterfaceMetaUtils.removeLportTagInterfaceMap(idManagerService, transaction, interfaceName);
     }
 
@@ -367,3 +378,4 @@ public class InterfaceManagerCommonUtils {
     }
 
 }
+
