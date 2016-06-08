@@ -75,6 +75,49 @@ module odl-interface {
         base tunnel-type-base;
     }
 
+    identity tunnel-monitoring-type-base {
+        description "Base identity for all tunnel-monitoring-types";
+    }
+
+    identity tunnel-monitoring-type-lldp {
+        description "Tunnel monitoring using lldp";
+        base tunnel-monitoring-type-base;
+    }
+
+    identity tunnel-monitoring-type-bfd {
+        description "Tunnel monitoring using bfd support on OVS";
+        base tunnel-monitoring-type-base;
+    }
+
+    grouping monitor-params {
+        leaf monitor-enabled {
+            type boolean;
+            default false;
+        }
+
+        leaf monitor-interval {
+            type uint32;
+            default 10000;
+        }
+
+        leaf monitor-protocol {
+            type identityref {
+                base tunnel-monitoring-type-base;
+            }
+            default tunnel-monitoring-type-bfd;
+        }
+
+        list monitor-config {
+            key "monitor-config-key";
+            leaf monitor-config-key {
+                type string;
+            }
+            leaf monitor-config-value {
+                type string;
+            }
+        }
+    }
+
     /* base/common properties */
     augment "/if:interfaces/if:interface" {
         status deprecated;
@@ -202,15 +245,7 @@ module odl-interface {
             description "gateway IP address";
         }
 
-        leaf monitor-enabled {
-            type boolean;
-            default false;
-        }
-
-        leaf monitor-interval {
-             type uint32;
-              default 10000;
-        }
+        uses monitor-params;
     }
 
     augment "/if:interfaces/if:interface" {

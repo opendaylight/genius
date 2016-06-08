@@ -49,36 +49,43 @@ public class OvsInterfaceStateRemoveHelper {
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
 
         // delete the port entry from interface operational DS
-        InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
-                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
-        if(iface != null) {
-            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-            // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
-            if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
-                handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId, iface, transaction,
-                        nodeConnectorId, futures);
-                return futures;
-            } else {
-                FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
+        if (!InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorId)) {
+            //Remove event is because of connection lost between controller and switch, or switch shutdown.
+            // Hence, dont remove the interface but set the status as "unknown"
+            OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(key, interfaceName, dataBroker, alivenessMonitorService, transaction);
+
+        } else {
+            InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
+
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
+                    InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+            if (iface != null) {
+                // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
+                if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                    InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
+                    handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId,
+                            iface.getName(), iface.getAugmentation(IfTunnel.class), transaction,
+                            nodeConnectorId, futures);
+                    return futures;
+                }
             }
+            FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
         }
-
         futures.add(transaction.submit());
         return futures;
     }
 
     public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService, IMdsalApiManager mdsalApiManager,
-                                                     DataBroker dataBroker, BigInteger dpId,
-                                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface, WriteTransaction transaction,
-                                                     NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures){
+                                                     DataBroker dataBroker, BigInteger dpId, String interfaceName,
+                                                     IfTunnel ifTunnel, WriteTransaction transaction,
+                                                     NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures) {
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, iface.getAugmentation(IfTunnel.class), dpId, portNo, iface, -1,
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName, -1,
                 NwConstants.DEL_FLOW);
         futures.add(transaction.submit());
-        AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, iface);
+        AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }
 }

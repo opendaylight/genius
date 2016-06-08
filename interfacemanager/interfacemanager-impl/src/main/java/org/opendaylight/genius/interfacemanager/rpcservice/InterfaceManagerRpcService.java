@@ -101,7 +101,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()),dataBroker);
             IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
             if(tunnelInfo != null) {
-                ListenableFuture<Void> installFlowResult = (tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)) ?
+                ListenableFuture<Void> installFlowResult =(tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class))?
                         makeLFIBFlow(input.getDpid(),input.getTunnelKey(), input.getInstruction(), NwConstants.ADD_FLOW) :
                         makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(), input.getInstruction(), NwConstants.ADD_FLOW);
                 Futures.addCallback(installFlowResult, new FutureCallback<Void>(){
@@ -142,7 +142,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()),dataBroker);
             IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
             if(tunnelInfo != null) {
-                ListenableFuture<Void> removeFlowResult = (tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)) ?
+                ListenableFuture<Void> removeFlowResult = (tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class))?
                         makeLFIBFlow(input.getDpid(),input.getTunnelKey(), null, NwConstants.DEL_FLOW) :
                         makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(), null, NwConstants.DEL_FLOW);
                 Futures.addCallback(removeFlowResult, new FutureCallback<Void>(){
@@ -205,11 +205,11 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             List<InstructionInfo> instructionInfo = new ArrayList<InstructionInfo>();
             List<ActionInfo> actionInfo = IfmUtil.getEgressActionInfosForInterface(input.getIntfName(),
-                                                                                   input.getTunnelKey(),
-                                                                                   0,  /* ActionKey starting value */
-                                                                                   dataBroker);
+                    input.getTunnelKey(),
+                    0,  /* ActionKey starting value */
+                    dataBroker);
             instructionInfo.add(new InstructionInfo(InstructionType.write_actions, actionInfo));
-                    GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder().
+            GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder().
                     setInstruction(buildInstructions(instructionInfo));
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
@@ -248,7 +248,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
 
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 IfTunnel tnl = interfaceInfo.getAugmentation(IfTunnel.class);
-                Class<? extends TunnelTypeBase> tun_type = tnl.getTunnelInterfaceType();
+                Class <? extends TunnelTypeBase> tun_type = tnl.getTunnelInterfaceType();
                 GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder().setTunnelType(tun_type);
                 rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
@@ -269,14 +269,14 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             LOG.debug("Get Egress Action for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
             List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
-                                                                            input.getTunnelKey(),
-                                                                            dataBroker);
+                    input.getTunnelKey(),
+                    dataBroker);
             GetEgressActionsForInterfaceOutputBuilder output = new GetEgressActionsForInterfaceOutputBuilder().
                     setAction(actionsList);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         }catch(Exception e){
-            LOG.error("Retrieval of egress actions for the key {} failed due to {}" ,input.getIntfName(), e);
+            LOG.error("Retrieval of egress actions for the key {} failed due to {}" ,input.getIntfName(), e.getMessage());
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -291,7 +291,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             BigInteger dpId = null;
             long portNo = 0;
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                        InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                    InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
             String lowerLayerIf = ifState.getLowerLayerIf().get(0);
             NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
             dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));

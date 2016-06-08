@@ -26,6 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.monitor.id._interface.map.MonitorIdInterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.monitor.id._interface.map.MonitorIdInterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -45,11 +46,9 @@ public class AlivenessMonitorUtils {
     private static final long MONITORING_WINDOW = 4;
 
     public static void startLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                           Interface trunkInterface) {
-        //LLDP monitoring for the trunk interface
-        String trunkInterfaceName = trunkInterface.getName();
-        IfTunnel ifTunnel = trunkInterface.getAugmentation(IfTunnel.class);
-        if(ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class) && ifTunnel.isInternal()) {
+                                           IfTunnel ifTunnel, String trunkInterfaceName) {
+        //LLDP monitoring for the tunnel interface
+        if(lldpMonitoringEnabled(ifTunnel)) {
             MonitorStartInput lldpMonitorInput = new MonitorStartInputBuilder().setConfig(new ConfigBuilder()
                     .setSource(new SourceBuilder().setEndpointType(getInterfaceForMonitoring(trunkInterfaceName,
                             ifTunnel.getTunnelSource())).build())
@@ -75,13 +74,12 @@ public class AlivenessMonitorUtils {
     }
 
     public static void stopLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                          Interface trunkInterface) {
-        IfTunnel ifTunnel = trunkInterface.getAugmentation(IfTunnel.class);
-        if(!(ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)&& ifTunnel.isInternal())){
+                                          IfTunnel ifTunnel, String trunkInterface) {
+        if(!lldpMonitoringEnabled(ifTunnel)){
             return;
         }
-        LOG.debug("stop LLDP monitoring for {}", trunkInterface.getName());
-        List<Long> monitorIds = getMonitorIdForInterface(dataBroker, trunkInterface.getName());
+        LOG.debug("stop LLDP monitoring for {}", trunkInterface);
+        List<Long> monitorIds = getMonitorIdForInterface(dataBroker, trunkInterface);
         if (monitorIds == null) {
             LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
             return;
@@ -139,15 +137,14 @@ public class AlivenessMonitorUtils {
                                                   Interface interfaceOld, Interface interfaceNew) {
         String interfaceName = interfaceNew.getName();
         IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
-        if(!(ifTunnelNew.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)&&
-                ifTunnelNew.isInternal())){
+        if(!lldpMonitoringEnabled(ifTunnelNew)){
             return;
         }
         LOG.debug("handling tunnel monitoring updates for interface {}", interfaceName);
 
-        stopLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceOld);
+        stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnelNew, interfaceOld.getName());
         if(ifTunnelNew.isMonitorEnabled()) {
-            startLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceNew);
+            startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnelNew, interfaceName);
 
             // Delete old profile from Aliveness Manager
             IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
@@ -243,8 +240,7 @@ public class AlivenessMonitorUtils {
 
     private static MonitorProfileGetInput buildMonitorGetProfile(long monitorInterval, long monitorWindow, long failureThreshold, EtherTypes protocolType){
         MonitorProfileGetInputBuilder buildGetProfile = new MonitorProfileGetInputBuilder();
-        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder =
-                new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
+        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder = new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
         profileBuilder.setFailureThreshold(failureThreshold);
         profileBuilder.setMonitorInterval(monitorInterval);
         profileBuilder.setMonitorWindow(monitorWindow);
@@ -262,10 +258,12 @@ public class AlivenessMonitorUtils {
         return createMonitorProfile(alivenessMonitor, input);
     }
 
-    public static long allocateDefaultProfile(AlivenessMonitorService alivenessMonitor, EtherTypes etherType ) {
-        MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder().
-                setProfile(getDefaultMonitorProfile(etherType)).build();
-        return createMonitorProfile(alivenessMonitor, input);
+    public static boolean lldpMonitoringEnabled(IfTunnel ifTunnel){
+        if(ifTunnel.isInternal() && ifTunnel.isMonitorEnabled() &&
+                TunnelMonitoringTypeLldp.class.isAssignableFrom(ifTunnel.getMonitorProtocol())){
+            return true;
+        }
+        return false;
     }
 
     public static Profile getDefaultMonitorProfile(EtherTypes etherType) {
