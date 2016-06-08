@@ -35,7 +35,7 @@ import java.util.List;
 public class OvsInterfaceConfigUpdateHelper{
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,  AlivenessMonitorService alivenessMonitorService,
                                                                    IdManagerService idManager, IMdsalApiManager mdsalApiManager,
                                                                    Interface interfaceNew, Interface interfaceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -91,8 +91,8 @@ public class OvsInterfaceConfigUpdateHelper{
         if (checkAugmentations(ifTunnelOld,ifTunnelNew)) {
             if(!ifTunnelNew.getTunnelDestination().equals(ifTunnelOld.getTunnelDestination()) ||
                     !ifTunnelNew.getTunnelSource().equals(ifTunnelOld.getTunnelSource()) ||
-                            ( ifTunnelNew.getTunnelGateway() !=null && ifTunnelOld.getTunnelGateway() !=null &&
-                                            !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway()))) {
+                    ( ifTunnelNew.getTunnelGateway() !=null && ifTunnelOld.getTunnelGateway() !=null &&
+                            !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway()))) {
                 return true;
             }
         }
@@ -120,16 +120,13 @@ public class OvsInterfaceConfigUpdateHelper{
         // update termination point on switch, if switch is connected
         BridgeRefEntry bridgeRefEntry =
                 InterfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew, dataBroker);
-        if(InterfaceMetaUtils.bridgeExists(bridgeRefEntry, dataBroker)) {
+        IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+        if(SouthboundUtils.isMonitorProtocolBfd(ifTunnel) && InterfaceMetaUtils.bridgeExists(bridgeRefEntry, dataBroker)) {
             SouthboundUtils.updateBfdParamtersForTerminationPoint(bridgeRefEntry.getBridgeReference().getValue(),
                     interfaceNew.getAugmentation(IfTunnel.class),
                     interfaceNew.getName(), transaction);
-        }
-
-        // stop tunnel monitoring if admin state is disabled for an internal vxlan trunk interface
-        if(interfaceOld.isEnabled() && !interfaceNew.isEnabled()) {
-            AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, interfaceNew);
-        }else{
+        }else {
+            // update lldp tunnel monitoring attributes for an internal vxlan tunnel interface
             AlivenessMonitorUtils.handleTunnelMonitorUpdates(alivenessMonitorService, dataBroker, interfaceOld, interfaceNew);
         }
         futures.add(transaction.submit());

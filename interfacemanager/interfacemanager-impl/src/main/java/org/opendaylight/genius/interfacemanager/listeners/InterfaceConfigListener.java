@@ -67,13 +67,13 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
         String ifName = interfaceOld.getName();
         ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-            LOG.warn("parent refs not specified for {}", interfaceOld.getName());
+            LOG.warn("parent refs not specified for {}",interfaceOld.getName());
             return;
         }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld, ifName, parentRefs);
         String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld) ?
-                parentRefs.getDatapathNodeIdentifier().toString() : interfaceOld.getName();
+                parentRefs.getDatapathNodeIdentifier().toString() : parentRefs.getParentInterface();
         coordinator.enqueueJob(synchronizationKey, configWorker, MAX_RETRIES);
     }
 
@@ -83,12 +83,14 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
         String ifNameNew = interfaceNew.getName();
         ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-            LOG.warn("parent refs not specified for {}", interfaceNew.getName());
+            LOG.warn("parent refs not specified for {}",interfaceNew.getName());
             return;
         }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigUpdateWorker worker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew, ifNameNew);
-        coordinator.enqueueJob(ifNameNew, worker, MAX_RETRIES);
+        String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld) ?
+                interfaceOld.getName() : parentRefs.getParentInterface();
+        coordinator.enqueueJob(synchronizationKey, worker, MAX_RETRIES);
     }
 
     @Override
@@ -97,12 +99,14 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
         String ifName = interfaceNew.getName();
         ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-            LOG.warn("parent refs not specified for {}", interfaceNew.getName());
+            LOG.warn("parent refs not specified for {}",interfaceNew.getName());
             return;
         }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs, ifName);
-        coordinator.enqueueJob(ifName, configWorker, MAX_RETRIES);
+        String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew) ?
+                interfaceNew.getName() : parentRefs.getParentInterface();
+        coordinator.enqueueJob(synchronizationKey, configWorker, MAX_RETRIES);
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {

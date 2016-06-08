@@ -120,7 +120,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             rpcRegistration = getRpcProviderRegistry().addRpcImplementation(
                     OdlInterfaceRpcService.class, interfaceManagerRpcService);
 
-            interfaceConfigListener = new InterfaceConfigListener(dataBroker, idManager,alivenessManager, mdsalManager);
+            interfaceConfigListener = new InterfaceConfigListener(dataBroker, idManager, alivenessManager, mdsalManager);
             interfaceConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
             interfaceInventoryStateListener = new InterfaceInventoryStateListener(dataBroker, idManager, mdsalManager, alivenessManager);
@@ -130,7 +130,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             topologyStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
             hwVTEPTunnelsStateListener = new HwVTEPTunnelsStateListener(dataBroker);
-            hwVTEPTunnelsStateListener.registerListener(LogicalDatastoreType.OPERATIONAL,dataBroker);
+            hwVTEPTunnelsStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
             terminationPointStateListener = new TerminationPointStateListener(dataBroker);
             terminationPointStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
@@ -143,7 +143,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             flowBasedServicesInterfaceStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
             vlanMemberConfigListener =
-                    new VlanMemberConfigListener(dataBroker, idManager, alivenessManager,mdsalManager);
+                    new VlanMemberConfigListener(dataBroker, idManager, alivenessManager, mdsalManager);
             vlanMemberConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
             hwVTEPConfigListener = new HwVTEPConfigListener(dataBroker);
@@ -177,7 +177,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
                 LOG.debug("Created IdPool for InterfaceMgr");
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Failed to create idPool for InterfaceMgr",e);
+            LOG.error("Failed to create idPool for InterfaceMgr", e);
         }
     }
 
@@ -198,11 +198,11 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         Future<RpcResult<GetPortFromInterfaceOutput>> output = interfaceManagerRpcService.getPortFromInterface(input);
         try {
             RpcResult<GetPortFromInterfaceOutput> port = output.get();
-            if(port.isSuccessful()){
+            if (port.isSuccessful()) {
                 return port.getResult().getPortno();
             }
-        }catch(NullPointerException | InterruptedException | ExecutionException e){
-            LOG.warn("Exception when getting port for interface",e);
+        } catch (NullPointerException | InterruptedException | ExecutionException e) {
+            LOG.warn("Exception when getting port for interface", e);
         }
         return null;
     }
@@ -213,11 +213,11 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         Future<RpcResult<GetPortFromInterfaceOutput>> output = interfaceManagerRpcService.getPortFromInterface(input);
         try {
             RpcResult<GetPortFromInterfaceOutput> port = output.get();
-            if(port.isSuccessful()){
+            if (port.isSuccessful()) {
                 return port.getResult().getPortno();
             }
-        }catch(NullPointerException | InterruptedException | ExecutionException e){
-            LOG.warn("Exception when getting port for interface",e);
+        } catch (NullPointerException | InterruptedException | ExecutionException e) {
+            LOG.warn("Exception when getting port for interface", e);
         }
         return null;
     }
@@ -227,9 +227,9 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         //FIXME [ELANBE] This is not working yet, fix this
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-                ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName,dataBroker);
+                ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
 
-        if(ifState == null) {
+        if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;
         }
@@ -241,17 +241,17 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             return null;
         }
 
-        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(intf, dataBroker);
+        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(intf.getName(), dataBroker);
         InterfaceInfo.InterfaceType interfaceType = IfmUtil.getInterfaceType(intf);
         InterfaceInfo interfaceInfo = null;
         BigInteger dpId = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_DPID;
         Integer portNo = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_PORT_NO;
-        if (ncId !=null ) {
+        if (ncId != null) {
             dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(ncId));
             portNo = Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId));
         }
 
-        if(interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE){
+        if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
             interfaceInfo = IfmUtil.getVlanInterfaceInfo(interfaceName, intf, dpId);
         } else if (interfaceType == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE || interfaceType == InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE) {/*
             trunkInterfaceInfo trunkInterfaceInfo = (TrunkInterfaceInfo) ConfigIfmUtil.getTrunkInterfaceInfo(ifName, ConfigIfmUtil.getInterfaceByIfName(dataBroker, ifName));
@@ -264,7 +264,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             }
             interfaceInfo = trunkInterfaceInfo;
             interfaceInfo.setL2domainGroupId(IfmUtil.getGroupId(OperationalIfmUtil.getInterfaceStateByIfName(dataBroker, higherLayerIf).getIfIndex(), InterfaceType.VLAN_INTERFACE));
-        */} else {
+        */
+        } else {
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
         }
@@ -327,22 +328,30 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
         interfaceInfo.setInterfaceTag(lportTag);
-        interfaceInfo.setOpState((ifState.getOperStatus() == OperStatus.Up) ? InterfaceInfo.InterfaceOpState.UP : InterfaceInfo.InterfaceOpState.DOWN);
+        interfaceInfo.setOpState((ifState.getOperStatus() == OperStatus.Down) ? InterfaceInfo.InterfaceOpState.DOWN :
+                ifState.getOperStatus() == OperStatus.Unknown ? InterfaceInfo.InterfaceOpState.UNKNOWN : InterfaceInfo.InterfaceOpState.UP);
         return interfaceInfo;
     }
 
+    @Override
+    public Interface getInterfaceInfoFromConfigDataStore(String interfaceName) {
+        Interface intf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
+        return intf;
+    }
+
+    @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
                                     String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
 
-        LOG.info("Create VLAN interface : {}",interfaceName);
+        LOG.info("Create VLAN interface : {}", interfaceName);
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils.getInterfaceIdentifier(new InterfaceKey(interfaceName));
         Interface interfaceOptional = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
         if (interfaceOptional != null) {
-            LOG.debug("VLAN interface is already exist",interfaceOptional.getDescription());
+            LOG.debug("VLAN interface is already exist", interfaceOptional.getDescription());
             throw new InterfaceAlreadyExistsException(interfaceOptional.getName());
         }
         IfL2vlanBuilder l2vlanBuilder = new IfL2vlanBuilder().setL2vlanMode(l2vlanMode);
-        if(vlanId > 0){
+        if (vlanId > 0) {
             l2vlanBuilder.setVlanId(new VlanId(vlanId));
         }
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(portName).build();
@@ -353,18 +362,20 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         t.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, inf, true);
     }
 
-    public void bindService(String interfaceName, BoundServices serviceInfo){
-        LOG.info("Binding Service : {}",interfaceName);
+    @Override
+    public void bindService(String interfaceName, BoundServices serviceInfo) {
+        LOG.info("Binding Service : {}", interfaceName);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, new ServicesInfoKey(interfaceName))
                 .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
-       // List<BoundServices> services = (List<BoundServices>)serviceInfo.getBoundServices();
+        // List<BoundServices> services = (List<BoundServices>)serviceInfo.getBoundServices();
         t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
         t.submit();
     }
 
-    public void unbindService(String interfaceName, BoundServices serviceInfo){
-        LOG.info("Unbinding Service  : {}",interfaceName);
+    @Override
+    public void unbindService(String interfaceName, BoundServices serviceInfo) {
+        LOG.info("Unbinding Service  : {}", interfaceName);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, new ServicesInfoKey(interfaceName))
                 .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
@@ -378,11 +389,11 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         Future<RpcResult<GetDpidFromInterfaceOutput>> output = interfaceManagerRpcService.getDpidFromInterface(input);
         try {
             RpcResult<GetDpidFromInterfaceOutput> dpn = output.get();
-            if(dpn.isSuccessful()){
+            if (dpn.isSuccessful()) {
                 return dpn.getResult().getDpid();
             }
-        }catch(NullPointerException | InterruptedException | ExecutionException e){
-            LOG.warn("Exception when getting port for interface",e);
+        } catch (NullPointerException | InterruptedException | ExecutionException e) {
+            LOG.warn("Exception when getting port for interface", e);
         }
         return null;
     }
@@ -393,14 +404,14 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         Future<RpcResult<GetEndpointIpForDpnOutput>> output = interfaceManagerRpcService.getEndpointIpForDpn(input);
         try {
             RpcResult<GetEndpointIpForDpnOutput> ipForDpnOutputRpcResult = output.get();
-            if(ipForDpnOutputRpcResult.isSuccessful()){
+            if (ipForDpnOutputRpcResult.isSuccessful()) {
                 List<IpAddress> localIps = ipForDpnOutputRpcResult.getResult().getLocalIps();
-                if(!localIps.isEmpty()) {
+                if (!localIps.isEmpty()) {
                     return localIps.get(0).getIpv4Address().getValue();
                 }
             }
-        }catch(NullPointerException | InterruptedException | ExecutionException e){
-            LOG.warn("Exception when getting port for interface",e);
+        } catch (NullPointerException | InterruptedException | ExecutionException e) {
+            LOG.warn("Exception when getting port for interface", e);
         }
         return null;
     }
@@ -418,8 +429,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     @Override
     public List<Interface> getVlanInterfaces() {
         List<Interface> vlanList = new ArrayList<Interface>();
-        InstanceIdentifier<Interfaces> interfacesInstanceIdentifier =  InstanceIdentifier.builder(Interfaces.class).build();
-        Optional<Interfaces> interfacesOptional  = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfacesInstanceIdentifier, dataBroker);
+        InstanceIdentifier<Interfaces> interfacesInstanceIdentifier = InstanceIdentifier.builder(Interfaces.class).build();
+        Optional<Interfaces> interfacesOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfacesInstanceIdentifier, dataBroker);
         if (!interfacesOptional.isPresent()) {
             return vlanList;
         }
