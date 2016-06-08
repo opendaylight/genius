@@ -89,6 +89,9 @@ public class IfmUtil {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(ifaceName, broker);
 
+        if(ifState == null){
+            throw new NullPointerException("interface information not present in oper DS for " +ifaceName);
+        }
         String lowerLayerIf = ifState.getLowerLayerIf().get(0);
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
         String portNo = IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId);
@@ -221,6 +224,9 @@ public class IfmUtil {
         List<ActionInfo> result = new ArrayList<ActionInfo>();
         Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
                 dataBroker);
+        if(interfaceInfo == null){
+            throw new NullPointerException("interface information not present in config DS for " +interfaceName);
+        }
         String portNo = IfmUtil.getPortNoFromInterfaceName(interfaceName, dataBroker);
 
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
@@ -334,8 +340,8 @@ public class IfmUtil {
         return null;
     }
 
-    public static NodeConnectorId getNodeConnectorIdFromInterface(Interface iface, DataBroker dataBroker) {
-        return FlowBasedServicesUtils.getNodeConnectorIdFromInterface(iface, dataBroker);
+    public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName, DataBroker dataBroker) {
+        return FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
     }
 
     public static String getPortName(DataBroker dataBroker, NodeConnectorId ncId){

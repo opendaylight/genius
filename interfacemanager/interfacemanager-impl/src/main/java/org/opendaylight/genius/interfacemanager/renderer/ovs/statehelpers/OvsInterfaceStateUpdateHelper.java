@@ -14,19 +14,12 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev100924.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
@@ -34,7 +27,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,11 +77,26 @@ public class OvsInterfaceStateUpdateHelper {
 
         // start/stop monitoring based on opState
         if(modifyTunnel(iface, opstateModified)){
-            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface, operStatusNew);
+            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
+                    iface.getName(), operStatusNew);
         }
 
         futures.add(transaction.submit());
         return futures;
+    }
+
+    public static void updateInterfaceStateOnNodeRemove(InstanceIdentifier<FlowCapableNodeConnector> key,String interfaceName, DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService, WriteTransaction transaction){
+        LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
+
+        InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
+                handleInterfaceStateUpdates(interfaceName, nodeConnectorId,
+                        transaction, dataBroker, ifaceBuilder, true, Interface.OperStatus.Unknown);
+        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)){
+            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
+                    interfaceName, Interface.OperStatus.Unknown);
+        }
     }
 
     public static Interface.OperStatus getOpState(FlowCapableNodeConnector flowCapableNodeConnector){
@@ -119,14 +126,14 @@ public class OvsInterfaceStateUpdateHelper {
     }
 
     public static void handleTunnelMonitoringUpdates(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
+                                                     IfTunnel ifTunnel, String interfaceName,
                                                      Interface.OperStatus operStatus){
 
-        LOG.debug("handling tunnel monitoring updates for {} due to opstate modification", iface.getName());
-        if (operStatus == Interface.OperStatus.Down)
-            AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, iface);
+        LOG.debug("handling tunnel monitoring updates for {} due to opstate modification", interfaceName);
+        if (operStatus == Interface.OperStatus.Down || operStatus == Interface.OperStatus.Unknown)
+            AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
         else
-            AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, iface);
+            AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }
 
     public static boolean modifyOpState(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,

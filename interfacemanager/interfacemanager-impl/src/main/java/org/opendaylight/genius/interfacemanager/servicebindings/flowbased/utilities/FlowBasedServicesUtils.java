@@ -63,9 +63,9 @@ public class FlowBasedServicesUtils {
         return null;
     }
 
-    public static NodeConnectorId getNodeConnectorIdFromInterface(Interface iface, DataBroker dataBroker) {
+    public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName, DataBroker dataBroker) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(iface.getName(), dataBroker);
+                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if(ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
             return new NodeConnectorId(ofportIds.get(0));
@@ -356,6 +356,4 @@ public class FlowBasedServicesUtils {
 
         t.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
-
-
 }

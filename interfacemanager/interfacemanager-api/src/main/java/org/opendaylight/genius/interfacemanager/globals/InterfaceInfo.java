@@ -23,6 +23,7 @@ public class InterfaceInfo implements Serializable {
         GRE_TRUNK_INTERFACE,
         VXLAN_VNI_INTERFACE,
         MPLS_OVER_GRE,
+        MPLS_OVER_UDP,
         LOGICAL_GROUP_INTERFACE,
         UNKNOWN_INTERFACE;
     }
@@ -34,7 +35,8 @@ public class InterfaceInfo implements Serializable {
 
     public enum InterfaceOpState {
         UP,
-        DOWN
+        DOWN,
+        UNKNOWN
     }
 
     protected InterfaceType interfaceType;

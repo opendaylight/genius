@@ -50,4 +50,5 @@ public interface IInterfaceManager {
     public void unbindService(String interfaceName, BoundServices serviceInfo);
     List<Interface> getVlanInterfaces();
     List<Interface> getVxlanInterfaces();
+    public Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
 }
