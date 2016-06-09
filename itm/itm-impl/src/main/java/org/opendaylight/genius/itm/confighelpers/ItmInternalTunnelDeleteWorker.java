@@ -165,7 +165,7 @@ public class ItmInternalTunnelDeleteWorker {
         // also update itm-state ds -- Delete the reverse tunnel-interface from the tunnel list
         path = InstanceIdentifier.create(
                 TunnelList.class)
-                .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, srcTep.getTunnelType()));
+                .child(InternalTunnel.class, new InternalTunnelKey(srcDpnId, dstDpnId, dstTep.getTunnelType()));
         t.delete(LogicalDatastoreType.CONFIGURATION,path) ;
 
         // Release the Ids for the reverse trunk interface Name

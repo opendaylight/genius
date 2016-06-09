@@ -664,21 +664,21 @@ public class TepCommandHelper {
             if (ifaceObj.isPresent()) {
                 l2Vlan = (IfL2vlan) ifaceObj.get().getAugmentation(IfL2vlan.class);
                 tunnelInterface = (IfTunnel) ifaceObj.get().getAugmentation(IfTunnel.class);
-            }
 
-            Class<? extends TunnelTypeBase> tunType = tunnelInterface.getTunnelInterfaceType();
-            String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
-            if( tunType.equals(TunnelTypeVxlan.class))
-                tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
-            else if( tunType.equals(TunnelTypeGre.class) )
-                tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
-            int vlanId = 0;
-            if( l2Vlan != null ) {
-                vlanId = l2Vlan.getVlanId().getValue() ;
-            }
-            System.out.println(String.format(displayFormat, tunnel.getTunnelInterfaceName(), tunnel
+                Class<? extends TunnelTypeBase> tunType = tunnelInterface.getTunnelInterfaceType();
+                String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+                if( tunType.equals(TunnelTypeVxlan.class))
+                   tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+                else if( tunType.equals(TunnelTypeGre.class) )
+                   tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
+                int vlanId = 0;
+                if( l2Vlan != null ) {
+                   vlanId = l2Vlan.getVlanId().getValue() ;
+                }
+                System.out.println(String.format(displayFormat, tunnel.getTunnelInterfaceName(), tunnel
                             .getSourceDPN().toString(), tunnel.getDestinationDPN().toString(), tunnelInterface.getTunnelSource().getIpv4Address().getValue(), tunnelInterface.getTunnelDestination().getIpv4Address().getValue(),vlanId, tunnelState ,
                     tunnelType));
+            }
         }
     }
 
