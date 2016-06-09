@@ -1,0 +1,158 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_43d7c0c1",
+        "filename": "idmanager/idmanager-api/src/main/yang/id-manager.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "nitpick: indentation needed.",
+      "range": {
+        "startLine": 41,
+        "startChar": 12,
+        "endLine": 41,
+        "endChar": 24
+      },
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_63d2c4d3",
+        "filename": "idmanager/idmanager-api/src/main/yang/id-manager.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "nitpick: indentation neeed",
+      "range": {
+        "startLine": 151,
+        "startChar": 13,
+        "endLine": 152,
+        "endChar": 25
+      },
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_a3db3cec",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "add a comment explaining why we\u0027re calling with size 1 and calling get(0).",
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_636e4403",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "nitpick: delete commented lines",
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_036948f9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 461,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "nitpick: delete commented lines",
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_e3e534a9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 467,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "nitpick: delete commented lines.",
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_83d8b8f0",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 476,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "Use an iterator, like:\n\nfor(Long idValue: idValuesList)",
+      "range": {
+        "startLine": 473,
+        "startChar": 12,
+        "endLine": 476,
+        "endChar": 13
+      },
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_234bac88",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-09T05:42:04Z",
+      "side": 1,
+      "message": "Add some test cases that test getting and releasing multiple ids, getting ids once pool is full etc.",
+      "revId": "7bef2bace2a56c423894ca4343037d69f9436ebb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
