@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_9d3f7125",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-10T09:10:08Z",
+      "side": 1,
+      "message": "write a generic method that takes key, poolName and size as input and returns results. Call it from both allocateId and allocateIdRange. This will avoid duplication of code.",
+      "range": {
+        "startLine": 98,
+        "startChar": 8,
+        "endLine": 116,
+        "endChar": 69
+      },
+      "revId": "e1644f1657f362e2e1f64166ae30bc2f777af3f1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_1d1361b9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-10T09:10:08Z",
+      "side": 1,
+      "message": "nitpick: ids",
+      "range": {
+        "startLine": 224,
+        "startChar": 40,
+        "endLine": 224,
+        "endChar": 42
+      },
+      "revId": "e1644f1657f362e2e1f64166ae30bc2f777af3f1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_fd178da1",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-10T09:10:08Z",
+      "side": 1,
+      "message": "these should be reversed",
+      "range": {
+        "startLine": 224,
+        "startChar": 64,
+        "endLine": 224,
+        "endChar": 86
+      },
+      "revId": "e1644f1657f362e2e1f64166ae30bc2f777af3f1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_7d237d05",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-10T09:10:08Z",
+      "side": 1,
+      "message": "trace, or drop idValuesList from output.",
+      "range": {
+        "startLine": 487,
+        "startChar": 16,
+        "endLine": 487,
+        "endChar": 21
+      },
+      "revId": "e1644f1657f362e2e1f64166ae30bc2f777af3f1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
