@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_f8631baf",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2016-06-10T10:31:18Z",
+      "side": 1,
+      "message": "If the idPool is exhausted while creating list of idValues, should the RPC return with whatever number of ids are available or should it return with no value? Currently, for such cases it will return an exception.",
+      "range": {
+        "startLine": 233,
+        "startChar": 32,
+        "endLine": 233,
+        "endChar": 35
+      },
+      "revId": "7c3911727f01c58de1314d17ff2a4c40769229ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
