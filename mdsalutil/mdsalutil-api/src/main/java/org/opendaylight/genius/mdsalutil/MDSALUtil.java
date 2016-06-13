@@ -105,7 +105,7 @@ public class MDSALUtil {
     private static final Logger logger = LoggerFactory.getLogger(MDSALUtil.class);
 
     public static FlowEntity buildFlowEntity(BigInteger dpnId, short tableId, String flowId, int priority, String flowName,
-            int idleTimeOut, int hardTimeOut, BigInteger cookie, List<MatchInfo> listMatchInfo,
+            int idleTimeOut, int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
             List<InstructionInfo> listInstructionInfo) {
 
         FlowEntity flowEntity = new FlowEntity(dpnId);
@@ -117,7 +117,7 @@ public class MDSALUtil {
         flowEntity.setIdleTimeOut(idleTimeOut);
         flowEntity.setHardTimeOut(hardTimeOut);
         flowEntity.setCookie(cookie);
-        flowEntity.setMatchInfoList(listMatchInfo);
+        flowEntity.setMatchInfoList(listMatchInfoBase);
         flowEntity.setInstructionInfoList(listInstructionInfo);
 
         return flowEntity;
@@ -125,16 +125,16 @@ public class MDSALUtil {
 
     // TODO: CHECK IF THIS IS USED
     public static Flow buildFlow(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-            int hardTimeOut, BigInteger cookie, List<MatchInfo> listMatchInfo, List<InstructionInfo> listInstructionInfo) {
+            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase> listMatchInfoBase, List<InstructionInfo> listInstructionInfo) {
         return MDSALUtil.buildFlow(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
-                listMatchInfo, listInstructionInfo, true);
+                listMatchInfoBase, listInstructionInfo, true);
     }
 
     public static Flow buildFlow(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-            int hardTimeOut, BigInteger cookie, List<MatchInfo> listMatchInfo,
+            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
             List<InstructionInfo> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
-        return new FlowBuilder().setMatch(buildMatches(listMatchInfo)).setKey(key)
+        return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
                 .setPriority(Integer.valueOf(priority)).setInstructions(buildInstructions(listInstructionInfo))
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
                 .setFlowName(flowName).setTableId(Short.valueOf(tableId)).setStrict(isStrict)
@@ -146,16 +146,16 @@ public class MDSALUtil {
     }
 
     public static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-                                 int hardTimeOut, BigInteger cookie, List<MatchInfo> listMatchInfo, List<Instruction> listInstructionInfo) {
+                                 int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase, List<Instruction> listInstructionInfo) {
         return MDSALUtil.buildFlowNew(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
-                listMatchInfo, listInstructionInfo, true);
+                listMatchInfoBase, listInstructionInfo, true);
     }
 
     private static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-                                  int hardTimeOut, BigInteger cookie, List<MatchInfo> listMatchInfo,
+                                  int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
                                   List<Instruction> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
-        return new FlowBuilder().setMatch(buildMatches(listMatchInfo)).setKey(key)
+        return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
                 .setPriority(Integer.valueOf(priority)).setInstructions(new InstructionsBuilder().setInstruction(listInstructionInfo).build())
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
                 .setFlowName(flowName).setTableId(Short.valueOf(tableId)).setStrict(isStrict)
@@ -281,17 +281,17 @@ public class MDSALUtil {
         return EMPTY_Instructions;
     }
 
-    public static Match buildMatches(List<MatchInfo> listMatchInfo) {
-        if (listMatchInfo != null) {
+    public static Match buildMatches(List<? extends MatchInfoBase> listMatchInfoBase) {
+        if (listMatchInfoBase != null) {
             MatchBuilder matchBuilder = new MatchBuilder();
             Map<Class<?>, Object> mapMatchBuilder = new HashMap<Class<?>, Object>();
 
-            for (MatchInfo matchInfo : listMatchInfo) {
-                matchInfo.createInnerMatchBuilder(mapMatchBuilder);
+            for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
+                MatchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
             }
 
-            for (MatchInfo matchInfo : listMatchInfo) {
-                matchInfo.setMatch(matchBuilder, mapMatchBuilder);
+            for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
+                MatchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
             }
 
             return matchBuilder.build();
