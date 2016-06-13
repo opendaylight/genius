@@ -292,8 +292,8 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         LOG.debug("Deleted all Vtep schemas from config DS");
     }
 
-    public void configureTunnelMonitorEnabled(boolean monitorEnabled) {
-        tepCommandHelper.configureTunnelMonitorEnabled(monitorEnabled);
+    public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol) {
+        tepCommandHelper.configureTunnelMonitorParams(monitorEnabled, monitorProtocol);
     }
 
     public void configureTunnelMonitorInterval(int interval) {

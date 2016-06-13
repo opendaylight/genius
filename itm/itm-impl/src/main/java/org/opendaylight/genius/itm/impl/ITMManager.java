@@ -13,10 +13,12 @@ import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabled;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabledBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -53,14 +55,14 @@ public class ITMManager implements AutoCloseable {
         new Thread() {
             public void run() {
                 boolean readSucceeded = false;
-                InstanceIdentifier<TunnelMonitorEnabled> monitorPath = InstanceIdentifier.builder(TunnelMonitorEnabled.class).build();
+                InstanceIdentifier<TunnelMonitorParams> monitorPath = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
                 while (!readSucceeded) {
                     try {
-                        Optional<TunnelMonitorEnabled> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, monitorPath, broker);
+                        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, monitorPath, broker);
                         // Store default values only when tunnel monitor data is not initialized
                         if (!storedTunnelMonitor.isPresent()) {
-                            TunnelMonitorEnabled monitorEnabled =
-                                    new TunnelMonitorEnabledBuilder().setEnabled(ITMConstants.DEFAULT_MONITOR_ENABLED).build();
+                            TunnelMonitorParams monitorEnabled =
+                                    new TunnelMonitorParamsBuilder().setEnabled(ITMConstants.DEFAULT_MONITOR_ENABLED).build();
                             ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, monitorPath, monitorEnabled, broker, ItmUtils.DEFAULT_CALLBACK);
 
                             InstanceIdentifier<TunnelMonitorInterval> intervalPath = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
@@ -84,12 +86,22 @@ public class ITMManager implements AutoCloseable {
 
     protected boolean getTunnelMonitorEnabledFromConfigDS() {
         boolean tunnelMonitorEnabled = true;
-        InstanceIdentifier<TunnelMonitorEnabled> path = InstanceIdentifier.builder(TunnelMonitorEnabled.class).build();
-        Optional<TunnelMonitorEnabled> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
+        InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (storedTunnelMonitor.isPresent()) {
             tunnelMonitorEnabled = storedTunnelMonitor.get().isEnabled();
         }
         return tunnelMonitorEnabled;
+    }
+
+    protected Class<? extends TunnelMonitoringTypeBase> getTunnelMonitorTypeFromConfigDS() {
+
+        Class<? extends TunnelMonitoringTypeBase> tunnelMonitorType = TunnelMonitoringTypeBfd.class;
+        InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
+        if(storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol()!=null )
+            tunnelMonitorType = storedTunnelMonitor.get().getMonitorProtocol();
+        return tunnelMonitorType;
     }
 
     protected int getTunnelMonitorIntervalFromConfigDS() {

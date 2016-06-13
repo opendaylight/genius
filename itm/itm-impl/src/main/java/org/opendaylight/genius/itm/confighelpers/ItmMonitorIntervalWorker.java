@@ -42,6 +42,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         this.interval = interval;
         this.hwVteps = hwVteps;
         this.exists = exists;
+        logger.debug("ItmMonitorIntervalWorker: monitorInterval = {}",interval);
         logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval );
     }
 
@@ -69,7 +70,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         if (tunnelInterfaceName != null) {
             logger.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
-            IfTunnel tunnel = new IfTunnelBuilder().setMonitorInterval(interval.longValue() * 1000).build();
+            IfTunnel tunnel = new IfTunnelBuilder().setMonitorInterval(interval.longValue()).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
                     .addAugmentation(IfTunnel.class, tunnel);
             t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());

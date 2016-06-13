@@ -77,7 +77,7 @@ public interface IITMProvider {
      */
     public void deleteAllVtepSchemas();
 
-    public void configureTunnelMonitorEnabled(boolean monitorEnabled);
+    public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol);
 
     public void configureTunnelMonitorInterval(int interval);
 }

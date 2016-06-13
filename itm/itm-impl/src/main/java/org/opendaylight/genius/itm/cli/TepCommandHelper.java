@@ -22,10 +22,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabled;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabledBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
@@ -802,13 +802,24 @@ public class TepCommandHelper {
         }
     }
 
-    public void configureTunnelMonitorEnabled(boolean monitorEnabled) {
-        InstanceIdentifier<TunnelMonitorEnabled> path = InstanceIdentifier.builder(TunnelMonitorEnabled.class).build();
-        Optional<TunnelMonitorEnabled> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().isEnabled() != monitorEnabled) {
-            TunnelMonitorEnabled tunnelMonitor = new TunnelMonitorEnabledBuilder().setEnabled(monitorEnabled).build();
+    public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol) {
+        InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+        Class<? extends TunnelMonitoringTypeBase> monitorType ;
+        if(storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol()!=null )
+            monitorType = storedTunnelMonitor.get().getMonitorProtocol();
+        else
+        {
+            if(monitorProtocol!=null && monitorProtocol.equalsIgnoreCase(ITMConstants.MONITOR_TYPE_LLDP))
+                monitorType = TunnelMonitoringTypeLldp.class ;
+            else
+                monitorType = TunnelMonitoringTypeBfd.class ;
+        }
+        if (!storedTunnelMonitor.isPresent()|| storedTunnelMonitor.get().isEnabled() != monitorEnabled)  {
+            TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled).setMonitorProtocol(monitorType).build();
             ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
                     ItmUtils.DEFAULT_CALLBACK);
+
         }
     }
 

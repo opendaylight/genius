@@ -33,12 +33,13 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabled;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabledBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
@@ -78,7 +79,7 @@ public class ItmExternalTunnelAddTest {
 
     BigInteger dpId1 = BigInteger.valueOf(1);
     int vlanId = 100 ;
-    int interval = 10;
+    int interval = 100;
     String portName1 = "phy0";
     String tepIp1 = "192.168.56.30";
     String tepIp2 = "192.168.56.40";
@@ -113,8 +114,9 @@ public class ItmExternalTunnelAddTest {
     DeviceVteps deviceVteps1 = null;
     DeviceVteps deviceVteps2 = null;
     TransportZone transportZone = null;
-    TunnelMonitorEnabled tunnelMonitorEnabled = null;
+    TunnelMonitorParams TunnelMonitorParams = null;
     TunnelMonitorInterval tunnelMonitorInterval = null;
+    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     Interface iface = null;
     List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<DPNTEPsInfo>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
@@ -126,7 +128,7 @@ public class ItmExternalTunnelAddTest {
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
 
     InstanceIdentifier<Interface> interfaceIdentifier = null;
-    InstanceIdentifier<TunnelMonitorEnabled> tunnelMonitorEnabledIdentifier = InstanceIdentifier.create(TunnelMonitorEnabled.class);
+    InstanceIdentifier<TunnelMonitorParams> TunnelMonitorParamsIdentifier = InstanceIdentifier.create(TunnelMonitorParams.class);
     InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier = InstanceIdentifier.create(TunnelMonitorInterval.class);
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = null;
     InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).build();
@@ -143,7 +145,7 @@ public class ItmExternalTunnelAddTest {
     AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("105")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional6 ;
     Optional<DpnEndpoints> optionalDpnEndPoints ;
-    Optional<TunnelMonitorEnabled> tunnelMonitorEnabledOptional ;
+    Optional<TunnelMonitorParams> TunnelMonitorParamsOptional ;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
 
     @Mock DataBroker dataBroker;
@@ -165,13 +167,13 @@ public class ItmExternalTunnelAddTest {
         setupMocks();
 
         optionalDpnEndPoints = Optional.of(dpnEndpointsVxlan);
-        tunnelMonitorEnabledOptional = Optional.of(tunnelMonitorEnabled);
+        TunnelMonitorParamsOptional = Optional.of(TunnelMonitorParams);
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
 
         doReturn(Futures.immediateCheckedFuture(optionalDpnEndPoints)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,dpnEndpointsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorEnabledOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                tunnelMonitorEnabledIdentifier);
+        doReturn(Futures.immediateCheckedFuture(TunnelMonitorParamsOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
+                TunnelMonitorParamsIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
                 tunnelMonitorIntervalIdentifier);
 
@@ -253,7 +255,7 @@ public class ItmExternalTunnelAddTest {
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.40:6640/physicalswitch/s4:192.168.56.40:192.168.56.30:VXLAN")
                 .build();
         doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
-        tunnelMonitorEnabled = new TunnelMonitorEnabledBuilder().setEnabled(true).build();
+        TunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,
@@ -264,7 +266,7 @@ public class ItmExternalTunnelAddTest {
                 .child(ExternalTunnel.class, new ExternalTunnelKey(ipAddress2.toString(), dpId1.toString(), tunnelType1));
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,ipAddress3
-                ,ipAddress2,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,null);
+                ,ipAddress2,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null);
         externalTunnel = ItmUtils.buildExternalTunnel(dpId1.toString(),ipAddress2.toString(),tunnelType1,
                 trunkInterfaceName);
         subnets = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
@@ -304,22 +306,22 @@ public class ItmExternalTunnelAddTest {
 
         Interface extTunnelIf1 = ItmUtils.buildTunnelInterface(dpId1, "TUNNEL:101", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, tunnelType1, tunnelEndPointsVxlan.getIpAddress(), ipAddress1,
-                gtwyIp1, vlanId, false,true, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                gtwyIp1, vlanId, false,true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf2 = ItmUtils.buildHwTunnelInterface("TUNNEL:102", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), hwVtep1.getNode_id(), tunnelType1, ipAddress1, ipAddress3, gtwyIp1,
-                true, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface extTunnelIf3 = ItmUtils.buildTunnelInterface(dpId1, "TUNNEL:100", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, tunnelType1, tunnelEndPointsVxlan.getIpAddress(), ipAddress2,
-                gtwyIp1, vlanId, false,true, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                gtwyIp1, vlanId, false,true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf4 = ItmUtils.buildHwTunnelInterface("TUNNEL:103", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
-                ipAddress3, gtwyIp1, true, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                ipAddress3, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf5 = ItmUtils.buildHwTunnelInterface("TUNNEL:104", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), hwVtep1.getNode_id(), tunnelType1, ipAddress1,
-                ipAddress2, gtwyIp1, true, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                ipAddress2, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf6 = ItmUtils.buildHwTunnelInterface("TUNNEL:105", String.format("%s %s", tunnelType1
-                .getName(), "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
-                ipAddress1, gtwyIp1, true, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                        .getName(), "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
+                ipAddress1, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         ExternalTunnel externalTunnel1 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(dpId1.toString()),
                 getExternalTunnelKey(source), tunnelType1, "TUNNEL:101");
         ExternalTunnel externalTunnel2 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(source),
@@ -349,7 +351,7 @@ public class ItmExternalTunnelAddTest {
                 new InterfaceKey("TUNNEL:105")).build();
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier1 = InstanceIdentifier.create(ExternalTunnelList
                 .class).child(ExternalTunnel.class, new ExternalTunnelKey( getExternalTunnelKey(source),
-                        getExternalTunnelKey(dpId1.toString()), tunnelType1));
+                getExternalTunnelKey(dpId1.toString()), tunnelType1));
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier2 = InstanceIdentifier.create
                 (ExternalTunnelList.class).child(ExternalTunnel.class, new ExternalTunnelKey(getExternalTunnelKey(dpId1.toString()),
                 getExternalTunnelKey(source), tunnelType1));

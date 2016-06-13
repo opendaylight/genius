@@ -24,19 +24,24 @@ module itm-config {
     
     /* Tunnel Monitoring Knob */
     
-    container tunnel-monitor-enabled {
+    container tunnel-monitor-params {
       leaf enabled {
          type boolean;
          default true;
       }
-    }
 
+      leaf monitor-protocol {
+         type identityref {
+             base odlif:tunnel-monitoring-type-base;
+         }
+         default odlif:tunnel-monitoring-type-bfd;
+      }
+    }
     container tunnel-monitor-interval {
       leaf interval {
          type uint16 {
-             range "5..30";
+             range "100..30000";
          }
-         default 10;
       }
     }
 

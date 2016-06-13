@@ -35,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
@@ -43,7 +44,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabled;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepIpPools;
@@ -232,7 +232,7 @@ public class ItmUtils {
     }
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled, Class<? extends TunnelTypeBase> tunType,
-                                                 IpAddress localIp, IpAddress remoteIp, IpAddress gatewayIp,Integer vlanId, boolean internal, Boolean monitorEnabled, Integer monitorInterval) {
+                                                 IpAddress localIp, IpAddress remoteIp, IpAddress gatewayIp,Integer vlanId, boolean internal, Boolean monitorEnabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitorInterval) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
@@ -241,23 +241,33 @@ public class ItmUtils {
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(new VlanId(vlanId)).build();
             builder.addAugmentation(IfL2vlan.class, l2vlan);
         }
-        Long monitoringInterval = (long) ITMConstants.DEFAULT_MONITOR_INTERVAL;
+        LOG.debug("buildTunnelInterface: monitorProtocol = {} and monitorInterval = {}",monitorProtocol.getName(),monitorInterval);
+
+        Long monitoringInterval = (long)ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
         Boolean monitoringEnabled = true;
         if(monitorInterval!= null)
             monitoringInterval = monitorInterval.longValue();
+        else {
+            if (monitorProtocol.getName().contains("Bfd"))
+                monitoringInterval = (long) ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
+            else
+                monitoringInterval = (long) ITMConstants.DEFAULT_MONITOR_INTERVAL;
+        }
+        LOG.debug("buildTunnelInterface: monitorProtocol = {} and monitorInterval = {}",monitorProtocol.getName(),monitorInterval);
+
         if(monitorEnabled!=null  )
             monitoringEnabled = monitorEnabled;
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(
                 gatewayIp).setTunnelSource(localIp)
                 .setTunnelInterfaceType(tunType).setInternal(internal).setMonitorEnabled(
-                        monitoringEnabled).setMonitorInterval(monitoringInterval).build();
+                        monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(monitoringInterval).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
     }
 
     public static Interface buildHwTunnelInterface(String tunnelIfName, String desc, boolean enabled, String topo_id,
                                                    String node_id, Class<? extends TunnelTypeBase> tunType, IpAddress srcIp, IpAddress destIp,
-                                                   IpAddress gWIp, Boolean monitor_enabled, Integer monitor_interval){
+                                                   IpAddress gWIp, Boolean monitor_enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitor_interval){
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelIfName)).setName(
                 tunnelIfName).setDescription(desc).
                 setEnabled(enabled).setType(Tunnel.class);
@@ -270,12 +280,15 @@ public class ItmUtils {
         builder.addAugmentation(ParentRefs.class, parent);
         Long monitoringInterval = (long) ITMConstants.DEFAULT_MONITOR_INTERVAL;
         Boolean monitoringEnabled = true;
+        Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         if(monitor_interval!= null)
             monitoringInterval = monitor_interval.longValue();
         if(monitor_enabled!=null  )
             monitoringEnabled = monitor_enabled;
+        if(monitorProtocol!=null)
+            monitoringProtocol = monitorProtocol;
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(destIp).setTunnelGateway(gWIp).setTunnelSource(
-                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorInterval(100L).
+                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(100L).
                 setTunnelInterfaceType(tunType).setInternal(false).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         LOG.trace("iftunnel {} built from hwvtep {} ", tunnel, node_id);
@@ -610,13 +623,13 @@ public class ItmUtils {
         }
         List<BigInteger> existingDpnIds = getDpnIdList(schema.getDpnIds());
         if (isNotEmpty(lstDpnsForAdd)) {
-            if (isNotEmpty(existingDpnIds)) {
-                List<BigInteger> lstAlreadyExistingDpns = new ArrayList<>(existingDpnIds);
-                lstAlreadyExistingDpns.retainAll(lstDpnsForAdd);
-                Preconditions.checkArgument(lstAlreadyExistingDpns.isEmpty(),
-                        new StringBuilder("DPN ID's ").append(lstAlreadyExistingDpns)
-                                .append(" already exists in VTEP schema [").append(schemaName).append("]").toString());
-            }
+            //  if (isNotEmpty(existingDpnIds)) {
+            List<BigInteger> lstAlreadyExistingDpns = new ArrayList<>(existingDpnIds);
+            lstAlreadyExistingDpns.retainAll(lstDpnsForAdd);
+            Preconditions.checkArgument(lstAlreadyExistingDpns.isEmpty(),
+                    new StringBuilder("DPN ID's ").append(lstAlreadyExistingDpns)
+                            .append(" already exists in VTEP schema [").append(schemaName).append("]").toString());
+            //    }
             if (schema.getTunnelType().equals(TunnelTypeGre.class)) {
                 validateForSingleGreTep(schema.getSchemaName(), lstDpnsForAdd, itmProvider.getAllVtepConfigSchemas());
             }
@@ -707,11 +720,11 @@ public class ItmUtils {
         return id;
     }
     public static Boolean readMonitoringStateFromDS(DataBroker dataBroker) {
-        InstanceIdentifier<TunnelMonitorEnabled> iid = InstanceIdentifier.create(TunnelMonitorEnabled.class);
-        Optional<TunnelMonitorEnabled> tunnelMonitorEnabledOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
+        Optional<TunnelMonitorParams> TunnelMonitorParamsOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 iid, dataBroker);
-        if(tunnelMonitorEnabledOptional.isPresent())
-            return tunnelMonitorEnabledOptional.get().isEnabled();
+        if(TunnelMonitorParamsOptional.isPresent())
+            return TunnelMonitorParamsOptional.get().isEnabled();
         return null;
     }
 
@@ -722,6 +735,20 @@ public class ItmUtils {
             return tunnelMonitorIOptional.get().getInterval();
         return null;
 
+    }
+
+    public static Integer determineMonitorInterval(DataBroker dataBroker) {
+        Integer monitorInterval = ItmUtils.readMonitorIntervalfromDS(dataBroker);
+        LOG.debug("determineMonitorInterval: monitorInterval from DS = {}", monitorInterval);
+        if(monitorInterval==null){
+            Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = determineMonitorProtocol(dataBroker);
+            if(monitoringProtocol.getName().contains("Bfd"))
+                monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
+            else
+                monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
+        }
+        LOG.debug("determineMonitorInterval: monitorInterval = {}", monitorInterval);
+        return monitorInterval;
     }
 
     public static List<String> getTunnelsofTzone(List<HwVtep> hwVteps, String tzone, DataBroker dataBroker, Boolean hwVtepsExist) {
@@ -812,7 +839,7 @@ public class ItmUtils {
 
     private static String getExtTunnel(String node_id, String dpId,Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
         LOG.trace("getting ext tunnel for {} and dpId {}",node_id,dpId);
-        ExternalTunnelKey key = getExternalTunnelKey(dpId,node_id, tunType);
+        ExternalTunnelKey key = getExternalTunnelKey(dpId, node_id, tunType);
         InstanceIdentifier<ExternalTunnel> intIID = InstanceIdentifier.builder(ExternalTunnelList.class).
                 child(ExternalTunnel.class, key).build();
         Optional<ExternalTunnel> TunnelsOptional =
@@ -905,7 +932,7 @@ public class ItmUtils {
         return false;
     }
 
-    public static StateTunnelListKey getTunnelStateKey(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
+    public static StateTunnelListKey getTunnelStateKey( org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
         StateTunnelListKey key = null;
         if(isItmIfType(iface.getType())) {
             key = new StateTunnelListKey(iface.getName());
@@ -964,5 +991,23 @@ public class ItmUtils {
             }
         }
         return result;
+    }
+
+    public static Class<? extends TunnelMonitoringTypeBase> readMonitoringProtocolFromDS(DataBroker dataBroker) {
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
+        Optional<TunnelMonitorParams> TunnelMonitorParamsOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                iid, dataBroker);
+        if(TunnelMonitorParamsOptional.isPresent())
+            return TunnelMonitorParamsOptional.get().getMonitorProtocol();
+        return null;
+    }
+
+    public static Class<? extends TunnelMonitoringTypeBase> determineMonitorProtocol(DataBroker dataBroker) {
+        Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = ItmUtils.readMonitoringProtocolFromDS(dataBroker);
+        LOG.debug("determineMonitorProtocol: monitorProtocol from DS = {}", monitoringProtocol);
+        if(monitoringProtocol==null)
+            monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
+        LOG.debug("determineMonitorProtocol: monitorProtocol = {}", monitoringProtocol);
+        return monitoringProtocol;
     }
 }

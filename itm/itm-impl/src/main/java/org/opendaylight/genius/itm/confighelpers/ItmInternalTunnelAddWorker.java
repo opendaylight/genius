@@ -18,6 +18,7 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
@@ -148,10 +149,9 @@ public class ItmInternalTunnelAddWorker {
         IpAddress gwyIpAddress = ( srcte.getSubnetMask().equals(dstte.getSubnetMask()) ) ? gatewayIpObj : srcte.getGwIpAddress() ;
         logger.debug(  " Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",trunkInterfaceName, interfaceName, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
         Boolean monitorEnabled = ItmUtils.readMonitoringStateFromDS(dataBroker);
-        Integer monitorInterval = ItmUtils.readMonitorIntervalfromDS(dataBroker);
-        if(monitorInterval == null)
-            monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
-        Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName, String.format( "%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"), true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true, monitorEnabled, monitorInterval*1000);
+        Integer monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
+        Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
+        Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName, String.format( "%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"), true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true, monitorEnabled, monitorProtocol, monitorInterval);
         logger.debug(  " Trunk Interface builder - {} ", iface ) ;
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         logger.debug(  " Trunk Interface Identifier - {} ", trunkIdentifier ) ;

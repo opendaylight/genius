@@ -34,10 +34,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabled;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorEnabledBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
@@ -73,7 +73,7 @@ public class ItmInternalTunnelAddTest {
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     int vlanId = 100 ;
-    int interval = 10;
+    int interval = 100;
     String tepIp1 = "192.168.56.101";
     String tepIp2 = "192.168.56.102";
     String gwyIp1 = "0.0.0.0";
@@ -96,7 +96,7 @@ public class ItmInternalTunnelAddTest {
     TunnelEndPoints tunnelEndPointsVxlanNew = null;
     TunnelEndPoints tunnelEndPointsGre = null;
     TunnelEndPoints tunnelEndPointsGreNew = null;
-    TunnelMonitorEnabled tunnelMonitorEnabled = null;
+    TunnelMonitorParams TunnelMonitorParams = null;
     TunnelMonitorInterval tunnelMonitorInterval = null;
     InternalTunnel internalTunnel1 = null;
     InternalTunnel internalTunnel2 = null;
@@ -113,7 +113,7 @@ public class ItmInternalTunnelAddTest {
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     java.lang.Class<? extends TunnelTypeBase> tunnelType2 = TunnelTypeGre.class;
 
-    InstanceIdentifier<TunnelMonitorEnabled> tunnelMonitorEnabledIdentifier = InstanceIdentifier.create(TunnelMonitorEnabled.class);
+    InstanceIdentifier<TunnelMonitorParams> TunnelMonitorParamsIdentifier = InstanceIdentifier.create(TunnelMonitorParams.class);
     InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier = InstanceIdentifier.create(TunnelMonitorInterval.class);
     InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder( DpnEndpoints.class).build() ;
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifierVxlan1 = InstanceIdentifier.create(
@@ -140,7 +140,7 @@ public class ItmInternalTunnelAddTest {
 
     ItmInternalTunnelAddWorker addWorker = new ItmInternalTunnelAddWorker();
 
-    Optional<TunnelMonitorEnabled> tunnelMonitorEnabledOptional ;
+    Optional<TunnelMonitorParams> TunnelMonitorParamsOptional ;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
 
 
@@ -154,14 +154,14 @@ public class ItmInternalTunnelAddTest {
                 .thenReturn(dataChangeListenerRegistration);
         setupMocks();
 
-        tunnelMonitorEnabledOptional = Optional.of(tunnelMonitorEnabled);
+        TunnelMonitorParamsOptional = Optional.of(TunnelMonitorParams);
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
 
         idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
         idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
 
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorEnabledOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                tunnelMonitorEnabledIdentifier);
+        doReturn(Futures.immediateCheckedFuture(TunnelMonitorParamsOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
+                TunnelMonitorParamsIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
                 tunnelMonitorIntervalIdentifier);
 
@@ -202,7 +202,7 @@ public class ItmInternalTunnelAddTest {
                 .setTunnelEndPoints(tunnelEndPointsListGre).build();
         dpntePsInfoGreNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).setKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListGreNew).build();
-        tunnelMonitorEnabled = new TunnelMonitorEnabledBuilder().setEnabled(true).build();
+        TunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         meshDpnListVxlan.add(dpntePsInfoVxlanNew);

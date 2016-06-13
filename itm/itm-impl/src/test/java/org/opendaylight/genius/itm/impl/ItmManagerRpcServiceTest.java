@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
@@ -145,6 +146,7 @@ public class ItmManagerRpcServiceTest {
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1 ;
+    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
             .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ipAddress1), dpId1.toString(),
@@ -276,7 +278,7 @@ public class ItmManagerRpcServiceTest {
                 (tunnelType1).setDestinationNode(destinationDevice).setSourceNode(sourceDevice).build();
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,tunnelEndPointsVxlan.getIpAddress()
-                ,ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,null);
+                ,ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null);
         subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);

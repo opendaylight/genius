@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class TepMonitor extends OsgiCommandSupport {
 
   @Argument(index = 0, name = "interval", description = "monitoring interval", required = true,
-      multiValued = false)
+          multiValued = false)
   private Integer interval;
 
   private static final Logger logger = LoggerFactory.getLogger(TepMonitor.class);
@@ -32,11 +32,11 @@ public class TepMonitor extends OsgiCommandSupport {
   protected Object doExecute() {
     try {
       logger.debug("Executing TEP monitor command with interval: " + "\t" + interval);
-      if(!(interval >= 5 && interval <=30)){
-          System.out.println("Monitoring Interval must be in the range 5 - 30");
+      if(!(interval >=100 && interval <=30000)){
+        System.out.println("Monitoring Interval must be in the range 100 - 30000");
       }
       else {
-          itmProvider.configureTunnelMonitorInterval(interval);
+        itmProvider.configureTunnelMonitorInterval(interval);
       }
     } catch (Exception e) {
       e.printStackTrace();

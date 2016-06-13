@@ -21,6 +21,8 @@ public class TepEnableTunnelMonitor extends OsgiCommandSupport {
 
     @Argument(index = 0, name = "true|false", description = "true|false to enable/disable Tunnel Monitoring", required = true, multiValued = false)
     private Boolean enableTunnelMonitor;
+    @Argument(index = 1, name = "monitorProtocol", description = "monitorProtocol", required = false, multiValued = false)
+    private String monitorProtocol;
 
     private IITMProvider itmProvider;
 
@@ -32,7 +34,7 @@ public class TepEnableTunnelMonitor extends OsgiCommandSupport {
     protected Object doExecute() {
         try {
             logger.debug("Executing Enable Tunnel Monitor command");
-            itmProvider.configureTunnelMonitorEnabled(enableTunnelMonitor);
+            itmProvider.configureTunnelMonitorParams(enableTunnelMonitor, monitorProtocol);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

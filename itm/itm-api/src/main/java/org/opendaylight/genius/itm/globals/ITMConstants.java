@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.globals;
 
 import java.math.BigInteger;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 
 public class ITMConstants{
   public static final BigInteger COOKIE_ITM = new BigInteger("9000000", 16);
@@ -19,11 +21,15 @@ public class ITMConstants{
   public static int LLDP_SERVICE_ID = 0;
   //Tunnel Monitoring
   public static final boolean DEFAULT_MONITOR_ENABLED = true;
-  public static final int DEFAULT_MONITOR_INTERVAL = 10;
+  public static final int DEFAULT_MONITOR_INTERVAL = 10000;
   public static final int BFD_DEFAULT_MONITOR_INTERVAL = 100;
   public static final String DUMMY_IP_ADDRESS = "0.0.0.0";
   public static final String TUNNEL_TYPE_VXLAN = "VXLAN";
   public static final String TUNNEL_TYPE_GRE = "GRE";
   public static final String TUNNEL_TYPE_MPLS_OVER_GRE = "MPLS_OVER_GRE";
   public static final String TUNNEL_TYPE_INVALID = "Invalid";
+  public static final String MONITOR_TYPE_LLDP = "LLDP";
+  public static final Class<? extends TunnelMonitoringTypeBase> DEFAULT_MONITOR_PROTOCOL =  TunnelMonitoringTypeBfd.class;
 }
+
+
