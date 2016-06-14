@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba51214e_bfcd3860",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-14T08:10:25Z",
+      "side": 1,
+      "message": "nitpick: renaming variable wasn\u0027t really needed. guess result of find/replace.",
+      "range": {
+        "startLine": 108,
+        "startChar": 109,
+        "endLine": 108,
+        "endChar": 113
+      },
+      "revId": "a3e94c77641f1f9058ffcdfb126d5d8e66b19ce8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_ffd7b0eb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MatchInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-14T08:10:25Z",
+      "side": 1,
+      "message": "nitpick: space after comma",
+      "revId": "a3e94c77641f1f9058ffcdfb126d5d8e66b19ce8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba51214e_5f121cb5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-14T08:10:25Z",
+      "side": 1,
+      "message": "nitpick: space after comma",
+      "revId": "a3e94c77641f1f9058ffcdfb126d5d8e66b19ce8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
