@@ -122,11 +122,8 @@ public class OvsInterfaceConfigAddHelper {
             return;
         }
 
-        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
-        BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(interfaceNew.getName());
-
-        LOG.debug("creating bridge interfaceEntry in ConfigDS {}", bridgeEntryKey);
-        InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(bridgeEntryKey, bridgeInterfaceEntryKey,
+        LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
+        InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId,
                 interfaceNew.getName(), transaction);
         futures.add(transaction.submit());
 
@@ -137,7 +134,7 @@ public class OvsInterfaceConfigAddHelper {
         BridgeRefEntry bridgeRefEntry =
                 InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnBridgeEntryIid, dataBroker);
         if(bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
-            LOG.debug("creating bridge interface on dpn {}", bridgeEntryKey);
+            LOG.debug("creating bridge interface on dpn {}", dpId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getBridgeReference().getValue();
             Optional<OvsdbBridgeAugmentation> bridgeNodeOptional =

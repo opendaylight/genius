@@ -52,17 +52,18 @@ public class OvsInterfaceStateRemoveHelper {
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
 
-        if (!InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorId)) {
+        if(!InterfaceManagerCommonUtils.isNodePresent(dataBroker,nodeConnectorId)){
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
-            OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(key, interfaceName, dataBroker, alivenessMonitorService, transaction);
+            OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(key, interfaceName, fcNodeConnectorOld, dataBroker,
+                    alivenessMonitorService, transaction);
 
-        } else {
+        }else{
             InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
 
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                     InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
-            if (iface != null) {
+            if(iface != null) {
                 // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
                 if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
                     InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
@@ -81,7 +82,7 @@ public class OvsInterfaceStateRemoveHelper {
     public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService, IMdsalApiManager mdsalApiManager,
                                                      DataBroker dataBroker, BigInteger dpId, String interfaceName,
                                                      IfTunnel ifTunnel, WriteTransaction transaction,
-                                                     NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures) {
+                                                     NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures){
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
         InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName, -1,
                 NwConstants.DEL_FLOW);

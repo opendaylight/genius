@@ -17,6 +17,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +40,12 @@ public class OvsInterfaceTopologyStateRemoveHelper {
             return futures;
         }
 
-        // remove all tunnels for the disconnected dpn
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
-        if (bridgeEntry != null) {
-            SouthboundUtils.removeAllPortsFromBridge(bridgeEntry, dataBroker, bridgeIid, bridgeOld, futures);
-        }
         //delete bridge reference entry in interface meta operational DS
         InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, transaction);
+
+        // the bridge reference is copied to dpn-tunnel interfaces map, so that whenever a northbound delete
+        // happens when bridge is not connected, we need the bridge reference to clean up the topology config DS
+        InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(bridgeIid), transaction);
 
         futures.add(transaction.submit());
         return futures;

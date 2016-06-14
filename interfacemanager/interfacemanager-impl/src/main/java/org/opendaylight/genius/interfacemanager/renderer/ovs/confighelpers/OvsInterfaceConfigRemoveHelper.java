@@ -35,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -79,11 +80,13 @@ public class OvsInterfaceConfigRemoveHelper {
         InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, transaction, idManagerService);
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, dataBroker, transaction, idManagerService);
-        if(ifState == null) {
-            LOG.debug("could not fetch interface state corresponding to {}", interfaceName);
+                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+
+        if (ifState == null) {
+            LOG.debug("could not fetch interface state corresponding to {}",interfaceName);
         }
 
+        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, dataBroker, transaction, idManagerService);
         BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
         FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
         InterfaceManagerCommonUtils.deleteParentInterfaceEntry(transaction, parentRefs.getParentInterface());
@@ -118,10 +121,10 @@ public class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
-        BridgeRefEntry bridgeRefEntry =
+        OvsdbBridgeRef ovsdbBridgeRef =
                 InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
-        if (bridgeRefEntry != null) {
-            SouthboundUtils.removeTerminationEndPoint(futures, dataBroker, bridgeRefEntry.getBridgeReference().getValue(), interfaceName);
+        if (ovsdbBridgeRef != null) {
+            SouthboundUtils.removeTerminationEndPoint(futures, dataBroker, ovsdbBridgeRef.getValue(), interfaceName);
         }
 
         // delete tunnel ingress flow
@@ -141,9 +144,11 @@ public class OvsInterfaceConfigRemoveHelper {
             LOG.debug("Bridge Interface Entries not present for dpn : {}", dpId);
             return;
         }
+
         InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid, transaction, interfaceName);
         InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, dataBroker, transaction, idManager);
+
         futures.add(transaction.submit());
         // stop LLDP monitoring for the tunnel interface
         AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);

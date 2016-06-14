@@ -62,8 +62,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     }
 
     public static List<ListenableFuture<Void>> updateTunnelState(DataBroker dataBroker,
-                                                                 OvsdbTerminationPointAugmentation terminationPointNew,
-                                                                 OvsdbTerminationPointAugmentation terminationPointOld) {
+                                                                 OvsdbTerminationPointAugmentation terminationPointNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
 
         if (InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker) == null) {

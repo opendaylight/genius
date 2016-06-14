@@ -199,7 +199,7 @@ public class TopologyStateInterfaceTest {
 
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
-        updateHelper.updateTunnelState(dataBroker, newTerminationPoint, null);
+        updateHelper.updateTunnelState(dataBroker, newTerminationPoint);
 
         //verify
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =

@@ -14,6 +14,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
@@ -66,12 +67,19 @@ public class InterfaceMetaUtils {
         return bridgeRefEntryOptional.get();
     }
 
-    public static BridgeRefEntry getBridgeRefEntryFromOperDS(BigInteger dpId,
+    public static OvsdbBridgeRef getBridgeRefEntryFromOperDS(BigInteger dpId,
                                                              DataBroker dataBroker) {
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid =
                 InterfaceMetaUtils.getBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        return getBridgeRefEntryFromOperDS(bridgeRefEntryIid, dataBroker);
+        BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromOperDS(bridgeRefEntryIid, dataBroker);
+        if(bridgeRefEntry == null){
+            // bridge ref entry will be null if the bridge is disconnected from controller.
+            // In that case, fetch bridge reference from bridge interface entry config DS
+            BridgeEntry bridgeEntry = getBridgeEntryFromConfigDS(dpId, dataBroker);
+            return  bridgeEntry.getBridgeReference();
+        }
+        return bridgeRefEntry.getBridgeReference();
     }
 
     public static BridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo,
@@ -131,10 +139,11 @@ public class InterfaceMetaUtils {
 
     }
 
-    public static void createBridgeInterfaceEntryInConfigDS(BridgeEntryKey bridgeEntryKey,
-                                                            BridgeInterfaceEntryKey bridgeInterfaceEntryKey,
+    public static void createBridgeInterfaceEntryInConfigDS(BigInteger dpId,
                                                             String childInterface,
                                                             WriteTransaction t) {
+        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
+        BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(childInterface);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey, bridgeInterfaceEntryKey);
         BridgeInterfaceEntryBuilder entryBuilder = new BridgeInterfaceEntryBuilder().setKey(bridgeInterfaceEntryKey)
@@ -218,6 +227,14 @@ public class InterfaceMetaUtils {
         LOG.debug("removing lport tag to interface map for {}",infName);
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         t.delete(LogicalDatastoreType.OPERATIONAL, id);
+    }
+
+    public static void addBridgeRefToBridgeInterfaceEntry(BigInteger dpId, OvsdbBridgeRef ovsdbBridgeRef, WriteTransaction t){
+        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
+        InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = getBridgeEntryIdentifier(bridgeEntryKey);
+
+        BridgeEntryBuilder bridgeEntryBuilder = new BridgeEntryBuilder().setKey(bridgeEntryKey).setBridgeReference(ovsdbBridgeRef);
+        t.merge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), true);
     }
 
     public static void createBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid,

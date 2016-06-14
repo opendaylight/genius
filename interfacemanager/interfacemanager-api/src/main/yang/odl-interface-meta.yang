@@ -19,6 +19,10 @@ module odl-interface-meta {
                 type uint64;
             }
 
+            leaf bridge-reference {
+                type southbound:ovsdb-bridge-ref;
+                description "This is the reference to an ovs bridge";
+            }
             list bridge-interface-entry {
                 key interface-name;
                 leaf interface-name {
