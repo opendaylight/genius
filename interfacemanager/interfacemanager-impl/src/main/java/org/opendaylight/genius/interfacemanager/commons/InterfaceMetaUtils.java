@@ -66,12 +66,19 @@ public class InterfaceMetaUtils {
         return bridgeRefEntryOptional.get();
     }
 
-    public static BridgeRefEntry getBridgeRefEntryFromOperDS(BigInteger dpId,
+    public static OvsdbBridgeRef getBridgeRefEntryFromOperDS(BigInteger dpId,
                                                              DataBroker dataBroker) {
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid =
                 InterfaceMetaUtils.getBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        return getBridgeRefEntryFromOperDS(bridgeRefEntryIid, dataBroker);
+        BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromOperDS(bridgeRefEntryIid, dataBroker);
+        if(bridgeRefEntry == null){
+            // bridge ref entry will be null if the bridge is disconnected from controller.
+            // In that case, fetch bridge reference from bridge interface entry config DS
+            BridgeEntry bridgeEntry = getBridgeEntryFromConfigDS(dpId, dataBroker);
+            return  bridgeEntry.getBridgeReference();
+        }
+        return bridgeRefEntry.getBridgeReference();
     }
 
     public static BridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo,
@@ -131,10 +138,11 @@ public class InterfaceMetaUtils {
 
     }
 
-    public static void createBridgeInterfaceEntryInConfigDS(BridgeEntryKey bridgeEntryKey,
-                                                            BridgeInterfaceEntryKey bridgeInterfaceEntryKey,
+    public static void createBridgeInterfaceEntryInConfigDS(BigInteger dpId,
                                                             String childInterface,
                                                             WriteTransaction t) {
+        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
+        BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(childInterface);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey, bridgeInterfaceEntryKey);
         BridgeInterfaceEntryBuilder entryBuilder = new BridgeInterfaceEntryBuilder().setKey(bridgeInterfaceEntryKey)
@@ -220,6 +228,14 @@ public class InterfaceMetaUtils {
         t.delete(LogicalDatastoreType.OPERATIONAL, id);
     }
 
+    public static void addBridgeRefToBridgeInterfaceEntry(BigInteger dpId, OvsdbBridgeRef ovsdbBridgeRef, WriteTransaction t){
+        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
+        InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = getBridgeEntryIdentifier(bridgeEntryKey);
+
+        BridgeEntryBuilder bridgeEntryBuilder = new BridgeEntryBuilder().setKey(bridgeEntryKey).setBridgeReference(ovsdbBridgeRef);
+        t.merge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), true);
+    }
+
     public static void createBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid,
                                             WriteTransaction tx){
         LOG.debug("Creating bridge ref entry for dpn: {} bridge: {}",
@@ -257,7 +273,7 @@ public class InterfaceMetaUtils {
     public static void createTunnelToInterfaceMap(String infName,InstanceIdentifier<Node> nodeId,
                                                   WriteTransaction transaction,
                                                   IfTunnel ifTunnel){
-        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.
+        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.vpnservice.interfacemgr.renderer.hwvtep.utilities.SouthboundUtils.
                 createTunnelsInstanceIdentifier(nodeId,
                         ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
         createTunnelToInterfaceMap(tunnelsInstanceIdentifier.toString(), infName, transaction);
@@ -266,7 +282,7 @@ public class InterfaceMetaUtils {
     public static void removeTunnelToInterfaceMap(InstanceIdentifier<Node> nodeId,
                                                   WriteTransaction transaction,
                                                   IfTunnel ifTunnel){
-        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.
+        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.vpnservice.interfacemgr.renderer.hwvtep.utilities.SouthboundUtils.
                 createTunnelsInstanceIdentifier(nodeId,
                         ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
         transaction.delete(LogicalDatastoreType.OPERATIONAL, tunnelsInstanceIdentifier);

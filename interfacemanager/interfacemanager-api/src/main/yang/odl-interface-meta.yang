@@ -1,12 +1,12 @@
 module odl-interface-meta {
-    namespace "urn:opendaylight:genius:interfacemanager:meta";
+    namespace "urn:opendaylight:vpnservice:interfacemgr:meta";
     prefix "odlifmeta";
 
     import ovsdb {
         prefix southbound; revision-date "2015-01-05";
     }
 
-    revision "2016-04-06" {
+    revision "2015-10-07" {
         description "ODL rendering specific Interface Manager Meta Module";
     }
 
@@ -17,6 +17,10 @@ module odl-interface-meta {
             key dpid;
             leaf dpid {
                 type uint64;
+            }
+            leaf bridge-reference {
+                type southbound:ovsdb-bridge-ref;
+                description "This is the reference to an ovs bridge";
             }
 
             list bridge-interface-entry {

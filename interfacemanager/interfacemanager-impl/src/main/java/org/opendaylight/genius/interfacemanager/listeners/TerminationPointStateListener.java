@@ -66,7 +66,7 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
             LOG.trace("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.",
                     identifier, tpOld, tpNew);
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew, tpOld);
+            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker);
         }
     }
@@ -74,20 +74,25 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
     @Override
     protected void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                        OvsdbTerminationPointAugmentation tpNew) {
+        LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());
+        if (tpNew.getInterfaceBfdStatus() != null) {
+            LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tpNew);
+            jobCoordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker);
+        }
 
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<OvsdbTerminationPointAugmentation> instanceIdentifier;
         OvsdbTerminationPointAugmentation terminationPointNew;
-        OvsdbTerminationPointAugmentation terminationPointOld;
 
 
         public RendererStateUpdateWorker(InstanceIdentifier<OvsdbTerminationPointAugmentation> instanceIdentifier,
-                                         OvsdbTerminationPointAugmentation tpNew, OvsdbTerminationPointAugmentation tpOld) {
+                                         OvsdbTerminationPointAugmentation tpNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.terminationPointNew = tpNew;
-            this.terminationPointOld = tpOld;
         }
 
         @Override
@@ -95,7 +100,7 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker,
-                    terminationPointNew, terminationPointOld);
+                    terminationPointNew);
         }
     }
 }
