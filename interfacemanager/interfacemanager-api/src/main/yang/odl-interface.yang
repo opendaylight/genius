@@ -64,6 +64,11 @@ module odl-interface {
         description "Tunnel type for vxlan tunnels";
         base tunnel-type-base;
     }
+    
+    identity tunnel-type-vxlan-gpe {
+        description "Tunnel type for vxlan-gpe";
+        base tunnel-type-base;
+    }
 
     identity tunnel-type-gre {
         description "Tunnel type for gre tunnels";
