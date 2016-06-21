@@ -9,26 +9,23 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
-import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
-import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,9 +74,7 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-        if (checkPortExistsForSameDPN(key, flowCapableNodeConnectorOld)) {
-            removeInterfaceStateConfig(key, flowCapableNodeConnectorOld);
-        }
+        remove(key, flowCapableNodeConnectorOld, true);
     }
 
     @Override
@@ -97,8 +92,8 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-        //VM Migration: Delete existing port entry for older DPN
-        removeInterfaceStateConfig(key, fcNodeConnectorNew);
+        //VM Migration: Delete existing interface entry for older DPN
+        remove(key, fcNodeConnectorNew, false);
         String portName = fcNodeConnectorNew.getName();
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -109,48 +104,38 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
     }
 
     /**
-     * VM Migration: VM migrated from DPN1 to DPN2
-     * In Nova evacuate scenario, OFPPR_ADD from DPN2 will be received before OFPPR_DELETE from DPN1.
-     * In this case, add method will cleanup the existing entry for older DPN1 in OperDS.
-     * When the OFPPR_DELETE received is for DPN1, we need to discard it.
-     */
-    private boolean checkPortExistsForSameDPN(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                              FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        String interfaceName = flowCapableNodeConnectorOld.getName();
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-
-        // Get the interfaceState for the port from the operational DS
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface interfaceState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-
-        if (interfaceState != null) {
-            String lowerLayerIf = interfaceState.getLowerLayerIf().get(0);
-            if (!nodeConnectorId.getValue().equals(lowerLayerIf)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * VM Migration: VM migrated from DPN1 to DPN2.
      * VM booted from new DPN host will preserves its configuration including ID, name and other properties.
      * In certain vm migration scenario like nova evacuate, vm reboot
      * it is expected to receive the events in a non-sequential manner
      * In Nova evacuate scenario, OFPPR_ADD from DPN2 will be received before OFPPR_DELETE from DPN1.
-     * To cleanup existing entry in OperDS, removeIfStateBeforeAdd method will be called from add()
+     * To cleanup existing entry in OperDS, remove method will be called from add()
+     *
      */
-    private void removeInterfaceStateConfig(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                            FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        LOG.debug("Received user/network triggered NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
+    private void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
+                        FlowCapableNodeConnector flowCapableNodeConnectorOld, boolean isNwTrigger) {
+        LOG.debug("Received user/network NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
         String portName = flowCapableNodeConnectorOld.getName();
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+
+        //VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD for same interface
+        NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
+        if(nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+            if(isNwTrigger) {
+                LOG.info("Received NodeConnector Remove Event for the interface exists in another DPN: {}, {}", nodeConnectorId, nodeConnectorIdOld);
+                return;
+            } else {
+                LOG.info("InterfaceState removal with old NodeConnectorID: {} instead of new NodeConnectorID: {}", nodeConnectorIdOld, nodeConnectorId);
+                nodeConnectorId = nodeConnectorIdOld;
+            }
+        }
+
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                key, flowCapableNodeConnectorOld, portName);
+                nodeConnectorId, flowCapableNodeConnectorOld, portName);
         coordinator.enqueueJob(portName, portStateRemoveWorker);
     }
-
 
     private class InterfaceStateAddWorker implements Callable {
         private final NodeConnectorId nodeConnectorId;
@@ -236,16 +221,15 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
     }
 
     private class InterfaceStateRemoveWorker implements Callable {
-        InstanceIdentifier<FlowCapableNodeConnector> key;
+        private final NodeConnectorId nodeConnectorId;
         FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
         private final IdManagerService idManager;
 
-        public InterfaceStateRemoveWorker(IdManagerService idManager,
-                                          InstanceIdentifier<FlowCapableNodeConnector> key,
+        public InterfaceStateRemoveWorker(IdManagerService idManager, NodeConnectorId nodeConnectorId,
                                           FlowCapableNodeConnector fcNodeConnectorOld,
                                           String portName) {
-            this.key = key;
+            this.nodeConnectorId = nodeConnectorId;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.interfaceName = portName;
             this.idManager = idManager;
@@ -256,13 +240,13 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             List<ListenableFuture<Void>> futures = OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager, alivenessMonitorService,
-                    key, dataBroker, interfaceName, fcNodeConnectorOld);
+                    nodeConnectorId, dataBroker, interfaceName, fcNodeConnectorOld);
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 // Fetch all interfaces on this port and trigger remove worker for each of them
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                        key, fcNodeConnectorOld, interfaceChildEntry.getChildInterface());
+                        nodeConnectorId, fcNodeConnectorOld, interfaceChildEntry.getChildInterface());
                 DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, interfaceStateRemoveWorker);
 
             }
@@ -272,7 +256,7 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
         @Override
         public String toString() {
             return "InterfaceStateRemoveWorker{" +
-                    "key=" + key +
+                    "nodeConnectorId=" + nodeConnectorId +
                     ", fcNodeConnectorOld=" + fcNodeConnectorOld +
                     ", interfaceName='" + interfaceName + '\'' +
                     '}';

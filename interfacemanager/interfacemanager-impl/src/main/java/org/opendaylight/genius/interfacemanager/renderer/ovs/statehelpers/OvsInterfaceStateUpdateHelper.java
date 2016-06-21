@@ -22,8 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,9 +83,9 @@ public class OvsInterfaceStateUpdateHelper {
         return futures;
     }
 
-    public static void updateInterfaceStateOnNodeRemove(InstanceIdentifier<FlowCapableNodeConnector> key,String interfaceName,
-                                                        FlowCapableNodeConnector flowCapableNodeConnector, DataBroker dataBroker,
-                                                        AlivenessMonitorService alivenessMonitorService, WriteTransaction transaction){
+    public static void updateInterfaceStateOnNodeRemove(String interfaceName, FlowCapableNodeConnector flowCapableNodeConnector,
+                                                        DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+                                                        WriteTransaction transaction){
         LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
 
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
