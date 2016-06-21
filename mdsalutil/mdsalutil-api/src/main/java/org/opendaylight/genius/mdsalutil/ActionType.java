@@ -53,6 +53,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.add.group.input.buckets.bucket.action.action.NxActionResubmitRpcAddGroupCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrack;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrackBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.resubmit.grouping.NxResubmitBuilder;
 
 public enum ActionType {
@@ -425,6 +428,28 @@ public enum ActionType {
             ActionBuilder ab = new ActionBuilder();
             return null;
         }
+    },
+    nx_conntrack {
+        @Override
+        public Action buildAction(ActionInfo actionInfo) {
+            String[] actionValues = actionInfo.getActionValues();
+            Integer flags = new Integer(actionValues[0]);
+            Long zoneSrc = new Long(actionValues[1]);
+            Integer conntrackZone = new Integer(actionValues[2]);
+            Short recircTable = new Short(actionValues[3]);
+            NxConntrackBuilder ctb = new NxConntrackBuilder()
+                    .setFlags(flags)
+                    .setZoneSrc(zoneSrc)
+                    .setConntrackZone(conntrackZone)
+                    .setRecircTable(recircTable);
+            ActionBuilder ab = new ActionBuilder();
+            ab.setAction(new NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder()
+                .setNxConntrack(ctb.build()).build());
+            ab.setKey(new ActionKey(actionInfo.getActionKey()));
+            return ab.build();
+
+        }
+
     };
 
     private static final int RADIX_HEX = 16;
