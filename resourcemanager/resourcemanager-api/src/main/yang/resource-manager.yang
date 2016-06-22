@@ -1,0 +1,63 @@
+module resource-manager {
+    namespace "urn:opendaylight:genius:resourcemanager";
+    prefix resourcemgr;
+
+    revision "2016-06-22" {
+        description "YANG model exposes RPCs that can be used by the applications for allocating a block of IDs for tables, groups, meters, etc. This yang-model enables ODL Resource Sharing Framework";
+    }
+
+
+    identity resource-type-base{
+        description "Base identity for all resource-types";
+    }
+
+    identity resource-type-tables{
+        description "Resource type for tables";
+        base resource-type-base;
+    }
+
+    identity resource-type-groups{
+        description "Resource type for groups";
+        base resource-type-base;
+    }
+
+    identity resource-type-meters{
+        description "Resource type for meters";
+        base resource-type-base;
+    }
+
+    rpc releaseIds {
+        input {
+             leaf resource-type {
+                type identityref{
+                    base resource-type-base;
+                }
+             }
+             leaf id-key {
+                type string;
+             }
+        }
+    }
+
+    rpc allocateIds {
+        input {
+             leaf resource-type {
+                type identityref{
+                    base resource-type-base;
+                }
+             }
+             leaf id-key {
+                type string;
+             }
+             leaf size {
+                type uint32;
+             }
+        }
+        output {
+             leaf-list id-values{
+                type uint32;
+                ordered-by user;
+             }
+        }
+    }
+}
