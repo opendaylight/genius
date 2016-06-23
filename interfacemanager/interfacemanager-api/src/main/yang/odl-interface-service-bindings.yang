@@ -21,11 +21,35 @@ module interface-service-bindings {
        base service-type-base;
     }
 
+    identity service-mode-base {
+       description "Base identity for all service-modes";
+    }
+
+    identity service-mode-ingress {
+       description "Service mode for ingress binding services.
+           Ingress binding services get applied to all packets ingressing the switch.
+           e.g. egress ACLs applied to VM ports are considered ingress service for the switch";
+       base service-mode-base;
+    }
+
+    identity service-mode-egress {
+       description "Service mode for egress binding services.
+           Egress binding services get applied to all packets egressing the switch.
+           e.g. ingress ACLs applied to VM ports are considered egress service for the switch";
+       base service-mode-base;
+    }
+
     container service-bindings {
         list services-info {
-            key interface-name;
+            key "interface-name service-mode";
             leaf interface-name {
                 type string;
+            }
+
+            leaf service-mode {
+                type identityref{
+                   base service-mode-base;
+                }
             }
 
             list bound-services {
