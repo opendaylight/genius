@@ -241,4 +241,18 @@ module itm-rpc {
                     }
                 }
             }
+
+        rpc is-tunnel-internal-or-external {
+            description "Used for determining whether tunnel is an internal or an external tunnel";
+                input {
+                    leaf tunnel-interface-name {
+                        type string;
+                    }
+                }
+                output {
+                    leaf tunnel-type {
+                        type uint32;
+                }
+            }
+        }
     }

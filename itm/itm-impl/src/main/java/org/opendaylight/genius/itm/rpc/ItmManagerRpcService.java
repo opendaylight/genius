@@ -616,5 +616,23 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
     }
 
+    @Override
+    public Future<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
+            IsTunnelInternalOrExternalInput input) {
+        RpcResultBuilder<IsTunnelInternalOrExternalOutput> resultBld;
+        String tunIfName = input.getTunnelInterfaceName();
+        long tunVal = 0;
+        IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder().setTunnelType(tunVal);
+
+        if(ItmUtils.itmCache.getInternalTunnel(tunIfName) != null) {
+            tunVal = 1;
+        } else if (ItmUtils.itmCache.getExternalTunnel(tunIfName) != null) {
+            tunVal = 2;
+        }
+        output.setTunnelType(tunVal);
+        resultBld = RpcResultBuilder.success();
+        resultBld.withResult(output.build());
+        return Futures.immediateFuture(resultBld.build());
+    }
 
 }
