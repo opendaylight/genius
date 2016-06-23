@@ -15,6 +15,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.stateh
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers.FlowBasedServicesStateUnbindHelper;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +70,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
+        Class<? extends ServiceModeBase> serviceMode;
 
         public RendererStateInterfaceBindWorker(Interface iface) {
             this.iface = iface;
@@ -76,12 +78,13 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            return FlowBasedServicesStateBindHelper.bindServicesOnInterface(iface, dataBroker);
+            return FlowBasedServicesStateBindHelper.bindServicesOnInterface(iface, serviceMode, dataBroker);
         }
     }
 
     private class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
+        Class<? extends ServiceModeBase> serviceMode;
 
         public RendererStateInterfaceUnbindWorker(Interface iface) {
             this.iface = iface;
@@ -89,7 +92,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            return FlowBasedServicesStateUnbindHelper.unbindServicesFromInterface(iface, dataBroker);
+            return FlowBasedServicesStateUnbindHelper.unbindServicesFromInterface(iface, serviceMode, dataBroker);
         }
     }
 }

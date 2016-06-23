@@ -24,6 +24,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -49,8 +50,9 @@ import java.util.List;
 public class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
 
-    public static ServicesInfo getServicesInfoForInterface(String interfaceName, DataBroker dataBroker) {
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName);
+    public static ServicesInfo getServicesInfoForInterface(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
+                                                           DataBroker dataBroker) {
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName,serviceMode);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
                 InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
         Optional<ServicesInfo> servicesInfoOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION,
