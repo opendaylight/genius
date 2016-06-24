@@ -33,6 +33,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <bundle>mvn:org.opendaylight.genius/alivenessmonitor-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/interfacemanager-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/itm-api/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/resourcemanager-api/{{VERSION}}</bundle>
   </feature>
   <feature name='odl-genius' version='${project.version}' description='OpenDaylight :: genius'>
     <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
@@ -49,6 +50,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <bundle>mvn:org.opendaylight.genius/alivenessmonitor-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/interfacemanager-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/itm-impl/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/resourcemanager-impl/{{VERSION}}</bundle>
     <configfile finalname="lockmanager-impl-default-config.xml">mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="idmanager-impl-default-config.xml">mvn:org.opendaylight.genius/idmanager-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="mdsalutil-impl-default-config.xml">mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}/xml/config</configfile>
@@ -56,6 +58,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <configfile finalname="arputil-impl-default-config.xml">mvn:org.opendaylight.genius/arputil-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="alivenessmonitor-impl-default-config.xml">mvn:org.opendaylight.genius/alivenessmonitor-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="itm-impl-default-config.xml">mvn:org.opendaylight.genius/itm-impl/{{VERSION}}/xml/config</configfile>
+    <configfile finalname="resourcemanager-impl-default-config.xml">mvn:org.opendaylight.genius/resourcemanager-impl/{{VERSION}}/xml/config</configfile>
    </feature>
   <feature name='odl-genius-rest' version='${project.version}' description='OpenDaylight :: genius :: REST'>
     <feature version="${project.version}">odl-genius</feature>
