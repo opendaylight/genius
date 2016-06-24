@@ -128,7 +128,7 @@ public class AlivenessMonitorUtils {
         }
     }
 
-    private static org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface getInterfaceForMonitoring(String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddress ipAddress) {
+    private static org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface getInterfaceForMonitoring(String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress ipAddress) {
         return new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.
                 endpoint.type.InterfaceBuilder().setInterfaceIp(ipAddress).setInterfaceName(interfaceName).build();
     }
