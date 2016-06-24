@@ -2,31 +2,35 @@ module resource-manager {
     namespace "urn:opendaylight:genius:resourcemanager";
     prefix resourcemgr;
 
+    import id-manager {
+        prefix idmgr;
+    }
+
     revision "2016-06-22" {
         description "YANG model exposes RPCs that can be used by the applications for allocating a block of IDs for tables, groups, meters, etc. This yang-model enables ODL Resource Sharing Framework";
     }
 
 
-    identity resource-type-base{
+    identity resource-type-base {
         description "Base identity for all resource-types";
     }
 
-    identity resource-type-tables{
+    identity resource-type-table-ids {
         description "Resource type for tables";
         base resource-type-base;
     }
 
-    identity resource-type-groups{
+    identity resource-type-group-ids {
         description "Resource type for groups";
         base resource-type-base;
     }
 
-    identity resource-type-meters{
+    identity resource-type-meter-ids {
         description "Resource type for meters";
         base resource-type-base;
     }
 
-    rpc releaseIds {
+    rpc releaseResource {
         input {
              leaf resource-type {
                 type identityref{
@@ -39,7 +43,7 @@ module resource-manager {
         }
     }
 
-    rpc allocateIds {
+    rpc allocateResource {
         input {
              leaf resource-type {
                 type identityref{
@@ -57,6 +61,36 @@ module resource-manager {
              leaf-list id-values{
                 type uint32;
                 ordered-by user;
+             }
+        }
+    }
+
+    rpc getAvailableResources{
+        input {
+             leaf resource-type {
+                type identityref{
+                    base resource-type-base;
+                }
+             }
+        }
+        output{
+             leaf total-available-id-count {
+                type uint32;
+             }
+        }
+    }
+
+    rpc getResourcePool{
+        input{
+             leaf resource-type {
+                type identityref{
+                    base resource-type-base;
+                }
+             }
+        }
+        output{
+             leaf pool {
+                type idmgr:id-pool;
              }
         }
     }
