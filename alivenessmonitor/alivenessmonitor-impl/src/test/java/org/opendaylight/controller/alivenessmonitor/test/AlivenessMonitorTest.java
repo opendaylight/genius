@@ -46,7 +46,7 @@ import org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitor;
 import org.opendaylight.genius.alivenessmonitor.internal.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.internal.AlivenessProtocolHandlerARP;
 import org.opendaylight.genius.alivenessmonitor.internal.AlivenessProtocolHandlerLLDP;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev100924.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInputBuilder;
