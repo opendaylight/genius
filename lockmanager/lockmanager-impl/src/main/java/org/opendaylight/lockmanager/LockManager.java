@@ -102,16 +102,18 @@ public class LockManager implements LockManagerService {
      * @param lockData
      */
     private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData) throws InterruptedException {
-        try {
-            if (!readWriteLock(lockInstanceIdentifier, lockData)) {
-                LOG.debug("Already locked trying after {}", DEFAULT_WAIT_TIME_IN_MILLIS);
-                LockManagerUtils.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
-                getLock(lockInstanceIdentifier, lockData);
+        // Count from 1 to provide human-comprehensible messages
+        for (int retry = 1; ; retry++) {
+            try {
+                if (readWriteLock(lockInstanceIdentifier, lockData)) {
+                    return;
+                } else {
+                    LOG.debug("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                }
+            } catch (ExecutionException e) {
+                LOG.error("Unable to acquire lock, try {}", retry, e);
             }
-        } catch (ExecutionException e) {
-            LOG.error("In getLock unable to get lock due to {}, trying again", e.getMessage());
-            LockManagerUtils.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
-            getLock(lockInstanceIdentifier, lockData);
+            Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
     }
 
@@ -125,21 +127,21 @@ public class LockManager implements LockManagerService {
      */
     private boolean getLock(InstanceIdentifier<Lock> lockInstanceIdentifier,
             Lock lockData, long retryCount) throws InterruptedException {
-        if (retryCount < 0) {
-            return false;
-        }
-        try {
-            if (!readWriteLock(lockInstanceIdentifier, lockData)) {
-                LOG.debug("Already locked trying after {}, retry value {}", DEFAULT_WAIT_TIME_IN_MILLIS, retryCount);
-                LockManagerUtils.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
-                return getLock(lockInstanceIdentifier, lockData, retryCount - 1);
+        // Count from 1 to provide human-comprehensible messages
+        for (int retry = 1; retry <= retryCount; retry++) {
+            try {
+                if (readWriteLock(lockInstanceIdentifier, lockData)) {
+                    return true;
+                } else {
+                    LOG.debug("Already locked after waiting {}ms, try {} of {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry,
+                            retryCount);
+                }
+            } catch (ExecutionException e) {
+                LOG.error("Unable to acquire lock, try {} of {}", retry, retryCount, e);
             }
-        } catch (ExecutionException e) {
-            LOG.error("In getLock unable to get lock due to {}, trying again, retry value {}", e.getMessage(), retryCount);
-            LockManagerUtils.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
-            return getLock(lockInstanceIdentifier, lockData, retryCount - 1);
+            Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
-        return true;
+        return false;
     }
 
     /**
