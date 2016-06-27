@@ -66,7 +66,7 @@ public class LockManager implements LockManagerService {
         LOG.info("Locking {}" , lockName);
         long waitTime = input.getTime() == null ? DEFAULT_WAIT_TIME_IN_MILLIS * DEFAULT_RETRY_COUNT : input.getTime();
         TimeUnit timeUnit = (TimeUnit) (input.getTimeUnit() == null ? TimeUnit.MILLISECONDS: LockManagerUtils.convertToTimeUnit(input.getTimeUnit()));
-        waitTime = LockManagerUtils.convertToMillis(waitTime, timeUnit);
+        waitTime = timeUnit.toMillis(waitTime);
         long retryCount = waitTime / DEFAULT_WAIT_TIME_IN_MILLIS;
         InstanceIdentifier<Lock> lockInstanceIdentifier = LockManagerUtils.getLockInstanceIdentifier(lockName);
         Lock lockData = LockManagerUtils.buildLockData(lockName);
