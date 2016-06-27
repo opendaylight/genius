@@ -23,13 +23,6 @@ public class LockManagerUtils {
         return timeUnit.toMillis(waitTime);
     }
 
-    public static void sleep(long waitTime) {
-        try {
-            Thread.sleep(waitTime);
-        } catch (InterruptedException exception) {
-        }
-    }
-
     public static TimeUnit convertToTimeUnit(TimeUnits timeUnit) {
         switch (timeUnit) {
         case Days:
