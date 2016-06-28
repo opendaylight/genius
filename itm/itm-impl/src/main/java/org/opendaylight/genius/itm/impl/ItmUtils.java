@@ -37,6 +37,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
@@ -1009,5 +1011,18 @@ public class ItmUtils {
             monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         LOG.debug("determineMonitorProtocol: monitorProtocol = {}", monitoringProtocol);
         return monitoringProtocol;
+    }
+
+
+    public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker){
+        InstanceIdentifier<DcGatewayIpList> dcGatewayIpListid = InstanceIdentifier.builder(DcGatewayIpList.class).build();
+        Optional<DcGatewayIpList> dcGatewayIpListConfig = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dcGatewayIpListid, broker);
+        if(dcGatewayIpListConfig.isPresent()){
+            DcGatewayIpList containerList = dcGatewayIpListConfig.get();
+            if(containerList != null){
+                return (containerList.getDcGatewayIp());
+            }
+        }
+        return null;
     }
 }

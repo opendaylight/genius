@@ -34,7 +34,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIpBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIpKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
@@ -106,7 +110,23 @@ public class ItmManagerRpcService implements ItmRpcService {
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,meshedDpnList , input.getDestinationIp(), input.getTunnelType());
-        result.set(RpcResultBuilder.<Void>success().build());
+        InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        t.delete(LogicalDatastoreType.CONFIGURATION, extPath);
+        ListenableFuture<Void> futureCheck = t.submit();
+        Futures.addCallback(futureCheck, new FutureCallback<Void>() {
+
+            @Override public void onSuccess(Void aVoid) {
+                result.set(RpcResultBuilder.<Void>success().build());
+            }
+
+            @Override public void onFailure(Throwable error) {
+                String msg = String.format("Unable to delete DcGatewayIp {} in datastore "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
+                LOG.error("Unable to delete DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
+                result.set(RpcResultBuilder.<Void>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+            }
+        });
         return result;
     }
 
@@ -155,8 +175,24 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType()) ;
-        result.set(RpcResultBuilder.<Void>success().build());
+        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType()) ;InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+        DcGatewayIp dcGatewayIp = new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp()).setTunnnelType(input.getTunnelType()).build();
+        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        t.put(LogicalDatastoreType.CONFIGURATION, extPath,dcGatewayIp, true);
+        ListenableFuture<Void> futureCheck = t.submit();
+        Futures.addCallback(futureCheck, new FutureCallback<Void>() {
+
+            @Override public void onSuccess(Void aVoid) {
+                result.set(RpcResultBuilder.<Void>success().build());
+            }
+
+            @Override public void onFailure(Throwable error) {
+                String msg = String.format("Unable to create DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
+                LOG.error("Unable to create DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
+                result.set(RpcResultBuilder.<Void>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+            }
+        });
         return result;
     }
 
