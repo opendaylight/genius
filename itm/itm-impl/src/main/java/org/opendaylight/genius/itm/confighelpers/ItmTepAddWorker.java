@@ -13,6 +13,7 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +47,12 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
         logger.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",cfgdDpnList, meshedDpnList );
         futures.addAll( ItmInternalTunnelAddWorker.build_all_tunnels(dataBroker, idManagerService,mdsalManager, cfgdDpnList, meshedDpnList) ) ;
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
+        List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
+        if(dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
+            for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
+                futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+            }
+        }
         //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
         logger.debug("invoking build hwVtepTunnels with hwVteplist {}", cfgdHwVteps );
         futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService,cfgdDpnList,cfgdHwVteps));
