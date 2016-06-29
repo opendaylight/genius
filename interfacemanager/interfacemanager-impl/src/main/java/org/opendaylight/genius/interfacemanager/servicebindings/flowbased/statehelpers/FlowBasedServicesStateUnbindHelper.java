@@ -16,6 +16,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -31,11 +32,11 @@ import java.util.List;
 public class FlowBasedServicesStateUnbindHelper {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesStateUnbindHelper.class);
 
-    public static List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState,
+    public static List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState, Class<? extends ServiceModeBase> serviceMode,
                                                                            DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("unbinding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), serviceMode, dataBroker);
         if (servicesInfo == null) {
             LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;

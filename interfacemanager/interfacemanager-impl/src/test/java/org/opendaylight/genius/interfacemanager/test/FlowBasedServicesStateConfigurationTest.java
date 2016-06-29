@@ -27,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
@@ -115,7 +116,7 @@ public class FlowBasedServicesStateConfigurationTest {
                 new InstructionKey(instructionKey));
         instructions.add(instruction);
         stateInterface = ifaceBuilder.build();
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName);
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
         List<BoundServices> lowerlayerIfList = new ArrayList<>();
         lowerlayerIfList.add(boundService);
         interfaceStateIdentifier = IfmUtil.buildStateInterfaceId(interfaceEnabled.getName());
@@ -145,7 +146,7 @@ public class FlowBasedServicesStateConfigurationTest {
         Optional<NodeConnectorId>expectednodeconnectorId = Optional.of(nodeConnectorId);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
 
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName);
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
                 InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
 
@@ -158,7 +159,7 @@ public class FlowBasedServicesStateConfigurationTest {
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
 
-        bindHelper.bindServicesOnInterface(stateInterface,dataBroker);
+        bindHelper.bindServicesOnInterface(stateInterface, ServiceModeIngress.class, dataBroker);
 
         verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,flowInstanceId,ingressFlow, true);
 
@@ -171,7 +172,7 @@ public class FlowBasedServicesStateConfigurationTest {
         Optional<Interface> expectedInterface = Optional.of(interfaceEnabled);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
 
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName);
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
                 InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
 
@@ -182,7 +183,7 @@ public class FlowBasedServicesStateConfigurationTest {
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
 
-        unbindHelper.unbindServicesFromInterface(stateInterface,dataBroker);
+        unbindHelper.unbindServicesFromInterface(stateInterface, ServiceModeIngress.class, dataBroker);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
     }

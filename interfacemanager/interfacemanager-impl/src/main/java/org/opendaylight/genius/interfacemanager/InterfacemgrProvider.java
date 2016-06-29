@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
@@ -366,9 +367,9 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     public void bindService(String interfaceName, BoundServices serviceInfo) {
         LOG.info("Binding Service : {}", interfaceName);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, new ServicesInfoKey(interfaceName))
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
+                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, ServiceModeIngress.class))
                 .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
-        // List<BoundServices> services = (List<BoundServices>)serviceInfo.getBoundServices();
         t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
         t.submit();
     }
@@ -377,7 +378,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     public void unbindService(String interfaceName, BoundServices serviceInfo) {
         LOG.info("Unbinding Service  : {}", interfaceName);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, new ServicesInfoKey(interfaceName))
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
+                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, ServiceModeIngress.class))
                 .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
         t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
         t.submit();

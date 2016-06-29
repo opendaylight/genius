@@ -26,6 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
@@ -47,7 +48,7 @@ public class InterfaceServiceUtil {
             BigInteger cookie, List<Instruction> instructions) {
         List<BoundServices>  boundService = new ArrayList<BoundServices>();
         boundService.add(new BoundServicesBuilder().setServicePriority((short)servicePriority).setServiceName(serviceName).build());
-        return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName)).build();
+        return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
     public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
@@ -62,7 +63,7 @@ public class InterfaceServiceUtil {
             BigInteger cookie) {
         List<BoundServices>  boundService = new ArrayList<BoundServices>();
         boundService.add(new BoundServicesBuilder().setServicePriority((short)servicePriority).setServiceName(serviceName).build());
-        return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName)).build();
+        return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
     public static List<MatchInfo> getMatchInfoForVlanLPort(BigInteger dpId, long portNo, long vlanId, boolean isVlanTransparent) {

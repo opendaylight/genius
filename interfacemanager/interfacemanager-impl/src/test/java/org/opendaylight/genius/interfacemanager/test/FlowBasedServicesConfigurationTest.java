@@ -29,6 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
@@ -120,7 +121,7 @@ public class FlowBasedServicesConfigurationTest {
         instruction = InterfaceManagerTestUtil.buildInstruction(InterfaceManagerTestUtil.buildWriteMetaDataCase(InterfaceManagerTestUtil.buildWriteMetaData(metadata, mask)),
                 new InstructionKey(instructionKey));
         instructions.add(instruction);
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName);
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
         boundServicesIid =  InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey).
                 child(BoundServices.class, new BoundServicesKey(key)).build();
 
@@ -154,7 +155,7 @@ public class FlowBasedServicesConfigurationTest {
         Optional<Interface> expectedInterface = Optional.of(interfaceEnabled);
         Optional<ServicesInfo>expectedservicesInfo = Optional.of(servicesInfo);
 
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName);
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
                 InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
 
@@ -178,7 +179,7 @@ public class FlowBasedServicesConfigurationTest {
         Optional<Interface> expectedInterface = Optional.of(interfaceEnabled);
         Optional<ServicesInfo>expectedservicesInfo = Optional.of(servicesInfoUnbind);
 
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName);
+        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
                 InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
 
