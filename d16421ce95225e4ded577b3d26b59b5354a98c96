@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_65d02d54",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface-service-bindings.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-29T08:58:34Z",
+      "side": 1,
+      "message": "could you specify in description what ingress/egress means in this context? I believe ingress/egress refers to entry/exit into/from the switch, not interface, right? At least that is what I got from discussions about how ACL Service will use this for ingress and egress ACLs. It would be good to capture it here so others looking to use this don\u0027t have any confusion.",
+      "range": {
+        "startLine": 28,
+        "startChar": 4,
+        "endLine": 36,
+        "endChar": 5
+      },
+      "revId": "d16421ce95225e4ded577b3d26b59b5354a98c96",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
