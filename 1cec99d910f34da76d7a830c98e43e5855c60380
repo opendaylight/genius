@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_0ce7d913",
+        "filename": "features/src/main/features/features.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-06-29T13:08:48Z",
+      "side": 1,
+      "message": "I think just flow-services would be enough for this. We don\u0027t really need rest and ui bits for this one.",
+      "range": {
+        "startLine": 81,
+        "startChar": 68,
+        "endLine": 81,
+        "endChar": 84
+      },
+      "revId": "1cec99d910f34da76d7a830c98e43e5855c60380",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
