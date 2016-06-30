@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_fe5de349",
+        "filename": "resourcemanager/resourcemanager-api/src/main/yang/resource-manager.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4534
+      },
+      "writtenOn": "2016-06-30T10:36:45Z",
+      "side": 1,
+      "message": "how will resourcepool be used, can applications do sel-allocation on individual resources, by first allocating a pool?",
+      "revId": "49db81b64bb706215940e17d2379cf0ef334ee95",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_be440b75",
+        "filename": "resourcemanager/resourcemanager-api/src/main/yang/resource-manager.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 4534
+      },
+      "writtenOn": "2016-06-30T10:36:45Z",
+      "side": 1,
+      "message": "the application should put its own ID in the allocateResource RPC, so that the resource manager can assign the resource based on some pre-set validations for the requestor. we could try and keep table ID space in increasing order, in case some application does a hand-off directly to a lower priority application, for example (but this is not a hard requirement). similarly, we could add an upper bound in future on how many of each type of resource an application can consume",
+      "revId": "49db81b64bb706215940e17d2379cf0ef334ee95",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
