@@ -336,22 +336,19 @@ public enum ActionType {
 
     },
     set_source_ip {
-
         @Override
         public Action buildAction(ActionInfo actionInfo) {
             String[] actionValues = actionInfo.getActionValues();
-            InetAddress sourceIp = null;
-            try{
-                sourceIp = InetAddress.getByName(actionValues[0]);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+            String sourceIp = actionValues[0];
+            String sourceMask = (actionValues.length > 1) ? actionValues[1] : "32";
+            String source = sourceIp + "/" + sourceMask;
             return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setLayer3Match(
-                                    new Ipv4MatchBuilder().setIpv4Source(
-                                            new Ipv4Prefix(sourceIp.getHostAddress())).build()).
-                                            build()).build()).setKey(new ActionKey(actionInfo.getActionKey())).build();
+                                        new SetFieldCaseBuilder().setSetField(
+                                                new SetFieldBuilder().setLayer3Match(
+                                                        new Ipv4MatchBuilder().setIpv4Source(
+                                                                new Ipv4Prefix(source)).build()).
+                                                                build()).build()).setKey(new ActionKey(actionInfo.getActionKey())).build();
+
 
         }
 
@@ -361,17 +358,14 @@ public enum ActionType {
         @Override
         public Action buildAction(ActionInfo actionInfo) {
             String[] actionValues = actionInfo.getActionValues();
-            InetAddress sourceIp = null;
-            try{
-                sourceIp = InetAddress.getByName(actionValues[0]);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
+            String destIp = actionValues[0];
+            String destMask = (actionValues.length > 1) ? actionValues[1] : "32";
+            String destination = destIp + "/" + destMask;
             return new ActionBuilder().setAction(
                     new SetFieldCaseBuilder().setSetField(
                             new SetFieldBuilder().setLayer3Match(
                                     new Ipv4MatchBuilder().setIpv4Destination(
-                                            new Ipv4Prefix(sourceIp.getHostAddress())).build()).
+                                            new Ipv4Prefix(destination)).build()).
                                             build()).build()).setKey(new ActionKey(actionInfo.getActionKey())).build();
 
         }
