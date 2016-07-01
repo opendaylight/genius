@@ -77,6 +77,9 @@ public class InterfaceMetaUtils {
             // bridge ref entry will be null if the bridge is disconnected from controller.
             // In that case, fetch bridge reference from bridge interface entry config DS
             BridgeEntry bridgeEntry = getBridgeEntryFromConfigDS(dpId, dataBroker);
+            if(bridgeEntry == null){
+                return null;
+            }
             return  bridgeEntry.getBridgeReference();
         }
         return bridgeRefEntry.getBridgeReference();

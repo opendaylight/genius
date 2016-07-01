@@ -12,14 +12,15 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -35,12 +36,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FlowBasedServicesConfigBindHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigBindHelper.class);
+public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServicesAddable{
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigBindHelper.class);
 
-    public static List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                                           BoundServices boundServiceNew, DataBroker dataBroker) {
+    private InterfacemgrProvider interfaceMgrProvider;
+    private static volatile FlowBasedServicesAddable flowBasedIngressServicesAddable;
+
+    private FlowBasedIngressServicesConfigBindHelper(InterfacemgrProvider interfaceMgrProvider) {
+        this.interfaceMgrProvider = interfaceMgrProvider;
+    }
+
+    public static void intitializeFlowBasedIngressServicesConfigAddHelper(InterfacemgrProvider interfaceMgrProvider) {
+        if (flowBasedIngressServicesAddable == null) {
+            synchronized (FlowBasedIngressServicesConfigBindHelper.class) {
+                if (flowBasedIngressServicesAddable == null) {
+                    flowBasedIngressServicesAddable = new FlowBasedIngressServicesConfigBindHelper(interfaceMgrProvider);
+                }
+            }
+        }
+    }
+
+    public static void clearFlowBasedIngressServicesConfigAddHelper() {
+        flowBasedIngressServicesAddable = null;
+    }
+
+    public static FlowBasedServicesAddable getFlowBasedIngressServicesAddHelper() {
+        if (flowBasedIngressServicesAddable == null) {
+            LOG.error("OvsInterfaceConfigAdd Renderer is not initialized");
+        }
+        return flowBasedIngressServicesAddable;
+    }
+
+    public List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
+                                                           BoundServices boundServiceNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
+        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         String interfaceName =
                 InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
@@ -145,7 +175,7 @@ public class FlowBasedServicesConfigBindHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifState);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        LOG.warn("binding service for vlan port: {}", ifState.getName());
+        LOG.info("binding service for vlan port: {}", ifState.getName());
         if (allServices.size() == 1) {
             //calling LportDispatcherTableForService with current service index as 0 and next service index as some value since this is the only service bound.
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(),
@@ -168,7 +198,7 @@ public class FlowBasedServicesConfigBindHelper {
                 //In this case the match criteria of existing service should be changed.
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, low)[0];
                 short lowerServiceIndex = (short) ((lower!=null) ? lower.getServicePriority() : low.getServicePriority() + 1);
-                LOG.trace("Installing table 30 entry for existing service {} service match on service index {} update with service index {}", low, low.getServicePriority(), lowerServiceIndex);
+                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", low, low.getServicePriority(), lowerServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId,low, ifState.getName(), transaction, ifState.getIfIndex(),low.getServicePriority(), lowerServiceIndex);
             } else {
                 currentServiceIndex = boundServiceNew.getServicePriority();
@@ -177,14 +207,14 @@ public class FlowBasedServicesConfigBindHelper {
         if (high != null) {
             currentServiceIndex = boundServiceNew.getServicePriority();
             if (high.equals(highest)) {
-                LOG.trace("Installing table 30 entry for existing service {} service match on service index {} update with service index {}", high, IfmConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
+                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, IfmConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
             } else {
-                LOG.trace("Installing table 30 entry for existing service {} service match on service index {} update with service index {}", high, high.getServicePriority(), currentServiceIndex);
+                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, high.getServicePriority(), currentServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex);
             }
         }
-        LOG.trace("Installing table 30 entry for new service match on service index {} update with service index {}", currentServiceIndex, nextServiceIndex);
+        LOG.trace("Installing table 17 entry for new service match on service index {} update with service index {}", currentServiceIndex, nextServiceIndex);
         FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction, ifState.getIfIndex(), currentServiceIndex, nextServiceIndex);
         futures.add(transaction.submit());
         return futures;

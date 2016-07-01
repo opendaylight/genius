@@ -126,7 +126,7 @@ public class OvsInterfaceStateUpdateHelper {
             LOG.debug("updating interface oper status as {} for {}", opState.name(), interfaceName);
             ifaceBuilder.setOperStatus(opState);
         }
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
 
         return iface;
     }
