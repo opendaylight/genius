@@ -318,6 +318,6 @@ public class StateInterfaceTest {
 
         updateHelper.updateState(fcNodeConnectorId, alivenessMonitorService, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
 
-        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier,parentInterface);
+        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier,parentInterface, false);
     }
 }

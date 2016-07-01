@@ -3,6 +3,7 @@ package org.opendaylight.genius.interfacemanager.test;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +15,13 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedServicesConfigBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedIngressServicesConfigBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedIngressServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRemovable;
 import org.opendaylight.genius.mdsalutil.*;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -28,7 +33,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
@@ -37,7 +41,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -66,6 +69,7 @@ public class FlowBasedServicesConfigurationTest {
     ServicesInfo servicesInfoUnbind = null;
     StypeOpenflow stypeOpenflow = null;
     InstanceIdentifier<Interface> interfaceInstanceIdentifier = null;
+    InstanceIdentifier<ServicesInfo> servicesInfoInstanceIdentifier = null;
     InstanceIdentifier<Flow> flowInstanceId = null;
     Flow ingressFlow = null;
     Instruction instruction = null;
@@ -74,26 +78,44 @@ public class FlowBasedServicesConfigurationTest {
     short key = 0;
     int ifIndexval = 100;
 
-    @Mock DataBroker dataBroker;
-    @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
-    @Mock ReadOnlyTransaction mockReadTx;
-    @Mock WriteTransaction mockWriteTx;
+    DataBroker dataBroker;
+    ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
+    InterfacemgrProvider interfacemgrProvider;
+    ReadOnlyTransaction mockReadTx;
+    WriteTransaction mockWriteTx;
 
-    FlowBasedServicesConfigBindHelper bindHelper;
-    FlowBasedServicesConfigUnbindHelper unbindHelper;
+    FlowBasedServicesAddable flowBasedServicesAddable;
+    FlowBasedServicesRemovable flowBasedServicesRemovable;
 
     @Before
     public void setUp() throws Exception {
+        setupMocks();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        FlowBasedIngressServicesConfigBindHelper.clearFlowBasedIngressServicesConfigAddHelper();
+        FlowBasedIngressServicesConfigUnbindHelper.clearFlowBasedIngressServicesConfigUnbindHelper();
+    }
+    private void setupMocks(){
+        interfacemgrProvider = mock(InterfacemgrProvider.class);
+        dataBroker = mock(DataBroker.class);
+        mockReadTx = mock(ReadOnlyTransaction.class);
+        mockWriteTx = mock(WriteTransaction.class);
+        dataChangeListenerRegistration = mock(DataChangeListenerRegistration.class);
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),
                 any(DataChangeListener.class),
                 any(DataChangeScope.class)))
                 .thenReturn(dataChangeListenerRegistration);
-        setupMocks();
-    }
-
-    private void setupMocks(){
+        when(interfacemgrProvider.getDataBroker()).thenReturn(dataBroker);
+        when(dataBroker.newReadOnlyTransaction()).thenReturn(mockReadTx);
+        when(dataBroker.newWriteOnlyTransaction()).thenReturn(mockWriteTx);
+        FlowBasedIngressServicesConfigBindHelper.intitializeFlowBasedIngressServicesConfigAddHelper(interfacemgrProvider);
+        FlowBasedIngressServicesConfigUnbindHelper.intitializeFlowBasedIngressServicesConfigRemoveHelper(interfacemgrProvider);
+        flowBasedServicesAddable = FlowBasedIngressServicesConfigBindHelper.getFlowBasedIngressServicesAddHelper();
+        flowBasedServicesRemovable = FlowBasedIngressServicesConfigUnbindHelper.getFlowBasedIngressServicesRemoveHelper();
 
         interfaceEnabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1",true,L2vlan.class,dpId);
         nodeConnectorId = InterfaceManagerTestUtil.buildNodeConnectorId(dpId, portNum);
@@ -143,56 +165,43 @@ public class FlowBasedServicesConfigurationTest {
                 stypeOpenflow.getFlowCookie(), matches, instructionList);
         FlowKey flowKey = new FlowKey(new FlowId(ingressFlow.getId()));
         flowInstanceId = InterfaceManagerTestUtil.getFlowInstanceIdentifier(dpId,ingressFlow.getTableId(),flowKey);
-
-        when(dataBroker.newReadOnlyTransaction()).thenReturn(mockReadTx);
-        when(dataBroker.newWriteOnlyTransaction()).thenReturn(mockWriteTx);
-    }
-
-    @Test
-    public void testConfigBindSingleService(){
-
-        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
-        Optional<Interface> expectedInterface = Optional.of(interfaceEnabled);
-        Optional<ServicesInfo>expectedservicesInfo = Optional.of(servicesInfo);
-
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
-        InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
-                InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
-
-
-        doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
-        doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(expectedservicesInfo)).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION, servicesInfoIdentifierBuilder.build());
-
-        bindHelper.bindService(boundServicesIid,boundServiceNew,dataBroker);
-
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,flowInstanceId,ingressFlow, true);
+        servicesInfoInstanceIdentifier = InterfaceManagerTestUtil.buildIngressServiceInfoInstanceIdentifier(InterfaceManagerTestUtil.interfaceName);
     }
 
     @Test
     public void testConfigUnbindSingleService(){
-
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
         Optional<Interface> expectedInterface = Optional.of(interfaceEnabled);
-        Optional<ServicesInfo>expectedservicesInfo = Optional.of(servicesInfoUnbind);
-
-        ServicesInfoKey servicesInfoKey = new ServicesInfoKey(InterfaceManagerTestUtil.interfaceName, ServiceModeIngress.class);
-        InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
-                InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
+        Optional<ServicesInfo>expectedservicesInfo = Optional.of(servicesInfo);
 
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedservicesInfo)).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION,servicesInfoIdentifierBuilder.build());
+                LogicalDatastoreType.CONFIGURATION,servicesInfoInstanceIdentifier);
 
-        unbindHelper.unbindService(boundServicesIid,boundServiceNew,dataBroker);
+        flowBasedServicesRemovable.unbindService(boundServicesIid,boundServiceNew);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
+    }
+
+    @Test
+    public void testConfigBindSingleService(){
+        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
+        Optional<Interface> expectedInterface = Optional.of(interfaceEnabled);
+        Optional<ServicesInfo>expectedservicesInfo = Optional.of(servicesInfo);
+
+        doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
+                LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
+        doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(expectedservicesInfo)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, servicesInfoInstanceIdentifier);
+
+        flowBasedServicesAddable.bindService(boundServicesIid,boundServiceNew);
+
+        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,flowInstanceId,ingressFlow, true);
     }
 
 }

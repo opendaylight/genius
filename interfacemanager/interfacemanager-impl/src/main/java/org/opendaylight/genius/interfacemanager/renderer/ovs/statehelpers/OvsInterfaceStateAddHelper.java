@@ -14,6 +14,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -71,6 +73,15 @@ public class OvsInterfaceStateAddHelper {
             handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
                     nodeConnectorId, transaction, ifState.getIfIndex(), iface.getAugmentation(IfTunnel.class), interfaceName);
             return futures;
+        }
+
+        // install ingress flow if this is an l2vlan interface
+        if(InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() &&
+                ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
+            BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+            long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+            List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, iface);
+            FlowBasedServicesUtils.installVlanFlow(dpId, portNo, iface, transaction, matches, ifState.getIfIndex());
         }
 
         futures.add(transaction.submit());

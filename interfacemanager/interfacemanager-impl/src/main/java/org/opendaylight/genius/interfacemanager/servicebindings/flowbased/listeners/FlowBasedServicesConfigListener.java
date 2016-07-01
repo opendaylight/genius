@@ -9,12 +9,18 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedServicesConfigBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedEgressServicesConfigBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedEgressServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedIngressServicesConfigBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedIngressServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRemovable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRendererFactory;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -26,13 +32,20 @@ import java.util.concurrent.Callable;
 
 public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
-    private DataBroker dataBroker;
+    private InterfacemgrProvider interfacemgrProvider;
 
-    public FlowBasedServicesConfigListener(final DataBroker dataBroker) {
+    public FlowBasedServicesConfigListener(InterfacemgrProvider interfacemgrProvider) {
         super(BoundServices.class, FlowBasedServicesConfigListener.class);
-        this.dataBroker = dataBroker;
+        this.interfacemgrProvider = interfacemgrProvider;
+        initializeFlowBasedServiceHelpers(interfacemgrProvider);
     }
 
+    private void initializeFlowBasedServiceHelpers(InterfacemgrProvider interfaceMgrProvider) {
+        FlowBasedIngressServicesConfigBindHelper.intitializeFlowBasedIngressServicesConfigAddHelper(interfaceMgrProvider);
+        FlowBasedIngressServicesConfigUnbindHelper.intitializeFlowBasedIngressServicesConfigRemoveHelper(interfaceMgrProvider);
+        FlowBasedEgressServicesConfigBindHelper.intitializeFlowBasedEgressServicesConfigAddHelper(interfaceMgrProvider);
+        FlowBasedEgressServicesConfigUnbindHelper.intitializeFlowBasedEgressServicesConfigRemoveHelper(interfaceMgrProvider);
+    }
     @Override
     protected InstanceIdentifier<BoundServices> getWildCardPath() {
         return InstanceIdentifier.create(ServiceBindings.class).child(ServicesInfo.class)
@@ -44,9 +57,11 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         LOG.info("Service Binding Entry removed for Interface: {}, Data: {}",
                 interfaceName, boundServiceOld);
-
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        FlowBasedServicesRemovable flowBasedServicesRemovable = FlowBasedServicesRendererFactory.getFlowBasedServicesRendererFactory(serviceMode).
+                getFlowBasedServicesRemoveRenderer();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, boundServiceOld);
+        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(flowBasedServicesRemovable, key, boundServiceOld);
         coordinator.enqueueJob(interfaceName, configWorker);
     }
 
@@ -62,9 +77,12 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         LOG.info("Service Binding Entry created for Interface: {}, Data: {}",
                 interfaceName, boundServicesNew);
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
+        FlowBasedServicesAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory.
+                getFlowBasedServicesRendererFactory(serviceMode).getFlowBasedServicesAddRenderer();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, boundServicesNew);
+        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(flowBasedServicesAddable, key, boundServicesNew);
         coordinator.enqueueJob(interfaceName, configWorker);
     }
 
@@ -74,36 +92,42 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
+        FlowBasedServicesAddable flowBasedServicesAddable;
         InstanceIdentifier<BoundServices> instanceIdentifier;
         BoundServices boundServicesNew;
 
-        public RendererConfigAddWorker(InstanceIdentifier<BoundServices> instanceIdentifier,
+        public RendererConfigAddWorker(FlowBasedServicesAddable flowBasedServicesAddable,
+                                       InstanceIdentifier<BoundServices> instanceIdentifier,
                                        BoundServices boundServicesNew) {
+            this.flowBasedServicesAddable = flowBasedServicesAddable;
             this.instanceIdentifier = instanceIdentifier;
             this.boundServicesNew = boundServicesNew;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            return FlowBasedServicesConfigBindHelper.bindService(instanceIdentifier,
-                    boundServicesNew, dataBroker);
+            return flowBasedServicesAddable.bindService(instanceIdentifier,
+                    boundServicesNew);
         }
     }
 
     private class RendererConfigRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+        FlowBasedServicesRemovable flowBasedServicesRemovable;
         InstanceIdentifier<BoundServices> instanceIdentifier;
         BoundServices boundServicesNew;
 
-        public RendererConfigRemoveWorker(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                       BoundServices boundServicesNew) {
+        public RendererConfigRemoveWorker(FlowBasedServicesRemovable flowBasedServicesRemovable,
+                                          InstanceIdentifier<BoundServices> instanceIdentifier,
+                                          BoundServices boundServicesNew) {
+            this.flowBasedServicesRemovable = flowBasedServicesRemovable;
             this.instanceIdentifier = instanceIdentifier;
             this.boundServicesNew = boundServicesNew;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            return FlowBasedServicesConfigUnbindHelper.unbindService(instanceIdentifier,
-                    boundServicesNew, dataBroker);
+            return flowBasedServicesRemovable.unbindService(instanceIdentifier,
+                    boundServicesNew);
         }
     }
 }
