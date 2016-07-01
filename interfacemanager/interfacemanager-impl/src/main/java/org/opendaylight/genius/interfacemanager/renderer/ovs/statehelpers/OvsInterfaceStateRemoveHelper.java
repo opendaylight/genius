@@ -68,7 +68,10 @@ public class OvsInterfaceStateRemoveHelper {
                     return futures;
                 }
             }
-            FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
+            // remove ingress flow only for northbound configured interfaces
+            if(iface != null || (iface == null && interfaceName != fcNodeConnectorOld.getName())) {
+                FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
+            }
         }
         futures.add(transaction.submit());
         return futures;

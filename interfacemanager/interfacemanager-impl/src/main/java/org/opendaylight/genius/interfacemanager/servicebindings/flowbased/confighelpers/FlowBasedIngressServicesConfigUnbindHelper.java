@@ -12,14 +12,15 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -35,12 +36,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FlowBasedServicesConfigUnbindHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigUnbindHelper.class);
+public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesRemovable{
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
 
-    public static List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                                             BoundServices boundServiceOld, DataBroker dataBroker) {
+    private InterfacemgrProvider interfaceMgrProvider;
+    private static volatile FlowBasedServicesRemovable flowBasedIngressServicesRemovable;
+
+    private FlowBasedIngressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
+        this.interfaceMgrProvider = interfaceMgrProvider;
+    }
+
+    public static void intitializeFlowBasedIngressServicesConfigRemoveHelper(InterfacemgrProvider interfaceMgrProvider) {
+        if (flowBasedIngressServicesRemovable == null) {
+            synchronized (FlowBasedIngressServicesConfigUnbindHelper.class) {
+                if (flowBasedIngressServicesRemovable == null) {
+                    flowBasedIngressServicesRemovable = new FlowBasedIngressServicesConfigUnbindHelper(interfaceMgrProvider);
+                }
+            }
+        }
+    }
+
+    public static FlowBasedServicesRemovable getFlowBasedIngressServicesRemoveHelper() {
+        if (flowBasedIngressServicesRemovable == null) {
+            LOG.error("FlowBasedIngressBindHelper is not initialized");
+        }
+        return flowBasedIngressServicesRemovable;
+    }
+
+    public static void clearFlowBasedIngressServicesConfigUnbindHelper() {
+        flowBasedIngressServicesRemovable = null;
+    }
+
+    public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
+                                                             BoundServices boundServiceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
+        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         String interfaceName =
                 InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
