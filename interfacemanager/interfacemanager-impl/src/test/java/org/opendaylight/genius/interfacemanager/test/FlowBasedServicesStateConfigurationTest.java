@@ -121,7 +121,6 @@ public class FlowBasedServicesStateConfigurationTest {
         lowerlayerIfList.add(boundService);
         interfaceStateIdentifier = IfmUtil.buildStateInterfaceId(interfaceEnabled.getName());
         servicesInfo = InterfaceManagerTestUtil.buildServicesInfo(InterfaceManagerTestUtil.interfaceName,servicesInfoKey,lowerlayerIfList);
-
         String flowRef = InterfaceManagerTestUtil.buildflowRef(dpId, InterfaceManagerTestUtil.interfaceName, boundService.getServiceName(), boundService.getServicePriority());
         List<Instruction> instructionList = boundService.getAugmentation(StypeOpenflow.class).getInstruction();
         String serviceRef = boundService.getServiceName();

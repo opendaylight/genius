@@ -78,12 +78,6 @@ public class OvsInterfaceConfigAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
 
-        if (ifState == null) {
-            LOG.debug("could not retrieve interface state corresponding to {}",interfaceNew.getName());
-            futures.add(transaction.submit());
-            return;
-        }
-
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), transaction, dataBroker, idManager, ifState);
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
