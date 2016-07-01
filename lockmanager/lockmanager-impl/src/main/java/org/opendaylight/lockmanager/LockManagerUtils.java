@@ -19,10 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 public class LockManagerUtils {
 
-    public static long convertToMillis(long waitTime, TimeUnit timeUnit) {
-        return timeUnit.toMillis(waitTime);
-    }
-
     public static void sleep(long waitTime) {
         try {
             Thread.sleep(waitTime);
