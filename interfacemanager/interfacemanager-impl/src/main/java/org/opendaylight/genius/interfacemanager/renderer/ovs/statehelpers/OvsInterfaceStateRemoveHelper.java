@@ -34,16 +34,21 @@ public class OvsInterfaceStateRemoveHelper {
 
     public static List<ListenableFuture<Void>> removeInterfaceStateConfiguration(IdManagerService idManager, IMdsalApiManager mdsalApiManager,
                                                                                  AlivenessMonitorService alivenessMonitorService,
-                                                                                 NodeConnectorId nodeConnectorId, DataBroker dataBroker,
-                                                                                 String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld) {
+                                                                                 NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
+                                                                                 DataBroker dataBroker, String interfaceName,
+                                                                                 FlowCapableNodeConnector fcNodeConnectorOld) {
         LOG.debug("Removing interface-state information for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
 
+        //VM Migration: Use old nodeConnectorId to delete the interface entry
+        NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ?
+                nodeConnectorIdOld : nodeConnectorIdNew;
         // delete the port entry from interface operational DS
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
 
-        if(!InterfaceManagerCommonUtils.isNodePresent(dataBroker,nodeConnectorId)){
+        //VM Migration: Update the interface state to unknown only if remove event received for same switch
+        if(!InterfaceManagerCommonUtils.isNodePresent(dataBroker,nodeConnectorId) && nodeConnectorIdNew.equals(nodeConnectorIdOld)){
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
             OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, dataBroker,
