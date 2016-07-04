@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_d25f2171",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-07-04T13:19:25Z",
+      "side": 1,
+      "message": "@Sam, following is the exception.\n\n2016-07-01 09:59:19,717 | ERROR | config-pusher    | ConfigPusherImpl                 | 140 - org.opendaylight.controller.config-persister-impl - 0.5.0.SNAPSHOT | Unable to push configuration due to missing yang models. Yang models that are missing, but required by the configuration: [urn:opendaylight:genius:resourcemanager:impl?module\u003dresourcemanager-impl\u0026revision\u003d2016-04-06]. For each mentioned model check:  1. that the mentioned yang model namespace/name/revision is identical to those in the yang model itself 2. the yang file is present in the system 3. the bundle with that yang file is present in the system and active 4. the yang parser did not fail while attempting to parse that model\n2016-07-01 09:59:19,718 | ERROR | config-pusher    | ConfigPusherImpl                 | 140 - org.opendaylight.controller.config-persister-impl - 0.5.0.SNAPSHOT | Failed to apply configuration snapshot: resourcemanager-impl-default-config.xml(odl-netvirt-vpnservice-openstack,odl-netvirt-vpnservice-openstack)",
+      "revId": "87ee05e2136213b676101ba9db28379b0a85328d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
