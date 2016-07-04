@@ -51,10 +51,8 @@ public class OvsVlanMemberConfigAddHelper {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
-        if (ifState != null) {
-            LOG.debug("add interface state info for vlan member {}",interfaceNew.getName());
-            InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), t, dataBroker, idManager, ifState);
-        }
+        LOG.debug("add interface state info for vlan member {}",interfaceNew.getName());
+        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), t, dataBroker, idManager, ifState);
 
         futures.add(t.submit());
         return futures;

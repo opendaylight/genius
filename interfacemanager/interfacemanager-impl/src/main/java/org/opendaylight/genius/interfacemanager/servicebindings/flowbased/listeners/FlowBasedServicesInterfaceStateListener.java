@@ -13,6 +13,7 @@ import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers.FlowBasedServicesStateBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers.FlowBasedServicesStateUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -41,9 +42,11 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateInterfaceUnbindWorker stateUnbindWorker =
-                new RendererStateInterfaceUnbindWorker(interfaceStateOld);
-        coordinator.enqueueJob(interfaceStateOld.getName(), stateUnbindWorker);
+        for(Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
+            RendererStateInterfaceUnbindWorker stateUnbindWorker =
+                    new RendererStateInterfaceUnbindWorker((Class<? extends ServiceModeBase>) serviceMode, interfaceStateOld);
+            coordinator.enqueueJob(interfaceStateOld.getName(), stateUnbindWorker);
+        }
     }
 
     @Override
@@ -59,8 +62,10 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
         }
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker(interfaceStateNew);
-        coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker);
+        for(Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
+            RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker((Class<? extends ServiceModeBase>) serviceMode, interfaceStateNew);
+            coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker);
+        }
     }
 
     @Override
@@ -72,7 +77,9 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
         Interface iface;
         Class<? extends ServiceModeBase> serviceMode;
 
-        public RendererStateInterfaceBindWorker(Interface iface) {
+        public RendererStateInterfaceBindWorker(Class<? extends ServiceModeBase> serviceMode,
+                                                Interface iface) {
+            this.serviceMode = serviceMode;
             this.iface = iface;
         }
 
@@ -86,7 +93,9 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
         Interface iface;
         Class<? extends ServiceModeBase> serviceMode;
 
-        public RendererStateInterfaceUnbindWorker(Interface iface) {
+        public RendererStateInterfaceUnbindWorker(Class<? extends ServiceModeBase> serviceMode,
+                                                  Interface iface) {
+            this.serviceMode = serviceMode;
             this.iface = iface;
         }
 

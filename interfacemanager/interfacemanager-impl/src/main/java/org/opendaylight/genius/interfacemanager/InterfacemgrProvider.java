@@ -107,6 +107,10 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         this.notificationService = notificationService;
     }
 
+    public DataBroker getDataBroker(){
+        return this.dataBroker;
+    }
+
     @Override
     public void onSessionInitiated(ProviderContext session) {
         LOG.info("InterfacemgrProvider Session Initiated");
@@ -136,7 +140,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             terminationPointStateListener = new TerminationPointStateListener(dataBroker);
             terminationPointStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
-            flowBasedServicesConfigListener = new FlowBasedServicesConfigListener(dataBroker);
+            flowBasedServicesConfigListener = new FlowBasedServicesConfigListener(this);
             flowBasedServicesConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
             flowBasedServicesInterfaceStateListener =
@@ -225,7 +229,6 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
     @Override
     public InterfaceInfo getInterfaceInfo(String interfaceName) {
-        //FIXME [ELANBE] This is not working yet, fix this
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
                 ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
@@ -244,28 +247,20 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(intf.getName(), dataBroker);
         InterfaceInfo.InterfaceType interfaceType = IfmUtil.getInterfaceType(intf);
-        InterfaceInfo interfaceInfo = null;
+        InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         BigInteger dpId = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_DPID;
         Integer portNo = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_PORT_NO;
         if (ncId != null) {
             dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(ncId));
             portNo = Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId));
         }
-
         if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
             interfaceInfo = IfmUtil.getVlanInterfaceInfo(interfaceName, intf, dpId);
-        } else if (interfaceType == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE || interfaceType == InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE) {/*
-            trunkInterfaceInfo trunkInterfaceInfo = (TrunkInterfaceInfo) ConfigIfmUtil.getTrunkInterfaceInfo(ifName, ConfigIfmUtil.getInterfaceByIfName(dataBroker, ifName));
-            String higherLayerIf = inf.getHigherLayerIf().get(0);
-            Interface vlanInterface = ConfigIfmUtil.getInterfaceByIfName(dataBroker, higherLayerIf);
-            trunkInterfaceInfo.setPortName(vlanInterface.getAugmentation(BaseConfig.class).getParentInterface());
-            trunkInterfaceManager.updateTargetMacAddressInInterfaceInfo(trunkInterfaceInfo, trunkInterface);
-            if (trunkInterface.getPhysAddress() != null) {
-                trunkInterfaceInfo.setLocalMacAddress(trunkInterface.getPhysAddress().getValue());
-            }
-            interfaceInfo = trunkInterfaceInfo;
-            interfaceInfo.setL2domainGroupId(IfmUtil.getGroupId(OperationalIfmUtil.getInterfaceStateByIfName(dataBroker, higherLayerIf).getIfIndex(), InterfaceType.VLAN_INTERFACE));
-        */
+        } else if (interfaceType == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE ||
+                interfaceType == InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE) {
+            // TODO : since there is no logical grouping for tunnel interfaces, there is no need
+            // for this code as of now. will be revisited once the support comes
+
         } else {
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
