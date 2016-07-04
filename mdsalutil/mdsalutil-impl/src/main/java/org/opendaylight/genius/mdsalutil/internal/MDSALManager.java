@@ -115,26 +115,12 @@ public class MDSALManager implements AutoCloseable {
     public void installFlow(FlowEntity flowEntity) {
 
         try {
+            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
             s_logger.trace("InstallFlow for flowEntity {} ", flowEntity);
 
-            if (flowEntity.getCookie() == null) {
-                flowEntity.setCookie(new BigInteger("0110000", 16));
-            }
+            writeFlowEntity(flowEntity, tx);
 
-            FlowKey flowKey = new FlowKey( new FlowId(flowEntity.getFlowId()) );
-
-            FlowBuilder flowbld = flowEntity.getFlowBuilder();
-
-            Node nodeDpn = buildDpnNode(flowEntity.getDpnId());
-            InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                    .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class,flowKey).build();
-
-            WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
-
-            modification.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flowbld.build(),true );
-
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = modification.submit();
+            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
 
             Futures.addCallback(submitFuture, new FutureCallback<Void>() {
 
@@ -162,32 +148,44 @@ public class MDSALManager implements AutoCloseable {
         }
     }
 
+    public void writeFlowEntity(FlowEntity flowEntity, WriteTransaction tx) {
+        if (flowEntity.getCookie() == null) {
+            flowEntity.setCookie(new BigInteger("0110000", 16));
+        }
+
+        FlowKey flowKey = new FlowKey( new FlowId(flowEntity.getFlowId()) );
+
+        FlowBuilder flowbld = flowEntity.getFlowBuilder();
+
+        Node nodeDpn = buildDpnNode(flowEntity.getDpnId());
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class,flowKey).build();
+
+        tx.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flowbld.build(),true );
+    }
+
     public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flow) {
+        WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
+        writeFlow(dpId, flow, tx);
+        return tx.submit();
+    }
+
+    public void writeFlow(BigInteger dpId, Flow flow, WriteTransaction tx) {
         FlowKey flowKey = new FlowKey( new FlowId(flow.getId()) );
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class,flowKey).build();
-        WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
-        modification.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
-        return modification.submit();
+        tx.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
     }
 
     public void installGroup(GroupEntity groupEntity) {
         try {
-            Group group = groupEntity.getGroupBuilder().build();
+            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
+            writeGroupEntity(groupEntity, tx);
 
-            Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
-
-            InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                    .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
-
-            WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
-
-            modification.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
-
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = modification.submit();
+            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
 
             Futures.addCallback(submitFuture, new FutureCallback<Void>() {
                 @Override
@@ -215,20 +213,47 @@ public class MDSALManager implements AutoCloseable {
         }
     }
 
+    public void writeGroupEntity(GroupEntity groupEntity, WriteTransaction tx) {
+        Group group = groupEntity.getGroupBuilder().build();
+
+        Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
+
+        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
+
+        tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
+    }
+
+    public void writeGroup(BigInteger dpId, Group group, WriteTransaction tx) {
+
+        Node nodeDpn = buildDpnNode(dpId);
+        long groupId = group.getGroupId().getValue();
+        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupId))).build();
+
+        tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
+    }
+
+    public void deleteGroup(BigInteger dpId, Group group, WriteTransaction tx) {
+
+        Node nodeDpn = buildDpnNode(dpId);
+        long groupId = group.getGroupId().getValue();
+        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupId))).build();
+
+        tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+    }
+
+
     public void removeFlow(FlowEntity flowEntity) {
         try {
-            s_logger.debug("Remove flow {}",flowEntity);
-            Node nodeDpn = buildDpnNode(flowEntity.getDpnId());
-            FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
-            InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                    .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
+            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
+            deleteFlowEntity(flowEntity, tx);
 
-
-            WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
-            modification.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
-
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = modification.submit();
+            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
 
             Futures.addCallback(submitFuture, new FutureCallback<Void>() {
                 @Override
@@ -255,30 +280,39 @@ public class MDSALManager implements AutoCloseable {
         }
     }
 
-    public CheckedFuture<Void,TransactionCommitFailedException> removeFlowNew(BigInteger dpnId, Flow flowEntity) {
-        s_logger.debug("Remove flow {}",flowEntity);
-        Node nodeDpn = buildDpnNode(dpnId);
-        FlowKey flowKey = new FlowKey(flowEntity.getId());
+    public void deleteFlowEntity(FlowEntity flowEntity, WriteTransaction tx) {
+        Node nodeDpn = buildDpnNode(flowEntity.getDpnId());
+        FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
-        WriteTransaction  modification = m_dataBroker.newWriteOnlyTransaction();
-        modification.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId );
-        return modification.submit();
+
+
+        tx.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
+    }
+
+    public CheckedFuture<Void,TransactionCommitFailedException> removeFlowNew(BigInteger dpnId, Flow flowEntity) {
+        s_logger.debug("Remove flow {}",flowEntity);
+        WriteTransaction  tx = m_dataBroker.newWriteOnlyTransaction();
+        deleteFlow(dpnId, flowEntity, tx);
+        return tx.submit();
+    }
+
+    public void deleteFlow(BigInteger dpId, Flow flow, WriteTransaction tx) {
+        Node nodeDpn = buildDpnNode(dpId);
+        FlowKey flowKey = new FlowKey(flow.getId());
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
+        tx.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId );
     }
 
     public void removeGroup(GroupEntity groupEntity) {
         try {
-            Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
-            InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                    .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
+            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
+            removeGroupEntity(groupEntity, tx);
 
-            WriteTransaction modification = m_dataBroker.newWriteOnlyTransaction();
-
-            modification.delete(LogicalDatastoreType.CONFIGURATION,groupInstanceId );
-
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = modification.submit();
+            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
 
             Futures.addCallback(submitFuture, new FutureCallback<Void>() {
                 @Override
@@ -302,6 +336,15 @@ public class MDSALManager implements AutoCloseable {
         } catch (Exception e) {
             s_logger.error("Could not remove Group: {}", groupEntity, e);
         }
+    }
+
+    public void removeGroupEntity(GroupEntity groupEntity, WriteTransaction tx) {
+        Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
+        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
+
+        tx.delete(LogicalDatastoreType.CONFIGURATION,groupInstanceId );
     }
 
     public void modifyGroup(GroupEntity groupEntity) {

@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 
@@ -22,21 +23,37 @@ public interface IMdsalApiManager {
 
     public void installFlow(FlowEntity flowEntity);
 
+    public void addFlowIntoTx(FlowEntity flowEntity, WriteTransaction tx);
+
     public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
+
+    public void addFlowIntoTx(BigInteger dpId, Flow flow, WriteTransaction tx);
 
     public CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
 
     public CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, FlowEntity flowEntity);
 
+    public void removeFlowIntoTx(BigInteger dpId, Flow flow, WriteTransaction tx);
+
     public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
 
     public void removeFlow(FlowEntity flowEntity);
 
+    public void removeFlowIntoTx(FlowEntity flowEntity, WriteTransaction tx);
+
     public void installGroup(GroupEntity groupEntity);
+
+    public void addGroupIntoTx(GroupEntity groupEntity, WriteTransaction tx);
+
+    public void addGroupIntoTx(BigInteger dpId,Group group, WriteTransaction tx);
 
     public void modifyGroup(GroupEntity groupEntity);
 
     public void removeGroup(GroupEntity groupEntity);
+
+    public void removeGroupIntoTx(GroupEntity groupEntity, WriteTransaction tx);
+
+    public void removeGroupIntoTx(BigInteger dpId, Group group, WriteTransaction tx);
 
     public void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload);
 
