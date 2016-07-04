@@ -9,6 +9,7 @@ package org.opendaylight.genius.mdsalutil.internal;
 
 import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ConsumerContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareConsumer;
@@ -90,7 +91,6 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
         mdSalMgr.installGroup(groupEntity);
     }
 
-
     @Override
     public void modifyGroup(GroupEntity groupEntity) {
         mdSalMgr.modifyGroup(groupEntity);
@@ -101,7 +101,6 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
     public void removeGroup(GroupEntity groupEntity) {
         mdSalMgr.removeGroup(groupEntity);
     }
-
 
     @Override
     public void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload) {
@@ -150,6 +149,46 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
     @Override
     public void syncRemoveGroup(BigInteger dpId, Group group) {
         mdSalMgr.syncSetUpGroup(dpId, group, FIXED_DELAY_IN_MILLISECONDS, true);
+    }
+
+    @Override
+    public void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+        mdSalMgr.writeFlowEntity(flowEntity, tx);
+    }
+
+    @Override
+    public void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx) {
+        mdSalMgr.writeFlow(dpId, flow, tx);
+    }
+
+    @Override
+    public void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx) {
+        mdSalMgr.deleteFlow(dpId, flow, tx);
+    }
+
+    @Override
+    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+        mdSalMgr.deleteFlowEntity(flowEntity, tx);
+    }
+
+    @Override
+    public void addGroupToTx(GroupEntity groupEntity, WriteTransaction tx) {
+        mdSalMgr.writeGroupEntity(groupEntity, tx);
+    }
+
+    @Override
+    public void addGroupToTx(BigInteger dpId, Group group, WriteTransaction tx) {
+        mdSalMgr.writeGroup(dpId, group, tx);;
+    }
+
+    @Override
+    public void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx) {
+        mdSalMgr.removeGroupEntity(groupEntity, tx);
+    }
+
+    @Override
+    public void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx) {
+        mdSalMgr.deleteGroup(dpId, group, tx);
     }
 
 }

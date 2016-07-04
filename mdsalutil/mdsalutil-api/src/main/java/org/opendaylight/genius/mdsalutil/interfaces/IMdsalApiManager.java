@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 
@@ -22,21 +23,117 @@ public interface IMdsalApiManager {
 
     public void installFlow(FlowEntity flowEntity);
 
+    /**
+     * Add a Flow to batched transaction.
+     * This is used to batch multiple ConfigDS changes in a single transaction.
+     *
+     * @param flowEntity
+     *            Flow being added
+     * @param tx
+     *            batched transaction
+     */
+    public void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
+
     public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
+
+    /**
+     * Add a Flow to batched transaction
+     * This is used to batch multiple ConfigDS changes in a single transaction and programming on specific DPN.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param flow
+     *            Flow being added
+     * @param tx
+     *            batched transaction
+     */
+    public void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
 
     public CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
 
     public CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, FlowEntity flowEntity);
 
+    /**
+     * Remove a Flow using batched transaction.
+     * This is used to batch multiple ConfigDS changes in a single transaction for removing on specific DPN.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param flow
+     *            Flow being removed
+     * @param tx
+     *            batched transaction
+     */
+    public void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
+
     public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
 
     public void removeFlow(FlowEntity flowEntity);
 
+    /**
+     *  Remove a Flow using batched transaction.
+     *  This is used to batch multiple ConfigDS changes in a single transaction
+     *
+     * @param flowEntity
+     *            Flow being removed
+     * @param tx
+     *            batched transaction
+     */
+    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
+
     public void installGroup(GroupEntity groupEntity);
+
+    /**
+     * Add a Group using batched transaction
+     * This is used to batch multiple ConfigDS changes in a single transaction
+     *
+     * @param groupEntity
+     *            group being added
+     * @param tx
+     *            batched transaction
+     */
+    public void addGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
+
+    /**
+     * Add a Group using batched transaction
+     * This is used to batch multiple ConfigDS changes in a single transaction and programming on specific DPN.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param group
+     *            group being added
+     * @param tx
+     *            batched transaction
+     */
+    public void addGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
     public void modifyGroup(GroupEntity groupEntity);
 
     public void removeGroup(GroupEntity groupEntity);
+
+    /**
+     * Remove a Group using batched transaction
+     * This is used to batch multiple ConfigDS changes in a single transaction.
+     *
+     * @param groupEntity
+     *            group being removed
+     * @param tx
+     *            batched transaction
+     */
+    public void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
+
+    /**
+     * Remove a Group using batched transaction
+     * This is used to batch multiple ConfigDS changes in a single transaction.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param group
+     *            group being removed
+     * @param tx
+     *            batched transaction
+     */
+    public void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
     public void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload);
 
