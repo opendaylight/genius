@@ -16,6 +16,29 @@
       "revId": "6a9f2d59986684fe495139a6b0a887b4eec8034f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_bf1a296c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-07T08:01:44Z",
+      "side": 1,
+      "message": "This looks like copy-paste error. This is same as lines 303 and 304",
+      "range": {
+        "startLine": 307,
+        "startChar": 0,
+        "endLine": 310,
+        "endChar": 95
+      },
+      "revId": "6a9f2d59986684fe495139a6b0a887b4eec8034f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
