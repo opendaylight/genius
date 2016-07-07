@@ -17,10 +17,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.M
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpSourceHardwareAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpTargetHardwareAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetDestinationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetTypeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.EthernetMatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv6MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
@@ -34,9 +38,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpTpa;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSha;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpTha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.EthDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.EthSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.EthType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Icmpv4Type;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Icmpv6Type;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.InPort;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.IpProto;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv4Dst;
@@ -251,7 +259,7 @@ public enum MatchFieldType {
             }
         }
     },
-    
+
     ipv4_destination {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -384,6 +392,66 @@ public enum MatchFieldType {
 
             long[] prefix = matchInfo.getMatchValues();
             arpMatchBuilder.setArpSourceTransportAddress(new Ipv4Prefix(MDSALUtil.longToIp(prefix[0], prefix[1])));
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+
+            if (arpMatchBuilder != null) {
+                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
+            }
+        }
+    },
+
+    arp_tha {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return ArpTha.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
+
+            if (arpMatchBuilder == null) {
+                arpMatchBuilder = new ArpMatchBuilder();
+                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
+            }
+
+            ArpTargetHardwareAddressBuilder arpSrc = new ArpTargetHardwareAddressBuilder();
+            arpSrc.setAddress(new MacAddress(matchInfo.getStringMatchValues()[0]));
+            arpMatchBuilder.setArpTargetHardwareAddress(arpSrc.build());
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+
+            if (arpMatchBuilder != null) {
+                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
+            }
+        }
+    },
+
+    arp_sha {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return ArpSha.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
+
+            if (arpMatchBuilder == null) {
+                arpMatchBuilder = new ArpMatchBuilder();
+                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
+            }
+
+            ArpSourceHardwareAddressBuilder arpSrc = new ArpSourceHardwareAddressBuilder();
+            arpSrc.setAddress(new MacAddress(matchInfo.getStringMatchValues()[0]));
+            arpMatchBuilder.setArpSourceHardwareAddress(arpSrc.build());
         }
 
         @Override
@@ -658,6 +726,64 @@ public enum MatchFieldType {
 
             if (vlanMatchBuilder != null) {
                 matchBuilderInOut.setVlanMatch(vlanMatchBuilder.build());
+            }
+        }
+    },
+
+    icmp_v4 {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return Icmpv4Type.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Icmpv4MatchBuilder icmpv4MatchBuilder = (Icmpv4MatchBuilder) mapMatchBuilder.get(Icmpv4MatchBuilder.class);
+
+            if (icmpv4MatchBuilder == null) {
+                icmpv4MatchBuilder = new Icmpv4MatchBuilder();
+                mapMatchBuilder.put(Icmpv4MatchBuilder.class, icmpv4MatchBuilder);
+            }
+
+            icmpv4MatchBuilder.setIcmpv4Type((short) matchInfo.getMatchValues()[0]);
+            icmpv4MatchBuilder.setIcmpv4Code((short) matchInfo.getMatchValues()[1]);
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Icmpv4MatchBuilder icmpv4MatchBuilder = (Icmpv4MatchBuilder) mapMatchBuilder.remove(Icmpv4MatchBuilder.class);
+
+            if (icmpv4MatchBuilder != null) {
+                matchBuilderInOut.setIcmpv4Match(icmpv4MatchBuilder.build());
+            }
+        }
+    },
+
+    icmp_v6 {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return Icmpv6Type.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Icmpv6MatchBuilder icmpv6MatchBuilder = (Icmpv6MatchBuilder) mapMatchBuilder.get(Icmpv6MatchBuilder.class);
+
+            if (icmpv6MatchBuilder == null) {
+                icmpv6MatchBuilder = new Icmpv6MatchBuilder();
+                mapMatchBuilder.put(Icmpv6MatchBuilder.class, icmpv6MatchBuilder);
+            }
+
+            icmpv6MatchBuilder.setIcmpv6Type((short) matchInfo.getMatchValues()[0]);
+            icmpv6MatchBuilder.setIcmpv6Code((short) matchInfo.getMatchValues()[1]);
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Icmpv6MatchBuilder icmpv6MatchBuilder = (Icmpv6MatchBuilder) mapMatchBuilder.remove(VlanMatchBuilder.class);
+
+            if (icmpv6MatchBuilder != null) {
+                matchBuilderInOut.setIcmpv6Match(icmpv6MatchBuilder.build());
             }
         }
     };
