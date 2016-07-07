@@ -21,9 +21,9 @@ module itm-config {
 
     description "This YANG module defines automatic tunnel configuration.";
     revision "2016-04-06";
-    
+
     /* Tunnel Monitoring Knob */
-    
+
     container tunnel-monitor-params {
       leaf enabled {
          type boolean;
@@ -40,7 +40,7 @@ module itm-config {
     container tunnel-monitor-interval {
       leaf interval {
          type uint16 {
-             range "100..30000";
+             range "1000..30000";
          }
       }
     }

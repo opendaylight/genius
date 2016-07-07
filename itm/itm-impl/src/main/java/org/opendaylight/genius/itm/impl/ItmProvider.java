@@ -190,8 +190,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
 
     @Override
     public void showTeps() {
-        tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(),
-                itmManager.getTunnelMonitorIntervalFromConfigDS());
+        tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker));
     }
 
     public void showState(TunnelList tunnels) {
