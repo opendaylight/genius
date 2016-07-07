@@ -40,11 +40,11 @@ public class FlowEntity extends AbstractSwitchEntity {
 
     @Override
     public String toString() {
-        return "FlowEntity [m_shTableId=" + m_shTableId + ", m_sFlowId=" + m_sFlowId + ", m_nPriority=" + m_nPriority
-                + ", m_sFlowName=" + m_sFlowName + ", m_nIdleTimeOut=" + m_nIdleTimeOut + ", m_nHardTimeOut="
-                + m_nHardTimeOut + ", m_biCookie=" + m_biCookie + ", m_listMatchInfo=" + m_listMatchInfo
-                + ", m_listInstructionInfo=" + m_listInstructionInfo + ", m_bStrictFlag=" + m_bStrictFlag
-                + ", m_bSendFlowRemFlag=" + m_bSendFlowRemFlag + ", toString()=" + super.toString() + "]";
+        return "FlowEntity [dpnId=" + getDpnId() + ", tableId=" + m_shTableId + ", flowId=" + m_sFlowId + ", priority=" + m_nPriority
+                + ", flowName=" + m_sFlowName + ", idleTimeOut=" + m_nIdleTimeOut + ", hardTimeOut="
+                + m_nHardTimeOut + ", cookie=" + m_biCookie + ", matchInfo=" + m_listMatchInfo
+                + ", instructionInfo=" + m_listInstructionInfo + ", strictFlag=" + m_bStrictFlag
+                + ", sendFlowRemFlag=" + m_bSendFlowRemFlag + "]";
     }
 
     public BigInteger getCookie() {

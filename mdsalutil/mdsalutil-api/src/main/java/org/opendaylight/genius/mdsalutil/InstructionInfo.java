@@ -7,16 +7,20 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
 public class InstructionInfo implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private final InstructionType m_instructionType;
+
     private long[] m_alInstructionValues;
     private BigInteger[] m_alBigInstructionValues;
     private List<ActionInfo> m_actionInfos;
@@ -63,6 +67,14 @@ public class InstructionInfo implements Serializable {
 
     public void setInstructionValues(long[] m_alInstructionValues) {
         this.m_alInstructionValues = m_alInstructionValues;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).omitNullValues().add("instructionType", m_instructionType)
+                .add("instructionValues", Arrays.toString(m_alInstructionValues))
+                .add("bigInstructionValues", Arrays.deepToString(m_alBigInstructionValues))
+                .add("actionInfos", m_actionInfos).toString();
     }
 
 }

@@ -7,14 +7,18 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.util.List;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 
 public class BucketInfo implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     private final List<ActionInfo> m_listActionInfo;
+
     private Integer weight = 0;
     private Long watchPort = 0xffffffffL;
     private Long watchGroup = 0xffffffffL;
@@ -67,5 +71,11 @@ public class BucketInfo implements Serializable {
 
     public void setWatchGroup(Long watchGroup) {
         this.watchGroup = watchGroup;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("actionInfoList", m_listActionInfo).add("weight", weight)
+                .add("watchPort", watchPort).add("watchGroup", watchGroup).toString();
     }
 }

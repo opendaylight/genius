@@ -31,8 +31,8 @@ public class GroupEntity extends AbstractSwitchEntity {
 
     @Override
     public String toString() {
-        return "GroupEntity [m_lGroupId=" + m_lGroupId + ", m_sGroupName=" + m_sGroupName + ", m_groupType="
-                + m_groupType + ", m_listBucketInfo=" + m_listBucketInfo + ", toString()=" + super.toString() + "]";
+        return "GroupEntity [dpnId=" + getDpnId() + ", groupId=" + m_lGroupId + ", groupName=" + m_sGroupName + ", groupType="
+                + m_groupType + ", bucketInfo=" + m_listBucketInfo + "]";
     }
 
     public List<BucketInfo> getBucketInfoList() {

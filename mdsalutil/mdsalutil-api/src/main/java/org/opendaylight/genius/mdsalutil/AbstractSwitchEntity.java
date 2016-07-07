@@ -14,16 +14,9 @@ public class AbstractSwitchEntity {
 
     private BigInteger m_dpnId;
 
-
     public AbstractSwitchEntity(BigInteger dpnId) {
         m_dpnId = dpnId;
     }
-
-    @Override
-    public String toString() {
-        return "AbstractSwitchEntity [m_lDpnId=" + m_dpnId + " ]";
-    }
-
 
     public BigInteger getDpnId() {
         return m_dpnId;

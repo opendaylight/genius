@@ -7,18 +7,21 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 
-public class ActionInfo implements Serializable{
+public class ActionInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     private final ActionType m_actionType;
+
     private String[] m_asActionValues = null;
-    private BigInteger [] m_aBigIntValues;
+    private BigInteger[] m_aBigIntValues;
     private int m_actionKey = 0;
 
     public ActionInfo(ActionInfo action) {
@@ -39,7 +42,7 @@ public class ActionInfo implements Serializable{
         m_actionKey = actionKey;
         m_asActionValues = asActionValues;
     }
-    
+
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues) {
         m_actionType = actionType;
         m_actionKey = 0;
@@ -71,8 +74,16 @@ public class ActionInfo implements Serializable{
     public String[] getActionValues() {
         return m_asActionValues;
     }
-    
+
     public BigInteger[] getBigActionValues() {
         return m_aBigIntValues;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).omitNullValues().add("actionType", m_actionType)
+                .add("actionValues", Arrays.deepToString(m_asActionValues))
+                .add("bigActionValues", Arrays.deepToString(m_aBigIntValues))
+                .add("actionKey", m_actionKey).toString();
     }
 }

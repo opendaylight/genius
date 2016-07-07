@@ -7,8 +7,10 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
@@ -60,5 +62,13 @@ public class MatchInfo implements Serializable, MatchInfoBase {
 
     public String[] getStringMatchValues() {
         return m_asMatchValues;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).omitNullValues().add("matchField", m_matchField)
+                .add("matchValues", Arrays.toString(m_alMatchValues))
+                .add("bigMatchValues", Arrays.deepToString(m_aBigIntValues))
+                .add("stringMatchValues", Arrays.deepToString(m_asMatchValues)).toString();
     }
 }
