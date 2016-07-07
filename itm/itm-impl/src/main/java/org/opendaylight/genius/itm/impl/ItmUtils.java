@@ -35,7 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -46,9 +46,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepIpPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaKey;
@@ -750,6 +747,9 @@ public class ItmUtils {
                 monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
         }
         LOG.debug("determineMonitorInterval: monitorInterval = {}", monitorInterval);
+        InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
+        TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(monitorInterval).build();
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
         return monitorInterval;
     }
 
@@ -1010,9 +1010,15 @@ public class ItmUtils {
         if(monitoringProtocol==null)
             monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         LOG.debug("determineMonitorProtocol: monitorProtocol = {}", monitoringProtocol);
+        Boolean monitorState = ItmUtils.readMonitoringStateFromDS(dataBroker);
+        if(monitorState==null)
+            monitorState = true;
+        LOG.debug("determineMonitorProtocol: monitorState = {}", monitorState);
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder().setEnabled(monitorState).setMonitorProtocol(monitoringProtocol).build();
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
         return monitoringProtocol;
     }
-
 
     public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker){
         InstanceIdentifier<DcGatewayIpList> dcGatewayIpListid = InstanceIdentifier.builder(DcGatewayIpList.class).build();

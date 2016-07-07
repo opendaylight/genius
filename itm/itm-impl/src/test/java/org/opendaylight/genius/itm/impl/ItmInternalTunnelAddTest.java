@@ -73,7 +73,7 @@ public class ItmInternalTunnelAddTest {
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     int vlanId = 100 ;
-    int interval = 100;
+    int interval = 1000;
     String tepIp1 = "192.168.56.101";
     String tepIp2 = "192.168.56.102";
     String gwyIp1 = "0.0.0.0";
