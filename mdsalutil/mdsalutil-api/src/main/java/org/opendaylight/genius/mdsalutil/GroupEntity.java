@@ -29,6 +29,10 @@ public class GroupEntity extends AbstractSwitchEntity {
         super(dpnId);
     }
 
+    public GroupEntity(long dpnId) {
+        this(BigInteger.valueOf(dpnId));
+    }
+
     @Override
     public String toString() {
         return "GroupEntity [m_lGroupId=" + m_lGroupId + ", m_sGroupName=" + m_sGroupName + ", m_groupType="

@@ -38,6 +38,10 @@ public class FlowEntity extends AbstractSwitchEntity {
         super(dpnId);
     }
 
+    public FlowEntity(long dpnId) {
+        this(BigInteger.valueOf(dpnId));
+    }
+
     @Override
     public String toString() {
         return "FlowEntity [m_shTableId=" + m_shTableId + ", m_sFlowId=" + m_sFlowId + ", m_nPriority=" + m_nPriority
