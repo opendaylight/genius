@@ -16,6 +16,24 @@
       "revId": "87ee05e2136213b676101ba9db28379b0a85328d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_f0b5fdcd",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 4958
+      },
+      "writtenOn": "2016-07-07T08:55:06Z",
+      "side": 1,
+      "message": "The implementation yangs for resourcemanager have now been merged. You won\u0027t see this error after the merge.",
+      "parentUuid": "9a561d44_d25f2171",
+      "revId": "87ee05e2136213b676101ba9db28379b0a85328d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
