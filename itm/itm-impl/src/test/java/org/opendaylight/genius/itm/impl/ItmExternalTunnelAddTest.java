@@ -79,7 +79,7 @@ public class ItmExternalTunnelAddTest {
 
     BigInteger dpId1 = BigInteger.valueOf(1);
     int vlanId = 100 ;
-    int interval = 100;
+    int interval = 1000;
     String portName1 = "phy0";
     String tepIp1 = "192.168.56.30";
     String tepIp2 = "192.168.56.40";
