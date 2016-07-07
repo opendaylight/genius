@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_3fe3b908",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-07-07T09:14:09Z",
+      "side": 1,
+      "message": "pls put whatever is there currently..somebody else is working on modifying this code portion..let them take care of that..",
+      "parentUuid": "9a561d44_3f5d7922",
+      "revId": "6a9f2d59986684fe495139a6b0a887b4eec8034f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_bf1a296c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 1
