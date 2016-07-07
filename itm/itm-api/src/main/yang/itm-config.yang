@@ -1,6 +1,6 @@
 module itm-config {
 
-    namespace "urn:opendaylight:genius:itm:config";
+    namespace "urn:opendaylight:vpnservice:itm:config";
 
     prefix itm-config;
 
@@ -20,10 +20,10 @@ module itm-config {
     import config { prefix config; revision-date 2013-04-05; }
 
     description "This YANG module defines automatic tunnel configuration.";
-    revision "2016-04-06";
-    
+    revision "2015-11-02";
+
     /* Tunnel Monitoring Knob */
-    
+
     container tunnel-monitor-params {
       leaf enabled {
          type boolean;
@@ -40,7 +40,7 @@ module itm-config {
     container tunnel-monitor-interval {
       leaf interval {
          type uint16 {
-             range "100..30000";
+             range "1000..30000";
          }
       }
     }
