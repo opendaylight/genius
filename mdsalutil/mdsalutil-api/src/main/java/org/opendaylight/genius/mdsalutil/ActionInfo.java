@@ -11,7 +11,8 @@ import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
-
+import java.util.Objects;
+import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 
 public class ActionInfo implements Serializable {
@@ -85,5 +86,27 @@ public class ActionInfo implements Serializable {
                 .add("actionValues", Arrays.deepToString(m_asActionValues))
                 .add("bigActionValues", Arrays.deepToString(m_aBigIntValues))
                 .add("actionKey", m_actionKey).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        // BEWARE, Caveat Emptor: Array ([]) type fields must use
+        // Arrays.hashCode(). deepHashCode() would have to be used for nested
+        // arrays.
+        return Objects.hash(m_actionType, Arrays.hashCode(m_asActionValues), Arrays.hashCode(m_aBigIntValues),
+                m_actionKey);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        // BEWARE, Caveat Emptor: Array ([]) type fields must use
+        // Arrays.equals(). deepEquals() would have to be used for nested
+        // arrays. Use == only for primitive types; if ever changing
+        // those field types, must change to Objects.equals.
+        return MoreObjects2.equalsHelper(this, obj,
+            (self, other) -> Objects.equals(self.m_actionType, other.m_actionType)
+                          && Arrays.equals(self.m_asActionValues, other.m_asActionValues)
+                          && Arrays.equals(self.m_aBigIntValues, other.m_aBigIntValues)
+                          && self.m_actionKey == other.m_actionKey);
     }
 }
