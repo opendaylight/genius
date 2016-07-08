@@ -10,6 +10,8 @@ package org.opendaylight.genius.mdsalutil;
 import java.math.BigInteger;
 
 import java.util.List;
+import java.util.Objects;
+import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupBuilder;
@@ -88,5 +90,20 @@ public class GroupEntity extends AbstractSwitchEntity {
     public void setGroupType(GroupTypes groupType) {
         m_groupType = groupType;
         m_groupBuilder = null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDpnId(), m_lGroupId, m_sGroupName, m_groupType, m_listBucketInfo);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return MoreObjects2.equalsHelper(this, obj,
+            (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
+                          && Objects.equals(this.m_lGroupId, other.m_lGroupId)
+                          && Objects.equals(this.m_sGroupName, other.m_sGroupName)
+                          && Objects.equals(this.m_groupType, other.m_groupType)
+                          && Objects.equals(this.m_listBucketInfo, other.m_listBucketInfo));
     }
 }
