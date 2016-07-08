@@ -17,27 +17,36 @@ public class InstructionInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final InstructionType m_instructionType;
-    private long[] m_alInstructionValues;
-    private BigInteger[] m_alBigInstructionValues;
-    private List<ActionInfo> m_actionInfos;
+    private final long[] m_alInstructionValues;
+    private final BigInteger[] m_alBigInstructionValues;
+    private final List<ActionInfo> m_actionInfos;
 
     // This constructor should be used incase of clearAction
     public InstructionInfo(InstructionType instructionType) {
         m_instructionType = instructionType;
+        m_alInstructionValues = null;
+        m_alBigInstructionValues = null;
+        m_actionInfos = null;
     }
 
     public InstructionInfo(InstructionType instructionType, long[] instructionValues) {
         m_instructionType = instructionType;
         m_alInstructionValues = instructionValues;
+        m_alBigInstructionValues = null;
+        m_actionInfos = null;
     }
 
     public InstructionInfo(InstructionType instructionType, BigInteger[] instructionValues) {
         m_instructionType = instructionType;
+        m_alInstructionValues = null;
         m_alBigInstructionValues = instructionValues;
+        m_actionInfos = null;
     }
 
     public InstructionInfo(InstructionType instructionType, List<ActionInfo> actionInfos) {
         m_instructionType = instructionType;
+        m_alInstructionValues = null;
+        m_alBigInstructionValues = null;
         m_actionInfos = actionInfos;
     }
 
@@ -59,10 +68,6 @@ public class InstructionInfo implements Serializable {
 
     public List<ActionInfo> getActionInfos() {
         return m_actionInfos;
-    }
-
-    public void setInstructionValues(long[] m_alInstructionValues) {
-        this.m_alInstructionValues = m_alInstructionValues;
     }
 
 }

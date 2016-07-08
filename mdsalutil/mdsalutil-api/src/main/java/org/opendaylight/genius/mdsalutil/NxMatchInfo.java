@@ -23,22 +23,28 @@ public class NxMatchInfo implements Serializable, MatchInfoBase {
     private static final long serialVersionUID = 1L;
 
     private final NxMatchFieldType m_matchField;
-    private long[] m_alMatchValues;
-    private BigInteger[] m_aBigIntValues;
-    private String[] m_asMatchValues;
+    private final long[] m_alMatchValues;
+    private final BigInteger[] m_aBigIntValues;
+    private final String[] m_asMatchValues;
 
     public NxMatchInfo(NxMatchFieldType matchField, long[] alMatchValues) {
         m_matchField = matchField;
         m_alMatchValues = alMatchValues;
+        m_aBigIntValues = null;
+        m_asMatchValues = null;
     }
 
     public NxMatchInfo(NxMatchFieldType matchField, BigInteger[] alBigMatchValues) {
         m_matchField = matchField;
+        m_alMatchValues = null;
         m_aBigIntValues = alBigMatchValues;
+        m_asMatchValues = null;
     }
 
     public NxMatchInfo(NxMatchFieldType matchField, String[] alStringMatchValues) {
         m_matchField = matchField;
+        m_alMatchValues = null;
+        m_aBigIntValues = null;
         m_asMatchValues = alStringMatchValues;
     }
 
