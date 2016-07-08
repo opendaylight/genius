@@ -26,7 +26,7 @@ public class FlowEntity extends AbstractSwitchEntity {
     private int m_nIdleTimeOut;
     private int m_nHardTimeOut;
     private BigInteger m_biCookie;
-    private List<? extends MatchInfoBase> m_listMatchInfo;
+    private List<MatchInfoBase> m_listMatchInfo;
     private List<InstructionInfo> m_listInstructionInfo;
 
     private boolean m_bStrictFlag;
@@ -71,7 +71,7 @@ public class FlowEntity extends AbstractSwitchEntity {
         return m_listInstructionInfo;
     }
 
-    public List<? extends MatchInfoBase> getMatchInfoList() {
+    public List<MatchInfoBase> getMatchInfoList() {
         return m_listMatchInfo;
     }
 
@@ -152,8 +152,9 @@ public class FlowEntity extends AbstractSwitchEntity {
         m_flowBuilder = null;
     }
 
+    @SuppressWarnings("unchecked")
     public void setMatchInfoList(List<? extends MatchInfoBase> listMatchInfo) {
-        m_listMatchInfo = listMatchInfo;
+        m_listMatchInfo = (List<MatchInfoBase>) listMatchInfo;
         m_flowBuilder = null;
     }
 
