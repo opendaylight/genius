@@ -51,5 +51,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <artifactId>hwvtepsouthbound-api</artifactId>
     <version>${genius.ovsdb.version}</version>
   </dependency>
+  <dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava-testlib</artifactId>
+    <!-- TODO Remove <version> when https://git.opendaylight.org/gerrit/#/c/41595/ is merged -->
+    <version>18.0</version>
+    <scope>test</scope>
+  </dependency>
 </dependencies>
 </project>
