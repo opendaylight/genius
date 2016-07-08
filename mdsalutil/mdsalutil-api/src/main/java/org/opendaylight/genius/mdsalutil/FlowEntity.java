@@ -8,6 +8,7 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowCookie;
@@ -26,8 +27,8 @@ public class FlowEntity extends AbstractSwitchEntity {
     private int m_nIdleTimeOut;
     private int m_nHardTimeOut;
     private BigInteger m_biCookie;
-    private List<MatchInfoBase> m_listMatchInfo;
-    private List<InstructionInfo> m_listInstructionInfo;
+    private List<MatchInfoBase> m_listMatchInfo = new ArrayList<>();
+    private List<InstructionInfo> m_listInstructionInfo = new ArrayList<>();
 
     private boolean m_bStrictFlag;
     private boolean m_bSendFlowRemFlag;
