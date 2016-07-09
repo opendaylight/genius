@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_3f4a8fc5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-07-09T10:00:27Z",
+      "side": 1,
+      "message": "Better if we put new ArrayList\u003cMatchInfoBase\u003e() as well.",
+      "range": {
+        "startLine": 30,
+        "startChar": 73,
+        "endLine": 30,
+        "endChar": 78
+      },
+      "revId": "144f4f7c7fc470f0f515e6bc1c0e3c50b906ebb2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_1f450bb3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-07-09T10:00:27Z",
+      "side": 1,
+      "message": "Better if we put new ArrayList\u003cInstructionInfo\u003e() as well",
+      "range": {
+        "startLine": 31,
+        "startChar": 58,
+        "endLine": 31,
+        "endChar": 76
+      },
+      "revId": "144f4f7c7fc470f0f515e6bc1c0e3c50b906ebb2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
