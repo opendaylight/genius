@@ -7,8 +7,19 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import java.math.BigInteger;
 import java.net.InetAddress;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+
+import com.google.common.base.Optional;
 import com.google.common.primitives.UnsignedBytes;
 
 public class NWUtil {
@@ -60,8 +71,8 @@ public class NWUtil {
 
         StringBuilder sb = new StringBuilder(18);
 
-        for (int i = 0; i < ipAddress.length; i++) {
-            sb.append(UnsignedBytes.toString(ipAddress[i], 10));
+        for (byte ipAddres : ipAddress) {
+            sb.append(UnsignedBytes.toString(ipAddres, 10));
             sb.append(".");
         }
 
@@ -77,9 +88,9 @@ public class NWUtil {
 
         StringBuilder sb = new StringBuilder(18);
 
-        for (int i = 0; i < macAddress.length; i++) {
-            String tmp = UnsignedBytes.toString(macAddress[i], 16).toUpperCase();
-            if(tmp.length() == 1 || macAddress[i] == (byte)0) {
+        for (byte macAddres : macAddress) {
+            String tmp = UnsignedBytes.toString(macAddres, 16).toUpperCase();
+            if(tmp.length() == 1 || macAddres == (byte)0) {
                 sb.append("0");
             }
             sb.append(tmp);
@@ -88,5 +99,31 @@ public class NWUtil {
 
         sb.setLength(17);
         return sb.toString();
+    }
+
+    /**
+     * Returns the ids of the currently operative DPNs
+     *
+     * @param dataBroker
+     * @return
+     */
+    public static List<BigInteger> getOperativeDPNs(DataBroker dataBroker) {
+        List<BigInteger> result = new LinkedList<BigInteger>();
+        InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
+        Optional<Nodes> nodesOptional = MDSALUtil.read(dataBroker, LogicalDatastoreType.OPERATIONAL,
+                                                       nodesInstanceIdentifier);
+        if (!nodesOptional.isPresent()) {
+            return result;
+        }
+        Nodes nodes = nodesOptional.get();
+        List<Node> nodeList = nodes.getNode();
+        for (Node node : nodeList) {
+            NodeId nodeId = node.getId();
+            if (nodeId != null) {
+                BigInteger dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
+                result.add(dpnId);
+            }
+        }
+        return result;
     }
 }
