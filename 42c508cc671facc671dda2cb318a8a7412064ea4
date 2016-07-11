@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_e5c9aa7a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-07-11T08:34:43Z",
+      "side": 1,
+      "message": "You are right, this should be valid, but it is not, so either we can use a cast setTableId((short)123) or change the attribute to from short to int. I am not against your proposal, but have you considered those options?",
+      "range": {
+        "startLine": 186,
+        "startChar": 31,
+        "endLine": 186,
+        "endChar": 40
+      },
+      "revId": "42c508cc671facc671dda2cb318a8a7412064ea4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
