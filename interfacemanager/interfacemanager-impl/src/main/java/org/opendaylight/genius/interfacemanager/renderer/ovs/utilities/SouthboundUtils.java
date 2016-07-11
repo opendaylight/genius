@@ -291,28 +291,11 @@ public class SouthboundUtils {
 
     }
 
-    private static String getBfdParamMinRx(IfTunnel ifTunnel){
-        if(ifTunnel != null && ifTunnel.getMonitorInterval() != null) {
-            return String.valueOf(Math.min(Long.valueOf(BFD_MIN_RX_VAL), ifTunnel.getMonitorInterval()));
-        }
-        return BFD_MIN_RX_VAL;
-    }
-
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
         List<InterfaceBfd> bfdParams = new ArrayList<>();
         bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() :"false"));
         bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null ?
                 ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_RX, getBfdParamMinRx(ifTunnel)));
-        bfdParams.add(
-                getIfBfdObj(BFD_PARAM_ENABLE, ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() : "false"));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX,
-                ifTunnel != null ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_RX, BFD_MIN_RX_VAL));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_DECAY_MIN_RX, BFD_DECAY_MIN_RX_VAL));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_CPATH_DOWN, BFD_CPATH_DOWN_VAL));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_CHECK_TNL_KEY, BFD_CHECK_TNL_KEY_VAL));
         return bfdParams;
     }
 
