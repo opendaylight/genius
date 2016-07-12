@@ -12,12 +12,15 @@ public class NwConstants {
     // EthType Values
     public static final int ETHTYPE_802_1Q            = 0X8100;
     public static final int ETHTYPE_IPV4              = 0X0800;
+    public static final int ETHTYPE_IPV6              = 0x86dd;
     public static final int ETHTYPE_ARP               = 0X0806;
 
     public static final int ETHTYPE_MPLS_UC           = 0X8847;
     public static final int ETHTYPE_PBB               = 0X88E7;
 
     //Protocol Type
+    public static final int IP_PROT_ICMP = 1;
+    public static final int IP_PROT_TCP = 6;
     public static final int IP_PROT_UDP = 17;
     public static final int IP_PROT_GRE = 47;
 
