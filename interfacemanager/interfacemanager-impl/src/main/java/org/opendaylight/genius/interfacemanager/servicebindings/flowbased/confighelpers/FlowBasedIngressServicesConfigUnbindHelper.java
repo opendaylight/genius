@@ -84,7 +84,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-        if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
+        if (ifState == null || ifState.getType() == null || ifState.getOperStatus() == OperStatus.Down) {
             LOG.info("Not unbinding Service since operstatus is DOWN for Interface: {}", interfaceName);
             return futures;
         }

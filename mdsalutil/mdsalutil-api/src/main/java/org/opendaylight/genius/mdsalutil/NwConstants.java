@@ -55,6 +55,6 @@ public class NwConstants {
     public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
     public static final short INTERNAL_TUNNEL_TABLE = 36;
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
-    public static final short DHCP_TABLE = 16;
+    public static final short DHCP_TABLE = 25;
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
  }
