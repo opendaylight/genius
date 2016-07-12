@@ -97,6 +97,9 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         }
 
         // Split based on type of interface....
+        if(ifState.getType() == null) {
+            return futures;
+        }
         if (ifState.getType().isAssignableFrom(L2vlan.class)) {
             return bindServiceOnVlan(boundServiceNew, allServices, ifState, dataBroker);
         } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
