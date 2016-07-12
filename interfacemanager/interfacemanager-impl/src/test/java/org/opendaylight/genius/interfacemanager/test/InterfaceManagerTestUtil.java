@@ -218,11 +218,9 @@ public class InterfaceManagerTestUtil {
         return nodeDpn;
     }
 
-    public static String buildflowRef(BigInteger dpId,String servicaName,String boundServicename, short servicePriority)
-    {
-        String flowRef = new StringBuffer().append(dpId).append(NwConstants.VLAN_INTERFACE_INGRESS_TABLE).append(NwConstants.FLOWID_SEPARATOR).
-                append(servicaName).append(NwConstants.FLOWID_SEPARATOR).append(servicePriority).toString();
-        return flowRef;
+    public static String buildFlowRef(BigInteger dpnId, short tableId, String iface, short currentServiceIndex) {
+        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR)
+                .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(currentServiceIndex).toString();
     }
 
     public static NodeConnector buildNodeConnector(NodeConnectorId ncId) {
