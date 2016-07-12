@@ -91,6 +91,10 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         List<BoundServices> boundServices = servicesInfo.getBoundServices();
 
         // Split based on type of interface....
+        if(ifState.getType() == null) {
+            return futures;
+        }
+        
         if (ifState.getType().isAssignableFrom(L2vlan.class)) {
             return unbindServiceOnVlan(boundServiceOld, boundServices, ifState, dataBroker);
         } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
