@@ -203,14 +203,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(GetEgressInstructionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder;
         try {
-            List<InstructionInfo> instructionInfo = new ArrayList<InstructionInfo>();
-            List<ActionInfo> actionInfo = IfmUtil.getEgressActionInfosForInterface(input.getIntfName(),
-                    input.getTunnelKey(),
-                    0,  /* ActionKey starting value */
-                    dataBroker);
-            instructionInfo.add(new InstructionInfo(InstructionType.write_actions, actionInfo));
+            List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(), input.getTunnelKey(), dataBroker);
             GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder().
-                    setInstruction(buildInstructions(instructionInfo));
+                    setInstruction(instructions);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         }catch(Exception e){

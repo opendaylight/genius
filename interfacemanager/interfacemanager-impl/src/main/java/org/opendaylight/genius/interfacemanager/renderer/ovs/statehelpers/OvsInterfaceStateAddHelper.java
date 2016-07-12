@@ -82,6 +82,7 @@ public class OvsInterfaceStateAddHelper {
             long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, iface);
             FlowBasedServicesUtils.installVlanFlow(dpId, portNo, iface, transaction, matches, ifState.getIfIndex());
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(iface, Long.toString(portNo), interfaceName, transaction);
         }
 
         futures.add(transaction.submit());
