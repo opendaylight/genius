@@ -348,7 +348,7 @@ public class FlowBasedServicesUtils {
             instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
         }
         instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, instructionKey++));
-        instructions.add(MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.DHCP_TABLE, instructionKey++));
+        instructions.add(MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.LPORT_DISPATCHER_TABLE, instructionKey++));
         int priority =  isVlanTransparent ? 1 : vlanId == 0 ? IfmConstants.FLOW_PRIORITY_FOR_UNTAGGED_VLAN : IfmConstants.FLOW_HIGH_PRIORITY;
         String flowRef = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
