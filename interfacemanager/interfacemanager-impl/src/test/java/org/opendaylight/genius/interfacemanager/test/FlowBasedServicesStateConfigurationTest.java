@@ -3,6 +3,7 @@ package org.opendaylight.genius.interfacemanager.test;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,10 +15,13 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers.FlowBasedServicesStateBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers.FlowBasedServicesStateUnbindHelper;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateUnbindHelper;
 import org.opendaylight.genius.mdsalutil.*;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -35,8 +39,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -71,26 +73,46 @@ public class FlowBasedServicesStateConfigurationTest {
     int flowpriority = 2;
     String serviceName = "VPN";
 
-    @Mock DataBroker dataBroker;
-    @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
-    @Mock ReadOnlyTransaction mockReadTx;
-    @Mock WriteTransaction mockWriteTx;
+    DataBroker dataBroker;
+    ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
+    InterfacemgrProvider interfacemgrProvider;
+    ReadOnlyTransaction mockReadTx;
+    WriteTransaction mockWriteTx;
 
-    FlowBasedServicesStateBindHelper bindHelper;
-    FlowBasedServicesStateUnbindHelper unbindHelper;
+    FlowBasedServicesStateAddable flowBasedServicesStateAddable;
+    FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
     @Before
     public void setUp() throws Exception {
+        interfacemgrProvider = mock(InterfacemgrProvider.class);
+        dataBroker = mock(DataBroker.class);
+        mockReadTx = mock(ReadOnlyTransaction.class);
+        mockWriteTx = mock(WriteTransaction.class);
+        dataChangeListenerRegistration = mock(DataChangeListenerRegistration.class);
+
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),
                 any(DataChangeListener.class),
                 any(DataChangeScope.class)))
                 .thenReturn(dataChangeListenerRegistration);
+        when(interfacemgrProvider.getDataBroker()).thenReturn(dataBroker);
+        when(dataBroker.newReadOnlyTransaction()).thenReturn(mockReadTx);
+        when(dataBroker.newWriteOnlyTransaction()).thenReturn(mockWriteTx);
+        FlowBasedIngressServicesStateBindHelper.intitializeFlowBasedIngressServicesStateAddHelper(interfacemgrProvider);
+        FlowBasedIngressServicesStateUnbindHelper.intitializeFlowBasedIngressServicesStateRemoveHelper(interfacemgrProvider);
+        flowBasedServicesStateAddable = FlowBasedIngressServicesStateBindHelper.getFlowBasedIngressServicesStateAddHelper();
+        flowBasedServicesStateRemovable = FlowBasedIngressServicesStateUnbindHelper.getFlowBasedIngressServicesStateRemoveHelper();
         setupMocks();
     }
 
+    @After
+    public void tearDown() throws Exception {
+        FlowBasedIngressServicesStateBindHelper.clearFlowBasedIngressServicesStateAddHelper();
+        FlowBasedIngressServicesStateUnbindHelper.clearFlowBasedIngressServicesStateUnbindHelper();
+    }
     private void setupMocks(){
+
 
         interfaceEnabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1", true, L2vlan.class, dpId);
         interfaceInstanceIdentifier = IfmUtil.buildId(InterfaceManagerTestUtil.interfaceName);
@@ -158,7 +180,7 @@ public class FlowBasedServicesStateConfigurationTest {
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
 
-        bindHelper.bindServicesOnInterface(stateInterface, ServiceModeIngress.class, dataBroker);
+        flowBasedServicesStateAddable.bindServicesOnInterface(stateInterface);
 
         verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,flowInstanceId,ingressFlow, true);
 
@@ -182,7 +204,7 @@ public class FlowBasedServicesStateConfigurationTest {
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier);
 
-        unbindHelper.unbindServicesFromInterface(stateInterface, ServiceModeIngress.class, dataBroker);
+        flowBasedServicesStateRemovable.unbindServicesFromInterface(stateInterface);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
     }
