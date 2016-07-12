@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_0178092a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-07-12T13:49:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_819ff9b3",
+      "range": {
+        "startLine": 30,
+        "startChar": 73,
+        "endLine": 30,
+        "endChar": 78
+      },
+      "revId": "144f4f7c7fc470f0f515e6bc1c0e3c50b906ebb2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_1f450bb3",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
         "patchSetId": 1
@@ -84,6 +108,30 @@
       "side": 1,
       "message": "Nope, I politely beg to differ. Not since Java 7 anymore. The compiler infers this. Less code is more readable code.",
       "parentUuid": "9a561d44_1f450bb3",
+      "range": {
+        "startLine": 31,
+        "startChar": 58,
+        "endLine": 31,
+        "endChar": 76
+      },
+      "revId": "144f4f7c7fc470f0f515e6bc1c0e3c50b906ebb2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_4172014a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-07-12T13:49:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_e1a6b50f",
       "range": {
         "startLine": 31,
         "startChar": 58,
