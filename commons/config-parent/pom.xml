@@ -69,30 +69,4 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-          <executions>
-            <execution>
-              <phase>process-sources</phase>
-              <goals>
-                <goal>check</goal>
-              </goals>
-            </execution>
-          </executions>
-        <configuration>
-          <configLocation>
-            ${project.basedir}/../../commons/src/main/resources/genius_checkstyle.xml
-          </configLocation>
-          <failsOnError>true</failsOnError>
-          <includes>**/*.java,**/*.xml,**/*.ini,**/*.sh,**/*.bat</includes>
-          <excludes>**\/target\/,**\/bin\/,**\/third-party,**\/yang-gen-sal</excludes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>
-
