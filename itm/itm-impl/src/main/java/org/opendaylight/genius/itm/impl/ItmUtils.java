@@ -88,6 +88,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -96,7 +97,7 @@ public class ItmUtils {
     public static final String DUMMY_IP_ADDRESS = "0.0.0.0";
     public static final String TUNNEL_TYPE_VXLAN = "VXLAN";
     public static final String TUNNEL_TYPE_GRE = "GRE";
-    public static final String TUNNEL = "TUNNEL";
+    public static final String TUNNEL = "tun";
     public static ItmCache itmCache = new ItmCache();
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
@@ -178,7 +179,7 @@ public class ItmUtils {
         String trunkInterfaceName = String.format(  "%s:%s:%s:%s", parentInterfaceName, localHostName,
                 remoteHostName, tunnelTypeStr);
         LOG.trace("trunk interface name is {}", trunkInterfaceName);
-        trunkInterfaceName = String.format("%s:%s", TUNNEL, getUniqueId(idManager, trunkInterfaceName));
+        trunkInterfaceName = String.format("%s%s", TUNNEL, getUniqueIdString(trunkInterfaceName));
         return trunkInterfaceName;
     }
 
@@ -191,7 +192,7 @@ public class ItmUtils {
         }
         String trunkInterfaceName = String.format("%s:%s:%s:%s", parentInterfaceName, localHostName, remoteHostName, tunnelTypeStr);
         LOG.trace("Releasing Id for trunkInterface - {}", trunkInterfaceName );
-        releaseId(idManager, trunkInterfaceName) ;
+        //releaseId(idManager, trunkInterfaceName) ;
     }
 
     public static InetAddress getInetAddressFromIpAddress(IpAddress ip) {
@@ -348,6 +349,10 @@ public class ItmUtils {
             LOG.warn("Exception when getting Unique Id",e);
         }
         return 0;
+    }
+
+    public static String getUniqueIdString(String idKey) {
+        return UUID.nameUUIDFromBytes(idKey.getBytes()).toString().substring(0, 12).replace("-", "");
     }
 
     public static void releaseId(IdManagerService idManager, String idKey) {
