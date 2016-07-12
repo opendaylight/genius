@@ -62,6 +62,7 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Future;
 
 import static org.mockito.Mockito.*;
@@ -288,11 +289,11 @@ public class StateInterfaceTest {
     }
 
     @Test
-    public void testUpdateStateInterface(){
+    public void testUpdateStateInterface() {
 
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
                 expectedStateInterface = Optional.of(stateInterface);
-        Optional<InterfaceParentEntry>expectedParentEntry = Optional.of(interfaceParentEntry);
+        Optional<InterfaceParentEntry> expectedParentEntry = Optional.of(interfaceParentEntry);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<Interface> expectedChildInterface = Optional.of(childVlanInterfaceEnabled);
         Optional<InterfaceParentEntry> higherLayerParentOptional = Optional.of(higherLayerInterfaceParentEntry);
@@ -318,6 +319,17 @@ public class StateInterfaceTest {
 
         updateHelper.updateState(fcNodeConnectorId, alivenessMonitorService, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
 
-        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier,parentInterface, false);
+        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier, parentInterface, false);
+
+        // creating byte array
+        String tunnelName = "abcde";
+
+        // creating UUID from byte
+        UUID uid = UUID.nameUUIDFromBytes(tunnelName.getBytes());
+
+        // checking UUID value
+        System.out.println("UUID value from byte: " + uid);
+
+
     }
 }

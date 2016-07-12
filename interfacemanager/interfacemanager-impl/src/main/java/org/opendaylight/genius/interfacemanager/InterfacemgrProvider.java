@@ -144,7 +144,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             flowBasedServicesConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
             flowBasedServicesInterfaceStateListener =
-                    new FlowBasedServicesInterfaceStateListener(dataBroker);
+                    new FlowBasedServicesInterfaceStateListener(this);
             flowBasedServicesInterfaceStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
             vlanMemberConfigListener =

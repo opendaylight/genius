@@ -5,18 +5,21 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -29,14 +32,43 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FlowBasedServicesStateUnbindHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesStateUnbindHelper.class);
+public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateUnbindHelper.class);
 
-    public static List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState, Class<? extends ServiceModeBase> serviceMode,
-                                                                           DataBroker dataBroker) {
+    private InterfacemgrProvider interfaceMgrProvider;
+    private static volatile FlowBasedServicesStateRemovable flowBasedIngressServicesStateRemovable;
+
+    private FlowBasedIngressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
+        this.interfaceMgrProvider = interfaceMgrProvider;
+    }
+
+    public static void intitializeFlowBasedIngressServicesStateRemoveHelper(InterfacemgrProvider interfaceMgrProvider) {
+        if (flowBasedIngressServicesStateRemovable == null) {
+            synchronized (FlowBasedIngressServicesStateUnbindHelper.class) {
+                if (flowBasedIngressServicesStateRemovable == null) {
+                    flowBasedIngressServicesStateRemovable = new FlowBasedIngressServicesStateUnbindHelper(interfaceMgrProvider);
+                }
+            }
+        }
+    }
+
+    public static FlowBasedServicesStateRemovable getFlowBasedIngressServicesStateRemoveHelper() {
+        if (flowBasedIngressServicesStateRemovable == null) {
+            LOG.error("FlowBasedIngressBindHelper is not initialized");
+        }
+        return flowBasedIngressServicesStateRemovable;
+    }
+
+    public static void clearFlowBasedIngressServicesStateUnbindHelper() {
+        flowBasedIngressServicesStateRemovable = null;
+    }
+
+    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("unbinding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), serviceMode, dataBroker);
+
+        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeIngress.class, dataBroker);
         if (servicesInfo == null) {
             LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;
