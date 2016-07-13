@@ -24,7 +24,7 @@ public class InstructionInfo implements Serializable {
     private final BigInteger[] m_alBigInstructionValues;
     private final List<ActionInfo> m_actionInfos;
 
-    // This constructor should be used incase of clearAction
+    // This constructor should be used in case of clearAction
     public InstructionInfo(InstructionType instructionType) {
         m_instructionType = instructionType;
         m_alInstructionValues = null;
@@ -39,10 +39,10 @@ public class InstructionInfo implements Serializable {
         m_actionInfos = null;
     }
 
-    public InstructionInfo(InstructionType instructionType, BigInteger[] instructionValues) {
+    public InstructionInfo(InstructionType instructionType, BigInteger[] bigInstructionValues) {
         m_instructionType = instructionType;
         m_alInstructionValues = null;
-        m_alBigInstructionValues = instructionValues;
+        m_alBigInstructionValues = bigInstructionValues;
         m_actionInfos = null;
     }
 
