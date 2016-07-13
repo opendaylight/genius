@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.resourcemanager;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -13,20 +12,12 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceManagerService;
-import org.opendaylight.yangtools.yang.binding.Augmentation;
-import org.opendaylight.yangtools.yang.binding.DataContainer;
-import org.opendaylight.yangtools.yang.data.api.schema.tree.SynchronizedDataTreeModification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
 
-
-public class ResourceManagerServiceProvider implements BindingAwareProvider,
-            AutoCloseable {
+public class ResourceManagerServiceProvider implements BindingAwareProvider, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ResourceManagerServiceProvider.class);
     private ResourceManager resourceManager;
@@ -49,22 +40,17 @@ public class ResourceManagerServiceProvider implements BindingAwareProvider,
     }
 
     @Override
-    public void onSessionInitiated(ProviderContext session){
+    public void onSessionInitiated(ProviderContext session) {
         LOG.info("ResourceManagerserviceProvider Session Initiated");
-        try {
-            dataBroker = session.getSALService(DataBroker.class);
-            idManager = rpcProviderRegistry.getRpcService(IdManagerService.class);
-            resourceManager = new ResourceManager(dataBroker, idManager);
-            rpcRegistration = getRpcProviderRegistry().addRpcImplementation(ResourceManagerService.class, resourceManager);
-            createIdpools();
-        } catch (Exception e) {
-            LOG.error("Error initializing services", e);
-        }
+        dataBroker = session.getSALService(DataBroker.class);
+        idManager = rpcProviderRegistry.getRpcService(IdManagerService.class);
+        resourceManager = new ResourceManager(dataBroker, idManager);
+        rpcRegistration = rpcProviderRegistry.addRpcImplementation(ResourceManagerService.class, resourceManager);
+        createIdpools();
     }
 
     private void createIdpools() {
-        //TODO Create pools for tables, groups and meters
-
+        // TODO Create pools for tables, groups and meters
     }
 
     public ResourceManagerServiceProvider(RpcProviderRegistry rpcRegistry) {
@@ -74,11 +60,5 @@ public class ResourceManagerServiceProvider implements BindingAwareProvider,
     @Override
     public void close() throws Exception {
         rpcRegistration.close();
-
-        }
     }
-
-
-
-
-
+}
