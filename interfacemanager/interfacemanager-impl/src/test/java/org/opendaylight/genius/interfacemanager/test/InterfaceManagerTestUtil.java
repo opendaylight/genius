@@ -8,8 +8,11 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import com.google.common.collect.Maps;
+import java.lang.reflect.Field;
+import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
@@ -346,5 +349,24 @@ public class InterfaceManagerTestUtil {
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         return tpBuilder.build();
+    }
+
+    public static void clearInterfaceCaches(){
+        Field configMap = null;
+        try {
+            configMap = InterfaceManagerCommonUtils.class.getDeclaredField("interfaceConfigMap");
+            configMap.setAccessible(true);
+            ConcurrentHashMap<String, Interface> refMap = (ConcurrentHashMap<String, Interface>) configMap.get(new InterfaceManagerCommonUtils());
+            refMap.clear();
+            Field stateMap = InterfaceManagerCommonUtils.class.getDeclaredField("interfaceStateMap");
+            stateMap.setAccessible(true);
+            ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> stateMapRef =
+                (ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>) stateMap.get(new InterfaceManagerCommonUtils());
+            stateMapRef.clear();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }

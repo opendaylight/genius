@@ -93,6 +93,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private InterfaceManagerRpcService interfaceManagerRpcService;
     private BindingAwareBroker.RpcRegistration<OdlInterfaceRpcService> rpcRegistration;
     private NodeConnectorStatsImpl nodeConnectorStatsManager;
+    private CacheInterfaceConfigListener cacheInterfaceConfigListener;
+    private CacheInterfaceStateListener cacheInterfaceStateListener;
 
     public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
         this.rpcProviderRegistry = rpcProviderRegistry;
@@ -157,6 +159,12 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             alivenessMonitorListener = new org.opendaylight.genius.interfacemanager.listeners.AlivenessMonitorListener(dataBroker);
             notificationService.registerNotificationListener(alivenessMonitorListener);
 
+            cacheInterfaceConfigListener = new CacheInterfaceConfigListener(dataBroker);
+            cacheInterfaceConfigListener.registerListener(dataBroker);
+
+            cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
+            cacheInterfaceStateListener.registerListener(dataBroker);
+
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
                     session.getRpcService(OpendaylightPortStatisticsService.class), session.getRpcService(OpendaylightFlowTableStatisticsService.class));
@@ -191,6 +199,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         LOG.info("InterfacemgrProvider Closed");
         interfaceConfigListener.close();
         rpcRegistration.close();
+        cacheInterfaceConfigListener.close();
+        cacheInterfaceStateListener.close();
     }
 
     public RpcProviderRegistry getRpcProviderRegistry() {

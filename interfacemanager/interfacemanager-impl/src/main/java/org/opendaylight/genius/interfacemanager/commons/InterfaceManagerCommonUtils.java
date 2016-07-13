@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.commons;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -52,6 +53,9 @@ import java.util.List;
 
 public class InterfaceManagerCommonUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerCommonUtils.class);
+    private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<String, Interface>();
+    private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
+        interfaceStateMap = new ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>();
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
                                                                     DataBroker dataBroker) {
         NodeId nodeId = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
@@ -103,26 +107,44 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static Interface getInterfaceFromConfigDS(String interfaceName, DataBroker dataBroker) {
-        InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-        return getInterfaceFromConfigDS(interfaceKey, dataBroker);
-    }
-
-    public static Interface getInterfaceFromConfigDS(InterfaceKey interfaceKey, DataBroker dataBroker) {
-        InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(interfaceKey);
-        Optional<Interface> interfaceOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfaceId, dataBroker);
-        if (!interfaceOptional.isPresent()) {
-            return null;
+        Interface iface = null;
+        iface = interfaceConfigMap.get(interfaceName);
+        if (iface != null) {
+            return iface;
+        }
+        InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(new InterfaceKey(interfaceName));
+        Optional<Interface> interfaceOptional =
+            IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfaceId, dataBroker);
+        if (interfaceOptional.isPresent()) {
+            iface = interfaceOptional.get();
+            interfaceConfigMap.put(iface.getName(), iface);
         }
 
-        return interfaceOptional.get();
+        return iface;
+    }
+
+    @Deprecated
+    public static Interface getInterfaceFromConfigDS(InterfaceKey interfaceKey, DataBroker dataBroker) {
+        return getInterfaceFromConfigDS(interfaceKey.getName(), dataBroker);
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(String interfaceName, DataBroker dataBroker) {
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
-                IfmUtil.buildStateInterfaceId(interfaceName);
-        return getInterfaceStateFromOperDS(ifStateId, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+            interfaceStateMap.get(interfaceName);
+        if(ifState != null) {
+            return ifState;
+        }
+        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateOptional =
+            IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                IfmUtil.buildStateInterfaceId(interfaceName), dataBroker);
+        if (ifStateOptional.isPresent()) {
+            ifState = ifStateOptional.get();
+            interfaceStateMap.put(ifState.getName(), ifState);
+        }
+        return ifState;
     }
 
+    @Deprecated
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS
             (InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId, DataBroker dataBroker) {
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateOptional =
@@ -372,4 +394,20 @@ public class InterfaceManagerCommonUtils {
         return false;
     }
 
+    // Cache Util methods
+    public static void addInterfaceToCache(Interface iface) {
+        interfaceConfigMap.put(iface.getName(), iface);
+    }
+
+    public static void removeFromInterfaceCache(Interface iface) {
+        interfaceConfigMap.remove(iface.getName(), iface);
+    }
+
+    public static void addInterfaceStateToCache(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
+        interfaceStateMap.put(iface.getName(), iface);
+    }
+
+    public static void removeFromInterfaceStateCache(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
+        interfaceStateMap.remove(iface.getName(), iface);
+    }
 }

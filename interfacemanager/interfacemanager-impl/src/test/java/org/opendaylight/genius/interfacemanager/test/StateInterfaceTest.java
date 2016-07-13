@@ -116,6 +116,7 @@ public class StateInterfaceTest {
                 any(DataChangeScope.class)))
                 .thenReturn(dataChangeListenerRegistration);
         setupMocks();
+        InterfaceManagerTestUtil.clearInterfaceCaches();
     }
 
     private void setupMocks() {
@@ -180,6 +181,8 @@ public class StateInterfaceTest {
                 LogicalDatastoreType.CONFIGURATION, higherLevelInterfaceParentEntryIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedChildInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, childInterfaceInstanceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
+                LogicalDatastoreType.OPERATIONAL, ifIndexId);
 
         AllocateIdInput getIdInput = new AllocateIdInputBuilder()
                 .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
@@ -318,6 +321,6 @@ public class StateInterfaceTest {
 
         updateHelper.updateState(fcNodeConnectorId, alivenessMonitorService, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
 
-        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL,interfaceStateIdentifier,parentInterface, false);
+        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier, parentInterface, false);
     }
 }

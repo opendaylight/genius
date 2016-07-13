@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -95,8 +96,7 @@ public class TunnelInterfaceConfigurationTest {
     @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
-    @Mock
-    IMdsalApiManager mdsalApiManager;
+    @Mock IMdsalApiManager mdsalApiManager;
     OvsInterfaceConfigAddHelper addHelper;
     OvsInterfaceConfigRemoveHelper removeHelper;
     OvsInterfaceConfigUpdateHelper updateHelper;
@@ -152,6 +152,11 @@ public class TunnelInterfaceConfigurationTest {
         // Setup mocks
         when(dataBroker.newReadOnlyTransaction()).thenReturn(mockReadTx);
         when(dataBroker.newWriteOnlyTransaction()).thenReturn(mockWriteTx);
+    }
+
+    @After
+    public void tearDown(){
+        InterfaceManagerTestUtil.clearInterfaceCaches();
     }
 
     @Test

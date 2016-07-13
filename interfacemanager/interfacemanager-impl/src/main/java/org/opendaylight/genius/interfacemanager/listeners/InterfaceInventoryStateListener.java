@@ -86,7 +86,7 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
 
         InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
                 fcNodeConnectorNew, portName);
-        coordinator.enqueueJob(portName, portStateUpdateWorker);
+        coordinator.enqueueJob(portName, portStateUpdateWorker, 3);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
 
         InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
                 fcNodeConnectorNew, portName);
-        coordinator.enqueueJob(portName, ifStateAddWorker);
+        coordinator.enqueueJob(portName, ifStateAddWorker, 3);
     }
 
     /**
@@ -131,7 +131,7 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
 
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                 nodeConnectorIdNew, nodeConnectorIdOld, flowCapableNodeConnectorOld, portName);
-        coordinator.enqueueJob(portName, portStateRemoveWorker);
+        coordinator.enqueueJob(portName, portStateRemoveWorker, 3);
     }
 
     private class InterfaceStateAddWorker implements Callable {

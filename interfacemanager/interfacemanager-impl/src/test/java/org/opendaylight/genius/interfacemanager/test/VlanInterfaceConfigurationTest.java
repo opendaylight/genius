@@ -96,10 +96,7 @@ public class VlanInterfaceConfigurationTest {
                 any(DataChangeScope.class)))
                 .thenReturn(dataChangeListenerRegistration);
         setupMocks();
-    }
-
-    @After
-    public void cleanUp(){
+        InterfaceManagerTestUtil.clearInterfaceCaches();
     }
 
     private void setupMocks() {

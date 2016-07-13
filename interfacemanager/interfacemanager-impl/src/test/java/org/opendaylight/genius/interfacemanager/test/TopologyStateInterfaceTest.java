@@ -5,6 +5,7 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +71,7 @@ public class TopologyStateInterfaceTest {
     @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
-    @Mock OvsdbTerminationPointAugmentation newTerminationPoint;
+    OvsdbTerminationPointAugmentation newTerminationPoint;
 
     OvsInterfaceTopologyStateAddHelper addHelper;
     OvsInterfaceTopologyStateRemoveHelper removeHelper;
@@ -87,12 +88,21 @@ public class TopologyStateInterfaceTest {
         setupMocks();
     }
 
+    @After
+    public void tearDown(){
+        InterfaceManagerTestUtil.clearInterfaceCaches();
+    }
+
     private void setupMocks()
     {
         Node node = new NodeBuilder().setKey(null).setNodeId(null).build();
-        tunnelInterfaceEnabled = InterfaceManagerTestUtil.buildTunnelInterface(dpId, InterfaceManagerTestUtil.tunnelInterfaceName, "Test Interface1", true, TunnelTypeGre.class
-                , "192.168.56.101", "192.168.56.102");
-        bridgeIid = InterfaceManagerTestUtil.getOvsdbAugmentationInstanceIdentifier(InterfaceManagerTestUtil.interfaceName, node);
+        tunnelInterfaceEnabled = InterfaceManagerTestUtil.buildTunnelInterface(dpId,
+            InterfaceManagerTestUtil.tunnelInterfaceName, "Test Interface1", true, TunnelTypeGre.class,
+            "192.168.56.101", "192.168.56.102");
+        newTerminationPoint = new OvsdbTerminationPointAugmentationBuilder()
+            .setName(InterfaceManagerTestUtil.tunnelInterfaceName).build();
+        bridgeIid = InterfaceManagerTestUtil
+            .getOvsdbAugmentationInstanceIdentifier(InterfaceManagerTestUtil.tunnelInterfaceName, node);
         bridgeNew = InterfaceManagerTestUtil.getOvsdbBridgeRef("s1");
         bridgeOld = InterfaceManagerTestUtil.getOvsdbBridgeRef("s1");
         bridgeEntryIid = InterfaceMetaUtils.getBridgeEntryIdentifier(new BridgeEntryKey(dpId));
@@ -191,8 +201,6 @@ public class TopologyStateInterfaceTest {
 
         List<InterfaceBfdStatus> interfaceBfdStatus = new ArrayList<InterfaceBfdStatus>();
         interfaceBfdStatus.add(new InterfaceBfdStatusBuilder().setBfdStatusKey(SouthboundUtils.BFD_OP_STATE).setBfdStatusValue(SouthboundUtils.BFD_STATE_UP).build());
-        List bfdStatusSpy = spy(interfaceBfdStatus);
-        when(newTerminationPoint.getInterfaceBfdStatus()).thenReturn(bfdStatusSpy);
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = new InterfaceBuilder().setKey(new InterfaceKey(InterfaceManagerTestUtil.interfaceName)).build();
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedInterface = Optional.of(ifState);
@@ -203,9 +211,9 @@ public class TopologyStateInterfaceTest {
 
         //verify
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
-                IfmUtil.buildStateInterfaceId(null);
-        InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
-        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(null));
+            IfmUtil.buildStateInterfaceId(InterfaceManagerTestUtil.tunnelInterfaceName);
+        InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down);
+        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(InterfaceManagerTestUtil.tunnelInterfaceName));
         verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
 
     }
