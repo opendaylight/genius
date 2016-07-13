@@ -304,51 +304,51 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildHwVtepsTunnels(){
 
-        Interface extTunnelIf1 = ItmUtils.buildTunnelInterface(dpId1, "TUNNEL:101", String.format("%s %s", tunnelType1
+        Interface extTunnelIf1 = ItmUtils.buildTunnelInterface(dpId1, "tun030025bd04f", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, tunnelType1, tunnelEndPointsVxlan.getIpAddress(), ipAddress1,
                 gtwyIp1, vlanId, false,true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
-        Interface hwTunnelIf2 = ItmUtils.buildHwTunnelInterface("TUNNEL:102", String.format("%s %s", tunnelType1.getName(),
+        Interface hwTunnelIf2 = ItmUtils.buildHwTunnelInterface("tun9a55a9c38f2", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), hwVtep1.getNode_id(), tunnelType1, ipAddress1, ipAddress3, gtwyIp1,
                 true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
-        Interface extTunnelIf3 = ItmUtils.buildTunnelInterface(dpId1, "TUNNEL:100", String.format("%s %s", tunnelType1
+        Interface extTunnelIf3 = ItmUtils.buildTunnelInterface(dpId1, "tun17c6e20c283", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, tunnelType1, tunnelEndPointsVxlan.getIpAddress(), ipAddress2,
                 gtwyIp1, vlanId, false,true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
-        Interface hwTunnelIf4 = ItmUtils.buildHwTunnelInterface("TUNNEL:103", String.format("%s %s", tunnelType1.getName(),
+        Interface hwTunnelIf4 = ItmUtils.buildHwTunnelInterface("tunaa109b6c8c5", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
                 ipAddress3, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
-        Interface hwTunnelIf5 = ItmUtils.buildHwTunnelInterface("TUNNEL:104", String.format("%s %s", tunnelType1.getName(),
+        Interface hwTunnelIf5 = ItmUtils.buildHwTunnelInterface("tund903ed434d5", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), hwVtep1.getNode_id(), tunnelType1, ipAddress1,
                 ipAddress2, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
-        Interface hwTunnelIf6 = ItmUtils.buildHwTunnelInterface("TUNNEL:105", String.format("%s %s", tunnelType1
+        Interface hwTunnelIf6 = ItmUtils.buildHwTunnelInterface("tunc3315b110a6", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
                 ipAddress1, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         ExternalTunnel externalTunnel1 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(dpId1.toString()),
-                getExternalTunnelKey(source), tunnelType1, "TUNNEL:101");
+                getExternalTunnelKey(source), tunnelType1, "tun030025bd04f");
         ExternalTunnel externalTunnel2 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(source),
-                getExternalTunnelKey(dpId1.toString()), tunnelType1, "TUNNEL:102");
+                getExternalTunnelKey(dpId1.toString()), tunnelType1, "tun9a55a9c38f2");
         ExternalTunnel externalTunnel3 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(dpId1.toString()),
-                getExternalTunnelKey(destination), tunnelType1, "TUNNEL:100");
+                getExternalTunnelKey(destination), tunnelType1, "tun17c6e20c283");
         ExternalTunnel externalTunnel4 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(destination),
-                getExternalTunnelKey(dpId1.toString()), tunnelType1, "TUNNEL:103");
+                getExternalTunnelKey(dpId1.toString()), tunnelType1, "tunaa109b6c8c5");
         ExternalTunnel externalTunnel5 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(source),
-                getExternalTunnelKey(destination), tunnelType1, "TUNNEL:104");
+                getExternalTunnelKey(destination), tunnelType1, "tund903ed434d5");
         ExternalTunnel externalTunnel6 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(destination),
-                getExternalTunnelKey(source), tunnelType1, "TUNNEL:105");
+                getExternalTunnelKey(source), tunnelType1, "tunc3315b110a6");
 
         InstanceIdentifier<TransportZone> transportZoneIdentifier = InstanceIdentifier.builder(TransportZones.class).child
                 (TransportZone.class, new TransportZoneKey(transportZone1)).build();
         InstanceIdentifier<Interface> ifIID1 = InstanceIdentifier.builder(Interfaces.class).child(Interface.class, new
-                InterfaceKey("TUNNEL:101")).build();
+                InterfaceKey("tun030025bd04f")).build();
         InstanceIdentifier<Interface> ifIID2 = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
-                new InterfaceKey("TUNNEL:102")).build();
+                new InterfaceKey("tun9a55a9c38f2")).build();
         InstanceIdentifier<Interface> ifIID3 = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
-                new InterfaceKey("TUNNEL:100")).build();
+                new InterfaceKey("tun17c6e20c283")).build();
         InstanceIdentifier<Interface> ifIID4 = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
-                new InterfaceKey("TUNNEL:103")).build();
+                new InterfaceKey("tunaa109b6c8c5")).build();
         InstanceIdentifier<Interface> ifIID5 = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
-                new InterfaceKey("TUNNEL:104")).build();
+                new InterfaceKey("tund903ed434d5")).build();
         InstanceIdentifier<Interface> ifIID6 = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
-                new InterfaceKey("TUNNEL:105")).build();
+                new InterfaceKey("tunc3315b110a6")).build();
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier1 = InstanceIdentifier.create(ExternalTunnelList
                 .class).child(ExternalTunnel.class, new ExternalTunnelKey( getExternalTunnelKey(source),
                 getExternalTunnelKey(dpId1.toString()), tunnelType1));
@@ -378,18 +378,18 @@ public class ItmExternalTunnelAddTest {
         externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker,idManagerService,null,cfgdHwVtepsList);
 
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID1,extTunnelIf1,true);
-        verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID2,hwTunnelIf2,true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID3,extTunnelIf3,true);
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1,
                 externalTunnel1, true);
+        verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID2,hwTunnelIf2,true);
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier2,
                 externalTunnel2, true);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID3,extTunnelIf3,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier3,
                 externalTunnel3, true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID5,hwTunnelIf5,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID4,hwTunnelIf4,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier4,
                 externalTunnel4, true);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID5,hwTunnelIf5,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier5,
                 externalTunnel5, true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID6,hwTunnelIf6,true);
