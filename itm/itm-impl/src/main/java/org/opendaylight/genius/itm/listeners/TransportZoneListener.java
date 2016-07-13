@@ -10,6 +10,13 @@ package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -37,10 +44,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
@@ -121,14 +124,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.debug("Received Transport Zone Update Event: Key - {}, Old - {}, Updated - {}", key, tzOld, tzNew);
         //if( !(tzOld.equals(tzNew))) {
         //add(key, tzNew);
-        List<DPNTEPsInfo> oldDpnTepsList = new ArrayList<DPNTEPsInfo>();
+        List<DPNTEPsInfo> oldDpnTepsList = new ArrayList<>();
         oldDpnTepsList = createDPNTepInfo(tzOld);
-        List<DPNTEPsInfo> newDpnTepsList = new ArrayList<DPNTEPsInfo>();
+        List<DPNTEPsInfo> newDpnTepsList = new ArrayList<>();
         newDpnTepsList = createDPNTepInfo(tzNew);
-        List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<DPNTEPsInfo>();
+        List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
         oldDpnTepsListcopy.addAll(oldDpnTepsList);
         LOG.trace("oldcopy0" + oldDpnTepsListcopy);
-        List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<DPNTEPsInfo>();
+        List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<>();
         newDpnTepsListcopy.addAll(newDpnTepsList);
         LOG.trace("newcopy0" + newDpnTepsListcopy);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -153,14 +156,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                     new ItmTepRemoveWorker(oldDpnTepsList, Collections.<HwVtep>emptyList(), dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzNew.getZoneName(), removeWorker);
         }
-        List<HwVtep> oldHwList = new ArrayList<HwVtep>();
+        List<HwVtep> oldHwList = new ArrayList<>();
         oldHwList = createhWVteps(tzOld);
-        List<HwVtep> newHwList = new ArrayList<HwVtep>();
+        List<HwVtep> newHwList = new ArrayList<>();
         newHwList =  createhWVteps(tzNew);
-        List<HwVtep> oldHwListcopy = new ArrayList<HwVtep>();
+        List<HwVtep> oldHwListcopy = new ArrayList<>();
         oldHwListcopy.addAll(oldHwList);
         LOG.trace("oldHwListcopy0" + oldHwListcopy);
-        List<HwVtep> newHwListcopy = new ArrayList<HwVtep>();
+        List<HwVtep> newHwListcopy = new ArrayList<>();
         newHwListcopy.addAll(newHwList);
         LOG.trace("newHwListcopy0" + newHwListcopy);
 
@@ -204,7 +207,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone){
 
         Map<BigInteger, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
-        List<DPNTEPsInfo> dpnTepInfo = new ArrayList<DPNTEPsInfo>();
+        List<DPNTEPsInfo> dpnTepInfo = new ArrayList<>();
         // List<TransportZone> transportZoneList = transportZones.getTransportZone();
         // for(TransportZone transportZone : transportZoneList) {
         String zone_name = transportZone.getZoneName();
@@ -233,7 +236,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                             tunnelEndPointsList.add(tunnelEndPoints);
                         } else {
                             LOG.trace("Adding new DPN info list to the Map: {} ", dpnID);
-                            tunnelEndPointsList = new ArrayList<TunnelEndPoints>();
+                            tunnelEndPointsList = new ArrayList<>();
                             tunnelEndPointsList.add(tunnelEndPoints);
                             mapDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
                         }
@@ -255,7 +258,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     private List<HwVtep> createhWVteps(TransportZone transportZone) {
         //creating hwVtepsList to pass
         //Inventory model would deprecate Eventually, so not creating hWvtepslist under createDpnTepInfo();
-        List<HwVtep> hwVtepsList = new ArrayList<HwVtep>();
+        List<HwVtep> hwVtepsList = new ArrayList<>();
         //currently the list has only one object always since we are adding L2Gws one by one and only to One TransportZone.
         //Map<BigInteger, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
 

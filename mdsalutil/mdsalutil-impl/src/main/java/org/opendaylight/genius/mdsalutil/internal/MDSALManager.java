@@ -11,6 +11,13 @@ package org.opendaylight.genius.mdsalutil.internal;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
@@ -20,7 +27,13 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataChangeListenerBase;
-import org.opendaylight.genius.mdsalutil.*;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.FlowEntity;
+import org.opendaylight.genius.mdsalutil.FlowInfoKey;
+import org.opendaylight.genius.mdsalutil.GroupEntity;
+import org.opendaylight.genius.mdsalutil.GroupInfoKey;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.Table;
@@ -28,7 +41,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupKey;
@@ -48,14 +60,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class MDSALManager implements AutoCloseable {
 
     private static final Logger s_logger = LoggerFactory.getLogger(MDSALManager.class);
@@ -65,8 +69,8 @@ public class MDSALManager implements AutoCloseable {
     private PacketProcessingService m_packetProcessingService;
     private ListenerRegistration<DataChangeListener> groupListenerRegistration;
     private ListenerRegistration<DataChangeListener> flowListenerRegistration;
-    private ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<FlowInfoKey, Runnable>();
-    private ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<GroupInfoKey, Runnable> ();
+    private ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<> ();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
@@ -354,7 +358,7 @@ public class MDSALManager implements AutoCloseable {
 
     public void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload) {
 
-        List<ActionInfo> actionInfos = new ArrayList<ActionInfo>();
+        List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(new ActionInfo(ActionType.group, new String[] { String.valueOf(groupId) }));
 
         sendPacketOutWithActions(dpnId, groupId, payload, actionInfos);

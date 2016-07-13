@@ -9,6 +9,11 @@ package org.opendaylight.genius.itm.cli;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.net.util.SubnetUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -21,7 +26,14 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
@@ -44,12 +56,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 //import org.opendaylight.genius.interfacemgr.util.OperationalIfmUtil;
 
 
@@ -64,10 +70,10 @@ public class TepCommandHelper {
      * command is Tep-add else set to false when Tep-delete is called
      * tepCommandHelper object is created only once in session initiated
      */
-    final Map<String, Map<SubnetObject, List<Vteps>>> tZones = new HashMap<String, Map<SubnetObject, List<Vteps>>>();
-    private List<Subnets> subnetList = new ArrayList<Subnets>();
-    private List<TransportZone> tZoneList = new ArrayList<TransportZone>();
-    private List<Vteps> vtepDelCommitList = new ArrayList<Vteps>();
+    final Map<String, Map<SubnetObject, List<Vteps>>> tZones = new HashMap<>();
+    private List<Subnets> subnetList = new ArrayList<>();
+    private List<TransportZone> tZoneList = new ArrayList<>();
+    private List<Vteps> vtepDelCommitList = new ArrayList<>();
     private IInterfaceManager interfaceManager;
 
     // private List<InstanceIdentifier<? extends DataObject>> vtepPaths = new
@@ -139,14 +145,14 @@ public class TepCommandHelper {
                     System.out.println("subnet with subnet mask " + subObCli.get_key() + "already exists");
                     return;
                 }
-                List<Vteps> vtepListTemp = new ArrayList<Vteps>();
+                List<Vteps> vtepListTemp = new ArrayList<>();
                 vtepListTemp.add(vtepCli);
                 subVtepMapTemp.put(subObCli, vtepListTemp);
             }
         } else {
-            List<Vteps> vtepListTemp = new ArrayList<Vteps>();
+            List<Vteps> vtepListTemp = new ArrayList<>();
             vtepListTemp.add(vtepCli);
-            Map<SubnetObject, List<Vteps>> subVtepMapTemp = new HashMap<SubnetObject, List<Vteps>>();
+            Map<SubnetObject, List<Vteps>> subVtepMapTemp = new HashMap<>();
             subVtepMapTemp.put(subObCli, vtepListTemp);
             tZones.put(transportZone, subVtepMapTemp);
         }
@@ -358,10 +364,10 @@ public class TepCommandHelper {
         try {
             LOG.debug("no of teps added" + check);
             if (tZones != null || !tZones.isEmpty()) {
-                tZoneList = new ArrayList<TransportZone>();
+                tZoneList = new ArrayList<>();
                 for (String tZ : tZones.keySet()) {
                     LOG.debug("tZones" + tZ);
-                    subnetList = new ArrayList<Subnets>();
+                    subnetList = new ArrayList<>();
                     Map<SubnetObject, List<Vteps>> subVtepMapTemp = (Map<SubnetObject, List<Vteps>>) tZones.get(tZ);
                     for (SubnetObject subOb : subVtepMapTemp.keySet()) {
                         LOG.debug("subnets" + subOb.get_prefix());
@@ -432,7 +438,7 @@ public class TepCommandHelper {
                 System.out.println("No teps configured");
                 return;
             }
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
             result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", (monitorEnabled ? "On" : "Off")));
             result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval));
             result.add(System.lineSeparator());
@@ -547,9 +553,9 @@ public class TepCommandHelper {
         List<InstanceIdentifier<T>> vtepPaths = new ArrayList<>();
         List<InstanceIdentifier<T>> subnetPaths = new ArrayList<>();
         List<InstanceIdentifier<T>> tzPaths = new ArrayList<>();
-        List<Subnets> subDelList = new ArrayList<Subnets>();
-        List<TransportZone> tzDelList = new ArrayList<TransportZone>();
-        List<Vteps> vtepDelList = new ArrayList<Vteps>();
+        List<Subnets> subDelList = new ArrayList<>();
+        List<TransportZone> tzDelList = new ArrayList<>();
+        List<Vteps> vtepDelList = new ArrayList<>();
         List<InstanceIdentifier<T>> allPaths = new ArrayList<>();
         try {
             if (vtepDelCommitList != null && !vtepDelCommitList.isEmpty()) {
@@ -748,10 +754,10 @@ public class TepCommandHelper {
         if (tZones.isPresent()) {
             tZoneList = tZones.get().getTransportZone();
             if(tZoneList == null || tZoneList.isEmpty()) {
-                tZoneList = new ArrayList<TransportZone>();
+                tZoneList = new ArrayList<>();
             }
         } else {
-            tZoneList = new ArrayList<TransportZone>();
+            tZoneList = new ArrayList<>();
         }
         tZoneList.add(tZone);
         transportZones = new TransportZonesBuilder().setTransportZone(tZoneList).build();

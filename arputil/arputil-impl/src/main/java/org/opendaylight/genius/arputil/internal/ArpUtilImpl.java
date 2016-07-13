@@ -8,11 +8,23 @@
 
 package org.opendaylight.genius.arputil.internal;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.SettableFuture;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.opendaylight.controller.liblldp.NetUtils;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -32,15 +44,38 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpRequestReceivedBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpResponseReceivedBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.MacChangedBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpResponseInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Metadata;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketInReason;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.SendToController;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -49,15 +84,6 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.List;
-import java.util.concurrent.*;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ArpUtilImpl implements OdlArputilService,
         PacketProcessingListener, AutoCloseable {
@@ -84,7 +110,7 @@ public class ArpUtilImpl implements OdlArputilService,
             .getLogger(ArpUtilImpl.class);
 
     static OdlInterfaceRpcService intfRpc;
-    
+
     ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
     DataBroker dataBroker;
@@ -202,7 +228,6 @@ public class ArpUtilImpl implements OdlArputilService,
                     + arpReqInput.getIpaddress());
         }
         BigInteger dpnId;
-        long groupId;
         byte payload[];
         String interfaceName = null;
         byte srcIpBytes[];
@@ -228,7 +253,7 @@ public class ArpUtilImpl implements OdlArputilService,
                 interfaceName = interfaceAddress.getInterface();
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
 
-                NodeConnectorId id = getNodeConnectorFromInterfaceName(interfaceName);
+                getNodeConnectorFromInterfaceName(interfaceName);
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
                 dpnId = portResult.getDpid();
@@ -309,7 +334,6 @@ public class ArpUtilImpl implements OdlArputilService,
             LOGGER.trace("sendArpResponse rpc invoked");
         }
         BigInteger dpnId;
-        long groupId;
         byte payload[];
 
         try {
@@ -390,7 +414,7 @@ public class ArpUtilImpl implements OdlArputilService,
 
                 Metadata metadata  = packetReceived.getMatch().getMetadata();
                 String interfaceName = getInterfaceName(ref,metadata, dataBroker);
-                
+
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr,
                         srcMac);
 
@@ -425,13 +449,13 @@ public class ArpUtilImpl implements OdlArputilService,
         }
         return result;
     }
-    
+
     private String getInterfaceName(NodeConnectorRef ref, Metadata metadata, DataBroker dataBroker2) throws Throwable {
         LOGGER.debug("metadata received is {} ", metadata);
-    	
+
         GetInterfaceFromIfIndexInputBuilder ifIndexInputBuilder = new GetInterfaceFromIfIndexInputBuilder();
         BigInteger lportTag = MetaDataUtil.getLportFromMetadata(metadata.getMetadata());
-    	
+
         ifIndexInputBuilder.setIfIndex(lportTag.intValue());
         GetInterfaceFromIfIndexInput input = ifIndexInputBuilder.build();
         OdlInterfaceRpcService intfRpc = getInterfaceRpcService();
@@ -441,7 +465,7 @@ public class ArpUtilImpl implements OdlArputilService,
         return interfaceFromIfIndexOutput.getInterfaceName();
     }
 
-	class MacResponderTask implements Runnable {
+    class MacResponderTask implements Runnable {
         ARP arp;
 
         MacResponderTask(ARP arp) {

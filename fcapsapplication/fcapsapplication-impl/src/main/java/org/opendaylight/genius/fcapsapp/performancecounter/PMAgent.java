@@ -8,16 +8,16 @@
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
 
+import java.lang.management.ManagementFactory;
+import java.util.Map;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import org.opendaylight.genius.fcapsappjmx.NumberOfOFPorts;
 import org.opendaylight.genius.fcapsappjmx.NumberOfOFSwitchCounter;
 import org.opendaylight.genius.fcapsappjmx.PacketInCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.management.*;
-import java.lang.String;
-import java.lang.management.ManagementFactory;
-import java.util.Map;
 
 public class PMAgent {
     private static Logger s_logger = LoggerFactory.getLogger(PMAgent.class);
