@@ -22,6 +22,30 @@
       "revId": "42c508cc671facc671dda2cb318a8a7412064ea4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_b7ccf662",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-07-13T17:29:28Z",
+      "side": 1,
+      "message": "\u003e  use a cast setTableId((short)123) \n\nYep, that\u0027s what I\u0027m currently doing in test code I\u0027m writing and hope to be sharing with everyone soon.\n\n\u003e change the attribute to from short to int\n\nYes, that would be simpler.  I was assuming that there was some functional reason for which you guys wanted this to be a short (e.g. validation, if in the networking tableId can never have a bigger value than short; and dpnId must be able to holder larger values than long), or perhaps memory concerns if there are likely gazillions of instances of this class at run-time in production.  If this is not so, please confirm this, and I could instead propose an alternative change which makes dpnId a long instead of a BigInteger and tableId an int instead of a short.",
+      "parentUuid": "9a561d44_e5c9aa7a",
+      "range": {
+        "startLine": 186,
+        "startChar": 31,
+        "endLine": 186,
+        "endChar": 40
+      },
+      "revId": "42c508cc671facc671dda2cb318a8a7412064ea4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
