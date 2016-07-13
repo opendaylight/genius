@@ -32,10 +32,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hw
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical.port.attributes.VlanBindings;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import com.google.common.base.Optional;
@@ -163,6 +165,30 @@ public final class HwvtepUtils {
         Optional<LogicalSwitches> optLogicalSwitch = MDSALUtil.read(broker, datastoreType, iid);
         if (optLogicalSwitch.isPresent()) {
             return optLogicalSwitch.get();
+        }
+        return null;
+    }
+
+    /**
+     * Gets physical port termination point
+     *
+     * @param broker
+     *          the broker
+     * @param datastoreType
+     *          the datastore type
+     * @param nodeId
+     *          the physical switch node id
+     * @param portName
+     *          port name under physical switch node id
+     * @return the physical port termination point
+     */
+    public static TerminationPoint getPhysicalPortTerminationPoint(DataBroker broker,
+            LogicalDatastoreType datastoreType, NodeId nodeId, String portName) {
+        TerminationPointKey tpKey = new TerminationPointKey(new TpId(portName));
+        InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createTerminationPointId(nodeId, tpKey);
+        Optional<TerminationPoint> physicalPortTerminationPoint = MDSALUtil.read(broker, datastoreType, iid);
+        if (physicalPortTerminationPoint.isPresent()) {
+            return physicalPortTerminationPoint.get();
         }
         return null;
     }
