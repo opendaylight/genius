@@ -39,6 +39,10 @@ public class FlowEntity extends AbstractSwitchEntity {
         super(dpnId);
     }
 
+    public FlowEntity(long dpnId) {
+        this(BigInteger.valueOf(dpnId));
+    }
+
     @Override
     public String toString() {
         return "FlowEntity [dpnId=" + getDpnId() + ", tableId=" + m_shTableId + ", flowId=" + m_sFlowId + ", priority=" + m_nPriority
@@ -178,4 +182,14 @@ public class FlowEntity extends AbstractSwitchEntity {
         m_shTableId = shTableId;
         m_flowBuilder = null;
     }
+
+    // int variant is a convenience, because Java is dumb: setTableId(123) does
+    // not work without this, and there is no short literal like 123l for long.
+    public void setTableId(int shTableId) {
+        if (shTableId > Short.MAX_VALUE || shTableId < Short.MIN_VALUE) {
+            throw new IllegalArgumentException("tableId not a short: " + shTableId);
+        }
+        setTableId((short) shTableId);
+    }
+
 }
