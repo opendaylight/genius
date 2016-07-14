@@ -15,7 +15,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderCo
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev151126.OdlArputilService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +24,11 @@ public class ArpUtilProvider implements BindingAwareProvider, AutoCloseable {
 
     private static final Logger s_logger = LoggerFactory.getLogger(ArpUtilProvider.class);
 
-    RpcProviderRegistry rpcProviderRegistry;
+    RpcProviderRegistry         rpcProviderRegistry;
 
-    NotificationService notificationService;
+    NotificationService         notificationService;
 
-    NotificationPublishService notificationPublishService;
+    NotificationPublishService  notificationPublishService;
 
     ArpUtilImpl                  arpManager;
 
@@ -37,9 +37,9 @@ public class ArpUtilProvider implements BindingAwareProvider, AutoCloseable {
     BindingAwareBroker.RpcRegistration<OdlArputilService> rpcRegistration;
 
     public ArpUtilProvider(RpcProviderRegistry rpcRegistry,
-            NotificationPublishService publishService,
-            NotificationService notificationService,
-            IMdsalApiManager iMdsalApiManager) {
+                           NotificationPublishService publishService,
+                           NotificationService notificationService,
+                           IMdsalApiManager iMdsalApiManager) {
 
         this.rpcProviderRegistry        = rpcRegistry;
         this.mdsalApiManager            = iMdsalApiManager;
@@ -62,7 +62,7 @@ public class ArpUtilProvider implements BindingAwareProvider, AutoCloseable {
 
             arpManager = new ArpUtilImpl( dataBroker, packetProcessingService,
                     notificationPublishService, notificationService,
-                     mdsalApiManager, rpcProviderRegistry) ;
+                    mdsalApiManager, rpcProviderRegistry) ;
 
             rpcRegistration = rpcProviderRegistry.
                     addRpcImplementation(OdlArputilService.class, arpManager);
