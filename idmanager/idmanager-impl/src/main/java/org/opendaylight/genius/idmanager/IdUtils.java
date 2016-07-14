@@ -148,8 +148,9 @@ class IdUtils {
     }
 
     protected static IdPool createLocalIdPool(String localPoolName, IdPool parentIdPool) {
+        IdPoolBuilder idPoolBuilder = new IdPoolBuilder();
         ReleasedIdsHolder releasedIdsHolder = createReleasedIdsHolder(DEFAULT_AVAILABLE_ID_COUNT, DEFAULT_DELAY_TIME);
-        return new IdPoolBuilder().setKey(new IdPoolKey(localPoolName))
+        return idPoolBuilder.setKey(new IdPoolKey(localPoolName))
                 .setPoolName(localPoolName)
                 .setParentPoolName(parentIdPool.getPoolName())
                 .setBlockSize(parentIdPool.getBlockSize())
@@ -259,7 +260,9 @@ class IdUtils {
          Future<RpcResult<Void>> result = lockManager.lock(input);
          try {
              if ((result != null) && (result.get().isSuccessful())) {
-                 LOGGER.debug("Acquired lock {}", poolName);
+                 if (LOGGER.isDebugEnabled()) {
+                     LOGGER.debug("Acquired lock {}", poolName);
+                 }
              } else {
                  throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName));
              }
@@ -274,9 +277,13 @@ class IdUtils {
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
             if ((result != null) && (result.get().isSuccessful())) {
-                LOGGER.debug("Unlocked {}", poolName);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Unlocked {}", poolName);
+                }
             } else {
-                LOGGER.debug("Unable to unlock pool {}", poolName);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Unable to unlock pool {}", poolName);
+                }
             }
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.error("Unable to unlock for pool {}", poolName);
