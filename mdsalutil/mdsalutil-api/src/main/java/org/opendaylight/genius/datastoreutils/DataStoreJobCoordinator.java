@@ -21,6 +21,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class DataStoreJobCoordinator {
     private static final Logger LOG = LoggerFactory.getLogger(DataStoreJobCoordinator.class);
@@ -29,6 +31,8 @@ public class DataStoreJobCoordinator {
 
     private ForkJoinPool fjPool;
     private Map<Integer,Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
+    private ReentrantLock reentrantLock = new ReentrantLock();
+    private Condition waitCondition = reentrantLock.newCondition();
 
     private static DataStoreJobCoordinator instance;
 
@@ -55,19 +59,19 @@ public class DataStoreJobCoordinator {
     }
 
     public void enqueueJob(String key,
-                           Callable<List<ListenableFuture<Void>>> mainWorker) {
+            Callable<List<ListenableFuture<Void>>> mainWorker) {
         enqueueJob(key, mainWorker, null, 0);
     }
 
     public void enqueueJob(String key,
-                           Callable<List<ListenableFuture<Void>>> mainWorker,
-                           RollbackCallable rollbackWorker) {
+            Callable<List<ListenableFuture<Void>>> mainWorker,
+            RollbackCallable rollbackWorker) {
         enqueueJob(key, mainWorker, rollbackWorker, 0);
     }
 
     public void enqueueJob(String key,
-                           Callable<List<ListenableFuture<Void>>> mainWorker,
-                           int maxRetries) {
+            Callable<List<ListenableFuture<Void>>> mainWorker,
+            int maxRetries) {
         enqueueJob(key, mainWorker, null, maxRetries);
     }
 
@@ -83,9 +87,9 @@ public class DataStoreJobCoordinator {
      */
 
     public void enqueueJob(String key,
-                           Callable<List<ListenableFuture<Void>>> mainWorker,
-                           RollbackCallable rollbackWorker,
-                           int maxRetries) {
+            Callable<List<ListenableFuture<Void>>> mainWorker,
+            RollbackCallable rollbackWorker,
+            int maxRetries) {
         JobEntry jobEntry = new JobEntry(key, mainWorker, rollbackWorker, maxRetries);
         Integer hashKey = getHashKey(key);
         LOG.debug("Obtained Hashkey: {}, for jobkey: {}", hashKey, key);
@@ -101,6 +105,12 @@ public class DataStoreJobCoordinator {
         }
 
         jobQueueMap.put(hashKey, jobEntriesMap); // Is this really needed ?
+        reentrantLock.lock();
+        try {
+            waitCondition.signal();
+        } finally {
+            reentrantLock.unlock();
+        }
     }
 
     /**
@@ -240,7 +250,6 @@ public class DataStoreJobCoordinator {
                 LOG.error("Exception when executing jobEntry: {}, exception: {}", jobEntry, e.getStackTrace());
                 e.printStackTrace();
             }
-
             if (futures == null || futures.isEmpty()) {
                 clearJob(jobEntry);
                 return;
@@ -258,7 +267,6 @@ public class DataStoreJobCoordinator {
             LOG.debug("Starting JobQueue Handler Thread.");
             while (true) {
                 try {
-                    boolean jobAddedToPool = false;
                     for (int i = 0; i < THREADPOOL_SIZE; i++) {
                         Map<String, JobQueue> jobEntriesMap = jobQueueMap.get(i);
                         if (jobEntriesMap.isEmpty()) {
@@ -277,7 +285,6 @@ public class DataStoreJobCoordinator {
                                     entry.getValue().setExecutingEntry(jobEntry);
                                     MainTask worker = new MainTask(jobEntry);
                                     fjPool.execute(worker);
-                                    jobAddedToPool = true;
                                 } else {
                                     it.remove();
                                 }
@@ -285,13 +292,18 @@ public class DataStoreJobCoordinator {
                         }
                     }
 
-                    if (!jobAddedToPool) {
-                        TimeUnit.SECONDS.sleep(1);
+                    if (jobQueueMap.isEmpty()) {
+                        reentrantLock.lock();
+                        try {
+                            waitCondition.await();
+                        } finally {
+                            reentrantLock.unlock();
+                        }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOG.error("Exception while executing the tasks {} ", e);
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    LOG.error("Error while executing the tasks {} ", e);
                 }
             }
         }
