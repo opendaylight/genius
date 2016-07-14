@@ -46,6 +46,30 @@
       "revId": "42c508cc671facc671dda2cb318a8a7412064ea4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_a5c5e03e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/FlowEntity.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-07-14T08:14:10Z",
+      "side": 1,
+      "message": "I have been following the use of this entity and at some point it gets out of Genius\u0027s control, so you are right, we can not just change it from short to int.",
+      "parentUuid": "9a561d44_b7ccf662",
+      "range": {
+        "startLine": 186,
+        "startChar": 31,
+        "endLine": 186,
+        "endChar": 40
+      },
+      "revId": "42c508cc671facc671dda2cb318a8a7412064ea4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
