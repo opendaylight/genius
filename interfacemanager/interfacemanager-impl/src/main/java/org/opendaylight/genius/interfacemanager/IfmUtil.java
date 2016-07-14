@@ -394,12 +394,16 @@ public class IfmUtil {
         return interfaceType;
     }
 
-    public static VlanInterfaceInfo getVlanInterfaceInfo(String interfaceName, Interface iface, BigInteger dpId){
-        IfL2vlan vlanIface = iface.getAugmentation(IfL2vlan.class);
+    public static VlanInterfaceInfo getVlanInterfaceInfo(String interfaceName, Interface iface, BigInteger dpId) {
 
         short vlanId = 0;
-        //FIXME :Use this below thing properly
-        VlanInterfaceInfo vlanInterfaceInfo = new VlanInterfaceInfo(dpId, "someString", vlanId);
+        String portName = "";
+        IfL2vlan vlanIface = iface.getAugmentation(IfL2vlan.class);
+        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        if (parentRefs != null && parentRefs.getParentInterface() != null) {
+            portName = parentRefs.getParentInterface();
+        }
+        VlanInterfaceInfo vlanInterfaceInfo = new VlanInterfaceInfo(dpId, portName, vlanId);
 
         if (vlanIface != null) {
             vlanId = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().shortValue();
