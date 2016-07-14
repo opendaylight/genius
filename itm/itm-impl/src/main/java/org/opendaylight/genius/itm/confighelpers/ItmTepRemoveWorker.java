@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +31,16 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private IdManagerService idManagerService;
     private IMdsalApiManager mdsalManager;
     private List<HwVtep> cfgdHwVteps;
+    private TransportZone originalTZone;
 
-    public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
-        this.delDpnList = delDpnList ;
-        this.dataBroker = broker ;
+    public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
+            DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
+        this.delDpnList = delDpnList;
+        this.dataBroker = broker;
         this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
+        this.originalTZone = originalTZone;
         logger.trace("ItmTepRemoveWorker initialized with  DpnList {}",delDpnList );
         logger.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}",delHwList );
     }
@@ -65,7 +69,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
             }
         }
 
-        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService,delDpnList,cfgdHwVteps));
+        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService,delDpnList,cfgdHwVteps, this.originalTZone));
         return futures ;
     }
 

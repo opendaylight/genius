@@ -306,7 +306,8 @@ public class ItmExternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
                 externalTunnelIdentifier6);
 
-        itmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker,idManagerService,dpnTepsList,cfgdHwVtepsList);
+        itmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService, dpnTepsList, cfgdHwVtepsList,
+                transportZone);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);
         verify(mockWriteTx, times(2)).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1);

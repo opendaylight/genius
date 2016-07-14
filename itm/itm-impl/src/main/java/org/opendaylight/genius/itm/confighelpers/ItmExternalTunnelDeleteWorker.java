@@ -74,17 +74,21 @@ public class ItmExternalTunnelDeleteWorker {
         return futures ;
     }
 
-    public static List<ListenableFuture<Void>> deleteHwVtepsTunnels(DataBroker dataBroker, IdManagerService idManagerService, List<DPNTEPsInfo> delDpnList ,List<HwVtep> cfgdHwVteps) {
+    public static List<ListenableFuture<Void>> deleteHwVtepsTunnels(DataBroker dataBroker,
+            IdManagerService idManagerService, List<DPNTEPsInfo> delDpnList, List<HwVtep> cfgdHwVteps,
+            TransportZone originalTZone) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
 
         if (delDpnList != null || cfgdHwVteps != null)
-            tunnelsDeletion(delDpnList, cfgdHwVteps, idManagerService, futures, t, dataBroker);
+            tunnelsDeletion(delDpnList, cfgdHwVteps, originalTZone, idManagerService, futures, t, dataBroker);
         futures.add(t.submit());
         return futures;
     }
 
-    private static void tunnelsDeletion(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdhwVteps, IdManagerService idManagerService, List<ListenableFuture<Void>> futures, WriteTransaction t, DataBroker dataBroker) {
+    private static void tunnelsDeletion(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdhwVteps,
+            TransportZone originalTZone, IdManagerService idManagerService, List<ListenableFuture<Void>> futures,
+            WriteTransaction t, DataBroker dataBroker) {
         if (cfgdDpnList != null && !cfgdDpnList.isEmpty()) {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 if (dpn.getTunnelEndPoints() != null && !dpn.getTunnelEndPoints().isEmpty())
@@ -122,6 +126,7 @@ public class ItmExternalTunnelDeleteWorker {
                     }
             }
         }
+
         if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
             for (HwVtep hwTep : cfgdhwVteps) {
                 logger.trace("processing hwTep from list {}", hwTep);
@@ -132,41 +137,35 @@ public class ItmExternalTunnelDeleteWorker {
                                 hwTepRemote.getHwIp(), TunnelTypeVxlan.class, t, futures);
                     }
                 }
-                InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
-                        .child(TransportZone.class, new TransportZoneKey((hwTep.getTransportZone()))).build();
-                Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
-                if (tZoneOptional.isPresent()) {
-                    TransportZone tZone = tZoneOptional.get();
-                    //do we need to check tunnel type?
-                    logger.trace("subnets under tz {} are {}", tZone.getZoneName(), tZone.getSubnets());
-                    if (tZone.getSubnets() != null && !tZone.getSubnets().isEmpty()) {
+                //do we need to check tunnel type?
+                logger.trace("subnets under tz {} are {}", originalTZone.getZoneName(), originalTZone.getSubnets());
+                if (originalTZone.getSubnets() != null && !originalTZone.getSubnets().isEmpty()) {
 
-                        for (Subnets sub : tZone.getSubnets()) {
-                            if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                                for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                                    logger.trace("hwtepDS exists {}", hwVtepDS);
-                                    //do i need to check node-id?
-                                    //for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
-                                    if (hwVtepDS.getIpAddress().equals(hwTep.getHwIp()))
-                                        continue;//dont delete tunnels with self
-                                    //TOR-TOR
-                                    logger.trace("deleting tor-tor {} and {}", hwTep, hwVtepDS);
-                                    deleteTrunksTORTOR(dataBroker, idManagerService, hwTep.getTopo_id(), hwTep.getNode_id(),
-                                            hwTep.getHwIp(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
-                                            hwVtepDS.getIpAddress(), tZone.getTunnelType(),
-                                            t, futures);
+                    for (Subnets sub : originalTZone.getSubnets()) {
+                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
+                            for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
+                                logger.trace("hwtepDS exists {}", hwVtepDS);
+                                //do i need to check node-id?
+                                //for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
+                                if (hwVtepDS.getIpAddress().equals(hwTep.getHwIp()))
+                                    continue;//dont delete tunnels with self
+                                //TOR-TOR
+                                logger.trace("deleting tor-tor {} and {}", hwTep, hwVtepDS);
+                                deleteTrunksTORTOR(dataBroker, idManagerService, hwTep.getTopo_id(), hwTep.getNode_id(),
+                                        hwTep.getHwIp(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
+                                        hwVtepDS.getIpAddress(), originalTZone.getTunnelType(),
+                                        t, futures);
 
-                                }
                             }
-                            if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
-                                for (Vteps vtep : sub.getVteps()) {
-                                    //TOR-CSS
-                                    logger.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
-                                    String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId());
-                                    deleteTrunksCSSTOR(dataBroker, idManagerService, vtep.getDpnId(), parentIf, vtep.getIpAddress(),
-                                            hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(),
-                                            tZone.getTunnelType(), t, futures);
-                                }
+                        }
+                        if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
+                            for (Vteps vtep : sub.getVteps()) {
+                                //TOR-CSS
+                                logger.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
+                                String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId());
+                                deleteTrunksCSSTOR(dataBroker, idManagerService, vtep.getDpnId(), parentIf, vtep.getIpAddress(),
+                                        hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(),
+                                        originalTZone.getTunnelType(), t, futures);
                             }
                         }
                     }

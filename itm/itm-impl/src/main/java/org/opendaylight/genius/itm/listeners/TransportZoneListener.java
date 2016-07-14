@@ -111,7 +111,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             LOG.trace("Delete: Invoking ItmManager with hwVtep List {} " , hwVtepList);
             // itmManager.deleteTunnels(opDpnList);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            ItmTepRemoveWorker removeWorker = new ItmTepRemoveWorker(opDpnList,hwVtepList, dataBroker, idManagerService, mdsalManager);
+            ItmTepRemoveWorker removeWorker =
+                    new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzOld.getZoneName(), removeWorker);
         }
     }
@@ -149,8 +150,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         }
         if(oldDpnTepsList.size() > 0) {
             LOG.trace( "Removing TEPs " );
-            ItmTepRemoveWorker removeWorker =
-                    new ItmTepRemoveWorker(oldDpnTepsList, Collections.<HwVtep>emptyList(), dataBroker, idManagerService, mdsalManager);
+            ItmTepRemoveWorker removeWorker = new ItmTepRemoveWorker(oldDpnTepsList, Collections.<HwVtep>emptyList(),
+                    tzOld, dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzNew.getZoneName(), removeWorker);
         }
         List<HwVtep> oldHwList = new ArrayList<HwVtep>();
@@ -175,11 +176,10 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.<DPNTEPsInfo>emptyList(), newHwList, dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
-        if(oldHwList.size() > 0) {
-            LOG.trace( "Removing HW TEPs " );
-            ItmTepRemoveWorker removeWorker =
-                    new ItmTepRemoveWorker(Collections.<DPNTEPsInfo>emptyList(), oldHwList, dataBroker,
-                            idManagerService, mdsalManager);
+        if (oldHwList.size() > 0) {
+            LOG.trace("Removing HW TEPs ");
+            ItmTepRemoveWorker removeWorker = new ItmTepRemoveWorker(Collections.<DPNTEPsInfo>emptyList(), oldHwList,
+                    tzOld, dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzNew.getZoneName(), removeWorker);
         }
 
