@@ -1,4 +1,5 @@
 package org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.impl.rev160406;
+
 import org.opendaylight.genius.arputil.internal.ArpUtilProvider;
 
 public class ArputilImplModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.impl.rev160406.AbstractArputilImplModule {

@@ -13,6 +13,8 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.SettableFuture;
+
+import org.opendaylight.controller.liblldp.HexEncode;
 import org.opendaylight.controller.liblldp.NetUtils;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -32,6 +34,18 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpRequestReceivedBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpResponseReceivedBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.MacChangedBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpResponseInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
@@ -39,8 +53,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Metadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddress;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -53,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -84,7 +97,7 @@ public class ArpUtilImpl implements OdlArputilService,
             .getLogger(ArpUtilImpl.class);
 
     static OdlInterfaceRpcService intfRpc;
-    
+
     ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
     DataBroker dataBroker;
@@ -100,11 +113,11 @@ public class ArpUtilImpl implements OdlArputilService,
     ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>> getMacFutures = new ConcurrentHashMap<>();
 
     public ArpUtilImpl(DataBroker db,
-            PacketProcessingService packetProcessingService,
-            NotificationPublishService notificationPublishService,
-            NotificationService notificationService,
-            IMdsalApiManager mdsalApiManager,
-            RpcProviderRegistry rpc) {
+                       PacketProcessingService packetProcessingService,
+                       NotificationPublishService notificationPublishService,
+                       NotificationService notificationService,
+                       IMdsalApiManager mdsalApiManager,
+                       RpcProviderRegistry rpc) {
 
         this.dataBroker = db;
         this.packetProcessingService = packetProcessingService;
@@ -132,15 +145,13 @@ public class ArpUtilImpl implements OdlArputilService,
 
     String getIpAddressInString(IpAddress ipAddress)
             throws UnknownHostException {
-        return InetAddress.getByName(ipAddress.getIpv4Address().getValue())
-                .getHostAddress();
+        return InetAddress.getByName(ipAddress.getIpv4Address().getValue()).getHostAddress();
     }
 
     public Future<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
 
         try {
-            final String dstIpAddress = getIpAddressInString(input
-                    .getIpaddress());
+            final String dstIpAddress = getIpAddressInString(input.getIpaddress());
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("getMac rpc invoked for ip " + dstIpAddress);
             }
@@ -303,6 +314,50 @@ public class ArpUtilImpl implements OdlArputilService,
                         .setIngress(nodeConnectorRef).setEgress(ref).build());
     }
 
+    public Future<RpcResult<Void>> sendPacketOutWithActions(BigInteger dpnId,
+                                                            byte[] payload, NodeConnectorRef ref, List<Action> actions) {
+
+        NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId,
+                "0xfffffffd");
+        return packetProcessingService
+                .transmitPacket(new TransmitPacketInputBuilder()
+                        .setPayload(payload)
+                        .setNode(
+                                new NodeRef(InstanceIdentifier
+                                        .builder(Nodes.class)
+                                        .child(Node.class,
+                                                new NodeKey(new NodeId(
+                                                        "openflow:" + dpnId)))
+                                        .toInstance()))
+                        .setIngress(nodeConnectorRef).setEgress(ref)
+                        .setAction(actions).build());
+    }
+
+    private List<Action> getEgressAction(String interfaceName) {
+        List<Action> actions = new ArrayList<Action>();
+        try {
+            GetEgressActionsForInterfaceInputBuilder egressAction = new GetEgressActionsForInterfaceInputBuilder().setIntfName(interfaceName);
+            OdlInterfaceRpcService intfRpc = getInterfaceRpcService();
+            if (intfRpc == null) {
+                LOGGER.error("Unable to obtain interfaceMgrRpc service, ignoring egress actions for interfaceName {}", interfaceName);
+                return actions;
+            }
+            Future<RpcResult<GetEgressActionsForInterfaceOutput>> result =
+                    intfRpc.getEgressActionsForInterface(egressAction.build());
+            RpcResult<GetEgressActionsForInterfaceOutput> rpcResult = result.get();
+            if (!rpcResult.isSuccessful()) {
+                LOGGER.warn("RPC Call to Get egress actions for interface {} returned with Errors {}", interfaceName, rpcResult.getErrors());
+            } else {
+                actions = rpcResult.getResult().getAction();
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error("Exception when egress actions for interface {}", interfaceName, e);
+        } catch ( Exception e) {
+            LOGGER.error("Exception when egress actions for interface {}", interfaceName, e);
+        }
+        return actions;
+    }
+
     @Override
     public Future<RpcResult<Void>> sendArpResponse(SendArpResponseInput input) {
         if (LOGGER.isTraceEnabled()) {
@@ -311,6 +366,9 @@ public class ArpUtilImpl implements OdlArputilService,
         BigInteger dpnId;
         long groupId;
         byte payload[];
+        //byte srcMac[] = new byte[] { (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
+        byte srcMac[];
+
 
         try {
             String interfaceName = input.getInterface();
@@ -329,25 +387,31 @@ public class ArpUtilImpl implements OdlArputilService,
                         dpnId, interfaceName);
             }
 
-            byte[] srcIpBytes = getIpAddressBytes(input.getSrcIpAddress());
-            byte[] dstIpBytes = getIpAddressBytes(input.getIpaddress());
-            byte srcMac[] = MDSALUtil.getMacAddressForNodeConnector(dataBroker,
-                    (InstanceIdentifier<NodeConnector>) ref.getValue());
-            byte[] dstMac = NWUtil.parseMacAddress(input.getMacaddress()
+            byte[] srcIpBytes = getIpAddressBytes(input.getSrcIpaddress());
+            byte[] dstIpBytes = getIpAddressBytes(input.getDstIpaddress());
+            if(input.getSrcMacaddress() == null) {
+                srcMac = MDSALUtil.getMacAddressForNodeConnector(dataBroker,
+                        (InstanceIdentifier<NodeConnector>) ref.getValue());
+            }else {
+                String macAddr = input.getSrcMacaddress().getValue();
+                srcMac = HexEncode.bytesFromHexString(macAddr);
+            }
+            byte[] dstMac = NWUtil.parseMacAddress(input.getDstMacaddress()
                     .getValue());
             checkNotNull(srcIpBytes, FAILED_TO_GET_SRC_IP_FOR_INTERFACE,
                     interfaceName);
             payload = ArpPacketUtil.getPayload(ARP_RESPONSE_OP, srcMac, srcIpBytes,
                     dstMac, dstIpBytes);
 
-            sendPacketOut(dpnId, payload, ref);
+            List<Action> actions = getEgressAction(interfaceName);
+            sendPacketOutWithActions(dpnId, payload, ref, actions);
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("sent the arp response for "
-                        + input.getSrcIpAddress());
+                        + input.getSrcIpaddress());
             }
         } catch (Throwable e) {
-            LOGGER.trace("failed to send arp response for {} {}",
-                    input.getSrcIpAddress(), e);
+            LOGGER.error("failed to send arp response for {} {}",
+                    input.getSrcIpaddress(), e);
             return RpcResultBuilder.<Void> failed()
                     .withError(ErrorType.APPLICATION, e.getMessage(), e)
                     .buildFuture();
@@ -384,25 +448,29 @@ public class ArpUtilImpl implements OdlArputilService,
                         .getSenderProtocolAddress());
                 InetAddress dstInetAddr = InetAddress.getByAddress(arp
                         .getTargetProtocolAddress());
+                InetAddress addr = srcInetAddr;
+                //For GARP learn target IP
+                if (srcInetAddr.getHostAddress().equalsIgnoreCase(dstInetAddr.getHostAddress()))
+                    addr = dstInetAddr;
                 byte[] srcMac = ethernet.getSourceMACAddress();
 
                 NodeConnectorRef ref = packetReceived.getIngress();
 
                 Metadata metadata  = packetReceived.getMatch().getMetadata();
+
                 String interfaceName = getInterfaceName(ref,metadata, dataBroker);
-                
+                //Long vpnId = MetaDataUtil.getVpnIdFromMetadata(metadata.getMetadata());
+
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr,
                         srcMac);
-
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(),
                         NWUtil.toStringMacAddress(srcMac));
-
                 if (arp.getOpCode() == ARP_REQUEST_OP) {
                     fireArpReqRecvdNotification(interfaceName, srcInetAddr,
-                            srcMac, dstInetAddr, tableId);
+                            srcMac, dstInetAddr, tableId, metadata.getMetadata());
                 } else {
                     fireArpRespRecvdNotification(interfaceName, srcInetAddr,
-                            srcMac, tableId);
+                            srcMac, tableId, metadata.getMetadata());
                 }
                 if (getMacFutures.get(srcInetAddr.getHostAddress()) != null) {
                     threadPool.submit(new MacResponderTask(arp));
@@ -425,13 +493,13 @@ public class ArpUtilImpl implements OdlArputilService,
         }
         return result;
     }
-    
+
     private String getInterfaceName(NodeConnectorRef ref, Metadata metadata, DataBroker dataBroker2) throws Throwable {
         LOGGER.debug("metadata received is {} ", metadata);
-    	
+
         GetInterfaceFromIfIndexInputBuilder ifIndexInputBuilder = new GetInterfaceFromIfIndexInputBuilder();
         BigInteger lportTag = MetaDataUtil.getLportFromMetadata(metadata.getMetadata());
-    	
+
         ifIndexInputBuilder.setIfIndex(lportTag.intValue());
         GetInterfaceFromIfIndexInput input = ifIndexInputBuilder.build();
         OdlInterfaceRpcService intfRpc = getInterfaceRpcService();
@@ -441,7 +509,7 @@ public class ArpUtilImpl implements OdlArputilService,
         return interfaceFromIfIndexOutput.getInterfaceName();
     }
 
-	class MacResponderTask implements Runnable {
+    class MacResponderTask implements Runnable {
         ARP arp;
 
         MacResponderTask(ARP arp) {
@@ -482,7 +550,7 @@ public class ArpUtilImpl implements OdlArputilService,
     }
 
     private void fireArpRespRecvdNotification(String interfaceName,
-                                              InetAddress inetAddr, byte[] macAddressBytes, int tableId)
+                                              InetAddress inetAddr, byte[] macAddressBytes, int tableId, BigInteger metadata)
             throws InterruptedException {
 
         IpAddress ip = new IpAddress(inetAddr.getHostAddress().toCharArray());
@@ -493,12 +561,13 @@ public class ArpUtilImpl implements OdlArputilService,
         builder.setIpaddress(ip);
         builder.setOfTableId((long) tableId);
         builder.setMacaddress(mac);
+        builder.setMetadata(metadata);
         notificationPublishService.putNotification(builder.build());
     }
 
     private void fireArpReqRecvdNotification(String interfaceName,
                                              InetAddress srcInetAddr, byte[] srcMac, InetAddress dstInetAddr,
-                                             int tableId) throws InterruptedException {
+                                             int tableId, BigInteger metadata) throws InterruptedException {
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
@@ -508,6 +577,7 @@ public class ArpUtilImpl implements OdlArputilService,
         builder.setDstIpaddress(new IpAddress(dstInetAddr.getHostAddress()
                 .toCharArray()));
         builder.setSrcMac(new PhysAddress(macAddress));
+        builder.setMetadata(metadata);
         notificationPublishService.putNotification(builder.build());
     }
 
@@ -539,7 +609,6 @@ public class ArpUtilImpl implements OdlArputilService,
         InstanceIdentifier<Interface> id = idBuilder.build();
         return id;
     }
-
 
     private NodeConnectorId getNodeConnectorFromInterfaceName(String interfaceName) {
         InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> idBuilder =

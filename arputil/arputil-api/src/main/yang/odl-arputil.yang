@@ -68,10 +68,10 @@ module odl-arputil {
 
     rpc send-arp-response {
           input {
-              leaf ipaddress {
+              leaf dst-ipaddress {
                   type inet:ip-address;
               }
-              leaf macaddress {
+              leaf dst-macaddress {
                   type yang:phys-address;
               }
               leaf interface {
@@ -79,8 +79,11 @@ module odl-arputil {
                       path "/if:interfaces/if:interface/if:name";
                   }
               }
-              leaf src-ip-address {
+              leaf src-ipaddress {
                   type inet:ip-address;
+              }
+              leaf src-macaddress {
+                  type yang:phys-address;
               }
           }
     }
@@ -118,6 +121,9 @@ module odl-arputil {
                 path "/if:interfaces/if:interface/if:name";
             }
          }
+         leaf metadata {
+             type uint64;
+         }
     }
 
     notification arp-response-received {
@@ -135,5 +141,9 @@ module odl-arputil {
                 path "/if:interfaces/if:interface/if:name";
             }
          }
+         leaf metadata {
+             type uint64;
+         }
     }
+
 }
