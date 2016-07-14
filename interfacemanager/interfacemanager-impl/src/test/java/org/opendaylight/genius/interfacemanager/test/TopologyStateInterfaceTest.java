@@ -214,7 +214,7 @@ public class TopologyStateInterfaceTest {
             IfmUtil.buildStateInterfaceId(InterfaceManagerTestUtil.tunnelInterfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(InterfaceManagerTestUtil.tunnelInterfaceName));
-        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
 
     }
 }

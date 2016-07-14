@@ -190,7 +190,7 @@ public class HwVTEPConfigurationTest {
                 IfmUtil.buildStateInterfaceId(hwVTEPInterfaceEnabled.getName());
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(hwVTEPInterfaceEnabled.getName()));
-        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+        verify(mockWriteTx).merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
     }
 
     @Test
