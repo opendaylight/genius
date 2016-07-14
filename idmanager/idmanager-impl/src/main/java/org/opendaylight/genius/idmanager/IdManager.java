@@ -239,7 +239,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
             ReleasedIdsHolderBuilder releasedParentIds = IdUtils.getReleaseIdsHolderBuilder(parentIdPool);
             totalAvailableIdCount = totalAvailableIdCount + releasedParentIds.getAvailableIdCount()
                     + IdUtils.getAvailableIdsCount(availableParentIds);
-            if(totalAvailableIdCount>size) {
+            if(totalAvailableIdCount>=size) {
                 while (size > 0) {
                     try {
                         newIdValue = getIdFromPool(localPool, availableIds, releasedIds);
