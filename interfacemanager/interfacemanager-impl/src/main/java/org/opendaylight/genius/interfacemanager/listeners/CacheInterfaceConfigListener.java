@@ -38,7 +38,7 @@ public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeList
         registerListener(db);
     }
 
-    public void registerListener(DataBroker db) {
+    private void registerListener(DataBroker db) {
         final DataTreeIdentifier<Interface> treeId =
                         new DataTreeIdentifier<Interface>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
         try {

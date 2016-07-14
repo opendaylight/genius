@@ -160,10 +160,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             notificationService.registerNotificationListener(alivenessMonitorListener);
 
             cacheInterfaceConfigListener = new CacheInterfaceConfigListener(dataBroker);
-            cacheInterfaceConfigListener.registerListener(dataBroker);
 
             cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
-            cacheInterfaceStateListener.registerListener(dataBroker);
 
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
