@@ -106,11 +106,7 @@ module resource-manager {
     }
 
     grouping released-resource-ids {
-        leaf delayed-time-sec {
-            type uint32;
-            mandatory true;
-        }
-        list delayed-id-entries {
+        list delayed-resource-entries {
             uses idmgr:delayed-id-entry;
         }
     }
