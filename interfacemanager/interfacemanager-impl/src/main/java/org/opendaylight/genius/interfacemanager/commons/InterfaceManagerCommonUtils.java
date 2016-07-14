@@ -400,7 +400,7 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void removeFromInterfaceCache(Interface iface) {
-        interfaceConfigMap.remove(iface.getName(), iface);
+        interfaceConfigMap.remove(iface.getName());
     }
 
     public static void addInterfaceStateToCache(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
@@ -408,6 +408,6 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void removeFromInterfaceStateCache(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
-        interfaceStateMap.remove(iface.getName(), iface);
+        interfaceStateMap.remove(iface.getName());
     }
 }

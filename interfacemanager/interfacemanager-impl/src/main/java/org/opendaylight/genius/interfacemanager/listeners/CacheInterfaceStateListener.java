@@ -40,7 +40,7 @@ public class CacheInterfaceStateListener implements ClusteredDataTreeChangeListe
 
     public void registerListener(DataBroker db) {
         final DataTreeIdentifier<Interface> treeId =
-                        new DataTreeIdentifier<Interface>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
+                        new DataTreeIdentifier<Interface>(LogicalDatastoreType.OPERATIONAL, getWildcardPath());
         try {
             LOG.trace("Registering on path: {}", treeId);
             registration = db.registerDataTreeChangeListener(treeId, CacheInterfaceStateListener.this);
