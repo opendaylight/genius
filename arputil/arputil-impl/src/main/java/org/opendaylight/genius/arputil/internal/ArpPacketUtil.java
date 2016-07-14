@@ -20,14 +20,14 @@ public class ArpPacketUtil {
     public static byte[] MAC_Broadcast = new byte[] { (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
 
     public static byte[] getPayload(short opCode, byte[] senderMacAddress, byte[] senderIP, byte[] targetMacAddress,
-            byte[] targetIP) throws PacketException {
+                                    byte[] targetIP) throws PacketException {
         ARP arp = createARPPacket(opCode, senderMacAddress, senderIP, targetMacAddress, targetIP);
         Ethernet ethernet = createEthernetPacket(senderMacAddress, targetMacAddress, arp);
         return ethernet.serialize();
     }
 
     public static ARP createARPPacket(short opCode, byte[] senderMacAddress, byte[] senderIP, byte[] targetMacAddress,
-            byte[] targetIP) {
+                                      byte[] targetIP) {
         ARP arp = new ARP();
         arp.setHardwareType(ARP.HW_TYPE_ETHERNET);
         arp.setProtocolType(EtherTypes.IPv4.shortValue());
