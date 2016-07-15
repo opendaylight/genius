@@ -7,23 +7,16 @@
  */
 package org.opendaylight.genius.utils.clustering;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import org.opendaylight.controller.md.sal.common.api.clustering.*;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
-import org.opendaylight.genius.utils.SystemPropertyReader;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentMap;
+import org.opendaylight.controller.md.sal.common.api.clustering.CandidateAlreadyRegisteredException;
+import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
+import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipChange;
+import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipListener;
+import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.genius.utils.cache.CacheUtil;
-import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentMap;
 
 public class EntityOwnerUtils {
     public static final String ENTITY_OWNER_CACHE = "entity.owner.cache";
@@ -111,9 +104,9 @@ public class EntityOwnerUtils {
             throws CandidateAlreadyRegisteredException {
         LOG.info("registering for entity ownership for type "+entityType);
         Entity candidateEntity = new Entity(entityType, entityName);
-        EntityOwnershipCandidateRegistration candidateRegistration = entityOwnershipService.registerCandidate(
+        entityOwnershipService.registerCandidate(
                 candidateEntity);
-        EntityOwnershipListenerRegistration listenerRegistration = entityOwnershipService.registerListener(entityType,
+        entityOwnershipService.registerListener(entityType,
                 entityOwnershipListener);
         if (listener != null) {
             entityOwnershipService.registerListener(entityType, listener);

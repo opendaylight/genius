@@ -8,8 +8,11 @@
 package org.opendaylight.genius.fcapsapp;
 
 import com.google.common.base.Optional;
-import org.opendaylight.controller.md.sal.binding.api.*;
-
+import java.net.InetAddress;
+import java.util.Collection;
+import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
+import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
@@ -22,8 +25,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.InetAddress;
-import java.util.Collection;
 
 public class NodeEventListener<D extends DataObject> implements ClusteredDataTreeChangeListener<D>,AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(NodeEventListener.class);

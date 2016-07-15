@@ -8,12 +8,28 @@
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import java.lang.Thread.UncaughtExceptionHandler;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsListener;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.flow.table.and.statistics.map.FlowTableAndStatisticsMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
@@ -21,19 +37,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeRef
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.GetAllNodeConnectorsStatisticsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.GetAllNodeConnectorsStatisticsInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.NodeConnectorStatisticsUpdate;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsListener;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.node.connector.statistics.and.port.number.map.NodeConnectorStatisticsAndPortNumberMap;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.Thread.UncaughtExceptionHandler;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
 
 public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
 
@@ -45,14 +57,14 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
     private PortRpcStatisticsListener portStatsListener = new PortRpcStatisticsListener();
     private FlowRpcStatisticsListener flowTableStatsListener = new FlowRpcStatisticsListener();
     private List<BigInteger> nodes = new ArrayList<>();
-    Map<String, Map<String, String>> nodeAndNcIdOFPortDurationMap = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveDropMap = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveError = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndNcIdPacketSentMap = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndNcIdPacketReceiveMap = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndNcIdBytesSentMap = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndNcIdBytesReceiveMap = new ConcurrentHashMap<String, Map<String, String>>();
-    Map<String, Map<String, String>> nodeAndEntriesPerOFTableMap = new ConcurrentHashMap<String, Map<String, String>>();
+    Map<String, Map<String, String>> nodeAndNcIdOFPortDurationMap = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveDropMap = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveError = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndNcIdPacketSentMap = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndNcIdPacketReceiveMap = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndNcIdBytesSentMap = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndNcIdBytesReceiveMap = new ConcurrentHashMap<>();
+    Map<String, Map<String, String>> nodeAndEntriesPerOFTableMap = new ConcurrentHashMap<>();
     private ScheduledFuture<?> scheduledResult;
     private OpendaylightPortStatisticsService statPortService;
     private ScheduledExecutorService portStatExecutorService;
@@ -158,13 +170,13 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
 
         @Override
         public void onNodeConnectorStatisticsUpdate(NodeConnectorStatisticsUpdate ncStats) {
-            Map<String, String> ncIdOFPortDurationMap = new HashMap<String, String>();
-            Map<String, String> ncIdOFPortReceiveDropMap = new HashMap<String, String>();
-            Map<String, String> ncIdOFPortReceiveError = new HashMap<String, String>();
-            Map<String, String> ncIdPacketSentMap = new HashMap<String, String>();
-            Map<String, String> ncIdPacketReceiveMap = new HashMap<String, String>();
-            Map<String, String> ncIdBytesSentMap = new HashMap<String, String>();
-            Map<String, String> ncIdBytesReceiveMap = new HashMap<String, String>();
+            Map<String, String> ncIdOFPortDurationMap = new HashMap<>();
+            Map<String, String> ncIdOFPortReceiveDropMap = new HashMap<>();
+            Map<String, String> ncIdOFPortReceiveError = new HashMap<>();
+            Map<String, String> ncIdPacketSentMap = new HashMap<>();
+            Map<String, String> ncIdPacketReceiveMap = new HashMap<>();
+            Map<String, String> ncIdBytesSentMap = new HashMap<>();
+            Map<String, String> ncIdBytesReceiveMap = new HashMap<>();
             List<NodeConnectorStatisticsAndPortNumberMap> ncStatsAndPortMapList = ncStats.getNodeConnectorStatisticsAndPortNumberMap();
             NodeId nodeId = ncStats.getId();
             String node = nodeId.getValue().split(":")[1];
@@ -207,7 +219,7 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
     }
 
     private Map<String, String> combineAllNodesStats(Map<String, Map<String, String>> allNodesStats) {
-        Map<String, String> allNcsStatsMap = new HashMap<String, String>();
+        Map<String, String> allNcsStatsMap = new HashMap<>();
         for (Map.Entry<String, Map<String, String>> entry : allNodesStats.entrySet()) {
             Map<String, String> ncStatsMap = entry.getValue();
             for (Map.Entry<String, String> statResult : ncStatsMap.entrySet()) {
@@ -225,7 +237,7 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
         @Override
         public void onFlowTableStatisticsUpdate(FlowTableStatisticsUpdate flowTableStats) {
             String node = flowTableStats.getId().getValue().split(":")[1];
-            Map<String, String> entriesPerOFTableMap = new HashMap<String, String>();
+            Map<String, String> entriesPerOFTableMap = new HashMap<>();
             List<FlowTableAndStatisticsMap> flowTableAndStatisticsMapList = flowTableStats.getFlowTableAndStatisticsMap();
             for (FlowTableAndStatisticsMap flowTableAndStatisticsMap : flowTableAndStatisticsMapList) {
                 String nodeTableStr =  "dpnId_" + node + "_table_" + flowTableAndStatisticsMap.getTableId().getValue().toString();

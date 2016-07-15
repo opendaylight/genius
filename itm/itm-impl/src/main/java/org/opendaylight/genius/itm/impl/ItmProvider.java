@@ -9,6 +9,10 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
@@ -21,7 +25,11 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.listeners.*;
+import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
+import org.opendaylight.genius.itm.listeners.TransportZoneListener;
+import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
+import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
+import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
@@ -38,11 +46,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.I
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMProvider /*,ItmStateService */{
 
@@ -95,7 +98,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tnlToggleListener = new TunnelMonitorChangeListener(dataBroker);
             tnlIntervalListener = new TunnelMonitorIntervalListener(dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
-            final BindingAwareBroker.RpcRegistration<ItmRpcService> rpcRegistration = getRpcProviderRegistry().addRpcImplementation(ItmRpcService.class, itmRpcService);
+            getRpcProviderRegistry().addRpcImplementation(ItmRpcService.class, itmRpcService);
             itmRpcService.setMdsalManager(mdsalManager);
             itmManager.setMdsalManager(mdsalManager);
             itmManager.setNotificationPublishService(notificationPublishService);

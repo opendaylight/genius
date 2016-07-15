@@ -17,6 +17,20 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.Future;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -51,6 +65,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,7 +253,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
             IdPool parentIdPool = getIdPool(parentIdPoolInstanceIdentifier);
             List<IdEntries> idEntries = parentIdPool.getIdEntries();
             if (idEntries == null) {
-                idEntries = new LinkedList<IdEntries>();
+                idEntries = new LinkedList<>();
             } else {
                 InstanceIdentifier<IdEntries> existingId = IdUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
                 Optional<IdEntries> existingIdEntry = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, existingId);
@@ -318,7 +336,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
         long delayTime = System.currentTimeMillis() / 1000 + releasedIds.getDelayedTimeSec();
         List<DelayedIdEntries> delayedIdEntries = releasedIds.getDelayedIdEntries();
         if (delayedIdEntries == null) {
-            delayedIdEntries = new LinkedList<DelayedIdEntries>();
+            delayedIdEntries = new LinkedList<>();
         }
         for(long idValue : idsList) {
             DelayedIdEntries delayedIdEntry = IdUtils.createDelayedIdEntry(idValue, delayTime);
@@ -507,7 +525,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
         List<DelayedIdEntries> delayedIdEntriesParent = releasedIdsBuilderParent.getDelayedIdEntries();
         List<DelayedIdEntries> delayedIdEntriesChild = releasedIdsBuilderChild.getDelayedIdEntries();
         if (delayedIdEntriesChild == null) {
-            delayedIdEntriesChild = new LinkedList<DelayedIdEntries>();
+            delayedIdEntriesChild = new LinkedList<>();
         }
         int idCount = Math.min(delayedIdEntriesParent.size(), parentIdPool.getBlockSize());
         List<DelayedIdEntries> idEntriesToBeRemoved = delayedIdEntriesParent.subList(0, idCount);

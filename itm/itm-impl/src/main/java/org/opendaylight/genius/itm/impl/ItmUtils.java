@@ -13,6 +13,15 @@ import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -24,7 +33,15 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.mdsalutil.*;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.FlowEntity;
+import org.opendaylight.genius.mdsalutil.InstructionInfo;
+import org.opendaylight.genius.mdsalutil.InstructionType;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.mdsalutil.MatchFieldType;
+import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -35,17 +52,32 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepIpPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaKey;
@@ -70,27 +102,21 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class ItmUtils {
 
@@ -271,22 +297,20 @@ public class ItmUtils {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelIfName)).setName(
                 tunnelIfName).setDescription(desc).
                 setEnabled(enabled).setType(Tunnel.class);
-        List<NodeIdentifier> nodeIds = new ArrayList<NodeIdentifier>();
+        List<NodeIdentifier> nodeIds = new ArrayList<>();
         NodeIdentifier hWnode = new NodeIdentifierBuilder().setKey(new NodeIdentifierKey(topo_id)).setTopologyId(
                 topo_id).
                 setNodeId(node_id).build();
         nodeIds.add(hWnode);
         ParentRefs parent = new ParentRefsBuilder().setNodeIdentifier(nodeIds).build();
         builder.addAugmentation(ParentRefs.class, parent);
-        Long monitoringInterval = (long) ITMConstants.DEFAULT_MONITOR_INTERVAL;
         Boolean monitoringEnabled = true;
-        Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         if(monitor_interval!= null)
-            monitoringInterval = monitor_interval.longValue();
+			monitor_interval.longValue();
         if(monitor_enabled!=null  )
             monitoringEnabled = monitor_enabled;
-        if(monitorProtocol!=null)
-            monitoringProtocol = monitorProtocol;
+        if(monitorProtocol!=null) {
+		}
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(destIp).setTunnelGateway(gWIp).setTunnelSource(
                 srcIp).setMonitorEnabled(monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(100L).
                 setTunnelInterfaceType(tunType).setInternal(false).build();
@@ -371,7 +395,7 @@ public class ItmUtils {
 
     public static List<DPNTEPsInfo> getDPNTEPListFromDPNId(DataBroker dataBroker, List<BigInteger> dpnIds) {
         List<DPNTEPsInfo> meshedDpnList = getTunnelMeshInfo(dataBroker) ;
-        List<DPNTEPsInfo> cfgDpnList = new ArrayList<DPNTEPsInfo>();
+        List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
         if( null != meshedDpnList) {
             for(BigInteger dpnId : dpnIds) {
                 for( DPNTEPsInfo teps : meshedDpnList ) {
@@ -386,18 +410,17 @@ public class ItmUtils {
     public static void setUpOrRemoveTerminatingServiceTable(BigInteger dpnId, IMdsalApiManager mdsalManager, boolean addFlag) {
         String logmsg = ( addFlag == true) ? "Installing" : "Removing";
         LOG.trace( logmsg + " PUNT to Controller flow in DPN {} ", dpnId );
-        long dpId;
-        List<ActionInfo> listActionInfo = new ArrayList<ActionInfo>();
+        List<ActionInfo> listActionInfo = new ArrayList<>();
         listActionInfo.add(new ActionInfo(ActionType.punt_to_controller,
                 new String[] {}));
 
         try {
-            List<MatchInfo> mkMatches = new ArrayList<MatchInfo>();
+            List<MatchInfo> mkMatches = new ArrayList<>();
 
             mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] {
                     BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID) }));
 
-            List<InstructionInfo> mkInstructions = new ArrayList<InstructionInfo>();
+            List<InstructionInfo> mkInstructions = new ArrayList<>();
             mkInstructions.add(new InstructionInfo(InstructionType.apply_actions,
                     listActionInfo));
 
@@ -698,7 +721,7 @@ public class ItmUtils {
     }
 
     public static List<BigInteger> getDpnIdList( List<DpnIds> dpnIds ) {
-        List<BigInteger> dpnList = new ArrayList<BigInteger>() ;
+        List<BigInteger> dpnList = new ArrayList<>() ;
         for( DpnIds dpn : dpnIds) {
             dpnList.add(dpn.getDPN()) ;
         }
@@ -706,7 +729,7 @@ public class ItmUtils {
     }
 
     public static List<DpnIds> getDpnIdsListFromBigInt( List<BigInteger> dpnIds) {
-        List<DpnIds> dpnIdList = new ArrayList<DpnIds>() ;
+        List<DpnIds> dpnIdList = new ArrayList<>() ;
         DpnIdsBuilder builder = new DpnIdsBuilder() ;
         for( BigInteger dpnId : dpnIds) {
             dpnIdList.add(builder.setKey(new DpnIdsKey(dpnId)).setDPN(dpnId).build() );
@@ -760,7 +783,7 @@ public class ItmUtils {
 
     public static List<String> getTunnelsofTzone(List<HwVtep> hwVteps, String tzone, DataBroker dataBroker, Boolean hwVtepsExist) {
 
-        List<String> tunnels = new ArrayList<String>();
+        List<String> tunnels = new ArrayList<>();
         InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).
                 child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
@@ -811,7 +834,7 @@ public class ItmUtils {
     }
 
     public static List<String> getInternalTunnelsofTzone(String tzone, DataBroker dataBroker) {
-        List<String> tunnels = new ArrayList<String>();
+        List<String> tunnels = new ArrayList<>();
         LOG.trace("Getting internal tunnels of {}",tzone);
         InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).
                 child(TransportZone.class, new TransportZoneKey(tzone)).build();

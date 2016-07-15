@@ -8,8 +8,17 @@
 
 package org.opendaylight.genius.itm.impl;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +31,6 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -30,7 +38,11 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
@@ -54,16 +66,6 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmInternalTunnelAddTest {
@@ -106,10 +108,10 @@ public class ItmInternalTunnelAddTest {
     List<TunnelEndPoints> tunnelEndPointsListVxlanNew = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListGre = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListGreNew = new ArrayList<>();
-    List<DPNTEPsInfo> meshDpnListVxlan = new ArrayList<DPNTEPsInfo>() ;
-    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<DPNTEPsInfo>() ;
-    List<DPNTEPsInfo> meshDpnListGre = new ArrayList<DPNTEPsInfo>() ;
-    List<DPNTEPsInfo> cfgdDpnListGre = new ArrayList<DPNTEPsInfo>() ;
+    List<DPNTEPsInfo> meshDpnListVxlan = new ArrayList<>() ;
+    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
+    List<DPNTEPsInfo> meshDpnListGre = new ArrayList<>() ;
+    List<DPNTEPsInfo> cfgdDpnListGre = new ArrayList<>() ;
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     java.lang.Class<? extends TunnelTypeBase> tunnelType2 = TunnelTypeGre.class;
 

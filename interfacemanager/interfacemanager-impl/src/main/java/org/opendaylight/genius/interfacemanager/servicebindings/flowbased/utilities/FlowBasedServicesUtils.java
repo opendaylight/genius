@@ -9,13 +9,22 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utili
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.mdsalutil.*;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.mdsalutil.MatchFieldType;
+import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MetaDataUtil;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -25,32 +34,24 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
@@ -123,14 +124,14 @@ public class FlowBasedServicesUtils {
     }
 
     public static List<MatchInfo> getMatchInfoForTunnelPortAtIngressTable(BigInteger dpId, long portNo) {
-        List<MatchInfo> matches = new ArrayList<MatchInfo>();
+        List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[]{dpId, BigInteger.valueOf(portNo)}));
         return matches;
     }
 
     public static List<MatchInfo> getMatchInfoForDispatcherTable(BigInteger dpId,
                                                                  int interfaceTag, short servicePriority) {
-        List<MatchInfo> matches = new ArrayList<MatchInfo>();
+        List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
                 MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, servicePriority),
                 MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
@@ -144,7 +145,7 @@ public class FlowBasedServicesUtils {
         List<Instruction> instructions = boundServiceNew.getAugmentation(StypeOpenflow.class).getInstruction();
 
         int serviceInstructionsSize = instructions.size();
-        List<Instruction> instructionSet = new ArrayList<Instruction>();
+        List<Instruction> instructionSet = new ArrayList<>();
         int vlanId = 0;
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
         if(l2vlan != null && l2vlan.getVlanId() != null){
@@ -231,7 +232,7 @@ public class FlowBasedServicesUtils {
         BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
 
         // build the final instruction for LPort Dispatcher table flow entry
-        List<Instruction> instructions = new ArrayList<Instruction>();
+        List<Instruction> instructions = new ArrayList<>();
         instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize));
         if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
             for (Instruction info : serviceInstructions) {
@@ -265,7 +266,7 @@ public class FlowBasedServicesUtils {
     public static void removeLPortDispatcherFlow(BigInteger dpId, String iface, BoundServices boundServicesOld, WriteTransaction t, short currentServiceIndex) {
         LOG.debug("Removing LPort Dispatcher Flows {}, {}", dpId, iface);
 
-        StypeOpenflow stypeOpenFlow = boundServicesOld.getAugmentation(StypeOpenflow.class);
+        boundServicesOld.getAugmentation(StypeOpenflow.class);
         // build the flow and install it
         String flowRef = getFlowRef(dpId, iface, boundServicesOld, currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
@@ -298,7 +299,7 @@ public class FlowBasedServicesUtils {
         if (serviceInfos == null || serviceInfos.isEmpty()) {
             return new BoundServices[]{lower, higher};
         }
-        List <BoundServices> availableServiceInfos = new ArrayList<BoundServices>(serviceInfos);
+        List <BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
         Collections.sort(availableServiceInfos, new Comparator<BoundServices>() {
             @Override
             public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {
@@ -317,7 +318,7 @@ public class FlowBasedServicesUtils {
     }
 
     public static BoundServices getHighestPriorityService(List<BoundServices> serviceInfos) {
-        List <BoundServices> availableServiceInfos = new ArrayList<BoundServices>(serviceInfos);
+        List <BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
         if (availableServiceInfos.isEmpty()) {
             return null;
         }
@@ -343,7 +344,7 @@ public class FlowBasedServicesUtils {
         int instructionKey = 0;
         BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag, (short) 0);
         BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher();
-        List<Instruction> instructions = new ArrayList<Instruction>();
+        List<Instruction> instructions = new ArrayList<>();
         if (vlanId != 0 && !isVlanTransparent) {
             instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
         }
