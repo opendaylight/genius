@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
@@ -17,7 +19,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmMonitorToggleWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
@@ -25,9 +27,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorParams, TunnelMonitorChangeListener>
         implements  AutoCloseable {
@@ -81,7 +80,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
 
     @Override
     protected void remove(InstanceIdentifier<TunnelMonitorParams> key, TunnelMonitorParams dataObjectModification) {
-        List<HwVtep> hwVteps = new ArrayList<HwVtep>();
+        List<HwVtep> hwVteps = new ArrayList<>();
         Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
@@ -91,7 +90,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
                 hwVtepsExist = false;
-                hwVteps = new ArrayList<HwVtep>();
+                hwVteps = new ArrayList<>();
                 if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
                     for (Subnets sub : tzone.getSubnets()) {
                         if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
@@ -121,7 +120,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                                     TunnelMonitorParams dataObjectModificationBefore,
                                     TunnelMonitorParams dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorChangeListener called with {}",dataObjectModificationAfter.isEnabled());
-        List<HwVtep> hwVteps = new ArrayList<HwVtep>();
+        List<HwVtep> hwVteps = new ArrayList<>();
         Boolean hwVtepsExist = false;
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol_before = dataObjectModificationBefore.getMonitorProtocol();
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol_after = dataObjectModificationAfter.getMonitorProtocol();
@@ -143,7 +142,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
                 hwVtepsExist = false;
-                hwVteps = new ArrayList<HwVtep>();
+                hwVteps = new ArrayList<>();
                 if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
                     for (Subnets sub : tzone.getSubnets()) {
                         if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
@@ -171,7 +170,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
     protected void add(InstanceIdentifier<TunnelMonitorParams> key, TunnelMonitorParams dataObjectModification) {
         LOG.debug("add TunnelMonitorChangeListener called with {}",dataObjectModification.isEnabled());
         LOG.debug("add TunnelMonitorChangeListener called with monitorProtcol {}",dataObjectModification.getMonitorProtocol());
-        List<HwVtep> hwVteps = new ArrayList<HwVtep>();
+        List<HwVtep> hwVteps = new ArrayList<>();
         Boolean hwVtepsExist = false;
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -181,7 +180,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
                 hwVtepsExist = false;
-                hwVteps = new ArrayList<HwVtep>();
+                hwVteps = new ArrayList<>();
                 if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
                     for (Subnets sub : tzone.getSubnets()) {
                         if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {

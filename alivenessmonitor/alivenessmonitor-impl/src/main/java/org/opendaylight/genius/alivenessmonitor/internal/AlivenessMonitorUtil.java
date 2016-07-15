@@ -8,7 +8,13 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.primitives.UnsignedBytes;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.InterfaceMonitorMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorConfigs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfiles;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoridKeyMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringStates;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
@@ -20,9 +26,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringStateKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class AlivenessMonitorUtil {
 
@@ -73,8 +76,8 @@ public class AlivenessMonitorUtil {
 
         StringBuilder sb = new StringBuilder(18);
 
-        for (int i = 0; i < macAddress.length; i++) {
-            sb.append(UnsignedBytes.toString(macAddress[i], 16).toUpperCase());
+        for (byte macAddres : macAddress) {
+            sb.append(UnsignedBytes.toString(macAddres, 16).toUpperCase());
             sb.append(":");
         }
 

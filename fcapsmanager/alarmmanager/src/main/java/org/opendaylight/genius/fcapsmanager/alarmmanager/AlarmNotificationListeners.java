@@ -7,14 +7,23 @@
  */
 package org.opendaylight.genius.fcapsmanager.alarmmanager;
 
-import javax.management.*;
 import java.lang.management.ManagementFactory;
-import java.util.*;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.management.AttributeChangeNotification;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerNotification;
+import javax.management.MalformedObjectNameException;
+import javax.management.Notification;
+import javax.management.NotificationFilterSupport;
+import javax.management.NotificationListener;
+import javax.management.ObjectName;
+import org.opendaylight.genius.fcapsmanager.AlarmServiceFacade;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.opendaylight.genius.fcapsmanager.AlarmServiceFacade;
 
 public class AlarmNotificationListeners implements Runnable {
     static Logger s_logger = LoggerFactory.getLogger(AlarmNotificationListeners.class);
@@ -153,7 +162,7 @@ public class AlarmNotificationListeners implements Runnable {
     public void queryMbeans() {
 
         Set<ObjectName> names =
-                new TreeSet<ObjectName>(mbs.queryNames(null, null));
+                new TreeSet<>(mbs.queryNames(null, null));
         s_logger.debug("Queried MBeanServer for MBeans:");
         for (ObjectName beanName : names) {
             if(beanName.toString().contains(DOMAIN)){

@@ -9,8 +9,15 @@ package org.opendaylight.genius.fcapsapp.performancecounter;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
-import org.opendaylight.controller.md.sal.binding.api.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.concurrent.Callable;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
@@ -25,10 +32,6 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.lang.String;
-import java.util.HashMap;
-import java.util.Collection;
-import java.util.concurrent.Callable;
 
 public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEventListener<FlowCapableNodeConnector>  {
     public static final int STARTUP_LOOP_TICK = 500;
@@ -50,7 +53,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     private static Multimap<Long,String> dpnToPortMultiMap = Multimaps.synchronizedListMultimap(ArrayListMultimap.<Long,String>create());
 
-    private static HashMap<String, String> nodeConnectorCountermap = new HashMap<String, String>();
+    private static HashMap<String, String> nodeConnectorCountermap = new HashMap<>();
 
     public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,final EntityOwnershipService eos) {
         super( FlowCapableNodeConnector.class);

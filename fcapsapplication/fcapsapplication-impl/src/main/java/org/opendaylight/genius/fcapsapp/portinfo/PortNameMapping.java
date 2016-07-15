@@ -7,19 +7,20 @@
  */
 package org.opendaylight.genius.fcapsapp.portinfo;
 
-import java.lang.String;
+import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Map;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.management.*;
-import java.lang.management.ManagementFactory;
 
 public class PortNameMapping implements PortNameMappingMBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(PortNameMapping.class);
 
-    private static Map<String,String> portNameToPortIdMap = new HashMap<String,String>();
+    private static Map<String,String> portNameToPortIdMap = new HashMap<>();
 
     @Override
     public Map<String,String> getPortIdtoPortNameMap() {
