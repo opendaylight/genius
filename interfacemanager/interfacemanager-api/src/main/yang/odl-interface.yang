@@ -295,4 +295,17 @@ module odl-interface {
             }
         }
     }
+
+    /* Port to external network */
+    augment "/if:interfaces/if:interface" {
+        ext:augment-identifier "if-external";
+        when "if:type = 'ianaift:l2vlan'";
+
+        leaf external {
+            type boolean;
+            default "true";
+            description
+              "represents whether port belongs to external network.";
+        }
+    }
 }
