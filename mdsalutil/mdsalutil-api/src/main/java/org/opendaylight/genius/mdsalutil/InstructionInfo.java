@@ -83,7 +83,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
         // Arrays.hashCode(). deepHashCode() would have to be used for nested
         // arrays.
         return Objects.hash(m_instructionType, Arrays.hashCode(m_alInstructionValues),
-                Arrays.hashCode(m_alBigInstructionValues), m_actionInfos);
+                Arrays.hashCode(m_alBigInstructionValues), getActionInfos());
     }
 
     @Override
@@ -96,6 +96,6 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
             (self, other) -> Objects.equals(self.m_instructionType, other.m_instructionType)
                           && Arrays.equals(self.m_alInstructionValues, other.m_alInstructionValues)
                           && Arrays.equals(self.m_alBigInstructionValues, other.m_alBigInstructionValues)
-                          && Objects.equals(self.m_actionInfos, other.m_actionInfos));
+                          && Objects.equals(self.getActionInfos(), other.getActionInfos()));
     }
 }
