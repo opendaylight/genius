@@ -46,6 +46,10 @@ public interface IInterfaceManager {
 
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId,  Integer vlanId,
                              String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
+
+    public void createVLANInterface(String interfaceName, String portName, BigInteger dpId,  Integer vlanId,
+            String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
+
     public void bindService(String interfaceName, BoundServices serviceInfo);
     public void unbindService(String interfaceName, BoundServices serviceInfo);
     List<Interface> getVlanInterfaces();
