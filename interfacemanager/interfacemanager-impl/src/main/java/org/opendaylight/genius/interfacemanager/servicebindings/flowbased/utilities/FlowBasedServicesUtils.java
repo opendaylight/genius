@@ -49,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,10 +162,10 @@ public class FlowBasedServicesUtils {
             BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(instructions);
             short sIndex = boundServiceNew.getServicePriority();
             BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag,
-                    ++sIndex, metadataValues[0]);
+                    ++sIndex, metadataValues[0], isExternal(iface));
             BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher(
                     MetaDataUtil.METADATA_MASK_SERVICE_INDEX,
-                    MetaDataUtil.METADATA_MASK_LPORT_TAG, metadataValues[1]);
+                    MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG, metadataValues[1]);
             instructionSet.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask,
                     ++serviceInstructionsSize));
         }
@@ -217,7 +218,7 @@ public class FlowBasedServicesUtils {
     }
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
-                                                  WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
+            WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
         LOG.debug("Installing LPort Dispatcher Flows {}, {}", dpId, interfaceName);
         String serviceRef = boundService.getServiceName();
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId,
@@ -228,7 +229,8 @@ public class FlowBasedServicesUtils {
         List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
         int instructionSize = serviceInstructions.size();
         BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
-        BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex, metadataValues[0]);
+        BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex,
+                metadataValues[0]);
         BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
 
         // build the final instruction for LPort Dispatcher table flow entry
@@ -374,5 +376,13 @@ public class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, flowKey).build();
 
         t.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+    }
+
+    private static boolean isExternal(Interface iface) {
+        if (iface == null) {
+            return false;
+        }
+        IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
+        return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
     }
 }

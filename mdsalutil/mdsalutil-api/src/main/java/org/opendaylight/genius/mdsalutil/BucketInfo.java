@@ -65,13 +65,13 @@ public class BucketInfo extends AbstractActionInfoList implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(m_listActionInfo, weight, watchPort, watchGroup);
+        return Objects.hash(getActionInfos(), weight, watchPort, watchGroup);
     }
 
     @Override
     public boolean equals(Object obj) {
         return MoreObjects2.equalsHelper(this, obj,
-                (self, other) -> Objects.equals(self.m_listActionInfo, other.m_listActionInfo)
+                (self, other) -> Objects.equals(self.getActionInfos(), other.getActionInfos())
                               && Objects.equals(self.weight, other.weight)
                               && Objects.equals(self.watchPort, other.watchPort)
                               && Objects.equals(self.watchGroup, other.watchGroup));
