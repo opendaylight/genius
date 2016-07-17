@@ -10,7 +10,7 @@ package org.opendaylight.genius.mdsalutil;
 import java.math.BigInteger;
 
 public class MetaDataUtil {
-    public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("00000000FFFFFFFF", 16);
+    public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("00000000FFFFFFFE", 16);
     public static final BigInteger METADATA_MASK_LPORT_TAG =     new BigInteger("1FFFFF0000000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE =       new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("E000000000000000", 16);
@@ -21,15 +21,22 @@ public class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SERVICE_SH_FLAG = new BigInteger("000000FFFF000001", 16);
     public static final BigInteger METADATA_MASK_LPORT_TAG_SH_FLAG =     new BigInteger("1FFFFF0000000001", 16);
     public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("0000FFFF00000000", 16);
-    public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("0000FFFFFFFFFFFF", 16);
+    public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("0000FFFFFFFFFFFE", 16);
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
         return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag));
     }
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex,
-                                                           BigInteger serviceMetaData) {
-        return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag)).or(serviceMetaData);
+            BigInteger serviceMetaData) {
+        return getMetaDataForLPortDispatcher(lportTag, serviceIndex, serviceMetaData, false);
+    }
+
+    public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex,
+                                                           BigInteger serviceMetaData, boolean isSHFlagSet) {
+        int shBit = (isSHFlagSet) ? 1 : 0;
+        return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag)).or(serviceMetaData)
+                .or(BigInteger.valueOf(shBit));
     }
 
     public static BigInteger getServiceIndexMetaData(int serviceIndex) {
