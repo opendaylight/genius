@@ -258,9 +258,9 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         VtepConfigSchema schema = ItmUtils.validateForUpdateVtepSchema(schemaName, lstDpnsForAdd, lstDpnsForDelete,
                 this);
         VtepConfigSchemaBuilder builder = new VtepConfigSchemaBuilder(schema);
-        if (ItmUtils.getDpnIdList(schema.getDpnIds()).isEmpty()) {
+       /* if (ItmUtils.getDpnIdList(schema.getDpnIds()).isEmpty()) {
             builder.setDpnIds(schema.getDpnIds());
-        } else {
+        } else {*/
             if (lstDpnsForAdd != null && !lstDpnsForAdd.isEmpty()) {
                 List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.getDpnIds()) ;
                 originalDpnList.addAll(lstDpnsForAdd) ;
@@ -268,11 +268,11 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             }
             if (lstDpnsForDelete != null && !lstDpnsForDelete.isEmpty()) {
                 List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.getDpnIds()) ;
-                originalDpnList.removeAll(lstDpnsForAdd) ;
+                originalDpnList.removeAll(lstDpnsForDelete) ;
                 builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList)) ;
                 // schema.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(ItmUtils.getDpnIdList(schema.getDpnIds()).removeAll(lstDpnsForAdd)));
             }
-        }
+       // }
         schema = builder.build();
         MDSALUtil.syncWrite(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
                 ItmUtils.getVtepConfigSchemaIdentifier(schemaName), schema);
