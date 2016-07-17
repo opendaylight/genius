@@ -26,8 +26,15 @@ public class MetaDataUtil {
     }
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex,
-                                                           BigInteger serviceMetaData) {
-        return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag)).or(serviceMetaData);
+            BigInteger serviceMetaData) {
+        return getMetaDataForLPortDispatcher(lportTag, serviceIndex, serviceMetaData, false);
+    }
+
+    public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex,
+                                                           BigInteger serviceMetaData, boolean isSHFlagSet) {
+        int shBit = (isSHFlagSet) ? 1 : 0;
+        return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag)).or(serviceMetaData)
+                .or(BigInteger.valueOf(shBit));
     }
 
     public static BigInteger getServiceIndexMetaData(int serviceIndex) {

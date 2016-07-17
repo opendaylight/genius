@@ -52,6 +52,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
@@ -346,6 +348,11 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
                                     String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
+        createVLANInterface(interfaceName, portName, dpId, vlanId, description, l2vlanMode, false);
+    }
+    @Override
+    public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
+                                    String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException {
 
         LOG.info("Create VLAN interface : {}", interfaceName);
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils.getInterfaceIdentifier(new InterfaceKey(interfaceName));
@@ -355,15 +362,19 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             throw new InterfaceAlreadyExistsException(interfaceOptional.getName());
         }
         IfL2vlanBuilder l2vlanBuilder = new IfL2vlanBuilder().setL2vlanMode(l2vlanMode);
-        if (vlanId > 0) {
+        if (vlanId != null && vlanId > 0) {
             l2vlanBuilder.setVlanId(new VlanId(vlanId));
         }
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(portName).build();
-        Interface inf = new InterfaceBuilder().setEnabled(true).setName(interfaceName).setType(L2vlan.class).
+        InterfaceBuilder interfaceBuilder = new InterfaceBuilder().setEnabled(true).setName(interfaceName).setType(L2vlan.class).
                 addAugmentation(IfL2vlan.class, l2vlanBuilder.build()).addAugmentation(ParentRefs.class, parentRefs).
-                setDescription(description).build();
+                setDescription(description);
+        if (isExternal) {
+            interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
+        }
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        t.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, inf, true);
+        t.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(), true);
+        t.submit();
     }
 
     @Override
