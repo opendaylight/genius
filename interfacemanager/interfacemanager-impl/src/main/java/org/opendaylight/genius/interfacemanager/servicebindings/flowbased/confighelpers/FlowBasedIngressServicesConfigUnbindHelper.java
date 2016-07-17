@@ -67,6 +67,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         flowBasedIngressServicesRemovable = null;
     }
 
+    @Override
     public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
                                                              BoundServices boundServiceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -129,7 +130,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) ((lower!=null) ? lower.getServicePriority() : low.getServicePriority() + 1);
                 LOG.trace("Installing new entry for lower service {}, match service index {}, update service index {}", low, IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifaceState.getName(), t, ifaceState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifaceState.getName(), t, ifaceState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, dataBroker);
             }
         } else {
             LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld, boundServiceOld.getServicePriority());
@@ -138,10 +139,10 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
             if (high.equals(highest)) {
                 LOG.trace("Update the existing higher service {}, match service index {}, update service index {}", high, IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, dataBroker);
             } else {
                 LOG.trace("Update the existing higher service {}, match service index {}, update service index {}", high, high.getServicePriority(), lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), high.getServicePriority(), lowerServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), high.getServicePriority(), lowerServiceIndex, dataBroker);
             }
         }
         futures.add(t.submit());
