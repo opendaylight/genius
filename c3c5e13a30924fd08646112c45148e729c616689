@@ -22,6 +22,30 @@
       "revId": "c3c5e13a30924fd08646112c45148e729c616689",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_15a028f3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfoBuilder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-07-18T14:42:00Z",
+      "side": 1,
+      "message": "Fixed! Sorry.",
+      "parentUuid": "9a561d44_24b8a4c7",
+      "range": {
+        "startLine": 40,
+        "startChar": 44,
+        "endLine": 40,
+        "endChar": 51
+      },
+      "revId": "c3c5e13a30924fd08646112c45148e729c616689",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
