@@ -10,8 +10,9 @@ package org.opendaylight.genius.mdsalutil;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowCookie;
+import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
@@ -190,6 +191,30 @@ public class FlowEntity extends AbstractSwitchEntity {
             throw new IllegalArgumentException("tableId not a short: " + shTableId);
         }
         setTableId((short) shTableId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDpnId(), m_shTableId, m_sFlowId, m_nPriority, m_sFlowName, m_nIdleTimeOut,
+                m_nHardTimeOut, m_biCookie, m_listMatchInfo, m_listInstructionInfo, m_bStrictFlag, m_bSendFlowRemFlag);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return MoreObjects2.equalsHelper(this, obj,
+            (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
+                          && Objects.equals(self.m_shTableId, other.m_shTableId)
+                          && Objects.equals(self.m_sFlowId, other.m_sFlowId)
+                          && Objects.equals(self.m_nPriority, other.m_nPriority)
+                          && Objects.equals(self.m_sFlowName, other.m_sFlowName)
+                          && Objects.equals(self.m_nIdleTimeOut, other.m_nIdleTimeOut)
+                          && Objects.equals(self.m_nHardTimeOut, other.m_nHardTimeOut)
+                          && Objects.equals(self.m_biCookie, other.m_biCookie)
+                          && Objects.equals(self.m_listMatchInfo, other.m_listMatchInfo)
+                          && Objects.equals(self.m_listInstructionInfo, other.m_listInstructionInfo)
+                          && Objects.equals(self.m_bStrictFlag, other.m_bStrictFlag)
+                          && Objects.equals(self.m_bSendFlowRemFlag, other.m_bSendFlowRemFlag)
+                );
     }
 
 }

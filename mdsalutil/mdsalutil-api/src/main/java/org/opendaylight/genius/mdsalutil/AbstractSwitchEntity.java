@@ -9,7 +9,7 @@ package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
 
-public class AbstractSwitchEntity {
+public abstract class AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;
 
     private BigInteger m_dpnId;
@@ -26,4 +26,10 @@ public class AbstractSwitchEntity {
         m_dpnId = dpnId;
     }
 
+    // Force subclasses to implement hashCode() & equals() WITH m_dpnId!
+    @Override
+    public abstract int hashCode();
+
+    @Override
+    public abstract boolean equals(Object obj);
 }
