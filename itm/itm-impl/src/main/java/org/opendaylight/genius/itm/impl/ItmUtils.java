@@ -927,7 +927,7 @@ public class ItmUtils {
         else if( tunType.equals(TunnelTypeGre.class) )
             tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
         else if (tunnelType.equals(TunnelTypeMplsOverGre.class))
-            tunnelType = ITMConstants.TUNNEL_TYPE_MPLS_OVER_GRE;
+            tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
         return tunnelType ;
     }
 
