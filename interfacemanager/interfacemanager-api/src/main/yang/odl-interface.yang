@@ -80,6 +80,11 @@ module odl-interface {
         base tunnel-type-base;
     }
 
+    identity tunnel-type-mpls-over-udp {
+        description "Tunnel type for mpls over udp tunnels";
+        base tunnel-type-base;
+    }
+
     identity tunnel-monitoring-type-base {
         description "Base identity for all tunnel-monitoring-types";
     }
