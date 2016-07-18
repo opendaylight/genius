@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_617e0e6d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 405,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-18T06:57:01Z",
+      "side": 1,
+      "message": "can this be false? If yes, how it impacts next line where we call it with portName\u003d\"\"? If no, add an else with appropriate ERROR/WARN log.",
+      "range": {
+        "startLine": 403,
+        "startChar": 7,
+        "endLine": 405,
+        "endChar": 9
+      },
+      "revId": "31db8db2d58e361e221258c7cf3a8f631374f86b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
