@@ -366,6 +366,21 @@ public class IfmUtil {
         return null;
     }
 
+    public static boolean isTunnelType(Interface iface,org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(iface);
+        if (!isTunnelInterface && ifState != null) {
+            isTunnelInterface = IfmUtil.isTunnelType(ifState.getType());
+        }
+        return isTunnelInterface;
+    }
+
+    public static boolean isTunnelType(Class<? extends InterfaceType> ifType) {
+        if( (ifType != null) && (ifType.isAssignableFrom(Tunnel.class)) ) {
+            return true;
+        }
+        return false;
+    }
+
     public static InterfaceInfo.InterfaceType getInterfaceType(Interface iface) {
         InterfaceInfo.InterfaceType interfaceType =
                 org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
