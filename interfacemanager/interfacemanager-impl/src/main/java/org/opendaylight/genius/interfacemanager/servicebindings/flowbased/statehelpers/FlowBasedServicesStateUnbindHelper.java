@@ -48,6 +48,10 @@ public class FlowBasedServicesStateUnbindHelper {
             return futures;
         }
 
+        if(ifaceState.getType() == null) {
+            return futures;
+        }
+
         if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
             return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
