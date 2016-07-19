@@ -11,6 +11,7 @@ import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ public class TepMonitor extends OsgiCommandSupport {
   protected Object doExecute() {
     try {
       logger.debug("Executing TEP monitor command with interval: " + "\t" + interval);
-      if(!(interval >=100 && interval <=30000)){
+      if(!(interval >=ITMConstants.MIN_MONITOR_INTERVAL && interval<=ITMConstants.MAX_MONITOR_INTERVAL)){
         System.out.println("Monitoring Interval must be in the range 100 - 30000");
       }
       else {
