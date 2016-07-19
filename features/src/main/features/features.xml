@@ -49,6 +49,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <bundle>mvn:org.opendaylight.genius/arputil-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/alivenessmonitor-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/interfacemanager-impl/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/interfacemanager-shell/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/itm-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/resourcemanager-impl/{{VERSION}}</bundle>
     <configfile finalname="lockmanager-impl-default-config.xml">mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}/xml/config</configfile>
