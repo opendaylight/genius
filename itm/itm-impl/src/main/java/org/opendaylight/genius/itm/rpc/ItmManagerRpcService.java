@@ -341,6 +341,10 @@ public class ItmManagerRpcService implements ItmRpcService {
             resultBld.withResult(output.build()) ;
         } else {
             List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker);
+            if(meshedDpnList == null){
+                LOG.error("There are no tunnel mesh info in config DS");
+                return Futures.immediateFuture(resultBld.build());
+            }
             // Look for external tunnels if not look for internal tunnel
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
@@ -349,9 +353,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             TunnelList.class)
                             .child(InternalTunnel.class, new InternalTunnelKey(teps.getDPNID(), srcDpn, input.getTunnelType()));
 
-                    Optional<InternalTunnel>
-                            tnl =
-                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+                    Optional<InternalTunnel> tnl = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
                     if (tnl != null && tnl.isPresent()) {
                         InternalTunnel tunnel = tnl.get();
                         GetInternalOrExternalInterfaceNameOutputBuilder
@@ -361,6 +363,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                         resultBld = RpcResultBuilder.success();
                         resultBld.withResult(output.build());
                         break;
+                    }else{
+                        LOG.error("Tunnel not found for source DPN {} ans destination IP {}", srcDpn, dstIp);
                     }
                 }
             }
