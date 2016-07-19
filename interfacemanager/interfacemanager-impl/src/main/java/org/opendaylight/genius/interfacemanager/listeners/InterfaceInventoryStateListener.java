@@ -17,6 +17,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -74,7 +75,17 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-        remove(key, flowCapableNodeConnectorOld, true);
+        String portName = flowCapableNodeConnectorOld.getName();
+        NodeConnectorId nodeConnectorIdNew = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+
+        //VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD for same interface from Older DPN
+        NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
+        if(nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+            LOG.info("Skipping the NodeConnector Remove Event received for the interface exists in newer DPN: {}, {}", nodeConnectorIdNew, nodeConnectorIdOld);
+            return;
+        }
+
+        remove(nodeConnectorIdNew, nodeConnectorIdOld, flowCapableNodeConnectorOld, portName);
     }
 
     @Override
@@ -92,10 +103,16 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-        //VM Migration: Delete existing interface entry for older DPN
-        remove(key, fcNodeConnectorNew, false);
         String portName = fcNodeConnectorNew.getName();
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+
+        //VM Migration: Delete existing interface entry for older DPN
+        NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
+        if(nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+            LOG.info("Received NodeConnector Remove Event for the interface exists in older DPN: {}, {}", nodeConnectorId, nodeConnectorIdOld);
+            remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName);
+        }
+
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
@@ -103,34 +120,12 @@ public class InterfaceInventoryStateListener extends AsyncDataTreeChangeListener
         coordinator.enqueueJob(portName, ifStateAddWorker, 3);
     }
 
-    /**
-     * VM Migration: VM migrated from DPN1 to DPN2.
-     * VM booted from new DPN host will preserves its configuration including ID, name and other properties.
-     * In certain vm migration scenario like nova evacuate, vm reboot
-     * it is expected to receive the events in a non-sequential manner
-     * In Nova evacuate scenario, OFPPR_ADD from DPN2 will be received before OFPPR_DELETE from DPN1.
-     * To cleanup existing entry in OperDS, remove method will be called from add()
-     *
-     */
-    private void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
-                        FlowCapableNodeConnector flowCapableNodeConnectorOld, boolean isNwTrigger) {
-        LOG.debug("Received user/network NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-        String portName = flowCapableNodeConnectorOld.getName();
-        NodeConnectorId nodeConnectorIdNew = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-
-        //VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD for same interface
-        NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
-        if(nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
-            if(isNwTrigger) {
-                LOG.info("Received NodeConnector Remove Event for the interface exists in another DPN: {}, {}", nodeConnectorIdNew, nodeConnectorIdOld);
-                return;
-            }
-        }
-
+    private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
+                        FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                nodeConnectorIdNew, nodeConnectorIdOld, flowCapableNodeConnectorOld, portName);
+                nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, portStateRemoveWorker, 3);
     }
 

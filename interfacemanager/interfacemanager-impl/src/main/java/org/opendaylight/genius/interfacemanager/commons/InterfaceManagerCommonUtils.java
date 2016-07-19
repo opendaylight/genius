@@ -377,7 +377,7 @@ public class InterfaceManagerCommonUtils {
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(operStatus);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
     }
 
     public static boolean isTunnelInterface(Interface interfaceInfo){
