@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_9d029a09",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-07-20T08:00:14Z",
+      "side": 1,
+      "message": "Get the extension list and add to it else it may replace the existing ones. You can refer [0]\n[0]https://git.opendaylight.org/gerrit/#/c/41652/",
+      "range": {
+        "startLine": 136,
+        "startChar": 32,
+        "endLine": 136,
+        "endChar": 42
+      },
+      "revId": "ebd4a3e2efb1a058609295ad7d17c28cbd01137b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
