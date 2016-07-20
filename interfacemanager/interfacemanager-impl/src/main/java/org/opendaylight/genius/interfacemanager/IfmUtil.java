@@ -90,7 +90,7 @@ public class IfmUtil {
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(ifaceName, broker);
 
         if(ifState == null){
-            throw new NullPointerException("interface information not present in oper DS for " +ifaceName);
+            throw new NullPointerException("Interface information not present in oper DS for " +ifaceName);
         }
         String lowerLayerIf = ifState.getLowerLayerIf().get(0);
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -225,7 +225,7 @@ public class IfmUtil {
         Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
                 dataBroker);
         if(interfaceInfo == null){
-            throw new NullPointerException("interface information not present in config DS for " +interfaceName);
+            throw new NullPointerException("Interface information not present in config DS for " +interfaceName);
         }
         String portNo = IfmUtil.getPortNoFromInterfaceName(interfaceName, dataBroker);
 
