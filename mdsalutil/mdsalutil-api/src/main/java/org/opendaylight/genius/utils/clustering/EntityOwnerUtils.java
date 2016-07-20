@@ -28,6 +28,34 @@ import java.util.concurrent.ConcurrentMap;
 public class EntityOwnerUtils {
     public static final String ENTITY_OWNER_CACHE = "entity.owner.cache";
     private static final Logger LOG = LoggerFactory.getLogger(EntityOwnerUtils.class);
+    static final ArrayList<EntityEvent> eventsHistory = new ArrayList<>();
+    public static class EntityEvent {
+        long time;
+        String entityName;
+        boolean isOwner;
+        boolean hasOwner;
+        public EntityEvent(long time, String entityName, boolean hasOwner, boolean isOwner) {
+            this.time = time;
+            this.entityName = entityName;
+            this.hasOwner = hasOwner;
+            this.isOwner = isOwner;
+        }
+        public long getTime() {
+            return time;
+        }
+        public String getEntityName() {
+            return entityName;
+        }
+        public boolean isOwner() {
+            return isOwner;
+        }
+        public boolean hasOwner() {
+            return hasOwner;
+        }
+    }
+    public static ArrayList<EntityEvent> getEventsHistory() {
+        return eventsHistory;
+    }
 
     static {
         createEntityOwnerCache();
@@ -102,6 +130,8 @@ public class EntityOwnerUtils {
             String entityType = ownershipChange.getEntity().getType();
             String entityName = ownershipChange.getEntity().getId().toString();
             LOG.info("entity ownership changed for "+entityType);
+            eventsHistory.add(new EntityEvent(System.currentTimeMillis(), entityName, ownershipChange.hasOwner() ,
+                    ownershipChange.isOwner()));
             if (ownershipChange.hasOwner() && ownershipChange.isOwner()) {
                 LOG.info("entity ownership change became owner for type "+entityType);
                 updateEntityOwner(entityType, entityName, Boolean.TRUE);
