@@ -177,7 +177,7 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
             srcInfoBuilder.setTepDeviceId(tunnel.getSourceDevice())
                 .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()));
             dstInfoBuilder.setTepDeviceId(tunnel.getDestinationDevice())
-                .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()))
+                .setTepDeviceType(getDeviceType(tunnel.getDestinationDevice()))
                 .setTepIp(ifTunnel.getTunnelDestination());
             stlBuilder.setTransportType(tunnel.getTransportType());
         }
@@ -189,7 +189,7 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
     private Class<? extends TepTypeBase> getDeviceType(String device) {
         if(device.startsWith("hwvtep")) {
             return TepTypeHwvtep.class;
-        } else if(InetAddresses.isInetAddress(device)) {
+        } else if(device.contains("IpAddress")) {
             return TepTypeExternal.class;
         } else {
             return TepTypeInternal.class;
