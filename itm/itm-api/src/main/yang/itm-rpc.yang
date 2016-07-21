@@ -255,4 +255,19 @@ module itm-rpc {
                 }
             }
         }
+
+        rpc is-dcgw-present {
+            description "Used for determining whether tunnel is an internal or an external tunnel";
+                input {
+                    leaf dcgw-ip {
+                        type string;
+                    }
+                }
+                output {
+                    leaf retVal {
+                        type uint32;
+                }
+            }
+        }
+
     }

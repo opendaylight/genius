@@ -675,4 +675,29 @@ public class ItmManagerRpcService implements ItmRpcService {
         return Futures.immediateFuture(resultBld.build());
     }
 
+    @Override
+    public Future<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
+        RpcResultBuilder<IsDcgwPresentOutput> resultBld = RpcResultBuilder.success();
+
+        List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
+        String dcgwIpStr = input.getDcgwIp();
+        IpAddress dcgwIpAddr = new IpAddress(dcgwIpStr.toCharArray());
+        long retVal;
+
+        if((dcGatewayIpList != null) &&
+                (!dcGatewayIpList.isEmpty()) &&
+                (dcGatewayIpList.contains(dcgwIpAddr))) {
+            //Match found
+            retVal = 1;
+            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
+            resultBld.withResult(output.build());
+        } else {
+            //Match not found
+            retVal = 2;
+            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
+            resultBld.withResult(output.build());
+        }
+        return Futures.immediateFuture(resultBld.build());
+    }
+
 }
