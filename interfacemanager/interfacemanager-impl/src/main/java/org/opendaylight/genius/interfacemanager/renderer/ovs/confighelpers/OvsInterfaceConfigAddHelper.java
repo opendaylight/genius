@@ -81,9 +81,12 @@ public class OvsInterfaceConfigAddHelper {
             return;
         }
         LOG.debug("adding vlan configuration for {}",interfaceNew.getName());
-
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentInterface, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
+        if (parentInterface.contains(IfmConstants.OF_URI_SEPARATOR)) {
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentInterface, dataBroker);
+        } else {
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateForUnknownDpn(parentRefs.getParentInterface(), dataBroker);
+        }
 
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), transaction, dataBroker, idManager, ifState);
 
