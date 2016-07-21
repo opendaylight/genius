@@ -7,22 +7,26 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
 import java.util.Map;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.ExtensionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.GeneralAugMatchNodesNodeTableFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.GeneralAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.grouping.ExtensionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtStateKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.state.grouping.NxmNxCtStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.zone.grouping.NxmNxCtZoneBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
-
-import com.google.common.collect.ImmutableList;
 
 public enum NxMatchFieldType {
 
@@ -55,16 +59,15 @@ public enum NxMatchFieldType {
                 NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
                         .setNxmNxCtState(ctStateBuilder.build())
                         .build();
-                GeneralAugMatchNodesNodeTableFlow genAugMatch = new GeneralAugMatchNodesNodeTableFlowBuilder()
-                        .setExtensionList(ImmutableList.of(new ExtensionListBuilder()
-                                                       .setExtensionKey(NxmNxCtStateKey.class)
-                                                       .setExtension(new ExtensionBuilder()
-                                                       .addAugmentation(NxAugMatchNodesNodeTableFlow.class, nxAugMatch)
-                                                                         .build()).build())).build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations =
+                        matchBuilderInOut.getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmNxCtStateKey.class);
                 matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
             }
         }
     },
+
     ct_zone {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -77,7 +80,7 @@ public enum NxMatchFieldType {
 
             if (ctZoneBuilder == null) {
                 ctZoneBuilder = new NxmNxCtZoneBuilder();
-                mapMatchBuilder.put(NxmNxCtStateBuilder.class, ctZoneBuilder);
+                mapMatchBuilder.put(NxmNxCtZoneBuilder.class, ctZoneBuilder);
             }
 
             ctZoneBuilder.setCtZone((int)matchInfo.getMatchValues()[0]);
@@ -92,20 +95,31 @@ public enum NxMatchFieldType {
                 NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
                         .setNxmNxCtZone(ctZoneBuilder.build())
                         .build();
-                GeneralAugMatchNodesNodeTableFlow genAugMatch = new GeneralAugMatchNodesNodeTableFlowBuilder()
-                        .setExtensionList(ImmutableList.of(new ExtensionListBuilder()
-                                                       .setExtensionKey(NxmNxCtStateKey.class)
-                                                       .setExtension(new ExtensionBuilder()
-                                                       .addAugmentation(NxAugMatchNodesNodeTableFlow.class, nxAugMatch)
-                                                                         .build()).build())).build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations =
+                        matchBuilderInOut.getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmNxCtZoneKey.class);
                 matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
             }
         }
 
     };
 
+    /**
+     * Creates the match builder object and add it to the map.
+     *
+     * @param matchInfo the match info object
+     * @param mapMatchBuilder the match builder object
+     */
     public abstract void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder);
 
+    /**
+     *  Retrieves the match from the map and set in the matchBuilder.
+     *
+     * @param matchBuilderInOut the match builder
+     * @param matchInfo the match info
+     * @param mapMatchBuilder the map containing the matches
+     */
     public abstract void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
             Map<Class<?>, Object> mapMatchBuilder);
 
@@ -113,7 +127,25 @@ public enum NxMatchFieldType {
 
     protected boolean hasMatchFieldMask() {
         // Override this to return true
-                return false;
+        return false;
     }
 
+    protected GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(GeneralAugMatchNodesNodeTableFlow
+                                   existingAugmentations, NxAugMatchNodesNodeTableFlow nxAugMatch,
+                                   Class<? extends ExtensionKey> extentionKey ) {
+        List<ExtensionList> extensions = null;
+        if (existingAugmentations != null ) {
+            extensions = existingAugmentations.getExtensionList();
+        }
+        if (extensions == null) {
+            extensions = Lists.newArrayList();
+        }
+        extensions.add(new ExtensionListBuilder()
+                .setExtensionKey(extentionKey)
+                .setExtension(new ExtensionBuilder()
+                .addAugmentation(NxAugMatchNodesNodeTableFlow.class, nxAugMatch)
+                .build()).build());
+        return new GeneralAugMatchNodesNodeTableFlowBuilder()
+                .setExtensionList(extensions).build();
+    }
 }
