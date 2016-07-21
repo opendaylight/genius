@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_0fb80275",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-07-21T10:50:23Z",
+      "side": 1,
+      "message": "Please add proper description of the change.",
+      "revId": "6ef3b40c2175ad8eaa0f4e38f99987c86abd6e61",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
