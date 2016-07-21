@@ -44,6 +44,9 @@ public class NwConstants {
 
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
 
+    public static final int SCF_SERVICE_INDEX = 1;
+    public static final int L3VPN_SERVICE_INDEX = 2;
+    public static final int ELAN_SERVICE_INDEX = 3;
     //Table IDs
     public static final short L3_FIB_TABLE = 21;
     public static final short L3_LFIB_TABLE = 20;

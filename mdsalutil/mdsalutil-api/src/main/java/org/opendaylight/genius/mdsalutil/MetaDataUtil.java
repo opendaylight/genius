@@ -20,6 +20,7 @@ public class MetaDataUtil {
     public static final BigInteger METADA_MASK_TUNNEL_ID =       new BigInteger("00000000FFFFFF00", 16);
     public static final BigInteger METADATA_MASK_SERVICE_SH_FLAG = new BigInteger("000000FFFF000001", 16);
     public static final BigInteger METADATA_MASK_LPORT_TAG_SH_FLAG =     new BigInteger("1FFFFF0000000001", 16);
+    public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("0000FFFF00000000", 16);
     public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("0000FFFFFFFFFFFF", 16);
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
@@ -74,6 +75,9 @@ public class MetaDataUtil {
         return (metadata.and(METADATA_MASK_VRFID)).longValue();
     }
 
+    public static long getVpnIdFromMetadata(BigInteger metadata) {
+        return (metadata.and(METADATA_MASK_VRFID)).longValue();
+    }
     public static BigInteger getWriteMetaDataMaskForDispatcherTable() {
         return new BigInteger("FFFFFFFFFFFFFFFF", 16);
     }
