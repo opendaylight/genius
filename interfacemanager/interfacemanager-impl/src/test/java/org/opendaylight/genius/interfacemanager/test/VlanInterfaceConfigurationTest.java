@@ -31,10 +31,14 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.*;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
@@ -45,6 +49,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -76,16 +83,23 @@ public class VlanInterfaceConfigurationTest {
     OvsVlanMemberConfigUpdateHelper memberConfigUpdateHelper;
 
     NodeConnectorId nodeConnectorId;
+    Nodes nodes;
+    Node node;
+    List<Node>  nodeList = new ArrayList<>();
+    List<NodeConnector> nodeConnectorList = new ArrayList<>();
     NodeConnector nodeConnector;
     Interface vlanInterfaceEnabled;
     Interface vlanInterfaceDisabled;
     InstanceIdentifier<Interface> interfaceInstanceIdentifier;
     InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier;
+    InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
     InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = null;
     InterfaceParentEntry interfaceParentEntry;
     InterfaceChildEntry interfaceChildEntry = null;
     InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryInstanceIdentifier;
     InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateIdentifier;
+    InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+            .state.Interface> interfaceStateIdentifierNew;
     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface stateInterface;
 
     @Before
@@ -103,11 +117,17 @@ public class VlanInterfaceConfigurationTest {
     private void setupMocks() {
         nodeConnectorId = InterfaceManagerTestUtil.buildNodeConnectorId(BigInteger.valueOf(1), 1);
         nodeConnector = InterfaceManagerTestUtil.buildNodeConnector(nodeConnectorId);
+        nodeConnectorList.add(nodeConnector);
+        node = new NodeBuilder().setId(NodeId.getDefaultInstance("openflow:1:1")).setKey(new NodeKey(NodeId
+                .getDefaultInstance("openflow:1:1"))).build();
+        nodeList.add(node);
+        nodes = new NodesBuilder().setNode(nodeList).build();
         vlanInterfaceEnabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1", true, L2vlan.class, BigInteger.valueOf(1));
         vlanInterfaceDisabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1", false, L2vlan.class, BigInteger.valueOf(1));
         interfaceInstanceIdentifier = IfmUtil.buildId(InterfaceManagerTestUtil.interfaceName);
         nodeConnectorInstanceIdentifier = InterfaceManagerTestUtil.getNcIdent("openflow:1", nodeConnectorId);
         interfaceStateIdentifier = IfmUtil.buildStateInterfaceId(vlanInterfaceEnabled.getName());
+        interfaceStateIdentifierNew = IfmUtil.buildStateInterfaceId("1:s1-eth1");
         stateInterface = InterfaceManagerTestUtil.buildStateInterface(InterfaceManagerTestUtil.interfaceName, nodeConnectorId);
         AllocateIdOutput output = new AllocateIdOutputBuilder().setIdValue((long)1).build();
         RpcResultBuilder<AllocateIdOutput> allocateIdRpcBuilder = RpcResultBuilder.success();
@@ -132,15 +152,19 @@ public class VlanInterfaceConfigurationTest {
         when(idManager.allocateId(any(AllocateIdInput.class))).thenReturn(future);
     }
 
-    @Ignore
+    @Test
     public void testAddVlanInterfaceWhenSwitchIsNotConnected() {
+
+        Optional<Nodes> nodesOptional = Optional.of(nodes);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
 
+        doReturn(Futures.immediateCheckedFuture(nodesOptional)).when(mockReadTx).read(LogicalDatastoreType
+                .OPERATIONAL, nodesInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifierNew);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
@@ -151,16 +175,19 @@ public class VlanInterfaceConfigurationTest {
 
     }
 
-    @Ignore
+    @Test
     public void testAddVlanInterfaceWhenSwitchIsConnected() {
+        Optional<Nodes> nodesOptional = Optional.of(nodes);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
                 expectedStateInterface = Optional.of(stateInterface);
 
+        doReturn(Futures.immediateCheckedFuture(nodesOptional)).when(mockReadTx).read(LogicalDatastoreType
+                .OPERATIONAL, nodesInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifierNew);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
@@ -171,16 +198,19 @@ public class VlanInterfaceConfigurationTest {
         //we don't do any datastore operation
     }
 
-    @Ignore
+    @Test
     public void testAddVlanInterfaceWhenAdminStateDisabled() {
+        Optional<Nodes> nodesOptional = Optional.of(nodes);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface =
                 Optional.of(stateInterface);
 
+        doReturn(Futures.immediateCheckedFuture(nodesOptional)).when(mockReadTx).read(LogicalDatastoreType
+                .OPERATIONAL, nodesInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifierNew);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
