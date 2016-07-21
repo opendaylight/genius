@@ -10,6 +10,9 @@ package org.opendaylight.genius.interfacemanager.commons;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -26,7 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -40,9 +43,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,9 @@ public class InterfaceManagerCommonUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerCommonUtils.class);
     private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<String, Interface>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
-        interfaceStateMap = new ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>();
+
+            interfaceStateMap = new ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>();
+
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
                                                                     DataBroker dataBroker) {
         NodeId nodeId = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
@@ -71,12 +74,12 @@ public class InterfaceManagerCommonUtils {
         return nodeConnectorOptional.get();
     }
 
-    public static boolean isNodePresent(DataBroker dataBroker, NodeConnectorId nodeConnectorId){
+    public static boolean isNodePresent(DataBroker dataBroker, NodeConnectorId nodeConnectorId) {
         NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class, new NodeKey(nodeID)).build();
         Optional<Node> node = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, dataBroker);
 
-        if(node.isPresent()){
+        if (node.isPresent()) {
             return true;
         }
         return false;
@@ -90,15 +93,15 @@ public class InterfaceManagerCommonUtils {
 
     public static List<Interface> getAllTunnelInterfaces(DataBroker dataBroker, InterfaceInfo.InterfaceType interfaceType) {
         List<Interface> vxlanList = new ArrayList<Interface>();
-        InstanceIdentifier<Interfaces> interfacesInstanceIdentifier =  InstanceIdentifier.builder(Interfaces.class).build();
-        Optional<Interfaces> interfacesOptional  = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfacesInstanceIdentifier, dataBroker);
+        InstanceIdentifier<Interfaces> interfacesInstanceIdentifier = InstanceIdentifier.builder(Interfaces.class).build();
+        Optional<Interfaces> interfacesOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfacesInstanceIdentifier, dataBroker);
         if (!interfacesOptional.isPresent()) {
             return vxlanList;
         }
         Interfaces interfaces = interfacesOptional.get();
         List<Interface> interfacesList = interfaces.getInterface();
         for (Interface iface : interfacesList) {
-            if(IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE &&
+            if (IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE &&
                     iface.getAugmentation(IfTunnel.class).isInternal()) {
                 vxlanList.add(iface);
             }
@@ -114,7 +117,7 @@ public class InterfaceManagerCommonUtils {
         }
         InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(new InterfaceKey(interfaceName));
         Optional<Interface> interfaceOptional =
-            IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfaceId, dataBroker);
+                IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfaceId, dataBroker);
         if (interfaceOptional.isPresent()) {
             iface = interfaceOptional.get();
             interfaceConfigMap.put(iface.getName(), iface);
@@ -129,14 +132,15 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(String interfaceName, DataBroker dataBroker) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-            interfaceStateMap.get(interfaceName);
-        if(ifState != null) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+                ifState =
+                interfaceStateMap.get(interfaceName);
+        if (ifState != null) {
             return ifState;
         }
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateOptional =
-            IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-                IfmUtil.buildStateInterfaceId(interfaceName), dataBroker);
+                IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                        IfmUtil.buildStateInterfaceId(interfaceName), dataBroker);
         if (ifStateOptional.isPresent()) {
             ifState = ifStateOptional.get();
             interfaceStateMap.put(ifState.getName(), ifState);
@@ -155,22 +159,23 @@ public class InterfaceManagerCommonUtils {
 
         return ifStateOptional.get();
     }
+
     public static void makeTunnelIngressFlow(List<ListenableFuture<Void>> futures, IMdsalApiManager mdsalApiManager,
                                              IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
-        LOG.debug("make tunnel ingress flow for {}",interfaceName);
+        LOG.debug("make tunnel ingress flow for {}", interfaceName);
         String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
         List<MatchInfo> matches = new ArrayList<MatchInfo>();
         List<InstructionInfo> mkInstructions = new ArrayList<InstructionInfo>();
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] {
-                    dpnId, BigInteger.valueOf(portNo) }));
+            matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[]{
+                    dpnId, BigInteger.valueOf(portNo)}));
             mkInstructions.add(new InstructionInfo(
-                    InstructionType.write_metadata, new BigInteger[] {
+                    InstructionType.write_metadata, new BigInteger[]{
                     MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
                     MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG}));
             short tableId = (tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)) ? NwConstants.L3_LFIB_TABLE :
                     tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
-            mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[] {tableId}));
+            mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[]{tableId}));
         }
 
         BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
@@ -182,6 +187,7 @@ public class InterfaceManagerCommonUtils {
             futures.add(mdsalApiManager.removeFlow(dpnId, flowEntity));
         }
     }
+
     public static String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
         return new StringBuilder().append(dpnId).append(tableId).append(ifName).toString();
     }
@@ -193,15 +199,15 @@ public class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
-    public static void createInterfaceChildEntry( WriteTransaction t,
-                                                  String parentInterface, String childInterface){
+    public static void createInterfaceChildEntry(WriteTransaction t,
+                                                 String parentInterface, String childInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
         InstanceIdentifier<InterfaceChildEntry> intfId =
                 InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(),true);
+        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus
@@ -233,7 +239,7 @@ public class InterfaceManagerCommonUtils {
 
     public static void updateOperStatus(String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
                                         WriteTransaction transaction) {
-        LOG.debug("updating operational status for interface {}",interfaceName);
+        LOG.debug("updating operational status for interface {}", interfaceName);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
                 IfmUtil.buildStateInterfaceId(interfaceName);
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder();
@@ -249,11 +255,11 @@ public class InterfaceManagerCommonUtils {
         // on id allocation even when multiple southbound port_up events come in one shot
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
         InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
-        if(ifState == null){
-            LOG.debug("could not retrieve interface state corresponding to {}",interfaceName);
+        if (ifState == null) {
+            LOG.debug("could not retrieve interface state corresponding to {}", interfaceName);
             return;
         }
-        LOG.debug("adding interface state for {}",interfaceName);
+        LOG.debug("adding interface state for {}", interfaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = ifState.getOperStatus();
         PhysAddress physAddress = ifState.getPhysAddress();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus = ifState.getAdminStatus();
@@ -274,7 +280,7 @@ public class InterfaceManagerCommonUtils {
                 .setOperStatus(operStatus).setPhysAddress(physAddress).setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setIfIndex(ifIndex);
 
-        if(interfaceInfo != null){
+        if (interfaceInfo != null) {
             ifaceBuilder.setType(interfaceInfo.getType());
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
@@ -283,7 +289,7 @@ public class InterfaceManagerCommonUtils {
         // install ingress flow
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-        if(interfaceInfo != null && interfaceInfo.isEnabled() &&
+        if (interfaceInfo != null && interfaceInfo.isEnabled() &&
                 ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, interfaceInfo);
             FlowBasedServicesUtils.installVlanFlow(dpId, portNo, interfaceInfo, transaction, matches, ifIndex);
@@ -294,11 +300,11 @@ public class InterfaceManagerCommonUtils {
                                                                                                                                               PhysAddress physAddress, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
                                                                                                                                               org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus,
                                                                                                                                               NodeConnectorId nodeConnectorId) {
-        LOG.debug("adding interface state for {}",interfaceName);
+        LOG.debug("adding interface state for {}", interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         Integer ifIndex = null;
-        if (interfaceInfo != null){
-            if(!interfaceInfo.isEnabled()){
+        if (interfaceInfo != null) {
+            if (!interfaceInfo.isEnabled()) {
                 operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
             }
 
@@ -316,19 +322,19 @@ public class InterfaceManagerCommonUtils {
                 .setOperStatus(operStatus).setPhysAddress(physAddress).setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder.build();
-        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState , true);
+        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         return ifState;
     }
 
     public static void deleteStateEntry(String interfaceName, WriteTransaction transaction) {
-        LOG.debug("removing interface state entry for {}",interfaceName);
+        LOG.debug("removing interface state entry for {}", interfaceName);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId =
                 IfmUtil.buildStateInterfaceId(interfaceName);
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
     }
 
     public static void deleteInterfaceStateInformation(String interfaceName, WriteTransaction transaction, IdManagerService idManagerService) {
-        LOG.debug("removing interface state information for {}",interfaceName);
+        LOG.debug("removing interface state information for {}", interfaceName);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
                 IfmUtil.buildStateInterfaceId(interfaceName);
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
@@ -337,15 +343,15 @@ public class InterfaceManagerCommonUtils {
 
     // For trunk interfaces, binding to a parent interface which is already bound to another trunk interface should not
     // be allowed
-    public static boolean createInterfaceChildEntryIfNotPresent( DataBroker dataBroker, WriteTransaction t,
-                                                                 String parentInterface, String childInterface){
+    public static boolean createInterfaceChildEntryIfNotPresent(DataBroker dataBroker, WriteTransaction t,
+                                                                String parentInterface, String childInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier =
                 InterfaceMetaUtils.getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
         InterfaceParentEntry interfaceParentEntry =
                 InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryIdentifier, dataBroker);
 
-        if(interfaceParentEntry != null){
+        if (interfaceParentEntry != null) {
             LOG.error("Trying to bind the same parent interface {} to multiple trunk interfaces. ", parentInterface);
             return false;
         }
@@ -356,11 +362,11 @@ public class InterfaceManagerCommonUtils {
                 InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(),true);
+        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
         return true;
     }
 
-    public static boolean deleteParentInterfaceEntry( WriteTransaction t, String parentInterface){
+    public static boolean deleteParentInterfaceEntry(WriteTransaction t, String parentInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils.getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
         t.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
@@ -371,7 +377,7 @@ public class InterfaceManagerCommonUtils {
      * update operational state of interface based on events like tunnel monitoring
      */
     public static void updateOpState(WriteTransaction transaction, String interfaceName,
-                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus){
+                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
                 IfmUtil.buildStateInterfaceId(interfaceName);
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
@@ -380,15 +386,15 @@ public class InterfaceManagerCommonUtils {
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
     }
 
-    public static boolean isTunnelInterface(Interface interfaceInfo){
-        if(interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null){
+    public static boolean isTunnelInterface(Interface interfaceInfo) {
+        if (interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null) {
             return true;
         }
         return false;
     }
 
-    public static boolean isVlanInterface(Interface interfaceInfo){
-        if(interfaceInfo != null && interfaceInfo.getAugmentation(IfL2vlan.class) != null){
+    public static boolean isVlanInterface(Interface interfaceInfo) {
+        if (interfaceInfo != null && interfaceInfo.getAugmentation(IfL2vlan.class) != null) {
             return true;
         }
         return false;
@@ -409,5 +415,52 @@ public class InterfaceManagerCommonUtils {
 
     public static void removeFromInterfaceStateCache(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
         interfaceStateMap.remove(iface.getName());
+    }
+
+    public static List<BigInteger> getListOfDpns(DataBroker broker) {
+        List<BigInteger> dpnsList = new LinkedList<>();
+        InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
+        Optional<Nodes> nodesOptional = MDSALUtil.read(broker, LogicalDatastoreType.OPERATIONAL, nodesInstanceIdentifier);
+        if (!nodesOptional.isPresent()) {
+            return dpnsList;
+        }
+        Nodes nodes = nodesOptional.get();
+        List<Node> nodeList = nodes.getNode();
+        for (Node node : nodeList) {
+            NodeId nodeId = node.getId();
+            if (nodeId == null) {
+                continue;
+            }
+            BigInteger dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
+            dpnsList.add(dpnId);
+        }
+        return dpnsList;
+    }
+
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateForUnknownDpn(
+            String interfaceName, DataBroker dataBroker) {
+        String parentInterface;
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
+        List<BigInteger> listOfDpns = InterfaceManagerCommonUtils.getListOfDpns(dataBroker);
+        for (BigInteger dpnId : listOfDpns) {
+            parentInterface = new StringBuilder().append(dpnId).append(IfmConstants.OF_URI_SEPARATOR).append(interfaceName).toString();
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentInterface, dataBroker);
+            if (ifState != null) {
+                break;
+            }
+        }
+        return ifState;
+    }
+
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromDS(
+            String interfaceName) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
+        for (Map.Entry<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
+                entry : interfaceStateMap.entrySet()) {
+            if (entry.getKey().contains(interfaceName)) {
+                ifState = entry.getValue();
+            }
+        }
+        return ifState;
     }
 }
