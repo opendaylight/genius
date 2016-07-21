@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.opendaylight.genius.idmanager.test;
 
 import static org.junit.Assert.assertEquals;
@@ -162,7 +169,7 @@ public class IdManagerTest {
     public void testAllocateId() throws Exception
     {
         AllocateIdInput allocateIdInput = buildAllocateId(globalPoolName, idKey);
-        List<IdEntries> idEntries = new ArrayList<IdEntries>();
+        List<IdEntries> idEntries = new ArrayList<>();
         List<Long> idValuesList = new ArrayList<>();
         idValuesList.add(idValue);
         idEntries.add(buildIdEntry(idKey2, idValuesList));
@@ -206,7 +213,7 @@ public class IdManagerTest {
     @Test
     public void testReleaseId() throws Exception {
         ReleaseIdInput releaseIdInput = createReleaseIdInput(globalPoolName, idKey);
-        List<IdEntries> idEntries = new ArrayList<IdEntries>();
+        List<IdEntries> idEntries = new ArrayList<>();
         List<Long> idValuesList = new ArrayList<>();
         idValuesList.add(idValue);
         idEntries.add(buildIdEntry(idKey, idValuesList));
@@ -243,7 +250,7 @@ public class IdManagerTest {
         AllocateIdInput allocateIdInput = buildAllocateId(globalPoolName, idKey2);
         Optional<ReleasedIdsHolder> expected = Optional.of(createReleasedIdsHolder(0, null, 0));
         long[] excessIds = new long[] { 1, 2, 3, 4, 5 };
-        List<IdEntries> idEntries = new ArrayList<IdEntries>();
+        List<IdEntries> idEntries = new ArrayList<>();
         List<Long> idValuesList = new ArrayList<>();
         idValuesList.add(idValue);
         idEntries.add(buildIdEntry(idKey2, idValuesList));
@@ -442,7 +449,7 @@ public class IdManagerTest {
     }
 
     private List<DelayedIdEntries> buildDelayedIdEntries(long[] idValues) {
-        List<DelayedIdEntries> delayedIdEntriesList = new ArrayList<DelayedIdEntries>();
+        List<DelayedIdEntries> delayedIdEntriesList = new ArrayList<>();
         for (long idValue : idValues) {
             DelayedIdEntries delayedIdEntries = new DelayedIdEntriesBuilder().setId(idValue).setReadyTimeSec(0L).build();
             delayedIdEntriesList.add(delayedIdEntries);
@@ -452,7 +459,7 @@ public class IdManagerTest {
 
     private List<ChildPools> buildChildPool(String childPoolName) {
         ChildPools childPools = new ChildPoolsBuilder().setChildPoolName(childPoolName).build();
-        List<ChildPools> childPoolsList = new ArrayList<ChildPools>();
+        List<ChildPools> childPoolsList = new ArrayList<>();
         childPoolsList.add(childPools);
         return childPoolsList;
     }
