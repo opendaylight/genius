@@ -21,15 +21,7 @@ import org.slf4j.LoggerFactory;
 class ResourceManagerUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceManagerUtils.class);
 
-    private static int BLADE_ID;
-
-    static {
-        try {
-            BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
-        } catch (UnknownHostException e) {
-            LOGGER.error("ResourceManager - Exception - {}", e.getMessage());
-        }
-    }
+    private static Integer BLADE_ID;
 
     protected static InstanceIdentifier<IdPool> getIdPoolInstance(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idPoolBuilder = InstanceIdentifier
@@ -40,7 +32,14 @@ class ResourceManagerUtils {
     }
 
     protected static String getLocalPoolName(String poolName) {
-        return (poolName + "." + BLADE_ID);
+        if (BLADE_ID == null) {
+            try {
+                BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
+            } catch (UnknownHostException e) {
+                LOGGER.error("ResourceManager - Exception - {}", e);
+            }
+        }
+        return poolName + "." + BLADE_ID;
     }
 
 }
