@@ -23,6 +23,9 @@ class ResourceManagerUtils {
 
     private static int BLADE_ID;
 
+    private ResourceManagerUtils() {
+    }
+
     static {
         try {
             BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
