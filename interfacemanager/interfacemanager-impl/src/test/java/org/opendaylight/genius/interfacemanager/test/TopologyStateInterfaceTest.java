@@ -1,5 +1,9 @@
-/**
- * Created by eranjsu on 28-Dec-15.
+/*
+ * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.genius.interfacemanager.test;
 
@@ -199,7 +203,7 @@ public class TopologyStateInterfaceTest {
     @Test
     public void testUpdateTunnelState(){
 
-        List<InterfaceBfdStatus> interfaceBfdStatus = new ArrayList<InterfaceBfdStatus>();
+        List<InterfaceBfdStatus> interfaceBfdStatus = new ArrayList<>();
         interfaceBfdStatus.add(new InterfaceBfdStatusBuilder().setBfdStatusKey(SouthboundUtils.BFD_OP_STATE).setBfdStatusValue(SouthboundUtils.BFD_STATE_UP).build());
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = new InterfaceBuilder().setKey(new InterfaceKey(InterfaceManagerTestUtil.interfaceName)).build();
