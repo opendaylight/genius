@@ -8,14 +8,13 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
-
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupKey;
+import org.opendaylight.yangtools.util.MoreObjects2;
 
 public class GroupEntity extends AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;

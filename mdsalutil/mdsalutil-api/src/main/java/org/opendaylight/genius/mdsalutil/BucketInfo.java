@@ -11,8 +11,8 @@ import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yangtools.util.MoreObjects2;
 
 public class BucketInfo implements Serializable {
 
