@@ -814,7 +814,7 @@ public enum MatchFieldType {
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Icmpv6MatchBuilder icmpv6MatchBuilder = (Icmpv6MatchBuilder) mapMatchBuilder.remove(VlanMatchBuilder.class);
+            Icmpv6MatchBuilder icmpv6MatchBuilder = (Icmpv6MatchBuilder) mapMatchBuilder.remove(Icmpv6MatchBuilder.class);
 
             if (icmpv6MatchBuilder != null) {
                 matchBuilderInOut.setIcmpv6Match(icmpv6MatchBuilder.build());
