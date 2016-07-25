@@ -13,8 +13,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
+import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 /**
  *  This class defines the nicira extension matches.
@@ -97,7 +97,7 @@ public class NxMatchInfo implements Serializable, MatchInfoBase {
         // Arrays.equals(). deepEquals() would have to be used for nested
         // arrays. Use == only for primitive types; if ever changing
         // those field types, must change to Objects.equals.
-        return MoreObjects2.equalsHelper(this, obj,
+        return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.m_matchField, other.m_matchField)
                           && Arrays.equals(self.m_alMatchValues, other.m_alMatchValues)
                           && Arrays.equals(self.m_aBigIntValues, other.m_aBigIntValues)

@@ -8,14 +8,13 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
-
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupKey;
+import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class GroupEntity extends AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;
@@ -103,7 +102,7 @@ public class GroupEntity extends AbstractSwitchEntity {
 
     @Override
     public boolean equals(Object obj) {
-        return MoreObjects2.equalsHelper(this, obj,
+        return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
                           && Objects.equals(this.m_lGroupId, other.m_lGroupId)
                           && Objects.equals(this.m_sGroupName, other.m_sGroupName)

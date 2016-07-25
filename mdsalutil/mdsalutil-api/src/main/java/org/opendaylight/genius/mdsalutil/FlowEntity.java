@@ -11,12 +11,12 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowCookie;
-import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowCookie;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowModFlags;
+import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class FlowEntity extends AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;
@@ -201,7 +201,7 @@ public class FlowEntity extends AbstractSwitchEntity {
 
     @Override
     public boolean equals(Object obj) {
-        return MoreObjects2.equalsHelper(this, obj,
+        return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
                           && Objects.equals(self.m_shTableId, other.m_shTableId)
                           && Objects.equals(self.m_sFlowId, other.m_sFlowId)
