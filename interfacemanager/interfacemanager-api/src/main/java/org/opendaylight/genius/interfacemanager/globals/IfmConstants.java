@@ -31,6 +31,7 @@ public class IfmConstants {
     public static final long DELAY_TIME_IN_MILLISECOND = 10000;
     //Cookies
     public static final BigInteger COOKIE_L3_BASE = new BigInteger("8000000", 16);
+    public static final BigInteger COOKIE_EGRESS_DISPATCHER_TABLE = new BigInteger("1300000", 16);
     //Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
 }

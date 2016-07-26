@@ -319,6 +319,7 @@ public class InterfaceManagerCommonUtils {
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo,
                     interfaceInfo);
             FlowBasedServicesUtils.installVlanFlow(dpId, portNo, interfaceInfo, transaction, matches, ifIndex);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(interfaceInfo, Long.toString(portNo), interfaceName, transaction, ifIndex);
         }
     }
 

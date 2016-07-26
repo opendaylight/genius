@@ -14,17 +14,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
-import org.opendaylight.genius.mdsalutil.MetaDataUtil;
-import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.*;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -35,14 +32,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -139,6 +134,13 @@ public class FlowBasedServicesUtils {
         return matches;
     }
 
+    public static List<NxMatchInfo> getMatchInfoForEgressDispatcherTable(int interfaceTag, short serviceIndex) {
+        List<NxMatchInfo> matches = new ArrayList<>();
+        matches.add(new NxMatchInfo(NxMatchFieldType.nxm_reg_6, new long[] {
+                MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, serviceIndex)}));
+        return matches;
+    }
+
     public static void installInterfaceIngressFlow(BigInteger dpId, Interface iface,
                                                    BoundServices boundServiceNew,
                                                    WriteTransaction t,
@@ -181,7 +183,8 @@ public class FlowBasedServicesUtils {
         }
 
         String serviceRef = boundServiceNew.getServiceName();
-        String flowRef = getFlowRef(dpId, iface.getName(), boundServiceNew, boundServiceNew.getServicePriority());
+        String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(),
+                boundServiceNew, boundServiceNew.getServicePriority());
         StypeOpenflow stypeOpenflow = boundServiceNew.getAugmentation(StypeOpenflow.class);
         Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef,
                 stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
@@ -218,8 +221,8 @@ public class FlowBasedServicesUtils {
     }
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
-            WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
-        LOG.debug("Installing LPort Dispatcher Flows {}, {}", dpId, interfaceName);
+                                                  WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
+        LOG.debug("Installing LPort Dispatcher Flow {}, {}", dpId, interfaceName);
         String serviceRef = boundService.getServiceName();
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId,
                 interfaceTag, currentServiceIndex);
@@ -246,15 +249,86 @@ public class FlowBasedServicesUtils {
         }
 
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, interfaceName, boundService, currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName, boundService, currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
         installFlow(dpId, ingressFlow, t);
     }
 
+    public static void installEgressDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
+                                                  WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
+        LOG.debug("Installing Egress Dispatcher Flows {}, {}", dpId, interfaceName);
+        String serviceRef = boundService.getServiceName();
+        List<? extends MatchInfoBase> matches;
+        matches = FlowBasedServicesUtils.getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex);
+
+        // Get the metadata and mask from the service's write metadata instruction
+        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
+        List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
+        int instructionSize = serviceInstructions.size();
+
+        // build the final instruction for LPort Dispatcher table flow entry
+        List<Instruction> instructions = new ArrayList<Instruction>();
+        if(boundService.getServicePriority() != NwConstants.DEFAULT_EGRESS_SERVICE_INDEX) {
+            BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
+            BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex, metadataValues[0]);
+            BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
+            instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize));
+            instructions.add(MDSALUtil.buildAndGetSetReg6ActionInstruction(0, ++instructionSize, 0, 31,
+                    MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, nextServiceIndex)));
+        }
+        if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
+            for (Instruction info : serviceInstructions) {
+                // Skip meta data write as that is handled already
+                if (info.getInstruction() instanceof WriteMetadataCase) {
+                    continue;
+                }
+                instructions.add(info);
+            }
+        }
+
+        // build the flow and install it
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService, currentServiceIndex);
+        Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
+                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
+        installFlow(dpId, ingressFlow, t);
+    }
+
+
+    public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
+                                                 BigInteger cookie, List<Instruction> instructions) {
+        StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority).setInstruction(instructions);
+        return new BoundServicesBuilder().setKey(new BoundServicesKey(servicePriority))
+                .setServiceName(serviceName).setServicePriority(servicePriority)
+                .setServiceType(ServiceTypeFlowBased.class).addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
+    }
+
+    public static InstanceIdentifier<BoundServices> buildServiceId(String interfaceName, short serviceIndex) {
+        return InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class,
+                new ServicesInfoKey(interfaceName, ServiceModeIngress.class))
+                .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();
+    }
+
+    public static void unbindDefaultEgressDispatcherService(DataBroker dataBroker, String interfaceName) {
+        IfmUtil.unbindService(dataBroker, interfaceName, buildServiceId(interfaceName, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
+                ServiceModeEgress.class);
+    }
+
+    public static void bindDefaultEgressDispatcherService(Interface interfaceInfo, String portNo, String interfaceName,
+                                                          WriteTransaction tx, int ifIndex) {
+        int priority = NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+        List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex);
+        BoundServices
+                serviceInfo =
+                getBoundServices(String.format("%s.%s", "default", interfaceName),
+                        NwConstants.DEFAULT_EGRESS_SERVICE_INDEX, priority,
+                        NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
+        IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
+    }
+
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId, WriteTransaction t) {
         LOG.debug("Removing Ingress Flows");
-        String flowKeyStr = getFlowRef(dpId, name, serviceOld, serviceOld.getServicePriority());
+        String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name, serviceOld, serviceOld.getServicePriority());
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -269,7 +343,7 @@ public class FlowBasedServicesUtils {
 
         boundServicesOld.getAugmentation(StypeOpenflow.class);
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, iface, boundServicesOld, currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface, boundServicesOld, currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -279,8 +353,21 @@ public class FlowBasedServicesUtils {
         t.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
 
-    private static String getFlowRef(BigInteger dpnId, String iface, BoundServices service, short currentServiceIndex) {
-        return new StringBuffer().append(dpnId).append(NwConstants.VLAN_INTERFACE_INGRESS_TABLE).append(NwConstants.FLOWID_SEPARATOR)
+    public static void removeEgressDispatcherFlow(BigInteger dpId, String iface, BoundServices boundServicesOld, WriteTransaction t, short currentServiceIndex) {
+        LOG.debug("Removing Egress Dispatcher Flows {}, {}", dpId, iface);
+        // build the flow and install it
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface, boundServicesOld, currentServiceIndex);
+        FlowKey flowKey = new FlowKey(new FlowId(flowRef));
+        Node nodeDpn = buildInventoryDpnNode(dpId);
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey).build();
+
+        t.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+    }
+
+    private static String getFlowRef(BigInteger dpnId, short tableId, String iface, BoundServices service, short currentServiceIndex) {
+        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR)
                 .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(currentServiceIndex).toString();
     }
 
@@ -354,7 +441,7 @@ public class FlowBasedServicesUtils {
         int priority =  isVlanTransparent ? 1 : vlanId == 0 ? IfmConstants.FLOW_PRIORITY_FOR_UNTAGGED_VLAN : IfmConstants.FLOW_HIGH_PRIORITY;
         String flowRef = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
-                IfmConstants.VLAN_TABLE_COOKIE, matches, instructions);
+                NwConstants.VLAN_TABLE_COOKIE, matches, instructions);
         installFlow(dpId, ingressFlow, t);
     }
 
