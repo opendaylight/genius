@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,11 +49,15 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     public void registerBatchableResource(String resourceType, final BlockingQueue<ActionableResource> resQueue, final ResourceHandler resHandler) {
+        Preconditions.checkNotNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
+        Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
         resourceHandlerMapper.put(resourceType, new ImmutablePair<BlockingQueue, ResourceHandler>(resQueue, resHandler));
         ScheduledThreadPoolExecutor resDelegatorService =(ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
+        LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
+                resHandler.getBatchSize(), resHandler.getBatchInterval());
         if (resDelegatorService.getPoolSize() == 0 )
-            resDelegatorService.scheduleAtFixedRate(new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+            resDelegatorService.scheduleWithFixedDelay(new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
     }
 
     public void deregisterBatchableResource(String resourceType) {
@@ -100,7 +105,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                     new MdsalDsTask<>(resourceType, resList.subList(batches * batchSize, resList.size())).process();
                 } else {
                     // process less than OR == batchsize routes
-                    LOG.info("Picked up 2 size {}", resList.size());
+                    LOG.trace("Picked up 2 size {}", resList.size());
                     new MdsalDsTask<>(resourceType, resList).process();
                 }
 
@@ -130,7 +135,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             InstanceIdentifier<T> identifier;
             Object instance;
             try {
-                LOG.trace("Picked up 3 size {}", actResourceList.size());
+                LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
                 Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
                 if (resMapper == null) {
                     LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
