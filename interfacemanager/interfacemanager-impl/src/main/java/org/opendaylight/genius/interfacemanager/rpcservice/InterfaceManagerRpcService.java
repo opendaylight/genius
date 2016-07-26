@@ -237,14 +237,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(GetEgressInstructionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder;
         try {
-            List<InstructionInfo> instructionInfo = new ArrayList<>();
-            List<ActionInfo> actionInfo = IfmUtil.getEgressActionInfosForInterface(input.getIntfName(),
-                    input.getTunnelKey(),
-                    0,  /* ActionKey starting value */
-                    dataBroker);
-            instructionInfo.add(new InstructionInfo(InstructionType.write_actions, actionInfo));
+            List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(), input.getTunnelKey(), dataBroker, false);
             GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder().
-                    setInstruction(buildInstructions(instructionInfo));
+                    setInstruction(instructions);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         }catch(Exception e){
@@ -304,7 +299,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             LOG.debug("Get Egress Action for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
             List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
                     input.getTunnelKey(),
-                    dataBroker);
+                    dataBroker, false);
             GetEgressActionsForInterfaceOutputBuilder output = new GetEgressActionsForInterfaceOutputBuilder().
                     setAction(actionsList);
             rpcResultBuilder = RpcResultBuilder.success();
