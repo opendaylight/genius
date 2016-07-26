@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -14,7 +14,7 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRemovable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesRemovable{
+public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
 
     private InterfacemgrProvider interfaceMgrProvider;
-    private static volatile FlowBasedServicesRemovable flowBasedIngressServicesRemovable;
+    private static volatile FlowBasedServicesConfigRemovable flowBasedIngressServicesRemovable;
 
     private FlowBasedIngressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -56,7 +56,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         }
     }
 
-    public static FlowBasedServicesRemovable getFlowBasedIngressServicesRemoveHelper() {
+    public static FlowBasedServicesConfigRemovable getFlowBasedIngressServicesRemoveHelper() {
         if (flowBasedIngressServicesRemovable == null) {
             LOG.error("FlowBasedIngressBindHelper is not initialized");
         }
