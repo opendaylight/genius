@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -14,7 +14,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import java.util.List;
 
-public interface FlowBasedServicesAddable {
+public interface FlowBasedServicesConfigAddable {
     public List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
                                                     BoundServices boundServiceNew);
 }
