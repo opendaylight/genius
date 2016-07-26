@@ -39,6 +39,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.protocol.match.fields.PbbBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.vlan.match.fields.VlanIdBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.reg.grouping.NxmNxRegBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSpa;
@@ -67,6 +70,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Tunne
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.VlanVid;
+
+import static org.opendaylight.openflowplugin.openflow.md.core.sal.convertor.common.OrderComparator.build;
 
 public enum MatchFieldType {
     eth_src {
