@@ -75,6 +75,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxRegCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -385,8 +391,36 @@ public class MDSALUtil {
         return buildApplyActionsInstruction(listAction, instructionKey);
     }
 
+    public static Instruction buildAndGetSetReg6ActionInstruction(int actionKey, int instructionKey,
+                                                                  int startOffSet, int endOffSet, long value) {
+        NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
+        Dst dst =  new DstBuilder()
+                .setDstChoice(new DstNxRegCaseBuilder().setNxReg(NxmNxReg6.class).build())
+                .setStart(startOffSet)
+                .setEnd(endOffSet)
+                .build();
+        nxRegLoadBuilder.setDst(dst);
+        nxRegLoadBuilder.setValue(new BigInteger(Long.toString(value)));
+        ActionBuilder ab = new ActionBuilder();
+        ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build());
+        ab.setKey(new ActionKey(actionKey));
+        List<Action> listAction = new ArrayList<Action> ();
+        listAction.add(ab.build());
+        return buildApplyActionsInstruction(listAction, instructionKey);
+    }
+
     public static Instruction buildApplyActionsInstruction(List<Action> actions) {
         return buildApplyActionsInstruction(actions, 0);
+    }
+
+    public static Instruction buildWriteActionsInstruction(List<Action> actions) {
+        WriteActions writeActions = new WriteActionsBuilder().setAction(actions).build();
+        WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
+        InstructionBuilder instructionBuilder = new InstructionBuilder();
+
+        instructionBuilder.setInstruction(writeActionsCase);
+        instructionBuilder.setKey(new InstructionKey(0));
+        return instructionBuilder.build();
     }
 
     public static Instruction buildApplyActionsInstruction(List<Action> listAction, int instructionKey) {
