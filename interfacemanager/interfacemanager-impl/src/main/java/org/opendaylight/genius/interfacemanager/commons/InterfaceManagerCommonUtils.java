@@ -117,9 +117,15 @@ public class InterfaceManagerCommonUtils {
         return vxlanList;
     }
 
-    public static Interface getInterfaceFromConfigDS(String interfaceName, DataBroker dataBroker) {
-        Interface iface = null;
-        iface = interfaceConfigMap.get(interfaceName);
+    /**
+     * Searches for an interface by its name
+     * @param interfaceName name of the interface to search for
+     * @param dataBroker
+     * @return the Interface object
+     *
+     */
+    public static Interface getInterfaceFromConfigDS (String interfaceName, DataBroker dataBroker) {
+        Interface iface = interfaceConfigMap.get(interfaceName);
         if (iface != null) {
             return iface;
         }
@@ -130,12 +136,11 @@ public class InterfaceManagerCommonUtils {
             iface = interfaceOptional.get();
             interfaceConfigMap.put(iface.getName(), iface);
         }
-
         return iface;
     }
 
     @Deprecated
-    public static Interface getInterfaceFromConfigDS(InterfaceKey interfaceKey, DataBroker dataBroker) {
+    public static Interface getInterfaceFromConfigDS (InterfaceKey interfaceKey, DataBroker dataBroker) {
         return getInterfaceFromConfigDS(interfaceKey.getName(), dataBroker);
     }
 
