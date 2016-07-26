@@ -5,14 +5,14 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 
 public abstract class FlowBasedServicesRendererFactory {
-        public abstract FlowBasedServicesAddable getFlowBasedServicesAddRenderer();
-        public abstract FlowBasedServicesRemovable getFlowBasedServicesRemoveRenderer();
+        public abstract FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer();
+        public abstract FlowBasedServicesConfigRemovable getFlowBasedServicesRemoveRenderer();
 
         public static FlowBasedServicesRendererFactory getFlowBasedServicesRendererFactory(Class<? extends ServiceModeBase> serviceMode) {
             if (ServiceModeIngress.class.equals(serviceMode)) {

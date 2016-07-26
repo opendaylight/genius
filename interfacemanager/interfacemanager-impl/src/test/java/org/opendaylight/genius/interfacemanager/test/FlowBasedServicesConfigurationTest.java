@@ -33,15 +33,15 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedIngressServicesConfigBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedIngressServicesConfigUnbindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesAddable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRemovable;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -96,8 +96,8 @@ public class FlowBasedServicesConfigurationTest {
     ReadOnlyTransaction mockReadTx;
     WriteTransaction mockWriteTx;
 
-    FlowBasedServicesAddable flowBasedServicesAddable;
-    FlowBasedServicesRemovable flowBasedServicesRemovable;
+    FlowBasedServicesConfigAddable flowBasedServicesAddable;
+    FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable;
 
     @Before
     public void setUp() throws Exception {
@@ -128,7 +128,7 @@ public class FlowBasedServicesConfigurationTest {
         FlowBasedIngressServicesConfigBindHelper.intitializeFlowBasedIngressServicesConfigAddHelper(interfacemgrProvider);
         FlowBasedIngressServicesConfigUnbindHelper.intitializeFlowBasedIngressServicesConfigRemoveHelper(interfacemgrProvider);
         flowBasedServicesAddable = FlowBasedIngressServicesConfigBindHelper.getFlowBasedIngressServicesAddHelper();
-        flowBasedServicesRemovable = FlowBasedIngressServicesConfigUnbindHelper.getFlowBasedIngressServicesRemoveHelper();
+        flowBasedServicesConfigRemovable = FlowBasedIngressServicesConfigUnbindHelper.getFlowBasedIngressServicesRemoveHelper();
 
         interfaceEnabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1",true,L2vlan.class,dpId);
         nodeConnectorId = InterfaceManagerTestUtil.buildNodeConnectorId(dpId, portNum);
@@ -167,7 +167,7 @@ public class FlowBasedServicesConfigurationTest {
         servicesInfo = InterfaceManagerTestUtil.buildServicesInfo(InterfaceManagerTestUtil.interfaceName, servicesInfoKey, boundServiceslist);
         servicesInfoUnbind = InterfaceManagerTestUtil.buildServicesInfo(InterfaceManagerTestUtil.interfaceName,servicesInfoKey,new ArrayList<>());
 
-        String flowRef = InterfaceManagerTestUtil.buildflowRef(dpId,InterfaceManagerTestUtil.interfaceName,boundServiceNew.getServiceName(),boundServiceNew.getServicePriority());
+        String flowRef = InterfaceManagerTestUtil.buildFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, InterfaceManagerTestUtil.interfaceName, boundServiceNew.getServicePriority());
         List<Instruction> instructionList = boundServiceNew.getAugmentation(StypeOpenflow.class).getInstruction();
         String serviceRef = boundServiceNew.getServiceName();
         List<MatchInfo> matches = new ArrayList<>();
@@ -195,7 +195,7 @@ public class FlowBasedServicesConfigurationTest {
         doReturn(Futures.immediateCheckedFuture(expectedservicesInfo)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,servicesInfoInstanceIdentifier);
 
-        flowBasedServicesRemovable.unbindService(boundServicesIid,boundServiceNew);
+        flowBasedServicesConfigRemovable.unbindService(boundServicesIid,boundServiceNew);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
     }
@@ -218,5 +218,4 @@ public class FlowBasedServicesConfigurationTest {
 
         verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,flowInstanceId,ingressFlow, true);
     }
-
 }
