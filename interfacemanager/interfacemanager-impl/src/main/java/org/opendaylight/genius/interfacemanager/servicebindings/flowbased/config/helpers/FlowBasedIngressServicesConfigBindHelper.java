@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -14,7 +14,7 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServicesAddable{
+public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServicesConfigAddable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigBindHelper.class);
 
     private InterfacemgrProvider interfaceMgrProvider;
-    private static volatile FlowBasedServicesAddable flowBasedIngressServicesAddable;
+    private static volatile FlowBasedServicesConfigAddable flowBasedIngressServicesAddable;
 
     private FlowBasedIngressServicesConfigBindHelper(InterfacemgrProvider interfaceMgrProvider) {
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -60,7 +60,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         flowBasedIngressServicesAddable = null;
     }
 
-    public static FlowBasedServicesAddable getFlowBasedIngressServicesAddHelper() {
+    public static FlowBasedServicesConfigAddable getFlowBasedIngressServicesAddHelper() {
         if (flowBasedIngressServicesAddable == null) {
             LOG.error("OvsInterfaceConfigAdd Renderer is not initialized");
         }
@@ -95,11 +95,10 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
             LOG.error("Reached Impossible part 2 in the code during bind service for: {}", boundServiceNew);
             return futures;
         }
-
-        // Split based on type of interface....
         if(ifState.getType() == null) {
             return futures;
         }
+        // Split based on type of interface...
         if (ifState.getType().isAssignableFrom(L2vlan.class)) {
             return bindServiceOnVlan(boundServiceNew, allServices, ifState, dataBroker);
         } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {

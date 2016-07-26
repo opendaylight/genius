@@ -81,4 +81,15 @@ public class MetaDataUtil {
     public static BigInteger getWriteMetaDataMaskForDispatcherTable() {
         return new BigInteger("FFFFFFFFFFFFFFFF", 16);
     }
+
+    public static BigInteger getLportTagForReg6(int lportTag) {
+        return new BigInteger("1FFFFF", 16).and(BigInteger.valueOf(lportTag)).shiftLeft(8);
+    }
+    public static BigInteger getServiceIndexForReg6(int serviceIndex) {
+        return new BigInteger("7", 16).and(BigInteger.valueOf(serviceIndex)).shiftLeft(29);
+    }
+    public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex) {
+        return getServiceIndexForReg6(serviceIndex).or(getLportTagForReg6(lportTag)).longValue();
+    }
+
 }

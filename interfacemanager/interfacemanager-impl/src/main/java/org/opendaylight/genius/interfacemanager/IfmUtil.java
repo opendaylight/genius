@@ -14,15 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.mdsalutil.MetaDataUtil;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
@@ -52,6 +58,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -66,6 +78,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.concurrent.Callable;
+
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 
 public class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
@@ -163,7 +178,7 @@ public class IfmUtil {
         if (infType == InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE) {
             return ifIndex + IfmConstants.LOGICAL_GROUP_START;
         }
-        else if (infType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
+        else if (infType == VLAN_INTERFACE) {
             return ifIndex + IfmConstants.VLAN_GROUP_START;
         } else {
             return ifIndex + IfmConstants.TRUNK_GROUP_START;
@@ -202,8 +217,9 @@ public class IfmUtil {
         return result;
     }
 
-    public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey, DataBroker dataBroker) {
-        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey, 0, dataBroker);
+    public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey,
+                                                            DataBroker dataBroker, Boolean isDefaultEgress) {
+        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress);
         List<Action> actionsList = new ArrayList<>();
         for (ActionInfo actionInfo : listActionInfo) {
             actionsList.add(actionInfo.buildAction());
@@ -211,10 +227,31 @@ public class IfmUtil {
         return actionsList;
     }
 
+    public static List<Instruction> getEgressInstructionsForInterface(String interfaceName, Long tunnelKey,
+                                                                      DataBroker dataBroker, Boolean isDefaultEgress) {
+        List<Instruction> instructions = new ArrayList<>();
+        List<Action> actionList = MDSALUtil.buildActions(getEgressActionInfosForInterface(
+                interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress));
+        instructions.add(MDSALUtil.buildWriteActionsInstruction(actionList));
+        return  instructions;
+    }
+
+    public static List<Instruction> getEgressInstructionsForInterface(Interface interfaceInfo, String portNo,
+                                                                      Long tunnelKey, boolean isDefaultEgress, int ifIndex) {
+        List<Instruction> instructions = new ArrayList<>();
+        InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
+        List<Action> actionList = MDSALUtil.buildActions(
+                getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, 0, isDefaultEgress, ifIndex));
+        instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
+        return  instructions;
+    }
+
+
     public static List<ActionInfo> getEgressActionInfosForInterface(String     interfaceName,
                                                                     int        actionKeyStart,
-                                                                    DataBroker dataBroker) {
-        return getEgressActionInfosForInterface(interfaceName, null, actionKeyStart, dataBroker);
+                                                                    DataBroker dataBroker,
+                                                                    Boolean isDefaultEgress) {
+        return getEgressActionInfosForInterface(interfaceName, null, actionKeyStart, dataBroker, isDefaultEgress);
     }
 
     /**
@@ -229,59 +266,81 @@ public class IfmUtil {
     public static List<ActionInfo> getEgressActionInfosForInterface(String     interfaceName,
                                                                     Long       tunnelKey,
                                                                     int        actionKeyStart,
-                                                                    DataBroker dataBroker) {
-        List<ActionInfo> result = new ArrayList<>();
+                                                                    DataBroker dataBroker,
+                                                                    Boolean isDefaultEgress) {
         Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
                 dataBroker);
         if(interfaceInfo == null){
             throw new NullPointerException("Interface information not present in config DS for " +interfaceName);
         }
-        String portNo = IfmUtil.getPortNoFromInterfaceName(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        if(ifState == null){
+            throw new NullPointerException("Interface information not present in oper DS for " +interfaceName);
+        }
+        String lowerLayerIf = ifState.getLowerLayerIf().get(0);
+        NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
+        String portNo = IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId);
 
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
-
-        switch (ifaceType ) {
-            case VLAN_INTERFACE:
-                IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
-                LOG.trace("L2Vlan: {}",vlanIface);
-                boolean isVlanTransparent = false;
-                long vlanVid = 0;
-                if (vlanIface != null) {
-                    vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue();
-                    isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
-                }
-                if (vlanVid != 0 && !isVlanTransparent) {
-                    result.add(new ActionInfo(ActionType.push_vlan, new String[] {}, actionKeyStart));
-                    actionKeyStart++;
-                    result.add(new ActionInfo(ActionType.set_field_vlan_vid,
-                            new String[] { Long.toString(vlanVid) }, actionKeyStart));
-                    actionKeyStart++;
-                }
-                result.add(new ActionInfo(ActionType.output, new String[] {portNo}, actionKeyStart));
-                actionKeyStart++;
-                break;
-            case MPLS_OVER_GRE:
-            case VXLAN_TRUNK_INTERFACE:
-            case GRE_TRUNK_INTERFACE:
-                if(tunnelKey != null) {
-                    result.add(new ActionInfo(ActionType.set_field_tunnel_id,
-                            new BigInteger[] { BigInteger.valueOf(tunnelKey.longValue()) },
-                            actionKeyStart) );
-                    actionKeyStart++;
-                }
-
-                result.add(new ActionInfo(ActionType.output, new String[] { portNo}, actionKeyStart));
-                actionKeyStart++;
-                break;
-
-            default:
-                LOG.warn("Interface Type {} not handled yet", ifaceType);
-                break;
-        }
-
-        return result;
+        return getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, actionKeyStart,
+                isDefaultEgress, ifState.getIfIndex());
     }
 
+
+    public static List<ActionInfo> getEgressActionInfosForInterface(Interface interfaceInfo,
+                                                                    String portNo,
+                                                                    InterfaceInfo.InterfaceType ifaceType,
+                                                                    Long       tunnelKey,
+                                                                    int        actionKeyStart,
+                                                                    boolean isDefaultEgress,
+                                                                    int ifIndex) {
+        List<ActionInfo> result = new ArrayList<ActionInfo>();
+        if(!isDefaultEgress){
+            long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, IfmConstants.DEFAULT_SERVICE_INDEX);
+            result.add(new ActionInfo(ActionType.nx_load_reg_6,
+                    new String[]{Integer.toString(IfmConstants.REG6_START_INDEX), Integer.toString(IfmConstants.REG6_END_INDEX),
+                            Long.toString(regValue)}, actionKeyStart++));
+            result.add(new ActionInfo(ActionType.nx_resubmit,
+                    new String[]{Short.toString(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)}, actionKeyStart++));
+
+        }else {
+            switch (ifaceType) {
+                case VLAN_INTERFACE:
+                    IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
+                    LOG.trace("L2Vlan: {}", vlanIface);
+                    boolean isVlanTransparent = false;
+                    long vlanVid = 0;
+                    if (vlanIface != null) {
+                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue();
+                        isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
+                    }
+                    if (vlanVid != 0 && !isVlanTransparent) {
+                        result.add(new ActionInfo(ActionType.push_vlan, new String[]{}, actionKeyStart++));
+                        result.add(new ActionInfo(ActionType.set_field_vlan_vid,
+                                new String[]{Long.toString(vlanVid)}, actionKeyStart++));
+                    }
+                    result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
+                    break;
+                case MPLS_OVER_GRE:
+                case VXLAN_TRUNK_INTERFACE:
+                case GRE_TRUNK_INTERFACE:
+                    if (tunnelKey != null) {
+                        result.add(new ActionInfo(ActionType.set_field_tunnel_id,
+                                new BigInteger[]{BigInteger.valueOf(tunnelKey.longValue())},
+                                actionKeyStart++));
+                    }
+
+                    result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
+                    break;
+
+                default:
+                    LOG.warn("Interface Type {} not handled yet", ifaceType);
+                    break;
+            }
+        }
+        return result;
+    }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
         return new NodeId(ncId.getValue().substring(0,ncId.getValue().lastIndexOf(":")));
@@ -396,25 +455,12 @@ public class IfmUtil {
         Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType> ifType = iface.getType();
 
         if (ifType.isAssignableFrom(L2vlan.class)) {
-            interfaceType =  org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
+            interfaceType =  VLAN_INTERFACE;
         } else if (ifType.isAssignableFrom(Tunnel.class)) {
             IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
             Class<? extends  org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel.getTunnelInterfaceType();
             interfaceType = TUNNEL_TYPE_MAP.get(tunnelType);
-            /*if (tunnelType.isAssignableFrom(TunnelTypeVxlan.class)) {
-                interfaceType = InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
-            } else if (tunnelType.isAssignableFrom(TunnelTypeGre.class)) {
-                interfaceType = InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
-            } else if(tunnelType.isAssignableFrom(TunnelTypeMplsOverGre.class)){
-                interfaceType = InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
-            } else if(tunnelType.isAssignableFrom(TunnelTypeMplsOverUdp.class)){
-                interfaceType = InterfaceInfo.InterfaceType.MPLS_OVER_UDP;
-            }*/
         }
-        // TODO: Check if the below condition is still needed/valid
-        //else if (ifType.isAssignableFrom(InterfaceGroup.class)) {
-        //    interfaceType =  org.opendaylight.vpnservice.interfacemgr.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
-        //}
         return interfaceType;
     }
 
@@ -445,5 +491,32 @@ public class IfmUtil {
 
         }
         return vlanInterfaceInfo;
+    }
+
+    public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
+                                   Class<? extends ServiceModeBase> serviceMode){
+        LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
+                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
+                .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
+        t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
+    }
+
+    public static void unbindService(DataBroker dataBroker, String interfaceName, InstanceIdentifier<BoundServices>
+            boundServicesInstanceIdentifier, Class<? extends ServiceModeBase> serviceMode){
+        LOG.info("Unbinding Service from : {}", interfaceName);
+        DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
+        dataStoreJobCoordinator.enqueueJob(interfaceName,
+                new Callable<List<ListenableFuture<Void>>>() {
+                    @Override
+                    public List<ListenableFuture<Void>> call() throws Exception {
+                        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                        t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
+                        List<ListenableFuture<Void>> futures = new ArrayList<>();
+                        futures.add(t.submit());
+                        return futures;
+                    }
+                }
+        );
     }
 }

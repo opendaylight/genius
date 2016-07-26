@@ -52,6 +52,7 @@ public class NwConstants {
     public static final short SCF_SERVICE_INDEX = 4;
     public static final short L3VPN_SERVICE_INDEX = 5;
     public static final short ELAN_SERVICE_INDEX = 6;
+    public static final short DEFAULT_SERVICE_PRIORITY = 7;
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
@@ -92,8 +93,7 @@ public class NwConstants {
     public static final short ELAN_UNKNOWN_DMAC_TABLE = 52;
     public static final short ELAN_FILTER_EQUALS_TABLE = 55;
     public static final short L3_INTERFACE_TABLE = 80;
+    public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short INGRESS_ACL_TABLE_ID = 251;
     public static final short INGRESS_ACL_NEXT_TABLE_ID = 252;
-
-
  }
