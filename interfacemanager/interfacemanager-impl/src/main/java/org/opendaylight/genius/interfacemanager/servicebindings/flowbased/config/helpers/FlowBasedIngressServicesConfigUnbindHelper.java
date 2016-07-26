@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -14,7 +14,7 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesRemovable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -36,11 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesRemovable{
+public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
 
     private InterfacemgrProvider interfaceMgrProvider;
-    private static volatile FlowBasedServicesRemovable flowBasedIngressServicesRemovable;
+    private static volatile FlowBasedServicesConfigRemovable flowBasedIngressServicesRemovable;
 
     private FlowBasedIngressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -56,7 +56,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         }
     }
 
-    public static FlowBasedServicesRemovable getFlowBasedIngressServicesRemoveHelper() {
+    public static FlowBasedServicesConfigRemovable getFlowBasedIngressServicesRemoveHelper() {
         if (flowBasedIngressServicesRemovable == null) {
             LOG.error("FlowBasedIngressBindHelper is not initialized");
         }
@@ -109,7 +109,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifaceState);
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, t, IfmConstants.DEFAULT_SERVICE_INDEX);
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, t, NwConstants.DEFAULT_SERVICE_INDEX);
             if (t != null) {
                 futures.add(t.submit());
             }
@@ -120,16 +120,16 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         BoundServices high = highLow[1];
         // This means the one removed was the highest priority service
         if (high == null) {
-            LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld, IfmConstants.DEFAULT_SERVICE_INDEX);
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, t, IfmConstants.DEFAULT_SERVICE_INDEX);
+            LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld, NwConstants.DEFAULT_SERVICE_INDEX);
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, t, NwConstants.DEFAULT_SERVICE_INDEX);
             if (low != null) {
                 //delete the lower services flow entry.
                 LOG.trace("Deleting table entry for lower service {}, match service index {}", low, low.getServicePriority());
                 FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), low, t, low.getServicePriority());
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) ((lower!=null) ? lower.getServicePriority() : low.getServicePriority() + 1);
-                LOG.trace("Installing new entry for lower service {}, match service index {}, update service index {}", low, IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifaceState.getName(), t, ifaceState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                LOG.trace("Installing new entry for lower service {}, match service index {}, update service index {}", low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifaceState.getName(), t, ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
             }
         } else {
             LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld, boundServiceOld.getServicePriority());
@@ -137,8 +137,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             short lowerServiceIndex = (short) ((low!=null) ? low.getServicePriority() : boundServiceOld.getServicePriority() + 1);
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
             if (high.equals(highest)) {
-                LOG.trace("Update the existing higher service {}, match service index {}, update service index {}", high, IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), IfmConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                LOG.trace("Update the existing higher service {}, match service index {}, update service index {}", high, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
             } else {
                 LOG.trace("Update the existing higher service {}, match service index {}, update service index {}", high, high.getServicePriority(), lowerServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), high.getServicePriority(), lowerServiceIndex);
