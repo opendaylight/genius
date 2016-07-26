@@ -27,6 +27,7 @@ import org.opendaylight.genius.interfacemanager.pmcounters.NodeConnectorStatsImp
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -39,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
@@ -146,7 +148,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             flowBasedServicesConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
             flowBasedServicesInterfaceStateListener =
-                    new FlowBasedServicesInterfaceStateListener(dataBroker);
+                    new FlowBasedServicesInterfaceStateListener(this);
             flowBasedServicesInterfaceStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
             vlanMemberConfigListener =
@@ -367,25 +369,16 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     }
 
     @Override
-    public void bindService(String interfaceName, BoundServices serviceInfo) {
-        LOG.info("Binding Service : {}", interfaceName);
+    public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo) {
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
-                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, ServiceModeIngress.class))
-                .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
-        t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
+        IfmUtil.bindService(t, interfaceName, serviceInfo, serviceMode);
         t.submit();
     }
 
     @Override
-    public void unbindService(String interfaceName, BoundServices serviceInfo) {
-        LOG.info("Unbinding Service  : {}", interfaceName);
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
-                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, ServiceModeIngress.class))
-                .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
-        t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-        t.submit();
+    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo) {
+        IfmUtil.unbindService(dataBroker, interfaceName,
+                FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority()), serviceMode);
     }
 
     @Override
@@ -423,7 +416,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
     @Override
     public List<ActionInfo> getInterfaceEgressActions(String ifName) {
-        return IfmUtil.getEgressActionInfosForInterface(ifName, 0, dataBroker);
+        return IfmUtil.getEgressActionInfosForInterface(ifName, 0, dataBroker, false);
     }
 
     @Override

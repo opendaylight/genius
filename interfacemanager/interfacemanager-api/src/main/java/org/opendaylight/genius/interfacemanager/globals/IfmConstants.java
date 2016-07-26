@@ -39,6 +39,7 @@ public class IfmConstants {
     public static final BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_L3_BASE = new BigInteger("8000000", 16);
+    public static final BigInteger COOKIE_EGRESS_DISPATCHER_TABLE = new BigInteger("1300000", 16);
     //Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
 }
