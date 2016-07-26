@@ -5,21 +5,21 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory;
 
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedEgressServicesConfigBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confighelpers.FlowBasedEgressServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigUnbindHelper;
 
 public class FlowBasedEgressServicesRendererFactory extends FlowBasedServicesRendererFactory{
     private static FlowBasedEgressServicesRendererFactory egressServicesRendererFactory = new FlowBasedEgressServicesRendererFactory();
 
     @Override
-    public FlowBasedServicesAddable getFlowBasedServicesAddRenderer() {
+    public FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer() {
         return FlowBasedEgressServicesConfigBindHelper.getFlowBasedEgressServicesAddHelper();
     }
 
     @Override
-    public FlowBasedServicesRemovable getFlowBasedServicesRemoveRenderer() {
+    public FlowBasedServicesConfigRemovable getFlowBasedServicesRemoveRenderer() {
         return FlowBasedEgressServicesConfigUnbindHelper.getFlowBasedEgressServicesRemoveHelper();
     }
 
