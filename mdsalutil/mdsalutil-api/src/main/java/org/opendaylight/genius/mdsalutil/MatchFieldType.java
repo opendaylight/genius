@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.util.Map;
 
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
@@ -32,6 +33,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4MatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv6MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.TcpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.protocol.match.fields.PbbBuilder;
@@ -50,6 +52,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.InPor
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.IpProto;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv4Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv4Src;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv6Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv6Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Metadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.MplsLabel;
@@ -319,6 +323,62 @@ public enum MatchFieldType {
             }
         }
     },
+
+    ipv6_destination {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return Ipv6Dst.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.get(Ipv6MatchBuilder.class);
+
+            if (ipv6MatchBuilder == null) {
+                ipv6MatchBuilder = new Ipv6MatchBuilder();
+                mapMatchBuilder.put(Ipv6MatchBuilder.class, ipv6MatchBuilder);
+            }
+            ipv6MatchBuilder.setIpv6Destination(new Ipv6Prefix(matchInfo.getStringMatchValues()[0])).build();
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.remove(Ipv6MatchBuilder.class);
+
+            if (ipv6MatchBuilder != null) {
+                matchBuilderInOut.setLayer3Match(ipv6MatchBuilder.build());
+            }
+        }
+    },
+
+    ipv6_source {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return Ipv6Src.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.get(Ipv6MatchBuilder.class);
+
+            if (ipv6MatchBuilder == null) {
+                ipv6MatchBuilder = new Ipv6MatchBuilder();
+                mapMatchBuilder.put(Ipv6MatchBuilder.class, ipv6MatchBuilder);
+            }
+
+            ipv6MatchBuilder.setIpv6Source(new Ipv6Prefix(matchInfo.getStringMatchValues()[0])).build();
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.remove(Ipv6MatchBuilder.class);
+
+            if (ipv6MatchBuilder != null) {
+                matchBuilderInOut.setLayer3Match(ipv6MatchBuilder.build());
+            }
+        }
+    },
+
 
     arp_op {
         @Override
