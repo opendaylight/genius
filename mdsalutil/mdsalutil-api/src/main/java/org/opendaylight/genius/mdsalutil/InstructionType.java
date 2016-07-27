@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -34,14 +33,7 @@ public enum InstructionType {
     apply_actions {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            List<ActionInfo> mkActions = instructionInfo.getActionInfos();
-            List<Action> listAction = new ArrayList <Action> ();
-            int actionKey = 0 ;
-            for(ActionInfo mkAction: mkActions) {
-                ActionType actionType = mkAction.getActionType();
-                mkAction.setActionKey(actionKey++);
-                listAction.add(actionType.buildAction(mkAction));
-            }
+            List<Action> listAction = instructionInfo.buildActions();
             ApplyActions applyActions = new ApplyActionsBuilder().setAction(listAction).build();
             ApplyActionsCase applyActionsCase = new ApplyActionsCaseBuilder().setApplyActions(applyActions).build();
             InstructionBuilder instructionBuilder = new InstructionBuilder();
@@ -69,14 +61,7 @@ public enum InstructionType {
     write_actions {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            List<ActionInfo> mkActions = instructionInfo.getActionInfos();
-            List<Action> listAction = new ArrayList <Action> ();
-            int actionKey = 0 ;
-            for(ActionInfo mkAction: mkActions) {
-                ActionType actionType = mkAction.getActionType();
-                mkAction.setActionKey(actionKey++);
-                listAction.add(actionType.buildAction(mkAction));
-            }
+            List<Action> listAction = instructionInfo.buildActions();
             WriteActions writeActions = new WriteActionsBuilder().setAction(listAction).build();
             WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
             InstructionBuilder instructionBuilder = new InstructionBuilder();

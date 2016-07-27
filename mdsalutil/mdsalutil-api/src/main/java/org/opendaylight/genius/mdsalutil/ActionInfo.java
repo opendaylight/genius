@@ -20,44 +20,44 @@ public class ActionInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final ActionType m_actionType;
-
-    private String[] m_asActionValues = null;
-    private BigInteger[] m_aBigIntValues;
-    private int m_actionKey = 0;
+    private final String[] m_asActionValues;
+    private final BigInteger[] m_aBigIntValues;
+    private final int m_actionKey;
 
     public ActionInfo(ActionInfo action) {
         super();
         m_actionType = action.m_actionType;
         m_actionKey = action.m_actionKey;
         m_asActionValues = Arrays.copyOf(action.m_asActionValues, action.m_asActionValues.length);
+        m_aBigIntValues = null;
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues) {
         m_actionType = actionType;
         m_actionKey = 0;
         m_asActionValues = asActionValues;
+        m_aBigIntValues = null;
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, int actionKey) {
         m_actionType = actionType;
         m_actionKey = actionKey;
         m_asActionValues = asActionValues;
+        m_aBigIntValues = null;
     }
 
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues) {
         m_actionType = actionType;
         m_actionKey = 0;
         m_aBigIntValues = aBigIntValues;
+        m_asActionValues = null;
     }
 
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues, int actionKey) {
         m_actionType = actionType;
         m_actionKey = actionKey;
         m_aBigIntValues = aBigIntValues;
-    }
-
-    public void setActionKey(int key) {
-        m_actionKey = key;
+        m_asActionValues = null;
     }
 
     public int getActionKey() {
@@ -65,7 +65,7 @@ public class ActionInfo implements Serializable {
     }
 
     public Action buildAction() {
-        return m_actionType.buildAction(this);
+        return m_actionType.buildAction(getActionKey(), this);
     }
 
     public ActionType getActionType() {

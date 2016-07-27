@@ -14,36 +14,23 @@ import java.util.Objects;
 import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 
-public class BucketInfo implements Serializable {
+public class BucketInfo extends AbstractActionInfoList implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private final List<ActionInfo> m_listActionInfo;
 
     private Integer weight = 0;
     private Long watchPort = 0xffffffffL;
     private Long watchGroup = 0xffffffffL;
 
     public BucketInfo(List<ActionInfo> listActions) {
-        m_listActionInfo = listActions;
+        super(listActions);
     }
 
-    public BucketInfo(List<ActionInfo> m_listActionInfo, Integer weight, Long watchPort, Long watchGroup) {
-        super();
-        this.m_listActionInfo = m_listActionInfo;
+    public BucketInfo(List<ActionInfo> actionInfos, Integer weight, Long watchPort, Long watchGroup) {
+        super(actionInfos);
         this.weight = weight;
         this.watchPort = watchPort;
         this.watchGroup = watchGroup;
-    }
-
-    public void buildAndAddActions(List<Action> listActionOut) {
-        int key = 0;
-        if (m_listActionInfo != null) {
-            for (ActionInfo actionInfo : m_listActionInfo) {
-                actionInfo.setActionKey(key++);
-                listActionOut.add(actionInfo.buildAction());
-            }
-        }
     }
 
     public void setWeight(Integer bucketWeight) {
@@ -52,10 +39,6 @@ public class BucketInfo implements Serializable {
 
     public Integer getWeight() {
         return weight;
-    }
-
-    public List<ActionInfo> getActionInfoList() {
-        return m_listActionInfo;
     }
 
     public Long getWatchPort() {
@@ -76,7 +59,7 @@ public class BucketInfo implements Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("actionInfoList", m_listActionInfo).add("weight", weight)
+        return MoreObjects.toStringHelper(this).add("actionInfos", getActionInfos()).add("weight", weight)
                 .add("watchPort", watchPort).add("watchGroup", watchGroup).toString();
     }
 

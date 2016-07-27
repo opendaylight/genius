@@ -16,42 +16,41 @@ import java.util.Objects;
 import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
-public class InstructionInfo implements Serializable {
+public class InstructionInfo extends AbstractActionInfoList implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private final InstructionType m_instructionType;
     private final long[] m_alInstructionValues;
     private final BigInteger[] m_alBigInstructionValues;
-    private final List<ActionInfo> m_actionInfos;
 
     // This constructor should be used incase of clearAction
     public InstructionInfo(InstructionType instructionType) {
+        super(null);
         m_instructionType = instructionType;
         m_alInstructionValues = null;
         m_alBigInstructionValues = null;
-        m_actionInfos = null;
     }
 
     public InstructionInfo(InstructionType instructionType, long[] instructionValues) {
+        super(null);
         m_instructionType = instructionType;
         m_alInstructionValues = instructionValues;
         m_alBigInstructionValues = null;
-        m_actionInfos = null;
     }
 
     public InstructionInfo(InstructionType instructionType, BigInteger[] instructionValues) {
+        super(null);
         m_instructionType = instructionType;
         m_alInstructionValues = null;
         m_alBigInstructionValues = instructionValues;
-        m_actionInfos = null;
     }
 
     public InstructionInfo(InstructionType instructionType, List<ActionInfo> actionInfos) {
+        super(actionInfos);
         m_instructionType = instructionType;
         m_alInstructionValues = null;
         m_alBigInstructionValues = null;
-        m_actionInfos = actionInfos;
     }
 
     public Instruction buildInstruction(int instructionKey) {
@@ -70,16 +69,12 @@ public class InstructionInfo implements Serializable {
         return m_alBigInstructionValues;
     }
 
-    public List<ActionInfo> getActionInfos() {
-        return m_actionInfos;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).omitNullValues().add("instructionType", m_instructionType)
                 .add("instructionValues", Arrays.toString(m_alInstructionValues))
                 .add("bigInstructionValues", Arrays.deepToString(m_alBigInstructionValues))
-                .add("actionInfos", m_actionInfos).toString();
+                .add("actionInfos", getActionInfos()).toString();
     }
 
     @Override
