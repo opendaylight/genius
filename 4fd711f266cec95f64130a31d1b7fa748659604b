@@ -1,0 +1,9 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Michael Vorburger <vorburger@redhat.com>
+Code-Review+1: Vishal Thapar <vishal.thapar@ericsson.com>
+Code-Review+2: David Suarez <david.suarez.fuentes@ericsson.com>
+Submitted-by: David Suarez <david.suarez.fuentes@ericsson.com>
+Submitted-at: Wed, 27 Jul 2016 20:05:27 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/41849
+Project: genius
+Branch: refs/heads/master
