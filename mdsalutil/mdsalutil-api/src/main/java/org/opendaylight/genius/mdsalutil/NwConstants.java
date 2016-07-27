@@ -44,20 +44,30 @@ public class NwConstants {
 
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
 
-    public static final int SCF_SERVICE_INDEX = 1;
-    public static final int L3VPN_SERVICE_INDEX = 2;
-    public static final int ELAN_SERVICE_INDEX = 3;
+    public static final int DHCP_SERVICE_INDEX = 1;
+    public static final int ACL_SERVICE_INDEX = 2;
+    public static final int IPV6_SERVICE_INDEX = 3;
+    public static final int L3VPN_SERVICE_INDEX = 4;
+    public static final int ELAN_SERVICE_INDEX = 5;
     //Table IDs
     public static final short L3_FIB_TABLE = 21;
     public static final short L3_LFIB_TABLE = 20;
     public static final short L3_SUBNET_ROUTE_TABLE=22;
 
-    public static final short L3_PROTOCOL_TABLE = 36;
     public static final short L3_INTERFACE_TABLE = 80;
     public static final short LPORT_DISPATCHER_TABLE = 17;
     public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
     public static final short INTERNAL_TUNNEL_TABLE = 36;
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
     public static final short DHCP_TABLE = 25;
+    public static final short ELAN_SMAC_TABLE = 50;
+    public static final short ELAN_DMAC_TABLE = 51;
+    public static final short ELAN_UNKNOWN_DMAC_TABLE = 52;
+    public static final short ELAN_FILTER_EQUALS_TABLE = 55;
+    public static final short EGRESS_ACL_TABLE_ID = 40;
+    public static final short EGRESS_ACL_NEXT_TABLE_ID = 41;
+    public static final short INGRESS_ACL_TABLE_ID = 251;
+    public static final short INGRESS_ACL_NEXT_TABLE_ID = 252;
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
+
  }
