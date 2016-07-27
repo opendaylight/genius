@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_5840e206",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-07-27T11:33:45Z",
+      "side": 1,
+      "message": "Instead of setting SH Flag in metadata on LPortDispatcher table 17, itcan be set in ingress table 0 flow entry itself for external VLAN port. It avoids unnecessary SH flag write in metadata for each service bound to the port.",
+      "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
