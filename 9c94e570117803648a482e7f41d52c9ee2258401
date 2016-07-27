@@ -16,6 +16,24 @@
       "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_f16591b5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-07-27T18:38:18Z",
+      "side": 1,
+      "message": "So setting the SH-flag in T0 means that MetaDataUtil.getWriteMetaDataMaskForDispatcherTable() should also be changed to 0xFFFFFFFFFFFFFFFE rather than 0xFFFFFFFFFFFFFFFF\nAre there any other use-cases which could be affected by this change?",
+      "parentUuid": "9a561d44_5840e206",
+      "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
