@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_5b11fc5b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-27T14:43:45Z",
+      "side": 1,
+      "message": "Sort the list by number. Some entries seem to be missing from the list we discussed, mainly the NAT service tables.",
+      "revId": "555b7f51b99a3c78673a5e7e5799b33a1f87fc2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
