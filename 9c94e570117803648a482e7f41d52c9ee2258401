@@ -34,6 +34,24 @@
       "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_c74c0fcb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-07-28T04:51:42Z",
+      "side": 1,
+      "message": "Mask should be 1FFFFF0000000001 for lportTag+SH Flag (in the LSB) while writing it in metadata. You can look at InterfaceManagerCommonUtils#makeTunnelIngressFlow for reference.\nI don\u0027t see any other service get impacted (because of LSB being used for SH Flag) Since this bit is not used by any service. So let us go ahead and use this bit always for SH Flag and let services use this bit for any SH Flag match in the metadata.",
+      "parentUuid": "9a561d44_f16591b5",
+      "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
