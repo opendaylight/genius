@@ -102,6 +102,7 @@ public class FlowBasedServicesConfigurationTest {
     @Before
     public void setUp() throws Exception {
         setupMocks();
+        InterfaceManagerTestUtil.clearInterfaceCaches();
     }
 
     @After
