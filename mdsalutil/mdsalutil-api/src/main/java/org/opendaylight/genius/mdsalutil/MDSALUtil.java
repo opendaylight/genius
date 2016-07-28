@@ -210,7 +210,7 @@ public class MDSALUtil {
     }
 
     public static List<Action> buildActions(List<ActionInfo> actions) {
-        List<Action> actionsList = new ArrayList<>();
+        List<Action> actionsList = new ArrayList<Action>();
         for (ActionInfo actionInfo : actions) {
             actionsList.add(actionInfo.buildAction());
         }
@@ -243,11 +243,14 @@ public class MDSALUtil {
         long i = 0;
         if (listBucketInfo != null) {
             BucketsBuilder bucketsBuilder = new BucketsBuilder();
-            List<Bucket> bucketList = new ArrayList<>();
+            List<Bucket> bucketList = new ArrayList<Bucket>();
 
             for (BucketInfo bucketInfo : listBucketInfo) {
                 BucketBuilder bucketBuilder = new BucketBuilder();
-                bucketBuilder.setAction(bucketInfo.buildActions());
+                List<Action> actionsList = new ArrayList<Action>();
+
+                bucketInfo.buildAndAddActions(actionsList);
+                bucketBuilder.setAction(actionsList);
                 bucketBuilder.setWeight(bucketInfo.getWeight());
                 bucketBuilder.setBucketId(new BucketId(i++));
                 bucketBuilder.setWeight(bucketInfo.getWeight()).setWatchPort(bucketInfo.getWatchPort())
@@ -264,7 +267,7 @@ public class MDSALUtil {
 
     public static Instructions buildInstructions(List<InstructionInfo> listInstructionInfo) {
         if (listInstructionInfo != null) {
-            List<Instruction> instructions = new ArrayList<>();
+            List<Instruction> instructions = new ArrayList<Instruction>();
             int instructionKey = 0;
 
             for (InstructionInfo instructionInfo : listInstructionInfo) {
@@ -281,7 +284,7 @@ public class MDSALUtil {
     public static Match buildMatches(List<? extends MatchInfoBase> listMatchInfoBase) {
         if (listMatchInfoBase != null) {
             MatchBuilder matchBuilder = new MatchBuilder();
-            Map<Class<?>, Object> mapMatchBuilder = new HashMap<>();
+            Map<Class<?>, Object> mapMatchBuilder = new HashMap<Class<?>, Object>();
 
             for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
                 MatchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
@@ -380,7 +383,7 @@ public class MDSALUtil {
         Action popVlanAction = new ActionBuilder().setAction(
                 new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
                 .setKey(new ActionKey(actionKey)).build();
-        List<Action> listAction = new ArrayList<> ();
+        List<Action> listAction = new ArrayList<Action> ();
         listAction.add(popVlanAction);
         return buildApplyActionsInstruction(listAction, instructionKey);
     }
@@ -404,8 +407,8 @@ public class MDSALUtil {
     }
 
     public static List<Instruction> buildInstructionsDrop(int instructionKey) {
-        List<Instruction> mkInstructions = new ArrayList<>();
-        List <Action> actionsInfos = new ArrayList <> ();
+        List<Instruction> mkInstructions = new ArrayList<Instruction>();
+        List <Action> actionsInfos = new ArrayList <Action> ();
         actionsInfos.add(new ActionInfo(ActionType.drop_action, new String[]{}).buildAction());
         mkInstructions.add(getWriteActionsInstruction(actionsInfos, instructionKey));
         return mkInstructions;
