@@ -52,6 +52,24 @@
       "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_27eceb8e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-07-28T05:04:45Z",
+      "side": 1,
+      "message": "ok. I fixed metadatamask in installInterfaceIngressFlow to be METADATA_MASK_LPORT_TAG_SH_FLAG but still isn\u0027t the dispatcher table write metadata should be changed to 0xFFFFFFFFFFFFFFFE rather than 0xFFFFFFFFFFFFFFFF? otherwise the SH-flag will be overridden once it gets to the dispatcher table",
+      "parentUuid": "9a561d44_c74c0fcb",
+      "revId": "9c94e570117803648a482e7f41d52c9ee2258401",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
