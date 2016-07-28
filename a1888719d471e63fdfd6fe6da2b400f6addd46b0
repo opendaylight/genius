@@ -16,6 +16,24 @@
       "revId": "a1888719d471e63fdfd6fe6da2b400f6addd46b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_0c1e27bb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-07-28T13:22:15Z",
+      "side": 1,
+      "message": "There is an SCF version so this is OK.",
+      "parentUuid": "9a561d44_43063287",
+      "revId": "a1888719d471e63fdfd6fe6da2b400f6addd46b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
