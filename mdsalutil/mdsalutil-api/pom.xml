@@ -51,10 +51,5 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <artifactId>hwvtepsouthbound-api</artifactId>
     <version>${genius.ovsdb.version}</version>
   </dependency>
-  <dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava-testlib</artifactId>
-    <scope>test</scope>
-  </dependency>
 </dependencies>
 </project>

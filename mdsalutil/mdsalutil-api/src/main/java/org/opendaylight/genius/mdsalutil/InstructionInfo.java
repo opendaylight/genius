@@ -12,8 +12,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
 public class InstructionInfo extends AbstractActionInfoList implements Serializable {
@@ -75,27 +74,5 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
                 .add("instructionValues", Arrays.toString(m_alInstructionValues))
                 .add("bigInstructionValues", Arrays.deepToString(m_alBigInstructionValues))
                 .add("actionInfos", getActionInfos()).toString();
-    }
-
-    @Override
-    public int hashCode() {
-        // BEWARE, Caveat Emptor: Array ([]) type fields must use
-        // Arrays.hashCode(). deepHashCode() would have to be used for nested
-        // arrays.
-        return Objects.hash(m_instructionType, Arrays.hashCode(m_alInstructionValues),
-                Arrays.hashCode(m_alBigInstructionValues), m_actionInfos);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        // BEWARE, Caveat Emptor: Array ([]) type fields must use
-        // Arrays.equals(). deepEquals() would have to be used for nested
-        // arrays. Use == only for primitive types; if ever changing
-        // those field types, must change to Objects.equals.
-        return MoreObjects2.equalsHelper(this, obj,
-            (self, other) -> Objects.equals(self.m_instructionType, other.m_instructionType)
-                          && Arrays.equals(self.m_alInstructionValues, other.m_alInstructionValues)
-                          && Arrays.equals(self.m_alBigInstructionValues, other.m_alBigInstructionValues)
-                          && Objects.equals(self.m_actionInfos, other.m_actionInfos));
     }
 }
