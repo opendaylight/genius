@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -179,6 +180,7 @@ public class FlowBasedServicesConfigurationTest {
         servicesInfoInstanceIdentifier = InterfaceManagerTestUtil.buildIngressServiceInfoInstanceIdentifier(InterfaceManagerTestUtil.interfaceName);
     }
 
+    @Ignore
     @Test
     public void testConfigUnbindSingleService(){
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
@@ -197,6 +199,7 @@ public class FlowBasedServicesConfigurationTest {
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
     }
 
+    @Ignore
     @Test
     public void testConfigBindSingleService(){
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
