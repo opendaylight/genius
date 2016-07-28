@@ -63,7 +63,7 @@ public class BucketInfo extends AbstractActionInfoList implements Serializable {
                 .add("watchPort", watchPort).add("watchGroup", watchGroup).toString();
     }
 
-    @Override
+    /*@Override
     public int hashCode() {
         return Objects.hash(m_listActionInfo, weight, watchPort, watchGroup);
     }
@@ -75,5 +75,5 @@ public class BucketInfo extends AbstractActionInfoList implements Serializable {
                               && Objects.equals(self.weight, other.weight)
                               && Objects.equals(self.watchPort, other.watchPort)
                               && Objects.equals(self.watchGroup, other.watchGroup));
-    }
+    }*/
 }

@@ -77,7 +77,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
                 .add("actionInfos", getActionInfos()).toString();
     }
 
-    @Override
+    /*@Override
     public int hashCode() {
         // BEWARE, Caveat Emptor: Array ([]) type fields must use
         // Arrays.hashCode(). deepHashCode() would have to be used for nested
@@ -97,5 +97,5 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
                           && Arrays.equals(self.m_alInstructionValues, other.m_alInstructionValues)
                           && Arrays.equals(self.m_alBigInstructionValues, other.m_alBigInstructionValues)
                           && Objects.equals(self.m_actionInfos, other.m_actionInfos));
-    }
+    }*/
 }
