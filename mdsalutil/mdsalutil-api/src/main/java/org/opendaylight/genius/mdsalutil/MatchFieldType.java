@@ -9,8 +9,8 @@ package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
 import java.util.Map;
-
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -30,6 +30,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TcpFlagMatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4MatchBuilder;
@@ -39,10 +40,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.protocol.match.fields.PbbBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.vlan.match.fields.VlanIdBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpOp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSpa;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpTpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSha;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpTha;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpTpa;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.EthDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.EthSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.EthType;
@@ -53,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.IpPro
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv4Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv4Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv6Dst;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv6NdTarget;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Ipv6Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Metadata;
@@ -61,11 +63,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.PbbIs
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpFlag;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpSrc;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TunnelId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpDst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.VlanVid;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TunnelId;
 
 public enum MatchFieldType {
     eth_src {
@@ -878,6 +879,33 @@ public enum MatchFieldType {
 
             if (icmpv6MatchBuilder != null) {
                 matchBuilderInOut.setIcmpv6Match(icmpv6MatchBuilder.build());
+            }
+        }
+    },
+
+    ipv6_nd_target {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return Ipv6NdTarget.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.get(Ipv6MatchBuilder.class);
+
+            if (ipv6MatchBuilder == null) {
+                ipv6MatchBuilder = new Ipv6MatchBuilder();
+                mapMatchBuilder.put(Ipv6MatchBuilder.class, ipv6MatchBuilder);
+            }
+            ipv6MatchBuilder.setIpv6NdTarget(new Ipv6Address(matchInfo.getStringMatchValues()[0])).build();
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.remove(Ipv6MatchBuilder.class);
+
+            if (ipv6MatchBuilder != null) {
+                matchBuilderInOut.setLayer3Match(ipv6MatchBuilder.build());
             }
         }
     };
