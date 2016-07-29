@@ -57,10 +57,11 @@ public class NwConstants {
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
     public static final BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
     public static final BigInteger COOKIE_VM_LFIB_TABLE = new BigInteger("8000002", 16);
-    static final BigInteger COOKIE_VM_FIB_TABLE =  new BigInteger("8000003", 16);
+    public static final BigInteger COOKIE_VM_FIB_TABLE =  new BigInteger("8000003", 16);
     public static final BigInteger COOKIE_DNAT_TABLE = new BigInteger("8000004", 16);
     public static final BigInteger COOKIE_TS_TABLE = new BigInteger("8000005", 16);
     public static final BigInteger COOKIE_SNAT_TABLE = new BigInteger("8000006", 16);
+    public static final BigInteger COOKIE_OUTBOUND_NAPT_TABLE = new BigInteger("8000008", 16);
     public static final BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
