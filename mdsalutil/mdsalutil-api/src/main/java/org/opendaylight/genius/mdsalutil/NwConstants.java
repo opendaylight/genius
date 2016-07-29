@@ -52,7 +52,8 @@ public class NwConstants {
     public static final int SCF_SERVICE_INDEX = 4;
     public static final int L3VPN_SERVICE_INDEX = 5;
     public static final int ELAN_SERVICE_INDEX = 6;
-    //Table IDs
+
+    public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
     public static final BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
     public static final BigInteger COOKIE_VM_LFIB_TABLE = new BigInteger("8000002", 16);
@@ -65,6 +66,7 @@ public class NwConstants {
     public static final BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
     public static final BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
 
+    //Table IDs
     public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
     public static final short LPORT_DISPATCHER_TABLE = 17;
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
@@ -81,6 +83,7 @@ public class NwConstants {
     public static final short EGRESS_ACL_TABLE_ID = 40;
     public static final short EGRESS_ACL_NEXT_TABLE_ID = 41;
     public static final short INBOUND_NAPT_TABLE = 44;
+    public static final short IPV6_TABLE = 45;
     public static final short OUTBOUND_NAPT_TABLE = 46;
     public static final short NAPT_PFIB_TABLE = 47;
     public static final short ELAN_SMAC_TABLE = 50;
