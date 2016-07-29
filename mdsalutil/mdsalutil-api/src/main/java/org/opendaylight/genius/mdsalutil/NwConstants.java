@@ -57,7 +57,7 @@ public class NwConstants {
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
     public static final BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
     public static final BigInteger COOKIE_VM_LFIB_TABLE = new BigInteger("8000002", 16);
-    static final BigInteger COOKIE_VM_FIB_TABLE =  new BigInteger("8000003", 16);
+    public static final BigInteger COOKIE_VM_FIB_TABLE =  new BigInteger("8000003", 16);
     public static final BigInteger COOKIE_DNAT_TABLE = new BigInteger("8000004", 16);
     public static final BigInteger COOKIE_TS_TABLE = new BigInteger("8000005", 16);
     public static final BigInteger COOKIE_SNAT_TABLE = new BigInteger("8000006", 16);
@@ -90,6 +90,9 @@ public class NwConstants {
     public static final short ELAN_DMAC_TABLE = 51;
     public static final short ELAN_UNKNOWN_DMAC_TABLE = 52;
     public static final short ELAN_FILTER_EQUALS_TABLE = 55;
+    public static final short SCF_UP_SUB_FILTER_TCP_BASED_TABLE = 70;
+    public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
+    public static final short SCF_CHAIN_FWD_TABLE = 75;
     public static final short L3_INTERFACE_TABLE = 80;
     public static final short INGRESS_ACL_TABLE_ID = 251;
     public static final short INGRESS_ACL_NEXT_TABLE_ID = 252;
