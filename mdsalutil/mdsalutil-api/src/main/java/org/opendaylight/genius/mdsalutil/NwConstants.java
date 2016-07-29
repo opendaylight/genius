@@ -46,12 +46,12 @@ public class NwConstants {
 
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
 
-    public static final int DHCP_SERVICE_INDEX = 1;
-    public static final int ACL_SERVICE_INDEX = 2;
-    public static final int IPV6_SERVICE_INDEX = 3;
-    public static final int SCF_SERVICE_INDEX = 4;
-    public static final int L3VPN_SERVICE_INDEX = 5;
-    public static final int ELAN_SERVICE_INDEX = 6;
+    public static final short DHCP_SERVICE_INDEX = 1;
+    public static final short ACL_SERVICE_INDEX = 2;
+    public static final short IPV6_SERVICE_INDEX = 3;
+    public static final short SCF_SERVICE_INDEX = 4;
+    public static final short L3VPN_SERVICE_INDEX = 5;
+    public static final short ELAN_SERVICE_INDEX = 6;
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
