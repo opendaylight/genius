@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_e05e7d75",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-07-30T10:33:27Z",
+      "side": 1,
+      "message": "add a new line here. checkstyle will complain.",
+      "revId": "203880597681f080fb6a97e405bd4cca8518a345",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
