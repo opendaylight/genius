@@ -48,7 +48,11 @@ public class MetaDataUtil {
     }
 
     public static BigInteger getMetaDataMaskForLPortDispatcher() {
-        return METADATA_MASK_SERVICE_INDEX.or(METADATA_MASK_LPORT_TAG);
+        return getMetaDataMaskForLPortDispatcher(METADATA_MASK_LPORT_TAG);
+    }
+
+    public static BigInteger getMetaDataMaskForLPortDispatcher(BigInteger metadataMaskForLPortTag) {
+        return METADATA_MASK_SERVICE_INDEX.or(metadataMaskForLPortTag);
     }
 
     public static BigInteger getMetadataLPort(int lPortTag) {

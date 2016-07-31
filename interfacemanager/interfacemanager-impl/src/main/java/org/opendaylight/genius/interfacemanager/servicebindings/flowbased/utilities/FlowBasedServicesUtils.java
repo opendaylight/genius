@@ -343,8 +343,8 @@ public class FlowBasedServicesUtils {
             isVlanTransparent = l2vlan.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
         }
         int instructionKey = 0;
-        BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag, (short) 0);
-        BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher();
+        BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag, (short) 0, BigInteger.ZERO, isExternal(iface));
+        BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher(MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG);
         List<Instruction> instructions = new ArrayList<>();
         if (vlanId != 0 && !isVlanTransparent) {
             instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
