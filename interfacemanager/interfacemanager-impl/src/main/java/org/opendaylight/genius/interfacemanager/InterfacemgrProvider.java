@@ -9,11 +9,13 @@ package org.opendaylight.genius.interfacemanager;
 
 
 import com.google.common.base.Optional;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -52,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
@@ -300,8 +303,10 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
         interfaceInfo.setOpState((ifState.getOperStatus() == OperStatus.Up) ? InterfaceInfo.InterfaceOpState.UP : InterfaceInfo.InterfaceOpState.DOWN);
-
-
+        PhysAddress phyAddress = ifState.getPhysAddress();
+        if (phyAddress != null) {
+            interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
+        }
         return interfaceInfo;
 
     }
@@ -327,7 +332,10 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
         interfaceInfo.setOpState((ifState.getOperStatus() == OperStatus.Up) ? InterfaceInfo.InterfaceOpState.UP : InterfaceInfo.InterfaceOpState.DOWN);
-
+        PhysAddress phyAddress = ifState.getPhysAddress();
+        if (phyAddress != null) {
+            interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
+        }
 
         return interfaceInfo;
     }
@@ -353,6 +361,10 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setOpState((ifState.getOperStatus() == OperStatus.Down) ? InterfaceInfo.InterfaceOpState.DOWN :
                 ifState.getOperStatus() == OperStatus.Unknown ? InterfaceInfo.InterfaceOpState.UNKNOWN : InterfaceInfo.InterfaceOpState.UP);
+        PhysAddress phyAddress = ifState.getPhysAddress();
+        if (phyAddress != null) {
+            interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
+        }
         return interfaceInfo;
     }
 
