@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.Map;
-
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
@@ -25,8 +25,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtStateKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfTcpDstKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfTcpSrcKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfUdpDstKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfUdpSrcKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.state.grouping.NxmNxCtStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.zone.grouping.NxmNxCtZoneBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.tcp.src.grouping.NxmOfTcpSrcBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.tcp.dst.grouping.NxmOfTcpDstBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.udp.dst.grouping.NxmOfUdpDstBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.udp.src.grouping.NxmOfUdpSrcBuilder;
 
 public enum NxMatchFieldType {
 
@@ -103,6 +111,149 @@ public enum NxMatchFieldType {
             }
         }
 
+    },
+    nx_tcp_src_with_mask {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return NxmNxReg.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfTcpSrcBuilder tcpSrcBuilder = (NxmOfTcpSrcBuilder) mapMatchBuilder.get(NxmOfTcpSrcBuilder.class);
+
+            if (tcpSrcBuilder == null) {
+                tcpSrcBuilder = new NxmOfTcpSrcBuilder();
+                mapMatchBuilder.put(NxmOfTcpSrcBuilder.class, tcpSrcBuilder);
+            }
+            tcpSrcBuilder.setPort(new PortNumber((int)matchInfo.getMatchValues()[0]));
+            tcpSrcBuilder.setMask((int)matchInfo.getMatchValues()[1]);
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
+                             Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfTcpSrcBuilder tcpSrcBuilder = (NxmOfTcpSrcBuilder) mapMatchBuilder.remove(NxmOfTcpSrcBuilder.class);
+
+            if (tcpSrcBuilder != null) {
+                NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
+                        .setNxmOfTcpSrc(tcpSrcBuilder.build())
+                        .build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations =
+                        matchBuilderInOut.getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmOfTcpSrcKey.class);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            }
+        }
+
+    },
+    nx_tcp_dst_with_mask {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return NxmNxReg.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfTcpDstBuilder tcpDstBuilder = (NxmOfTcpDstBuilder) mapMatchBuilder.get(NxmOfTcpDstBuilder.class);
+
+            if (tcpDstBuilder == null) {
+                tcpDstBuilder = new NxmOfTcpDstBuilder();
+                mapMatchBuilder.put(NxmOfTcpDstBuilder.class, tcpDstBuilder);
+            }
+            tcpDstBuilder.setPort(new PortNumber((int)matchInfo.getMatchValues()[0]));
+            tcpDstBuilder.setMask((int)matchInfo.getMatchValues()[1]);
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
+                             Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfTcpDstBuilder tcpDstBuilder = (NxmOfTcpDstBuilder) mapMatchBuilder.remove(NxmOfTcpDstBuilder.class);
+
+            if (tcpDstBuilder != null) {
+                NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
+                        .setNxmOfTcpDst(tcpDstBuilder.build())
+                        .build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations =
+                        matchBuilderInOut.getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmOfTcpDstKey.class);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            }
+        }
+
+    },
+    nx_udp_src_with_mask {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return NxmNxReg.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfUdpSrcBuilder udpSrcBuilder = (NxmOfUdpSrcBuilder) mapMatchBuilder.get(NxmOfUdpSrcBuilder.class);
+
+            if (udpSrcBuilder == null) {
+                udpSrcBuilder = new NxmOfUdpSrcBuilder();
+                mapMatchBuilder.put(NxmOfUdpSrcBuilder.class, udpSrcBuilder);
+            }
+            udpSrcBuilder.setPort(new PortNumber((int)matchInfo.getMatchValues()[0]));
+            udpSrcBuilder.setMask((int)matchInfo.getMatchValues()[1]);
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
+                             Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfUdpSrcBuilder udpSrcBuilder = (NxmOfUdpSrcBuilder) mapMatchBuilder.remove(NxmOfUdpSrcBuilder.class);
+
+            if (udpSrcBuilder != null) {
+                NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
+                        .setNxmOfUdpSrc(udpSrcBuilder.build())
+                        .build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations =
+                        matchBuilderInOut.getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmOfUdpSrcKey.class);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            }
+        }
+
+    },
+    nx_udp_dst_with_mask {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return NxmNxReg.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfUdpDstBuilder udpDstBuilder = (NxmOfUdpDstBuilder) mapMatchBuilder.get(NxmOfUdpDstBuilder.class);
+
+            if (udpDstBuilder == null) {
+                udpDstBuilder = new NxmOfUdpDstBuilder();
+                mapMatchBuilder.put(NxmOfUdpDstBuilder.class, udpDstBuilder);
+            }
+            udpDstBuilder.setPort(new PortNumber((int)matchInfo.getMatchValues()[0]));
+            udpDstBuilder.setMask((int)matchInfo.getMatchValues()[1]);
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
+                             Map<Class<?>, Object> mapMatchBuilder) {
+            NxmOfUdpDstBuilder udpDstBuilder = (NxmOfUdpDstBuilder) mapMatchBuilder.remove(NxmOfUdpDstBuilder.class);
+
+            if (udpDstBuilder != null) {
+                NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
+                        .setNxmOfUdpDst(udpDstBuilder.build())
+                        .build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations =
+                        matchBuilderInOut.getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmOfUdpDstKey.class);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            }
+        }
     };
 
     /**
