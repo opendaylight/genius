@@ -9,7 +9,7 @@ package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
 
-public class NwConstants {
+public final class NwConstants {
 
     // EthType Values
     public static final int ETHTYPE_802_1Q            = 0X8100;
@@ -46,12 +46,16 @@ public class NwConstants {
 
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
 
+    // Ingress (w.r.t switch) service indexes
     public static final short DHCP_SERVICE_INDEX = 1;
     public static final short ACL_SERVICE_INDEX = 2;
     public static final short IPV6_SERVICE_INDEX = 3;
     public static final short SCF_SERVICE_INDEX = 4;
     public static final short L3VPN_SERVICE_INDEX = 5;
     public static final short ELAN_SERVICE_INDEX = 6;
+
+    // Egress (w.r.t switch) service indexes
+    public static final short INGRESS_ACL_SERVICE_INDEX = 6;
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
@@ -82,6 +86,11 @@ public class NwConstants {
     public static final short INTERNAL_TUNNEL_TABLE = 36;
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
     public static final short EGRESS_ACL_TABLE_ID = 40;
+    public static final short EGRESS_ACL_FILTER_TABLE_ID = 41;
+    /**
+     * @deprecated Use {@link #EGRESS_ACL_FILTER_TABLE_ID} instead.
+     */
+    @Deprecated
     public static final short EGRESS_ACL_NEXT_TABLE_ID = 41;
     public static final short INBOUND_NAPT_TABLE = 44;
     public static final short IPV6_TABLE = 45;
@@ -96,6 +105,11 @@ public class NwConstants {
     public static final short SCF_CHAIN_FWD_TABLE = 75;
     public static final short L3_INTERFACE_TABLE = 80;
     public static final short INGRESS_ACL_TABLE_ID = 251;
+    public static final short INGRESS_ACL_FILTER_TABLE_ID = 252;
+    /**
+     * @deprecated Use {@link #INGRESS_ACL_FILTER_TABLE_ID} instead.
+     */
+    @Deprecated
     public static final short INGRESS_ACL_NEXT_TABLE_ID = 252;
 
 
