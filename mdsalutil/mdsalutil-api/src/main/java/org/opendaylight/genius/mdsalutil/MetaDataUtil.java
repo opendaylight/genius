@@ -83,11 +83,15 @@ public class MetaDataUtil {
     }
 
     public static long getNatRouterIdFromMetadata(BigInteger metadata){
-        return (metadata.and(METADATA_MASK_VRFID)).longValue();
+        return getVpnIdFromMetadata(metadata);
+    }
+
+    public static BigInteger getVpnIdMetadata(long vrfId) {
+        return METADATA_MASK_VRFID.and(BigInteger.valueOf(vrfId).shiftLeft(1));
     }
 
     public static long getVpnIdFromMetadata(BigInteger metadata) {
-        return (metadata.and(METADATA_MASK_VRFID)).longValue();
+        return (metadata.and(METADATA_MASK_VRFID).shiftRight(1)).longValue();
     }
     public static BigInteger getWriteMetaDataMaskForDispatcherTable() {
         return new BigInteger("FFFFFFFFFFFFFFFE", 16);
