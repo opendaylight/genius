@@ -50,6 +50,7 @@ public class InterfaceInfo implements Serializable {
     protected String portName;
     protected String interfaceName;
     protected boolean isUntaggedVlan;
+    protected String macAddress;
 
     public String getInterfaceName() {
         return interfaceName;
@@ -134,5 +135,13 @@ public class InterfaceInfo implements Serializable {
     }
     public String getPortName(){
         return this.portName;
+    }
+
+    public String getMacAddress() {
+        return macAddress;
+    }
+
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
     }
 }
