@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_d3e62b16",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-08-02T16:12:35Z",
+      "side": 1,
+      "message": "Can we put a parenthesis around the (BigInteger... .shiftLeft(1))\n\nBasically we have to take the input: shiftLeft , then AND it with METADATA_MASK_VRFID.",
+      "revId": "ff2bb004ba2bb925632e5aac7a8cf74b67ba0369",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
