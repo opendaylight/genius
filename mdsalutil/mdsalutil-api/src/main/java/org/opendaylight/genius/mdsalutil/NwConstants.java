@@ -73,6 +73,9 @@ public final class NwConstants {
 
     //Table IDs
     public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
+    public static final short VXLAN_TRUNK_INTERFACE_TABLE = 10;
+    public static final short TRUNK_L2_TABLE = 11;
+    public static final short GRE_TRUNK_INTERFACE_TABLE = 12;
     public static final short LPORT_DISPATCHER_TABLE = 17;
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
     public static final short DHCP_TABLE = 19;

@@ -191,9 +191,8 @@ public class InterfaceManagerCommonUtils {
             mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[] { tableId }));
         }
 
-        BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
         FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,
-                IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, COOKIE_VM_INGRESS_TABLE, matches,
+                IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
                 mkInstructions);
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
             futures.add(mdsalApiManager.installFlow(dpnId, flowEntity));

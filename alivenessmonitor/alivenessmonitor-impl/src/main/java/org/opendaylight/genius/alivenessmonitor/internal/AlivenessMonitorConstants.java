@@ -11,7 +11,6 @@ public class AlivenessMonitorConstants {
     static final String MONITOR_IDPOOL_NAME = "aliveness-monitor";
     static final long MONITOR_IDPOOL_START = 1L;
     static final long MONITOR_IDPOOL_SIZE = 65535;
-    static final short L3_INTERFACE_TABLE = 80;
     static final String SEPERATOR = ".";
 
     // BFD parameters

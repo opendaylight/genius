@@ -28,16 +28,8 @@ public class IfmConstants {
     public static final long TRUNK_GROUP_START = 20000;
     public static final long LOGICAL_GROUP_START = 100000;
     //Table
-    public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
-    public static final short VXLAN_TRUNK_INTERFACE_TABLE = 10;
-    public static final short TRUNK_L2_TABLE = 11;
-    public static final short GRE_TRUNK_INTERFACE_TABLE = 12;
-    public static final short LPORT_DISPATCHER_TABLE = 30;
-    public static final short L3_INTERFACE_TABLE = 80;
     public static final long DELAY_TIME_IN_MILLISECOND = 10000;
     //Cookies
-    public static final BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
-    public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_L3_BASE = new BigInteger("8000000", 16);
     //Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;

@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -71,7 +72,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             LOG.trace("packet: {}, tableId {}, arpType {}", packetReceived, tableId, arpType);
         }
 
-        if (tableId == AlivenessMonitorConstants.L3_INTERFACE_TABLE) {
+        if (tableId == NwConstants.L3_INTERFACE_TABLE) {
             if (arpType == ARP.REPLY) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("packet: {}, monitorKey {}", packetReceived);
