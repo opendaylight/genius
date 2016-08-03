@@ -21,6 +21,7 @@ public class ActionInfo implements Serializable {
 
     private final ActionType m_actionType;
     private final String[] m_asActionValues;
+    private final String[][] m_asActionValuesMatrix;
     private final BigInteger[] m_aBigIntValues;
     private final int m_actionKey;
 
@@ -28,6 +29,11 @@ public class ActionInfo implements Serializable {
         super();
         m_actionType = action.m_actionType;
         m_actionKey = action.m_actionKey;
+        m_asActionValuesMatrix = new String[action.m_asActionValuesMatrix.length][];
+        for(int i = 0; i < action.m_asActionValuesMatrix.length; i++){
+            m_asActionValuesMatrix[i] = Arrays.copyOf(action.m_asActionValuesMatrix[i], action.m_asActionValuesMatrix[i].length);
+        }
+
         m_asActionValues = Arrays.copyOf(action.m_asActionValues, action.m_asActionValues.length);
         m_aBigIntValues = null;
     }
@@ -36,6 +42,7 @@ public class ActionInfo implements Serializable {
         m_actionType = actionType;
         m_actionKey = 0;
         m_asActionValues = asActionValues;
+        m_asActionValuesMatrix = null;
         m_aBigIntValues = null;
     }
 
@@ -43,6 +50,7 @@ public class ActionInfo implements Serializable {
         m_actionType = actionType;
         m_actionKey = actionKey;
         m_asActionValues = asActionValues;
+        m_asActionValuesMatrix = null;
         m_aBigIntValues = null;
     }
 
@@ -50,6 +58,7 @@ public class ActionInfo implements Serializable {
         m_actionType = actionType;
         m_actionKey = 0;
         m_aBigIntValues = aBigIntValues;
+        m_asActionValuesMatrix = null;
         m_asActionValues = null;
     }
 
@@ -57,7 +66,20 @@ public class ActionInfo implements Serializable {
         m_actionType = actionType;
         m_actionKey = actionKey;
         m_aBigIntValues = aBigIntValues;
+        m_asActionValuesMatrix = null;
         m_asActionValues = null;
+    }
+
+    public ActionInfo(ActionType actionType, String[] asActionValues, String[][] asActionValuesMatrix, int actionKey) {
+        m_actionType = actionType;
+        m_actionKey = actionKey;
+        m_aBigIntValues = null;
+        m_asActionValuesMatrix = asActionValuesMatrix;
+        m_asActionValues = asActionValues;
+    }
+
+    public ActionInfo(ActionType actionType, String[] asActionValues, String[][] asActionValuesMatrix) {
+        this(actionType, asActionValues, asActionValuesMatrix, 0);
     }
 
     public int getActionKey() {
@@ -78,6 +100,10 @@ public class ActionInfo implements Serializable {
 
     public BigInteger[] getBigActionValues() {
         return m_aBigIntValues;
+    }
+
+    public String[][] getActionValuesMatrix() {
+        return m_asActionValuesMatrix;
     }
 
     @Override
