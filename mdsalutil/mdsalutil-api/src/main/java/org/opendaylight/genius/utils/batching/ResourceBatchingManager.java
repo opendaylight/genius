@@ -93,9 +93,9 @@ public class ResourceBatchingManager implements AutoCloseable {
                 int batchSize = resHandler.getBatchSize();
 
                 int batches = resList.size()/ batchSize;
-                LOG.trace("Picked up size {} batches {}", resList.size(), batches);
                 if ( resList.size() > batchSize)
                 {
+                    LOG.info("Batched up resources of size {} into batches {} for resourcetype {}", resList.size(), batches, resourceType);
                     for (int i = 0, j = 0; i < batches; j = j + batchSize,i++)
                     {
                         new MdsalDsTask<>(resourceType, resList.subList(j, j + batchSize)).process();
@@ -110,7 +110,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                 }
 
                 long timetaken = System.currentTimeMillis() - start;
-                LOG.info( "Total time taken for resourceList of size: " + resList.size() + " ### time =  " + timetaken);
+                LOG.info( "Total taken ##time = {}ms for resourceList of size {} for resourceType {}", timetaken, resList.size(), resourceType);
 
             } catch (InterruptedException e)
             {
@@ -178,7 +178,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                     futures.get();
                     long time = System.currentTimeMillis() - start;
 
-                    LOG.info( " ##### Time taken for " + actResourceList.size() + " = " + time);
+                    LOG.trace( " ##### Time taken for " + actResourceList.size() + " = " + time + "ms");
 
                 } catch (InterruptedException | ExecutionException e)
                 {
