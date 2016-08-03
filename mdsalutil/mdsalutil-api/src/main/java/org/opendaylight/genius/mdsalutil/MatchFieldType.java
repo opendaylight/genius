@@ -29,7 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TcpFlagMatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TcpFlagsMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatchBuilder;
@@ -61,7 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.Metad
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.MplsLabel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.PbbIsid;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpDst;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpFlag;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpFlags;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TcpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.TunnelId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpDst;
@@ -676,32 +676,32 @@ public enum MatchFieldType {
     tcp_flags {
         @Override
         protected Class<? extends MatchField> getMatchType() {
-            return TcpFlag.class;
+            return TcpFlags.class;
         }
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TcpFlagMatchBuilder tcpFlagMatchBuilder = (TcpFlagMatchBuilder) mapMatchBuilder
-                    .get(TcpFlagMatchBuilder.class);
+            TcpFlagsMatchBuilder TcpFlagsMatchBuilder = (TcpFlagsMatchBuilder) mapMatchBuilder
+                    .get(TcpFlagsMatchBuilder.class);
             if (matchInfo == null || matchInfo.getMatchValues() == null || matchInfo.getMatchValues().length == 0) {
                 return;
             }
 
-            if (tcpFlagMatchBuilder == null) {
-                tcpFlagMatchBuilder = new TcpFlagMatchBuilder();
-                mapMatchBuilder.put(TcpFlagMatchBuilder.class, tcpFlagMatchBuilder);
+            if (TcpFlagsMatchBuilder == null) {
+                TcpFlagsMatchBuilder = new TcpFlagsMatchBuilder();
+                mapMatchBuilder.put(TcpFlagsMatchBuilder.class, TcpFlagsMatchBuilder);
             }
-            tcpFlagMatchBuilder.setTcpFlag((int) matchInfo.getMatchValues()[0]);
+            TcpFlagsMatchBuilder.setTcpFlags((int) matchInfo.getMatchValues()[0]);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>,
                 Object> mapMatchBuilder) {
-            TcpFlagMatchBuilder tcpFlagMatchBuilder = (TcpFlagMatchBuilder) mapMatchBuilder
-                    .remove(TcpFlagMatchBuilder.class);
+            TcpFlagsMatchBuilder TcpFlagsMatchBuilder = (TcpFlagsMatchBuilder) mapMatchBuilder
+                    .remove(TcpFlagsMatchBuilder.class);
 
-            if (tcpFlagMatchBuilder != null) {
-                matchBuilderInOut.setTcpFlagMatch(tcpFlagMatchBuilder.build());
+            if (TcpFlagsMatchBuilder != null) {
+                matchBuilderInOut.setTcpFlagsMatch(TcpFlagsMatchBuilder.build());
             }
         }
     },
