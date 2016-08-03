@@ -270,6 +270,7 @@ public class DataStoreJobCoordinator {
                     for (int i = 0; i < THREADPOOL_SIZE; i++) {
                         Map<String, JobQueue> jobEntriesMap = jobQueueMap.get(i);
                         if (jobEntriesMap.isEmpty()) {
+                            Thread.sleep(500);
                             continue;
                         }
 
