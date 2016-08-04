@@ -46,7 +46,7 @@ class IdUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(IdUtils.class);
     private static final long DEFAULT_DELAY_TIME = 30;
     private static final long DEFAULT_AVAILABLE_ID_COUNT = 0;
-    private static final int DEFAULT_BLOCK_SIZE_DIFF = 50;
+    private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
 
     private static int BLADE_ID;
     static {
