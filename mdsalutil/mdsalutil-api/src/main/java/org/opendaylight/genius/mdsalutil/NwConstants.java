@@ -53,9 +53,17 @@ public final class NwConstants {
     public static final short SCF_SERVICE_INDEX = 4;
     public static final short L3VPN_SERVICE_INDEX = 5;
     public static final short ELAN_SERVICE_INDEX = 6;
-
+    
+    public static final String DHCP_SERVICE_NAME = "DHCP_SERVICE";
+    public static final String ACL_SERVICE_NAME = "ACL_SERVICE";
+    public static final String IPV6_SERVICE_NAME = "IPV6_SERVICE";
+    public static final String SCF_SERVICE_NAME = "SCF_SERVICE";
+    public static final String L3VPN_SERVICE_NAME = "L3VPN_SERVICE";
+    public static final String ELAN_SERVICE_NAME = "ELAN_SERVICE";
+    
     // Egress (w.r.t switch) service indexes
-    public static final short INGRESS_ACL_SERVICE_INDEX = 6;
+    public static final short INGRESS_ACL_SERVICE_INDEX = 6;    
+    public static final String INGRESS_ACL_SERVICE_NAME = "INGRESS_ACL_SERVICE";
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
