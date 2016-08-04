@@ -47,12 +47,14 @@ public final class NwConstants {
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
 
     // Ingress (w.r.t switch) service indexes
+    public static final short DEFAULT_SERVICE_INDEX = 0;
     public static final short DHCP_SERVICE_INDEX = 1;
     public static final short ACL_SERVICE_INDEX = 2;
     public static final short IPV6_SERVICE_INDEX = 3;
     public static final short SCF_SERVICE_INDEX = 4;
     public static final short L3VPN_SERVICE_INDEX = 5;
     public static final short ELAN_SERVICE_INDEX = 6;
+    public static final short DEFAULT_EGRESS_SERVICE_INDEX = 7;
 
     // Egress (w.r.t switch) service indexes
     public static final short INGRESS_ACL_SERVICE_INDEX = 6;
@@ -65,6 +67,7 @@ public final class NwConstants {
     public static final BigInteger COOKIE_DNAT_TABLE = new BigInteger("8000004", 16);
     public static final BigInteger COOKIE_TS_TABLE = new BigInteger("8000005", 16);
     public static final BigInteger COOKIE_SNAT_TABLE = new BigInteger("8000006", 16);
+    public static final BigInteger EGRESS_DISPATCHER_TABLE_COOKIE = new BigInteger("8000007", 16);
     public static final BigInteger COOKIE_OUTBOUND_NAPT_TABLE = new BigInteger("8000008", 16);
     public static final BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
@@ -107,6 +110,7 @@ public final class NwConstants {
     public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     public static final short SCF_CHAIN_FWD_TABLE = 75;
     public static final short L3_INTERFACE_TABLE = 80;
+    public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short INGRESS_ACL_TABLE_ID = 251;
     public static final short INGRESS_ACL_FILTER_TABLE_ID = 252;
     /**
@@ -114,6 +118,4 @@ public final class NwConstants {
      */
     @Deprecated
     public static final short INGRESS_ACL_NEXT_TABLE_ID = 252;
-
-
  }

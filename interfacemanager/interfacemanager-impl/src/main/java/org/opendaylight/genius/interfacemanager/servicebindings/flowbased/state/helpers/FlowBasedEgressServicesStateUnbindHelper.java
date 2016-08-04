@@ -5,21 +5,25 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.statehelpers;
+package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,14 +33,38 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class FlowBasedServicesStateUnbindHelper {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesStateUnbindHelper.class);
+public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateUnbindHelper.class);
 
-    public static List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState, Class<? extends ServiceModeBase> serviceMode,
-                                                                           DataBroker dataBroker) {
+    private InterfacemgrProvider interfaceMgrProvider;
+    private static volatile FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+
+    private FlowBasedEgressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
+        this.interfaceMgrProvider = interfaceMgrProvider;
+    }
+
+    public static void intitializeFlowBasedEgressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
+        if (flowBasedServicesStateRemovable == null) {
+            synchronized (FlowBasedEgressServicesStateUnbindHelper.class) {
+                if (flowBasedServicesStateRemovable == null) {
+                    flowBasedServicesStateRemovable = new FlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
+                }
+            }
+        }
+    }
+
+    public static FlowBasedServicesStateRemovable getFlowBasedEgressServicesStateRemoveHelper() {
+        if (flowBasedServicesStateRemovable == null) {
+            LOG.error("FlowBasedIngressBindHelper`` is not initialized");
+        }
+        return flowBasedServicesStateRemovable;
+    }
+    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("unbinding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), serviceMode, dataBroker);
+
+        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
         if (servicesInfo == null) {
             LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;
@@ -45,10 +73,6 @@ public class FlowBasedServicesStateUnbindHelper {
         List<BoundServices> allServices = servicesInfo.getBoundServices();
         if (allServices == null || allServices.isEmpty()) {
             LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if(ifaceState.getType() == null) {
             return futures;
         }
 
@@ -65,25 +89,7 @@ public class FlowBasedServicesStateUnbindHelper {
             Interface iface,
             Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-
-        List<String> ofportIds = iface.getLowerLayerIf();
-        NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if(nodeConnectorId == null){
-            return futures;
-        }
-        BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
-
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, t);
-
-        for (BoundServices boundService : allServices) {
-            if (!boundService.equals(highestPriorityBoundService)) {
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), boundService, t, boundService.getServicePriority());
-            }
-        }
-
-        futures.add(t.submit());
+        //FIXME : not supported yet
         return futures;
     }
 
@@ -105,9 +111,9 @@ public class FlowBasedServicesStateUnbindHelper {
             }
         });
         BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, t, IfmConstants.DEFAULT_SERVICE_INDEX);
+        FlowBasedServicesUtils.removeEgressDispatcherFlow(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
+            FlowBasedServicesUtils.removeEgressDispatcherFlow(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
         }
         futures.add(t.submit());
         return futures;
