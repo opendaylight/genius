@@ -62,7 +62,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <version>${genius.ovsdb.version}</version>
   </dependency>
 </dependencies>
-
  <build>
     <plugins>
       <plugin>
@@ -78,5 +77,4 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       </plugin>
     </plugins>
   </build>
-
 </project>

@@ -62,9 +62,9 @@ public final class NwConstants {
     public static final String SCF_SERVICE_NAME = "SCF_SERVICE";
     public static final String L3VPN_SERVICE_NAME = "L3VPN_SERVICE";
     public static final String ELAN_SERVICE_NAME = "ELAN_SERVICE";
-    
+
     // Egress (w.r.t switch) service indexes
-    public static final short INGRESS_ACL_SERVICE_INDEX = 6;    
+    public static final short INGRESS_ACL_SERVICE_INDEX = 6;
     public static final String INGRESS_ACL_SERVICE_NAME = "INGRESS_ACL_SERVICE";
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);

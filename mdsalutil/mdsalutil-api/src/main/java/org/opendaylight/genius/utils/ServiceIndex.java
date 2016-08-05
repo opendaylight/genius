@@ -23,26 +23,27 @@ import org.slf4j.LoggerFactory;
 public class ServiceIndex {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceIndex.class);
 
-	private static Map<String, Short> serviceIndexMap = new ConcurrentHashMap<>();
-	
-	public static short getIndex(String serviceName, short defaultValue) {
-		if ( serviceIndexMap.containsKey(serviceName)) {
-			return serviceIndexMap.get(serviceName);
-		}
-		
-		String servicePriority = ConfigProperties.getProperty(ServiceIndex.class, serviceName, String.valueOf(defaultValue));
-		if ( servicePriority != null ) {
-			try {
-				serviceIndexMap.put( serviceName, Short.valueOf(servicePriority));
-			} catch ( NumberFormatException ex) {
-				LOG.error("Wrong configuration for service {} index {}", serviceName, servicePriority);
-			}
-		}
-		if ( ! serviceIndexMap.containsKey(serviceName)) {
-			LOG.trace("Using default value for service {} index {}", serviceName, defaultValue );
-			serviceIndexMap.put( serviceName, defaultValue);			
-		}
-		
-		return serviceIndexMap.get(serviceName);		
-	}
+    private static Map<String, Short> serviceIndexMap = new ConcurrentHashMap<>();
+
+    public static short getIndex(String serviceName, short defaultValue) {
+        if (serviceIndexMap.containsKey(serviceName)) {
+            return serviceIndexMap.get(serviceName);
+        }
+
+        String servicePriority = ConfigProperties.getProperty(ServiceIndex.class, serviceName,
+                String.valueOf(defaultValue));
+        if (servicePriority != null) {
+            try {
+                serviceIndexMap.put(serviceName, Short.valueOf(servicePriority));
+            } catch (NumberFormatException ex) {
+                LOG.error("Wrong configuration for service {} index {}", serviceName, servicePriority);
+            }
+        }
+        if (!serviceIndexMap.containsKey(serviceName)) {
+            LOG.trace("Using default value for service {} index {}", serviceName, defaultValue);
+            serviceIndexMap.put(serviceName, defaultValue);
+        }
+
+        return serviceIndexMap.get(serviceName);
+    }
 }
