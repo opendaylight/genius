@@ -68,6 +68,11 @@ public class MetaDataUtil {
                 shiftRight(24))).intValue();
     }
 
+    public static int getServiceTagFromMetadata(BigInteger metadata) {
+        return (((metadata.and(MetaDataUtil.METADATA_MASK_SERVICE_INDEX)).
+                shiftRight(61))).intValue();
+    }
+
     public static BigInteger getMetaDataMaskForLPortDispatcher(BigInteger metadataMaskForServiceIndex,
                                                                BigInteger metadataMaskForLPortTag, BigInteger metadataMaskForService) {
         return metadataMaskForServiceIndex.or(metadataMaskForLPortTag).or(metadataMaskForService);
