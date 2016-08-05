@@ -296,17 +296,9 @@ public class IfmUtil {
                                                                     boolean isDefaultEgress,
                                                                     int ifIndex) {
         List<ActionInfo> result = new ArrayList<ActionInfo>();
-        if(!isDefaultEgress){
-            long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
-            result.add(new ActionInfo(ActionType.nx_load_reg_6,
-                    new String[]{Integer.toString(IfmConstants.REG6_START_INDEX), Integer.toString(IfmConstants.REG6_END_INDEX),
-                            Long.toString(regValue)}, actionKeyStart++));
-            result.add(new ActionInfo(ActionType.nx_resubmit,
-                    new String[]{Short.toString(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)}, actionKeyStart++));
-
-        }else {
-            switch (ifaceType) {
-                case VLAN_INTERFACE:
+        switch (ifaceType) {
+            case VLAN_INTERFACE:
+                if(isDefaultEgress) {
                     IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
                     LOG.trace("L2Vlan: {}", vlanIface);
                     boolean isVlanTransparent = false;
@@ -321,23 +313,30 @@ public class IfmUtil {
                                 new String[]{Long.toString(vlanVid)}, actionKeyStart++));
                     }
                     result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
-                    break;
-                case MPLS_OVER_GRE:
-                case VXLAN_TRUNK_INTERFACE:
-                case GRE_TRUNK_INTERFACE:
-                    if (tunnelKey != null) {
-                        result.add(new ActionInfo(ActionType.set_field_tunnel_id,
-                                new BigInteger[]{BigInteger.valueOf(tunnelKey.longValue())},
-                                actionKeyStart++));
-                    }
+                }else{
+                    long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
+                    result.add(new ActionInfo(ActionType.nx_load_reg_6,
+                            new String[]{Integer.toString(IfmConstants.REG6_START_INDEX), Integer.toString(IfmConstants.REG6_END_INDEX),
+                                    Long.toString(regValue)}, actionKeyStart++));
+                    result.add(new ActionInfo(ActionType.nx_resubmit,
+                            new String[]{Short.toString(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)}, actionKeyStart++));
+                }
+                break;
+            case MPLS_OVER_GRE:
+            case VXLAN_TRUNK_INTERFACE:
+            case GRE_TRUNK_INTERFACE:
+                if (tunnelKey != null) {
+                    result.add(new ActionInfo(ActionType.set_field_tunnel_id,
+                            new BigInteger[]{BigInteger.valueOf(tunnelKey.longValue())},
+                            actionKeyStart++));
+                }
 
-                    result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
-                    break;
+                result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
+                break;
 
-                default:
-                    LOG.warn("Interface Type {} not handled yet", ifaceType);
-                    break;
-            }
+            default:
+                LOG.warn("Interface Type {} not handled yet", ifaceType);
+                break;
         }
         return result;
     }
