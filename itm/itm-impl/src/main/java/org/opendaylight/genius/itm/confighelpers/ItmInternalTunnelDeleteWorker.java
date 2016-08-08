@@ -23,6 +23,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +89,7 @@ public class ItmInternalTunnelDeleteWorker {
                     t.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
                     // remove the tep from the cache
                     meshedEndPtCache.remove(srcTep) ;
-
+                    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
                     InstanceIdentifier<DPNTEPsInfo> dpnPath =
                             InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
                                     .build();
@@ -100,8 +102,10 @@ public class ItmInternalTunnelDeleteWorker {
                         //DPNTEPsInfo dpnRead = dpnOptional.get();
                         // remove dpn if no vteps exist on dpn
                         //  if (dpnRead.getTunnelEndPoints() == null || dpnRead.getTunnelEndPoints().size() == 0) {
-                        logger.debug( "Removing Terminating Service Table Flow ") ;
-                        ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager,false);
+                        if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
+                            logger.debug("Removing Terminating Service Table Flow ");
+                            ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager, false);
+                        }
                         logger.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
                         t.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
                         InstanceIdentifier<DpnEndpoints> tnlContainerPath =
