@@ -274,7 +274,7 @@ public class ItmUtils {
         if(monitorInterval!= null)
             monitoringInterval = monitorInterval.longValue();
         else {
-            if (monitorProtocol.getName().contains("Bfd"))
+            if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeBfd.class))
                 monitoringInterval = (long) ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
             else
                 monitoringInterval = (long) ITMConstants.DEFAULT_MONITOR_INTERVAL;
@@ -768,8 +768,8 @@ public class ItmUtils {
         Integer monitorInterval = ItmUtils.readMonitorIntervalfromDS(dataBroker);
         LOG.debug("determineMonitorInterval: monitorInterval from DS = {}", monitorInterval);
         if(monitorInterval==null){
-            Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = determineMonitorProtocol(dataBroker);
-            if(monitoringProtocol.getName().contains("Bfd"))
+            Class<? extends TunnelMonitoringTypeBase> monitorProtocol = determineMonitorProtocol(dataBroker);
+            if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeBfd.class))
                 monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
             else
                 monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;

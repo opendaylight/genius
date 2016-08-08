@@ -87,7 +87,7 @@ public class ItmInternalTunnelDeleteWorker {
                     t.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
                     // remove the tep from the cache
                     meshedEndPtCache.remove(srcTep) ;
-
+                    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
                     InstanceIdentifier<DPNTEPsInfo> dpnPath =
                             InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
                                     .build();
@@ -100,8 +100,10 @@ public class ItmInternalTunnelDeleteWorker {
                         //DPNTEPsInfo dpnRead = dpnOptional.get();
                         // remove dpn if no vteps exist on dpn
                         //  if (dpnRead.getTunnelEndPoints() == null || dpnRead.getTunnelEndPoints().size() == 0) {
-                        logger.debug( "Removing Terminating Service Table Flow ") ;
-                        ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager,false);
+                        if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
+                            logger.debug("Removing Terminating Service Table Flow ");
+                            ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager, false);
+                        }
                         logger.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
                         t.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
                         InstanceIdentifier<DpnEndpoints> tnlContainerPath =

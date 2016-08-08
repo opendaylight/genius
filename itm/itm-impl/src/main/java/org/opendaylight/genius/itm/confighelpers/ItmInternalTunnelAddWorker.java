@@ -120,9 +120,11 @@ public class ItmInternalTunnelAddWorker {
     private static void wireUpBidirectionalTunnel( TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
                                                    DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
-        ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
-        ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
-
+        Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
+        if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
+            ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
+            ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
+        }
         // Create the forward direction tunnel
         if(!wireUp( srcte, dstte, srcDpnId, dstDpnId, dataBroker, idManagerService, t, futures ))
             logger.error("Could not build tunnel between end points {}, {} " , srcte, dstte );
