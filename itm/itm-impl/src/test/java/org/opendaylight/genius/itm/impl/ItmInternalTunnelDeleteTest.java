@@ -29,8 +29,14 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -60,6 +66,7 @@ public class ItmInternalTunnelDeleteTest {
     BigInteger dpId1 = BigInteger.valueOf(1);
     BigInteger dpId2 = BigInteger.valueOf(2);
     int vlanId = 100 ;
+    int interval = 1000;
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     String parentInterfaceName = "1:phy0:100" ;
@@ -84,6 +91,11 @@ public class ItmInternalTunnelDeleteTest {
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListVxlanNew = new ArrayList<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
+    TunnelMonitorParams TunnelMonitorParams = null;
+    TunnelMonitorInterval tunnelMonitorInterval = null;
+    InstanceIdentifier<TunnelMonitorParams> TunnelMonitorParamsIdentifier = InstanceIdentifier.create(TunnelMonitorParams.class);
+    InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier = InstanceIdentifier.create(TunnelMonitorInterval.class);
+    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = TunnelMonitoringTypeBfd.class;
 
     @Mock DataBroker dataBroker;
     @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
@@ -94,6 +106,9 @@ public class ItmInternalTunnelDeleteTest {
 
     ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker();
 
+    Optional<TunnelMonitorParams> TunnelMonitorParamsOptional ;
+    Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
+
     @Before
     public void setUp() throws Exception {
         when(dataBroker.registerDataChangeListener(
@@ -103,6 +118,15 @@ public class ItmInternalTunnelDeleteTest {
                 any(AsyncDataBroker.DataChangeScope.class)))
                 .thenReturn(dataChangeListenerRegistration);
         setupMocks();
+
+        TunnelMonitorParamsOptional = Optional.of(TunnelMonitorParams);
+        tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
+
+        doReturn(Futures.immediateCheckedFuture(TunnelMonitorParamsOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
+            TunnelMonitorParamsIdentifier);
+        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
+            tunnelMonitorIntervalIdentifier);
+
     }
 
     @After
@@ -129,6 +153,8 @@ public class ItmInternalTunnelDeleteTest {
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).setKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlanNew).setTunnelEndPoints(tunnelEndPointsListVxlan).build();
+        TunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).setMonitorProtocol(monitorProtocol).build();
+        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         meshDpnListVxlan.add(dpntePsInfoVxlanNew);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
@@ -136,7 +162,6 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
-
     }
 
     @Test
