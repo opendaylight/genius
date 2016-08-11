@@ -452,53 +452,11 @@ public class InterfaceManagerCommonUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
         interfaceStateMap.remove(iface.getName());
     }
-
-    public static List<BigInteger> getListOfDpns(DataBroker broker) {
-        List<BigInteger> dpnsList = new LinkedList<>();
-        InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
-        Optional<Nodes> nodesOptional = MDSALUtil.read(broker, LogicalDatastoreType.OPERATIONAL,
-                nodesInstanceIdentifier);
-        if (!nodesOptional.isPresent()) {
-            return dpnsList;
+    
+    public static boolean isPhysicalInterface(String interfaceName) {
+        if (interfaceName.startsWith("tap") || interfaceName.startsWith("vhu") || interfaceName.startsWith("tun")) {
+            return false;
         }
-        Nodes nodes = nodesOptional.get();
-        List<Node> nodeList = nodes.getNode();
-        for (Node node : nodeList) {
-            NodeId nodeId = node.getId();
-            if (nodeId == null) {
-                continue;
-            }
-            BigInteger dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
-            dpnsList.add(dpnId);
-        }
-        return dpnsList;
-    }
-
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateForUnknownDpn(
-            String interfaceName, DataBroker dataBroker) {
-        String parentInterface;
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
-        List<BigInteger> listOfDpns = InterfaceManagerCommonUtils.getListOfDpns(dataBroker);
-        for (BigInteger dpnId : listOfDpns) {
-            parentInterface = new StringBuilder().append(dpnId).append(IfmConstants.OF_URI_SEPARATOR)
-                    .append(interfaceName).toString();
-            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentInterface, dataBroker);
-            if (ifState != null) {
-                break;
-            }
-        }
-        return ifState;
-    }
-
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromDS(
-            String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
-        for (Map.Entry<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> entry : interfaceStateMap
-                .entrySet()) {
-            if (entry.getKey().contains(interfaceName)) {
-                ifState = entry.getValue();
-            }
-        }
-        return ifState;
+        return true;
     }
 }
