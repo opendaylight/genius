@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
@@ -22,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,9 +72,13 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
             LOG.warn("parent refs not specified for {}",interfaceOld.getName());
             return;
         }
+        boolean isTunnelInterface  = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
+        if (!isTunnelInterface && parentRefs.getDatapathNodeIdentifier() != null) {
+            parentRefs = getParentRefsWithDpnPrefix(parentRefs);
+        }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld, ifName, parentRefs);
-        String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld) ?
+        String synchronizationKey = isTunnelInterface ?
                 parentRefs.getDatapathNodeIdentifier().toString() : parentRefs.getParentInterface();
         coordinator.enqueueJob(synchronizationKey, configWorker, MAX_RETRIES);
     }
@@ -86,9 +92,13 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
             LOG.warn("parent refs not specified for {}",interfaceNew.getName());
             return;
         }
+        boolean isTunnelInterface  = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
+        if (!isTunnelInterface && parentRefs.getDatapathNodeIdentifier() != null) {
+            parentRefs = getParentRefsWithDpnPrefix(parentRefs);
+        }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigUpdateWorker worker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew, ifNameNew);
-        String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld) ?
+        String synchronizationKey = isTunnelInterface ?
                 interfaceOld.getName() : parentRefs.getParentInterface();
         coordinator.enqueueJob(synchronizationKey, worker, MAX_RETRIES);
     }
@@ -102,11 +112,23 @@ public class InterfaceConfigListener extends AsyncDataTreeChangeListenerBase<Int
             LOG.warn("parent refs not specified for {}",interfaceNew.getName());
             return;
         }
+        boolean isTunnelInterface  = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew);
+        if (!isTunnelInterface && parentRefs.getDatapathNodeIdentifier() != null) {
+            parentRefs = getParentRefsWithDpnPrefix(parentRefs);
+        }
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs, ifName);
-        String synchronizationKey = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew) ?
+        String synchronizationKey = isTunnelInterface ?
                 interfaceNew.getName() : parentRefs.getParentInterface();
         coordinator.enqueueJob(synchronizationKey, configWorker, MAX_RETRIES);
+    }
+
+    private static ParentRefs getParentRefsWithDpnPrefix(ParentRefs parentRefs) {
+        StringBuilder parentInterface = new StringBuilder(parentRefs.getDatapathNodeIdentifier().toString());
+        parentInterface.append(IfmConstants.OF_URI_SEPARATOR);
+        parentInterface.append(parentRefs.getParentInterface());
+        parentRefs = new ParentRefsBuilder(parentRefs).setParentInterface(parentInterface.toString()).build();
+        return parentRefs;
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {

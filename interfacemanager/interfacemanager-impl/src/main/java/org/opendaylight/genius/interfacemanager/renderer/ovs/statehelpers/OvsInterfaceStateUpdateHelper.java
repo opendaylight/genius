@@ -11,7 +11,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -70,12 +69,10 @@ public class OvsInterfaceStateUpdateHelper {
             PhysAddress physAddress = new PhysAddress(macAddressNew.getValue());
             ifaceBuilder.setPhysAddress(physAddress);
         }
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-        String dpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         // modify the attributes in interface operational DS
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 handleInterfaceStateUpdates(interfaceName, transaction, dataBroker,
-                        ifaceBuilder, opstateModified, flowCapableNodeConnectorNew.getName(), operStatusNew, dpnId);
+                        ifaceBuilder, opstateModified, flowCapableNodeConnectorNew.getName(), operStatusNew);
 
         // start/stop monitoring based on opState
         if(modifyTunnel(iface, opstateModified)){
@@ -89,14 +86,14 @@ public class OvsInterfaceStateUpdateHelper {
 
     public static void updateInterfaceStateOnNodeRemove(String interfaceName, FlowCapableNodeConnector flowCapableNodeConnector,
                                                         DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
-                                                        WriteTransaction transaction, String dpnId){
+                                                        WriteTransaction transaction){
         LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
 
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 handleInterfaceStateUpdates(interfaceName,transaction, dataBroker,
                         ifaceBuilder, true, flowCapableNodeConnector.getName(),
-                        Interface.OperStatus.Unknown, dpnId);
+                        Interface.OperStatus.Unknown);
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)){
             handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
                     interfaceName, Interface.OperStatus.Unknown);
@@ -115,19 +112,15 @@ public class OvsInterfaceStateUpdateHelper {
     handleInterfaceStateUpdates(String interfaceName, WriteTransaction transaction,
                                 DataBroker dataBroker, InterfaceBuilder ifaceBuilder, boolean opStateModified,
                                 String portName,
-                                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opState,String dpnId){
+                                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opState){
         LOG.debug("updating interface state entry for {}", interfaceName);
-        boolean isParentInterface = (interfaceName.equals(portName))?true:false;
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
-                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
-        if (!IfmUtil.isTunnelType(iface, null) && isParentInterface) {
-            interfaceName = new StringBuilder(dpnId).append(IfmConstants.OF_URI_SEPARATOR).append(interfaceName).toString();
-        }
         InstanceIdentifier<Interface> ifStateId = IfmUtil.buildStateInterfaceId(interfaceName);
         ifaceBuilder.setKey(new InterfaceKey(interfaceName));
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
+                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
         // if interface config DS is null, do the update only for the lower-layer-interfaces
         // which have no corresponding config entries
-        if(iface == null && !isParentInterface){
+        if(iface == null && interfaceName != portName){
             return null;
         }
         if (modifyOpState(iface, opStateModified)) {
