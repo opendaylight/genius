@@ -156,7 +156,7 @@ public class InterfaceManagerTestUtil {
                                            BigInteger dpn) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
-        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(ifName).build();
+        ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).setParentInterface(ifName).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
         if(ifType.equals(L2vlan.class)){
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))
