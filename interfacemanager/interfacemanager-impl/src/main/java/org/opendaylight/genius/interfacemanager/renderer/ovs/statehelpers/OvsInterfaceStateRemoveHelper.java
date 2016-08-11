@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -18,8 +17,6 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -39,8 +36,7 @@ public class OvsInterfaceStateRemoveHelper {
                                                                                  AlivenessMonitorService alivenessMonitorService,
                                                                                  NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
                                                                                  DataBroker dataBroker, String interfaceName,
-                                                                                 FlowCapableNodeConnector fcNodeConnectorOld,
-                                                                                 Interface ifState) {
+                                                                                 FlowCapableNodeConnector fcNodeConnectorOld) {
         LOG.debug("Removing interface-state information for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
@@ -56,16 +52,11 @@ public class OvsInterfaceStateRemoveHelper {
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
             OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, dataBroker,
-                    alivenessMonitorService, transaction, dpId.toString());
+                    alivenessMonitorService, transaction);
         }else{
-
+            InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                     InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
-            boolean isTunnelInterface = IfmUtil.isTunnelType(iface, ifState);
-            if (!isTunnelInterface && fcNodeConnectorOld!=null && interfaceName.equals(fcNodeConnectorOld.getName())) {
-                interfaceName = new StringBuilder().append(dpId).append(IfmConstants.OF_URI_SEPARATOR).append(interfaceName).toString();
-            }
-            InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
 
             if(iface != null) {
                 // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring

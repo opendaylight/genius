@@ -92,23 +92,16 @@ public class VlanInterfaceConfigurationTest {
     OvsVlanMemberConfigUpdateHelper memberConfigUpdateHelper;
 
     NodeConnectorId nodeConnectorId;
-    Nodes nodes;
-    Node node;
-    List<Node>  nodeList = new ArrayList<>();
-    List<NodeConnector> nodeConnectorList = new ArrayList<>();
     NodeConnector nodeConnector;
     Interface vlanInterfaceEnabled;
     Interface vlanInterfaceDisabled;
     InstanceIdentifier<Interface> interfaceInstanceIdentifier;
     InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier;
-    InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
     InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = null;
     InterfaceParentEntry interfaceParentEntry;
     InterfaceChildEntry interfaceChildEntry = null;
     InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryInstanceIdentifier;
     InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateIdentifier;
-    InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
-            .state.Interface> interfaceStateIdentifierNew;
     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface stateInterface;
 
     @Before
@@ -126,17 +119,11 @@ public class VlanInterfaceConfigurationTest {
     private void setupMocks() {
         nodeConnectorId = InterfaceManagerTestUtil.buildNodeConnectorId(BigInteger.valueOf(1), 1);
         nodeConnector = InterfaceManagerTestUtil.buildNodeConnector(nodeConnectorId);
-        nodeConnectorList.add(nodeConnector);
-        node = new NodeBuilder().setId(NodeId.getDefaultInstance("openflow:1:1")).setKey(new NodeKey(NodeId
-                .getDefaultInstance("openflow:1:1"))).build();
-        nodeList.add(node);
-        nodes = new NodesBuilder().setNode(nodeList).build();
         vlanInterfaceEnabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1", true, L2vlan.class, BigInteger.valueOf(1));
         vlanInterfaceDisabled = InterfaceManagerTestUtil.buildInterface(InterfaceManagerTestUtil.interfaceName, "Test Vlan Interface1", false, L2vlan.class, BigInteger.valueOf(1));
         interfaceInstanceIdentifier = IfmUtil.buildId(InterfaceManagerTestUtil.interfaceName);
         nodeConnectorInstanceIdentifier = InterfaceManagerTestUtil.getNcIdent("openflow:1", nodeConnectorId);
         interfaceStateIdentifier = IfmUtil.buildStateInterfaceId(vlanInterfaceEnabled.getName());
-        interfaceStateIdentifierNew = IfmUtil.buildStateInterfaceId("1:s1-eth1");
         stateInterface = InterfaceManagerTestUtil.buildStateInterface(InterfaceManagerTestUtil.interfaceName, nodeConnectorId);
         AllocateIdOutput output = new AllocateIdOutputBuilder().setIdValue((long)1).build();
         RpcResultBuilder<AllocateIdOutput> allocateIdRpcBuilder = RpcResultBuilder.success();
@@ -163,17 +150,13 @@ public class VlanInterfaceConfigurationTest {
 
     @Test
     public void testAddVlanInterfaceWhenSwitchIsNotConnected() {
-
-        Optional<Nodes> nodesOptional = Optional.of(nodes);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
-        Optional.of(stateInterface);
+        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface = Optional.of(stateInterface);
 
-        doReturn(Futures.immediateCheckedFuture(nodesOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .OPERATIONAL, nodesInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
+                        LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifierNew);
+               LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
@@ -186,17 +169,14 @@ public class VlanInterfaceConfigurationTest {
 
     @Test
     public void testAddVlanInterfaceWhenSwitchIsConnected() {
-        Optional<Nodes> nodesOptional = Optional.of(nodes);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface>
                 expectedStateInterface = Optional.of(stateInterface);
 
-        doReturn(Futures.immediateCheckedFuture(nodesOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .OPERATIONAL, nodesInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifierNew);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
@@ -209,17 +189,14 @@ public class VlanInterfaceConfigurationTest {
 
     @Test
     public void testAddVlanInterfaceWhenAdminStateDisabled() {
-        Optional<Nodes> nodesOptional = Optional.of(nodes);
         Optional<Interface> expectedInterface = Optional.of(vlanInterfaceEnabled);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateInterface =
                 Optional.of(stateInterface);
 
-        doReturn(Futures.immediateCheckedFuture(nodesOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .OPERATIONAL, nodesInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedStateInterface)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifierNew);
+                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
@@ -242,11 +219,11 @@ public class VlanInterfaceConfigurationTest {
         Optional<NodeConnector> expectedNc = Optional.of(nodeConnector);
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> expectedStateIf = Optional.of(stateInterface);
         doReturn(Futures.immediateCheckedFuture(expected)).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
+                        LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedNc)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, nodeConnectorInstanceIdentifier);
+                        LogicalDatastoreType.OPERATIONAL, nodeConnectorInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(expectedStateIf)).when(mockReadTx).read(
-                LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
+                        LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
 
