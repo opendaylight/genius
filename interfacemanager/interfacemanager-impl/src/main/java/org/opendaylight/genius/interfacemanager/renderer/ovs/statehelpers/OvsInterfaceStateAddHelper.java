@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -66,15 +65,11 @@ public class OvsInterfaceStateAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
-        boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(iface);
-        if (!isTunnelInterface && fcNodeConnectorNew!=null && interfaceName.equals(fcNodeConnectorNew.getName())) {
-            interfaceName = new StringBuilder(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId)).append(IfmConstants.OF_URI_SEPARATOR).append(interfaceName).toString();
-        }
         Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, transaction, idManager,
                 physAddress, operStatus, adminStatus, nodeConnectorId);
 
         // If this interface is a tunnel interface, create the tunnel ingress flow,and start tunnel monitoring
-        if (isTunnelInterface) {
+        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
             handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
                     nodeConnectorId, transaction, ifState.getIfIndex(), iface.getAugmentation(IfTunnel.class), interfaceName);
             return futures;
