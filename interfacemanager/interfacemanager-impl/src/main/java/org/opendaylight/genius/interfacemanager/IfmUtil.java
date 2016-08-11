@@ -31,7 +31,6 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -431,21 +430,6 @@ public class IfmUtil {
             return new NodeConnectorId(ofportIds.get(0));
         }
         return null;
-    }
-
-    public static boolean isTunnelType(Interface iface,org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(iface);
-        if (!isTunnelInterface && ifState != null) {
-            isTunnelInterface = IfmUtil.isTunnelType(ifState.getType());
-        }
-        return isTunnelInterface;
-    }
-
-    public static boolean isTunnelType(Class<? extends InterfaceType> ifType) {
-        if( (ifType != null) && (ifType.isAssignableFrom(Tunnel.class)) ) {
-            return true;
-        }
-        return false;
     }
 
     public static InterfaceInfo.InterfaceType getInterfaceType(Interface iface) {
