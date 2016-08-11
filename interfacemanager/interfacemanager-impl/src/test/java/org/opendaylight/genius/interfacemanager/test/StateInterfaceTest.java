@@ -252,8 +252,7 @@ public class StateInterfaceTest {
         doReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build())).when(idManager).releaseId(getIdInput);
 
         removeHelper.removeInterfaceStateConfiguration(idManager, mdsalManager, alivenessMonitorService, nodeConnectorId,
-                nodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew,
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(InterfaceManagerTestUtil.interfaceName, dataBroker));
+                nodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.OPERATIONAL, interfaceStateIdentifier);
 
@@ -285,8 +284,7 @@ public class StateInterfaceTest {
                 LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier);
 
         removeHelper.removeInterfaceStateConfiguration(idManager, mdsalManager, alivenessMonitorService, nodeConnectorId,
-                nodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew,
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(InterfaceManagerTestUtil.interfaceName, dataBroker));
+                nodeConnectorId, dataBroker, InterfaceManagerTestUtil.interfaceName, fcNodeConnectorNew);
 
     }
 
