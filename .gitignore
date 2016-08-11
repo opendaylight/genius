@@ -17,6 +17,7 @@ xtend-gen
 target
 .DS_Store
 .checkstyle
+.factorypath
 yang-gen-config
 yang-gen-sal
 classes
