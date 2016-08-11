@@ -16,6 +16,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -62,6 +65,7 @@ public class InterfaceManagerCommonUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerCommonUtils.class);
     private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateMap = new ConcurrentHashMap<>();
+    private static final String NOVA_OR_TUNNEL_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}";
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
             DataBroker dataBroker) {
@@ -453,52 +457,11 @@ public class InterfaceManagerCommonUtils {
         interfaceStateMap.remove(iface.getName());
     }
 
-    public static List<BigInteger> getListOfDpns(DataBroker broker) {
-        List<BigInteger> dpnsList = new LinkedList<>();
-        InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
-        Optional<Nodes> nodesOptional = MDSALUtil.read(broker, LogicalDatastoreType.OPERATIONAL,
-                nodesInstanceIdentifier);
-        if (!nodesOptional.isPresent()) {
-            return dpnsList;
-        }
-        Nodes nodes = nodesOptional.get();
-        List<Node> nodeList = nodes.getNode();
-        for (Node node : nodeList) {
-            NodeId nodeId = node.getId();
-            if (nodeId == null) {
-                continue;
-            }
-            BigInteger dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
-            dpnsList.add(dpnId);
-        }
-        return dpnsList;
+    public static boolean isNovaOrTunnelPort(String portName) {
+
+        Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+        Matcher matcher = pattern.matcher(portName);
+        return matcher.matches();
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateForUnknownDpn(
-            String interfaceName, DataBroker dataBroker) {
-        String parentInterface;
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
-        List<BigInteger> listOfDpns = InterfaceManagerCommonUtils.getListOfDpns(dataBroker);
-        for (BigInteger dpnId : listOfDpns) {
-            parentInterface = new StringBuilder().append(dpnId).append(IfmConstants.OF_URI_SEPARATOR)
-                    .append(interfaceName).toString();
-            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentInterface, dataBroker);
-            if (ifState != null) {
-                break;
-            }
-        }
-        return ifState;
-    }
-
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromDS(
-            String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = null;
-        for (Map.Entry<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> entry : interfaceStateMap
-                .entrySet()) {
-            if (entry.getKey().contains(interfaceName)) {
-                ifState = entry.getValue();
-            }
-        }
-        return ifState;
-    }
 }
