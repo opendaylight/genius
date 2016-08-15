@@ -148,6 +148,7 @@ public class ArpUtilImpl implements OdlArputilService,
         return InetAddress.getByName(ipAddress.getIpv4Address().getValue()).getHostAddress();
     }
 
+    @Override
     public Future<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
 
         try {
@@ -242,6 +243,7 @@ public class ArpUtilImpl implements OdlArputilService,
                 NodeConnectorId id = getNodeConnectorFromInterfaceName(interfaceName);
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
+                checkNotNull(portResult);
                 dpnId = portResult.getDpid();
                 Long portid = portResult.getPortno();
                 checkArgument(null != dpnId && BigInteger.ZERO != dpnId,
@@ -268,7 +270,8 @@ public class ArpUtilImpl implements OdlArputilService,
                         srcIpBytes, ArpPacketUtil.EthernetDestination_Broadcast,
                         dstIpBytes);
 
-                sendPacketOut(dpnId, payload, ref);
+                List<Action> actions = getEgressAction(interfaceName);
+                sendPacketOutWithActions(dpnId, payload, ref, actions);
 
                 if (LOGGER.isTraceEnabled()) {
                     LOGGER.trace("sent arp request for "
@@ -373,6 +376,7 @@ public class ArpUtilImpl implements OdlArputilService,
         try {
             String interfaceName = input.getInterface();
             GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
+            checkNotNull(portResult);
             dpnId = portResult.getDpid();
             Long portid = portResult.getPortno();
             NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId,
@@ -484,7 +488,14 @@ public class ArpUtilImpl implements OdlArputilService,
 
     GetPortFromInterfaceOutput getPortFromInterface(String interfaceName) throws Throwable {
         GetPortFromInterfaceInputBuilder getPortFromInterfaceInputBuilder = new GetPortFromInterfaceInputBuilder();
-        getPortFromInterfaceInputBuilder.setIntfName(interfaceName);;
+        getPortFromInterfaceInputBuilder.setIntfName(interfaceName);
+        OdlInterfaceRpcService intfRpc = getInterfaceRpcService();
+        if (intfRpc == null) {
+            LOGGER.error("Failed to get OF port for interface {}. Unable to obtain OdlInterfaceRpcService",
+                    interfaceName);
+            return null;
+        }
+
         Future<RpcResult<GetPortFromInterfaceOutput>> portFromInterface = intfRpc.getPortFromInterface(getPortFromInterfaceInputBuilder.build());
         GetPortFromInterfaceOutput result = portFromInterface.get().getResult();
         LOGGER.trace("getPortFromInterface rpc result is {} ", result);
