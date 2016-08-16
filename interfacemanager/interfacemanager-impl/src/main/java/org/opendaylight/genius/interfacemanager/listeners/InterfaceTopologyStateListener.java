@@ -13,6 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
@@ -58,7 +59,7 @@ public class InterfaceTopologyStateListener extends AsyncDataChangeListenerBase<
                 identifier, bridgeOld);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
-        jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker);
+        jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -69,11 +70,11 @@ public class InterfaceTopologyStateListener extends AsyncDataChangeListenerBase<
         if(bridgeOld.getDatapathId()== null && bridgeNew.getDatapathId()!= null){
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker);
+            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         } else if(!bridgeOld.getDatapathId().equals(bridgeNew.getDatapathId())){
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker);
+            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
     }
 
@@ -83,7 +84,7 @@ public class InterfaceTopologyStateListener extends AsyncDataChangeListenerBase<
                 identifier, bridgeNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker);
+        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
