@@ -22,6 +22,7 @@ public class InterfacemgrImplModule extends org.opendaylight.yang.gen.v1.urn.ope
         provider.setRpcProviderRegistry(getRpcRegistryDependency());
         provider.setNotificationService(getNotificationServiceDependency());
         provider.setMdsalManager(getMdsalutilDependency());
+        provider.setEntityOwnershipService(getEntityOwnershipServiceDependency());
         getBrokerDependency().registerProvider(provider);
         return provider;
     }
