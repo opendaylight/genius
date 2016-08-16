@@ -68,7 +68,6 @@ public class ResourceManagerServiceProvider implements BindingAwareProvider, Aut
                     .setLow(Long.valueOf(System.getProperty(tablesStr)))
                     .setHigh(Long.valueOf(System.getProperty(tablesEnd))).build());
         } else {
-            LOG.error("Tables Id Pool cannot be created due to null parameters");
             LOG.trace("Creating pool with default values");
             idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName("tables")
                     .setLow((long) 0).setHigh((long) 254).build());
@@ -81,7 +80,6 @@ public class ResourceManagerServiceProvider implements BindingAwareProvider, Aut
                     .setLow(Long.valueOf(System.getProperty(groupsStr)))
                     .setHigh(Long.valueOf(System.getProperty(groupsEnd))).build());
         } else {
-            LOG.error("Groups Id Pool cannot be created due to null parameters");
             LOG.trace("Creating pool with default values");
             idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName("meters")
                     .setLow((long) 0).setHigh((long) 254).build());
@@ -94,7 +92,6 @@ public class ResourceManagerServiceProvider implements BindingAwareProvider, Aut
                     .setLow(Long.valueOf(System.getProperty(metersStr)))
                     .setHigh(Long.valueOf(System.getProperty(metersEnd))).build());
         } else {
-            LOG.error("Meters Id Pool cannot be created due to null parameters");
             LOG.trace("Creating pool with default values");
             idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName("groups")
                     .setLow((long) 0).setHigh((long) 254).build());
