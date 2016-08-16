@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPInterfaceConfigUpdateHelper;
@@ -56,7 +57,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(dataBroker, nodeIdentifier.getNodeId()));
-                        coordinator.enqueueJob(interfaceOld.getName(), configWorker);
+                        coordinator.enqueueJob(interfaceOld.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
                     }
                 }
             }
@@ -76,7 +77,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                         RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(dataBroker, nodeIdentifier.getNodeId()), ifTunnel);
-                        coordinator.enqueueJob(interfaceNew.getName(), configWorker, 3);
+                        coordinator.enqueueJob(interfaceNew.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
                     }
                 }
             }
@@ -96,7 +97,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(dataBroker, nodeIdentifier.getNodeId()), ifTunnel);
-                        coordinator.enqueueJob(interfaceNew.getName(), configWorker, 3);
+                        coordinator.enqueueJob(interfaceNew.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
                     }
                 }
             }
