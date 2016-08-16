@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigUpdateHelper;
@@ -71,7 +72,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker removeWorker = new RendererConfigRemoveWorker(key, interfaceOld, parentRefs, ifL2vlan);
-        coordinator.enqueueJob(lowerLayerIf, removeWorker);
+        coordinator.enqueueJob(lowerLayerIf, removeWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigUpdateWorker updateWorker = new RendererConfigUpdateWorker(key, interfaceNew, interfaceOld,
                 parentRefsNew, ifL2vlanNew);
-        coordinator.enqueueJob(lowerLayerIf, updateWorker);
+        coordinator.enqueueJob(lowerLayerIf, updateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs, ifL2vlan);
-        coordinator.enqueueJob(lowerLayerIf, configWorker);
+        coordinator.enqueueJob(lowerLayerIf, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override

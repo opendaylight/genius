@@ -13,6 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
@@ -58,7 +59,7 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
                 identifier, tunnel);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, tunnel);
-        jobCoordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker);
+        jobCoordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelNew, tunnelOld);
-        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker);
+        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
                 identifier, tunnelNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, tunnelNew);
-        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker);
+        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
