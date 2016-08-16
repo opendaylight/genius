@@ -13,6 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -67,7 +68,7 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
                     identifier, tpOld, tpNew);
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
-            jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker);
+            jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
     }
 
@@ -79,7 +80,7 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
             LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tpNew);
-            jobCoordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker);
+            jobCoordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
         }
 
     }
