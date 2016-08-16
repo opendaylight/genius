@@ -8,6 +8,7 @@ module interfacemanager-impl {
         import opendaylight-md-sal-binding { prefix md-sal-binding; revision-date 2013-10-28;}
         import odl-interface {prefix odlif; revision-date 2016-04-06;}
         import odl-mdsalutil { prefix odl-mdsal; revision-date 2016-04-06;}
+        import opendaylight-entity-ownership-service { prefix eos; revision-date 2015-08-10;}
 
         description
             "Service definition for interfacemgr project";
@@ -56,6 +57,14 @@ module interfacemanager-impl {
                              mandatory true;
                              config:required-identity md-sal-binding-impl:binding-new-notification-service;
                          }
+                     }
+                }
+                container entity-ownership-service {
+                     uses config:service-ref {
+                          refine type {
+                              mandatory true;
+                              config:required-identity eos:entity-ownership-service;
+                          }
                      }
                 }
             }
