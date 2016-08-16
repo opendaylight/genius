@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
@@ -40,6 +41,7 @@ import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyState
 import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
 import org.opendaylight.genius.interfacemanager.pmcounters.NodeConnectorStatsImpl;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
@@ -123,6 +125,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private NodeConnectorStatsImpl nodeConnectorStatsManager;
     private CacheInterfaceConfigListener cacheInterfaceConfigListener;
     private CacheInterfaceStateListener cacheInterfaceStateListener;
+    private EntityOwnershipService entityOwnershipService;
 
     public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
         this.rpcProviderRegistry = rpcProviderRegistry;
@@ -131,6 +134,15 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
     public void setMdsalManager(IMdsalApiManager mdsalManager) {
         this.mdsalManager = mdsalManager;
+    }
+
+    public void setEntityOwnershipService(
+            EntityOwnershipService entityOwnershipService) {
+        this.entityOwnershipService = entityOwnershipService;
+    }
+
+    public EntityOwnershipService getEntityOwnershipService() {
+        return entityOwnershipService;
     }
 
     public void setNotificationService(NotificationService notificationService) {
@@ -190,6 +202,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             cacheInterfaceConfigListener = new CacheInterfaceConfigListener(dataBroker);
 
             cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
+
+            IfmClusterUtils.registerEntityForOwnership(this, entityOwnershipService);
 
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
