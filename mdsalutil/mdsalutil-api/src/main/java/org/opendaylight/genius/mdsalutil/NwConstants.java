@@ -67,16 +67,6 @@ public final class NwConstants {
     public static final short EGRESS_ACL_SERVICE_INDEX = 6;
 
     public static final String EGRESS_ACL_SERVICE_NAME = "EGRESS_ACL_SERVICE";
-    /**
-     * @deprecated Use {@link #EGRESS_ACL_SERVICE_INDEX} instead.
-     */
-    @Deprecated
-    public static final short INGRESS_ACL_SERVICE_INDEX = 6;
-    /**
-     * @deprecated Use {@link #EGRESS_ACL_SERVICE_NAME} instead.
-     */
-    @Deprecated
-    public static final String INGRESS_ACL_SERVICE_NAME = "INGRESS_ACL_SERVICE";
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
@@ -112,16 +102,6 @@ public final class NwConstants {
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
     public static final short INGRESS_ACL_TABLE = 40;
     public static final short INGRESS_ACL_FILTER_TABLE = 41;
-    /**
-     * @deprecated Use {@link #INGRESS_ACL_TABLE} instead.
-     */
-    @Deprecated
-    public static final short EGRESS_ACL_TABLE_ID = 40;
-    /**
-     * @deprecated Use {@link #INGRESS_ACL_FILTER_TABLE} instead.
-     */
-    @Deprecated
-    public static final short EGRESS_ACL_NEXT_TABLE_ID = 41;
     public static final short INBOUND_NAPT_TABLE = 44;
     public static final short IPV6_TABLE = 45;
     public static final short OUTBOUND_NAPT_TABLE = 46;
@@ -137,14 +117,4 @@ public final class NwConstants {
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 251;
     public static final short EGRESS_ACL_FILTER_TABLE = 252;
-    /**
-     * @deprecated Use {@link #EGRESS_ACL_TABLE} instead.
-     */
-    @Deprecated
-    public static final short INGRESS_ACL_TABLE_ID = 251;
-    /**
-     * @deprecated Use {@link #EGRESS_ACL_FILTER_TABLE} instead.
-     */
-    @Deprecated
-    public static final short INGRESS_ACL_NEXT_TABLE_ID = 252;
 }
