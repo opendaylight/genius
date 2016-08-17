@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_675f3fe6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/yang/gen/v1/urn/opendaylight/genius/interfacemanager/impl/rev160406/InterfacemgrImplModule.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6238
+      },
+      "writtenOn": "2016-08-17T06:40:54Z",
+      "side": 1,
+      "message": "this file is in a package that looks like it is generated from yang module.\n\nIs it possible to change package name? Or remove this file from source control?",
+      "revId": "9b51cc0082d8fb6fdec3c7f9a3d233202eba1f7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
