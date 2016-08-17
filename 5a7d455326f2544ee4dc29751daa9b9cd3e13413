@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_c73573dc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 6238
+      },
+      "writtenOn": "2016-08-17T04:54:50Z",
+      "side": 1,
+      "message": "We need to add Learn Table constants here:\n\npublic static final short EGRESS_LEARN_TABLE \u003d 41;\npublic static final short EGRESS_LEARN2_TABLE \u003d 42;\n\npublic static final short INGRESS_LEARN_TABLE \u003d 252;\npublic static final short INGRESS_LEARN2_TABLE \u003d 253;",
+      "revId": "5a7d455326f2544ee4dc29751daa9b9cd3e13413",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
