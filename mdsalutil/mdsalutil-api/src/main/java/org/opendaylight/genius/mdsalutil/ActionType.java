@@ -8,6 +8,10 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.opendaylight.genius.mdsalutil.NwConstants.LearnFlowModsType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.GroupActionCaseBuilder;
@@ -60,6 +64,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromFieldCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromValueCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModCopyFieldIntoFieldCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModCopyValueIntoFieldCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModOutputToPortCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.flow.mod.add.match.from.field._case.FlowModAddMatchFromFieldBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.flow.mod.add.match.from.value._case.FlowModAddMatchFromValueBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.flow.mod.copy.field.into.field._case.FlowModCopyFieldIntoFieldBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.flow.mod.copy.value.into.field._case.FlowModCopyValueIntoFieldBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.flow.mod.output.to.port._case.FlowModOutputToPortBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrackBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.NxLearnBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.nx.learn.FlowMods;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.nx.learn.FlowModsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.resubmit.grouping.NxResubmitBuilder;
 
 public enum ActionType {
@@ -270,6 +290,96 @@ public enum ActionType {
             return ab.build();
         }
 
+    },
+    learn {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            String[] actionValues = actionInfo.getActionValues();
+            String[][] actionValuesMatrix = actionInfo.getActionValuesMatrix();
+            NxLearnBuilder learnBuilder = new NxLearnBuilder();
+            learnBuilder.setIdleTimeout(Integer.parseInt(actionValues[0]));
+            learnBuilder.setHardTimeout(Integer.parseInt(actionValues[1]));
+            learnBuilder.setPriority(Integer.parseInt(actionValues[2]));
+            learnBuilder.setCookie(BigInteger.valueOf(Long.valueOf(actionValues[3])));
+            learnBuilder.setFlags(Integer.parseInt(actionValues[4]));
+            learnBuilder.setTableId(Short.parseShort(actionValues[5]));
+            learnBuilder.setFinIdleTimeout(Integer.parseInt(actionValues[6]));
+            learnBuilder.setFinHardTimeout(Integer.parseInt(actionValues[7]));
+
+            List<FlowMods> flowModsList = new ArrayList<>();
+            for(String[] values : actionValuesMatrix){
+                if(LearnFlowModsType.ADD_FROM_FIELD.name().equals(values[0])){
+                    FlowModAddMatchFromFieldBuilder builder = new FlowModAddMatchFromFieldBuilder();
+                    builder.setSrcField(Long.decode(values[1]));
+                    builder.setSrcOfs(0);
+                    builder.setDstField(Long.decode(values[2]));
+                    builder.setDstOfs(0);
+                    builder.setFlowModNumBits(Integer.parseInt(values[3]));
+
+                    FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
+                    FlowModAddMatchFromFieldCaseBuilder caseBuilder = new FlowModAddMatchFromFieldCaseBuilder();
+                    caseBuilder.setFlowModAddMatchFromField(builder.build());
+                    flowModsBuilder.setFlowModSpec(caseBuilder.build());
+                    flowModsList.add(flowModsBuilder.build());
+                } else if (LearnFlowModsType.ADD_FROM_VALUE.name().equals(values[0])){
+                    FlowModAddMatchFromValueBuilder builder = new FlowModAddMatchFromValueBuilder();
+                    builder.setValue(Integer.parseInt(values[1]));
+                    builder.setSrcField(Long.decode(values[2]));
+                    builder.setSrcOfs(0);
+                    builder.setFlowModNumBits(Integer.parseInt(values[3]));
+
+                    FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
+                    FlowModAddMatchFromValueCaseBuilder caseBuilder = new FlowModAddMatchFromValueCaseBuilder();
+                    caseBuilder.setFlowModAddMatchFromValue(builder.build());
+                    flowModsBuilder.setFlowModSpec(caseBuilder.build());
+                    flowModsList.add(flowModsBuilder.build());
+                } else if (LearnFlowModsType.COPY_FROM_FIELD.name().equals(values[0])){
+                    FlowModCopyFieldIntoFieldBuilder builder = new FlowModCopyFieldIntoFieldBuilder();
+                    builder.setSrcField(Long.decode(values[1]));
+                    builder.setSrcOfs(0);
+                    builder.setDstField(Long.decode(values[2]));
+                    builder.setDstOfs(0);
+                    builder.setFlowModNumBits(Integer.parseInt(values[3]));
+
+                    FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
+                    FlowModCopyFieldIntoFieldCaseBuilder caseBuilder = new FlowModCopyFieldIntoFieldCaseBuilder();
+                    caseBuilder.setFlowModCopyFieldIntoField(builder.build());
+                    flowModsBuilder.setFlowModSpec(caseBuilder.build());
+                    flowModsList.add(flowModsBuilder.build());
+                } else if (LearnFlowModsType.COPY_FROM_VALUE.name().equals(values[0])){
+                    FlowModCopyValueIntoFieldBuilder builder = new FlowModCopyValueIntoFieldBuilder();
+                    builder.setValue(Integer.parseInt(values[1]));
+                    builder.setDstField(Long.decode(values[2]));
+                    builder.setDstOfs(0);
+                    builder.setFlowModNumBits(Integer.parseInt(values[3]));
+
+                    FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
+                    FlowModCopyValueIntoFieldCaseBuilder caseBuilder = new FlowModCopyValueIntoFieldCaseBuilder();
+                    caseBuilder.setFlowModCopyValueIntoField(builder.build());
+                    flowModsBuilder.setFlowModSpec(caseBuilder.build());
+                    flowModsList.add(flowModsBuilder.build());
+                } else if (LearnFlowModsType.OUTPUT_YO_PORT.name().equals(values[0])){
+                    FlowModOutputToPortBuilder builder = new FlowModOutputToPortBuilder();
+                    builder.setSrcField(Long.decode(values[1]));
+                    builder.setSrcOfs(0);
+                    builder.setFlowModNumBits(Integer.parseInt(values[2]));
+
+                    FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
+                    FlowModOutputToPortCaseBuilder caseBuilder = new FlowModOutputToPortCaseBuilder();
+                    caseBuilder.setFlowModOutputToPort(builder.build());
+                    flowModsBuilder.setFlowModSpec(caseBuilder.build());
+                    flowModsList.add(flowModsBuilder.build());
+                }
+            }
+            learnBuilder.setFlowMods(flowModsList);
+
+            ActionBuilder abExt = new ActionBuilder();
+            abExt.setKey(new ActionKey(newActionKey));
+
+            abExt.setAction(new NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder()
+                    .setNxLearn(learnBuilder.build()).build());
+            return abExt.build();
+        }
     },
     set_udp_destination_port {
 
