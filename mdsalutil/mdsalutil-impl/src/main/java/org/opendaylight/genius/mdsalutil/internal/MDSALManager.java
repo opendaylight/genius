@@ -67,8 +67,6 @@ public class MDSALManager implements AutoCloseable {
     private DataBroker m_dataBroker;
 
     private PacketProcessingService m_packetProcessingService;
-    private ListenerRegistration<DataChangeListener> groupListenerRegistration;
-    private ListenerRegistration<DataChangeListener> flowListenerRegistration;
     private ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<> ();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -91,8 +89,6 @@ public class MDSALManager implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        groupListenerRegistration.close();
-        flowListenerRegistration.close();
         s_logger.info("MDSAL Manager Closed");
     }
 
