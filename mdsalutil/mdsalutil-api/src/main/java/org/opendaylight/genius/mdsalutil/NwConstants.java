@@ -78,6 +78,7 @@ public final class NwConstants {
     public static final BigInteger COOKIE_SNAT_TABLE = new BigInteger("8000006", 16);
     public static final BigInteger EGRESS_DISPATCHER_TABLE_COOKIE = new BigInteger("8000007", 16);
     public static final BigInteger COOKIE_OUTBOUND_NAPT_TABLE = new BigInteger("8000008", 16);
+    public static final BigInteger COOKIE_L3_GW_MAC_TABLE = new BigInteger("8000009", 16);
     public static final BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
@@ -92,6 +93,7 @@ public final class NwConstants {
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
     public static final short DHCP_TABLE = 19;
     public static final short L3_LFIB_TABLE = 20;
+    public static final short L3_GW_MAC_TABLE = 19;
     public static final short L3_FIB_TABLE = 21;
     public static final short L3_SUBNET_ROUTE_TABLE=22;
     public static final short PDNAT_TABLE = 25;
