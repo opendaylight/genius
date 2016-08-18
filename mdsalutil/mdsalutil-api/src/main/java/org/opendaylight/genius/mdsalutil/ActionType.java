@@ -308,7 +308,7 @@ public enum ActionType {
 
             List<FlowMods> flowModsList = new ArrayList<>();
             for(String[] values : actionValuesMatrix){
-                if(LearnFlowModsType.ADD_FROM_FIELD.name().equals(values[0])){
+                if(LearnFlowModsType.MATCH_FROM_FIELD.name().equals(values[0])){
                     FlowModAddMatchFromFieldBuilder builder = new FlowModAddMatchFromFieldBuilder();
                     builder.setSrcField(Long.decode(values[1]));
                     builder.setSrcOfs(0);
@@ -321,7 +321,7 @@ public enum ActionType {
                     caseBuilder.setFlowModAddMatchFromField(builder.build());
                     flowModsBuilder.setFlowModSpec(caseBuilder.build());
                     flowModsList.add(flowModsBuilder.build());
-                } else if (LearnFlowModsType.ADD_FROM_VALUE.name().equals(values[0])){
+                } else if (LearnFlowModsType.MATCH_FROM_VALUE.name().equals(values[0])){
                     FlowModAddMatchFromValueBuilder builder = new FlowModAddMatchFromValueBuilder();
                     builder.setValue(Integer.parseInt(values[1]));
                     builder.setSrcField(Long.decode(values[2]));
@@ -358,7 +358,7 @@ public enum ActionType {
                     caseBuilder.setFlowModCopyValueIntoField(builder.build());
                     flowModsBuilder.setFlowModSpec(caseBuilder.build());
                     flowModsList.add(flowModsBuilder.build());
-                } else if (LearnFlowModsType.OUTPUT_YO_PORT.name().equals(values[0])){
+                } else if (LearnFlowModsType.OUTPUT_TO_PORT.name().equals(values[0])){
                     FlowModOutputToPortBuilder builder = new FlowModOutputToPortBuilder();
                     builder.setSrcField(Long.decode(values[1]));
                     builder.setSrcOfs(0);
