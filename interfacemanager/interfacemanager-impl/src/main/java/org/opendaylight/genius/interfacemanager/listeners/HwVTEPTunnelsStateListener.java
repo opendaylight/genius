@@ -16,6 +16,7 @@ import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
+import org.opendaylight.genius.utils.hwvtep.HACacheUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -55,6 +56,10 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
 
     @Override
     protected void remove(InstanceIdentifier<Tunnels> identifier, Tunnels tunnel) {
+        String nodeId = identifier.firstKeyOf(Node.class).getNodeId().getValue();
+        if (HACacheUtils.isHAEnabledDevice(nodeId)) {
+            return;
+        }
         LOG.debug("Received Remove DataChange Notification for identifier: {}, physicalSwitchAugmentation: {}",
                 identifier, tunnel);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
@@ -65,6 +70,10 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
     @Override
     protected void update(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld,
                           Tunnels tunnelNew) {
+        String nodeId = identifier.firstKeyOf(Node.class).getNodeId().getValue();
+        if (HACacheUtils.isHAEnabledDevice(nodeId)) {
+            return;
+        }
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelNew, tunnelOld);
@@ -73,6 +82,10 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
 
     @Override
     protected void add(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelNew) {
+        String nodeId = identifier.firstKeyOf(Node.class).getNodeId().getValue();
+        if (HACacheUtils.isHAEnabledDevice(nodeId)) {
+            return;
+        }
         LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}",
                 identifier, tunnelNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
