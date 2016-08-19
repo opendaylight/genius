@@ -162,6 +162,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             idManager = rpcProviderRegistry.getRpcService(IdManagerService.class);
             createIdPool();
 
+            IfmClusterUtils.registerEntityForOwnership(this, entityOwnershipService);
             alivenessManager = rpcProviderRegistry.getRpcService(AlivenessMonitorService.class);
             interfaceManagerRpcService = new InterfaceManagerRpcService(dataBroker, mdsalManager);
             rpcRegistration = getRpcProviderRegistry().addRpcImplementation(
@@ -202,8 +203,6 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             cacheInterfaceConfigListener = new CacheInterfaceConfigListener(dataBroker);
 
             cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
-
-            IfmClusterUtils.registerEntityForOwnership(this, entityOwnershipService);
 
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,

@@ -36,8 +36,9 @@ public class OvsInterfaceStateRemoveHelper {
                                                                                  AlivenessMonitorService alivenessMonitorService,
                                                                                  NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
                                                                                  DataBroker dataBroker, String interfaceName,
-                                                                                 FlowCapableNodeConnector fcNodeConnectorOld) {
-        LOG.debug("Removing interface-state information for interface: {}", interfaceName);
+                                                                                 FlowCapableNodeConnector fcNodeConnectorOld,
+                                                                                 boolean isNodePresent) {
+        LOG.debug("Removing interface-state information for interface: {} {}", interfaceName, isNodePresent);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
 
@@ -48,7 +49,7 @@ public class OvsInterfaceStateRemoveHelper {
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
 
         //VM Migration: Update the interface state to unknown only if remove event received for same switch
-        if(!InterfaceManagerCommonUtils.isNodePresent(dataBroker,nodeConnectorId) && nodeConnectorIdNew.equals(nodeConnectorIdOld)){
+        if(!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)){
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
             OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, dataBroker,
