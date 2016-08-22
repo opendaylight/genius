@@ -33,11 +33,11 @@ public class ShowVlan extends OsgiCommandSupport {
         logger.debug("Executing show VLAN command");
         List<Interface> vlanList = interfaceManager.getVlanInterfaces();
         if (!vlanList.isEmpty()) {
-            IfmCLIUtil.showVlanHeaderOutput();
+            IfmCLIUtil.showVlanHeaderOutput(session);
         }
         for (Interface iface : vlanList) {
             InterfaceInfo ifaceState = interfaceManager.getInterfaceInfoFromOperationalDataStore(iface.getName());
-            IfmCLIUtil.showVlanOutput(ifaceState, iface);
+            IfmCLIUtil.showVlanOutput(ifaceState, iface, session);
         }
         return null;
     }
