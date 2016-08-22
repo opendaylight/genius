@@ -68,9 +68,9 @@ public class VtepSchemaShow extends OsgiCommandSupport {
             if (this.schemaName != null) {
                 VtepConfigSchema schema = this.itmProvider.getVtepConfigSchema(this.schemaName);
                 if (schema == null) {
-                    System.out.println("No VTEP schema present with name: " + this.schemaName);
+                    session.getConsole().println("No VTEP schema present with name: " + this.schemaName);
                 } else {
-                    System.out.println(getHeaderOutput());
+                    session.getConsole().println(getHeaderOutput());
                     printSchema(schema);
                 }
             } else {
@@ -88,10 +88,10 @@ public class VtepSchemaShow extends OsgiCommandSupport {
     private void printAllVtepSchemas() {
         List<VtepConfigSchema> schemas = this.itmProvider.getAllVtepConfigSchemas();
         if (schemas == null || schemas.isEmpty()) {
-            System.out.println("No VTEP schemas present.");
+            session.getConsole().println("No VTEP schemas present.");
             return;
         }
-        System.out.println(getHeaderOutput());
+        session.getConsole().println(getHeaderOutput());
         for (VtepConfigSchema schema : schemas) {
             printSchema(schema);
         }
@@ -131,17 +131,17 @@ public class VtepSchemaShow extends OsgiCommandSupport {
                 : StringUtils.EMPTY);
 
         // Print first row
-        System.out.println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, schema.getSchemaName(), portName, vlanId,
+        session.getConsole().println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, schema.getSchemaName(), portName, vlanId,
                 subnetCIDR, gatewayIp, transportZone, strTunnelType, dpnId, excludeIpFilter));
         while (dpnIterator.hasNext() || ipFilterIterator.hasNext()) {
             dpnId = (dpnIterator.hasNext() ? String.valueOf(dpnIterator.next()) : StringUtils.EMPTY);
             excludeIpFilter = (ipFilterIterator.hasNext() ? String.valueOf(ipFilterIterator.next())
                     : StringUtils.EMPTY);
-            System.out.println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, StringUtils.EMPTY, StringUtils.EMPTY,
+            session.getConsole().println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, StringUtils.EMPTY, StringUtils.EMPTY,
                     StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
                     dpnId, excludeIpFilter));
         }
-        System.out.println(System.lineSeparator());
+        session.getConsole().println(System.lineSeparator());
     }
 
     /**
