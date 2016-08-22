@@ -45,17 +45,17 @@ public class TepAdd extends OsgiCommandSupport {
         try {
             if (dpnId == null || portName == null || vlanId == null || ipAddress == null || subnetMask == null
                     || transportZone == null) {
-                System.out.println("Insufficient Arguments");
-                System.out.println("Correct Usage : exec tep-add dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
+                session.getConsole().println("Insufficient Arguments");
+                session.getConsole().println("Correct Usage : exec tep-add dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
                 return null;
             }
             LOG.debug("Executing create TEP command" + "\t" + dpnId + "\t" + portName + "\t" + vlanId + "\t"
                     + ipAddress + "\t" + subnetMask + "\t" + gatewayIp + "\t" + transportZone);
-            itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+            itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            session.getConsole().println(e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            session.getConsole().println(e.getMessage());
             LOG.error("Exception occurred during execution of command \"tep-add\": ", e);
         }
         return null;
