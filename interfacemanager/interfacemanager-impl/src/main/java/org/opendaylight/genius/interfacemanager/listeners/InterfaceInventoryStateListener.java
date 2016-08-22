@@ -135,6 +135,12 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                         LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
                         boolean isNodePresent = InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorIdOld);
                         remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent);
+                        //Adding a delay of 10sec for VM migration, so applications can process remove and add events
+                        try {
+                            Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
+                        } catch (InterruptedException e) {
+                            LOG.error("Error while waiting for the vm migration remove events to get processed");
+                        }
                     }
                 } else {
                     portName = getDpnPrefixedPortName(nodeConnectorId, portName);

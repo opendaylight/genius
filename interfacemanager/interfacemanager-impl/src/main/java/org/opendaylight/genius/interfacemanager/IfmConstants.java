@@ -35,4 +35,5 @@ public class IfmConstants {
     public static final int REG6_END_INDEX = 31;
 
     public static final int JOB_MAX_RETRIES = 6;
+    public static final long DELAY_TIME_IN_MILLISECOND = 10000;
 }
