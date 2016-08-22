@@ -38,10 +38,10 @@ public class TepShowState extends OsgiCommandSupport {
         InstanceIdentifier<TunnelList> path = InstanceIdentifier.builder(TunnelList.class).build();
         Optional<TunnelList> tunnels = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (tunnels.isPresent()) {
-            itmProvider.showState(tunnels.get());
+            itmProvider.showState(tunnels.get(), session);
         }
         else
-            System.out.println("No Internal Tunnels Exist");
+            session.getConsole().println("No Internal Tunnels Exist");
         return null;
     }
 }
