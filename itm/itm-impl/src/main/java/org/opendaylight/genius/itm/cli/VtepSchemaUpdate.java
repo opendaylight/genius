@@ -59,7 +59,7 @@ public class VtepSchemaUpdate extends OsgiCommandSupport {
      * Command Usage.
      */
     private void usage() {
-        System.out.println(
+        session.getConsole().println(
                 String.format("usage: vtep:schema-update [%s schema-name] [%s dpn-ids-for-add] [%s dpn-ids-for-delete]",
                         SCHEMA_NAME, AD, DD));
     }
@@ -73,7 +73,7 @@ public class VtepSchemaUpdate extends OsgiCommandSupport {
     protected Object doExecute() {
         try {
             if (this.dpnIdsForAdd == null && this.dpnIdsForDelete == null) {
-                System.out.println(String.format("Atleast one of the parameters [%s or %s] is mandatory", AD, DD));
+                session.getConsole().println(String.format("Atleast one of the parameters [%s or %s] is mandatory", AD, DD));
                 usage();
                 return null;
             }
@@ -83,10 +83,9 @@ public class VtepSchemaUpdate extends OsgiCommandSupport {
             this.itmProvider.updateVtepSchema(this.schemaName, ItmCliUtils.constructDpnIdList(this.dpnIdsForAdd),
                     ItmCliUtils.constructDpnIdList(this.dpnIdsForDelete));
 
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
         } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"vtep:schema-update\": ", e);
+            throw e;
         }
         return null;
     }

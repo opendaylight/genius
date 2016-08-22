@@ -44,7 +44,7 @@ public class VtepSchemaDelete extends OsgiCommandSupport {
     }
 
     private void usage() {
-        System.out.println("usage: vtep:schema-delete all");
+        session.getConsole().println("usage: vtep:schema-delete all");
     }
 
     /*
@@ -62,10 +62,9 @@ public class VtepSchemaDelete extends OsgiCommandSupport {
             LOG.debug("Executing vtep:schema-delete command\t {} ", this.deleteAll);
             this.itmProvider.deleteAllVtepSchemas();
 
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        } catch (Exception e) {
+        }catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"vtep:schema-delete all\": ", e);
+            throw e;
         }
         return null;
     }

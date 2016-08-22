@@ -39,11 +39,8 @@ public class TepConfigureTunnelType extends OsgiCommandSupport {
         try {
             LOG.debug("TepConfigureTunnelType: configureTunnelType {} for transportZone {}", tunnelType, tZoneName);
             itmProvider.configureTunnelType(tZoneName, tunnelType);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            LOG.error("Exception occurred during execution of command \"tep:configure-tunnelType\": ", e);
+            throw e;
         }
         return null;
     }
