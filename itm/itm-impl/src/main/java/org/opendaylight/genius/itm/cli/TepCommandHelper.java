@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.net.util.SubnetUtils;
+import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -90,7 +91,7 @@ public class TepCommandHelper {
     }
 
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress,
-                                 String subnetMask, String gatewayIp, String transportZone) {
+                                 String subnetMask, String gatewayIp, String transportZone, CommandSession session) throws TepException{
 
         check++;
         IpAddress ipAddressObj = null;
@@ -106,23 +107,22 @@ public class TepCommandHelper {
                 LOG.debug("gateway is null");
             }
         } catch (Exception e) {
-            System.out.println("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255");
-            return;
+            handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
         }
         try {
             subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
         } catch (Exception e) {
-            System.out.println("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32");
-            return;
+            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
         }
 
         if (!validateIPs(ipAddress, subnetMask, gatewayIp)) {
-            System.out.println("IpAddress and gateWayIp should belong to the subnet provided");
-            return;
+            handleError("IpAddress and gateWayIp should belong to the subnet provided", session);
         }
 
         if (checkTepPerTzPerDpn(transportZone, dpnId)) {
-            System.out.println("Only one end point per transport Zone per Dpn is allowed");
+            if(session  != null) {
+                session.getConsole().println("Only one end point per transport Zone per Dpn is allowed");
+            }
             return;
         }
         Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
@@ -142,7 +142,9 @@ public class TepCommandHelper {
                 }
             } else { // subnet doesnt exist
                 if (checkExistingSubnet(subVtepMapTemp, subObCli)) {
-                    System.out.println("subnet with subnet mask " + subObCli.get_key() + "already exists");
+                    if(session != null) {
+                        session.getConsole().println("subnet with subnet mask " + subObCli.get_key() + "already exists");
+                    }
                     return;
                 }
                 List<Vteps> vtepListTemp = new ArrayList<>();
@@ -423,11 +425,11 @@ public class TepCommandHelper {
                 LOG.debug("NO vteps were configured");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
     }
 
-    public void showTeps(boolean monitorEnabled, int monitorInterval) {
+    public void showTeps(boolean monitorEnabled, int monitorInterval, CommandSession session) throws TepException {
         boolean flag = false;
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
@@ -435,8 +437,7 @@ public class TepCommandHelper {
             TransportZones tZones = tZonesOptional.get();
             if(tZones.getTransportZone() == null || tZones.getTransportZone().isEmpty())
             {
-                System.out.println("No teps configured");
-                return;
+                handleError("No teps configured", session);
             }
             List<String> result = new ArrayList<>();
             result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", (monitorEnabled ? "On" : "Off")));
@@ -471,17 +472,23 @@ public class TepCommandHelper {
             }
             if (flag == true) {
                 for (String p : result) {
-                    System.out.println(p);
+                    if(session != null) {
+                        session.getConsole().println(p);
+                    }
                 }
-            } else
-                System.out.println("No teps to display");
-        } else
-            System.out.println("No teps configured");
+            } else {
+                if (session != null) {
+                    session.getConsole().println("No teps to display");
+                }
+            }
+        } else {
+            handleError("No teps configured", session);
+        }
     }
 
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                           String gatewayIp, String transportZone) {
+                           String gatewayIp, String transportZone,CommandSession session) throws TepException {
 
         IpAddress ipAddressObj = null;
         IpAddress gatewayIpObj = null;
@@ -496,18 +503,16 @@ public class TepCommandHelper {
                 LOG.debug("gateway is null");
             }
         } catch (Exception e) {
-            System.out.println("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255");
-            return;
+            handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
         }
         try {
             subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
         } catch (Exception e) {
-            System.out.println("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32");
-            return;
+            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
         }
 
         if (!validateIPs(ipAddress, subnetMask, gatewayIp)) {
-            System.out.println("IpAddress and gateWayIp should belong to the subnet provided");
+            handleError("IpAddress and gateWayIp should belong to the subnet provided", session);
             return;
         }
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
@@ -520,7 +525,7 @@ public class TepCommandHelper {
                         .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
 
         // check if present in tzones and delete from cache
-        boolean existsInCache = isInCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+        boolean existsInCache = isInCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
         if (!existsInCache) {
             Optional<Vteps> vtepOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, vpath, dataBroker);
             if (vtepOptional.isPresent()) {
@@ -537,14 +542,22 @@ public class TepCommandHelper {
                         if(subCli.getGatewayIp().equals(gatewayIpObj) && subCli.getVlanId().equals(vlanId)){
                             vtepDelCommitList.add(vtepCli);
                         }
-                        else
-                            System.out.println(String.format("vtep with this vlan or gateway doesnt exist"));
+                        else {
+                            if(session != null) {
+                                session.getConsole().println(String.format("vtep with this vlan or gateway doesnt exist"));
+                            }
+                        }
                     }
                 }
-                else
-                    System.out.println(String.format("Vtep with this ipaddress doesnt exist"));
+                else {
+                    if(session != null) {
+                        session.getConsole().println(String.format("Vtep with this ipaddress doesnt exist"));
+                    }
+                }
             } else {
-                System.out.println(String.format("Vtep Doesnt exist"));
+                if(session != null) {
+                    session.getConsole().println(String.format("Vtep Doesnt exist"));
+                }
             }
         }
     }
@@ -631,26 +644,30 @@ public class TepCommandHelper {
                 vtepDelCommitList.clear();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
     }
 
-    public void showState(TunnelList tunnels, boolean tunnelMonitorEnabled) {
+    public void showState(TunnelList tunnels, boolean tunnelMonitorEnabled, CommandSession session) throws TepException {
         IfTunnel tunnelInterface = null;
         IfL2vlan l2Vlan = null;
         List<InternalTunnel> tunnelLists = tunnels.getInternalTunnel();
         if (tunnelLists == null || tunnelLists.isEmpty()) {
-            System.out.println("No Internal Tunnels Exist");
+            handleError("No Internal Tunnels Exist", session);
             return;
         }
         if (!tunnelMonitorEnabled) {
-            System.out.println("Tunnel Monitoring is Off");
+            if(session != null) {
+                session.getConsole().println("Tunnel Monitoring is Off");
+            }
         }
         String displayFormat = "%-16s  %-16s  %-16s  %-16s  %-16s  %-8s  %-10s  %-10s";
-        System.out.println(String.format(displayFormat, "Tunnel Name", "Source-DPN",
+        if(session != null) {
+            session.getConsole().println(String.format(displayFormat, "Tunnel Name", "Source-DPN",
                 "Destination-DPN", "Source-IP", "Destination-IP", "Vlan Id", "Trunk-State", "Transport Type"));
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+            session.getConsole().println("-------------------------------------------------------------------------------------------------------------------------------------");
 
+        }
         for (InternalTunnel tunnel : tunnelLists) {
             String tunnelInterfaceName = tunnel.getTunnelInterfaceName();
             LOG.trace("tunnelInterfaceName::: {}", tunnelInterfaceName);
@@ -681,16 +698,18 @@ public class TepCommandHelper {
                 if( l2Vlan != null ) {
                    vlanId = l2Vlan.getVlanId().getValue() ;
                 }
-                System.out.println(String.format(displayFormat, tunnel.getTunnelInterfaceName(), tunnel
-                            .getSourceDPN().toString(), tunnel.getDestinationDPN().toString(), tunnelInterface.getTunnelSource().getIpv4Address().getValue(), tunnelInterface.getTunnelDestination().getIpv4Address().getValue(),vlanId, tunnelState ,
-                    tunnelType));
+                if(session != null) {
+                    session.getConsole().println(String.format(displayFormat, tunnel.getTunnelInterfaceName(), tunnel
+                            .getSourceDPN().toString(), tunnel.getDestinationDPN().toString(), tunnelInterface.getTunnelSource().getIpv4Address().getValue(), tunnelInterface.getTunnelDestination().getIpv4Address().getValue(), vlanId, tunnelState,
+                        tunnelType));
+                }
             }
         }
     }
 
     // deletes from ADD-cache if it exists.
     public boolean isInCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                             String gatewayIp, String transportZone) {
+                             String gatewayIp, String transportZone, CommandSession session) {
         boolean exists = false;
         VtepsKey vtepkey = new VtepsKey(dpnId, portName);
         IpAddress ipAddressObj = new IpAddress(ipAddress.toCharArray());
@@ -721,7 +740,9 @@ public class TepCommandHelper {
                         }
                     }
                 } else {
-                    System.out.println("Vtep " + "has not been configured");
+                    if(session != null) {
+                        session.getConsole().println("Vtep " + "has not been configured");
+                    }
                 }
             }
         }
@@ -837,5 +858,15 @@ public class TepCommandHelper {
             ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
                     ItmUtils.DEFAULT_CALLBACK);
         }
+    }
+
+    public void handleError(String errorMessage, CommandSession session) throws TepException {
+        if(session != null) {
+            session.getConsole().println(errorMessage);
+            return;
+        } else {
+            throw new TepException(errorMessage);
+        }
+
     }
 }

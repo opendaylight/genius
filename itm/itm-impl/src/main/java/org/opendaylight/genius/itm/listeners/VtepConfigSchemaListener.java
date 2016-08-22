@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
+import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
@@ -355,8 +356,12 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
                 skippedDpnIds.add(dpnId);
                 continue;
             }
-            tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
-                    String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName());
+            try {
+                tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
+                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+            } catch (TepException e) {
+                LOG.error(e.getMessage());
+            }
             newlyAllocatedIps.add(ipAddress);
         }
         if (!skippedDpnIds.isEmpty()) {
@@ -420,8 +425,12 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             }
 
             IpAddress ipAddress = vtep.getIpAddress();
-            tepCommandHelper.deleteVtep(dpnId, vtep.getPortname(), schema.getVlanId(),
-                    String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName());
+            try {
+                tepCommandHelper.deleteVtep(dpnId, vtep.getPortname(), schema.getVlanId(),
+                    String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+            } catch (TepException e) {
+                LOG.error(e.getMessage());
+            }
 
             freeIps.add(ipAddress);
         }

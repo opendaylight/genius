@@ -26,7 +26,7 @@ public class SubnetObject {
                 checkVlanIdRange(vlanId);
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid VlanID. expected: 0 to 4095");
+            throw new IllegalArgumentException("Invalid VlanID. expected: 0 to 4095");
         }
         _vlanId = vlanId;
     }
