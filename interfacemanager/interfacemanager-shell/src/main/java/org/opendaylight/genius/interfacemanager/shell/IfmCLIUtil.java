@@ -26,17 +26,19 @@ public class IfmCLIUtil {
     public static void showVlanHeaderOutput() {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1, "Name"));
+        CommandSessionHolder commandSessionHolder = new CommandSessionHolder();
+        CommandSession session = commandSessionHolder.getSession();
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1, "Name"));
         sb.setLength(0);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT, "", "Dpn", "PortName",
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT, "", "Dpn", "PortName",
                 "Vlan-Id"));
         sb.setLength(0);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT, "Tag", "PortNo",
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT, "Tag", "PortNo",
                 "AdmState", "OpState"));
         sb.setLength(0);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT, "Description", "", "", ""));
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT, "Description", "", "", ""));
         sb.setLength(0);
-        System.out.println(fmt.format("--------------------------------------------------------------------------------"));
+        session.getConsole().println(fmt.format("--------------------------------------------------------------------------------"));
         sb.setLength(0);
         fmt.close();
     }
@@ -44,22 +46,24 @@ public class IfmCLIUtil {
     public static void showVlanOutput(InterfaceInfo ifaceInfo, Interface iface) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
+        CommandSessionHolder commandSessionHolder = new CommandSessionHolder();
+        CommandSession session = commandSessionHolder.getSession();
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
         int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue() : 0 : 0;
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1,
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1,
                 iface.getName()));
         sb.setLength(0);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT,
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT,
                 "", (ifaceInfo == null) ? UNSET : ifaceInfo.getDpId(),
                 (ifaceInfo == null) ? UNSET : ifaceInfo.getPortName(), vlanId));
         sb.setLength(0);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT,
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT,
                 (ifaceInfo == null) ? UNSET : ifaceInfo.getInterfaceTag(),
                 (ifaceInfo == null) ? UNSET  : ifaceInfo.getPortNo(),
                 (ifaceInfo == null) ? UNSET : ifaceInfo.getAdminState(),
                 (ifaceInfo == null) ? UNSET : ifaceInfo.getOpState()));
         sb.setLength(0);
-        System.out.println(fmt.format(VLAN_OUTPUT_FORMAT + "\n",
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT + "\n",
                 iface.getDescription(), "", "", ""));
         sb.setLength(0);
         fmt.close();
@@ -68,16 +72,16 @@ public class IfmCLIUtil {
     public static void showVxlanHeaderOutput() {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
-        System.out.println(fmt
+        session.getConsole().println(fmt
                 .format(VXLAN_OUTPUT_FORMAT_LINE1, "Name", "Description"));
         sb.setLength(0);
-        System.out.println(fmt.format(VXLAN_OUTPUT_FORMAT, "Local IP",
+        session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT, "Local IP",
                 "Remote IP", "Gateway IP", "AdmState"));
         sb.setLength(0);
-        System.out.println(fmt.format(VXLAN_OUTPUT_FORMAT, "OpState", "Parent",
+        session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT, "OpState", "Parent",
                 "Tag", ""));
         sb.setLength(0);
-        System.out.println(fmt
+        session.getConsole().println(fmt
                 .format("--------------------------------------------------------------------------------"));
         fmt.close();
     }
@@ -85,19 +89,21 @@ public class IfmCLIUtil {
     public static void showVxlanOutput(Interface iface, InterfaceInfo interfaceInfo) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
-        System.out.println(fmt.format(VXLAN_OUTPUT_FORMAT_LINE1,
+        CommandSessionHolder commandSessionHolder = new CommandSessionHolder();
+        CommandSession session = commandSessionHolder.getSession();
+        session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT_LINE1,
                 iface.getName(),
                 iface.getDescription() == null ? UNSET : iface.getDescription()));
         sb.setLength(0);
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-        System.out.println(fmt.format(VXLAN_OUTPUT_FORMAT,
+        session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT,
                 ifTunnel.getTunnelSource().getIpv4Address().getValue(),
                 ifTunnel.getTunnelDestination().getIpv4Address().getValue(),
                 ifTunnel.getTunnelGateway() == null ? UNSET : ifTunnel.getTunnelGateway().getIpv4Address().getValue(),
                 (interfaceInfo == null) ? InterfaceInfo.InterfaceAdminState.DISABLED : interfaceInfo.getAdminState()));
         sb.setLength(0);
         ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-        System.out.println(fmt.format(VXLAN_OUTPUT_FORMAT + "\n",
+        session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT + "\n",
                 (interfaceInfo == null) ? InterfaceOpState.DOWN : interfaceInfo.getOpState(),
                 String.format("%s/%s", parentRefs.getDatapathNodeIdentifier(),
                         iface.getName()),
