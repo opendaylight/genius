@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
@@ -24,6 +26,7 @@ import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
+import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
@@ -173,9 +176,13 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     }
     @Override
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                                 String gatewayIp, String transportZone) {
+                                 String gatewayIp, String transportZone, CommandSession session) {
         if (tepCommandHelper != null) {
-            tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+            try {
+                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+            } catch (TepException e) {
+                LOG.error(e.getMessage());
+            }
         } else {
             LOG.trace("tepCommandHelper doesnt exist");
         }
@@ -192,21 +199,30 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     }
 
     @Override
-    public void showTeps() {
-        tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker));
+    public void showTeps(CommandSession session) {
+        try {
+            tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker), session);
+        } catch (TepException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void showState(TunnelList tunnels) {
-        if (tunnels != null)
-            tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS());
+    public void showState(TunnelList tunnels, CommandSession session) {
+        if (tunnels != null) {
+            try {
+                tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS(), session);
+            } catch (TepException e) {
+                LOG.trace(e.getMessage());
+            }
+        }
         else
             LOG.debug("No tunnels available");
     }
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                           String gatewayIp, String transportZone) {
+                           String gatewayIp, String transportZone, CommandSession session) {
         try {
-            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
         } catch (Exception e) {
             e.printStackTrace();
         }
