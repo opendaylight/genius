@@ -38,11 +38,11 @@ public class ShowVxlan extends OsgiCommandSupport {
         logger.debug("Executing show Vxlan command");
         List<Interface> vxlanList = interfaceManager.getVxlanInterfaces();
         if (!vxlanList.isEmpty()) {
-            IfmCLIUtil.showVxlanHeaderOutput();
+            IfmCLIUtil.showVxlanHeaderOutput(session);
         }
         for (Interface iface : vxlanList) {
             InterfaceInfo ifaceState = interfaceManager.getInterfaceInfoFromOperationalDataStore(iface.getName());
-            IfmCLIUtil.showVxlanOutput(iface, ifaceState);
+            IfmCLIUtil.showVxlanOutput(iface, ifaceState, session);
         }
         return null;
     }

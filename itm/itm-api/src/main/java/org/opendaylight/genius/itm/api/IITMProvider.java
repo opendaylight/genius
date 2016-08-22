@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceNotFoundException;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
@@ -20,18 +21,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Tun
 
 public interface IITMProvider {
     // APIs used by i
-    public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask, String gatewayIp, String transportZone);
+    public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask, String gatewayIp, String transportZone, CommandSession session);
 
     public void commitTeps();
 
     public DataBroker getDataBroker();
 
-    public void showTeps();
+    public void showTeps(CommandSession session);
 
-    public void showState(TunnelList tunnels);
+    public void showState(TunnelList tunnels, CommandSession session);
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                           String gatewayIp, String transportZone);
+                           String gatewayIp, String transportZone, CommandSession session);
     // public void showState(TunnelsState tunnelsState);
     public void configureTunnelType(String transportZone, String tunnelType);
 
