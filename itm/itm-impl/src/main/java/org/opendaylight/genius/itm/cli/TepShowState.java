@@ -41,7 +41,7 @@ public class TepShowState extends OsgiCommandSupport {
             itmProvider.showState(tunnels.get());
         }
         else
-            System.out.println("No Internal Tunnels Exist");
+            session.getConsole().println("No Internal Tunnels Exist");
         return null;
     }
 }
