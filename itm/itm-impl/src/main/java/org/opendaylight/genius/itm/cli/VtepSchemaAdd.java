@@ -98,7 +98,7 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
      * Command Usage.
      */
     private void usage() {
-        System.out.println(String.format(
+        session.getConsole().println(String.format(
                 "usage: vtep:schema-add [%s schema-name] [%s port-name] [%s vlan-id] [%s subnet-cidr] [%s transport-zone] [%s dpn-ids] [%s gateway-ip] [%s tunnel-type] [%s exclude-ip-filter]",
                 SCHEMA_NAME, PORT_NAME, VLAN_ID, SUBNET_CIDR, TRANSPORT_ZONE, DPN_IDS, GATEWAY_IP, TUNNEL_TYPE,
                 EXCLUDE_IP_FILTER));
@@ -128,7 +128,7 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
             this.itmProvider.addVtepConfigSchema(schema);
 
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            session.getConsole().println(e.getMessage());
         } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"vtep:schema-add\": ", e);
         }
