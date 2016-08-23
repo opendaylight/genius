@@ -314,8 +314,10 @@ public class FlowBasedServicesUtils {
                 ServiceModeEgress.class);
     }
 
-    public static void bindDefaultEgressDispatcherService(Interface interfaceInfo, String portNo, String interfaceName,
-                                                          WriteTransaction tx, int ifIndex) {
+    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
+                                                          Interface interfaceInfo, String portNo,
+                                                          String interfaceName, int ifIndex) {
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         int priority = NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex);
         BoundServices
@@ -324,6 +326,7 @@ public class FlowBasedServicesUtils {
                         NwConstants.DEFAULT_EGRESS_SERVICE_INDEX, priority,
                         NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
         IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
+        futures.add(tx.submit());
     }
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId, WriteTransaction t) {
@@ -420,10 +423,13 @@ public class FlowBasedServicesUtils {
         return highPriorityService;
     }
 
-    public static void installVlanFlow(BigInteger dpId, long portNo, Interface iface,
-                                       WriteTransaction t, List<MatchInfo> matches, int lportTag) {
+    public static void installLportIngressFlow(BigInteger dpId, long portNo, Interface iface,
+                                               List<ListenableFuture<Void>> futures, DataBroker dataBroker,
+                                               int lportTag) {
         int vlanId = 0;
         boolean isVlanTransparent = false;
+        WriteTransaction  inventoryConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
+        List<MatchInfo> matches = getMatchInfoForVlanPortAtIngressTable(dpId, portNo, iface);
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
         if(l2vlan != null){
             vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
@@ -442,18 +448,21 @@ public class FlowBasedServicesUtils {
         String flowRef = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
                 NwConstants.VLAN_TABLE_COOKIE, matches, instructions);
-        installFlow(dpId, ingressFlow, t);
+        installFlow(dpId, ingressFlow, inventoryConfigShardTransaction);
+        futures.add(inventoryConfigShardTransaction.submit());
     }
 
     public static String getFlowRef(short tableId, BigInteger dpnId, String infName) {
         return String.format("%d:%s:%s", tableId, dpnId, infName);
     }
 
-    public static void removeIngressFlow(String interfaceName, BigInteger dpId, WriteTransaction t) {
+    public static void removeIngressFlow(String interfaceName, BigInteger dpId, DataBroker dataBroker,
+                                         List<ListenableFuture<Void>> futures) {
         if(dpId == null){
             return;
         }
         LOG.debug("Removing Ingress Flows for {}", interfaceName);
+        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         String flowKeyStr = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, interfaceName);
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);
@@ -462,6 +471,7 @@ public class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, flowKey).build();
 
         t.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        futures.add(t.submit());
     }
 
     private static boolean isExternal(Interface iface) {

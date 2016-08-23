@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
@@ -35,6 +36,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -69,8 +71,12 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(BatchingUtils.class)
 public class TunnelInterfaceConfigurationTest {
     BigInteger dpId = BigInteger.valueOf(1);
     NodeConnectorId nodeConnectorId = null;
@@ -104,12 +110,14 @@ public class TunnelInterfaceConfigurationTest {
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
+    @Mock BatchingUtils batchingUtils;
     OvsInterfaceConfigAddHelper addHelper;
     OvsInterfaceConfigRemoveHelper removeHelper;
     OvsInterfaceConfigUpdateHelper updateHelper;
 
     @Before
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(BatchingUtils.class);
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),
@@ -182,7 +190,9 @@ public class TunnelInterfaceConfigurationTest {
                 alivenessMonitorService, mdsalApiManager);
 
         //Add some verifications
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, bridgeInterfaceEntryInstanceIdentifier, bridgeInterfaceEntry, true);
+        PowerMockito.verifyStatic(Mockito.times(1));
+        BatchingUtils.write(bridgeInterfaceEntryInstanceIdentifier,bridgeInterfaceEntry,
+                BatchingUtils.EntityType.DEFAULT_CONFIG );
     }
 
     @Test
@@ -200,10 +210,10 @@ public class TunnelInterfaceConfigurationTest {
                 alivenessMonitorService, mdsalApiManager);
 
         //Add some verifications
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, bridgeInterfaceEntryInstanceIdentifier ,
-                bridgeInterfaceEntry, true);
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, terminationPointInstanceIdentifier ,
-                terminationPoint, true);
+        PowerMockito.verifyStatic(Mockito.times(1));
+        BatchingUtils.write(bridgeInterfaceEntryInstanceIdentifier,bridgeInterfaceEntry, BatchingUtils.EntityType.DEFAULT_CONFIG );
+        PowerMockito.verifyStatic(Mockito.times(1));
+        BatchingUtils.write(terminationPointInstanceIdentifier,terminationPoint, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
 

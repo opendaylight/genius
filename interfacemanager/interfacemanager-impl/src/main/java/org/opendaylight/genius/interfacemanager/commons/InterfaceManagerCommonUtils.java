@@ -273,16 +273,24 @@ public class InterfaceManagerCommonUtils {
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifChildStateId, ifaceBuilderChild.build());
     }
 
-    public static void addStateEntry(String interfaceName, WriteTransaction transaction, DataBroker dataBroker,
-            IdManagerService idManager,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+    public static void addStateEntry(String interfaceName, DataBroker dataBroker,
+                                     IdManagerService idManager, List<ListenableFuture<Void>> futures,
+                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        WriteTransaction interfaceOperShardTransaction = dataBroker.newWriteOnlyTransaction();
+        addStateEntry(interfaceName, dataBroker, interfaceOperShardTransaction, idManager, futures, ifState);
+        futures.add(interfaceOperShardTransaction.submit());
+    }
+
+    public static void addStateEntry(String interfaceName, DataBroker dataBroker, WriteTransaction interfaceOperShardTransaction,
+                                     IdManagerService idManager, List<ListenableFuture<Void>> futures,
+                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         // allocate lport tag and create interface-if-index map.
         // This is done even if interface-state is not present, so that there is
         // no throttling
         // on id allocation even when multiple southbound port_up events come in
         // one shot
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
-        InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
+        InterfaceMetaUtils.createLportTagInterfaceMap(interfaceOperShardTransaction, interfaceName, ifIndex);
         if (ifState == null) {
             LOG.debug("could not retrieve interface state corresponding to {}", interfaceName);
             return;
@@ -314,17 +322,15 @@ public class InterfaceManagerCommonUtils {
             ifaceBuilder.setType(interfaceInfo.getType());
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
+        interfaceOperShardTransaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
 
         // install ingress flow
         BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
         if (interfaceInfo != null && interfaceInfo.isEnabled() && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-            List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo,
-                    interfaceInfo);
-            FlowBasedServicesUtils.installVlanFlow(dpId, portNo, interfaceInfo, transaction, matches, ifIndex);
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(interfaceInfo, Long.toString(portNo), interfaceName, transaction, ifIndex);
+            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, dataBroker, ifIndex);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
         }
     }
 

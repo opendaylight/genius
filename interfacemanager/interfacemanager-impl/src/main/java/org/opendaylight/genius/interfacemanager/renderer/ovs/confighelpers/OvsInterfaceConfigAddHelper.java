@@ -50,26 +50,29 @@ public class OvsInterfaceConfigAddHelper {
                                                                 AlivenessMonitorService alivenessMonitorService,
                                                                 IMdsalApiManager mdsalApiManager) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-
+        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
             addTunnelConfiguration(dataBroker, parentRefs, interfaceNew, idManager, alivenessMonitorService,
                     mdsalApiManager, futures);
-            return futures;
+        }else {
+            addVlanConfiguration(interfaceNew, parentRefs, dataBroker, idManager, defaultConfigShardTransaction,
+                    defaultOperShardTransaction, futures);
         }
-
-        addVlanConfiguration(interfaceNew, parentRefs, dataBroker, idManager, futures);
+        futures.add(defaultConfigShardTransaction.submit());
+        futures.add(defaultOperShardTransaction.submit());
         return futures;
     }
 
     private static void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs, DataBroker dataBroker, IdManagerService idManager,
+                                             WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
                                              List<ListenableFuture<Void>> futures) {
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || (IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode())) {
             return;
         }
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        if(!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker, transaction,
+        if(!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker, defaultConfigShardTransaction,
                 parentRefs.getParentInterface(), interfaceNew.getName())){
             return;
         }
@@ -77,22 +80,19 @@ public class OvsInterfaceConfigAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
 
-        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), transaction, dataBroker, idManager, ifState);
+        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, defaultOperShardTransaction,
+                idManager, futures, ifState);
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
         InterfaceParentEntry interfaceParentEntry =
                 InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
-        if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
-            LOG.debug("could not retrieve interface parent info for {}",interfaceNew.getName());
-            futures.add(transaction.submit());
-            return;
+        if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
+            //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
+            for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
+                InterfaceManagerCommonUtils.addStateEntry(interfaceChildEntry.getChildInterface(),
+                        dataBroker, defaultOperShardTransaction, idManager, futures, ifState);
+            }
         }
-
-        //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
-        for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
-            InterfaceManagerCommonUtils.addStateEntry(interfaceChildEntry.getChildInterface(), transaction, dataBroker, idManager,ifState);
-        }
-        futures.add(transaction.submit());
     }
 
     private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
@@ -117,8 +117,7 @@ public class OvsInterfaceConfigAddHelper {
 
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId,
-                interfaceNew.getName(), transaction);
-        futures.add(transaction.submit());
+                interfaceNew.getName());
 
         // create bridge on switch, if switch is connected
         BridgeRefEntryKey BridgeRefEntryKey = new BridgeRefEntryKey(dpId);
@@ -130,29 +129,22 @@ public class OvsInterfaceConfigAddHelper {
             LOG.debug("creating bridge interface on dpn {}", dpId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getBridgeReference().getValue();
-            Optional<OvsdbBridgeAugmentation> bridgeNodeOptional =
-                    IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeIid, dataBroker);
-            if (bridgeNodeOptional.isPresent()) {
-                OvsdbBridgeAugmentation ovsdbBridgeAugmentation = bridgeNodeOptional.get();
-                String bridgeName = ovsdbBridgeAugmentation.getBridgeName().getValue();
-                SouthboundUtils.addPortToBridge(bridgeIid, interfaceNew,
-                        ovsdbBridgeAugmentation, bridgeName, interfaceNew.getName(), dataBroker, futures);
+            SouthboundUtils.addPortToBridge(bridgeIid, interfaceNew, interfaceNew.getName(), dataBroker, futures);
 
-                // if TEP is already configured on switch, start LLDP monitoring and program tunnel ingress flow
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                        InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
-                if(ifState != null){
-                    NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
-                    if(ncId != null) {
-                        long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
-                        IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
-                        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel,
-                                dpId, portNo, interfaceNew.getName(),
-                                ifState.getIfIndex(), NwConstants.ADD_FLOW);
-                        // start LLDP monitoring for the tunnel interface
-                        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
-                                ifTunnel, interfaceNew.getName());
-                    }
+            // if TEP is already configured on switch, start LLDP monitoring and program tunnel ingress flow
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+                    InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
+            if(ifState != null){
+                NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
+                if(ncId != null) {
+                    long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
+                    IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+                    InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel,
+                            dpId, portNo, interfaceNew.getName(),
+                            ifState.getIfIndex(), NwConstants.ADD_FLOW);
+                    // start LLDP monitoring for the tunnel interface
+                    AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
+                            ifTunnel, interfaceNew.getName());
                 }
             }
         }

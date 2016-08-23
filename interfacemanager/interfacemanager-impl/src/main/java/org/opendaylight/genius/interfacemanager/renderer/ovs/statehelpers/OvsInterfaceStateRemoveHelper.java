@@ -40,7 +40,7 @@ public class OvsInterfaceStateRemoveHelper {
                                                                                  boolean isNodePresent) {
         LOG.debug("Removing interface-state information for interface: {} {}", interfaceName, isNodePresent);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         //VM Migration: Use old nodeConnectorId to delete the interface entry
         NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ?
@@ -53,29 +53,29 @@ public class OvsInterfaceStateRemoveHelper {
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
             OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, dataBroker,
-                    alivenessMonitorService, transaction);
+                    alivenessMonitorService, defaultOperationalShardTransaction);
         }else{
-            InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, transaction);
+            InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                     InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
 
             if(iface != null) {
                 // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
                 if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                    InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
+                    InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);
                     handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId,
-                            iface.getName(), iface.getAugmentation(IfTunnel.class), transaction,
+                            iface.getName(), iface.getAugmentation(IfTunnel.class), defaultOperationalShardTransaction,
                             nodeConnectorId, futures);
                     return futures;
                 }
             }
             // remove ingress flow only for northbound configured interfaces
             if(iface != null || (iface == null && interfaceName != fcNodeConnectorOld.getName())) {
-                FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, transaction);
+                FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
                 FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
             }
         }
-        futures.add(transaction.submit());
+        futures.add(defaultOperationalShardTransaction.submit());
         return futures;
     }
 
