@@ -32,6 +32,7 @@ public class ITMConstants{
   public static final String TUNNEL_TYPE_INVALID = "Invalid";
   public static final String MONITOR_TYPE_LLDP = "LLDP";
   public static final Class<? extends TunnelMonitoringTypeBase> DEFAULT_MONITOR_PROTOCOL =  TunnelMonitoringTypeBfd.class;
+  public static final String ITM_MONIRORING_PARAMS_CACHE_NAME = "ItmMonitoringParamsCache";
 }
 
 
