@@ -38,7 +38,8 @@ public class OvsVlanMemberConfigRemoveHelper {
                                                                    IdManagerService idManager) {
         LOG.debug("remove vlan member configuration {}",interfaceOld.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentRefs.getParentInterface());
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid =
@@ -55,10 +56,10 @@ public class OvsVlanMemberConfigRemoveHelper {
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
         InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid =
                 InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-        t.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
+        defaultConfigShardTransaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
         //If this is the last child, remove the interface parent info as well.
         if (interfaceChildEntries.size() <= 1) {
-            t.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
+            defaultConfigShardTransaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
@@ -68,11 +69,13 @@ public class OvsVlanMemberConfigRemoveHelper {
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
             InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
                     IfmUtil.buildStateInterfaceId(interfaceOld.getName());
-            t.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
-            FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, t);
+            defaultOperShardTransaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
+            FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, dataBroker, futures);
+            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceOld.getName());
         }
 
-        futures.add(t.submit());
+        futures.add(defaultConfigShardTransaction.submit());
+        futures.add(defaultOperShardTransaction.submit());
         return futures;
     }
 }

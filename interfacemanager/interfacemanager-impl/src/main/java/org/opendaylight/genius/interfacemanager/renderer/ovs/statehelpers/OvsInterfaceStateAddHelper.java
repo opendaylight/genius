@@ -52,7 +52,7 @@ public class OvsInterfaceStateAddHelper {
                                                         NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
         LOG.debug("Adding Interface State to Oper DS for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         //Retrieve PbyAddress & OperState from the DataObject
         PhysAddress physAddress = new PhysAddress(fcNodeConnectorNew.getHardwareAddress().getValue());
@@ -65,13 +65,13 @@ public class OvsInterfaceStateAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
-        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, transaction, idManager,
+        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, defaultOperationalShardTransaction, idManager,
                 physAddress, operStatus, adminStatus, nodeConnectorId);
 
         // If this interface is a tunnel interface, create the tunnel ingress flow,and start tunnel monitoring
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
             handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
-                    nodeConnectorId, transaction, ifState.getIfIndex(), iface.getAugmentation(IfTunnel.class), interfaceName);
+                    nodeConnectorId, defaultOperationalShardTransaction, ifState.getIfIndex(), iface.getAugmentation(IfTunnel.class), interfaceName);
             return futures;
         }
 
@@ -81,11 +81,11 @@ public class OvsInterfaceStateAddHelper {
             BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
             long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, iface);
-            FlowBasedServicesUtils.installVlanFlow(dpId, portNo, iface, transaction, matches, ifState.getIfIndex());
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(iface, Long.toString(portNo), interfaceName, transaction, ifState.getIfIndex());
+            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker, ifState.getIfIndex());
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo), interfaceName, ifState.getIfIndex());
         }
 
-        futures.add(transaction.submit());
+        futures.add(defaultOperationalShardTransaction.submit());
         return futures;
     }
 

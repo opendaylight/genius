@@ -66,6 +66,9 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
 
     public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
+        if(ifaceState.getType() == null) {
+            return futures;
+        }
         LOG.debug("unbinding services on interface {}", ifaceState.getName());
 
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
@@ -78,10 +81,6 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         List<BoundServices> allServices = servicesInfo.getBoundServices();
         if (allServices == null || allServices.isEmpty()) {
             LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if(ifaceState.getType() == null) {
             return futures;
         }
 

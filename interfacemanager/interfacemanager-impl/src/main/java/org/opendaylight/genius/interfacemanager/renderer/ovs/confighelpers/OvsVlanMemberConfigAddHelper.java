@@ -29,32 +29,29 @@ public class OvsVlanMemberConfigAddHelper {
                                                                 IdManagerService idManager) {
         LOG.debug("add vlan member configuration {}",interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
 
-        InterfaceManagerCommonUtils.createInterfaceChildEntry(t, parentRefs.getParentInterface(), interfaceNew.getName());
+        InterfaceManagerCommonUtils.createInterfaceChildEntry(defaultConfigShardTransaction, parentRefs.getParentInterface(), interfaceNew.getName());
+        futures.add(defaultConfigShardTransaction.submit());
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
         if (ifaceParent == null) {
             LOG.info("Parent Interface: {} not found when adding child interface: {}",
                     parentRefs.getParentInterface(), interfaceNew.getName());
-            futures.add(t.submit());
             return futures;
         }
 
         IfL2vlan parentIfL2Vlan = ifaceParent.getAugmentation(IfL2vlan.class);
         if (parentIfL2Vlan == null || parentIfL2Vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Trunk) {
             LOG.error("Parent Interface: {} not of trunk Type when adding trunk-member: {}", ifaceParent, interfaceNew);
-            futures.add(t.submit());
             return futures;
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
         LOG.debug("add interface state info for vlan member {}",interfaceNew.getName());
-        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), t, dataBroker, idManager, ifState);
-
-        futures.add(t.submit());
+        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures, ifState);
         return futures;
     }
 }
