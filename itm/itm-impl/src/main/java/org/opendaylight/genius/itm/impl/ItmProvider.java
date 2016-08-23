@@ -30,11 +30,14 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
+import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
+import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -67,6 +70,8 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor itmStatusMonitor = ITMStatusMonitor.getInstance();
     private ItmTunnelEventListener itmStateListener;
+    private ItmMonitoringListener itmMonitoringListener;
+    private ItmMonitoringIntervalListener itmMonitoringIntervalListener;
     static short flag = 0;
 
     public ItmProvider() {
@@ -113,6 +118,10 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             itmStateListener =new ItmTunnelEventListener(dataBroker);
             createIdPool();
             itmStatusMonitor.reportStatus("OPERATIONAL");
+            DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
+            itmMonitoringListener = new ItmMonitoringListener(dataBroker);
+            itmMonitoringIntervalListener = new ItmMonitoringIntervalListener(dataBroker);
+
         } catch (Exception e) {
             LOG.error("Error initializing services", e);
             itmStatusMonitor.reportStatus("ERROR");
