@@ -109,15 +109,12 @@ public class SouthboundUtils {
         }
     };
 
-    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface,
-            OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String portName, DataBroker dataBroker,
+    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName, DataBroker dataBroker,
             List<ListenableFuture<Void>> futures) {
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
-            addTunnelPortToBridge(ifTunnel, bridgeIid, iface, bridgeAugmentation, bridgeName, portName, dataBroker, tx);
+            addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
         }
-        futures.add(tx.submit());
     }
 
     /*
@@ -127,7 +124,6 @@ public class SouthboundUtils {
     public static void addAllPortsToBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
             List<ListenableFuture<Void>> futures) {
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
@@ -139,15 +135,13 @@ public class SouthboundUtils {
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, bridgeNew, bridgeName, portName, dataBroker,
-                                writeTransaction);
+                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
                     }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
                 }
             }
         }
-        futures.add(writeTransaction.submit());
     }
 
     /*
@@ -183,15 +177,14 @@ public class SouthboundUtils {
             OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String portName, DataBroker dataBroker,
             WriteTransaction t) {
         if (ifL2vlan.getVlanId() != null) {
-            addTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, portName, ifL2vlan.getVlanId().getValue(),
-                    null, null, ifTunnel, t);
+            addTerminationPoint(bridgeIid, portName, ifL2vlan.getVlanId().getValue(),
+                    null, null, ifTunnel);
         }
     }
 
     private static void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
-            OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String portName, DataBroker dataBroker,
-            WriteTransaction t) {
-        LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeName);
+            String portName, DataBroker dataBroker) {
+        LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
 
         Class<? extends InterfaceTypeBase> type = TUNNEL_TYPE_MAP.get(ifTunnel.getTunnelInterfaceType());
 
@@ -228,7 +221,7 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_NSHC3, TUNNEL_OPTIONS_VALUE_FLOW);
             options.put(TUNNEL_OPTIONS_NSHC4, TUNNEL_OPTIONS_VALUE_FLOW);
         }
-        addTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, portName, vlanId, type, options, ifTunnel, t);
+        addTerminationPoint(bridgeIid, portName, vlanId, type, options, ifTunnel);
     }
 
     // Update is allowed only for tunnel monitoring attributes
@@ -248,9 +241,8 @@ public class SouthboundUtils {
         transaction.merge(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
     }
 
-    private static void addTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
-            String bridgeName, String portName, int vlanId, Class<? extends InterfaceTypeBase> type,
-            Map<String, String> options, IfTunnel ifTunnel, WriteTransaction t) {
+    private static void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
+                                            Class<? extends InterfaceTypeBase> type, Map<String, String> options, IfTunnel ifTunnel) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
@@ -287,7 +279,7 @@ public class SouthboundUtils {
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-        t.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
+        BatchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
 
     }
 

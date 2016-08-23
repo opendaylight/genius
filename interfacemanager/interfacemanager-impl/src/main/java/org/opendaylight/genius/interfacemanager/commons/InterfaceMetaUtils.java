@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeInterfaceInfo;
@@ -146,15 +147,14 @@ public class InterfaceMetaUtils {
     }
 
     public static void createBridgeInterfaceEntryInConfigDS(BigInteger dpId,
-                                                            String childInterface,
-                                                            WriteTransaction t) {
+                                                            String childInterface) {
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(childInterface);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey, bridgeInterfaceEntryKey);
         BridgeInterfaceEntryBuilder entryBuilder = new BridgeInterfaceEntryBuilder().setKey(bridgeInterfaceEntryKey)
                 .setInterfaceName(childInterface);
-        t.put(LogicalDatastoreType.CONFIGURATION, bridgeInterfaceEntryIid, entryBuilder.build(), true);
+        BatchingUtils.write(bridgeInterfaceEntryIid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     public static InstanceIdentifier<InterfaceParentEntry> getInterfaceParentEntryIdentifier(
