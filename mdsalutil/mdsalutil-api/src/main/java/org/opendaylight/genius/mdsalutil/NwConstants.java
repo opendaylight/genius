@@ -93,7 +93,7 @@ public final class NwConstants {
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
     public static final short DHCP_TABLE = 19;
     public static final short L3_LFIB_TABLE = 20;
-    public static final short L3_GW_MAC_TABLE = 19;
+    public static final short L3_GW_MAC_TABLE = 13;
     public static final short L3_FIB_TABLE = 21;
     public static final short L3_SUBNET_ROUTE_TABLE=22;
     public static final short PDNAT_TABLE = 25;
