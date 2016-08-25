@@ -7,10 +7,12 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
@@ -26,9 +28,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigUnbindHelper.class);
