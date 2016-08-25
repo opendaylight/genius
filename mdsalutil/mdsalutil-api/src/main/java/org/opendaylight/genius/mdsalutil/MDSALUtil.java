@@ -197,6 +197,17 @@ public class MDSALUtil {
                 .setIngress(getDefaultNodeConnRef(dpnId)).setEgress(getDefaultNodeConnRef(dpnId)).build();
     }
 
+    public static TransmitPacketInput getPacketOutFromController(List<ActionInfo> actionInfos, byte[] payload,
+            long dpnId, NodeConnectorRef egress) {
+        return new TransmitPacketInputBuilder()
+                .setAction(buildActions(actionInfos))
+                .setPayload(payload)
+                .setNode(
+                        new NodeRef(InstanceIdentifier.builder(Nodes.class)
+                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                .setEgress(egress).build();
+    }
+
     public static TransmitPacketInput getPacketOut(List<ActionInfo> actionInfos, byte[] payload, long dpnId,
             NodeConnectorRef ingress) {
         return new TransmitPacketInputBuilder()
@@ -404,7 +415,7 @@ public class MDSALUtil {
         ActionBuilder ab = new ActionBuilder();
         ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build());
         ab.setKey(new ActionKey(actionKey));
-        List<Action> listAction = new ArrayList<Action> ();
+        List<Action> listAction = new ArrayList<> ();
         listAction.add(ab.build());
         return buildApplyActionsInstruction(listAction, instructionKey);
     }
