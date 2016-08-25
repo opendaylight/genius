@@ -16,8 +16,11 @@ import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -181,7 +184,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         if (allServices.size() == 1) {
             //calling LportDispatcherTableForService with current service index as 0 and next service index as some value since this is the only service bound.
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(),
-                    transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX,(short) (boundServiceNew.getServicePriority() + 1));
+                    transaction, ifState.getIfIndex(), ServiceIndex.getIndex(),(short) (boundServiceNew.getServicePriority() + 1));
             if (transaction != null) {
                 futures.add(transaction.submit());
             }
@@ -192,7 +195,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         BoundServices low = highLowPriorityService[0];
         BoundServices high = highLowPriorityService[1];
         BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(allServices);
-        short currentServiceIndex = NwConstants.DEFAULT_SERVICE_INDEX;
+        short currentServiceIndex = ServiceIndex.getIndex();
         short nextServiceIndex = (short) (boundServiceNew.getServicePriority() + 1); // dummy service index
         if (low != null) {
             nextServiceIndex = low.getServicePriority();
@@ -209,8 +212,8 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         if (high != null) {
             currentServiceIndex = boundServiceNew.getServicePriority();
             if (high.equals(highest)) {
-                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
+                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, ServiceIndex.getIndex(), currentServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), ServiceIndex.getIndex(), currentServiceIndex);
             } else {
                 LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, high.getServicePriority(), currentServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex);

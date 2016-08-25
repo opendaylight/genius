@@ -10,6 +10,7 @@ package org.opendaylight.genius.utils;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.ovsdb.utils.config.ConfigProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +23,24 @@ import org.slf4j.LoggerFactory;
  */
 public class ServiceIndex {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceIndex.class);
+    private static final String DEFAULT_SERVICE_NAME = "DEFAULT_SERVICE";
 
     private static Map<String, Short> serviceIndexMap = new ConcurrentHashMap<>();
+
+    public static short getIndex() {
+        return getIndex(NwConstants.DEFAULT_SERVICE_INDEX);
+    }
+
+    public static short getIndex(short defaultValue) {
+        return getIndex(DEFAULT_SERVICE_NAME, defaultValue);
+    }
 
     public static short getIndex(String serviceName, short defaultValue) {
         if (serviceIndexMap.containsKey(serviceName)) {
             return serviceIndexMap.get(serviceName);
         }
 
-        String servicePriority = ConfigProperties.getProperty(ServiceIndex.class, serviceName,
-                String.valueOf(defaultValue));
+        String servicePriority = ConfigProperties.getProperty(ServiceIndex.class, serviceName, String.valueOf(defaultValue));
         if (servicePriority != null) {
             try {
                 serviceIndexMap.put(serviceName, Short.valueOf(servicePriority));
