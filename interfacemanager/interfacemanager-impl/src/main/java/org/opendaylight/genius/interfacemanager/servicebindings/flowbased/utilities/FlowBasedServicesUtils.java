@@ -29,6 +29,7 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
+import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -282,7 +283,7 @@ public class FlowBasedServicesUtils {
 
         // build the final instruction for LPort Dispatcher table flow entry
         List<Instruction> instructions = new ArrayList<Instruction>();
-        if(boundService.getServicePriority() != NwConstants.DEFAULT_EGRESS_SERVICE_INDEX) {
+        if(boundService.getServicePriority() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
             BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
             BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex, metadataValues[0]);
             BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
@@ -323,7 +324,8 @@ public class FlowBasedServicesUtils {
     }
 
     public static void unbindDefaultEgressDispatcherService(DataBroker dataBroker, String interfaceName) {
-        IfmUtil.unbindService(dataBroker, interfaceName, buildServiceId(interfaceName, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
+        IfmUtil.unbindService(dataBroker, interfaceName, buildServiceId(interfaceName,
+                ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)),
                 ServiceModeEgress.class);
     }
 
@@ -331,12 +333,12 @@ public class FlowBasedServicesUtils {
                                                           Interface interfaceInfo, String portNo,
                                                           String interfaceName, int ifIndex) {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        int priority = NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+        int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex);
         BoundServices
                 serviceInfo =
                 getBoundServices(String.format("%s.%s", "default", interfaceName),
-                        NwConstants.DEFAULT_EGRESS_SERVICE_INDEX, priority,
+                        ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), priority,
                         NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
         IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
         futures.add(tx.submit());
