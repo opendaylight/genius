@@ -8,7 +8,10 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
