@@ -91,9 +91,8 @@ public final class NwConstants {
     public static final short GRE_TRUNK_INTERFACE_TABLE = 12;
     public static final short LPORT_DISPATCHER_TABLE = 17;
     public static final short DHCP_TABLE_EXTERNAL_TUNNEL = 18;
-    public static final short DHCP_TABLE = 19;
-    public static final short L3_LFIB_TABLE = 20;
     public static final short L3_GW_MAC_TABLE = 19;
+    public static final short L3_LFIB_TABLE = 20;
     public static final short L3_FIB_TABLE = 21;
     public static final short L3_SUBNET_ROUTE_TABLE=22;
     public static final short PDNAT_TABLE = 25;
@@ -114,6 +113,7 @@ public final class NwConstants {
     public static final short ELAN_DMAC_TABLE = 51;
     public static final short ELAN_UNKNOWN_DMAC_TABLE = 52;
     public static final short ELAN_FILTER_EQUALS_TABLE = 55;
+    public static final short DHCP_TABLE = 60;
     public static final short SCF_UP_SUB_FILTER_TCP_BASED_TABLE = 70;
     public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     public static final short SCF_CHAIN_FWD_TABLE = 75;
