@@ -13,6 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAsyncDataChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
@@ -28,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunnels, HwVTEPTunnelsStateListener> {
+public class HwVTEPTunnelsStateListener extends HwvtepAsyncDataChangeListenerBase<Tunnels, HwVTEPTunnelsStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
     private DataBroker dataBroker;
 
@@ -54,7 +55,7 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Tunnels> identifier, Tunnels tunnel) {
+    protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels tunnel) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, physicalSwitchAugmentation: {}",
                 identifier, tunnel);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
@@ -63,7 +64,7 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
     }
 
     @Override
-    protected void update(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld,
+    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld,
                           Tunnels tunnelNew) {
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
@@ -72,7 +73,7 @@ public class HwVTEPTunnelsStateListener extends AsyncDataChangeListenerBase<Tunn
     }
 
     @Override
-    protected void add(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelNew) {
+    protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}",
                 identifier, tunnelNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
