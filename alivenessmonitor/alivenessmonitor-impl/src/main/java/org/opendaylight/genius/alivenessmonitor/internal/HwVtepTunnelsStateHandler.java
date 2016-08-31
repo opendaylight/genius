@@ -23,7 +23,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
+import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataChangeListener;
+import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAsyncDataChangeListenerBase;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
@@ -60,7 +61,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnels> implements AlivenessProtocolHandler, AutoCloseable {
+public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataChangeListener<Tunnels> implements AlivenessProtocolHandler, AutoCloseable {
     private DataBroker broker;
     private ServiceProvider serviceProvider;
     ListenerRegistration<DataChangeListener> tunnelsListenerRegistration;
@@ -94,13 +95,13 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
+    protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void update(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
+    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
         List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
         List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
@@ -200,7 +201,7 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     }
 
     @Override
-    protected void add(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
+    protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
         // TODO: need to add the code to enable BFD if tunnels are created dynamically by TOR switch
     }
 
