@@ -39,6 +39,9 @@ module odl-arputil {
            leaf ip-address {
                 type inet:ip-address;
            }
+           leaf macaddress {
+                type yang:phys-address;
+            }
         }
     }
 
