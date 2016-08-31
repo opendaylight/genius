@@ -240,6 +240,7 @@ public class ArpUtilImpl implements OdlArputilService,
         String interfaceName = null;
         byte srcIpBytes[];
         byte[] dstIpBytes = null;
+        byte [] srcMac = null;
 
         RpcResultBuilder<Void> failureBuilder = RpcResultBuilder
                 .<Void> failed();
@@ -260,7 +261,7 @@ public class ArpUtilImpl implements OdlArputilService,
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
-
+                
                 NodeConnectorId id = getNodeConnectorFromInterfaceName(interfaceName);
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
@@ -279,9 +280,15 @@ public class ArpUtilImpl implements OdlArputilService,
                             "sendArpRequest received dpnId {} out interface {}",
                             dpnId, interfaceName);
                 }
-                byte srcMac[] = MDSALUtil.getMacAddressForNodeConnector(
-                        dataBroker,
-                        (InstanceIdentifier<NodeConnector>) ref.getValue());
+                if(interfaceAddress.getMacaddress() == null) {
+                    srcMac = MDSALUtil.getMacAddressForNodeConnector(
+                            dataBroker,
+                            (InstanceIdentifier<NodeConnector>) ref.getValue());
+                }else {
+                    String macAddr = interfaceAddress.getMacaddress().getValue();
+                    srcMac = HexEncode.bytesFromHexString(macAddr);
+                }
+                
                 checkNotNull(srcMac, FAILED_TO_GET_SRC_MAC_FOR_INTERFACE,
                         interfaceName, ref.getValue());
                 checkNotNull(srcIpBytes, FAILED_TO_GET_SRC_IP_FOR_INTERFACE,
