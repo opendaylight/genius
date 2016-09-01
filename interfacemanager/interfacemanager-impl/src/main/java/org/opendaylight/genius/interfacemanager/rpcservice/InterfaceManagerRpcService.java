@@ -270,7 +270,8 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         }catch(Exception e){
-            LOG.error("Retrieval of egress actions for the key {} failed due to {}" ,input.getIntfName(), e.getMessage());
+            LOG.error("Retrieval of egress instructions for the key {} failed due to {}",
+                input.getIntfName(), e.getMessage());
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
