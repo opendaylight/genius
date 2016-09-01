@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.net.InetAddresses;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -329,8 +330,15 @@ public class IfmUtil {
                             new BigInteger[]{BigInteger.valueOf(tunnelKey.longValue())},
                             actionKeyStart++));
                 }
+                IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+                String ipString = ifTunnel.getTunnelDestination().getIpv4Address().getValue();
+                int ipInt = InetAddresses.coerceToInteger(InetAddresses.forString(ipString));
+                result.add(new ActionInfo(ActionType.set_tunnel_dest_ip,
+                    new BigInteger[]{BigInteger.valueOf(ipInt & 0xffffffffL)},
+                    actionKeyStart++));
 
                 result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
+
                 break;
 
             default:

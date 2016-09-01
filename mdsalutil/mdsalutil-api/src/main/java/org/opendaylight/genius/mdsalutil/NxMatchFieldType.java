@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflow.oxm.rev150225.MatchField;
@@ -29,6 +30,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg5Key;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg6Key;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxTunIpv4DstKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxTunIpv4SrcKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfTcpDstKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfTcpSrcKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfUdpDstKey;
@@ -36,6 +39,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.state.grouping.NxmNxCtStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.zone.grouping.NxmNxCtZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.reg.grouping.NxmNxRegBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.tun.ipv4.dst.grouping.NxmNxTunIpv4DstBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.tun.ipv4.src.grouping.NxmNxTunIpv4SrcBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.tun.ipv4.src.grouping.NxmNxTunIpv4Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.tcp.dst.grouping.NxmOfTcpDstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.tcp.src.grouping.NxmOfTcpSrcBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.of.udp.dst.grouping.NxmOfUdpDstBuilder;
@@ -240,16 +246,88 @@ public enum NxMatchFieldType {
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
-                Map<Class<?>, Object> mapMatchBuilder) {
+                             Map<Class<?>, Object> mapMatchBuilder) {
             NxmOfUdpDstBuilder udpDstBuilder = (NxmOfUdpDstBuilder) mapMatchBuilder.remove(NxmOfUdpDstBuilder.class);
 
             if (udpDstBuilder != null) {
                 NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
-                        .setNxmOfUdpDst(udpDstBuilder.build()).build();
+                    .setNxmOfUdpDst(udpDstBuilder.build()).build();
                 GeneralAugMatchNodesNodeTableFlow existingAugmentations = matchBuilderInOut
-                        .getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                    .getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
                 GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
-                        nxAugMatch, NxmOfUdpDstKey.class);
+                    nxAugMatch, NxmOfUdpDstKey.class);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            }
+        }
+    },
+    nx_tun_dst_ip {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return NxmNxReg.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            NxmNxTunIpv4DstBuilder nxmNxTunIpv4DstBuilder =
+                (NxmNxTunIpv4DstBuilder) mapMatchBuilder.get(NxmNxTunIpv4DstBuilder.class);
+
+            if (nxmNxTunIpv4DstBuilder == null) {
+                nxmNxTunIpv4DstBuilder = new NxmNxTunIpv4DstBuilder();
+                mapMatchBuilder.put(NxmNxTunIpv4DstBuilder.class, nxmNxTunIpv4DstBuilder);
+            }
+            String[] address = matchInfo.getStringMatchValues();
+            nxmNxTunIpv4DstBuilder.setIpv4Address(new Ipv4Address(address[0]));
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
+                             Map<Class<?>, Object> mapMatchBuilder) {
+            NxmNxTunIpv4DstBuilder nxmNxTunIpv4DstBuilder =
+                (NxmNxTunIpv4DstBuilder) mapMatchBuilder.remove(NxmNxTunIpv4DstBuilder.class);
+
+            if (nxmNxTunIpv4DstBuilder != null) {
+                NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
+                    .setNxmNxTunIpv4Dst(nxmNxTunIpv4DstBuilder.build()).build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations = matchBuilderInOut
+                    .getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmNxTunIpv4DstKey.class);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            }
+        }
+    },
+    nx_tun_src_ip {
+        @Override
+        protected Class<? extends MatchField> getMatchType() {
+            return NxmNxReg.class;
+        }
+
+        @Override
+        public void createInnerMatchBuilder(NxMatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            NxmNxTunIpv4SrcBuilder nxmNxTunIpv4SrcBuilder =
+                (NxmNxTunIpv4SrcBuilder) mapMatchBuilder.get(NxmNxTunIpv4SrcBuilder.class);
+
+            if (nxmNxTunIpv4SrcBuilder == null) {
+                nxmNxTunIpv4SrcBuilder = new NxmNxTunIpv4SrcBuilder();
+                mapMatchBuilder.put(NxmNxTunIpv4SrcBuilder.class, nxmNxTunIpv4SrcBuilder);
+            }
+            String[] address = matchInfo.getStringMatchValues();
+            nxmNxTunIpv4SrcBuilder.setIpv4Address(new Ipv4Address(address[0]));
+        }
+
+        @Override
+        public void setMatch(MatchBuilder matchBuilderInOut, MatchInfoBase matchInfo,
+                             Map<Class<?>, Object> mapMatchBuilder) {
+            NxmNxTunIpv4SrcBuilder nxmNxTunIpv4SrcBuilder =
+                (NxmNxTunIpv4SrcBuilder) mapMatchBuilder.remove(NxmNxTunIpv4SrcBuilder.class);
+
+            if (nxmNxTunIpv4SrcBuilder != null) {
+                NxAugMatchNodesNodeTableFlow nxAugMatch = new NxAugMatchNodesNodeTableFlowBuilder()
+                    .setNxmNxTunIpv4Src(nxmNxTunIpv4SrcBuilder.build()).build();
+                GeneralAugMatchNodesNodeTableFlow existingAugmentations = matchBuilderInOut
+                    .getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
+                    nxAugMatch, NxmNxTunIpv4SrcKey.class);
                 matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
             }
         }

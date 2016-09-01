@@ -210,7 +210,8 @@ public class SouthboundUtils {
         options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
 
         IpAddress remoteIp = ifTunnel.getTunnelDestination();
-        options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        //options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
 
         // Specific options for each type of tunnel
         if (!ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
