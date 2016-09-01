@@ -106,23 +106,37 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             BigInteger dpId = null;
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+            if (interfaceInfo == null) {
+                String errMsg = String.format("Retrieval of datapath id for the key {%s} failed due to missing Interface in Config DataStore", interfaceName);
+                LOG.error(errMsg);
+                rpcResultBuilder = RpcResultBuilder.<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+                return Futures.immediateFuture(rpcResultBuilder.build());            	
+            }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
                 dpId = parentRefs.getDatapathNodeIdentifier();
             } else {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                         InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-                String lowerLayerIf = ifState.getLowerLayerIf().get(0);
-                NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-                dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                if (ifState != null) {
+                    String lowerLayerIf = ifState.getLowerLayerIf().get(0);
+                    NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
+                    dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                } else {
+                     String errMsg = String.format("Retrieval of datapath id for the key {%s} failed due to missing Interface-state", interfaceName);
+                     LOG.error(errMsg);
+                     rpcResultBuilder = RpcResultBuilder.<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+                     return Futures.immediateFuture(rpcResultBuilder.build());
+                }
             }
             GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(
                     (dpId));
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of datapath id for the key {} failed due to {}", interfaceName, e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            String errMsg = String.format("Retrieval of datapath id for the key %s failed due to %s", interfaceName, e.getMessage());
+            LOG.error(errMsg);
+            rpcResultBuilder = RpcResultBuilder.<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
@@ -256,7 +270,12 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
-
+            if (interfaceInfo == null) {
+                String errMsg = String.format("Retrieval of Interface Type for the key {%s} failed due to missing Interface in Config DataStore", interfaceName);
+                LOG.error(errMsg);
+                rpcResultBuilder = RpcResultBuilder.<GetInterfaceTypeOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+                return Futures.immediateFuture(rpcResultBuilder.build());            	
+            }
             GetInterfaceTypeOutputBuilder output = new GetInterfaceTypeOutputBuilder().setInterfaceType(interfaceInfo.getType());
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
@@ -274,7 +293,12 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
-
+            if (interfaceInfo == null) {
+                String errMsg = String.format("Retrieval of Tunnel Type for the key {%s} failed due to missing Interface in Config DataStore", interfaceName);
+                LOG.error(errMsg);
+                rpcResultBuilder = RpcResultBuilder.<GetTunnelTypeOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+                return Futures.immediateFuture(rpcResultBuilder.build());            	
+            }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 IfTunnel tnl = interfaceInfo.getAugmentation(IfTunnel.class);
                 Class <? extends TunnelTypeBase> tun_type = tnl.getTunnelInterfaceType();
@@ -321,18 +345,25 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             long portNo = 0;
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                     InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-            String lowerLayerIf = ifState.getLowerLayerIf().get(0);
-            NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-            dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-            portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-            // FIXME Assuming portName and interfaceName are same
-            GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
-                    setPortname(interfaceName).setPortno(Long.valueOf(portNo));
-            rpcResultBuilder = RpcResultBuilder.success();
-            rpcResultBuilder.withResult(output.build());
+            if (ifState != null) {
+                String lowerLayerIf = ifState.getLowerLayerIf().get(0);
+                NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
+                dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+                // FIXME Assuming portName and interfaceName are same
+                GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
+                        setPortname(interfaceName).setPortno(Long.valueOf(portNo));
+                rpcResultBuilder = RpcResultBuilder.success();
+                rpcResultBuilder.withResult(output.build());
+            } else {
+                String errMsg = String.format("Retrieval of Port for the key {%s} failed due to missing Interface-state", interfaceName);
+                LOG.error(errMsg);
+                rpcResultBuilder = RpcResultBuilder.<GetPortFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+            }
         }catch(Exception e){
-            LOG.error("Retrieval of lport tag for the key {} failed due to {}" ,input.getIntfName(), e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            String errMsg = String.format("Retrieval of Port for the key {%s} failed due to {%s}", interfaceName, e.getMessage());
+            LOG.error(errMsg);
+            rpcResultBuilder = RpcResultBuilder.<GetPortFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
