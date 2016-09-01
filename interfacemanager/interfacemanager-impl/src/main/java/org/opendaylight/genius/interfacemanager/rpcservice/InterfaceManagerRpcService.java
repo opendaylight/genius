@@ -112,9 +112,15 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             } else {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                         InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-                String lowerLayerIf = ifState.getLowerLayerIf().get(0);
-                NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-                dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                if (ifState != null) {
+                    String lowerLayerIf = ifState.getLowerLayerIf().get(0);
+                    NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
+                    dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                } else {
+                     LOG.error("Interface-State not found for Interface::{}", interfaceName);
+                     rpcResultBuilder = RpcResultBuilder.failed();
+                     return Futures.immediateFuture(rpcResultBuilder.build());
+                }
             }
             GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(
                     (dpId));
@@ -321,15 +327,20 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             long portNo = 0;
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                     InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-            String lowerLayerIf = ifState.getLowerLayerIf().get(0);
-            NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-            dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-            portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-            // FIXME Assuming portName and interfaceName are same
-            GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
-                    setPortname(interfaceName).setPortno(Long.valueOf(portNo));
-            rpcResultBuilder = RpcResultBuilder.success();
-            rpcResultBuilder.withResult(output.build());
+            if (ifState != null) {
+                String lowerLayerIf = ifState.getLowerLayerIf().get(0);
+                NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
+                dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+                // FIXME Assuming portName and interfaceName are same
+                GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
+                        setPortname(interfaceName).setPortno(Long.valueOf(portNo));
+                rpcResultBuilder = RpcResultBuilder.success();
+                rpcResultBuilder.withResult(output.build());
+            } else {
+                LOG.error("Interface-State not found for Interface::{}", interfaceName);
+                rpcResultBuilder = RpcResultBuilder.failed();
+            }
         }catch(Exception e){
             LOG.error("Retrieval of lport tag for the key {} failed due to {}" ,input.getIntfName(), e);
             rpcResultBuilder = RpcResultBuilder.failed();
