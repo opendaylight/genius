@@ -65,6 +65,9 @@ public class InterfaceManagerCommonUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerCommonUtils.class);
     private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
+            new ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus>();
+
     private static final String NOVA_OR_TUNNEL_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}";
     private static final Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
 
@@ -334,6 +337,12 @@ public class InterfaceManagerCommonUtils {
         }
     }
 
+    public static boolean checkIfBfdStateIsDown(String interfaceName){
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus =
+                InterfaceManagerCommonUtils.getBfdStateFromCache(interfaceName);
+        return (operStatus == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down);
+    }
+
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
             Interface interfaceInfo, String interfaceName, WriteTransaction transaction, IdManagerService idManager,
             PhysAddress physAddress,
@@ -344,7 +353,8 @@ public class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         Integer ifIndex = null;
         if (interfaceInfo != null) {
-            if (!interfaceInfo.isEnabled()) {
+            if(!interfaceInfo.isEnabled() || (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo) &&
+                    checkIfBfdStateIsDown(interfaceInfo.getName()))){
                 operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
             }
 
@@ -462,6 +472,19 @@ public class InterfaceManagerCommonUtils {
     public static void removeFromInterfaceStateCache(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
         interfaceStateMap.remove(iface.getName());
+    }
+
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus getBfdStateFromCache(String interfaceName) {
+        return bfdStateMap.get(interfaceName);
+    }
+
+    public static void addBfdStateToCache(String interfaceName,
+                                          org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
+        bfdStateMap.put(interfaceName, operStatus);
+    }
+
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(String interfaceName){
+        return bfdStateMap.remove(interfaceName);
     }
 
     public static boolean isNovaOrTunnelPort(String portName) {
