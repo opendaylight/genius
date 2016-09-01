@@ -11,9 +11,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -27,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class TerminationPointStateListener extends AsyncDataChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
+public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private DataBroker dataBroker;
 
@@ -43,18 +45,20 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
     }
 
     @Override
-    protected DataChangeListener getDataChangeListener() {
+    protected TerminationPointStateListener getDataTreeChangeListener() {
         return TerminationPointStateListener.this;
-    }
-
-    @Override
-    protected AsyncDataBroker.DataChangeScope getDataChangeScope() {
-        return AsyncDataBroker.DataChangeScope.SUBTREE;
     }
 
     @Override
     protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                           OvsdbTerminationPointAugmentation tpOld) {
+        LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
+        if (tpOld.getInterfaceBfdStatus() != null) {
+            LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
+            jobCoordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
+        }
     }
 
     @Override
@@ -102,6 +106,22 @@ public class TerminationPointStateListener extends AsyncDataChangeListenerBase<O
             // to call the respective helpers.
             return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker,
                     terminationPointNew);
+        }
+    }
+
+    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+        OvsdbTerminationPointAugmentation terminationPointOld;
+
+
+        public RendererStateRemoveWorker(OvsdbTerminationPointAugmentation tpNew) {
+            this.terminationPointOld = tpNew;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            LOG.debug("Removing bfd state from cache, if any, for {}", terminationPointOld.getName());
+            InterfaceManagerCommonUtils.removeBfdStateFromCache(terminationPointOld.getName());
+            return null;
         }
     }
 }
