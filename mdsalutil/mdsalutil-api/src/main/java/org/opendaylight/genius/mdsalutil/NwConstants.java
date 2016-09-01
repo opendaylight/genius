@@ -48,8 +48,8 @@ public final class NwConstants {
 
     // Ingress (w.r.t switch) service indexes
     public static final short DEFAULT_SERVICE_INDEX = 0;
-    public static final short DHCP_SERVICE_INDEX = 1;
-    public static final short ACL_SERVICE_INDEX = 2;
+	    public static final short ACL_SERVICE_INDEX = 1;
+    public static final short DHCP_SERVICE_INDEX = 2;
     public static final short IPV6_SERVICE_INDEX = 3;
     public static final short SCF_SERVICE_INDEX = 4;
     public static final short L3VPN_SERVICE_INDEX = 5;
