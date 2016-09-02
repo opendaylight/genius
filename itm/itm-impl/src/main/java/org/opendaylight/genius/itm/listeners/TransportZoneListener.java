@@ -28,6 +28,8 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.validator.TransportZoneAllowed;
+import org.opendaylight.genius.itm.validator.TransportZoneValidator;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -106,6 +108,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void remove(InstanceIdentifier<TransportZone> key, TransportZone tzOld) {
         LOG.debug("Received Transport Zone Remove Event: {}, {}", key, tzOld);
+        validateTransportZoneParam(tzOld);
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzOld);
         List<HwVtep> hwVtepList = createhWVteps(tzOld);
         LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
@@ -125,6 +128,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.debug("Received Transport Zone Update Event: Key - {}, Old - {}, Updated - {}", key, tzOld, tzNew);
         //if( !(tzOld.equals(tzNew))) {
         //add(key, tzNew);
+        validateTransportZoneParam(tzNew);
         List<DPNTEPsInfo> oldDpnTepsList = new ArrayList<>();
         oldDpnTepsList = createDPNTepInfo(tzOld);
         List<DPNTEPsInfo> newDpnTepsList = new ArrayList<>();
@@ -191,6 +195,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void add(InstanceIdentifier<TransportZone> key, TransportZone tzNew) {
         LOG.debug("Received Transport Zone Add Event: {}, {}", key, tzNew);
+        validateTransportZoneParam(tzNew);
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzNew);
         List<HwVtep> hwVtepList = createhWVteps(tzNew);
         LOG.trace("Add: Operational dpnTepInfo - Before invoking ItmManager {}", opDpnList);
@@ -295,5 +300,13 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
+    }
+
+    private void validateTransportZoneParam(TransportZone tzNew) {
+        ArrayList<TransportZoneValidator> tzValidatorList = new ArrayList<>();
+        tzValidatorList.add(new TransportZoneAllowed());
+        for(TransportZoneValidator tzValidator :tzValidatorList){
+            tzValidator.validate(tzNew);
+        }
     }
 }
