@@ -1,0 +1,1 @@
+package org.opendaylight.genius.itm.validator;import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;/** * Created by sathishkumar.bt on 06-09-2016. */public interface TransportZoneValidator {    public void validate(TransportZone zone);}
