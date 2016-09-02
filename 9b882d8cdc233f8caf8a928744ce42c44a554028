@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_cacb7751",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-09-02T23:58:11Z",
+      "side": 1,
+      "message": "will this option work for all types of tunnels? or only for internal vxlan tunnels?",
+      "revId": "9b882d8cdc233f8caf8a928744ce42c44a554028",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
