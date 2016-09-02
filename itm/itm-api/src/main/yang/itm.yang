@@ -79,7 +79,27 @@ module itm {
                }
 
             }
+
           }
+          container teps-not-hosted-in-transport-zones{
+            list teps-not-hosted-in-transport-zone{
+                        key zone-name;
+                        leaf zone-name {
+                            type string;
+                        }
+                        list vteps{
+                            key "dpn-id";
+                            leaf dpn-id {
+                                type uint64;
+                            }
+                            leaf ip-address {
+                                type inet:ip-address;
+                            }
+                        }
+
+                      }
+          }
+
         }
         identity itm {
             base "config:service-type";
