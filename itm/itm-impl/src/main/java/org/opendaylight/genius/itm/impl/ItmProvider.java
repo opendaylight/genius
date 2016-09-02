@@ -129,6 +129,9 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tnlToggleListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
             tepCommandHelper.setInterfaceManager(interfaceManager);
+            tepCommandHelper.configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
+            tepCommandHelper.configureTunnelMonitorParams(ITMConstants.DEFAULT_MONITOR_ENABLED,ITMConstants.MONITOR_TYPE_BFD);
+            tepCommandHelper.configureTunnelMonitorInterval(ITMConstants.DEFAULT_MONITOR_INTERVAL);
             itmStateListener =new ItmTunnelEventListener(dataBroker);
             createIdPool();
             itmStatusMonitor.reportStatus("OPERATIONAL");
