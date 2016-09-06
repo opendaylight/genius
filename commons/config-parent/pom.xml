@@ -28,6 +28,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <mdsal.model.version>0.9.1-SNAPSHOT</mdsal.model.version>
     <controller.mdsal.version>1.4.1-SNAPSHOT</controller.mdsal.version>
     <genius.mdsalutil.version>0.1.1-SNAPSHOT</genius.mdsalutil.version>
+    <genius.infrautils.version>1.0.1-SNAPSHOT</genius.infrautils.version>
     <model.bgp.version>2013.07.15.9.1-SNAPSHOT</model.bgp.version>
     <openflowplugin.version>0.3.1-SNAPSHOT</openflowplugin.version>
     <genius.ovsdb.version>1.3.1-SNAPSHOT</genius.ovsdb.version>
