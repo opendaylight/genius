@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PreDestroy;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
@@ -128,6 +129,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     }
 
     @Override
+    @PreDestroy
     public void close() throws Exception {
         if (listenerRegistration != null) {
             try {
