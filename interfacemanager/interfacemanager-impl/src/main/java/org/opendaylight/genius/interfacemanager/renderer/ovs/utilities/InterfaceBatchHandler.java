@@ -12,15 +12,15 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ResourceHandler;
-//import org.opendaylight.genius.utils.batching.SubTransaction;
-//import org.opendaylight.genius.utils.batching.SubTransactionImpl;
+import org.opendaylight.genius.utils.batching.SubTransaction;
+import org.opendaylight.genius.utils.batching.SubTransactionImpl;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import java.util.List;
 
-public class BatchHandler implements ResourceHandler {
-    public void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update) {
+public class InterfaceBatchHandler implements ResourceHandler {
+    public void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update,List<SubTransaction> transactionObjects) {
         if (update != null && !(update instanceof DataObject)) {
             return;
         }
@@ -33,7 +33,7 @@ public class BatchHandler implements ResourceHandler {
         //buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
     }
 
-    public void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data) {
+    public void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data,List<SubTransaction> transactionObjects) {
         if (data != null && !(data instanceof DataObject)) {
             return;
         }
@@ -45,7 +45,7 @@ public class BatchHandler implements ResourceHandler {
         //buildSubTransactions(transactionObjects, identifier, data, SubTransaction.CREATE);
     }
 
-    public void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data) {
+    public void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data,List<SubTransaction> transactionObjects) {
         if (data != null && !(data instanceof DataObject)) {
             return;
         }
