@@ -10,10 +10,11 @@ package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
@@ -26,7 +27,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener> implements DataTreeChangeListener<T>, AutoCloseable {
+public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener>
+        implements DataTreeChangeListener<T>, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncDataTreeChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -66,12 +69,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         final DataTreeIdentifier<T> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
         try {
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(new Callable<ListenerRegistration<K>>() {
-                @Override
-                public ListenerRegistration<K> call() throws Exception {
-                    return db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener());
-                }
-            });
+            listenerRegistration = looper.loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
             LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
             LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
@@ -79,7 +77,15 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         }
     }
 
+    /**
+     * Subclasses should override this and place initialization logic, notably calls to registerListener(), here.
+     */
+    @PostConstruct
+    protected void init() {
+    }
+
     @Override
+    @PreDestroy
     public void close() throws Exception {
         if (listenerRegistration != null) {
             try {
@@ -103,8 +109,6 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         public DataTreeChangeHandler(Collection<DataTreeModification<T>> changes) {
             this.changes = changes;
         }
-
-
 
         @Override
         public void run() {

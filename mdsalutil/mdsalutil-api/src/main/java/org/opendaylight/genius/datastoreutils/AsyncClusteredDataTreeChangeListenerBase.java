@@ -22,10 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PreDestroy;
 
 public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObject, K extends ClusteredDataTreeChangeListener> implements ClusteredDataTreeChangeListener<T>, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataTreeChangeListenerBase.class);
@@ -67,12 +67,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
         final DataTreeIdentifier<T> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
         try {
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(new Callable<ListenerRegistration<K>>() {
-                @Override
-                public ListenerRegistration<K> call() throws Exception {
-                    return db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener());
-                }
-            });
+            listenerRegistration = looper.loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
             LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
             LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
@@ -81,6 +76,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
     }
 
     @Override
+    @PreDestroy
     public void close() throws Exception {
         if (listenerRegistration != null) {
             try {
