@@ -26,7 +26,31 @@ module itm {
     }
 
     /* Configuration data */
-
+    grouping transport-zone-attributes {
+    	leaf prefix {
+            type inet:ip-prefix;
+        }
+        leaf gateway-ip {
+            type inet:ip-address;
+        }
+        leaf vlan-id {
+            type uint16{
+            range "0..4094";
+        }
+        }
+        list vteps {
+            key "dpn-id portname";
+            leaf dpn-id {
+                type uint64;
+            }
+            leaf portname {
+                type string;
+            }
+            leaf ip-address {
+                type inet:ip-address;
+            }
+        }
+    }
     container transport-zones {
           list transport-zone {
           ordered-by user;
@@ -44,29 +68,8 @@ module itm {
 
             list subnets {
                 key "prefix";
-                leaf prefix {
-                    type inet:ip-prefix;
-                }
-                leaf gateway-ip {
-                    type inet:ip-address;
-                }
-                leaf vlan-id {
-                    type uint16{
-                    range "0..4094";
-                }
-                }
-                list vteps {
-                    key "dpn-id portname";
-                    leaf dpn-id {
-                        type uint64;
-                    }
-                    leaf portname {
-                        type string;
-                    }
-                    leaf ip-address {
-                        type inet:ip-address;
-                    }
-                }
+                uses transport-zone-attributes;
+                
                  list device-vteps {
                   key "node-id ip-address";
                          leaf topology-id {
@@ -82,7 +85,15 @@ module itm {
 
             }
           }
+          list teps-not-hosted-in-transport-zone{
+                key zone-name;
+                leaf zone-name {
+                    type string;
+                }
+                uses transport-zone-attributes;
+          }
         }
+   
         identity itm {
             base "config:service-type";
             config:java-class "org.opendaylight.genius.itm.api.IITMProvider";
