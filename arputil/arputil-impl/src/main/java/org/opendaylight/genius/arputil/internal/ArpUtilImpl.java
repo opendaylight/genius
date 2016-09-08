@@ -261,7 +261,10 @@ public class ArpUtilImpl implements OdlArputilService,
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
-
+                String srcMacAddress = null;
+                if (interfaceAddress.getMacaddress() != null) {
+                    srcMacAddress = interfaceAddress.getMacaddress().getValue();
+                }
                 NodeConnectorId id = getNodeConnectorFromInterfaceName(interfaceName);
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);

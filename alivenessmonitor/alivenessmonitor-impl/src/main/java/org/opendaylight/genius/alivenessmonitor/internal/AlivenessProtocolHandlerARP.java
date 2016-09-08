@@ -26,6 +26,7 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
@@ -120,22 +121,22 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
 
         final String srcIp = Preconditions.checkNotNull(getIpAddress(source),
                                     "Source Ip address is required to send ARP Packet for monitoring");
-
+        final PhysAddress srcMacAddress = getMacAddress(source);
         EndpointType target = monitorInfo.getDestination().getEndpointType();
         final String targetIp = Preconditions.checkNotNull(getIpAddress(target),
                                       "Target Ip address is required to send ARP Packet for monitoring");
-
         if (LOG.isTraceEnabled()) {
             LOG.trace("sendArpRequest interface {}, senderIPAddress {}, targetAddress {}", sourceInterface, srcIp, targetIp);
         }
-
-        List<InterfaceAddress> addresses = Collections.singletonList(
-                           new InterfaceAddressBuilder().setInterface(sourceInterface)
-                                                        .setIpAddress(IpAddressBuilder.getDefaultInstance(srcIp)).build());
+        InterfaceAddressBuilder interfaceAddressBuilder = new InterfaceAddressBuilder().setInterface(sourceInterface)
+                .setIpAddress(IpAddressBuilder.getDefaultInstance(srcIp));
+        if (srcMacAddress != null) {
+            interfaceAddressBuilder.setMacaddress(new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress(srcMacAddress.getValue()));
+        }
+        List<InterfaceAddress> addresses = Collections.singletonList(interfaceAddressBuilder.build());
         SendArpRequestInput input = new SendArpRequestInputBuilder().setInterfaceAddress(addresses)
                                                                     .setIpaddress(IpAddressBuilder.getDefaultInstance(targetIp)).build();
         Future<RpcResult<Void>> future = arpService.sendArpRequest(input);
-
         final String msgFormat = String.format("Send ARP Request on interface %s to destination %s", sourceInterface, targetIp);
         Futures.addCallback(JdkFutureAdapters.listenInPoolThread(future), new FutureCallback<RpcResult<Void>>() {
             @Override
@@ -184,6 +185,13 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             ipAddress = ((Interface)source).getInterfaceIp().getIpv4Address().getValue();
         }
         return ipAddress;
+    }
+
+    private PhysAddress getMacAddress(EndpointType source) {
+        if (source instanceof Interface) {
+            return ((Interface)source).getMacAddress();
+        }
+        return null;
     }
 
     private String getInterfaceName(EndpointType endpoint) {
