@@ -10,6 +10,7 @@ package org.opendaylight.genius.alivenessmonitor.internal;
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorConstants.SEPERATOR;
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.toStringIpAddress;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
@@ -26,6 +27,7 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
@@ -116,42 +118,46 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
         }
         EndpointType source = monitorInfo.getSource().getEndpointType();
         final String sourceInterface = Preconditions.checkNotNull(getInterfaceName(source),
-                                       "Source interface is required to send ARP Packet for monitoring");
+                "Source interface is required to send ARP Packet for monitoring");
 
         final String srcIp = Preconditions.checkNotNull(getIpAddress(source),
-                                    "Source Ip address is required to send ARP Packet for monitoring");
-
-        EndpointType target = monitorInfo.getDestination().getEndpointType();
-        final String targetIp = Preconditions.checkNotNull(getIpAddress(target),
-                                      "Target Ip address is required to send ARP Packet for monitoring");
-
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("sendArpRequest interface {}, senderIPAddress {}, targetAddress {}", sourceInterface, srcIp, targetIp);
-        }
-
-        List<InterfaceAddress> addresses = Collections.singletonList(
-                           new InterfaceAddressBuilder().setInterface(sourceInterface)
-                                                        .setIpAddress(IpAddressBuilder.getDefaultInstance(srcIp)).build());
-        SendArpRequestInput input = new SendArpRequestInputBuilder().setInterfaceAddress(addresses)
-                                                                    .setIpaddress(IpAddressBuilder.getDefaultInstance(targetIp)).build();
-        Future<RpcResult<Void>> future = arpService.sendArpRequest(input);
-
-        final String msgFormat = String.format("Send ARP Request on interface %s to destination %s", sourceInterface, targetIp);
-        Futures.addCallback(JdkFutureAdapters.listenInPoolThread(future), new FutureCallback<RpcResult<Void>>() {
-            @Override
-            public void onFailure(Throwable error) {
-                LOG.error("Error - {}", msgFormat, error);
+                "Source Ip address is required to send ARP Packet for monitoring");
+        final Optional<PhysAddress> srcMacAddressOptional = getMacAddress(source);
+        if(srcMacAddressOptional.isPresent())
+        {
+            PhysAddress srcMacAddress = srcMacAddressOptional.get();
+            EndpointType target = monitorInfo.getDestination().getEndpointType();
+            final String targetIp = Preconditions.checkNotNull(getIpAddress(target),
+                    "Target Ip address is required to send ARP Packet for monitoring");
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("sendArpRequest interface {}, senderIPAddress {}, targetAddress {}", sourceInterface, srcIp, targetIp);
             }
-
-            @Override
-            public void onSuccess(RpcResult<Void> result) {
-                if(!result.isSuccessful()) {
-                    LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
-                } else {
-                    LOG.debug("Successful RPC Result - {}", msgFormat);
+            InterfaceAddressBuilder interfaceAddressBuilder = new InterfaceAddressBuilder().setInterface(sourceInterface)
+                    .setIpAddress(IpAddressBuilder.getDefaultInstance(srcIp));
+            if (srcMacAddress != null) {
+                interfaceAddressBuilder.setMacaddress(srcMacAddress);
+            }
+            List<InterfaceAddress> addresses = Collections.singletonList(interfaceAddressBuilder.build());
+            SendArpRequestInput input = new SendArpRequestInputBuilder().setInterfaceAddress(addresses)
+                    .setIpaddress(IpAddressBuilder.getDefaultInstance(targetIp)).build();
+            Future<RpcResult<Void>> future = arpService.sendArpRequest(input);
+            final String msgFormat = String.format("Send ARP Request on interface %s to destination %s", sourceInterface, targetIp);
+            Futures.addCallback(JdkFutureAdapters.listenInPoolThread(future), new FutureCallback<RpcResult<Void>>() {
+                @Override
+                public void onFailure(Throwable error) {
+                    LOG.error("Error - {}", msgFormat, error);
                 }
-            }
-        });
+
+                @Override
+                public void onSuccess(RpcResult<Void> result) {
+                    if(!result.isSuccessful()) {
+                        LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
+                    } else {
+                        LOG.debug("Successful RPC Result - {}", msgFormat);
+                    }
+                }
+            });
+        }
     }
 
     private String getErrorText(Collection<RpcError> errors) {
@@ -184,6 +190,14 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             ipAddress = ((Interface)source).getInterfaceIp().getIpv4Address().getValue();
         }
         return ipAddress;
+    }
+
+    private Optional <PhysAddress> getMacAddress(EndpointType source) {
+        Optional <PhysAddress> result = Optional.absent();
+        if (source instanceof Interface) {
+            result =  Optional.ofnullable(((Interface)source).getMacAddress());
+        }
+        return result;
     }
 
     private String getInterfaceName(EndpointType endpoint) {
