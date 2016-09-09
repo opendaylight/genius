@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_2d72ef10",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessProtocolHandlerARP.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-09T11:41:55Z",
+      "side": 1,
+      "message": "you can directly set srMacAddress to interfaceAddressBuilder.setMacaddress(...) without creating another object.",
+      "revId": "a1ab7023d0dc5342eca3edf6462e2e01dd7967e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8d62233c",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessProtocolHandlerARP.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-09T11:41:55Z",
+      "side": 1,
+      "message": "use Optional\u003cPhsAddress\u003e as the return type.",
+      "revId": "a1ab7023d0dc5342eca3edf6462e2e01dd7967e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cd589b8c",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-09T11:41:55Z",
+      "side": 1,
+      "message": "since macaddress is already defined in interface-address, this code block already considering the mac if it is set. so you can remove changes made in the above which is unnecessary.",
+      "revId": "a1ab7023d0dc5342eca3edf6462e2e01dd7967e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
