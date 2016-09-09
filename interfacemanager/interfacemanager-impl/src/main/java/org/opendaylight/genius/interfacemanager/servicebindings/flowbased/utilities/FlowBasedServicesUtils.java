@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -455,13 +456,16 @@ public class FlowBasedServicesUtils {
         BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher(MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG);
         List<Instruction> instructions = new ArrayList<>();
         if (vlanId != 0 && !isVlanTransparent) {
-            instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
+            //instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
+            instructions.add(MDSALUtil.buildApplyActionsInstruction(Arrays.asList(MDSALUtil.createPopVlanAction(0),MDSALUtil.createNxOfInPortAction(lportTag)),instructionKey++));
+        } else {
+            instructions.add(MDSALUtil.buildApplyActionsInstruction(Arrays.asList(MDSALUtil.createNxOfInPortAction(lportTag)),instructionKey++));
         }
         instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, instructionKey++));
         instructions.add(MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.LPORT_DISPATCHER_TABLE, instructionKey++));
         int priority =  isVlanTransparent ? 1 : vlanId == 0 ? IfmConstants.FLOW_PRIORITY_FOR_UNTAGGED_VLAN : IfmConstants.FLOW_HIGH_PRIORITY;
-        String flowRef = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
-        Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
+        String flowRef = getFlowRef(NwConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
+        Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
                 NwConstants.VLAN_TABLE_COOKIE, matches, instructions);
         installFlow(dpId, ingressFlow, inventoryConfigShardTransaction);
         futures.add(inventoryConfigShardTransaction.submit());
