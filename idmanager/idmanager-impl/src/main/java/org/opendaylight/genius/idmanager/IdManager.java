@@ -242,6 +242,17 @@ public class IdManager implements IdManagerService, AutoCloseable{
             LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
         }
         long newIdValue = -1;
+        //DEMO PATCH
+        if (idKey.contains("@")) {
+        	LOG.info("allocateIdFromLocalPool demo patch - received idKey before parsing=" + idKey);
+	        String delims = "[@]";
+			String[] tokens = idKey.split(delims);
+			idKey = tokens[0];
+			newIdValue = Long.parseLong(tokens[1]);
+			LOG.info("allocateIdFromLocalPool demo patch - received idKey=" + idKey + " newIdValue=" + newIdValue);
+        }
+        //END DEMO PATCH
+        
         List<Long> newIdValuesList = new ArrayList<>();
         InstanceIdentifier<IdPool> localIdPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
         localPoolName = localPoolName.intern();
@@ -257,7 +268,7 @@ public class IdManager implements IdManagerService, AutoCloseable{
                 if (existingIdEntry.isPresent()) {
                     newIdValuesList = existingIdEntry.get().getIdValue();
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
+                        LOG.info("Existing ids {} for the key {} ", newIdValuesList, idKey);
                     }
                     return newIdValuesList;
                 }
@@ -287,7 +298,10 @@ public class IdManager implements IdManagerService, AutoCloseable{
             if (totalAvailableIdCount > size) {
                 while (size > 0) {
                     try {
-                        newIdValue = getIdFromPool(localPool, availableIds, releasedIds);
+                    	//DEMO PATCH
+                    	if (newIdValue == -1) 
+                    		newIdValue = getIdFromPool(localPool, availableIds, releasedIds);
+                    	//END DEMO PATCH
                     } catch (RuntimeException e) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Releasing IDs to pool {}", localPoolName);

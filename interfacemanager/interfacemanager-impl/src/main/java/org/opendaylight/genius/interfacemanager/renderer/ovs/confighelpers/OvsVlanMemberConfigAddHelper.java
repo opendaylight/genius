@@ -27,7 +27,7 @@ public class OvsVlanMemberConfigAddHelper {
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
                                                                 Interface interfaceNew, IfL2vlan ifL2vlan,
                                                                 IdManagerService idManager) {
-        LOG.debug("add vlan member configuration {}",interfaceNew.getName());
+        LOG.info("add vlan member configuration {}",interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
 

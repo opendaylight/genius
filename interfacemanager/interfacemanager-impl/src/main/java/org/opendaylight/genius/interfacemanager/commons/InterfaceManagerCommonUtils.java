@@ -289,13 +289,30 @@ public class InterfaceManagerCommonUtils {
         // no throttling
         // on id allocation even when multiple southbound port_up events come in
         // one shot
-        Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
-        InterfaceMetaUtils.createLportTagInterfaceMap(interfaceOperShardTransaction, interfaceName, ifIndex);
+    	//DEMO patch
+    	Integer ifIndex = 0;
+    	if (null == ifState || null == ifState.getPhysAddress()) {
+    		LOG.error("physical address is null!");
+	        //ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
+    	} else {
+	    	String mac = ifState.getPhysAddress().toString();
+	    	LOG.info("addStateEntry mac = " + mac);
+	    	int macHash = getMachHash(ifState.getPhysAddress().toString());
+	    	String newName = interfaceName + "@" + String.valueOf(macHash);
+	    	
+	    	LOG.info ("addStateEntry demo patch 2 physAddress=" + ifState.getPhysAddress() + " hascode=" + getMachHash(ifState.getPhysAddress().toString()) + " sending newName " + newName);
+	    	ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, newName);
+	    	LOG.info ("addStateEntry demo patch 2 result " + ifIndex);
+	    	//END Demo patch
+	    	InterfaceMetaUtils.createLportTagInterfaceMap(interfaceOperShardTransaction, interfaceName, ifIndex);	    	
+    	}
+    	
+
         if (ifState == null) {
             LOG.debug("could not retrieve interface state corresponding to {}", interfaceName);
             return;
         }
-        LOG.debug("adding interface state for {}", interfaceName);
+        LOG.info("adding interface state for {}", interfaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = ifState
                 .getOperStatus();
         PhysAddress physAddress = ifState.getPhysAddress();
@@ -340,7 +357,7 @@ public class InterfaceManagerCommonUtils {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus,
             NodeConnectorId nodeConnectorId) {
-        LOG.debug("adding interface state for {}", interfaceName);
+        LOG.info("adding interface state for {}", interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         Integer ifIndex = null;
         if (interfaceInfo != null) {
@@ -350,7 +367,13 @@ public class InterfaceManagerCommonUtils {
 
             ifaceBuilder.setType(interfaceInfo.getType());
             // retrieve if-index only for northbound configured interfaces
-            ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
+            //DEMO patch
+            String newName = interfaceName + "@" + String.valueOf(getMachHash(physAddress.toString()));
+            LOG.info ("addStateEntry demo patch 1 physAddress=" + physAddress + " hascode=" + getMachHash(physAddress.toString()) + " sending newName " + newName);
+            ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, newName);
+            LOG.info ("addStateEntry demo patch  result " + ifIndex);
+          //END DEMO patch
+            //ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
             ifaceBuilder.setIfIndex(ifIndex);
             InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
         }
@@ -469,5 +492,24 @@ public class InterfaceManagerCommonUtils {
         Matcher matcher = pattern.matcher(portName);
         return matcher.matches();
     }
-
+    
+    //Demo Patch accessories
+    private static int getMachHash(String mac) {
+    	LOG.info("getMachHash mac" + mac);
+    	String cleanMac = getCleanMACStr (mac);
+    	LOG.info("getMachHash cleanMac" + cleanMac);
+    	String tmp = cleanMac.replace(":", "");
+        long lMac = Long.parseLong(tmp, 16);
+        long mask = Long.parseLong("FFFF", 16);
+        LOG.info("getMachHash return" + (int)(lMac & mask));
+        return (int)(lMac & mask);
+    }
+    
+    private static String getCleanMACStr (String macStr) {
+    	String str = macStr;
+    	if (macStr.indexOf("=") != -1 && macStr.indexOf("]") != -1)
+    		str = macStr.substring(macStr.indexOf("=")+1, macStr.indexOf("]"));
+    	return str;
+    }
+  //END Demo Patch accessories
 }
