@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a6b29fe_95a22949",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-09-12T05:24:20Z",
+      "side": 1,
+      "message": "Updating the default transport zone is a valid use case. When new teps are added to the default TZ, its comes as update.",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b59da50c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-09-12T05:24:20Z",
+      "side": 1,
+      "message": "Do we need a separate class for validating the transport zone name ?",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_552d3194",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneAllowed.java",
         "patchSetId": 7
@@ -13,6 +47,23 @@
       "writtenOn": "2016-09-10T15:19:00Z",
       "side": 1,
       "message": "consider rename to TransportZoneNameAllowed since it only verify the name and i assume that other constraint will use a different TransportZoneValidator",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f58a7dbd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneAllowed.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-09-12T05:24:20Z",
+      "side": 1,
+      "message": "Do we want to throw IllegalArgumentException or just log the message that \"add / remove of default TZ not supported \" and do nothing.",
       "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
