@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_49ce382f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-13T16:57:20Z",
+      "side": 1,
+      "message": "validation at add /update is going to be removed as we are going allow tunnel creation for deafult tz",
+      "parentUuid": "7a6b29fe_29749c34",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_95a22949",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-12T05:24:20Z",
       "side": 1,
       "message": "Updating the default transport zone is a valid use case. When new teps are added to the default TZ, its comes as update.",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_359195f1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-13T16:57:20Z",
+      "side": 1,
+      "message": "validation check is removed for both add and update notification",
+      "parentUuid": "7a6b29fe_95a22949",
       "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_158e19d0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-13T16:57:20Z",
+      "side": 1,
+      "message": "validator pattern is applied .validation is scalable and loosely coupled .Any new validation can be added with a new class.This will be clean with extendable with less modification.\nAs part of extension we can include dplist array size check as part of validator.",
+      "parentUuid": "7a6b29fe_b59da50c",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_552d3194",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneAllowed.java",
         "patchSetId": 7
@@ -64,6 +118,24 @@
       "writtenOn": "2016-09-10T15:19:00Z",
       "side": 1,
       "message": "consider rename to TransportZoneNameAllowed since it only verify the name and i assume that other constraint will use a different TransportZoneValidator",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_75be6d66",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneAllowed.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-13T16:57:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_552d3194",
       "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_b5b48582",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneAllowed.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-13T16:57:20Z",
+      "side": 1,
+      "message": "Exception thrown so that rest of the flow is not executed.\nmethod signature is changed to include validation status as return value of the method .\n public boolean validate(TransportZone zone);",
+      "parentUuid": "7a6b29fe_f58a7dbd",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_e97d841d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneValidator.java",
         "patchSetId": 7
@@ -98,6 +188,24 @@
       "writtenOn": "2016-09-13T06:26:39Z",
       "side": 1,
       "message": "as Hema commented assuming that throwing exception from the validate implementation is not meaningful. \nIMO validate should return a boolean. this will make it more clean and will not fill the log with stacktrace in case of wrong param.",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_69be9466",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneValidator.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-13T16:57:20Z",
+      "side": 1,
+      "message": "Signature is changed to include boolean as return value",
+      "parentUuid": "7a6b29fe_e97d841d",
       "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
