@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a6b29fe_29749c34",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-13T06:26:39Z",
+      "side": 1,
+      "message": "since we are going over the same list of validators as in the add/update this validate is meaningless.",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_95a22949",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 7
@@ -64,6 +81,23 @@
       "writtenOn": "2016-09-12T05:24:20Z",
       "side": 1,
       "message": "Do we want to throw IllegalArgumentException or just log the message that \"add / remove of default TZ not supported \" and do nothing.",
+      "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e97d841d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneValidator.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-13T06:26:39Z",
+      "side": 1,
+      "message": "as Hema commented assuming that throwing exception from the validate implementation is not meaningful. \nIMO validate should return a boolean. this will make it more clean and will not fill the log with stacktrace in case of wrong param.",
       "revId": "216d053dda43de281cbd5f9c9ea8464adfc554c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
