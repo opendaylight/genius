@@ -86,18 +86,10 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                 String portName = flowCapableNodeConnectorOld.getName();
                 NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
 
-                //VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD for same interface from Older DPN
-                NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
-                if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
-                    if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
-                        LOG.debug("Dropping the NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
-                        return;
-                    }
-                } else {
+                if (!InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
                     portName = getDpnPrefixedPortName(nodeConnectorId, portName);
                 }
-                boolean isNodePresent = InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorId);
-                remove(nodeConnectorId, nodeConnectorIdOld, flowCapableNodeConnectorOld, portName, isNodePresent);
+                remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
             }
         });
     }
@@ -133,8 +125,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                     NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                     if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                         LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
-                        boolean isNodePresent = InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorIdOld);
-                        remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent);
+                        remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
                         //Adding a delay of 10sec for VM migration, so applications can process remove and add events
                         try {
                             Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
@@ -154,10 +145,11 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     }
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
-                        FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNodePresent) {
+                        FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
+        boolean isNodePresent = InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorIdNew);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent);
+        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
+                nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -253,37 +245,54 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
 
     private class InterfaceStateRemoveWorker implements Callable {
         private final NodeConnectorId nodeConnectorIdNew;
-        private final NodeConnectorId nodeConnectorIdOld;
+        private NodeConnectorId nodeConnectorIdOld;
         FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
         private final IdManagerService idManager;
         private final boolean isNodePresent;
+        private final boolean isNetworkEvent;
+        private final boolean isParentInterface;
 
         public InterfaceStateRemoveWorker(IdManagerService idManager, NodeConnectorId nodeConnectorIdNew,
                                           NodeConnectorId nodeConnectorIdOld,
                                           FlowCapableNodeConnector fcNodeConnectorOld,
                                           String portName,
-                                          boolean isNodePresent) {
+                                          boolean isNodePresent,
+                                          boolean isNetworkEvent,
+                                          boolean isParentInterface) {
             this.nodeConnectorIdNew = nodeConnectorIdNew;
             this.nodeConnectorIdOld = nodeConnectorIdOld;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.interfaceName = portName;
             this.idManager = idManager;
             this.isNodePresent = isNodePresent;
+            this.isNetworkEvent = isNetworkEvent;
+            this.isParentInterface = isParentInterface;
         }
 
         @Override
         public Object call() throws Exception {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            List<ListenableFuture<Void>> futures = OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager, alivenessMonitorService,
+
+            List<ListenableFuture<Void>> futures = null;
+            //VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD for same interface from Older DPN
+            if (isParentInterface && isNetworkEvent) {
+                nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
+                if(nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+                    LOG.debug("Dropping the NodeConnector Remove Event for the interface: {}, {}, {}", interfaceName, nodeConnectorIdNew, nodeConnectorIdOld);
+                    return futures;
+                }
+            }
+
+            futures = OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager, alivenessMonitorService,
                     nodeConnectorIdNew, nodeConnectorIdOld, dataBroker, interfaceName, fcNodeConnectorOld, isNodePresent);
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 // Fetch all interfaces on this port and trigger remove worker for each of them
-                InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                        nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld, interfaceChildEntry.getChildInterface(), isNodePresent);
+                InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
+                        nodeConnectorIdOld, fcNodeConnectorOld, interfaceChildEntry.getChildInterface(), isNodePresent, isNetworkEvent, false);
                 DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, interfaceStateRemoveWorker);
             }
             return futures;
