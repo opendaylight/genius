@@ -288,7 +288,6 @@ public class ArpUtilImpl implements OdlArputilService,
                     String macAddr = interfaceAddress.getMacaddress().getValue();
                     srcMac = HexEncode.bytesFromHexString(macAddr);
                 }
-
                 checkNotNull(srcMac, FAILED_TO_GET_SRC_MAC_FOR_INTERFACE,
                         interfaceName, ref.getValue());
                 checkNotNull(srcIpBytes, FAILED_TO_GET_SRC_IP_FOR_INTERFACE,
