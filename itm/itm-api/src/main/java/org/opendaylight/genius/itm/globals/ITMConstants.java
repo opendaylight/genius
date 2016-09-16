@@ -8,8 +8,11 @@
 package org.opendaylight.genius.itm.globals;
 
 import java.math.BigInteger;
+
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 
 public class ITMConstants {
     public static final BigInteger COOKIE_ITM = new BigInteger("9000000", 16);
@@ -47,4 +50,10 @@ public class ITMConstants {
     public static final String TUNNEL_STATE_UP = "UP";
     public static final String TUNNEL_STATE_DOWN = "DOWN";
     public static final String TUNNEL_STATE_UNKNOWN = "UNKNOWN";
+    public static final String DUMMY_PREFIX = "255.255.255.255/32";
+    public static final String DUMMY_GATEWAY_IP = "0.0.0.0";
+    public static final String DUMMY_PORT = "";
+    public static final int DUMMY_VLANID = 0;
+    public static final String DEFAULT_BRIDGE_NAME = "br-int";
+    public static final String BRIDGE_URI_PREFIX = "bridge";
 }
