@@ -8,7 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +57,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
@@ -77,7 +78,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.concurrent.Callable;
 
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 
@@ -85,13 +85,13 @@ public class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final int INVALID_ID = 0;
 
-    public static final ImmutableBiMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType> TUNNEL_TYPE_MAP =
-            new ImmutableBiMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
+    private static final ImmutableMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType> TUNNEL_TYPE_MAP =
+            new ImmutableMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
                     .put(TunnelTypeGre.class, InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE)
                     .put(TunnelTypeMplsOverGre.class, InterfaceInfo.InterfaceType.MPLS_OVER_GRE)
                     .put(TunnelTypeVxlan.class, InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE)
+                    .put(TunnelTypeVxlanGpe.class, InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE)
                     .build();
-
 
     public static String getDpnFromNodeConnectorId(NodeConnectorId portId) {
         /*
@@ -294,7 +294,7 @@ public class IfmUtil {
                                                                     int        actionKeyStart,
                                                                     boolean isDefaultEgress,
                                                                     int ifIndex) {
-        List<ActionInfo> result = new ArrayList<ActionInfo>();
+        List<ActionInfo> result = new ArrayList<>();
         switch (ifaceType) {
             case VLAN_INTERFACE:
                 if(isDefaultEgress) {
@@ -433,15 +433,16 @@ public class IfmUtil {
     }
 
     public static InterfaceInfo.InterfaceType getInterfaceType(Interface iface) {
-        InterfaceInfo.InterfaceType interfaceType =
-                org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
-        Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType> ifType = iface.getType();
+        InterfaceInfo.InterfaceType interfaceType = org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
+        Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType> ifType = iface
+                .getType();
 
         if (ifType.isAssignableFrom(L2vlan.class)) {
-            interfaceType =  VLAN_INTERFACE;
+            interfaceType = VLAN_INTERFACE;
         } else if (ifType.isAssignableFrom(Tunnel.class)) {
             IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-            Class<? extends  org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel.getTunnelInterfaceType();
+            Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel
+                    .getTunnelInterfaceType();
             interfaceType = TUNNEL_TYPE_MAP.get(tunnelType);
         }
         return interfaceType;
@@ -490,15 +491,12 @@ public class IfmUtil {
         LOG.info("Unbinding Service from : {}", interfaceName);
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
         dataStoreJobCoordinator.enqueueJob(interfaceName,
-                new Callable<List<ListenableFuture<Void>>>() {
-                    @Override
-                    public List<ListenableFuture<Void>> call() throws Exception {
-                        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-                        t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-                        List<ListenableFuture<Void>> futures = new ArrayList<>();
-                        futures.add(t.submit());
-                        return futures;
-                    }
+                () -> {
+                    WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                    t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
+                    List<ListenableFuture<Void>> futures = new ArrayList<>();
+                    futures.add(t.submit());
+                    return futures;
                 }
         );
     }
