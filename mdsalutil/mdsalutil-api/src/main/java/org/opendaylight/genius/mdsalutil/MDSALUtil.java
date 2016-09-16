@@ -376,6 +376,15 @@ public class MDSALUtil {
         }
     }
 
+    public static BigInteger getDpnId(String datapathId){
+        if (datapathId != null) {
+            String dpIdStr = datapathId.replace(":", "");
+            BigInteger dpnId =  new BigInteger(dpIdStr, 16);
+            return dpnId;
+        }
+        return null;
+    }
+
     public static long getOfPortNumberFromPortName(String sMdsalPortName) {
         String sPortNumber = sMdsalPortName.substring(sMdsalPortName.lastIndexOf(":") + 1);
         return Long.parseLong(sPortNumber);
