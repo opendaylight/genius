@@ -29,6 +29,7 @@ import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
+import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
@@ -70,6 +71,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor itmStatusMonitor = ITMStatusMonitor.getInstance();
     private ItmTunnelEventListener itmStateListener;
+    private OvsdbNodeListener ovsdbChangeListener;
     static short flag = 0;
 
     public ItmProvider() {
@@ -101,6 +103,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tnlToggleListener = new TunnelMonitorChangeListener(dataBroker);
             tnlIntervalListener = new TunnelMonitorIntervalListener(dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
+            ovsdbChangeListener = new OvsdbNodeListener(dataBroker);
             getRpcProviderRegistry().addRpcImplementation(ItmRpcService.class, itmRpcService);
             itmRpcService.setMdsalManager(mdsalManager);
             itmManager.setMdsalManager(mdsalManager);
@@ -111,6 +114,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tzChangeListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
             tnlIntervalListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
             tnlToggleListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+            ovsdbChangeListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
             tepCommandHelper.setInterfaceManager(interfaceManager);
             itmStateListener =new ItmTunnelEventListener(dataBroker);
@@ -150,6 +154,9 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         }
         if(tnlToggleListener!= null){
             tnlToggleListener.close();
+        }
+        if (ovsdbChangeListener != null) {
+            ovsdbChangeListener.close();
         }
         LOG.info("ItmProvider Closed");
     }
