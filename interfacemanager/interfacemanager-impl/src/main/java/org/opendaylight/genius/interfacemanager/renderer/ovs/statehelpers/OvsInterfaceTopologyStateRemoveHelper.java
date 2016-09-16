@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
@@ -33,7 +34,7 @@ public class OvsInterfaceTopologyStateRemoveHelper {
                                                                     OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();;
-        BigInteger dpnId = IfmUtil.getDpnId(bridgeOld.getDatapathId());
+        BigInteger dpnId = MDSALUtil.getDpnId(bridgeOld.getDatapathId().getValue());
 
         if (dpnId == null) {
             LOG.warn("Got Null DPID for Bridge: {}", bridgeOld);

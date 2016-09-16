@@ -16,6 +16,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
@@ -44,8 +45,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
-        BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
-        BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
+        BigInteger dpnIdNew = MDSALUtil.getDpnId(bridgeNew.getDatapathId().getValue());
+        BigInteger dpnIdOld = MDSALUtil.getDpnId(bridgeOld.getDatapathId().getValue());
 
         //delete bridge reference entry for the old dpn in interface meta operational DS
         InterfaceMetaUtils.deleteBridgeRefEntry(dpnIdOld, writeTransaction);

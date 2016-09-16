@@ -13,6 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -34,7 +35,7 @@ public class OvsInterfaceTopologyStateAddHelper {
             LOG.warn("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
             return futures;
         }
-        BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+        BigInteger dpnId = MDSALUtil.getDpnId(bridgeNew.getDatapathId().getValue());
 
         // create bridge reference entry in interface meta operational DS
         InterfaceMetaUtils.createBridgeRefEntry(dpnId, bridgeIid, writeTransaction);

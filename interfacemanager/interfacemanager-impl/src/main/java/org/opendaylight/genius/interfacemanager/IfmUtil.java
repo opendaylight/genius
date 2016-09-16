@@ -396,16 +396,6 @@ public class IfmUtil {
         }
     }
 
-    public static BigInteger getDpnId(DatapathId datapathId){
-        if (datapathId != null) {
-            // Adding logs for a random issue spotted during datapath id conversion
-            String dpIdStr = datapathId.getValue().replace(":", "");
-            BigInteger dpnId =  new BigInteger(dpIdStr, 16);
-            return dpnId;
-        }
-        return null;
-    }
-
     public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName, DataBroker dataBroker) {
         return FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
     }

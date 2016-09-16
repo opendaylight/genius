@@ -1073,4 +1073,15 @@ public class ItmUtils {
         }
         return null;
     }
+
+    public static TransportZone getTransportZoneFromConfigDS(String tzone, DataBroker broker) {
+        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
+            .child(TransportZone.class, new TransportZoneKey(tzone)).build();
+        Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
+            broker);
+        if (tZoneOptional.isPresent()) {
+            return tZoneOptional.get();
+        }
+        return null;
+    }
 }
