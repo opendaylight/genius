@@ -290,24 +290,6 @@ public class TepCommandHelper {
     }
 
     /**
-     * Gets the transport zone from config ds.
-     *
-     * @param tzone
-     *            the tzone
-     * @return the transport zone
-     */
-    public TransportZone getTransportZoneFromConfigDS(String tzone) {
-        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
-                .child(TransportZone.class, new TransportZoneKey(tzone)).build();
-        Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
-                dataBroker);
-        if (tZoneOptional.isPresent()) {
-            return tZoneOptional.get();
-        }
-        return null;
-    }
-
-    /**
      * Gets all transport zones.
      *
      * @return all transport zones
@@ -753,7 +735,7 @@ public void showCache(String cacheName) {
     public void configureTunnelType(String tZoneName, String tunnelType) {
         LOG.debug("configureTunnelType {} for transportZone {}", tunnelType, tZoneName);
 
-        TransportZone tZoneFromConfigDS = getTransportZoneFromConfigDS(tZoneName);
+        TransportZone tZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(tZoneName, dataBroker);
         validateTunnelType(tZoneName, tunnelType,tZoneFromConfigDS);
 
         if (tZoneFromConfigDS != null) {
