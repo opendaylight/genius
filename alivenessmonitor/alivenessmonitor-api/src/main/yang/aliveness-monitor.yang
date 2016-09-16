@@ -7,6 +7,11 @@ module aliveness-monitor {
         revision-date "2013-07-15";
     }
 
+    import ietf-yang-types {
+        prefix yang;
+        revision-date "2013-07-15";
+    }
+
     revision "2016-04-11" {
         description "YANG model describes methods for monitoring endpoints.";
     }
@@ -31,6 +36,7 @@ typedef ether-types {
                 leaf ip-address { type inet:ip-address; }
             }
             case interface {
+                 leaf mac-address { type yang:phys-address; }
                  leaf interface-ip { type inet:ip-address; }
                  leaf interface-name { type string; }
             }
