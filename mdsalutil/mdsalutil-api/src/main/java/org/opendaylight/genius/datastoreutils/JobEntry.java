@@ -60,6 +60,10 @@ public class JobEntry {
         return rollbackWorker;
     }
 
+    public int getRetryCount() {
+        return retryCount.get();
+    }
+
     public int decrementRetryCountAndGet() {
         return retryCount.decrementAndGet();
     }

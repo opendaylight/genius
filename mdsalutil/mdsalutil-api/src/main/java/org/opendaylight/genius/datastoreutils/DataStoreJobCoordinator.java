@@ -100,11 +100,10 @@ public class DataStoreJobCoordinator {
             if (jobQueue == null) {
                 jobQueue = new JobQueue();
             }
+            LOG.trace("Adding jobkey {} to queue {} with size {}", key, hashKey, jobEntriesMap.size());
             jobQueue.addEntry(jobEntry);
             jobEntriesMap.put(key, jobQueue);
         }
-
-        jobQueueMap.put(hashKey, jobEntriesMap); // Is this really needed ?
         reentrantLock.lock();
         try {
             waitCondition.signal();
@@ -117,11 +116,14 @@ public class DataStoreJobCoordinator {
      * clearJob is used to cleanup the submitted job from the jobqueue.
      **/
     private void clearJob(JobEntry jobEntry) {
-        Map<String, JobQueue> jobEntriesMap = jobQueueMap.get(getHashKey(jobEntry.getKey()));
+        Integer hashKey = getHashKey(jobEntry.getKey());
+        Map<String, JobQueue> jobEntriesMap = jobQueueMap.get(hashKey);
+        LOG.trace("About to clear jobkey {} from queue {}", jobEntry.getKey(), hashKey);
         synchronized (jobEntriesMap) {
             JobQueue jobQueue = jobEntriesMap.get(jobEntry.getKey());
             jobQueue.setExecutingEntry(null);
             if (jobQueue.getWaitingEntries().isEmpty()) {
+                LOG.trace("Clear jobkey {} from queue {}", jobEntry.getKey(), hashKey);
                 jobEntriesMap.remove(jobEntry.getKey());
             }
         }
@@ -156,6 +158,7 @@ public class DataStoreJobCoordinator {
          */
         @Override
         public void onSuccess(List<Void> voids) {
+            LOG.trace("Job {} completed successfully", jobEntry.getKey());
             clearJob(jobEntry);
         }
 
@@ -170,7 +173,8 @@ public class DataStoreJobCoordinator {
 
         @Override
         public void onFailure(Throwable throwable) {
-            LOG.warn("Job: {} failed with exception: {}", jobEntry, throwable.getStackTrace());
+            LOG.warn("Job: {} failed with exception: {} {}", jobEntry, throwable.getClass().getSimpleName(),
+                    throwable.getStackTrace());
             if (jobEntry.getMainWorker() == null) {
                 LOG.error("Job: {} failed with Double-Fault. Bailing Out.", jobEntry);
                 clearJob(jobEntry);
@@ -244,12 +248,18 @@ public class DataStoreJobCoordinator {
         @Override
         public void run() {
             List<ListenableFuture<Void>> futures = null;
+            long jobStartTimestamp = System.currentTimeMillis();
+            LOG.trace("Running job {}", jobEntry.getKey());
+
             try {
                 futures = jobEntry.getMainWorker().call();
+                long jobExecutionTime = System.currentTimeMillis() - jobStartTimestamp;
+                LOG.trace("Job {} took {}ms to complete", jobEntry.getKey(), jobExecutionTime);
             } catch (Exception e){
                 LOG.error("Exception when executing jobEntry: {}, exception: {}", jobEntry, e.getStackTrace());
                 e.printStackTrace();
             }
+
             if (futures == null || futures.isEmpty()) {
                 clearJob(jobEntry);
                 return;
@@ -264,20 +274,20 @@ public class DataStoreJobCoordinator {
     private class JobQueueHandler implements Runnable {
         @Override
         public void run() {
-            LOG.debug("Starting JobQueue Handler Thread.");
+            LOG.info("Starting JobQueue Handler Thread with pool size {}", THREADPOOL_SIZE);
             while (true) {
                 try {
                     for (int i = 0; i < THREADPOOL_SIZE; i++) {
                         Map<String, JobQueue> jobEntriesMap = jobQueueMap.get(i);
                         if (jobEntriesMap.isEmpty()) {
-                            Thread.sleep(500);
                             continue;
                         }
 
+                        LOG.trace("JobQueueHandler handling queue {} with size {}", i, jobEntriesMap.size());
                         synchronized (jobEntriesMap) {
-                            Iterator it = jobEntriesMap.entrySet().iterator();
+                            Iterator<Map.Entry<String, JobQueue>> it = jobEntriesMap.entrySet().iterator();
                             while (it.hasNext()) {
-                                Map.Entry<String, JobQueue> entry = (Map.Entry)it.next();
+                                Map.Entry<String, JobQueue> entry = it.next();
                                 if (entry.getValue().getExecutingEntry() != null) {
                                     continue;
                                 }
@@ -285,6 +295,7 @@ public class DataStoreJobCoordinator {
                                 if (jobEntry != null) {
                                     entry.getValue().setExecutingEntry(jobEntry);
                                     MainTask worker = new MainTask(jobEntry);
+                                    LOG.trace("Executing job {} from queue {}", jobEntry.getKey(), i);
                                     fjPool.execute(worker);
                                 } else {
                                     it.remove();
@@ -293,13 +304,13 @@ public class DataStoreJobCoordinator {
                         }
                     }
 
-                    if (jobQueueMap.isEmpty()) {
-                        reentrantLock.lock();
-                        try {
+                    reentrantLock.lock();
+                    try {
+                        if (isJobQueueEmpty()) {
                             waitCondition.await();
-                        } finally {
-                            reentrantLock.unlock();
                         }
+                    } finally {
+                        reentrantLock.unlock();
                     }
                 } catch (Exception e) {
                     LOG.error("Exception while executing the tasks {} ", e);
@@ -308,5 +319,16 @@ public class DataStoreJobCoordinator {
                 }
             }
         }
+    }
+
+    private boolean isJobQueueEmpty() {
+        for (int i = 0; i < THREADPOOL_SIZE; i++) {
+            Map<String, JobQueue> jobEntriesMap = jobQueueMap.get(i);
+            if (!jobEntriesMap.isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

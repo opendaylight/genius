@@ -24,9 +24,11 @@ import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipS
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.utils.SystemPropertyReader;
 import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClusteringUtils {
-
+    private static final Logger LOG = LoggerFactory.getLogger(ClusteringUtils.class);
     static DataStoreJobCoordinator dataStoreJobCoordinator;
 
     static DataStoreJobCoordinator getDataStoreJobCoordinator() {
@@ -88,6 +90,8 @@ public class ClusteringUtils {
                         return getResultFuture();
                     }
                 }
+                LOG.trace("EntityOwnershipState for entity type {} is not yet available. {} retries left",
+                        entity.getType(), retries);
                 Thread.sleep(sleepBetweenRetries);
             }
             checkNodeEntityfuture.setException(new EntityOwnerNotPresentException("Entity Owner Not Present"));
