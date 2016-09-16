@@ -41,13 +41,14 @@ public class ItmProviderTest {
     @Mock TunnelMonitorIntervalListener tunnelMonitorIntervalListener;
     @Mock TransportZoneListener transportZoneListener;
     @Mock VtepConfigSchemaListener vtepConfigSchemaListener;
+    @Mock OvsdbNodeListener ovsdbNodeListener;
 
     @Test
     public void testClose() throws Exception {
         ItmProvider provider = new ItmProvider(dataBroker, dpnTepsInfoListener, idManagerService, interfaceStateListener,
                 itmManager, itmManagerRpcService, itmMonitoringListener, itmMonitoringIntervalListener, itmTunnelEventListener,
                 stateTunnelListListener, tepCommandHelper, tunnelMonitorChangeListener, tunnelMonitorIntervalListener,
-                transportZoneListener, vtepConfigSchemaListener);
+                transportZoneListener, vtepConfigSchemaListener, ovsdbNodeListener);
 
         // ensure no exceptions
         // currently this method is empty
