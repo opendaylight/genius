@@ -28,6 +28,8 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.validator.TransportZoneNameAllowed;
+import org.opendaylight.genius.itm.validator.TransportZoneValidator;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -38,9 +40,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.tepsnothostedintransportzone.UnknownVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZone;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,29 +117,33 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void remove(InstanceIdentifier<TransportZone> key, TransportZone tzOld) {
         LOG.debug("Received Transport Zone Remove Event: {}, {}", key, tzOld);
-        List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzOld);
-        List<HwVtep> hwVtepList = createhWVteps(tzOld);
-        LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
-        if(opDpnList.size()>0 || hwVtepList.size()>0) {
-            LOG.trace("Delete: Invoking ItmManager");
-            LOG.trace("Delete: Invoking ItmManager with hwVtep List {} " , hwVtepList);
-            // itmManager.deleteTunnels(opDpnList);
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            ItmTepRemoveWorker removeWorker =
-                    new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker, idManagerService, mdsalManager);
-            coordinator.enqueueJob(tzOld.getZoneName(), removeWorker);
+
+        if(validateTransportZoneParam(tzOld)){
+            //TODO : DPList code can be refactor with new specific class
+            // which implement TransportZoneValidator
+            List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzOld);
+            List<HwVtep> hwVtepList = createhWVteps(tzOld);
+            LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
+            if(opDpnList.size()>0 || hwVtepList.size()>0) {
+                LOG.trace("Delete: Invoking ItmManager");
+                LOG.trace("Delete: Invoking ItmManager with hwVtep List {} " , hwVtepList);
+                // itmManager.deleteTunnels(opDpnList);
+                DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+                ItmTepRemoveWorker removeWorker =
+                        new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker, idManagerService, mdsalManager);
+                coordinator.enqueueJob(tzOld.getZoneName(), removeWorker);
+            }
         }
     }
 
     @Override
     protected void update(InstanceIdentifier<TransportZone> key, TransportZone tzOld, TransportZone tzNew) {
         LOG.debug("Received Transport Zone Update Event: Key - {}, Old - {}, Updated - {}", key, tzOld, tzNew);
-        //if( !(tzOld.equals(tzNew))) {
-        //add(key, tzNew);
         List<DPNTEPsInfo> oldDpnTepsList = new ArrayList<>();
         oldDpnTepsList = createDPNTepInfo(tzOld);
         List<DPNTEPsInfo> newDpnTepsList = new ArrayList<>();
         newDpnTepsList = createDPNTepInfo(tzNew);
+        List<DPNTEPsInfo> notHostedOpDpnList=new ArrayList<>();
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
         oldDpnTepsListcopy.addAll(oldDpnTepsList);
         LOG.trace("oldcopy0" + oldDpnTepsListcopy);
@@ -146,6 +161,11 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("newcopy"+newDpnTepsListcopy);
         LOG.trace("oldcopy Size "+oldDpnTepsList.size());
         LOG.trace("newcopy Size "+newDpnTepsList.size());
+        if(isNewTZExistInNotHostedTZ(tzNew)){
+            notHostedOpDpnList = createDPNTepInfoFromNotHosted(tzNew);
+        }
+        newDpnTepsList.addAll(notHostedOpDpnList);
+        LOG.trace("Update :newDpnTepsList: {}", newDpnTepsList);
         if(newDpnTepsList.size() > 0) {
             LOG.trace( "Adding TEPs " );
             ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.<HwVtep>emptyList(), dataBroker, idManagerService, mdsalManager);
@@ -191,8 +211,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void add(InstanceIdentifier<TransportZone> key, TransportZone tzNew) {
         LOG.debug("Received Transport Zone Add Event: {}, {}", key, tzNew);
+        validateTransportZoneParam(tzNew);
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzNew);
         List<HwVtep> hwVtepList = createhWVteps(tzNew);
+        List<DPNTEPsInfo> notHostedOpDpnList=new ArrayList<>();
+        if(isNewTZExistInNotHostedTZ(tzNew)){
+           notHostedOpDpnList = createDPNTepInfoFromNotHosted(tzNew);
+        }
+        opDpnList.addAll(notHostedOpDpnList);
         LOG.trace("Add: Operational dpnTepInfo - Before invoking ItmManager {}", opDpnList);
         if(opDpnList.size()>0 || hwVtepList.size()>0) {
             LOG.trace("Add: Invoking ItmManager with DPN List {} " , opDpnList);
@@ -202,6 +228,92 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             ItmTepAddWorker addWorker = new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
+    }
+    private List<DPNTEPsInfo> createDPNTepInfoFromNotHosted(TransportZone tzNew) {
+        Map<BigInteger, List<TunnelEndPoints>> mapNotHostedDPNToTunnelEndpt = new ConcurrentHashMap<>();
+        List<DPNTEPsInfo> notHostedDpnTepInfo = new ArrayList<>();
+        String newZoneName=tzNew.getZoneName();
+        Class<? extends TunnelTypeBase> tunnelType=tzNew.getTunnelType();
+        TepsNotHostedInTransportZone tepNotHostedTransportZone=getNotHostedTransportZone(newZoneName).get();
+        List<UnknownVteps> unVtepsLst=tepNotHostedTransportZone.getUnknownVteps();
+        List<Vteps> vtepsList=new ArrayList<Vteps>();
+        if(unVtepsLst!=null && !unVtepsLst.isEmpty()) {
+            for (UnknownVteps vteps : unVtepsLst) {
+                BigInteger dpnID = vteps.getDpnId();
+                String port = ItmListenerUtils.dummyPort;
+                int vlanID= ItmListenerUtils.dummyVlanID;
+                IpPrefix ipPrefix = new IpPrefix(ItmListenerUtils.dummyPrefix.toCharArray());
+                IpAddress gatewayIP = new IpAddress(ItmListenerUtils.dummyGateway.toCharArray());
+                IpAddress ipAddress = vteps.getIpAddress();
+                TunnelEndPoints tunnelEndPoints =
+                        ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, vlanID, ipPrefix,
+                                gatewayIP, newZoneName, tunnelType);
+                List<TunnelEndPoints> tunnelEndPointsList = mapNotHostedDPNToTunnelEndpt.get(dpnID);
+                if (tunnelEndPointsList != null) {
+                   tunnelEndPointsList.add(tunnelEndPoints);
+                } else {
+                    tunnelEndPointsList = new ArrayList<>();
+                    tunnelEndPointsList.add(tunnelEndPoints);
+                    mapNotHostedDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
+                }
+                Vteps newVtep=createVtepFromUnKnownVteps(dpnID,ipAddress,ItmListenerUtils.dummyPort);
+                vtepsList.add(newVtep);
+                ItmListenerUtils.removeUnknownTzTepIntoTepsNotHosted(newZoneName, ipAddress, dpnID, dataBroker);
+            }
+
+        }
+        addVtepsInTzConfigDS(vtepsList, newZoneName);
+        if(mapNotHostedDPNToTunnelEndpt.size()>0){
+            Set<BigInteger> keys = mapNotHostedDPNToTunnelEndpt.keySet();
+             for(BigInteger key: keys){
+                DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(key, mapNotHostedDPNToTunnelEndpt.get(key));
+                notHostedDpnTepInfo.add(newDpnTepsInfo);
+            }
+        }
+        return notHostedDpnTepInfo;
+
+    }
+
+    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
+        VtepsKey vtepkey = new VtepsKey(dpnID, port);
+        Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).setKey(vtepkey)
+                .setPortname(port).build();
+        return vtepObj;
+    }
+
+
+    public void addVtepsInTzConfigDS(List<Vteps> vtepsList, String tzName) {
+        InstanceIdentifier<TransportZone> tZonepath =
+                InstanceIdentifier.builder(TransportZones.class)
+                        .child(TransportZone.class, new TransportZoneKey(tzName)).build();
+        List<Subnets> subnetList=new ArrayList<Subnets>();
+        SubnetsKey subKey = new SubnetsKey(ItmListenerUtils.getDummySubnet());
+        Subnets subnet =
+                new SubnetsBuilder()
+                        .setKey(subKey).setPrefix(ItmListenerUtils.getDummySubnet())
+                        .setVteps(vtepsList).build();
+        subnetList.add(subnet);
+
+        TransportZone updatedTzone =
+                new TransportZoneBuilder().setKey(new TransportZoneKey(tzName))
+                        .setSubnets(subnetList).setZoneName(tzName)
+                        .build();
+        ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, tZonepath, updatedTzone, dataBroker,
+                ItmUtils.DEFAULT_CALLBACK);
+    }
+    private boolean isNewTZExistInNotHostedTZ(TransportZone tzNew){
+        boolean isPresent=false;
+        if (getNotHostedTransportZone(tzNew.getZoneName()).isPresent()) {
+            isPresent=true;
+        }
+        return isPresent;
+    }
+    public  Optional<TepsNotHostedInTransportZone> getNotHostedTransportZone(String transportZoneName) {
+        InstanceIdentifier<TepsNotHostedInTransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
+                .child(TepsNotHostedInTransportZone.class, new TepsNotHostedInTransportZoneKey(transportZoneName)).build();
+        Optional<TepsNotHostedInTransportZone> tZoneNotHostedOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
+                dataBroker);
+        return tZoneNotHostedOptional;
     }
 
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone){
@@ -295,5 +407,18 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
+    }
+
+    private boolean validateTransportZoneParam(TransportZone transportZone) {
+        boolean validateParam = true;
+        ArrayList<TransportZoneValidator> tzValidatorList = new ArrayList<>();
+        tzValidatorList.add(new TransportZoneNameAllowed());
+        for(TransportZoneValidator tzValidator :tzValidatorList){
+            if(!tzValidator.validate(transportZone)){
+                validateParam = false;
+                break;
+            }
+        }
+        return validateParam;
     }
 }
