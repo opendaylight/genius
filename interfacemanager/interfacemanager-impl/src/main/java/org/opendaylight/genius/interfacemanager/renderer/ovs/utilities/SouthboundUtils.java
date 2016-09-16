@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -100,9 +101,6 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_VALUE_GPE = "gpe";
      // UDP port for VxLAN-GPE Tunnels
     private static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
-
-    //
-    public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
     private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
@@ -306,7 +304,7 @@ public class SouthboundUtils {
     public static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodekey,
             String portName) {
         InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier.create(NetworkTopology.class)
-                .child(Topology.class, new TopologyKey(OVSDB_TOPOLOGY_ID)).child(Node.class, nodekey)
+                .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID)).child(Node.class, nodekey)
                 .child(TerminationPoint.class, new TerminationPointKey(new TpId(portName)));
 
         LOG.debug("Termination point InstanceIdentifier generated : {}", terminationPointPath);

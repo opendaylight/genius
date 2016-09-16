@@ -30,6 +30,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -112,6 +113,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -1072,5 +1080,100 @@ public class ItmUtils {
             }
         }
         return null;
+    }
+
+    public static TransportZone getTransportZoneFromConfigDS(String tzone, DataBroker broker) {
+        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
+            .child(TransportZone.class, new TransportZoneKey(tzone)).build();
+        Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
+            broker);
+        if (tZoneOptional.isPresent()) {
+            return tZoneOptional.get();
+        }
+        return null;
+    }
+
+    /**
+     * Gets the bridge datapath ID from Network topology Node's OvsdbBridgeAugmentation
+     * in the Operational DS.
+     *
+     * @param node Network Topology Node
+     *
+     * @param bridge bridge name
+     *
+     * @return the datapath ID of bridge in string form
+     */
+    public static String getBridgeDpid(Node node, String bridge, DataBroker dataBroker) {
+        OvsdbBridgeAugmentation ovsdbBridgeAugmentation = null;
+        Node bridgeNode = null;
+        String datapathId = null;
+
+        NodeId ovsdbNodeId = node.getKey().getNodeId();
+
+        NodeId brNodeId = new NodeId(ovsdbNodeId.getValue()
+            + "/" + ITMConstants.BRIDGE_URI_PREFIX + "/" + bridge);
+
+        InstanceIdentifier<Node> bridgeIid =
+            InstanceIdentifier
+                .create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID))
+                .child(Node.class,new NodeKey(brNodeId));
+
+        Optional<Node> opBridgeNode = ItmUtils.read(LogicalDatastoreType.OPERATIONAL, bridgeIid, dataBroker);
+
+        if (opBridgeNode != null) {
+            bridgeNode = opBridgeNode.get();
+        }
+        if (bridgeNode != null) {
+            ovsdbBridgeAugmentation = bridgeNode.getAugmentation(OvsdbBridgeAugmentation.class);
+        }
+
+        if (ovsdbBridgeAugmentation != null && ovsdbBridgeAugmentation.getDatapathId() != null) {
+            datapathId = ovsdbBridgeAugmentation.getDatapathId().getValue();
+        }
+        return datapathId;
+    }
+
+    /**
+     * Gets the Network topology Node from Operational Datastore
+     * based on Bridge Augmentation.
+     *
+     * @param bridgeAugmentation bridge augmentation of OVSDB node
+     *
+     * @param dataBroker data broker handle to perform operations on datastore
+     *
+     * @return the Network Topology Node i.e. OVSDB node which is managing the specified bridge
+     */
+    public static Node getOvsdbNode(OvsdbBridgeAugmentation bridgeAugmentation,
+        DataBroker dataBroker) {
+        Node ovsdbNode = null;
+        Optional<Node> opOvsdbNode = null;
+        if (bridgeAugmentation != null) {
+            InstanceIdentifier<Node> ovsdbNodeIid =
+                (InstanceIdentifier<Node>) bridgeAugmentation.getManagedBy().getValue();
+            opOvsdbNode = ItmUtils.read(LogicalDatastoreType.OPERATIONAL, ovsdbNodeIid, dataBroker);
+        }
+        if (opOvsdbNode != null) {
+            ovsdbNode = opOvsdbNode.get();
+        }
+        return ovsdbNode;
+    }
+
+    /**
+     * Gets the bridge datapath ID in string form from
+     * Network topology Node's OvsdbBridgeAugmentation in the Operational DS.
+     *
+     * @param node Network Topology Node
+     *
+     * @return the datapath ID of bridge in string form
+     */
+    public static String getStrDatapathId(Node node) {
+        OvsdbBridgeAugmentation ovsdbBridgeAugmentation =
+            node.getAugmentation(OvsdbBridgeAugmentation.class);
+        String datapathId = null;
+        if (ovsdbBridgeAugmentation != null && ovsdbBridgeAugmentation.getDatapathId() != null) {
+            datapathId = ovsdbBridgeAugmentation.getDatapathId().getValue();
+        }
+        return datapathId;
     }
 }
