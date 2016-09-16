@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: David Suarez <david.suarez.fuentes@ericsson.com>
+Submitted-by: Faseela K <faseela.k@ericsson.com>
+Submitted-at: Fri, 16 Sep 2016 17:36:14 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/45437
+Project: genius
+Branch: refs/heads/stable/boron
