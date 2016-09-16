@@ -27,6 +27,7 @@ import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
+import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
@@ -75,6 +76,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private ItmTunnelEventListener itmStateListener;
     private ItmMonitoringListener itmMonitoringListener;
     private ItmMonitoringIntervalListener itmMonitoringIntervalListener;
+    private OvsdbNodeListener ovsdbChangeListener;
     static short flag = 0;
     private StateTunnelListListener tunnelStateListener ;
     private DpnTepsInfoListener dpnTepsInfoListener ;
@@ -94,7 +96,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        TunnelMonitorChangeListener tunnelMonitorChangeListener,
                        TunnelMonitorIntervalListener tunnelMonitorIntervalListener,
                        TransportZoneListener transportZoneListener,
-                       VtepConfigSchemaListener vtepConfigSchemaListener) {
+                       VtepConfigSchemaListener vtepConfigSchemaListener,
+                       OvsdbNodeListener ovsdbNodeListener) {
         LOG.info("ItmProvider Before register MBean");
         itmStatusMonitor.registerMbean();
         this.dataBroker = dataBroker;
@@ -112,6 +115,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.tnlIntervalListener = tunnelMonitorIntervalListener;
         this.tzChangeListener = transportZoneListener;
         this.vtepConfigSchemaListener = vtepConfigSchemaListener;
+        this.ovsdbChangeListener = ovsdbNodeListener;
     }
 
     @PostConstruct
@@ -140,6 +144,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
         if(dpnTepsInfoListener!= null){
             dpnTepsInfoListener.close();
+        }
+        if (ovsdbChangeListener != null) {
+            ovsdbChangeListener.close();
         }
         LOG.info("ItmProvider Closed");
     }
