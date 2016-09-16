@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
+
 import java.math.BigInteger;
 
 public class IfmConstants {
@@ -34,4 +37,6 @@ public class IfmConstants {
     public static final BigInteger COOKIE_EGRESS_DISPATCHER_TABLE = new BigInteger("1300000", 16);
     //Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
+
+    public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 }
