@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_3f703d0a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2016-09-19T15:10:22Z",
+      "side": 1,
+      "message": "The matchBuilderInOut can have other nicira extension, better to add to the extention list as in nx_udp_dst_with_mask",
+      "revId": "691fc4ef3edc3f8db796380bff7ba24b51afc589",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
