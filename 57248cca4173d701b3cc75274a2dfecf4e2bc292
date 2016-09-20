@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ebc9e3ac",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/BatchHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-09-20T09:48:55Z",
+      "side": 1,
+      "message": "If this is a BatchHandler only for InterfaceManager, can\u0027t we name it as \nInterfaceBatchHandler :) ?\n\nUsing generic names like \"BatchHandler\" certainly put me into confusion on why is this required if DefaultBatchHandler exists !",
+      "revId": "57248cca4173d701b3cc75274a2dfecf4e2bc292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6be67345",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-09-20T09:48:55Z",
+      "side": 1,
+      "message": "where are these methods used?",
+      "revId": "57248cca4173d701b3cc75274a2dfecf4e2bc292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4be1f728",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-09-20T09:48:55Z",
+      "side": 1,
+      "message": "Can you please add the code here for retrying the transactions using the transactionObjects?\n\nOr is that going to be subsequent review from you?",
+      "revId": "57248cca4173d701b3cc75274a2dfecf4e2bc292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
