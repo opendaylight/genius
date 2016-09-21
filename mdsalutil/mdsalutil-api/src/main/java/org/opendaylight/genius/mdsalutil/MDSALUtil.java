@@ -89,10 +89,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.primitives.Bytes;
-import com.google.common.primitives.Ints;
 import com.google.common.util.concurrent.CheckedFuture;
 
 public class MDSALUtil {
@@ -235,14 +232,11 @@ public class MDSALUtil {
     }
 
     public static String longToIp(long ip, long mask) {
-        StringBuilder sb = new StringBuilder(15);
-        Joiner joiner = Joiner.on('.');
-
-        joiner.appendTo(sb, Bytes.asList(Ints.toByteArray((int) ip)));
-
-        sb.append("/" + mask);
-
-        return sb.toString();
+        return ((ip & 0xFF000000) >> 3 * 8) + "." +
+               ((ip & 0x00FF0000) >> 2 * 8) + "." +
+               ((ip & 0x0000FF00) >>     8) + "." +
+                (ip & 0x000000FF) +
+                (mask == 0 ? "" : "/" + mask);
     }
 
 
