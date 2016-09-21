@@ -78,7 +78,15 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     }
 
     /**
-     * Subclasses should override this and place initialization logic, notably calls to registerListener(), here.
+     * Subclasses override this and place initialization logic here, notably
+     * calls to registerListener(). Note that the overriding method MUST repeat
+     * the PostConstruct annotation, because JSR 250 specifies that lifecycle
+     * methods "are called unless a subclass of the declaring class overrides
+     * the method without repeating the annotation".  (The blueprint-maven-plugin
+     * would gen. XML which calls PostConstruct annotated methods even if they are
+     * in a subclass without repeating the annotation, but this is wrong and not
+     * JSR 250 compliant, and while working in BP, then causes issues e.g. when
+     * wiring with Guice for tests, so do always repeat it.)
      */
     @PostConstruct
     protected void init() {
