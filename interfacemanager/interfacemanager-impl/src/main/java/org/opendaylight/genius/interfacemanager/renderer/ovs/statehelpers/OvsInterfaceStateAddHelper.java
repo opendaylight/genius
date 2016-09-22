@@ -65,7 +65,7 @@ public class OvsInterfaceStateAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
-        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, defaultOperationalShardTransaction, idManager,
+        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(dataBroker, iface, interfaceName, defaultOperationalShardTransaction, idManager,
                 physAddress, operStatus, adminStatus, nodeConnectorId);
 
         // If this interface is a tunnel interface, create the tunnel ingress flow,and start tunnel monitoring
@@ -78,7 +78,7 @@ public class OvsInterfaceStateAddHelper {
         // install ingress flow if this is an l2vlan interface
         if(InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() &&
                 ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-            BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
             long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForVlanPortAtIngressTable(dpId, portNo, iface);
             FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker, ifState.getIfIndex());
@@ -93,7 +93,7 @@ public class OvsInterfaceStateAddHelper {
                                                       IMdsalApiManager mdsalApiManager,AlivenessMonitorService alivenessMonitorService,
                                                       NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifindex,
                                                       IfTunnel ifTunnel, String interfaceName){
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
         InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName,
                 ifindex, NwConstants.ADD_FLOW);
