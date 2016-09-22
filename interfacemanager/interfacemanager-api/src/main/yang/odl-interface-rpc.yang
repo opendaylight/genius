@@ -209,4 +209,18 @@ module odl-interface-rpc {
              }
         }
     }
+
+    rpc get-dpn-interface-list {
+        description "used to retrieve interface list for a given Dpn";
+        input {
+            leaf dpid {
+                 type uint64;
+            }
+        }
+        output {
+            leaf-list interfaces-list {
+               type string;
+            }
+        }
+    }
 }

@@ -158,7 +158,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         long portNo = Long.parseLong(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
         if (boundServices.isEmpty()) {
             // Remove entry from Ingress Table.

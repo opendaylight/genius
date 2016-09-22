@@ -93,18 +93,18 @@ public class IfmUtil {
                     .put(TunnelTypeVxlanGpe.class, InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE)
                     .build();
 
-    public static String getDpnFromNodeConnectorId(NodeConnectorId portId) {
+    public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
         /*
          * NodeConnectorId is of form 'openflow:dpnid:portnum'
          */
         String[] split = portId.getValue().split(IfmConstants.OF_URI_SEPARATOR);
-        return split[1];
+        return new BigInteger(split[1]);
     }
 
     public static BigInteger getDpnFromInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState){
         NodeConnectorId ncId = getNodeConnectorIdFromInterface(ifState);
         if(ncId != null){
-            return new BigInteger(getDpnFromNodeConnectorId(ncId));
+            return getDpnFromNodeConnectorId(ncId);
         }
         return null;
     }

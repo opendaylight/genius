@@ -16,8 +16,11 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -39,12 +42,17 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.IfIndexesInterfaceMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -79,6 +87,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -119,7 +130,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 if (ifState != null) {
                     String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-                    dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                    dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 } else {
                      rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, "missing Interface-state");
                      return Futures.immediateFuture(rpcResultBuilder.build());
@@ -349,7 +360,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             if (ifState != null) {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-                dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
                 // FIXME Assuming portName and interfaceName are same
                 GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
@@ -407,6 +418,30 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             }
         } catch (Exception e) {
             LOG.error("Retrieval of interfaceName for the key {} failed due to {}", ifIndex, e);
+            rpcResultBuilder = RpcResultBuilder.failed();
+        }
+        return Futures.immediateFuture(rpcResultBuilder.build());
+    }
+
+    @Override
+    public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
+        BigInteger dpnid = input.getDpid();
+        RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = null;
+        try {
+            InstanceIdentifier<DpnToInterface> id =
+                    InstanceIdentifier.builder(DpnToInterfaceList.class).child(DpnToInterface.class , new DpnToInterfaceKey(dpnid)).build();
+            Optional<DpnToInterface> entry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
+            if (entry.isPresent()) {
+                List<InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
+                if (interfaceNameEntries != null && !interfaceNameEntries.isEmpty()) {
+                    List<String> interfaceList = interfaceNameEntries.stream().map((a) -> a.getInterfaceName()).collect(Collectors.toList());
+                    GetDpnInterfaceListOutputBuilder output = new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList);
+                    rpcResultBuilder = RpcResultBuilder.success();
+                    rpcResultBuilder.withResult(output.build());
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Retrieval of interfaceNameList for the dpnId {} failed due to {}", dpnid, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
