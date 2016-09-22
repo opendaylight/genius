@@ -116,7 +116,7 @@ public class FlowBasedServicesUtils {
             List<String> ofportIds = ifState.getLowerLayerIf();
             nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
         }
-        return new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        return IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
     }
 
     public static List<MatchInfo> getMatchInfoForVlanPortAtIngressTable(BigInteger dpId, long portNo, Interface iface) {

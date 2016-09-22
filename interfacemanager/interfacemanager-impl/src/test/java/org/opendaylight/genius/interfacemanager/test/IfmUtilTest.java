@@ -34,7 +34,7 @@ public class IfmUtilTest {
         String NodeId = IfmUtil.buildDpnNodeId(BigInteger.valueOf(101)).getValue();
         assertEquals("openflow:101", NodeId);
         when(ncId.getValue()).thenReturn("openflow:101:11");
-        assertEquals("101",IfmUtil.getDpnFromNodeConnectorId(ncId));
+        assertEquals(new BigInteger("101"),IfmUtil.getDpnFromNodeConnectorId(ncId));
     }
 
 }
