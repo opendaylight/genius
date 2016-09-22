@@ -42,6 +42,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.IfIndexesInterfaceMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceKey;
@@ -50,6 +51,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -96,6 +102,7 @@ public class StateInterfaceTest {
     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface stateInterface;
     InterfaceParentEntry interfaceParentEntry;
     InterfaceParentEntry higherLayerInterfaceParentEntry;
+    DpnToInterface dpnToInterface;
 
     @Mock DataBroker dataBroker;
     @Mock
@@ -124,6 +131,8 @@ public class StateInterfaceTest {
     }
 
     private void setupMocks() {
+        List<InterfaceNameEntry> interfaceNameEntries = new ArrayList<>();
+        interfaceNameEntries.add(new InterfaceNameEntryBuilder().setInterfaceName(InterfaceManagerTestUtil.interfaceName).build());
         nodeConnectorId = InterfaceManagerTestUtil.buildNodeConnectorId(BigInteger.valueOf(1), 2);
         nodeConnector = InterfaceManagerTestUtil.buildFlowCapableNodeConnector(nodeConnectorId);
         fcNodeConnectorNew = nodeConnector.getAugmentation(FlowCapableNodeConnector.class);
@@ -161,6 +170,7 @@ public class StateInterfaceTest {
         InterfaceParentEntryBuilder higherLayerIfParentEntryBuilder = new InterfaceParentEntryBuilder();
         List<InterfaceChildEntry> ifaceChildEntryListForHigherParent= new ArrayList<>();
         higherLayerInterfaceParentEntry = higherLayerIfParentEntryBuilder.setInterfaceChildEntry(ifaceChildEntryListForHigherParent).build();
+        dpnToInterface = new DpnToInterfaceBuilder().setDpid(dpId).setInterfaceNameEntry(interfaceNameEntries).build();
 
         when(dataBroker.newReadOnlyTransaction()).thenReturn(mockReadTx);
         when(dataBroker.newWriteOnlyTransaction()).thenReturn(mockWriteTx);
@@ -235,6 +245,9 @@ public class StateInterfaceTest {
         Optional<InterfaceParentEntry> higherLayerParentOptional = Optional.of(higherLayerInterfaceParentEntry);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class, InterfaceManagerTestUtil.nodeKey).build();
         Optional<Node> nodeOptional = Optional.of(mockNode);
+        Optional<DpnToInterface> dpnToInterfaceOptional = Optional.of(dpnToInterface);
+        InstanceIdentifier<DpnToInterface> dpnToInterfaceInstanceIdentifier =
+                InstanceIdentifier.builder(DpnToInterfaceList.class).child(DpnToInterface.class, new DpnToInterfaceKey(BigInteger.ONE)).build();
 
         doReturn(Futures.immediateCheckedFuture(expectedIfindexInterface)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL, ifIndexId);
@@ -250,6 +263,8 @@ public class StateInterfaceTest {
                 LogicalDatastoreType.CONFIGURATION, higherLevelInterfaceParentEntryIdentifier);
         doReturn(Futures.immediateCheckedFuture(nodeOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(dpnToInterfaceOptional)).when(mockReadTx).read(
+                LogicalDatastoreType.OPERATIONAL, dpnToInterfaceInstanceIdentifier);
 
         ReleaseIdInput getIdInput = new ReleaseIdInputBuilder()
                 .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
