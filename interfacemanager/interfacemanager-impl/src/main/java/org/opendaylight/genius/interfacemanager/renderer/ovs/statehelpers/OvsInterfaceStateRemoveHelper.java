@@ -75,6 +75,9 @@ public class OvsInterfaceStateRemoveHelper {
                 FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
                 FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
             }
+
+            // Delete the Vpn Interface from DpnToInterface Op DS.
+            InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName, defaultOperationalShardTransaction);
         }
         futures.add(defaultOperationalShardTransaction.submit());
         return futures;
