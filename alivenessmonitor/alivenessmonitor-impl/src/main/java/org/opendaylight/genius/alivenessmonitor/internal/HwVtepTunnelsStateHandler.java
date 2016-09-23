@@ -8,7 +8,6 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorStateId;
-
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -23,7 +22,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
+import org.opendaylight.genius.mdsalutil.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
@@ -60,31 +59,35 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnels> implements AlivenessProtocolHandler, AutoCloseable {
+public class HwVtepTunnelsStateHandler
+        extends HwvtepAbstractDataTreeChangeListener<Tunnels,HwVtepTunnelsStateHandler>
+        implements AlivenessProtocolHandler, AutoCloseable {
+
     private DataBroker broker;
     private ServiceProvider serviceProvider;
     ListenerRegistration<DataChangeListener> tunnelsListenerRegistration;
     private static final Logger logger = LoggerFactory.getLogger(HwVtepTunnelsStateHandler.class);
 
     public HwVtepTunnelsStateHandler() {
-        super(Tunnels.class);
+        super(Tunnels.class,HwVtepTunnelsStateHandler.class);
     }
 
     public HwVtepTunnelsStateHandler(ServiceProvider serviceProvider) {
         this();
         this.serviceProvider = serviceProvider;
         broker = serviceProvider.getDataBroker();
-        registerListener();
+        registerListener(LogicalDatastoreType.CONFIGURATION,this.broker);
     }
 
-    public void registerListener() {
-        try {
-            tunnelsListenerRegistration = broker.registerDataChangeListener(LogicalDatastoreType.CONFIGURATION,
-                    getTunnelsWildcardPath(), HwVtepTunnelsStateHandler.this, DataChangeScope.SUBTREE);
-        } catch (final Exception e) {
-            logger.error("Hwvtep Tunnels DataChange listener registration failed !", e);
-            throw new IllegalStateException("Hwvtep Tunnels registration Listener failed.", e);
-        }
+    @Override
+    protected InstanceIdentifier<Tunnels> getWildCardPath() {
+        return InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
+                .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class);
+    }
+
+    @Override
+    protected HwVtepTunnelsStateHandler getDataTreeChangeListener() {
+        return HwVtepTunnelsStateHandler.this;
     }
 
     @Override
@@ -94,13 +97,13 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
+    protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void update(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
+    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
         List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
         List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
@@ -200,7 +203,7 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     }
 
     @Override
-    protected void add(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
+    protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
         // TODO: need to add the code to enable BFD if tunnels are created dynamically by TOR switch
     }
 

@@ -24,5 +24,6 @@ public class HwvtepSouthboundConstants {
     public static final String ELAN_ENTITY_TYPE = "elan";
     public static final String ELAN_ENTITY_NAME = "elan";
     public static final String TEP_PREFIX = "vxlan_over_ipv4:";
+    public static final String PHYSICALSWITCH = "/physicalswitch/";
 }
 
