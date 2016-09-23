@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_6775f430",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-09-23T03:58:47Z",
+      "side": 1,
+      "message": "the discussion was to keep them both as different services, then service-index should be different",
+      "revId": "2f698e8268253b9b5232c050d9779c311f84df55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
