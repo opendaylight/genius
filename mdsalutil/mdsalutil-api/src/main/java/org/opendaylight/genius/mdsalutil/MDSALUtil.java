@@ -9,6 +9,7 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +92,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.net.InetAddresses;
 import com.google.common.primitives.Bytes;
 import com.google.common.primitives.Ints;
 import com.google.common.util.concurrent.CheckedFuture;
@@ -245,6 +247,23 @@ public class MDSALUtil {
         return sb.toString();
     }
 
+    /**
+     * Converts IPv4 Address to String.
+     * {@link #longToIpv4(long, long)} fixes the issue of {@link #longToIp(long, long)} not handling IP address greater than byte
+     * @param ipAddress IP Address to be converted to Long
+     * @param mask Network mask to be appended
+     * @return IP Address converted to String
+     */
+    public static String longToIpv4(final long ipAddress, final long mask){
+        
+        final StringBuilder builder = new StringBuilder(20);
+        final Inet4Address address = InetAddresses.fromInteger((int)ipAddress);
+        builder.append(address.toString()).append("/").append(mask);
+        if(builder.charAt(0)=='/'){
+            builder.deleteCharAt(0);
+        }
+        return builder.toString();
+    }
 
     public static Bucket buildBucket(List<Action> actionsList, int weight, int bucketId, long watchPort, long watchGroup) {
         return  new BucketBuilder().setAction(actionsList).setWeight(weight)
