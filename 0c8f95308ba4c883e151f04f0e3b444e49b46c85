@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ad3d2adf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-09-26T05:11:17Z",
+      "side": 1,
+      "message": "why is this changed? this is the egress service index...not ingress service index",
+      "revId": "0c8f95308ba4c883e151f04f0e3b444e49b46c85",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
