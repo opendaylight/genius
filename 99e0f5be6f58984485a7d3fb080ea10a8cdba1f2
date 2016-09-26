@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_a3d379d3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5350
+      },
+      "writtenOn": "2016-09-26T16:14:42Z",
+      "side": 1,
+      "message": "I think this method and \u0027longToIp\u0027 fit better in NWUtil.java.",
+      "range": {
+        "startLine": 257,
+        "startChar": 25,
+        "endLine": 257,
+        "endChar": 35
+      },
+      "revId": "99e0f5be6f58984485a7d3fb080ea10a8cdba1f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
