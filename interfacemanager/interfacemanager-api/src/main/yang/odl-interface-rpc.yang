@@ -74,6 +74,11 @@ module odl-interface-rpc {
                 type uint32;
                 mandatory false;
             }
+            leaf action-key {
+                description "By default action keys are incremented from zero, for custom initial value set action-key";
+                type int32;
+                mandatory false;
+            }
         }
         output {
             uses action:action-list;

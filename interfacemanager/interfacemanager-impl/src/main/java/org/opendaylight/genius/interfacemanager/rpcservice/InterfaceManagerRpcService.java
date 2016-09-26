@@ -334,7 +334,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             LOG.debug("Get Egress Action for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
             List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
-                    input.getTunnelKey(),
+                    input.getTunnelKey(), input.getActionKey(),
                     dataBroker, false);
             GetEgressActionsForInterfaceOutputBuilder output = new GetEgressActionsForInterfaceOutputBuilder().
                     setAction(actionsList);
