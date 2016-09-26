@@ -216,9 +216,9 @@ public class IfmUtil {
         return result;
     }
 
-    public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey,
+    public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey, Integer actionKey,
                                                             DataBroker dataBroker, Boolean isDefaultEgress) {
-        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress);
+        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey, actionKey==null?0:actionKey, dataBroker, isDefaultEgress);
         List<Action> actionsList = new ArrayList<>();
         for (ActionInfo actionInfo : listActionInfo) {
             actionsList.add(actionInfo.buildAction());
