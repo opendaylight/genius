@@ -428,9 +428,14 @@ public enum MatchFieldType {
                 arpMatchBuilder = new ArpMatchBuilder();
                 mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
             }
-
-            long[] prefix = matchInfo.getMatchValues();
-            arpMatchBuilder.setArpTargetTransportAddress(new Ipv4Prefix(MDSALUtil.longToIp(prefix[0], prefix[1])));
+            String arpTpa;
+            if (matchInfo.getStringMatchValues() != null) {
+                arpTpa = matchInfo.getStringMatchValues()[0] + "/" + matchInfo.getStringMatchValues()[1];
+            }else{
+                long[] prefix = matchInfo.getMatchValues();
+                arpTpa = NWUtil.longToIpv4(prefix[0], prefix[1]);
+            }
+            arpMatchBuilder.setArpTargetTransportAddress(new Ipv4Prefix(arpTpa));
         }
 
         @Override
