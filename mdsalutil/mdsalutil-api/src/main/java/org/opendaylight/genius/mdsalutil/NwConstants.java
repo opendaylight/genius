@@ -119,6 +119,7 @@ public final class NwConstants {
     public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     public static final short SCF_CHAIN_FWD_TABLE = 75;
     public static final short L3_INTERFACE_TABLE = 80;
+    public static final short ARP_RESPONDER_TABLE= 81;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 251;
     public static final short EGRESS_ACL_FILTER_TABLE = 252;
