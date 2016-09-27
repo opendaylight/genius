@@ -134,6 +134,24 @@
       "revId": "35996ae6bc9a85d3503b1c3224ba802e01b688ef",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_065cf817",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6550
+      },
+      "writtenOn": "2016-09-27T14:08:40Z",
+      "side": 1,
+      "message": "Since its generic implementation, provided option to add mask if mask value is greater than zero.",
+      "parentUuid": "7a6b29fe_e3044e4b",
+      "revId": "35996ae6bc9a85d3503b1c3224ba802e01b688ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
