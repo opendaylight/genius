@@ -70,7 +70,7 @@ public class SouthboundUtils {
     static final String BFD_PARAM_CPATH_DOWN = "cpath_down";
     static final String BFD_PARAM_CHECK_TNL_KEY = "check_tnl_key";
 
-    // bfd params
+    // BFD parameters
     public static final String BFD_OP_STATE = "state";
     public static final String BFD_STATE_UP = "up";
     private static final String BFD_MIN_RX_VAL = "1000";
@@ -84,8 +84,9 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_KEY = "key";
     private static final String TUNNEL_OPTIONS_LOCAL_IP = "local_ip";
     private static final String TUNNEL_OPTIONS_REMOTE_IP = "remote_ip";
+    private static final String TUNNEL_OPTIONS_DESTINATION_PORT = "dst_port";
 
-    // Options for VxLAN-GPE + NSH tunnels
+    // Option values for VxLAN-GPE + NSH tunnels
     private static final String TUNNEL_OPTIONS_EXTS = "exts";
     private static final String TUNNEL_OPTIONS_NSI = "nsi";
     private static final String TUNNEL_OPTIONS_NSP = "nsp";
@@ -94,10 +95,13 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_NSHC3 = "nshc3";
     private static final String TUNNEL_OPTIONS_NSHC4 = "nshc4";
 
-    // Values for VxLAN-GPE + NSH tunnels
+    // Option values for VxLAN-GPE + NSH tunnels
     private static final String TUNNEL_OPTIONS_VALUE_FLOW = "flow";
     private static final String TUNNEL_OPTIONS_VALUE_GPE = "gpe";
+     // UDP port for VxLAN-GPE Tunnels
+    private static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
 
+    //
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
@@ -118,7 +122,7 @@ public class SouthboundUtils {
     }
 
     /*
-     * add all tunnels ports corresponding to the bridge to the topology config
+     * Add all tunnels ports corresponding to the bridge to the topology config
      * DS
      */
     public static void addAllPortsToBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
@@ -220,6 +224,8 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_NSHC2, TUNNEL_OPTIONS_VALUE_FLOW);
             options.put(TUNNEL_OPTIONS_NSHC3, TUNNEL_OPTIONS_VALUE_FLOW);
             options.put(TUNNEL_OPTIONS_NSHC4, TUNNEL_OPTIONS_VALUE_FLOW);
+            // VxLAN-GPE interfaces will not use the default UDP port to avoid problems with other meshes
+            options.put(TUNNEL_OPTIONS_DESTINATION_PORT, TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT);
         }
         addTerminationPoint(bridgeIid, portName, vlanId, type, options, ifTunnel);
     }
@@ -330,6 +336,5 @@ public class SouthboundUtils {
             return true;
         }
         return false;
-
     }
 }
