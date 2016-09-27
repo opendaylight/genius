@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_de748ed0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-27T11:08:26Z",
+      "side": 1,
+      "message": "Handling else part is not required.\nI have changed the approach .I am not throwing any exception instead i am sending boolean variable.",
+      "parentUuid": "7a6b29fe_feb22a92",
+      "revId": "8d12bc347671eb5f77f3c1114ea7b35514176f2b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_1ea44649",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 11
@@ -30,6 +48,24 @@
       "writtenOn": "2016-09-27T05:03:38Z",
       "side": 1,
       "message": "The return type should be the enum containing the error codes , default error code (noError)",
+      "revId": "8d12bc347671eb5f77f3c1114ea7b35514176f2b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_83a75a0a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-27T11:08:26Z",
+      "side": 1,
+      "message": "return type will have only two state so return type will not be changed",
+      "parentUuid": "7a6b29fe_1ea44649",
       "revId": "8d12bc347671eb5f77f3c1114ea7b35514176f2b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_c065c8e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneNameAllowed.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-27T11:08:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_9eb85676",
+      "revId": "8d12bc347671eb5f77f3c1114ea7b35514176f2b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_7ebf3a61",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneNameAllowed.java",
         "patchSetId": 11
@@ -64,6 +118,24 @@
       "writtenOn": "2016-09-27T05:03:38Z",
       "side": 1,
       "message": "Please change the level to \"ERROR\" since the deletion of the Default TZ is an incorrect usage. The message should clearyly state why this action was not processed.",
+      "revId": "8d12bc347671eb5f77f3c1114ea7b35514176f2b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_005ce017",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/validator/TransportZoneNameAllowed.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-27T11:08:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_7ebf3a61",
       "revId": "8d12bc347671eb5f77f3c1114ea7b35514176f2b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
