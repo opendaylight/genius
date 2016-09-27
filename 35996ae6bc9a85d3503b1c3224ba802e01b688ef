@@ -116,6 +116,24 @@
       "revId": "35996ae6bc9a85d3503b1c3224ba802e01b688ef",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e3044e4b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-09-27T12:50:37Z",
+      "side": 1,
+      "message": "The mask is provided as input right.. should that not be the first check then, rather than after converting the IPAddress to String?",
+      "parentUuid": "7a6b29fe_63a4beb9",
+      "revId": "35996ae6bc9a85d3503b1c3224ba802e01b688ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
