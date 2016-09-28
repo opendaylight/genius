@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_e9226f50",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MatchFieldType.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-28T07:20:09Z",
+      "side": 1,
+      "message": "change gwIp to arpTpa",
+      "revId": "acf3def1f3ea23a2b0c84c05ac636bad0a652b6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c91df310",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MatchFieldType.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-28T07:20:09Z",
+      "side": 1,
+      "message": "Nit: have space like: } else {",
+      "revId": "acf3def1f3ea23a2b0c84c05ac636bad0a652b6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
