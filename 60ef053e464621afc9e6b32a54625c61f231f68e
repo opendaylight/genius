@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_144d42c4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2016-09-28T14:38:27Z",
+      "side": 1,
+      "message": "Based on [0] I recommend:\n\nLOG.error(\"Exception when executing jobEntry: {}\", jobEntry, e);\n\n[0] https://wiki.opendaylight.org/view/BestPractices/Logging_Best_Practices#Use_parameterized_logging",
+      "range": {
+        "startLine": 259,
+        "startChar": 16,
+        "endLine": 259,
+        "endChar": 133
+      },
+      "revId": "60ef053e464621afc9e6b32a54625c61f231f68e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
