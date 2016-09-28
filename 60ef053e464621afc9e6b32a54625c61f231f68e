@@ -22,6 +22,30 @@
       "revId": "60ef053e464621afc9e6b32a54625c61f231f68e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_14a9c223",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 6584
+      },
+      "writtenOn": "2016-09-28T15:52:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_144d42c4",
+      "range": {
+        "startLine": 259,
+        "startChar": 16,
+        "endLine": 259,
+        "endChar": 133
+      },
+      "revId": "60ef053e464621afc9e6b32a54625c61f231f68e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
