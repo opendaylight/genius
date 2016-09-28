@@ -256,8 +256,7 @@ public class DataStoreJobCoordinator {
                 long jobExecutionTime = System.currentTimeMillis() - jobStartTimestamp;
                 LOG.trace("Job {} took {}ms to complete", jobEntry.getKey(), jobExecutionTime);
             } catch (Exception e){
-                LOG.error("Exception when executing jobEntry: {}, exception: {}", jobEntry, e.getStackTrace());
-                e.printStackTrace();
+                LOG.error("Exception when executing jobEntry: {}", jobEntry, e);
             }
 
             if (futures == null || futures.isEmpty()) {
