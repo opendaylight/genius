@@ -1,0 +1,8 @@
+Code-Review+1: Vratko Polák <vrpolak@cisco.com>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: David Suarez <david.suarez.fuentes@ericsson.com>
+Submitted-by: David Suarez <david.suarez.fuentes@ericsson.com>
+Submitted-at: Thu, 29 Sep 2016 12:52:46 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/46264
+Project: genius
+Branch: refs/heads/master
