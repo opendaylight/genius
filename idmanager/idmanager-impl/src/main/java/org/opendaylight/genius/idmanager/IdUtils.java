@@ -8,13 +8,18 @@
 
 package org.opendaylight.genius.idmanager;
 
-import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.DelayedIdEntry;
+
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
@@ -41,12 +46,19 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class IdUtils {
+import com.google.common.base.Optional;
+import com.google.common.net.InetAddresses;
+import com.google.common.util.concurrent.CheckedFuture;
+
+public class IdUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdUtils.class);
-    private static final long DEFAULT_DELAY_TIME = 30;
+    public static final long DEFAULT_DELAY_TIME = 30;
     private static final long DEFAULT_AVAILABLE_ID_COUNT = 0;
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
+    public static final int RETRY_COUNT = 6;
+    public static ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
+    public static final String ID_POOL_CACHE = "ID_POOL_CACHE";
 
     private static int BLADE_ID;
     static {
@@ -64,12 +76,12 @@ class IdUtils {
         return idEntry;
     }
 
-    protected static IdEntries createIdEntries(String idKey, List<Long> newIdVals) {
+    public static IdEntries createIdEntries(String idKey, List<Long> newIdVals) {
         return new IdEntriesBuilder().setKey(new IdEntriesKey(idKey))
                 .setIdKey(idKey).setIdValue(newIdVals).build();
     }
 
-    protected static DelayedIdEntries createDelayedIdEntry(long idValue, long delayTime) {
+    public static DelayedIdEntries createDelayedIdEntry(long idValue, long delayTime) {
         return new DelayedIdEntriesBuilder()
                 .setId(idValue)
                 .setReadyTimeSec(delayTime).build();
@@ -85,7 +97,7 @@ class IdUtils {
                 .setReleasedIdsHolder(releasedIdsHolder).build();
     }
 
-    protected static AvailableIdsHolder createAvailableIdsHolder(long low, long high, long cursor) {
+    public static AvailableIdsHolder createAvailableIdsHolder(long low, long high, long cursor) {
         AvailableIdsHolder availableIdsHolder = new AvailableIdsHolderBuilder()
                 .setStart(low).setEnd(high).setCursor(cursor).build();
         return availableIdsHolder;
@@ -98,7 +110,7 @@ class IdUtils {
         return releasedIdsHolder;
     }
 
-    protected static InstanceIdentifier<IdPool> getIdPoolInstance(String poolName) {
+    public static InstanceIdentifier<IdPool> getIdPoolInstance(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idPoolBuilder = InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(poolName));
@@ -106,47 +118,12 @@ class IdUtils {
         return id;
     }
 
-    protected static InstanceIdentifier<ReleasedIdsHolder> getReleasedIdsHolderInstance(String poolName) {
+    public static InstanceIdentifier<ReleasedIdsHolder> getReleasedIdsHolderInstance(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<ReleasedIdsHolder> releasedIdsHolder = InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(poolName)).child(ReleasedIdsHolder.class);
         InstanceIdentifier<ReleasedIdsHolder> releasedIds = releasedIdsHolder.build();
         return releasedIds;
-    }
-
-    /**
-     * Changes made to releasedIds are not persisted in the datastore.
-     * @param releasedIds
-     * @return
-     */
-    protected static long getIdFromReleaseIdsIfAvailable(ReleasedIdsHolderBuilder releasedIds) {
-        List<DelayedIdEntries> delayedIdEntries = releasedIds.getDelayedIdEntries();
-        long newIdValue = -1;
-        if (delayedIdEntries != null && !delayedIdEntries.isEmpty()) {
-            processDelayList(releasedIds);
-            if (releasedIds.getAvailableIdCount() > 0) {
-                DelayedIdEntries delayedIdEntry= delayedIdEntries.get(0);
-                newIdValue = delayedIdEntry.getId();
-                delayedIdEntries.remove(delayedIdEntry);
-                releasedIds.setDelayedIdEntries(delayedIdEntries);
-                releasedIds.setAvailableIdCount(releasedIds.getAvailableIdCount() - 1);
-            }
-        }
-        return newIdValue;
-    }
-
-    /**
-     * Changes made to availableIds are not persisted to datastore.
-     * @param availableIds
-     * @return
-     */
-    protected static long getIdFromAvailableIds(AvailableIdsHolderBuilder availableIds) {
-        long newIdValue = -1;
-        if (availableIds != null && isIdAvailable(availableIds)) {
-            newIdValue = availableIds.getCursor() + 1;
-            availableIds.setCursor(newIdValue);
-        }
-        return newIdValue;
     }
 
     protected static boolean isIdAvailable(AvailableIdsHolderBuilder availableIds) {
@@ -157,16 +134,6 @@ class IdUtils {
 
     protected static String getLocalPoolName(String poolName) {
         return (poolName + "." + BLADE_ID);
-    }
-
-    protected static IdPool createLocalIdPool(String localPoolName, IdPool parentIdPool) {
-        IdPoolBuilder idPoolBuilder = new IdPoolBuilder();
-        ReleasedIdsHolder releasedIdsHolder = createReleasedIdsHolder(DEFAULT_AVAILABLE_ID_COUNT, DEFAULT_DELAY_TIME);
-        return idPoolBuilder.setKey(new IdPoolKey(localPoolName))
-                .setPoolName(localPoolName)
-                .setParentPoolName(parentIdPool.getPoolName())
-                .setBlockSize(parentIdPool.getBlockSize())
-                .setReleasedIdsHolder(releasedIdsHolder).build();
     }
 
     protected static ChildPools createChildPool(String childPoolName) {
@@ -188,52 +155,32 @@ class IdUtils {
     }
 
     /**
-     * Changes made to releaseIds are not persisted to the Datastore. Method invoking should ensure that releaseIds gets persisted.
-     * @param releasedIds
-     */
-    protected static void processDelayList(ReleasedIdsHolderBuilder releasedIds) {
-        List<DelayedIdEntries> delayedIdEntries = releasedIds.getDelayedIdEntries();
-        if (delayedIdEntries ==  null)
-            return;
-        long availableIdCount = releasedIds.getAvailableIdCount() == null ? 0 : releasedIds.getAvailableIdCount();
-        int index = (int) availableIdCount;
-        long currentTimeSec = System.currentTimeMillis() / 1000;
-        DelayedIdEntry delayedIdEntry;
-        while (index < delayedIdEntries.size()) {
-            delayedIdEntry = delayedIdEntries.get(index);
-            if (delayedIdEntry.getReadyTimeSec() > currentTimeSec) {
-                break;
-            }
-            availableIdCount++;
-            index++;
-        }
-        releasedIds.setAvailableIdCount(availableIdCount);
-    }
-
-    /**
      * Changes made to the parameters passed are not persisted to the Datastore. Method invoking should ensure that these gets persisted.
-     * @param releasedIdsChild
+     * @param releasedIdHolder
      * @param releasedIdsParent
      * @param idCountToBeFreed
      */
-    protected static void freeExcessAvailableIds(ReleasedIdsHolderBuilder releasedIdsChild, ReleasedIdsHolderBuilder releasedIdsParent, int idCountToBeFreed) {
+    public static void freeExcessAvailableIds(ReleasedIdHolder releasedIdHolder, ReleasedIdsHolderBuilder releasedIdsParent, long idCountToBeFreed) {
         List<DelayedIdEntries> existingDelayedIdEntriesInParent = releasedIdsParent.getDelayedIdEntries();
-        List<DelayedIdEntries> delayedIdEntriesChild = releasedIdsChild.getDelayedIdEntries();
         long availableIdCountParent = releasedIdsParent.getAvailableIdCount();
-        long availableIdCountChild = releasedIdsChild.getAvailableIdCount();
+        long availableIdCountChild = releasedIdHolder.getAvailableIdCount();
         if (existingDelayedIdEntriesInParent == null) {
             existingDelayedIdEntriesInParent = new LinkedList<>();
         }
-        idCountToBeFreed = Math.min(idCountToBeFreed, delayedIdEntriesChild.size());
+        idCountToBeFreed = Math.min(idCountToBeFreed, availableIdCountChild);
         for (int index = 0; index < idCountToBeFreed; index++) {
-            existingDelayedIdEntriesInParent.add(delayedIdEntriesChild.get(0));
-            delayedIdEntriesChild.remove(0);
+            Optional<Long> idValueOptional = releasedIdHolder.allocateId();
+            if (!idValueOptional.isPresent()) {
+                break;
+            }
+            long idValue = idValueOptional.get();
+            DelayedIdEntries delayedIdEntries = new DelayedIdEntriesBuilder().setId(idValue).setReadyTimeSec(System.currentTimeMillis() / 1000).build();
+            existingDelayedIdEntriesInParent.add(delayedIdEntries);
         }
-        releasedIdsChild.setDelayedIdEntries(delayedIdEntriesChild).setAvailableIdCount(availableIdCountChild - idCountToBeFreed);
         releasedIdsParent.setDelayedIdEntries(existingDelayedIdEntriesInParent).setAvailableIdCount(availableIdCountParent + idCountToBeFreed);
     }
 
-    protected static InstanceIdentifier<IdEntries> getIdEntriesInstanceIdentifier(String poolName, String idKey) {
+    public static InstanceIdentifier<IdEntries> getIdEntriesInstanceIdentifier(String poolName, String idKey) {
         InstanceIdentifier<IdEntries> idEntries = InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(poolName)).child(IdEntries.class, new IdEntriesKey(idKey)).build();
@@ -248,7 +195,7 @@ class IdUtils {
         return childPools;
     }
 
-    protected static long computeBlockSize(long low, long high) {
+    public static long computeBlockSize(long low, long high) {
         long blockSize;
 
         long diff = high - low;
@@ -301,5 +248,75 @@ class IdUtils {
             LOGGER.error("Unable to unlock for pool {}", poolName);
             throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e.getCause());
         }
-   }
+    }
+
+    public static void submitTransaction(WriteTransaction tx) {
+        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+        try {
+            futures.get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error("Error writing to datastore tx", tx);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public static InstanceIdentifier<IdPools> getIdPools() {
+        InstanceIdentifier.InstanceIdentifierBuilder<IdPools> idPoolsBuilder = InstanceIdentifier
+                .builder(IdPools.class);
+        InstanceIdentifier<IdPools> id = idPoolsBuilder.build();
+        return id;
+    }
+
+
+    public static void syncReleaseIdHolder(ReleasedIdHolder releasedIdHolder, IdPoolBuilder idPool) {
+        long delayTime = releasedIdHolder.getTimeDelaySec();
+        ReleasedIdsHolderBuilder releasedIdsBuilder = new ReleasedIdsHolderBuilder();
+        List<DelayedIdEntries> delayedIdEntriesList = new ArrayList<>();
+        List<DelayedIdEntry> delayList = releasedIdHolder.getDelayedEntries();
+        for (DelayedIdEntry delayedId : delayList) {
+            DelayedIdEntries delayedIdEntry = IdUtils.createDelayedIdEntry((long)delayedId.getId(), delayedId.getReadyTimeSec());
+            delayedIdEntriesList.add(delayedIdEntry);
+        }
+        releasedIdsBuilder.setAvailableIdCount((long)delayedIdEntriesList.size()).setDelayedTimeSec(delayTime).setDelayedIdEntries(delayedIdEntriesList);
+        idPool.setReleasedIdsHolder(releasedIdsBuilder.build());
+    }
+
+    public static void syncAvailableIdHolder(AvailableIdHolder availableIdHolder, IdPoolBuilder idPool) {
+        long cur = availableIdHolder.getCur().get();
+        long low = availableIdHolder.getLow();
+        long high = availableIdHolder.getHigh();
+        AvailableIdsHolder availableIdsHolder = IdUtils.createAvailableIdsHolder(low, high, cur);
+        idPool.setAvailableIdsHolder(availableIdsHolder);
+    }
+
+    public static void updateChildPool(WriteTransaction tx, String poolName, String localPoolName) {
+        ChildPools childPool = IdUtils.createChildPool(localPoolName);
+        InstanceIdentifier<ChildPools> childPoolInstanceIdentifier = IdUtils.getChildPoolsInstanceIdentifier(poolName, localPoolName);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, childPoolInstanceIdentifier, childPool, true);
+    }
+
+    public static void incrementPoolUpdatedMap(String localPoolName) {
+        Integer value = poolUpdatedMap.get(localPoolName);
+        if (value == null) {
+            value = 0;
+        }
+        poolUpdatedMap.put(localPoolName, value + 1);
+    }
+
+    public static void decrementPoolUpdatedMap(String localPoolName) {
+        Integer value = poolUpdatedMap.get(localPoolName);
+        if (value == null) {
+            value = 1;
+        }
+        poolUpdatedMap.put(localPoolName, value - 1);
+    }
+
+    public static boolean getPoolUpdatedMap(String localPoolName) {
+        Integer value = poolUpdatedMap.get(localPoolName);
+        return value!=null && value >= 0 ? true : false;
+    }
+
+    public static void removeFromPoolUpdatedMap(String localPoolName) {
+        poolUpdatedMap.remove(localPoolName);
+    }
 }
