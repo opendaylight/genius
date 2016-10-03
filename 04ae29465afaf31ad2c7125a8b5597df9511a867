@@ -1,0 +1,182 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_021c1277",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "DCLs are being deprecated for DTCL, so would prefer new code to use DTCL. This change is already targeted across Genius for SR1, so adding more code only to be modified soon will not help.",
+      "range": {
+        "startLine": 18,
+        "startChar": 88,
+        "endLine": 18,
+        "endChar": 106
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2215ce48",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepClusteredDataChangeListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "Use CDTCL here.",
+      "range": {
+        "startLine": 17,
+        "startChar": 88,
+        "endLine": 17,
+        "endChar": 107
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c205fa14",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "Why String? Why not use IID or NodeId itself as it will save unnecessary conversions?",
+      "range": {
+        "startLine": 33,
+        "startChar": 4,
+        "endLine": 34,
+        "endChar": 90
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a200be02",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "nitpick: use Disconnected.",
+      "range": {
+        "startLine": 114,
+        "startChar": 80,
+        "endLine": 114,
+        "endChar": 92
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dd05df11",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "Question: what about else case?",
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fd29bb8a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "Are these used just for display in logs or intent is to parse to determine more information about event? I believe it is former in which case it is okay, just wanted to be sure.",
+      "range": {
+        "startLine": 161,
+        "startChar": 52,
+        "endLine": 161,
+        "endChar": 67
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dd2cbf9b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/NodeEvent.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "Same question, why can\u0027t this be NodeId?",
+      "range": {
+        "startLine": 21,
+        "startChar": 11,
+        "endLine": 21,
+        "endChar": 17
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3d20539a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/hwvtep/HwvtepHACacheTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-15T04:53:10Z",
+      "side": 1,
+      "message": "This format is only used for switch initiated connections. Can we have a similar test case for controller initiated connections? Format would be something like \"hwvtep://a.b.c.d:6640\"",
+      "range": {
+        "startLine": 94,
+        "startChar": 29,
+        "endLine": 94,
+        "endChar": 43
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
