@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_14cd74b7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b45480ca",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "all of these 3 fields should be marked as private instead of package local",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5449ac2f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "this constant should be marked as private instead of package local, and should be moved to the top of the class, before the fields, separate by one line of space from fields",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f47c38ee",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "The only method of this class that is actually used in the other classes added in this change is the isHAEnabledDevice().  What are all the other methods proposed in here for, and who is their client?  Should they perhaps all, except isHAEnabledDevice, be private instead of public?",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b4f12097",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "Does such a Node Id value always have to contain a \"uuid/\" somewhere, or do some of them contain this but others do not, and you want to handle both?  Are you handling both?  Or should you throw an exception here if you don\u0027t find the \"uuid/\" ?  Just asking.",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d47f7cde",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "Using StringBuilder here, or even writing a dedicated small Event class instead of using String perhaps, would be preferablle to this inline String concatenation.",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
