@@ -2,6 +2,91 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a6b29fe_94e1842c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAbstractDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f4d3985d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAbstractDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d4d65c4e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAbstractDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_34ca30a1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_140f3489",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "space after comma here please",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_14cd74b7",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
         "patchSetId": 6
@@ -13,6 +98,159 @@
       "writtenOn": "2016-09-14T12:31:42Z",
       "side": 1,
       "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_742948e5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "space after comma here please",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_74c78896",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepAsyncDataChangeListenerBase.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_54c24c85",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepClusteredDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d4181cd5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepClusteredDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "space after comma here please",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_94b86412",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepClusteredDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_340cf093",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepClusteredDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "space after comma here please",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f43a7897",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/hwvtep/HwvtepClusteredDataChangeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "marking this method as \"final\" would make sense here IMHO",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_744e683c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "If I was a commiter on this project (I\u0027m not!) then I would refuse a change that introduces a new utility class like this without seeing a good unit test that illustrates and tests this class (and just this class, alone) as part of the same change.  If you\u0027re interested in writing a test for this class but don\u0027t know how, let me know what you need help with, and I can try to assist.",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_944fc433",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "If this class would not use any static fields (except its constants) and no static methods, it would be better designed IMHO, and lend itself more to testing in the future.  You then need to have a private field for this in every one of the other types, and initialize it in the constructor.  You\u0027d need to keep it as a Singleton in one place.  If this seems like a good idea to you in principle, but you don\u0027t know how to do that in practice, then please don\u0027t hesitate to let me know, and I\u0027ll show what I mean in code instead of words, perhaps best via a parallel gerrit?",
       "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -98,6 +336,23 @@
       "writtenOn": "2016-09-14T12:31:42Z",
       "side": 1,
       "message": "Using StringBuilder here, or even writing a dedicated small Event class instead of using String perhaps, would be preferablle to this inline String concatenation.",
+      "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b44800cd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-14T12:31:42Z",
+      "side": 1,
+      "message": "I wasn\u0027t familiar with the java.util.concurrent.BlockingQueue API yet (thank you for offering me an opportunity to learn about it), but as far as I can tell from reading its JavaDoc, this method seems... wrong, pointless - you offer() that String event to the eventTimeStamps BlockingQueue, which is a class member field, and then you immediately drainTo() your \"list\" - which is a local variable, so you\u0027re... I don\u0027t get what this is actually good for?  So either this is a real and serious bug in this class, or perhaps I\u0027m just stupid - in that case good JavaDoc and a unit test for this class may help (me and others in the future).",
       "revId": "d4acdc3ca078d72944eb26f4a5055e1c35a392ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
