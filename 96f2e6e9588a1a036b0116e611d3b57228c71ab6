@@ -1,0 +1,312 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_dd9b1f16",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/DebugEvent.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "final",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9d8d27d6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "This isn\u0027t really the design I meant... ;-) When I find the time, I\u0027ll try to raise a parallel Gerrit illustrating how to to do proper DI..",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a8d53fe6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T17:05:55Z",
+      "side": 1,
+      "message": "Yeah, for example like the listeners in netvirt\u0027s aclservice-impl. Also see related pending https://git.opendaylight.org/gerrit/#/c/45261/ and https://git.opendaylight.org/gerrit/#/c/45249/.",
+      "parentUuid": "7a6b29fe_5d238fbc",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_28012f6a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T17:07:51Z",
+      "side": 1,
+      "message": "Just to be clear: This particular review feedback is very minor in the overall scheme, my -1 is NOT because of that (but re. the other 20 points I raised earlier; most importantly that missing hashCode and API method signatures); this issue is more if you\u0027re curious, I\u0027ll +1 it even with this left as-is, once you\u0027ve had a chance to address the other points.",
+      "parentUuid": "7a6b29fe_a8d53fe6",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ddc2ffe7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "Collections.emptySet() is better than Collections.EMPTY_SET [I\u0027ll try to propose a new Checkstyle rule for this kind of stuff, when I find a minute]",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9d7b67bd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "see comment below in getNodeEvents() - I would probably just return a Map\u003cString, Boolean\u003e instead here.  Or, probably better actually, an ImmutableMap from Guava.",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bd80e38b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "unless I misunderstand, it appears that you aren\u0027t using this eventTime variable here - remove it?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1d70f7da",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "it\u0027s bad practice to return concrete implementation types such as ArrayList, better return either just List, or even Iterable, or in this case why not a (Guava) ImmutableList.  See https://github.com/google/guava/wiki/ImmutableCollectionsExplained and https://google.github.io/guava/releases/snapshot/api/docs/com/google/common/collect/ImmutableCollection.html",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bda90326",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "as a LinkedBlockingQueue IS-A Collection, you don\u0027t have to do this iteration yourself here; just use:\n\n   return ImmutableList.copyOf(debugEvents);",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1da2b74a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "would it make sense for readability to move these 3 inner classes which extend NodeEvent from here into NodeEvent, for more clarity when reading the NodeEvent class source?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5d870fb5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "NodeDisConnectedEvent \u003d\u003e NodeDisconnectedEvent is better IMHO (no capitalization of DisConn)",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bd92a3f3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "HA instead of ha (upper case) perhaps?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_3d9fb304",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/NodeEvent.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "could (should?) this class perhaps be abstract? It looks like this is just a base class for those other inner clases you\u0027ve defined in HwvtepHACache, right?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7d8c8bda",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/NodeEvent.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "final",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7d05ab44",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/hwvtep/HwvtepHACacheTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "If you don\u0027t need @Before and @After for this test, how about just removing these methods, to code shorter and thus more readable?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_9df6c75b",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/hwvtep/HwvtepHACacheTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "How about creating a simple enum ConnectionStatus { connected, disconnected } just for this method, instead of using a boolean which you have to comment on here?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_5d00af33",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/hwvtep/HwvtepHACacheTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "createInstanceIdentifier \u003d\u003e newNodeInstanceIdentifier ?",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bdfbc345",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/hwvtep/HwvtepHACacheTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "does this code to construct InstanceIdentifier\u003cNode\u003e given a String id perhaps already exist somewhere in the code you\u0027re testing, and you could call that?  (If it\u0027s hidden inside some private method deep in existing code, then refactoring that out into a helper instead of doing the same here could be worthwhile.)",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
