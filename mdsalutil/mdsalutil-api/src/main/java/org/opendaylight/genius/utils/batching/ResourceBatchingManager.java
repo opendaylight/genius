@@ -150,24 +150,25 @@ public class ResourceBatchingManager implements AutoCloseable {
                 DataBroker broker = resHandler.getResourceBroker();
                 LogicalDatastoreType dsType = resHandler.getDatastoreType();
                 WriteTransaction tx = broker.newWriteOnlyTransaction();
+                List<SubTransaction> transactionObjects = new ArrayList<>();
                 for (ActionableResource actResource : actResourceList)
                 {
                     switch (actResource.getAction()) {
                         case ActionableResource.CREATE:
                             identifier = actResource.getInstanceIdentifier();
                             instance = actResource.getInstance();
-                            resHandler.create(tx, dsType, identifier, instance);
+                            resHandler.create(tx, dsType, identifier, instance, transactionObjects);
                             break;
                         case ActionableResource.UPDATE:
                             identifier = actResource.getInstanceIdentifier();
                             Object updated = actResource.getInstance();
                             Object original = actResource.getOldInstance();
-                            resHandler.update(tx, dsType, identifier, original, updated);
+                            resHandler.update(tx, dsType, identifier, original, updated, transactionObjects);
                             break;
                         case ActionableResource.DELETE:
                             identifier = actResource.getInstanceIdentifier();
                             instance = actResource.getInstance();
-                            resHandler.delete(tx, dsType, identifier, instance);
+                            resHandler.delete(tx, dsType, identifier, instance, transactionObjects);
                             break;
                         default:
                             LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}", resourceType,
@@ -187,7 +188,31 @@ public class ResourceBatchingManager implements AutoCloseable {
 
                 } catch (InterruptedException | ExecutionException e)
                 {
-                    LOG.error("Exception occurred while writing to datastore: " + e);
+                    LOG.error("Exception occurred while batch writing to datastore {} ", e);
+                    LOG.info("Trying to submit transaction operations one at a time for resType {}", resourceType);
+                    for (SubTransaction object : transactionObjects) {
+                        WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
+                        switch (object.getAction()) {
+                                case SubTransaction.CREATE :
+                                        writeTransaction.put(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
+                                        break;
+                                case SubTransaction.DELETE :
+                                        writeTransaction.delete(dsType, object.getInstanceIdentifier());
+                                        break;
+                                case SubTransaction.UPDATE :
+                                        writeTransaction.merge(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
+                                        break;
+                                default:
+                                        LOG.error("Unable to determine Action for transaction object with id {}", object.getInstanceIdentifier());
+                                }
+                        CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction.submit();
+                        try {
+                                futureOperation.get();
+                        } catch (InterruptedException | ExecutionException exception) {
+                                LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(), object.getInstanceIdentifier(), object.getInstance());
+                                LOG.error(exception.getMessage());
+                        }
+                    }
                 }
 
             } catch (final Exception e)
