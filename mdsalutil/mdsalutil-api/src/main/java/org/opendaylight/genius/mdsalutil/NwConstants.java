@@ -52,6 +52,7 @@ public final class NwConstants {
     public static final short DHCP_SERVICE_INDEX = 2;
     public static final short IPV6_SERVICE_INDEX = 3;
     public static final short SCF_SERVICE_INDEX = 4;
+    public static final short SFC_SERVICE_INDEX = 4;
     public static final short L3VPN_SERVICE_INDEX = 5;
     public static final short ELAN_SERVICE_INDEX = 6;
     public static final short DEFAULT_EGRESS_SERVICE_INDEX = 7;
@@ -60,6 +61,7 @@ public final class NwConstants {
     public static final String ACL_SERVICE_NAME = "ACL_SERVICE";
     public static final String IPV6_SERVICE_NAME = "IPV6_SERVICE";
     public static final String SCF_SERVICE_NAME = "SCF_SERVICE";
+    public static final String SFC_SERVICE_NAME = "SFC_SERVICE";
     public static final String L3VPN_SERVICE_NAME = "L3VPN_SERVICE";
     public static final String ELAN_SERVICE_NAME = "ELAN_SERVICE";
     public static final String DEFAULT_EGRESS_SERVICE_NAME = "DEFAULT_EGRESS_SERVICE";
@@ -118,6 +120,10 @@ public final class NwConstants {
     public static final short SCF_UP_SUB_FILTER_TCP_BASED_TABLE = 70;
     public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     public static final short SCF_CHAIN_FWD_TABLE = 75;
+    public static final short SFC_TRANSPORT_INGRESS_TABLE = 76;
+    public static final short SFC_TRANSPORT_PATH_MAPPER_TABLE = 77;
+    public static final short SFC_TRANSPORT_NEXT_HOP_TABLE = 78;
+    public static final short SFC_TRANSPORT_EGRESS_TABLE = 79;
     public static final short L3_INTERFACE_TABLE = 80;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 251;
