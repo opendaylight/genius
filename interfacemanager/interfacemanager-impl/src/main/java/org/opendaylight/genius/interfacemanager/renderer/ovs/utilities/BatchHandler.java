@@ -12,15 +12,15 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ResourceHandler;
-import org.opendaylight.genius.utils.batching.SubTransaction;
-import org.opendaylight.genius.utils.batching.SubTransactionImpl;
+//import org.opendaylight.genius.utils.batching.SubTransaction;
+//import org.opendaylight.genius.utils.batching.SubTransactionImpl;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import java.util.List;
 
 public class BatchHandler implements ResourceHandler {
-    public void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update, List<SubTransaction> transactionObjects) {
+    public void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update) {
         if (update != null && !(update instanceof DataObject)) {
             return;
         }
@@ -29,10 +29,11 @@ public class BatchHandler implements ResourceHandler {
         }
         tx.merge(datastoreType, identifier, (DataObject)update, true);
 
-        buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
+        // TODO enable retries
+        //buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
     }
 
-    public void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data, List<SubTransaction> transactionObjects) {
+    public void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data) {
         if (data != null && !(data instanceof DataObject)) {
             return;
         }
@@ -40,11 +41,11 @@ public class BatchHandler implements ResourceHandler {
             return;
         }
         tx.put(datastoreType, identifier, (DataObject)data, true);
-
-        buildSubTransactions(transactionObjects, identifier, data, SubTransaction.CREATE);
+        // TODO enable retries
+        //buildSubTransactions(transactionObjects, identifier, data, SubTransaction.CREATE);
     }
 
-    public void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data, List<SubTransaction> transactionObjects) {
+    public void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data) {
         if (data != null && !(data instanceof DataObject)) {
             return;
         }
@@ -53,7 +54,8 @@ public class BatchHandler implements ResourceHandler {
         }
         tx.delete(datastoreType, identifier);
 
-        buildSubTransactions(transactionObjects, identifier, data, SubTransaction.DELETE);
+        // TODO enable retries
+        //buildSubTransactions(transactionObjects, identifier, data, SubTransaction.DELETE);
     }
 
     public DataBroker getResourceBroker() {
@@ -72,7 +74,8 @@ public class BatchHandler implements ResourceHandler {
         return LogicalDatastoreType.CONFIGURATION;
     }
 
-    private void buildSubTransactions(List<SubTransaction> transactionObjects, InstanceIdentifier identifier,
+    //TODO
+    /*private void buildSubTransactions(List<SubTransaction> transactionObjects, InstanceIdentifier identifier,
                                               Object data, short subTransactionType) {
         // enable retries
         SubTransaction subTransaction = new SubTransactionImpl();
@@ -80,5 +83,5 @@ public class BatchHandler implements ResourceHandler {
         subTransaction.setInstance(data);
         subTransaction.setAction(subTransactionType);
         transactionObjects.add(subTransaction);
-    }
+    }*/
 }
