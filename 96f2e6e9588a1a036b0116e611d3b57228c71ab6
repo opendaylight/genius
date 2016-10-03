@@ -242,6 +242,23 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fd989b1d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/NodeEvent.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "NEVER implement equals() without also correctly implementing a matching hashCode() - it\u0027s the cardinal sin of Java... ;-)",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_7d05ab44",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/hwvtep/HwvtepHACacheTest.java",
         "patchSetId": 11
