@@ -94,6 +94,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fdbffb5e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-09-15T12:00:15Z",
+      "side": 1,
+      "message": "I\u0027d have to side with Vishal on this - NodeDisconnectedEvent reads more natural to me too than NodeDisConnectedEvent (too many hump in the camel\u0027s back, if you know what I mean?)",
+      "parentUuid": "7a6b29fe_9d452745",
+      "range": {
+        "startLine": 114,
+        "startChar": 80,
+        "endLine": 114,
+        "endChar": 92
+      },
+      "revId": "04ae29465afaf31ad2c7125a8b5597df9511a867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_dd05df11",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
         "patchSetId": 9
