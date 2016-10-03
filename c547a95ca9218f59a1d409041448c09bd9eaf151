@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Sam Hague <shague@redhat.com>
+Submitted-by: Sam Hague <shague@redhat.com>
+Submitted-at: Mon, 03 Oct 2016 17:05:04 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/46393
+Project: genius
+Branch: refs/heads/stable/boron
