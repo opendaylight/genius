@@ -16,6 +16,24 @@
       "revId": "1866edc373b33bac75edd998a20f129717add29c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_0a334bf7",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface-rpc.yang",
+        "patchSetId": 11
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 6550
+      },
+      "writtenOn": "2016-10-04T11:22:16Z",
+      "side": 1,
+      "message": "Added description.\n\nChanges is as part of review comment on netvirt ARP changes, Currently we see where ever there is call for EgressAction, there is custom processing of Result to add Action key, in most cases EgressAction would be appended to an existing set of actions. Hence the requirement",
+      "parentUuid": "7a6b29fe_1f08af90",
+      "revId": "1866edc373b33bac75edd998a20f129717add29c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
