@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_1fcb8f1f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T10:51:04Z",
+      "side": 1,
+      "message": "use if (interfaceNameEntries !\u003d null \u0026\u0026 !interfaceNameEntries.isEmpty())",
+      "revId": "dd3447548b703f8e1aadc5cedacb7174ee9fdbc0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
