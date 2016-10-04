@@ -41,7 +41,7 @@ import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyState
 import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
 import org.opendaylight.genius.interfacemanager.pmcounters.NodeConnectorStatsImpl;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchHandler;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.InterfaceBatchHandler;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
@@ -165,7 +165,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             createIdPool();
 
             IfmClusterUtils.registerEntityForOwnership(this, entityOwnershipService);
-            BatchingUtils.registerWithBatchManager(new BatchHandler(), this.dataBroker);
+            BatchingUtils.registerWithBatchManager(new InterfaceBatchHandler(), this.dataBroker);
             alivenessManager = rpcProviderRegistry.getRpcService(AlivenessMonitorService.class);
             interfaceManagerRpcService = new InterfaceManagerRpcService(dataBroker, mdsalManager);
             rpcRegistration = getRpcProviderRegistry().addRpcImplementation(
