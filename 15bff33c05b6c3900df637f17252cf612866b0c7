@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a6b29fe_39494b8f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T06:15:33Z",
+      "side": 1,
+      "message": "can you make IfmUtil.getDpnFromNodeConnectorId(...) method itself to return BigInteger as return type ?",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7943c36c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 540,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T06:15:33Z",
+      "side": 1,
+      "message": "you can use interfaceNameEntries.isEmpty()",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_e02d5990",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
         "patchSetId": 2
@@ -31,6 +65,57 @@
       "side": 1,
       "message": "Hi Faseela ,\nIntellij tool itself is replacing all the class imports from \"rpcs.rev160406\" with \"rpc.rev160406.*\" because in this file we are using all the classes.",
       "parentUuid": "7a6b29fe_e02d5990",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_39178b56",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T06:15:33Z",
+      "side": 1,
+      "message": "it shouldn\u0027t be initialized with null. line no 405 will throw NPE.",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f92d13aa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T06:15:33Z",
+      "side": 1,
+      "message": "can you use java8 stream and filter to covert List\u003cInterfaceNameEntry\u003e into List\u003cString\u003e to make it faster ?",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7911035d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T06:15:33Z",
+      "side": 1,
+      "message": "what if interfaceNameEntries is null ?",
       "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
