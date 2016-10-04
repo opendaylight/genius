@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_9ffddf3e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T10:51:04Z",
+      "side": 1,
+      "message": "Can you also make this change ? I see whoever invoking  IfmUtil.getDpnFromNodeConnectorId(...) has additional logic to convert string into BigInteger. So let us do it in getDpnFromNodeConnectorId method itself.",
+      "parentUuid": "7a6b29fe_39494b8f",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_7943c36c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 2
@@ -48,6 +66,24 @@
       "side": 1,
       "message": "Hi Peri , i will delete the DpnToInterface (parent) only when last interface is removed. In line532 , interfaceNameEntries will have 1 interface and then below i delete that interface from DS. So when i check the size at line540 , it will be equal to 1 . Hence i can\u0027t use interfaceNameEntries.isEmpty()",
       "parentUuid": "7a6b29fe_7943c36c",
+      "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fffa1342",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 540,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-04T10:51:04Z",
+      "side": 1,
+      "message": "Ok. got it.",
+      "parentUuid": "7a6b29fe_3f2acbe7",
       "revId": "15bff33c05b6c3900df637f17252cf612866b0c7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
