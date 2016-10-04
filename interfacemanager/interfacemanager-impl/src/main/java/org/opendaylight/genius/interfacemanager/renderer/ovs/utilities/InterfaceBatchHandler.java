@@ -29,8 +29,7 @@ public class InterfaceBatchHandler implements ResourceHandler {
         }
         tx.merge(datastoreType, identifier, (DataObject)update, true);
 
-        // TODO enable retries
-        //buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
+        buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
     }
 
     public void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data,List<SubTransaction> transactionObjects) {
@@ -41,8 +40,8 @@ public class InterfaceBatchHandler implements ResourceHandler {
             return;
         }
         tx.put(datastoreType, identifier, (DataObject)data, true);
-        // TODO enable retries
-        //buildSubTransactions(transactionObjects, identifier, data, SubTransaction.CREATE);
+
+        buildSubTransactions(transactionObjects, identifier, data, SubTransaction.CREATE);
     }
 
     public void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object data,List<SubTransaction> transactionObjects) {
@@ -54,8 +53,7 @@ public class InterfaceBatchHandler implements ResourceHandler {
         }
         tx.delete(datastoreType, identifier);
 
-        // TODO enable retries
-        //buildSubTransactions(transactionObjects, identifier, data, SubTransaction.DELETE);
+        buildSubTransactions(transactionObjects, identifier, data, SubTransaction.DELETE);
     }
 
     public DataBroker getResourceBroker() {
@@ -74,8 +72,7 @@ public class InterfaceBatchHandler implements ResourceHandler {
         return LogicalDatastoreType.CONFIGURATION;
     }
 
-    //TODO
-    /*private void buildSubTransactions(List<SubTransaction> transactionObjects, InstanceIdentifier identifier,
+    private void buildSubTransactions(List<SubTransaction> transactionObjects, InstanceIdentifier identifier,
                                               Object data, short subTransactionType) {
         // enable retries
         SubTransaction subTransaction = new SubTransactionImpl();
@@ -83,5 +80,5 @@ public class InterfaceBatchHandler implements ResourceHandler {
         subTransaction.setInstance(data);
         subTransaction.setAction(subTransactionType);
         transactionObjects.add(subTransaction);
-    }*/
+    }
 }
