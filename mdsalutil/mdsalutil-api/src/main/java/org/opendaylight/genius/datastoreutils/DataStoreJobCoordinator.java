@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -29,10 +28,10 @@ public class DataStoreJobCoordinator {
 
     private static final int THREADPOOL_SIZE = Runtime.getRuntime().availableProcessors();
 
-    private ForkJoinPool fjPool;
-    private Map<Integer,Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
-    private ReentrantLock reentrantLock = new ReentrantLock();
-    private Condition waitCondition = reentrantLock.newCondition();
+    private final ForkJoinPool fjPool;
+    private final Map<Integer,Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
+    private final ReentrantLock reentrantLock = new ReentrantLock();
+    private final Condition waitCondition = reentrantLock.newCondition();
 
     private static DataStoreJobCoordinator instance;
 
@@ -51,7 +50,7 @@ public class DataStoreJobCoordinator {
         fjPool = new ForkJoinPool();
 
         for (int i = 0; i < THREADPOOL_SIZE; i++) {
-            Map<String, JobQueue> jobEntriesMap = new ConcurrentHashMap<String, JobQueue>();
+            Map<String, JobQueue> jobEntriesMap = new ConcurrentHashMap<>();
             jobQueueMap.put(i, jobEntriesMap);
         }
 
@@ -73,6 +72,11 @@ public class DataStoreJobCoordinator {
             Callable<List<ListenableFuture<Void>>> mainWorker,
             int maxRetries) {
         enqueueJob(key, mainWorker, null, maxRetries);
+    }
+
+    public void enqueueJob(AbstractDataStoreJob job) throws InvalidJobException {
+        job.validate();
+        enqueueJob(job.getJobQueueKey(), job);
     }
 
     /**
@@ -146,7 +150,7 @@ public class DataStoreJobCoordinator {
      * main and rollback workers to handle success and failure.
      */
     private class JobCallback implements FutureCallback<List<Void>> {
-        private JobEntry jobEntry;
+        private final JobEntry jobEntry;
 
         public JobCallback(JobEntry jobEntry) {
             this.jobEntry = jobEntry;
@@ -204,7 +208,7 @@ public class DataStoreJobCoordinator {
      */
 
     private class RollbackTask implements Runnable {
-        private JobEntry jobEntry;
+        private final JobEntry jobEntry;
 
         public RollbackTask(JobEntry jobEntry) {
             this.jobEntry = jobEntry;
@@ -239,7 +243,7 @@ public class DataStoreJobCoordinator {
      */
 
     private class MainTask implements Runnable {
-        private JobEntry jobEntry;
+        private final JobEntry jobEntry;
 
         public MainTask(JobEntry jobEntry) {
             this.jobEntry = jobEntry;
