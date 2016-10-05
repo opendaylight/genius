@@ -311,7 +311,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         BigInteger dpId = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_DPID;
         Integer portNo = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_PORT_NO;
         if (ncId != null) {
-            dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(ncId));
+            dpId = IfmUtil.getDpnFromNodeConnectorId(ncId);
             portNo = Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId));
         }
         if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
@@ -367,7 +367,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         Integer lportTag = ifState.getIfIndex();
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
-            interfaceInfo.setDpId(new BigInteger(IfmUtil.getDpnFromNodeConnectorId(ncId)));
+            interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
         InterfaceInfo.InterfaceOpState opState ;
@@ -410,7 +410,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
             interfaceInfo.setPortName(IfmUtil.getPortName(dataBroker, ncId));
-            interfaceInfo.setDpId(new BigInteger(IfmUtil.getDpnFromNodeConnectorId(ncId)));
+            interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
         InterfaceInfo.InterfaceOpState opState ;

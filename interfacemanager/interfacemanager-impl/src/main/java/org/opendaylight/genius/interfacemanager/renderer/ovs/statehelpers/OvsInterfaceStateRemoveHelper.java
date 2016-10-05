@@ -46,7 +46,7 @@ public class OvsInterfaceStateRemoveHelper {
         NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ?
                 nodeConnectorIdOld : nodeConnectorIdNew;
         // delete the port entry from interface operational DS
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
         //VM Migration: Update the interface state to unknown only if remove event received for same switch
         if(!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)){
@@ -75,6 +75,9 @@ public class OvsInterfaceStateRemoveHelper {
                 FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
                 FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
             }
+
+            // Delete the Vpn Interface from DpnToInterface Op DS.
+            InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName, defaultOperationalShardTransaction);
         }
         futures.add(defaultOperationalShardTransaction.submit());
         return futures;

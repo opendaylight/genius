@@ -106,7 +106,7 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         if(nodeConnectorId == null){
             return futures;
         }
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         Collections.sort(allServices, new Comparator<BoundServices>() {
             @Override
             public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {

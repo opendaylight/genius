@@ -42,11 +42,18 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
@@ -328,13 +335,16 @@ public class InterfaceManagerCommonUtils {
         interfaceOperShardTransaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
 
         // install ingress flow
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
         if (interfaceInfo != null && interfaceInfo.isEnabled() && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
             FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, dataBroker, ifIndex);
             FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
         }
+
+        // Update the DpnToInterfaceList OpDS
+        createOrUpdateDpnToInterface(dpId, interfaceName,interfaceOperShardTransaction);
     }
 
     public static boolean checkIfBfdStateIsDown(String interfaceName){
@@ -344,7 +354,7 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
-            Interface interfaceInfo, String interfaceName, WriteTransaction transaction, IdManagerService idManager,
+            DataBroker dataBroker, Interface interfaceInfo, String interfaceName, WriteTransaction transaction, IdManagerService idManager,
             PhysAddress physAddress,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus,
@@ -374,6 +384,10 @@ public class InterfaceManagerCommonUtils {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
                 .build();
         transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
+
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        // Update the DpnToInterfaceList OpDS
+        createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
         return ifState;
     }
 
@@ -491,6 +505,41 @@ public class InterfaceManagerCommonUtils {
 
         Matcher matcher = pattern.matcher(portName);
         return matcher.matches();
+    }
+
+
+    public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName, WriteTransaction transaction) {
+        DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
+        InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
+        InstanceIdentifier<InterfaceNameEntry> intfid = InstanceIdentifier.builder(DpnToInterfaceList.class)
+                                                        .child(DpnToInterface.class, dpnToInterfaceKey)
+                                                        .child(InterfaceNameEntry.class, interfaceNameEntryKey)
+                                                        .build();
+        InterfaceNameEntryBuilder entryBuilder = new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
+        transaction.put(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build(), true);
+    }
+
+    public static void deleteDpnToInterface(DataBroker dataBroker, BigInteger dpId, String infName, WriteTransaction transaction) {
+        DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
+        InstanceIdentifier<DpnToInterface> dpnToInterfaceId = InstanceIdentifier.builder(DpnToInterfaceList.class)
+                .child(DpnToInterface.class, dpnToInterfaceKey).build();
+        Optional<DpnToInterface> dpnToInterfaceOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId, dataBroker);
+        if (!dpnToInterfaceOptional.isPresent()) {
+            LOG.debug("DPN {} is already removed from the Operational DS", dpId);
+            return;
+        }
+
+        List<InterfaceNameEntry> interfaceNameEntries = dpnToInterfaceOptional.get().getInterfaceNameEntry();
+        InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
+        InstanceIdentifier<InterfaceNameEntry> intfid = InstanceIdentifier.builder(DpnToInterfaceList.class)
+                .child(DpnToInterface.class, dpnToInterfaceKey)
+                .child(InterfaceNameEntry.class, interfaceNameEntryKey)
+                .build();
+        transaction.delete(LogicalDatastoreType.OPERATIONAL, intfid);
+
+        if (interfaceNameEntries.size() <=1) {
+            transaction.delete(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId);
+        }
     }
 
 }

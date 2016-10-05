@@ -106,7 +106,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         }
         BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
 
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, t);
 
         for (BoundServices boundService : allServices) {
@@ -129,7 +129,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         if(nodeConnectorId == null){
             return futures;
         }
-        BigInteger dpId = new BigInteger(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         Collections.sort(allServices, new Comparator<BoundServices>() {
             @Override
             public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {
