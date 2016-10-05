@@ -13,8 +13,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class InstructionInfo extends AbstractActionInfoList implements Serializable {
 
@@ -92,7 +92,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
         // Arrays.equals(). deepEquals() would have to be used for nested
         // arrays. Use == only for primitive types; if ever changing
         // those field types, must change to Objects.equals.
-        return MoreObjects2.equalsHelper(this, obj,
+        return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.m_instructionType, other.m_instructionType)
                           && Arrays.equals(self.m_alInstructionValues, other.m_alInstructionValues)
                           && Arrays.equals(self.m_alBigInstructionValues, other.m_alBigInstructionValues)

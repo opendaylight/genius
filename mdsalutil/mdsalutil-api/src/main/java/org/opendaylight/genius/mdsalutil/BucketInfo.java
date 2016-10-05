@@ -11,8 +11,7 @@ import com.google.common.base.MoreObjects;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import org.opendaylight.genius.utils.MoreObjects2;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class BucketInfo extends AbstractActionInfoList implements Serializable {
 
@@ -70,7 +69,7 @@ public class BucketInfo extends AbstractActionInfoList implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return MoreObjects2.equalsHelper(this, obj,
+        return EvenMoreObjects.equalsHelper(this, obj,
                 (self, other) -> Objects.equals(self.getActionInfos(), other.getActionInfos())
                               && Objects.equals(self.weight, other.weight)
                               && Objects.equals(self.watchPort, other.watchPort)
