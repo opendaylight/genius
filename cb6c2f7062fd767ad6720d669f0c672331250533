@@ -16,6 +16,24 @@
       "revId": "cb6c2f7062fd767ad6720d669f0c672331250533",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d31e2b0d",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface-rpc.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 6550
+      },
+      "writtenOn": "2016-10-05T11:44:33Z",
+      "side": 1,
+      "message": "The inital value is action-key and not ++action-key in interface-mgr",
+      "parentUuid": "7a6b29fe_73ce37b6",
+      "revId": "cb6c2f7062fd767ad6720d669f0c672331250533",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
