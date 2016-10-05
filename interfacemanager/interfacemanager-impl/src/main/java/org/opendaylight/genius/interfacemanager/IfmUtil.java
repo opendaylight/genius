@@ -231,7 +231,7 @@ public class IfmUtil {
         List<Instruction> instructions = new ArrayList<>();
         List<Action> actionList = MDSALUtil.buildActions(getEgressActionInfosForInterface(
                 interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress));
-        instructions.add(MDSALUtil.buildWriteActionsInstruction(actionList));
+        instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
         return  instructions;
     }
 
