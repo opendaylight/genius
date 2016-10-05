@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_73ce37b6",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface-rpc.yang",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-05T11:12:08Z",
+      "side": 1,
+      "message": "For the custom scenario, I think initial value is started from ++action-key. So change the description accordingly.",
+      "revId": "cb6c2f7062fd767ad6720d669f0c672331250533",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
