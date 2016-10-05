@@ -120,11 +120,12 @@ public final class NwConstants {
     public static final short SCF_UP_SUB_FILTER_TCP_BASED_TABLE = 70;
     public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     public static final short SCF_CHAIN_FWD_TABLE = 75;
-    public static final short SFC_TRANSPORT_INGRESS_TABLE = 76;
-    public static final short SFC_TRANSPORT_PATH_MAPPER_TABLE = 77;
-    public static final short SFC_TRANSPORT_NEXT_HOP_TABLE = 78;
-    public static final short SFC_TRANSPORT_EGRESS_TABLE = 79;
     public static final short L3_INTERFACE_TABLE = 80;
+    public static final short SFC_TRANSPORT_INGRESS_TABLE = 81;
+    public static final short SFC_TRANSPORT_PATH_MAPPER_TABLE = 82;
+    public static final short SFC_TRANSPORT_PATH_MAPPER_ACL_TABLE = 85;
+    public static final short SFC_TRANSPORT_NEXT_HOP_TABLE = 84;
+    public static final short SFC_TRANSPORT_EGRESS_TABLE = 85;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 251;
     public static final short EGRESS_ACL_FILTER_TABLE = 252;
