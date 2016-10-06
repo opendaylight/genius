@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_62b5bbcf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-10-06T10:51:56Z",
+      "side": 1,
+      "message": "we are having multiple if condition before invoking itm creation.\nwith proper code refactoring we can reduce it to single if condition is what i meant.",
+      "parentUuid": "7a6b29fe_62b93bec",
+      "revId": "9f69c3c1cd7ad98dd7fb41b0da680ee030a33b07",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_c2e2cf00",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 14
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_a2afd37c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-10-06T10:51:56Z",
+      "side": 1,
+      "message": "yes.. changed.",
+      "parentUuid": "7a6b29fe_c2e2cf00",
+      "revId": "9f69c3c1cd7ad98dd7fb41b0da680ee030a33b07",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_02ede7ef",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 14
@@ -47,6 +83,24 @@
       "writtenOn": "2016-10-06T10:31:47Z",
       "side": 1,
       "message": "what is this trace log for?",
+      "revId": "9f69c3c1cd7ad98dd7fb41b0da680ee030a33b07",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c2c5af3e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-10-06T10:51:56Z",
+      "side": 1,
+      "message": "deleted",
+      "parentUuid": "7a6b29fe_02ede7ef",
       "revId": "9f69c3c1cd7ad98dd7fb41b0da680ee030a33b07",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
