@@ -74,7 +74,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             LOG.trace("packet: {}, tableId {}, arpType {}", packetReceived, tableId, arpType);
         }
 
-        if (tableId == NwConstants.L3_INTERFACE_TABLE) {
+        if (tableId == NwConstants.L3_INTERFACE_TABLE || tableId == NwConstants.L3_GW_MAC_TABLE) {
             if (arpType == ARP.REPLY) {
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("packet: {}, monitorKey {}", packetReceived);
