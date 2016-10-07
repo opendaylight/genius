@@ -47,6 +47,10 @@ import java.util.List;
 public class ItmExternalTunnelAddWorker {
     private static final Logger logger = LoggerFactory.getLogger(ItmExternalTunnelAddWorker.class);
 
+    private static Boolean monitorEnabled;
+    private static Integer monitorInterval;
+    private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+
     private static final FutureCallback<Void> DEFAULT_CALLBACK =
             new FutureCallback<Void>() {
                 public void onSuccess(Void result) {
@@ -108,6 +112,9 @@ public class ItmExternalTunnelAddWorker {
     public static List<ListenableFuture<Void>> buildHwVtepsTunnels(DataBroker dataBroker, IdManagerService idManagerService, List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdHwVteps) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
+        monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
+        monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         if (null != cfgdDpnList && !cfgdDpnList.isEmpty()) {
             logger.trace("calling tunnels from css {}",cfgdDpnList);
             tunnelsFromCSS(cfgdDpnList, idManagerService , futures, t , dataBroker);
@@ -124,7 +131,7 @@ public class ItmExternalTunnelAddWorker {
     }
 
     private static void tunnelsFromCSS(List<DPNTEPsInfo> cfgdDpnList, IdManagerService idManagerService, List<ListenableFuture<Void>> futures, WriteTransaction t, DataBroker dataBroker) {
-        Boolean monitorEnabled = ItmUtils.readMonitoringStateFromDS(dataBroker);
+        Boolean monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         for (DPNTEPsInfo dpn : cfgdDpnList) {
             logger.trace("processing dpn {}" , dpn);
@@ -146,12 +153,12 @@ public class ItmExternalTunnelAddWorker {
                                         String nodeId = hwVtepDS.getNodeId();
                                         logger.trace("wire up {} and {}",tep, hwVtepDS);
                                         if (!wireUp(dpn.getDPNID(), tep.getPortname(), sub.getVlanId(), tep.getIpAddress(), nodeId, hwVtepDS.getIpAddress(), tep.getSubnetMask(),
-                                                sub.getGatewayIp(), sub.getPrefix(), tZone.getTunnelType(),monitorEnabled, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL, idManagerService, dataBroker, futures, t))
+                                                sub.getGatewayIp(), sub.getPrefix(), tZone.getTunnelType(),false, monitorProtocol, monitorInterval, idManagerService, dataBroker, futures, t))
                                             logger.error("Unable to build tunnel {} -- {}", tep.getIpAddress(), hwVtepDS.getIpAddress());
                                         //TOR-CSS
                                         logger.trace("wire up {} and {}", hwVtepDS,tep);
                                         if (!wireUp(hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(), cssID, tep.getIpAddress(), sub.getPrefix(),
-                                                sub.getGatewayIp(), tep.getSubnetMask(), tZone.getTunnelType(), monitorEnabled, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL, idManagerService, dataBroker, futures, t))
+                                                sub.getGatewayIp(), tep.getSubnetMask(), tZone.getTunnelType(), false, monitorProtocol, monitorInterval, idManagerService, dataBroker, futures, t))
                                             logger.error("Unable to build tunnel {} -- {}", hwVtepDS.getIpAddress(), tep.getIpAddress());
 
                                     }
@@ -168,7 +175,7 @@ public class ItmExternalTunnelAddWorker {
             InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class, new TransportZoneKey((hwTep.getTransportZone()))).build();
             Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
             Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-            Boolean monitorEnabled = ItmUtils.readMonitoringStateFromDS(dataBroker);
+            Boolean monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
             Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
             if (tZoneOptional.isPresent()) {
                 TransportZone tZone = tZoneOptional.get();
@@ -181,13 +188,13 @@ public class ItmExternalTunnelAddWorker {
                                     continue;//dont mesh with self
                                 logger.trace("wire up {} and {}",hwTep, hwVtepDS);
                                 if (!wireUp(hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
-                                        hwTep.getIpPrefix(), hwTep.getGatewayIP(), sub.getPrefix(), tunType,monitorEnabled,monitorProtocol,
-                                        ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL, idManagerService, dataBroker, futures, t))
+                                        hwTep.getIpPrefix(), hwTep.getGatewayIP(), sub.getPrefix(), tunType,false,monitorProtocol,
+                                                monitorInterval, idManagerService, dataBroker, futures, t))
                                     logger.error("Unable to build tunnel {} -- {}", hwTep.getHwIp(), hwVtepDS.getIpAddress());
                                 //TOR2-TOR1
                                 logger.trace("wire up {} and {}", hwVtepDS,hwTep);
                                 if (!wireUp(hwTep.getTopo_id(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(), hwTep.getNode_id(), hwTep.getHwIp(),
-                                        sub.getPrefix(), sub.getGatewayIp(), hwTep.getIpPrefix(), tunType, monitorEnabled,monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL, idManagerService, dataBroker, futures, t))
+                                        sub.getPrefix(), sub.getGatewayIp(), hwTep.getIpPrefix(), tunType, false,monitorProtocol, monitorInterval, idManagerService, dataBroker, futures, t))
                                     logger.error("Unable to build tunnel {} -- {}", hwVtepDS.getIpAddress(), hwTep.getHwIp());
                             }
                         }
@@ -199,14 +206,13 @@ public class ItmExternalTunnelAddWorker {
                                 String cssID = vtep.getDpnId().toString();
                                 logger.trace("wire up {} and {}",hwTep, vtep);
                                 if(!wireUp(hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(), cssID, vtep.getIpAddress(), hwTep.getIpPrefix(),
-                                        hwTep.getGatewayIP(), sub.getPrefix(), tunType,monitorEnabled, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL, idManagerService, dataBroker, futures, t ))
+                                        hwTep.getGatewayIP(), sub.getPrefix(), tunType,false, monitorProtocol, monitorInterval, idManagerService, dataBroker, futures, t ))
                                     logger.error("Unable to build tunnel {} -- {}", hwTep.getHwIp(), vtep.getIpAddress());
                                 //CSS-TOR
                                 logger.trace("wire up {} and {}", vtep,hwTep);
                                 if(!wireUp(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId(), vtep.getIpAddress(),
-                                        hwTep.getNode_id(),hwTep.getHwIp(),sub.getPrefix(), sub.getGatewayIp(),hwTep.getIpPrefix(),
-                                        tunType,monitorEnabled,monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL,idManagerService, dataBroker, futures, t ));
-
+                                                hwTep.getNode_id(),hwTep.getHwIp(),sub.getPrefix(), sub.getGatewayIp(),hwTep.getIpPrefix(),
+                                                tunType,false,monitorProtocol, monitorInterval,idManagerService, dataBroker, futures, t ));
                             }
 
                         }

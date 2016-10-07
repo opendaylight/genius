@@ -67,12 +67,7 @@
             </action>
         </command>
         <command>
-            <action class="org.opendaylight.genius.itm.cli.AddExternalEndpoint">
-                <property name="itmProvider" ref="itmProviderRef" />
-            </action>
-        </command>
-        <command>
-            <action class="org.opendaylight.genius.itm.cli.RemoveExternalEndpoint">
+            <action class="org.opendaylight.genius.itm.cli.DSShowCache">
                 <property name="itmProvider" ref="itmProviderRef" />
             </action>
         </command>

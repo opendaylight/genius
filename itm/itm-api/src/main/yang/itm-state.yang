@@ -173,22 +173,27 @@ module itm-state {
                   }
               }
 
-            container tunnels_state {
-              list state-tunnel-list {
-                  key  "tunnel-interface-name";
+        typedef tunnel-oper-status {
+            type enumeration {
+                 enum up;
+                 enum down;
+                 enum unknown;
+                 enum ignore;
+             }
+        }
+
+      container tunnels_state {
+        list state-tunnel-list {
+            key  "tunnel-interface-name";
 
                   leaf tunnel-interface-name {
                       type string;
                   }
 
-                  leaf tunnel-state {
-                      type boolean;
-                      config false;
-                  }
-
-                  container src-info {
-                      uses tep-info-attributes;
-                  }
+            leaf oper-state { type tunnel-oper-status; }
+            container src-info {
+                uses tep-info-attributes;
+            }
 
                   container dst-info {
                       uses tep-info-attributes;
