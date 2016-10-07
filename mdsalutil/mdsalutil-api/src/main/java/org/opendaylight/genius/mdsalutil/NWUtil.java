@@ -8,6 +8,7 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import com.google.common.base.Optional;
+import com.google.common.net.InetAddresses;
 import com.google.common.primitives.UnsignedBytes;
 
 public class NWUtil {
@@ -31,6 +33,22 @@ public class NWUtil {
                 + ((ipAddressRaw[2] & 0xFF) << (1 * 8))
                 + (ipAddressRaw[3] & 0xFF))
                 & 0xffffffffL;
+    }
+    /**
+    * Converts IPv4 Address in long to String.
+    * {@link #longToIpv4(long, long)} fixes the issue of {@link MDSALUtil#longToIp(long, long)} not handling IP address greater than byte
+    * @param ipAddress IP Address to be converted to String
+    * @param mask Network mask to be appended
+    * @return IP Address converted to String
+    */
+    public static String longToIpv4(final long ipAddress, final long mask){
+        final StringBuilder builder = new StringBuilder(20);
+        final Inet4Address address = InetAddresses.fromInteger((int)ipAddress);
+        builder.append(address.toString());
+        if (mask !=0) {
+           builder.append("/").append(mask);
+        }
+        return builder.toString();
     }
 
     public static byte[] parseIpAddress(String ipAddress) {
