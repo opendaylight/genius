@@ -10,12 +10,15 @@ package org.opendaylight.genius.itm.cli;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SubnetObject {
     private IpAddress _gatewayIp;
     private SubnetsKey _key;
     private IpPrefix _prefix;
     private java.lang.Integer _vlanId;
+    private static final Logger LOG = LoggerFactory.getLogger(SubnetObject.class);
 
     public SubnetObject(IpAddress gWIP, SubnetsKey key, IpPrefix mask, Integer vlanId) {
         _gatewayIp = gWIP;
@@ -26,7 +29,7 @@ public class SubnetObject {
                 checkVlanIdRange(vlanId);
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid VlanID. expected: 0 to 4095");
+            LOG.error("Invalid VlanID. expected: 0 to 4095");
         }
         _vlanId = vlanId;
     }

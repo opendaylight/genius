@@ -45,11 +45,11 @@ public class TepDelete extends OsgiCommandSupport {
 
         if (dpnId == null || portName == null || vlanId == null || ipAddress == null || subnetMask == null
                         || transportZone == null) {
-            System.out.println("Insufficient Arguments");
-            System.out.println("Correct Usage : exec tep-delete dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
+            session.getConsole().println("Insufficient Arguments");
+            session.getConsole().println("Correct Usage : exec tep-delete dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
             return null;
         }
-        itmProvider.deleteVtep(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);        
+        itmProvider.deleteVtep(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
         logger.trace("Executing delete TEP command");
 
         return null;

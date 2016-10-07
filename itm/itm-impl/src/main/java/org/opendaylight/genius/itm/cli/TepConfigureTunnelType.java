@@ -42,8 +42,7 @@ public class TepConfigureTunnelType extends OsgiCommandSupport {
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            LOG.error("Exception occurred during execution of command \"tep:configure-tunnelType\": ", e);
+            throw e;
         }
         return null;
     }

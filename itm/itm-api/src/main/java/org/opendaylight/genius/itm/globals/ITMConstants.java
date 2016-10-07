@@ -31,7 +31,15 @@ public class ITMConstants{
   public static final String TUNNEL_TYPE_MPLSoGRE = "MPLS_OVER_GRE";
   public static final String TUNNEL_TYPE_INVALID = "Invalid";
   public static final String MONITOR_TYPE_LLDP = "LLDP";
+  public static final String MONITOR_TYPE_BFD = "BFD";
+  public static final String DEFAULT_TRANSPORT_ZONE  = "default-transport-zone";
   public static final Class<? extends TunnelMonitoringTypeBase> DEFAULT_MONITOR_PROTOCOL =  TunnelMonitoringTypeBfd.class;
+  public static final String ITM_MONIRORING_PARAMS_CACHE_NAME = "ItmMonitoringParamsCache";
+  public static final String TUNNEL_STATE_CACHE_NAME = "ItmTunnelStateCache";
+    public static final String DPN_TEPs_Info_CACHE_NAME = "ItmDpnTepsInfoCache" ;
+  public static final String TUNNEL_STATE_UP = "UP";
+  public static final String TUNNEL_STATE_DOWN = "DOWN";
+  public static final String TUNNEL_STATE_UNKNOWN = "UNKNOWN";
 }
 
 

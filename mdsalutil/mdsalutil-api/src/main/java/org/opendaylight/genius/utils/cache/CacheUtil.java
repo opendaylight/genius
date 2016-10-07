@@ -23,6 +23,10 @@ public class CacheUtil {
             m_mapCache.put(sCacheName, new ConcurrentHashMap<Object, Object>());
     }
 
+    public static boolean isCacheValid( String cacheName ) {
+        return m_mapCache.containsKey(cacheName) ;
+    }
+
     public static void destroyCache(String sCacheName) {
         m_mapCache.remove(sCacheName);
     }
