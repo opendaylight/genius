@@ -22,7 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.liblldp.Packet;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
@@ -41,21 +44,26 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.in
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerARP.class);
-    private OdlArputilService arpService;
+    private final OdlArputilService arpService;
+    private final OdlInterfaceRpcService interfaceManager;
 
-    public AlivenessProtocolHandlerARP(ServiceProvider serviceProvider) {
-        super(serviceProvider);
-    }
-
-    void setArpManagerService(OdlArputilService arpService) {
+    @Inject
+    public AlivenessProtocolHandlerARP(final DataBroker dataBroker,
+                                       final OdlInterfaceRpcService interfaceManager,
+                                       final AlivenessMonitor alivenessMonitor,
+                                       final OdlArputilService arpService) {
+        super(dataBroker, interfaceManager, alivenessMonitor, EtherTypes.Arp);
+        this.interfaceManager = interfaceManager;
         this.arpService = arpService;
     }
 
@@ -86,7 +94,8 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
 
                 try {
                     GetInterfaceFromIfIndexInput input = new GetInterfaceFromIfIndexInputBuilder().setIfIndex(portTag).build();
-                    Future<RpcResult<GetInterfaceFromIfIndexOutput>> output = serviceProvider.getInterfaceManager().getInterfaceFromIfIndex(input);
+                    Future<RpcResult<GetInterfaceFromIfIndexOutput>> output =
+                            interfaceManager.getInterfaceFromIfIndex(input);
                     RpcResult<GetInterfaceFromIfIndexOutput> result = output.get();
                     if(result.isSuccessful()) {
                         GetInterfaceFromIfIndexOutput ifIndexOutput = result.getResult();
