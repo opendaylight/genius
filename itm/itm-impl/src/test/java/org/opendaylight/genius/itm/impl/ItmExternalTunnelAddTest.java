@@ -277,7 +277,7 @@ public class ItmExternalTunnelAddTest {
                 .child(ExternalTunnel.class, new ExternalTunnelKey(ipAddress2.toString(), dpId1.toString(), tunnelType1));
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,ipAddress3
-                ,ipAddress2,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null);
+                ,ipAddress2,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         externalTunnel = ItmUtils.buildExternalTunnel(dpId1.toString(),ipAddress2.toString(),tunnelType1,
                 trunkInterfaceName);
         subnets = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
@@ -317,22 +317,22 @@ public class ItmExternalTunnelAddTest {
 
         Interface extTunnelIf1 = ItmUtils.buildTunnelInterface(dpId1, "tun030025bd04f", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, tunnelType1, tunnelEndPointsVxlan.getIpAddress(), ipAddress1,
-                gtwyIp1, vlanId, false,true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                gtwyIp1, vlanId, false,false, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf2 = ItmUtils.buildHwTunnelInterface("tun9a55a9c38f2", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), hwVtep1.getNode_id(), tunnelType1, ipAddress1, ipAddress3, gtwyIp1,
-                true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                false, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface extTunnelIf3 = ItmUtils.buildTunnelInterface(dpId1, "tun17c6e20c283", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, tunnelType1, tunnelEndPointsVxlan.getIpAddress(), ipAddress2,
-                gtwyIp1, vlanId, false,true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                gtwyIp1, vlanId, false,false, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf4 = ItmUtils.buildHwTunnelInterface("tunaa109b6c8c5", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
-                ipAddress3, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                ipAddress3, gtwyIp1, false, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf5 = ItmUtils.buildHwTunnelInterface("tund903ed434d5", String.format("%s %s", tunnelType1.getName(),
                 "Trunk Interface"), true, hwVtep1.getTopo_id(), hwVtep1.getNode_id(), tunnelType1, ipAddress1,
-                ipAddress2, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                ipAddress2, gtwyIp1, false, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         Interface hwTunnelIf6 = ItmUtils.buildHwTunnelInterface("tunc3315b110a6", String.format("%s %s", tunnelType1
                         .getName(), "Trunk Interface"), true, hwVtep1.getTopo_id(), destination, tunnelType1, ipAddress2,
-                ipAddress1, gtwyIp1, true, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
+                ipAddress1, gtwyIp1, false, monitorProtocol, ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL);
         ExternalTunnel externalTunnel1 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(dpId1.toString()),
                 getExternalTunnelKey(source), tunnelType1, "tun030025bd04f");
         ExternalTunnel externalTunnel2 = ItmUtils.buildExternalTunnel(  getExternalTunnelKey(source),

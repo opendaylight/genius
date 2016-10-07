@@ -67,14 +67,31 @@
             </action>
         </command>
         <command>
+<<<<<<< HEAD
             <action class="org.opendaylight.genius.itm.cli.AddExternalEndpoint">
+=======
+            <action class="org.opendaylight.vpnservice.itm.cli.AddExternalEndpoint">
+>>>>>>> 1594a41... Upstreaming ITM cache impl and monitoring bug fix
                 <property name="itmProvider" ref="itmProviderRef" />
             </action>
         </command>
         <command>
+<<<<<<< HEAD
             <action class="org.opendaylight.genius.itm.cli.RemoveExternalEndpoint">
                 <property name="itmProvider" ref="itmProviderRef" />
             </action>
         </command>
+=======
+            <action class="org.opendaylight.vpnservice.itm.cli.RemoveExternalEndpoint">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.vpnservice.itm.cli.DSShowCache">
+                <property name="itmProvider" ref="itmProviderRef" />
+            </action>
+        </command>
+        
+>>>>>>> 1594a41... Upstreaming ITM cache impl and monitoring bug fix
     </command-bundle>
 </blueprint>
