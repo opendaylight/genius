@@ -9,12 +9,20 @@ package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -22,24 +30,24 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutput;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
 abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHandler {
 
-    protected ServiceProvider serviceProvider;
+    private final DataBroker dataBroker;
+    private final OdlInterfaceRpcService interfaceManager;
     private InventoryReader inventoryReader;
 
-    public AbstractAlivenessProtocolHandler(ServiceProvider serviceProvider) {
-        this.serviceProvider = serviceProvider;
-        inventoryReader = new InventoryReader(serviceProvider.getDataBroker());
+    public AbstractAlivenessProtocolHandler(final DataBroker dataBroker,
+                                            final OdlInterfaceRpcService interfaceManager,
+                                            final AlivenessMonitor alivenessMonitor,
+                                            final EtherTypes etherType) {
+        this.dataBroker = dataBroker;
+        this.interfaceManager = interfaceManager;
+        alivenessMonitor.registerHandler(etherType, this);
+        inventoryReader = new InventoryReader(dataBroker);
     }
 
     private InstanceIdentifier<NodeConnector> getNodeConnectorId(String interfaceName) {
@@ -62,7 +70,8 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
 
     private NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName) {
         GetNodeconnectorIdFromInterfaceInput input = new GetNodeconnectorIdFromInterfaceInputBuilder().setIntfName(interfaceName).build();
-        Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> output =  serviceProvider.getInterfaceManager().getNodeconnectorIdFromInterface(input);
+        Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> output =
+                interfaceManager.getNodeconnectorIdFromInterface(input);
         RpcResult<GetNodeconnectorIdFromInterfaceOutput> result = null;
         try {
             result = output.get();
@@ -118,11 +127,10 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
         return interfaceOptional.get();
     }
 
-
     private <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                     InstanceIdentifier<T> path) {
 
-        ReadOnlyTransaction tx = serviceProvider.getDataBroker().newReadOnlyTransaction();
+        ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
 
         Optional<T> result = Optional.absent();
         try {
@@ -135,5 +143,4 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
 
         return result;
     }
-
 }

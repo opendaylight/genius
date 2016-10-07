@@ -26,6 +26,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   </prerequisites>
 
   <properties>
+    <infrautils.version>1.1.0-SNAPSHOT</infrautils.version>
     <openflowplugin.version>0.4.0-SNAPSHOT</openflowplugin.version>
     <ovsdb.version>1.4.0-SNAPSHOT</ovsdb.version>
     <mdsal.model.version>0.10.0-SNAPSHOT</mdsal.model.version>
@@ -88,11 +89,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.netconf</groupId>
-      <artifactId>features-restconf</artifactId>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>infrautils-features</artifactId>
+      <version>${infrautils.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.dlux</groupId>
@@ -236,13 +237,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <groupId>${project.groupId}</groupId>
       <artifactId>alivenessmonitor-impl</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>alivenessmonitor-impl</artifactId>
-      <version>${project.version}</version>
-      <type>xml</type>
-      <classifier>config</classifier>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>

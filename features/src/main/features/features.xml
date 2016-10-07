@@ -11,6 +11,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
   <repository>mvn:org.opendaylight.yangtools/features-yangtools/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.controller/features-mdsal/{{VERSION}}/xml/features</repository>
+  <repository>mvn:org.opendaylight.infrautils/infrautils-features/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.mdsal.model/features-mdsal-model/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.openflowplugin/features-openflowplugin/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.openflowplugin/features-openflowplugin-extension/{{VERSION}}/xml/features</repository>
@@ -42,6 +43,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <feature version='${ovsdb.version}'>odl-ovsdb-hwvtepsouthbound</feature>
     <feature version="${openflowplugin.version}">odl-openflowplugin-southbound</feature>
     <feature version="${openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+    <feature version='${infrautils.version}'>odl-infrautils-inject</feature>
     <bundle>mvn:commons-net/commons-net/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/idmanager-impl/{{VERSION}}</bundle>
@@ -57,7 +59,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <configfile finalname="${configfile.directory}/mdsalutil-impl-default-config.xml">mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/interfacemanager-impl-default-config.xml">mvn:org.opendaylight.genius/interfacemanager-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/arputil-impl-default-config.xml">mvn:org.opendaylight.genius/arputil-impl/{{VERSION}}/xml/config</configfile>
-    <configfile finalname="${configfile.directory}/alivenessmonitor-impl-default-config.xml">mvn:org.opendaylight.genius/alivenessmonitor-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/itm-impl-default-config.xml">mvn:org.opendaylight.genius/itm-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/resourcemanager-impl-default-config.xml">mvn:org.opendaylight.genius/resourcemanager-impl/{{VERSION}}/xml/config</configfile>
    </feature>
