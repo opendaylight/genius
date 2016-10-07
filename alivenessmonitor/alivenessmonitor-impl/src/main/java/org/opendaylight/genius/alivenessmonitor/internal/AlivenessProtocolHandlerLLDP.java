@@ -8,29 +8,6 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.base.Strings;
-import org.apache.commons.lang3.StringUtils;
-import org.opendaylight.controller.liblldp.EtherTypes;
-import org.opendaylight.controller.liblldp.LLDP;
-import org.opendaylight.controller.liblldp.LLDPTLV;
-import org.opendaylight.controller.liblldp.LLDPTLV.TLVType;
-import org.opendaylight.controller.liblldp.Packet;
-import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
-import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.packet.Ethernet;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -38,13 +15,47 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.apache.commons.lang3.StringUtils;
+import org.opendaylight.controller.liblldp.EtherTypes;
+import org.opendaylight.controller.liblldp.LLDP;
+import org.opendaylight.controller.liblldp.LLDPTLV;
+import org.opendaylight.controller.liblldp.LLDPTLV.TLVType;
+import org.opendaylight.controller.liblldp.Packet;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandler {
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerLLDP.class);
+    private final PacketProcessingService packetProcessingService;
     private AtomicInteger packetId = new AtomicInteger(0);
 
-    public AlivenessProtocolHandlerLLDP(ServiceProvider serviceProvider) {
-        super(serviceProvider);
+    @Inject
+    public AlivenessProtocolHandlerLLDP(final DataBroker dataBroker,
+                                        final OdlInterfaceRpcService interfaceManager,
+                                        final AlivenessMonitor alivenessMonitor,
+                                        final PacketProcessingService packetProcessingService) {
+        super(dataBroker, interfaceManager, alivenessMonitor,
+                org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes.Lldp);
+        this.packetProcessingService = packetProcessingService;
     }
 
     @Override
@@ -132,8 +143,6 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             return;
         }
 
-        OdlInterfaceRpcService interfaceService = serviceProvider.getInterfaceManager();
-
         long nodeId = -1, portNum = -1;
         try {
             String lowerLayerIf = interfaceState.getLowerLayerIf().get(0);
@@ -155,7 +164,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             }
             TransmitPacketInput transmitPacketInput = MDSALUtil.getPacketOut(actions,
                     ethenetLLDPPacket.serialize(), nodeId, MDSALUtil.getNodeConnRef(BigInteger.valueOf(nodeId), "0xfffffffd"));
-            serviceProvider.getPacketProcessingService().transmitPacket(transmitPacketInput);
+            packetProcessingService.transmitPacket(transmitPacketInput);
         } catch (Exception e) {
             LOG.error("Error while sending LLDP Packet", e);
         }
@@ -181,7 +190,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         if(interfaceState != null) {
             intfType = interfaceState.getType();
         } else {
-            LOG.error("Could not retrieve port type for interface {} to construct actions", interfaceState.getName());
+            LOG.error("Could not retrieve port type for interface to construct actions");
             return Collections.emptyList();
         }
 
