@@ -54,8 +54,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelListBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
@@ -122,6 +125,8 @@ public class TepCommandHelperTest {
     InternalTunnel internalTunnelTest = null;
     TunnelList tunnelList = null;
     TunnelList tunnelListTest = null;
+    StateTunnelList stateTunnelListTest = null ;
+    StateTunnelList stateTunnelTest = null ;
     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
             interfaceTest = null;
     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
@@ -134,6 +139,7 @@ public class TepCommandHelperTest {
     List<TransportZone> transportZoneList = new ArrayList<>();
     List<TransportZone> transportZoneListNew = new ArrayList<>();
     List<InternalTunnel> internalTunnelList = new ArrayList<>();
+    List<StateTunnelList> stateTunnelList = new ArrayList<>() ;
     List<String> lowerLayerIfList = new ArrayList<>();
     List<InstanceIdentifier> instanceIdentifierList = new ArrayList<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
@@ -252,6 +258,8 @@ public class TepCommandHelperTest {
                 .setTunnelInterfaceName(tunnelInterfaceName).setKey(new InternalTunnelKey(dpId1,dpId2,tunnelType1))
                 .setTransportType(tunnelType1).build();
         internalTunnelList.add(internalTunnelTest);
+        stateTunnelListTest = new StateTunnelListBuilder().setTunnelInterfaceName(tunnelInterfaceName).setOperState(TunnelOperStatus.Up).build();
+        stateTunnelList.add(stateTunnelListTest);
         tunnelList = new TunnelListBuilder().setInternalTunnel(internalTunnelList).build();
         tunnelListTest = new TunnelListBuilder().build();
         lowerLayerIfList.add(dpId1.toString());
@@ -614,7 +622,7 @@ public class TepCommandHelperTest {
     public void testShowStateTunnelTypeVxlan(){
 
         try {
-            tepCommandHelper.showState(tunnelList, enabled, null);
+            tepCommandHelper.showState(stateTunnelList, enabled, null);
         } catch (TepException e) {
             LOG.trace(e.getMessage());
         }
@@ -633,7 +641,7 @@ public class TepCommandHelperTest {
                 .CONFIGURATION,interfaceIdentifierNew);
 
         try {
-            tepCommandHelper.showState(tunnelList, enabled, null);
+            tepCommandHelper.showState(stateTunnelList, enabled, null);
         } catch (TepException e){
             LOG.trace(e.getMessage());
         }
@@ -648,7 +656,7 @@ public class TepCommandHelperTest {
 
         String output = null;
         try {
-            tepCommandHelper.showState(tunnelListTest, enabled, null);
+            tepCommandHelper.showState(stateTunnelList, enabled, null);
         } catch (TepException e) {
             output = e.getMessage() + newline;
         }
