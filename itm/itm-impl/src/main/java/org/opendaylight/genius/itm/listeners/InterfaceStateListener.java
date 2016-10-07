@@ -9,7 +9,6 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
-import com.google.common.net.InetAddresses;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
@@ -65,8 +64,8 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
 
     private void registerListener(final DataBroker db) {
         try {
-            listenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL,
-                    getWildCardPath(), InterfaceStateListener.this, DataChangeScope.SUBTREE);
+            listenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, getWildCardPath(),
+                    InterfaceStateListener.this, DataChangeScope.SUBTREE);
         } catch (final Exception e) {
             LOG.error("ITM Interfaces State listener registration fail!", e);
             throw new IllegalStateException("ITM Interfaces State listener registration failed.", e);
@@ -80,20 +79,18 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
     @Override
     protected void add(InstanceIdentifier<Interface> identifier, Interface iface) {
         LOG.trace("Interface added: {}", iface);
-        if(ItmUtils.isItmIfType(iface.getType())) {
+        if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
             updateItmState(iface);
         }
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Interface> identifier,
-            Interface iface) {
+    protected void remove(InstanceIdentifier<Interface> identifier, Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
-        if(ItmUtils.isItmIfType(iface.getType())) {
+        if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
-            StateTunnelListKey tlKey = null;
-            tlKey = ItmUtils.getTunnelStateKey(iface);
+            StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
             InstanceIdentifier<StateTunnelList> stListId = buildStateTunnelListId(tlKey);
             LOG.trace("Deleting tunnel_state for Id: {}", stListId);
             ItmUtils.asyncDelete(LogicalDatastoreType.OPERATIONAL, stListId, broker, ItmUtils.DEFAULT_CALLBACK);
@@ -101,16 +98,15 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> identifier,
-                          Interface original, Interface update) {
+    protected void update(InstanceIdentifier<Interface> identifier, Interface original, Interface update) {
         /*
-         * update contains only delta, may not include iftype
-         * Note: This assumes type can't be edited on the fly
+         * update contains only delta, may not include iftype Note: This assumes
+         * type can't be edited on the fly
          */
-        if(ItmUtils.isItmIfType(original.getType())) {
-        LOG.trace("Interface updated. Old: {} New: {}", original, update);
+        if (ItmUtils.isItmIfType(original.getType())) {
+            LOG.trace("Interface updated. Old: {} New: {}", original, update);
             OperStatus operStatus = update.getOperStatus();
-            if( operStatus != null ) {
+            if (operStatus != null) {
                 LOG.debug("Tunnel Interface {} changed state to {}", original.getName(), operStatus);
                 updateItmState(update);
             }
@@ -118,31 +114,31 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
     }
 
     private void updateItmState(Interface iface) {
-        StateTunnelListKey tlKey = null;
-        tlKey = ItmUtils.getTunnelStateKey(iface);
+        StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, iface.getName());
         InstanceIdentifier<StateTunnelList> stListId = buildStateTunnelListId(tlKey);
         Optional<StateTunnelList> tunnelsState = ItmUtils.read(LogicalDatastoreType.OPERATIONAL, stListId, broker);
         StateTunnelList tunnelStateList;
         StateTunnelListBuilder stlBuilder;
-        boolean tunnelState = (iface.getOperStatus().equals(OperStatus.Up)) ? (true):(false);
-        if(tunnelsState.isPresent()) {
+        boolean tunnelState = iface.getOperStatus().equals(OperStatus.Up) ? true : false;
+        if (tunnelsState.isPresent()) {
             tunnelStateList = tunnelsState.get();
             stlBuilder = new StateTunnelListBuilder(tunnelStateList);
             stlBuilder.setTunnelState(tunnelState);
             StateTunnelList stList = stlBuilder.build();
-            LOG.trace("Updating tunnel_state: {} for Id: {}",stList, stListId);
+            LOG.trace("Updating tunnel_state: {} for Id: {}", stList, stListId);
             ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL, stListId, stList, broker, ItmUtils.DEFAULT_CALLBACK);
         } else {
             // Create new Tunnel State
             try {
-                /*FIXME:
-                 * A defensive try-catch to find issues without disrupting existing behavior.
+                /*
+                 * FIXME: A defensive try-catch to find issues without
+                 * disrupting existing behavior.
                  */
                 tunnelStateList = buildStateTunnelList(tlKey, iface.getName(), tunnelState);
                 LOG.trace("Creating tunnel_state: {} for Id: {}", tunnelStateList, stListId);
                 ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL, stListId, tunnelStateList, broker,
-                                ItmUtils.DEFAULT_CALLBACK);
+                        ItmUtils.DEFAULT_CALLBACK);
             } catch (Exception e) {
                 LOG.warn("Exception trying to create tunnel state for {}", iface.getName(), e);
             }
@@ -151,49 +147,50 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
 
     private StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state) {
         StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
-                        ItmUtils.getInterface(name, broker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = ItmUtils
+                .getInterface(name, broker);
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-        if(ifTunnel == null && parentRefs == null) {
+        if (ifTunnel == null && parentRefs == null) {
             return null;
         }
         DstInfoBuilder dstInfoBuilder = new DstInfoBuilder();
         SrcInfoBuilder srcInfoBuilder = new SrcInfoBuilder();
         dstInfoBuilder.setTepIp(ifTunnel.getTunnelDestination());
         srcInfoBuilder.setTepIp(ifTunnel.getTunnelSource());
-        //TODO: Add/Improve logic for device type
+        // TODO: Add/Improve logic for device type
         InternalTunnel internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
         ExternalTunnel externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
-        if(internalTunnel == null && externalTunnel == null) {
+        if (internalTunnel == null && externalTunnel == null) {
             // both not present in cache. let us update and try again.
             ItmUtils.updateTunnelsCache(broker);
             internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
             externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
         }
-        if(internalTunnel != null) {
-            srcInfoBuilder.setTepDeviceId(internalTunnel.getSourceDPN().toString()).setTepDeviceType(TepTypeInternal.class);
+        if (internalTunnel != null) {
+            srcInfoBuilder.setTepDeviceId(internalTunnel.getSourceDPN().toString())
+                    .setTepDeviceType(TepTypeInternal.class);
             dstInfoBuilder.setTepDeviceId(internalTunnel.getDestinationDPN().toString())
-                .setTepDeviceType(TepTypeInternal.class);
+                    .setTepDeviceType(TepTypeInternal.class);
             stlBuilder.setTransportType(internalTunnel.getTransportType());
-        } else if(externalTunnel != null) {
+        } else if (externalTunnel != null) {
             ExternalTunnel tunnel = ItmUtils.itmCache.getExternalTunnel(name);
             srcInfoBuilder.setTepDeviceId(tunnel.getSourceDevice())
-                .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()));
+                    .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()));
             dstInfoBuilder.setTepDeviceId(tunnel.getDestinationDevice())
-                .setTepDeviceType(getDeviceType(tunnel.getDestinationDevice()))
-                .setTepIp(ifTunnel.getTunnelDestination());
+                    .setTepDeviceType(getDeviceType(tunnel.getDestinationDevice()))
+                    .setTepIp(ifTunnel.getTunnelDestination());
             stlBuilder.setTransportType(tunnel.getTransportType());
         }
-        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setTunnelState(state)
-            .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build());
+        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setTunnelState(state).setDstInfo(dstInfoBuilder.build())
+                .setSrcInfo(srcInfoBuilder.build());
         return stlBuilder.build();
     }
 
     private Class<? extends TepTypeBase> getDeviceType(String device) {
-        if(device.startsWith("hwvtep")) {
+        if (device.startsWith("hwvtep")) {
             return TepTypeHwvtep.class;
-        } else if(device.contains("IpAddress")) {
+        } else if (device.contains("IpAddress")) {
             return TepTypeExternal.class;
         } else {
             return TepTypeInternal.class;
@@ -201,9 +198,7 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
     }
 
     private InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
-        InstanceIdentifier<StateTunnelList> stListId =
-                        InstanceIdentifier.builder(TunnelsState.class).child(StateTunnelList.class, tlKey).build();
-        return stListId;
+        return InstanceIdentifier.builder(TunnelsState.class)
+                .child(StateTunnelList.class, tlKey).build();
     }
-
 }
