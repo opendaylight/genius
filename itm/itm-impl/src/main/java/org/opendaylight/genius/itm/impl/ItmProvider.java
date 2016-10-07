@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.felix.service.command.CommandSession;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,17 +29,23 @@ import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
+import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
+import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
+import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
+import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
+import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -59,6 +67,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.*;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,8 +93,11 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor itmStatusMonitor = ITMStatusMonitor.getInstance();
     private ItmTunnelEventListener itmStateListener;
+    private ItmMonitoringListener itmMonitoringListener;
+    private ItmMonitoringIntervalListener itmMonitoringIntervalListener;
     static short flag = 0;
-
+    private StateTunnelListListener tunnelStateListener ;
+    private DpnTepsInfoListener dpnTepsInfoListener ;
     public ItmProvider() {
         LOG.info("ItmProvider Before register MBean");
         itmStatusMonitor.registerMbean();
@@ -126,9 +139,17 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tnlToggleListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
             tepCommandHelper.setInterfaceManager(interfaceManager);
+            tepCommandHelper.configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
             itmStateListener =new ItmTunnelEventListener(dataBroker);
             createIdPool();
             itmStatusMonitor.reportStatus("OPERATIONAL");
+            DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
+            itmMonitoringListener = new ItmMonitoringListener(dataBroker);
+            itmMonitoringIntervalListener = new ItmMonitoringIntervalListener(dataBroker);
+            DataStoreCache.create(ITMConstants.TUNNEL_STATE_CACHE_NAME) ;
+            tunnelStateListener = new StateTunnelListListener(dataBroker);
+            DataStoreCache.create(ITMConstants.DPN_TEPs_Info_CACHE_NAME) ;
+            dpnTepsInfoListener = new DpnTepsInfoListener(dataBroker);
         } catch (Exception e) {
             LOG.error("Error initializing services", e);
             itmStatusMonitor.reportStatus("ERROR");
@@ -163,6 +184,12 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         }
         if(tnlToggleListener!= null){
             tnlToggleListener.close();
+        }
+        if(tunnelStateListener!= null){
+            tunnelStateListener.close();
+        }
+        if(dpnTepsInfoListener!= null){
+            dpnTepsInfoListener.close();
         }
         LOG.info("ItmProvider Closed");
     }
@@ -226,11 +253,20 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
         tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker));
     }
 
-    public void showState(TunnelList tunnels) {
-        if (tunnels != null)
-            tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS());
-        else
+    public void showState(List<StateTunnelList> tunnels,CommandSession session) {
+        if (tunnels != null) {
+            try {
+                tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS(), session);
+            }catch(TepException e) {
+                LOG.error(e.getMessage());
+            }
+        }else
             LOG.debug("No tunnels available");
+    }
+
+    @Override
+    public void showCache( String cacheName) {
+        tepCommandHelper.showCache(cacheName);
     }
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
@@ -331,7 +367,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     public void configureTunnelMonitorInterval(int interval) {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
     }
-
+    
     public boolean validateIP (final String ip){
         if (ip == null || ip.equals("")) {
             return false;

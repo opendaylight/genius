@@ -10,11 +10,9 @@ package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -32,48 +30,45 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.DstInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.SrcInfoBuilder;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.*;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfaceStateListener extends AbstractDataChangeListener<Interface> implements AutoCloseable {
+public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener> implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
-    private ListenerRegistration<DataChangeListener> listenerRegistration;
     private final DataBroker broker;
 
     public InterfaceStateListener(final DataBroker db) {
-        super(Interface.class);
+        super(Interface.class, InterfaceStateListener.class);
         broker = db;
-        registerListener(db);
+        registerListener(broker);
     }
 
     @Override
     public void close() throws Exception {
-        if (listenerRegistration != null) {
-            try {
-                listenerRegistration.close();
-            } catch (final Exception e) {
-                LOG.error("Error when cleaning up interface state listener", e);
-            }
-            listenerRegistration = null;
-        }
+        
         LOG.info("Interface state listener Closed");
     }
 
     private void registerListener(final DataBroker db) {
         try {
-            listenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL, getWildCardPath(),
-                    InterfaceStateListener.this, DataChangeScope.SUBTREE);
+            registerListener(LogicalDatastoreType.OPERATIONAL,db);
         } catch (final Exception e) {
             LOG.error("ITM Interfaces State listener registration fail!", e);
             throw new IllegalStateException("ITM Interfaces State listener registration failed.", e);
         }
     }
 
-    private InstanceIdentifier<Interface> getWildCardPath() {
+    @Override
+    protected InstanceIdentifier<Interface> getWildCardPath() {
         return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
+    }
+
+    @Override
+    protected InterfaceStateListener getDataTreeChangeListener() {
+        return this;
     }
 
     @Override
@@ -120,11 +115,26 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
         Optional<StateTunnelList> tunnelsState = ItmUtils.read(LogicalDatastoreType.OPERATIONAL, stListId, broker);
         StateTunnelList tunnelStateList;
         StateTunnelListBuilder stlBuilder;
-        boolean tunnelState = iface.getOperStatus().equals(OperStatus.Up) ? true : false;
-        if (tunnelsState.isPresent()) {
+        TunnelOperStatus tunnelOperStatus;
+        boolean tunnelState = (iface.getOperStatus().equals(OperStatus.Up)) ? (true):(false);
+        switch (iface.getOperStatus()) {
+            case Up:
+                tunnelOperStatus = TunnelOperStatus.Up;
+                break;
+            case Down:
+                tunnelOperStatus = TunnelOperStatus.Down;
+                break;
+            case Unknown:
+                tunnelOperStatus = TunnelOperStatus.Unknown;
+                break;
+            default:
+                tunnelOperStatus = TunnelOperStatus.Ignore;
+        }
+        if(tunnelsState.isPresent()) {
             tunnelStateList = tunnelsState.get();
             stlBuilder = new StateTunnelListBuilder(tunnelStateList);
             stlBuilder.setTunnelState(tunnelState);
+            stlBuilder.setOperState(tunnelOperStatus);
             StateTunnelList stList = stlBuilder.build();
             LOG.trace("Updating tunnel_state: {} for Id: {}", stList, stListId);
             ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL, stListId, stList, broker, ItmUtils.DEFAULT_CALLBACK);
@@ -135,7 +145,7 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
                  * FIXME: A defensive try-catch to find issues without
                  * disrupting existing behavior.
                  */
-                tunnelStateList = buildStateTunnelList(tlKey, iface.getName(), tunnelState);
+                tunnelStateList = buildStateTunnelList(tlKey, iface.getName(), tunnelState, tunnelOperStatus);
                 LOG.trace("Creating tunnel_state: {} for Id: {}", tunnelStateList, stListId);
                 ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL, stListId, tunnelStateList, broker,
                         ItmUtils.DEFAULT_CALLBACK);
@@ -145,7 +155,8 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
         }
     }
 
-    private StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state) {
+
+    private StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state, TunnelOperStatus tunOpStatus) {
         StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = ItmUtils
                 .getInterface(name, broker);
@@ -182,8 +193,8 @@ public class InterfaceStateListener extends AbstractDataChangeListener<Interface
                     .setTepIp(ifTunnel.getTunnelDestination());
             stlBuilder.setTransportType(tunnel.getTransportType());
         }
-        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setTunnelState(state).setDstInfo(dstInfoBuilder.build())
-                .setSrcInfo(srcInfoBuilder.build());
+        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setOperState(tunOpStatus).setTunnelState(state)
+            .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build());
         return stlBuilder.build();
     }
 

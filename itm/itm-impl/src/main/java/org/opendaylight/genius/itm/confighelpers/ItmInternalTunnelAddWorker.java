@@ -37,12 +37,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItmInternalTunnelAddWorker {
-    private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
-    private static final FutureCallback<Void> DEFAULT_CALLBACK =
-            new FutureCallback<Void>() {
-                public void onSuccess(Void result) {
-                    logger.debug("Success in Datastore operation");
-                }
+     private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
+  private static Boolean monitorEnabled;
+  private static Integer monitorInterval;
+  private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+  private static final FutureCallback<Void> DEFAULT_CALLBACK =
+             new FutureCallback<Void>() {
+                 public void onSuccess(Void result) {
+                     logger.debug("Success in Datastore operation");
+                 }
 
                 public void onFailure(Throwable error) {
                     logger.error("Error in Datastore operation", error);
@@ -53,6 +56,9 @@ public class ItmInternalTunnelAddWorker {
     public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker, IdManagerService idManagerService,IMdsalApiManager mdsalManager,
                                                                  List<DPNTEPsInfo> cfgdDpnList, List<DPNTEPsInfo> meshedDpnList) {
         logger.trace( "Building tunnels with DPN List {} " , cfgdDpnList );
+      monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
+      monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
+      monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         if( null == cfgdDpnList || cfgdDpnList.isEmpty()) {
@@ -121,7 +127,7 @@ public class ItmInternalTunnelAddWorker {
     private static void wireUpBidirectionalTunnel( TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
                                                    DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
-        Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
+        
         if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
             ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
             ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
@@ -151,9 +157,7 @@ public class ItmInternalTunnelAddWorker {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = ( srcte.getSubnetMask().equals(dstte.getSubnetMask()) ) ? gatewayIpObj : srcte.getGwIpAddress() ;
         logger.debug(  " Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",trunkInterfaceName, interfaceName, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
-        Boolean monitorEnabled = ItmUtils.readMonitoringStateFromDS(dataBroker);
-        Integer monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
-        Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
+        
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName, String.format( "%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"), true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true, monitorEnabled, monitorProtocol, monitorInterval);
         logger.debug(  " Trunk Interface builder - {} ", iface ) ;
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
