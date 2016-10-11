@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_157b552a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-11T21:59:17Z",
+      "side": 0,
+      "message": "not a biggie, but checkstyle doesn\u0027t care about 80 column width. it should be 120 since java lines are pretty long.",
+      "revId": "fdb6ab58674102a4bf54f37ef2d547a215aca115",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
