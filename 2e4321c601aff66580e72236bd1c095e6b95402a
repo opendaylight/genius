@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_40222602",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_fdd5dfb9",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_1d353b46",
         "filename": "alivenessmonitor/alivenessmonitor-impl/pom.xml",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-10-12T16:00:36Z",
       "side": 1,
       "message": "Sam, you can keep this much shorter - just the first two lines should be sufficient, since https://git.opendaylight.org/gerrit/#/c/44502/, the rest you\u0027re doing here is available from odl-parent (and should not be repeated here, so remove all that)",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a01fbab6",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_1d353b46",
       "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_801c3ec3",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/HwVtepTunnelsStateHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_5d017338",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_5dda13ea",
         "filename": "commons/config-parent/pom.xml",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-10-12T16:00:36Z",
       "side": 1,
       "message": "see related comment in pom.xml (this may not actually be needed)",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e07892fa",
+        "filename": "commons/config-parent/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_5dda13ea",
       "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_606c8237",
+        "filename": "features/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_3dd757c1",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_9de4abad",
         "filename": "features/pom.xml",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2016-10-12T16:00:36Z",
       "side": 1,
       "message": "see related comment in pom.xml (this may not actually be needed)",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a0769a04",
+        "filename": "features/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_9de4abad",
       "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_205a8a83",
+        "filename": "features/src/main/features/features.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_dded8390",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_bdf2476d",
         "filename": "features/src/main/features/features.xml",
         "patchSetId": 2
@@ -132,6 +258,24 @@
       "writtenOn": "2016-10-12T16:00:36Z",
       "side": 1,
       "message": "see related comment in pom.xml (this may not actually be needed)",
+      "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_005f8e73",
+        "filename": "features/src/main/features/features.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_bdf2476d",
       "revId": "2e4321c601aff66580e72236bd1c095e6b95402a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false

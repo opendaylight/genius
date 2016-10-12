@@ -16,6 +16,24 @@
       "revId": "fdb6ab58674102a4bf54f37ef2d547a215aca115",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2083aacd",
+        "filename": "features/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-12T18:51:51Z",
+      "side": 0,
+      "message": "restconf was duplicated twice so replaced it with the infrautils. Now this is changed to include inject instead.",
+      "parentUuid": "7a6b29fe_7de1cf99",
+      "revId": "fdb6ab58674102a4bf54f37ef2d547a215aca115",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
