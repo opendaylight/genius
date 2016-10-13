@@ -27,6 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -66,17 +67,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnels>
+public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListener<Tunnels,HwVtepTunnelsStateHandler>
         implements AlivenessProtocolHandler, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(HwVtepTunnelsStateHandler.class);
     private final DataBroker dataBroker;
     private final AlivenessMonitor alivenessMonitor;
-    private ListenerRegistration<DataChangeListener> listenerRegistration;
 
     @Inject
     public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor) {
-        super(Tunnels.class);
+        super(Tunnels.class,HwVtepTunnelsStateHandler.class);
         this.dataBroker = dataBroker;
         this.alivenessMonitor = alivenessMonitor;
     }
@@ -85,33 +85,27 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     public void start() {
         LOG.info("{} start", getClass().getSimpleName());
         alivenessMonitor.registerHandler(EtherTypes.Bfd, this);
-        listenerRegistration = dataBroker.registerDataChangeListener(LogicalDatastoreType.CONFIGURATION,
-                getWildCardPath(), this, DataChangeScope.SUBTREE);
+        registerListener(LogicalDatastoreType.CONFIGURATION,this.dataBroker);
     }
 
-    private InstanceIdentifier<?> getWildCardPath() {
+    @Override
+    protected InstanceIdentifier<Tunnels> getWildCardPath() {
         return InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
                 .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class);
     }
-
     @Override
-    @PreDestroy
-    public void close() throws Exception {
-        if (listenerRegistration != null) {
-            listenerRegistration.close();
-            listenerRegistration = null;
-        }
-        LOG.info("{} close", getClass().getSimpleName());
+    protected HwVtepTunnelsStateHandler getDataTreeChangeListener() {
+        return HwVtepTunnelsStateHandler.this;
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
+    protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void update(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
+    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
         List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
         List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
@@ -210,7 +204,7 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     }
 
     @Override
-    protected void add(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
+    protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
         // TODO: need to add the code to enable BFD if tunnels are created dynamically by TOR switch
     }
 
