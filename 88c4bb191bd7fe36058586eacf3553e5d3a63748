@@ -53,6 +53,24 @@
       "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_249f3752",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-14T08:42:17Z",
+      "side": 1,
+      "message": "I don\u0027t think it is required because deleteIdPool rpc is not invoked so often and it is just matter of deleting child pools from local cache and config DS.",
+      "parentUuid": "7a6b29fe_2108c92c",
+      "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
