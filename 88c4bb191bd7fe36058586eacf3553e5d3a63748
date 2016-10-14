@@ -17,6 +17,42 @@
       "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_81571d26",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2016-10-14T06:40:39Z",
+      "side": 1,
+      "message": "parallelStreams are used to populate the local cache on each cluster(if there are any) for the list of pools read from DS and it is not a long running task.\n\nThe size of the idPoolList depends on number of applications that create id pools. For now it is around 30.\n\npopulateCache will be called only once - when the controller is starting.",
+      "parentUuid": "7a6b29fe_e1ec1192",
+      "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2108c92c",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2016-10-14T06:40:39Z",
+      "side": 1,
+      "message": "The deletePool method here is time-consuming method. I\u0027ll update it to avoid syncDeletes which is not required. Thanks!",
+      "parentUuid": "7a6b29fe_41018538",
+      "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
