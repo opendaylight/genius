@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_61548121",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-14T06:36:12Z",
+      "side": 1,
+      "message": "Yes, But these are short lived tasks (doesn\u0027t get a FJ thread get blocked for longer time) to update each local cache id pool from config DS and it is invoked only during controller start.",
+      "parentUuid": "7a6b29fe_e1ec1192",
+      "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
