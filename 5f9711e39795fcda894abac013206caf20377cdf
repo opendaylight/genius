@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_881c5915",
+        "filename": "idmanager/idmanager-shell/src/main/java/org/opendaylight/genius/idmanager/shell/IdManagerCacheCli.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2016-10-17T11:55:55Z",
+      "side": 1,
+      "message": "I believe its not required since we are iterating on keySet of the returned map. keySet() is thread-safe right?",
+      "parentUuid": "7a6b29fe_266e1797",
+      "revId": "5f9711e39795fcda894abac013206caf20377cdf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
