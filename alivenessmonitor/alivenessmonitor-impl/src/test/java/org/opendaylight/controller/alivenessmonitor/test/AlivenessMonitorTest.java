@@ -8,23 +8,21 @@
 package org.opendaylight.controller.alivenessmonitor.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.argThat;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.argThat;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
 import java.util.Arrays;
+
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -39,7 +37,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -83,13 +80,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitorid.key.map.MonitoridKeyEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringStateBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -98,15 +93,16 @@ import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
+
 public class AlivenessMonitorTest {
 
     @Mock private DataBroker dataBroker;
     @Mock private IdManagerService idManager;
     @Mock private PacketProcessingService packetProcessingService;
     @Mock private NotificationPublishService notificationPublishService;
-    @Mock private NotificationService notificationService;
-    @Mock private OdlInterfaceRpcService interfaceManager;
-    @Mock private OdlArputilService arpService;
     private AlivenessMonitor alivenessMonitor;
     private AlivenessProtocolHandler arpHandler;
     private AlivenessProtocolHandler lldpHandler;
@@ -148,15 +144,18 @@ public class AlivenessMonitorTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        alivenessMonitor = new AlivenessMonitor(dataBroker);
         when(idManager.createIdPool(any(CreateIdPoolInput.class)))
                   .thenReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build()));
+        alivenessMonitor.setIdManager(idManager);
+        alivenessMonitor.setNotificationPublishService(notificationPublishService);
+        alivenessMonitor.setPacketProcessingService(packetProcessingService);
 
-        alivenessMonitor = new AlivenessMonitor(dataBroker, idManager, notificationPublishService,
-                notificationService);
-        alivenessMonitor.start();
-        arpHandler = new AlivenessProtocolHandlerARP(dataBroker, interfaceManager, alivenessMonitor, arpService);
-        lldpHandler = new AlivenessProtocolHandlerLLDP(dataBroker, interfaceManager, alivenessMonitor,
-                packetProcessingService);
+        arpHandler = new AlivenessProtocolHandlerARP(alivenessMonitor);
+        alivenessMonitor.registerHandler(EtherTypes.Arp, arpHandler);
+
+        lldpHandler = new AlivenessProtocolHandlerLLDP(alivenessMonitor);
+        alivenessMonitor.registerHandler(EtherTypes.Lldp, lldpHandler);
         mockId = 1L;
         when(idManager.allocateId(any(AllocateIdInput.class)))
                   .thenReturn(Futures.immediateFuture(RpcResultBuilder.success(new AllocateIdOutputBuilder().setIdValue(mockId++).build()).build()));
@@ -176,13 +175,9 @@ public class AlivenessMonitorTest {
 
     @Test
     public void testMonitorProfileCreate() throws Throwable {
-        MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L)
-                        .setMonitorWindow(10L)
-                        .setProtocolType(EtherTypes.Arp).build()).build();
-        doReturn(Futures.immediateCheckedFuture(Optional.absent()))
-                .when(readWriteTx).read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)));
+        MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder().setProfile(new ProfileBuilder().setFailureThreshold(10L)
+                .setMonitorInterval(10000L).setMonitorWindow(10L).setProtocolType(EtherTypes.Arp).build()).build();
+        doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(readWriteTx).read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)));
         doReturn(Futures.immediateCheckedFuture(null)).when(readWriteTx).submit();
         RpcResult<MonitorProfileCreateOutput> output = alivenessMonitor.monitorProfileCreate(input).get();
         assertTrue("Monitor Profile Create result", output.isSuccessful());

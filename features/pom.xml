@@ -88,6 +88,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.netconf</groupId>
+      <artifactId>features-restconf</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.dlux</groupId>
       <artifactId>features-dlux</artifactId>
       <classifier>features</classifier>
@@ -232,6 +239,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>alivenessmonitor-impl</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
+      <classifier>config</classifier>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>alivenessmonitor-api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -300,10 +314,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <version>${project.version}</version>
       <type>xml</type>
       <classifier>config</classifier>
-    </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
     </dependency>
   </dependencies>
 </project>
