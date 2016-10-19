@@ -13,8 +13,10 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import java.util.ArrayList;
@@ -32,16 +34,20 @@ public class TepShowState extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() throws Exception {
-
-        DataBroker broker = itmProvider.getDataBroker();
-        List<String> result = new ArrayList<String>();
-        InstanceIdentifier<TunnelList> path = InstanceIdentifier.builder(TunnelList.class).build();
-        Optional<TunnelList> tunnels = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if (tunnels.isPresent()) {
-            itmProvider.showState(tunnels.get(), session);
+        List<StateTunnelList> tunnels = null ;
+        List<Object> values = null ;
+        values = DataStoreCache.getValues(ITMConstants.TUNNEL_STATE_CACHE_NAME);
+        if( values != null ) {
+             tunnels = new ArrayList<>() ;
+            for( Object value : values ) {
+                 tunnels.add((StateTunnelList)value) ;
+            }
+        }
+        if( tunnels != null ) {
+           itmProvider.showState(tunnels, session);
         }
         else
-            session.getConsole().println("No Internal Tunnels Exist");
+            session.getConsole().println("No Internal Tunnels configured on the switch");
         return null;
     }
 }
