@@ -124,6 +124,22 @@ module id-manager {
         }
     }
 
+    rpc getExistingIdFromPool {
+        input {
+             leaf pool-name {
+                type string;
+             }
+             leaf id-key {
+                type string;
+             }
+        }
+        output {
+            leaf id-value {
+                type uint32;
+            }
+        }
+    }
+
     rpc releaseId {
         input {
              leaf pool-name {

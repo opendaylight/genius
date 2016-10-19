@@ -30,6 +30,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.DeleteIdPoolInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.GetExistingIdFromPoolInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.GetExistingIdFromPoolOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.GetExistingIdFromPoolOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
@@ -689,5 +692,46 @@ public class IdManager implements IdManagerService, AutoCloseable{
             LOG.error("Error writing to datastore tx", tx);
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @Override
+    public Future<RpcResult<GetExistingIdFromPoolOutput>> getExistingIdFromPool(GetExistingIdFromPoolInput input) {
+        String parentPoolName = input.getPoolName();
+        String idKey = input.getIdKey();
+        String localPoolName = IdUtils.getLocalPoolName(parentPoolName);
+        Long idValue = 0L;
+        RpcResultBuilder<GetExistingIdFromPoolOutput> getExistingIdRpcBuilder;
+        GetExistingIdFromPoolOutputBuilder output = new GetExistingIdFromPoolOutputBuilder();
+        synchronized (localPoolName) {
+            try {
+                InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = IdUtils.getIdPoolInstance(parentPoolName);
+                IdPool parentIdPool = getIdPool(parentIdPoolInstanceIdentifier);
+                List<IdEntries> idEntries = parentIdPool.getIdEntries();
+                if (idEntries == null) {
+                    LOG.error("IdPool {} is empty", parentPoolName);
+                    getExistingIdRpcBuilder = RpcResultBuilder.failed();
+                    getExistingIdRpcBuilder.withError(ErrorType.APPLICATION, "IdPool " + parentPoolName + " is empty.");
+                } else {
+                    InstanceIdentifier<IdEntries> existingId = IdUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
+                    Optional<IdEntries> existingIdEntry = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, existingId);
+                    if (existingIdEntry.isPresent()) {
+                        idValue = existingIdEntry.get().getIdValue().get(0);
+                        LOG.debug("Existing id {} for the key {} ", idValue, idKey);
+                        output.setIdValue(idValue);
+                        getExistingIdRpcBuilder = RpcResultBuilder.success();
+                        getExistingIdRpcBuilder.withResult(output.build());
+                    } else {
+                        LOG.error("No Id present in pool {} for key {}", parentPoolName, idKey);
+                        getExistingIdRpcBuilder = RpcResultBuilder.failed();
+                        getExistingIdRpcBuilder.withError(ErrorType.APPLICATION, "No Id present in pool "+ parentPoolName+" for key " + idKey);
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error("Error while fetching existing Id for key {} from pool {}. E {}", idKey, parentPoolName, e.getMessage());
+                getExistingIdRpcBuilder = RpcResultBuilder.failed();
+                getExistingIdRpcBuilder.withError(ErrorType.APPLICATION, e.getMessage());
+            }
+        }
+        return Futures.immediateFuture(getExistingIdRpcBuilder.build());
     }
 }
