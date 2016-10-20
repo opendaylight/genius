@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -454,8 +455,16 @@ public class FlowBasedServicesUtils {
         BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag, (short) 0, BigInteger.ZERO, isExternal(iface));
         BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher(MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG);
         List<Instruction> instructions = new ArrayList<>();
+        String ifaceName = iface.getName();
+        boolean isFlatOrTrunkIface = (ifaceName.endsWith(":flat") || ifaceName.endsWith(":trunk"))?true:false;
         if (vlanId != 0 && !isVlanTransparent) {
-            instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
+            if (isFlatOrTrunkIface) {
+                instructions.add(MDSALUtil.buildAndGetPopVlanActionInstruction(lportTag, instructionKey++));
+            } else {
+                instructions.add(MDSALUtil.buildApplyActionsInstruction(Arrays.asList(MDSALUtil.createPopVlanAction(0),MDSALUtil.createNxOfInPortAction(1,0)),instructionKey++));
+            }
+        } else if (!isFlatOrTrunkIface) {
+            instructions.add(MDSALUtil.buildApplyActionsInstruction(Arrays.asList(MDSALUtil.createNxOfInPortAction(0,0)),instructionKey++));
         }
         instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, instructionKey++));
         instructions.add(MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.LPORT_DISPATCHER_TABLE, instructionKey++));
