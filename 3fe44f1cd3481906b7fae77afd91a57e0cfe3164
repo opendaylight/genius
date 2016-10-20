@@ -16,6 +16,24 @@
       "revId": "3fe44f1cd3481906b7fae77afd91a57e0cfe3164",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_bef34109",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ItmMonitoringListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-10-20T09:43:48Z",
+      "side": 1,
+      "message": "There is no listenerRegistration variable declared in this class. Calling the registerlistener of the parent class",
+      "parentUuid": "7a6b29fe_7e4d2972",
+      "revId": "3fe44f1cd3481906b7fae77afd91a57e0cfe3164",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
