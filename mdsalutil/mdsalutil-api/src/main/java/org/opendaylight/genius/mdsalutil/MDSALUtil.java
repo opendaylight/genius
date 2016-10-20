@@ -76,8 +76,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxRegCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
@@ -612,6 +614,23 @@ public class MDSALUtil {
                         new NodeRef(InstanceIdentifier.builder(Nodes.class)
                                 .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
                 .setIngress(ncRef).setEgress(ncRef).build();
+    }
+
+    public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {
+
+        NxRegLoad r = new NxRegLoadBuilder().setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
+                .setStart(Integer.valueOf(0)).setEnd(Integer.valueOf(15)).build()).setValue(BigInteger.valueOf(inPortVal)).build();
+        ActionBuilder abExt = new ActionBuilder();
+        abExt.setKey(new ActionKey(actionKey));
+        abExt.setOrder(actionKey);
+        abExt.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(r).build());
+        return abExt.build();
+    }
+
+    public static Action createPopVlanAction(final int actionKey) {
+        return new ActionBuilder().setAction(
+               new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
+                .setKey(new ActionKey(actionKey)).setOrder(actionKey).build();
     }
 }
 
