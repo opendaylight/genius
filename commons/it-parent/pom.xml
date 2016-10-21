@@ -24,6 +24,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <packaging>pom</packaging>
 
   <properties>
+    <ovsdb.version>1.4.0-SNAPSHOT</ovsdb.version>
     <skip.surefire.tests>false</skip.surefire.tests>
   </properties>
   <profiles>
