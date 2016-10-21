@@ -230,9 +230,13 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     }
     @Override
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                                 String gatewayIp, String transportZone) {
+                                 String gatewayIp, String transportZone, CommandSession session) {
         if (tepCommandHelper != null) {
-            tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+            try {
+                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+            } catch (TepException e) {
+                LOG.error(e.getMessage());
+            }
         } else {
             LOG.trace("tepCommandHelper doesnt exist");
         }
@@ -249,8 +253,12 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     }
 
     @Override
-    public void showTeps() {
-        tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker));
+    public void showTeps(CommandSession session) {
+        try {
+            tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker), session);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
     }
 
     public void showState(List<StateTunnelList> tunnels,CommandSession session) {
@@ -270,11 +278,11 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     }
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                           String gatewayIp, String transportZone) {
+                           String gatewayIp, String transportZone, CommandSession session) {
         try {
-            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
     }
 

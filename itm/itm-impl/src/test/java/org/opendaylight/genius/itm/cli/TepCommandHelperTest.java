@@ -279,7 +279,11 @@ public class TepCommandHelperTest {
     @Test
     public void testCreateLocalCacheTzonesEmpty(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
 
@@ -303,15 +307,20 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
-        tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp1, transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp1, transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
+
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
 
     }
 
     @Test
-    public void testCreateLocalCacheWithcheckExistingSubnet(){
+    public void testCreateLocalCacheWithcheckExistingSubnet() {
 
         transportZoneNew = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType2).build();
 
@@ -322,26 +331,40 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
-        tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp2, transportZone1);
+
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp2, transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
 
     }
 
     @Test
-    public void testCreateLocalCacheInvalidIp(){
+    public void testCreateLocalCacheInvalidIp() {
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp3,subnetMask,gwyIp1,transportZone1);
+        String output = null;
+        try {
+            tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp3, subnetMask, gwyIp1, transportZone1, null);
+        } catch (Exception e) {
+            output = e.getMessage() + newline;
+        }
 
-        assertEquals("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255" + newline,outContent.toString());
+        assertEquals("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255" + newline,output);
 
     }
 
     @Test
     public void testCreateLocalCacheGtwyIpNull(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,null,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,null,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
 
         LOG.debug("gateway is null");
 
@@ -350,19 +373,29 @@ public class TepCommandHelperTest {
     @Test
     public void testCreateLocalCacheInvalidSubnetMask(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,tepIp2,gwyIp1,transportZone1);
+        String output = null;
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,tepIp2,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            output = e.getMessage()+newline;
+        }
 
         String newline = System.getProperty("line.separator");
-        assertEquals("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32" + newline,outContent.toString());
+        assertEquals("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32" + newline,output);
 
     }
 
     @Test
-    public void testCreateLocalCacheMismatchIpwithSubnet(){
+    public void testCreateLocalCadcheMismatchIpwithSubnet() {
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp4,subnetMask,gwyIp1,transportZone1);
+        String output = null;
+        try {
+            tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp4, subnetMask, gwyIp1, transportZone1, null);
+        } catch (TepException e) {
+            output = e.getMessage() + newline;
+        }
 
-        assertEquals("IpAddress and gateWayIp should belong to the subnet provided" + newline,outContent.toString());
+        assertEquals("IpAddress and gateWayIp should belong to the subnet provided" + newline,output);
 
     }
 
@@ -406,7 +439,11 @@ public class TepCommandHelperTest {
     @Test
     public void testDeleteVtep(){
 
-        tepCommandHelper.deleteVtep(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp1, subnetMask, gwyIp1, transportZone1, null);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,vtepsIdentifier);
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,subnetsIdentifier);
@@ -416,26 +453,40 @@ public class TepCommandHelperTest {
     @Test
     public void testDeleteVtepInvalidIp(){
 
-        tepCommandHelper.deleteVtep(dpId1,portName1,vlanId,tepIp3,subnetMask,gwyIp1,transportZone1);
+        String output = null;
+        try {
+            tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp3, subnetMask, gwyIp1, transportZone1, null);
+        }catch (TepException e) {
+            output = e.getMessage() +newline;
+        }
 
         String newline = System.getProperty("line.separator");
-        assertEquals("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255" + newline,outContent.toString());
+        assertEquals("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255" + newline,output);
 
     }
 
     @Test
     public void testDeleteVtepInvalidSubnetMask(){
 
-        tepCommandHelper.deleteVtep(dpId1,portName1,vlanId,tepIp1,tepIp1,gwyIp1,transportZone1);
+        String output = null;
+        try {
+            tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp1, tepIp1, gwyIp1, transportZone1, null);
+        } catch (TepException e) {
+            output = e.getMessage() + newline;
+        }
 
-        assertEquals("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32" + newline,outContent.toString());
+        assertEquals("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32" + newline,output);
 
     }
 
     @Test
     public void testDeleteVtepGatewayIpNull(){
 
-        tepCommandHelper.deleteVtep(dpId1,portName1,vlanId,tepIp1,subnetMask,null,transportZone1);
+        try {
+            tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp1, subnetMask, null, transportZone1, null);
+        }  catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
 
         LOG.debug("gateway is null in deleteVtep");
 
@@ -444,16 +495,25 @@ public class TepCommandHelperTest {
     @Test
     public void testDeleteVtepIpSubnetMismatch(){
 
-        tepCommandHelper.deleteVtep(dpId1,portName1,vlanId,tepIp4,subnetMask,gwyIp1,transportZone1);
+        String output = null;
+        try {
+            tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp4, subnetMask, gwyIp1, transportZone1, null);
+        } catch (Exception e) {
+            output = e.getMessage()+ newline;
+        }
 
-        assertEquals("IpAddress and gateWayIp should belong to the subnet provided" + newline,outContent.toString());
+        assertEquals("IpAddress and gateWayIp should belong to the subnet provided" + newline,output);
 
     }
 
     @Test
     public void testBuildTepsTunnelTypeVxlan(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
@@ -469,7 +529,11 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
@@ -479,14 +543,14 @@ public class TepCommandHelperTest {
 
 
     @Test
-    public void testBuildTepsTransportZoneAbsent(){
+    public void testBuildTepsTransportZoneAbsent() throws TepException {
 
         optionalTransportZone = Optional.absent();
 
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
@@ -497,7 +561,11 @@ public class TepCommandHelperTest {
     @Test
     public void testShowTepsWithTransportZone(){
 
-        tepCommandHelper.showTeps(enabled,interval);
+        try {
+            tepCommandHelper.showTeps(enabled, interval, null);
+        } catch (TepException e){
+            LOG.error(e.getMessage());
+        }
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier);
 
@@ -511,10 +579,15 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        tepCommandHelper.showTeps(enabled,interval);
+        String output = null;
+        try {
+            tepCommandHelper.showTeps(enabled, interval, null);
+        } catch (TepException e) {
+            output = e.getMessage() + newline;
+        }
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier);
-        assertEquals("No teps configured" + newline,outContent.toString());
+        assertEquals("No teps configured" + newline,output);
 
     }
 
@@ -529,7 +602,11 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        tepCommandHelper.deleteVtep(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp1, subnetMask, gwyIp1, transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
         tepCommandHelper.deleteOnCommit();
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier);
@@ -552,8 +629,12 @@ public class TepCommandHelperTest {
     @Test
     public void testIsInCache(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
-        tepCommandHelper.isInCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
+        tepCommandHelper.isInCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
 
@@ -562,7 +643,11 @@ public class TepCommandHelperTest {
     @Test
     public void testValidateForDuplicates(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
         tepCommandHelper.validateForDuplicates(vtepsTest,transportZone1);
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier);
@@ -572,7 +657,11 @@ public class TepCommandHelperTest {
     @Test
     public void testCheckTepPerTzPerDpn(){
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1);
+        try {
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        } catch (TepException e) {
+            LOG.error(e.getMessage());
+        }
         tepCommandHelper.checkTepPerTzPerDpn(transportZone1,dpId2);
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);

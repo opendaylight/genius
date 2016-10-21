@@ -33,11 +33,13 @@ module itm {
             key zone-name;
             leaf zone-name {
                 type string;
+                mandatory true;
             }
             leaf tunnel-type {
                 type identityref {
                     base odlif:tunnel-type-base;
                 }
+                mandatory true;
             }
 
             list subnets {
