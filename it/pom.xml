@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright © 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
-
+Copyright (C) 2016 Red Hat, Inc. and others. All rights reserved.
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License v1.0 which accompanies this distribution,
 and is available at http://www.eclipse.org/legal/epl-v10.html
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>it-parent</artifactId>
-    <groupId>org.opendaylight.genius</groupId>
-    <version>0.2.0-SNAPSHOT</version>
-    <relativePath>../commons/it-parent</relativePath>
+    <groupId>org.opendaylight.odlparent</groupId>
+    <artifactId>odlparent-lite</artifactId>
+    <version>1.8.0-SNAPSHOT</version>
+    <relativePath/>
   </parent>
 
+  <groupId>org.opendaylight.genius</groupId>
   <artifactId>genius-it</artifactId>
-  <packaging>jar</packaging>
+  <version>0.2.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>genius-features</artifactId>
-      <version>${project.version}</version>
-      <classifier>features</classifier>
-      <type>xml</type>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.sonar-plugins.java</groupId>
-      <artifactId>sonar-jacoco-listeners</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>features</module>
+    <module>impl</module>
+  </modules>
 
+  <!-- DO NOT install or deploy the pom as it's only needed to initiate a build -->
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
+        <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <propertyExpansion>checkstyle.violationSeverity=error</propertyExpansion>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>
