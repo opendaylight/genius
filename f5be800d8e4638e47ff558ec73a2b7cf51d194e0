@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Kency Kurian <kency.kurian@ericsson.com>
+Code-Review+2: Faseela K <faseela.k@ericsson.com>
+Submitted-by: Faseela K <faseela.k@ericsson.com>
+Submitted-at: Sat, 22 Oct 2016 02:44:29 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/47352
+Project: genius
+Branch: refs/heads/stable/boron
