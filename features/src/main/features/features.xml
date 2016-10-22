@@ -45,6 +45,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <bundle>mvn:commons-net/commons-net/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/idmanager-impl/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/idmanager-shell/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/arputil-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/alivenessmonitor-impl/{{VERSION}}</bundle>
