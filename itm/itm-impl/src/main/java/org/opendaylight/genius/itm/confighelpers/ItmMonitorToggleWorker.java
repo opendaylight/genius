@@ -34,16 +34,12 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
     private DataBroker dataBroker;
     private String tzone;
     private boolean enabled;
-    private List<HwVtep> hwVteps;
-    private  Boolean exists;
     private Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
-    public  ItmMonitorToggleWorker(List<HwVtep> hwVteps,String tzone,boolean enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker, Boolean exists){
+    public  ItmMonitorToggleWorker(String tzone,boolean enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker){
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.enabled = enabled;
-        this.hwVteps = hwVteps;
-        this.exists = exists;
         this.monitorProtocol = monitorProtocol;
         logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and toggleBoolean {}",tzone,enabled );
         logger.debug("TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
@@ -51,36 +47,36 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
 
     @Override public List<ListenableFuture<Void>> call() throws Exception {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        logger.debug("Invoking Tunnel Monitor Worker tzone = {} enabled {}",tzone,enabled );
+        logger.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled );
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(hwVteps,enabled,tzone,t,exists);
+        toggleTunnelMonitoring(enabled,tzone,t);
         futures.add(t.submit());
         return futures;
     }
 
-    private void toggleTunnelMonitoring(List<HwVtep> hwVteps,Boolean enabled, String tzone, WriteTransaction t,Boolean exists) {
-        //exists means hwVteps exist for this tzone
-
-        List<String> TunnelList = ItmUtils.getTunnelsofTzone(hwVteps,tzone,dataBroker,exists);
+    private void toggleTunnelMonitoring(Boolean enabled, String tzone, WriteTransaction t) {
+        List<String> TunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+        logger.debug("toggleTunnelMonitoring: TunnelList size {}", TunnelList.size());
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder().setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
+        logger.debug("toggleTunnelMonitoring: Updating Operational DS");
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
         if(TunnelList !=null &&!TunnelList.isEmpty()) {
-            for (String tunnel : TunnelList)
-                toggle(tunnel, enabled,t);
+            for (String tunnel : TunnelList) {
+                toggle(tunnel, enabled, t);
+            }
         }
     }
 
     private void toggle(String tunnelInterfaceName, boolean enabled, WriteTransaction t) {
         if(tunnelInterfaceName!=null) {
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
-            logger.debug("TunnelMonitorToggleWorker: toggle with monitor protocol = {} ",monitorProtocol);
+            logger.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {},  monitorEnable = {} ",tunnelInterfaceName, monitorProtocol, enabled);
             IfTunnel tunnel = new IfTunnelBuilder().setMonitorEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
                     .addAugmentation(IfTunnel.class, tunnel);
             t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
-            InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-            TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder().setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
-
-        }
+       }
     }
 }
 

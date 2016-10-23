@@ -80,36 +80,18 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
 
     @Override
     protected void remove(InstanceIdentifier<TunnelMonitorParams> key, TunnelMonitorParams dataObjectModification) {
-        List<HwVtep> hwVteps = new ArrayList<>();
-        Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
+        if(monitorProtocol==null)
+            monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
-                hwVtepsExist = false;
-                hwVteps = new ArrayList<>();
-                if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                    for (Subnets sub : tzone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            hwVtepsExist = true;
-                            for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
-                                HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                        deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                        tzone.getTunnelType(), tzone);
-                                hwVteps.add(hwVtep);
-                            }
-                        }
-                    }
-                }
-                if(monitorProtocol==null)
-                    monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-                LOG.debug("Remove:Calling TunnelMonitorToggleWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.isEnabled());
-                LOG.debug("Update:Calling TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
-                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(hwVteps, tzone.getZoneName(),
-                        false,monitorProtocol, broker, hwVtepsExist);
+                LOG.debug("Remove - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
+                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                        false,monitorProtocol, broker);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -120,8 +102,6 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
                                     TunnelMonitorParams dataObjectModificationBefore,
                                     TunnelMonitorParams dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorChangeListener called with {}",dataObjectModificationAfter.isEnabled());
-        List<HwVtep> hwVteps = new ArrayList<>();
-        Boolean hwVtepsExist = false;
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol_before = dataObjectModificationBefore.getMonitorProtocol();
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol_after = dataObjectModificationAfter.getMonitorProtocol();
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
@@ -132,8 +112,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
             monitorProtocol = dataObjectModificationAfter.getMonitorProtocol();
         if(monitorProtocol_before!=null && monitorProtocol_after!=null)
         {
-            LOG.debug("Update TunnelMonitorChangeListener: Existing monitor protocol {}",monitorProtocol_before.getName());
-            LOG.debug("Update TunnelMonitorChangeListener: New monitor protocol {}",monitorProtocol_after.getName());
+            LOG.debug("TunnelMonitorChangeListener Update : Existing_MonitorProtocol {}, New_MonitorProtocol {} ",monitorProtocol_before.getName(), monitorProtocol_after.getName());
             if(!monitorProtocol_after.getName().equalsIgnoreCase(monitorProtocol_before.getName()))
                 LOG.error("Updation of monitor protocol not allowed");
 
@@ -141,26 +120,9 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
-                hwVtepsExist = false;
-                hwVteps = new ArrayList<>();
-                if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                    for (Subnets sub : tzone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            hwVtepsExist = true;//gets set to true only if this particular tzone has
-                            LOG.debug("Update:Calling TunnelMonitorToggleWorker with tzone = {} and hwtepExist",tzone.getZoneName());
-                            for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
-                                HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                        deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                        tzone.getTunnelType(), tzone);
-                                hwVteps.add(hwVtep);
-                            }
-                        }
-                    }
-                }
-                LOG.debug("Update:Calling TunnelMonitorToggleWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModificationAfter.isEnabled());
-                LOG.debug("Update:Calling TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
-                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(hwVteps, tzone.getZoneName(),
-                        dataObjectModificationAfter.isEnabled(), monitorProtocol, broker, hwVtepsExist);
+                LOG.debug("Update - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",tzone.getZoneName(),dataObjectModificationAfter.isEnabled(), monitorProtocol);
+                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                        dataObjectModificationAfter.isEnabled(), monitorProtocol, broker);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -168,38 +130,19 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
 
     @Override
     protected void add(InstanceIdentifier<TunnelMonitorParams> key, TunnelMonitorParams dataObjectModification) {
-        LOG.debug("add TunnelMonitorChangeListener called with {}",dataObjectModification.isEnabled());
-        LOG.debug("add TunnelMonitorChangeListener called with monitorProtcol {}",dataObjectModification.getMonitorProtocol());
-        List<HwVtep> hwVteps = new ArrayList<>();
-        Boolean hwVtepsExist = false;
+        LOG.debug("Add - TunnelMonitorToggleWorker with Enable = {}, MonitorProtocol = {}",dataObjectModification.isEnabled(), dataObjectModification.getMonitorProtocol());
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
+        if(monitorProtocol==null)
+            monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
-                hwVtepsExist = false;
-                hwVteps = new ArrayList<>();
-                if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                    for (Subnets sub : tzone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            hwVtepsExist = true;
-                            for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
-                                HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                        deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                        tzone.getTunnelType(), tzone);
-                                hwVteps.add(hwVtep);
-                            }
-                        }
-                    }
-                }
-                LOG.debug("Add:Calling TunnelMonitorToggleWorker with tzone = {} monitoringEnabled {} and monitoringProtocol {}",tzone.getZoneName(),dataObjectModification.isEnabled(), dataObjectModification.getMonitorProtocol());
-                if(monitorProtocol==null)
-                    monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-                LOG.debug("Add:Calling TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
-                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(hwVteps, tzone.getZoneName(),
-                        dataObjectModification.isEnabled(), monitorProtocol, broker, hwVtepsExist);
+                LOG.debug("Add: TunnelMonitorToggleWorker with tzone = {} monitoringEnabled {} and monitoringProtocol {}",tzone.getZoneName(),dataObjectModification.isEnabled(), dataObjectModification.getMonitorProtocol());
+                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                        dataObjectModification.isEnabled(), monitorProtocol, broker);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }

@@ -11,7 +11,7 @@ package org.opendaylight.genius.itm.impl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
-
+import java.util.Set;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,5 +65,21 @@ public class ItmCache {
     public InternalTunnel removeInternalTunnel(String name) {
         return this.internalTunnels.remove(name);
     }
+    public Collection<ExternalTunnel> getAllExternalTunnel() {
+        return this.externalTunnels.values();
+    }
+
+    public Collection<InternalTunnel> getAllInternalTunnel() {
+        return this.internalTunnels.values();
+    }
+
+    public Set<String> getAllInternalInterfaces() {
+        return this.internalTunnels.keySet();
+    }
+
+    public Set<String> getAllExternalInterfaces() {
+        return this.externalTunnels.keySet();
+    }
+
 
 }

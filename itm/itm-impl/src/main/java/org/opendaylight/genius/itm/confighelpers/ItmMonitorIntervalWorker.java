@@ -32,15 +32,11 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
     private DataBroker dataBroker;
     private String tzone;
     private Integer interval;
-    private List<HwVtep> hwVteps;
-    private  Boolean exists;
 
-    public ItmMonitorIntervalWorker(List<HwVtep> hwVteps,String tzone,Integer interval, DataBroker dataBroker, Boolean exists){
+    public ItmMonitorIntervalWorker(String tzone,Integer interval, DataBroker dataBroker){
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.interval = interval;
-        this.hwVteps = hwVteps;
-        this.exists = exists;
         logger.debug("ItmMonitorIntervalWorker: monitorInterval = {}",interval);
         logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval );
     }
@@ -49,18 +45,19 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         logger.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval );
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(hwVteps,interval,tzone,t,exists);
+        toggleTunnelMonitoring(interval,tzone,t);
         futures.add(t.submit());
         return futures;
     }
 
-    private void toggleTunnelMonitoring(List<HwVtep> hwVteps,Integer interval, String tzone, WriteTransaction t,Boolean exists) {
-        //exists means hwVteps exist for this tzone
-
-        //List<String> TunnelList = ItmUtils.getTunnelsofTzone(hwVteps, tzone, dataBroker, exists);
-        List<String> TunnelList = ItmUtils.getInternalTunnelsofTzone(tzone,dataBroker);
-        if(TunnelList !=null &&!TunnelList.isEmpty()) {
-            for (String tunnel : TunnelList)
+    private void toggleTunnelMonitoring(Integer interval, String tzone, WriteTransaction t) {
+        List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+        logger.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
+        InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
+        TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        if(tunnelList !=null &&!tunnelList.isEmpty()) {
+            for (String tunnel : tunnelList)
                 toggle(tunnel, interval,t);
         }
     }
@@ -73,9 +70,6 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
                     .addAugmentation(IfTunnel.class, tunnel);
             t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
-            InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-            TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
         }
     }
 }
