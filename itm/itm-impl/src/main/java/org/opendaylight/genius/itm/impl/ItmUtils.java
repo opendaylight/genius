@@ -795,6 +795,21 @@ public class ItmUtils {
         ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
         return monitorInterval;
     }
+    
+    public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker){
+        List<String> tunnelList = new ArrayList<String>();
+        Collection<String> internalInterfaces = itmCache.getAllInternalInterfaces();
+        if(internalInterfaces == null) {
+            updateTunnelsCache(dataBroker);
+            internalInterfaces = itmCache.getAllInternalInterfaces();
+        }
+        LOG.debug("ItmUtils.getTunnelList Cache Internal Interfaces size: {} ", internalInterfaces.size());
+        if(internalInterfaces!=null) {
+            tunnelList.addAll(internalInterfaces);
+        }
+        LOG.trace("ItmUtils.getTunnelList Internal: {}", tunnelList);
+        return tunnelList;
+    }
 
     public static List<String> getTunnelsofTzone(List<HwVtep> hwVteps, String tzone, DataBroker dataBroker, Boolean hwVtepsExist) {
 
