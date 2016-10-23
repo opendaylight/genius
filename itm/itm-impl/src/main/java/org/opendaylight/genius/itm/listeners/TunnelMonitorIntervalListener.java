@@ -45,34 +45,16 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
     @Override
     protected void remove(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
         LOG.debug("remove TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
-        List<HwVtep> hwVteps = new ArrayList<>();
-        Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
-              /*  hwVtepsExist = false;
-                hwVteps = new ArrayList<HwVtep>();
-                if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                    for (Subnets sub : tzone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            hwVtepsExist = true;
-                            LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and hwtepExist",tzone.getZoneName());
-                            for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
-                                HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                                deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                                tzone.getTunnelType(), tzone);
-                                hwVteps.add(hwVtep);
-                            }
-                        }
-                    }
-                }*/
                 //if you remove configuration, the last configured interval is only set i.e no change
                 LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.getInterval());
-                ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(hwVteps, tzone.getZoneName(),
-                        dataObjectModification.getInterval(), broker, hwVtepsExist);
+                ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
+                        dataObjectModification.getInterval(), broker);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -82,33 +64,15 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
                                     TunnelMonitorInterval dataObjectModificationBefore,
                                     TunnelMonitorInterval dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorIntervalListener called with {}",dataObjectModificationAfter.getInterval());
-        List<HwVtep> hwVteps = new ArrayList<>();
-        Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
-                /*hwVtepsExist = false;
-                hwVteps = new ArrayList<HwVtep>();
-                if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                    for (Subnets sub : tzone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            hwVtepsExist = true;//gets set to true only if this particular tzone has
-                            LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and hwtepExist",tzone.getZoneName());
-                            for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
-                                HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                                deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                                tzone.getTunnelType(), tzone);
-                                hwVteps.add(hwVtep);
-                            }
-                        }
-                    }
-                }*/
-                LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModificationAfter.getInterval());
-                ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(hwVteps, tzone.getZoneName(),
-                        dataObjectModificationAfter.getInterval(), broker, hwVtepsExist);
+                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModificationAfter.getInterval());
+                ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
+                        dataObjectModificationAfter.getInterval(), broker);
                 coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
         }
@@ -117,33 +81,15 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
     @Override
     protected void add(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
         LOG.debug("Add TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
-        List<HwVtep> hwVteps = new ArrayList<>();
-        Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
-                /*hwVtepsExist = false;
-                hwVteps = new ArrayList<HwVtep>();
-                if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                    for (Subnets sub : tzone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            hwVtepsExist = true;
-                            LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and hwtepExist",tzone.getZoneName());
-                            for (DeviceVteps deviceVtep : sub.getDeviceVteps()) {
-                                HwVtep hwVtep = ItmUtils.createHwVtepObject(deviceVtep.getTopologyId(), deviceVtep.getNodeId(),
-                                                deviceVtep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(), sub.getVlanId(),
-                                                tzone.getTunnelType(), tzone);
-                                hwVteps.add(hwVtep);
-                            }
-                        }
-                    }
-                }*/
                 LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.getInterval());
-                ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(hwVteps, tzone.getZoneName(),
-                        dataObjectModification.getInterval(), broker, hwVtepsExist);
+                ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
+                        dataObjectModification.getInterval(), broker);
                 //conversion to milliseconds done while writing to i/f-mgr config DS
                 coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
