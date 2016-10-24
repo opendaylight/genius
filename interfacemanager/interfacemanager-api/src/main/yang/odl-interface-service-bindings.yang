@@ -54,7 +54,7 @@ module interface-service-bindings {
 
             list bound-services {
                 key "service-priority";
-                max-elements "7";
+                max-elements "15";
                 min-elements "0";
                 leaf service-priority {
                     type uint8;
