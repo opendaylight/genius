@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -16,11 +16,16 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -42,6 +47,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeGroupIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeMeterIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeTableIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.getresourcepool.output.AvailableIds;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.getresourcepool.output.AvailableIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.released.resource.ids.DelayedResourceEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.released.resource.ids.DelayedResourceEntriesBuilder;
@@ -52,18 +58,27 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ResourceManager implements ResourceManagerService, AutoCloseable  {
-
+@Singleton
+public class ResourceManager implements ResourceManagerService, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceManager.class);
-    private final DataBroker broker;
+    private final DataBroker dataBroker;
     private final IdManagerService idManager;
+
     private final ConcurrentHashMap<Class<? extends ResourceTypeBase>, String> resourceMap;
     private final String tablesName = "resource.tables.name";
     private final String groupsName = "resource.groups.name";
     private final String metersName = "resource.meters.name";
 
-    public ResourceManager(DataBroker broker, IdManagerService idManager) {
-        this.broker = broker;
+    private final String tablesStr = "resource.tables.startId";
+    private final String tablesEnd = "resource.tables.endId";
+    private final String groupsStr = "resource.groups.startId";
+    private final String groupsEnd = "resource.tables.endId";
+    private final String metersStr = "resource.meters.startId";
+    private final String metersEnd = "resource.meters.endId";
+
+    @Inject
+    public ResourceManager(final DataBroker dataBroker, final IdManagerService idManager) {
+        this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.resourceMap = new ConcurrentHashMap<>();
         if (System.getProperty(tablesName) != null && System.getProperty(groupsName) != null
@@ -72,16 +87,17 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
             resourceMap.put(ResourceTypeGroupIds.class, System.getProperty(groupsName));
             resourceMap.put(ResourceTypeMeterIds.class, System.getProperty(metersName));
         } else {
-            //Updating Map with default values
+            // Updating Map with default values
             resourceMap.put(ResourceTypeTableIds.class, "tables");
             resourceMap.put(ResourceTypeGroupIds.class, "groups");
             resourceMap.put(ResourceTypeMeterIds.class, "meters");
         }
     }
 
-    @Override
-    public void close() throws Exception {
-        LOG.info("ResourceManager closed");
+    @PostConstruct
+    public void start() {
+        LOG.info("{} start", getClass().getSimpleName());
+        createIdpools();
     }
 
     @Override
@@ -139,12 +155,12 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
             LOG.error("Incorrect parameters for GetResourcePool");
         }
 
-        List<org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager
-                .rev160622.getresourcepool.output.AvailableIds> availableIdsList = new ArrayList<>();
+        List<AvailableIds> availableIdsList = new ArrayList<>();
         List<DelayedResourceEntries> delayedIdEntriesList = new ArrayList<>();
-        InstanceIdentifier<IdPool> parentId = ResourceManagerUtils.getIdPoolInstance(resourceMap
-                .get(input.getResourceType()));
-        Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId, broker);
+        InstanceIdentifier<IdPool> parentId = ResourceManagerUtils
+                .getIdPoolInstance(resourceMap.get(input.getResourceType()));
+        Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId,
+                dataBroker);
         if (optionalParentIdPool != null && optionalParentIdPool.isPresent()) {
             parentIdPool = optionalParentIdPool.get();
             AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
@@ -166,7 +182,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
 
         String localPool = ResourceManagerUtils.getLocalPoolName(resourceMap.get(input.getResourceType()));
         InstanceIdentifier<IdPool> localId = ResourceManagerUtils.getIdPoolInstance(localPool);
-        Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId,broker);
+        Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId, dataBroker);
         if (optionalLocalId != null && optionalLocalId.isPresent()) {
             localIdPool = optionalLocalId.get();
             AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
@@ -194,10 +210,10 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
         try {
             outputBuilder = new GetResourcePoolOutputBuilder().setAvailableIds(availableIdsList)
                     .setDelayedResourceEntries(delayedIdEntriesList);
-            rpcOutputBuilder =  RpcResultBuilder.success();
+            rpcOutputBuilder = RpcResultBuilder.success();
             rpcOutputBuilder.withResult(outputBuilder.build());
         } catch (NullPointerException e) {
-            rpcOutputBuilder =  RpcResultBuilder.failed();
+            rpcOutputBuilder = RpcResultBuilder.failed();
             rpcOutputBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
         }
         return Futures.immediateFuture(rpcOutputBuilder.build());
@@ -218,7 +234,8 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
         }
         InstanceIdentifier<IdPool> parentId = ResourceManagerUtils
                 .getIdPoolInstance(resourceMap.get(input.getResourceType()));
-        Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId, broker);
+        Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId,
+                dataBroker);
         if (optionalParentIdPool != null && optionalParentIdPool.isPresent()) {
             parentIdPool = optionalParentIdPool.get();
             AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
@@ -234,13 +251,13 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
 
         String localPool = ResourceManagerUtils.getLocalPoolName(resourceMap.get(input.getResourceType()));
         InstanceIdentifier<IdPool> localId = ResourceManagerUtils.getIdPoolInstance(localPool);
-        Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId,broker);
+        Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId, dataBroker);
         if (optionalLocalId != null && optionalLocalId.isPresent()) {
             localIdPool = optionalLocalId.get();
             AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
             if (availableLocalIdsHolder != null) {
-                totalIdsAvailableForAllocation +=
-                        availableLocalIdsHolder.getEnd() - availableLocalIdsHolder.getCursor();
+                totalIdsAvailableForAllocation += availableLocalIdsHolder.getEnd()
+                        - availableLocalIdsHolder.getCursor();
             }
             ReleasedIdsHolder releasedLocalIdsHolder = localIdPool.getReleasedIdsHolder();
             if (releasedLocalIdsHolder != null) {
@@ -288,5 +305,49 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable  {
             releaseIdRpcBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
         }
         return Futures.immediateFuture(releaseIdRpcBuilder.build());
+    }
+
+    private void createIdpools() {
+        // Create Tables Id Pool
+        if (System.getProperty(tablesName) != null && System.getProperty(tablesStr) != null
+                && System.getProperty(tablesEnd) != null) {
+            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(tablesName))
+                    .setLow(Long.valueOf(System.getProperty(tablesStr)))
+                    .setHigh(Long.valueOf(System.getProperty(tablesEnd))).build());
+        } else {
+            LOG.trace("Creating pool with default values");
+            idManager.createIdPool(
+                    new CreateIdPoolInputBuilder().setPoolName("tables").setLow((long) 0).setHigh((long) 254).build());
+        }
+
+        // Create Groups Id Pool
+        if (System.getProperty(groupsName) != null && System.getProperty(groupsStr) != null
+                && System.getProperty(groupsEnd) != null) {
+            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(groupsName))
+                    .setLow(Long.valueOf(System.getProperty(groupsStr)))
+                    .setHigh(Long.valueOf(System.getProperty(groupsEnd))).build());
+        } else {
+            LOG.trace("Creating pool with default values");
+            idManager.createIdPool(
+                    new CreateIdPoolInputBuilder().setPoolName("meters").setLow((long) 0).setHigh((long) 254).build());
+        }
+
+        // Create Meters Id Pool
+        if (System.getProperty(metersName) != null && System.getProperty(metersStr) != null
+                && System.getProperty(metersEnd) != null) {
+            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(metersName))
+                    .setLow(Long.valueOf(System.getProperty(metersStr)))
+                    .setHigh(Long.valueOf(System.getProperty(metersEnd))).build());
+        } else {
+            LOG.trace("Creating pool with default values");
+            idManager.createIdPool(
+                    new CreateIdPoolInputBuilder().setPoolName("groups").setLow((long) 0).setHigh((long) 254).build());
+        }
+    }
+
+    @Override
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("{} close", getClass().getSimpleName());
     }
 }
