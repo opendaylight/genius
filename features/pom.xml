@@ -35,6 +35,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <dlux.version>0.4.1-SNAPSHOT</dlux.version>
     <liblldp.version>0.11.1-SNAPSHOT</liblldp.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
+    <infrautils.version>1.0.1-SNAPSHOT</infrautils.version>
   </properties>
 
   <dependencyManagement>
@@ -319,6 +320,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
       <version>${project.version}</version>
       <type>xml</type>
       <classifier>config</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>infrautils-features</artifactId>
+      <version>${infrautils.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
     </dependency>
   </dependencies>
 </project>
