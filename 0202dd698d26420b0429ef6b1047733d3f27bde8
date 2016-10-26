@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_fa050115",
+        "filename": "features/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-26T12:58:41Z",
+      "side": 0,
+      "message": "why is this removed? It is still needed by the fcaps feature right?",
+      "revId": "0202dd698d26420b0429ef6b1047733d3f27bde8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
