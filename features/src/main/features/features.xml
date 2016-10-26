@@ -18,6 +18,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <repository>mvn:org.opendaylight.ovsdb/southbound-features/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.ovsdb/hwvtepsouthbound-features/{{VERSION}}/xml/features</repository>
   <repository>mvn:org.opendaylight.dlux/features-dlux/{{VERSION}}/xml/features</repository>
+  <repository>mvn:org.opendaylight.infrautils/infrautils-features/{{VERSION}}/xml/features</repository>
   <feature name='odl-genius-api' version='${project.version}' description='OpenDaylight :: genius :: api'>
     <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
     <feature version='${mdsal.model.version}'>odl-mdsal-models</feature>
@@ -25,6 +26,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <feature version='${ovsdb.version}'>odl-ovsdb-hwvtepsouthbound-api</feature>
     <feature version='${openflowplugin.version}'>odl-openflowplugin-nsf-model</feature>
     <feature version="${openflowplugin.version}">odl-openflowplugin-nxm-extensions</feature>
+    <feature version='${infrautils.version}'>odl-infrautils-counters</feature>
     <bundle>mvn:org.opendaylight.controller/liblldp/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/lockmanager-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/idmanager-api/{{VERSION}}</bundle>
@@ -42,6 +44,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <feature version='${ovsdb.version}'>odl-ovsdb-hwvtepsouthbound</feature>
     <feature version="${openflowplugin.version}">odl-openflowplugin-southbound</feature>
     <feature version="${openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+    <feature version='${infrautils.version}'>odl-infrautils-counters</feature>
     <bundle>mvn:commons-net/commons-net/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/idmanager-impl/{{VERSION}}</bundle>
