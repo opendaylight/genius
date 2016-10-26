@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_e8f89b4b",
+        "filename": "features/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-10-26T18:25:39Z",
+      "side": 1,
+      "message": "It is Eclipse formatting. I left it as it was again.",
+      "parentUuid": "3a65312a_1d043714",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_7d6e0bcb",
         "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c8015f3b",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-10-26T18:25:39Z",
+      "side": 1,
+      "message": "The close method in the ResourceManagerServiceProvider was like this: @Override\n    public void close() throws Exception {\n        rpcRegistration.close();\n    }\nso I just migrate the previous code. As you say, maybe we should release the idPools by calling idManager.deleteIdPool().\n\nFaseela, what do you think?",
+      "parentUuid": "3a65312a_7d6e0bcb",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_bd40a336",
         "filename": "resourcemanager/resourcemanager-impl/src/main/resources/org/opendaylight/blueprint/resourcemanager.xml",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2016-10-26T12:58:41Z",
       "side": 1,
       "message": "nitpicky stuff, but maybe keep things all lined up like the other blueprint.xml files. This makes it easier when others start copying the code and everything is the same.",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_a8fea336",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/resources/org/opendaylight/blueprint/resourcemanager.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-10-26T18:25:39Z",
+      "side": 1,
+      "message": "I copied this from the alivenessmonitor.xml what kind of line up you mean?",
+      "parentUuid": "3a65312a_bd40a336",
       "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
