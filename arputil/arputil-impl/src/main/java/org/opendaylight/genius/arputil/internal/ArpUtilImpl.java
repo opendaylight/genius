@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
 import org.opendaylight.controller.liblldp.HexEncode;
@@ -364,7 +365,7 @@ public class ArpUtilImpl implements OdlArputilService,
     }
 
     private List<Action> getEgressAction(String interfaceName) {
-        List<Action> actions = new ArrayList<Action>();
+        List<Action> actions = new ArrayList<>();
         try {
             GetEgressActionsForInterfaceInputBuilder egressAction = new GetEgressActionsForInterfaceInputBuilder().setIntfName(interfaceName);
             OdlInterfaceRpcService intfRpc = getInterfaceRpcService();
@@ -481,8 +482,9 @@ public class ArpUtilImpl implements OdlArputilService,
                         .getTargetProtocolAddress());
                 InetAddress addr = srcInetAddr;
                 //For GARP learn target IP
-                if (srcInetAddr.getHostAddress().equalsIgnoreCase(dstInetAddr.getHostAddress()))
+                if (srcInetAddr.getHostAddress().equalsIgnoreCase(dstInetAddr.getHostAddress())) {
                     addr = dstInetAddr;
+                }
                 byte[] srcMac = ethernet.getSourceMACAddress();
 
                 NodeConnectorRef ref = packetReceived.getIngress();
@@ -590,6 +592,7 @@ public class ArpUtilImpl implements OdlArputilService,
     private void fireArpRespRecvdNotification(String interfaceName,
                                               InetAddress inetAddr, byte[] macAddressBytes, int tableId, BigInteger metadata)
             throws InterruptedException {
+        ArpUtilCounters.arpResRcv.inc();
 
         IpAddress ip = new IpAddress(inetAddr.getHostAddress().toCharArray());
         String macAddress = NWUtil.toStringMacAddress(macAddressBytes);
@@ -600,12 +603,18 @@ public class ArpUtilImpl implements OdlArputilService,
         builder.setOfTableId((long) tableId);
         builder.setMacaddress(mac);
         builder.setMetadata(metadata);
-        notificationPublishService.putNotification(builder.build());
+        ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
+        if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
+            ArpUtilCounters.arpResRcvNotificationRejected.inc();
+        } else {
+            ArpUtilCounters.arpResRcvNotification.inc();
+        }
     }
 
     private void fireArpReqRecvdNotification(String interfaceName,
                                              InetAddress srcInetAddr, byte[] srcMac, InetAddress dstInetAddr,
                                              int tableId, BigInteger metadata) throws InterruptedException {
+        ArpUtilCounters.arpReqRcv.inc();
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
@@ -616,7 +625,12 @@ public class ArpUtilImpl implements OdlArputilService,
                 .toCharArray()));
         builder.setSrcMac(new PhysAddress(macAddress));
         builder.setMetadata(metadata);
-        notificationPublishService.putNotification(builder.build());
+        ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
+        if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
+            ArpUtilCounters.arpReqRcvNotificationRejected.inc();
+        } else {
+            ArpUtilCounters.arpReqRcvNotification.inc();
+        }
     }
 
     private void checkAndFireMacChangedNotification(String interfaceName,

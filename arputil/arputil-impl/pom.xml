@@ -79,6 +79,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>model-flow-service</artifactId>
       <version>${openflowplugin.version}</version>
     </dependency>
+        <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>counters-api</artifactId>
+      <version>${genius.infrautils.version}</version>
+    </dependency>
+    <!-- Testing Dependencies -->
     <dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>sal-binding-broker-impl</artifactId>
@@ -91,7 +97,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <scope>test</scope>
       <type>test-jar</type>
     </dependency>
-    <!-- Testing Dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
