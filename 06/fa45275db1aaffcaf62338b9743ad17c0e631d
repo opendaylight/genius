@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: David Suarez <david.suarez.fuentes@ericsson.com>
+Code-Review+2: Vivek Srivastava <vivek.v.srivastava@ericsson.com>
+Submitted-by: Vivek Srivastava <vivek.v.srivastava@ericsson.com>
+Submitted-at: Thu, 27 Oct 2016 05:17:12 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/47624
+Project: genius
+Branch: refs/heads/master
