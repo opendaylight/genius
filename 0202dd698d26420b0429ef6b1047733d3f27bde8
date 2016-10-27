@@ -16,6 +16,24 @@
       "revId": "0202dd698d26420b0429ef6b1047733d3f27bde8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7b0e1036",
+        "filename": "features/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-10-27T12:59:07Z",
+      "side": 0,
+      "message": "I still have a question about this. If this config is removed, then it seems the fcaps feature would fail to install. Did you test that condition? This config here has nothing to do with the bp migration so it can be left to another commit if it really needs to be removed.",
+      "parentUuid": "3a65312a_fa050115",
+      "revId": "0202dd698d26420b0429ef6b1047733d3f27bde8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
