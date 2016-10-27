@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -419,7 +420,11 @@ public class InterfaceManagerCommonUtils {
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIdentifier, dataBroker);
 
         if (interfaceParentEntry != null) {
-            LOG.error("Trying to bind the same parent interface {} to multiple trunk interfaces. ", parentInterface);
+            if (!Objects.equals(parentInterface, interfaceParentEntry.getParentInterface())) {
+                LOG.error("Trying to bind the same parent interface {} to multiple trunk interfaces. ", parentInterface);
+            } else {
+                LOG.trace("Child entry for interface {} already exists", childInterface);
+            }
             return false;
         }
 

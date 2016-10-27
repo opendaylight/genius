@@ -10,6 +10,8 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class OvsInterfaceConfigUpdateHelper{
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
@@ -139,7 +142,6 @@ public class OvsInterfaceConfigUpdateHelper{
 
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || (IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode())) {
-            futures.add(transaction.submit());
             return;
         }
 
@@ -147,13 +149,13 @@ public class OvsInterfaceConfigUpdateHelper{
         InterfaceParentEntry interfaceParentEntry =
                 InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
         if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
-            futures.add(transaction.submit());
             return;
         }
 
-        for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
-            InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus, transaction);
-        }
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(dataBroker,
+                operStatus, futures, interfaceParentEntry.getInterfaceChildEntry());
+        coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private static<T> boolean checkAugmentations(T oldAug, T newAug) {
@@ -169,4 +171,38 @@ public class OvsInterfaceConfigUpdateHelper{
         return false;
     }
 
+    private static class VlanMemberStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+
+        private DataBroker dataBroker;
+        private OperStatus operStatus;
+        private List<ListenableFuture<Void>> futures;
+        private List<InterfaceChildEntry> interfaceChildEntries;
+
+        public VlanMemberStateUpdateWorker(DataBroker dataBroker, OperStatus operStatus,
+                List<ListenableFuture<Void>> futures, List<InterfaceChildEntry> interfaceChildEntries) {
+            this.dataBroker = dataBroker;
+            this.operStatus = operStatus;
+            this.futures = futures;
+            this.interfaceChildEntries = interfaceChildEntries;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
+            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
+                        operShardTransaction);
+            }
+
+            futures.add(operShardTransaction.submit());
+            return futures;
+        }
+
+        @Override
+        public String toString() {
+            return "VlanMemberStateUpdateWorker [operStatus=" + operStatus + ", interfaceChildEntries="
+                    + interfaceChildEntries + "]";
+        }
+    }
 }
+
