@@ -16,6 +16,24 @@
       "revId": "9f3910572b7a4c2e845581ff127c174f08a1e4ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1b76fc3e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-10-27T15:03:45Z",
+      "side": 1,
+      "message": "Is this comment for line #230? I can remove it if it\u0027s not a valid case",
+      "parentUuid": "3a65312a_7bb9f0e8",
+      "revId": "9f3910572b7a4c2e845581ff127c174f08a1e4ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
