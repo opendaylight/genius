@@ -10,7 +10,8 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -24,20 +25,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class OvsInterfaceConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigRemoveHelper.class);
@@ -103,13 +99,11 @@ public class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
-        //FIXME: If the no. of child entries exceeds 100, perform txn updates in batches of 100.
-        for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
-            LOG.debug("removing interface state for  vlan trunk member {}", interfaceChildEntry.getChildInterface());
-            InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(), defaultOperationalShardTransaction, idManagerService);
-            FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker, futures);
-            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName,interfaceParentEntry.getParentInterface());
-        }
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        VlanMemberStateRemoveWorker vlanMemberStateRemoveWorker = new VlanMemberStateRemoveWorker(dataBroker,
+                idManagerService, dpId, interfaceName, futures, interfaceParentEntry);
+        coordinator.enqueueJob(interfaceName, vlanMemberStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+
     }
 
     private static void removeTunnelConfiguration(AlivenessMonitorService alivenessMonitorService, ParentRefs parentRefs,
@@ -189,5 +183,47 @@ public class OvsInterfaceConfigRemoveHelper {
             InterfaceManagerCommonUtils.deleteInterfaceStateInformation(staleInterface, transaction, idManagerService);
         }
         return ifState;
+    }
+
+    private static class VlanMemberStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+
+        private DataBroker dataBroker;
+        private IdManagerService idManager;
+        private BigInteger dpId;
+        private String interfaceName;
+        private List<ListenableFuture<Void>> futures;
+        private InterfaceParentEntry interfaceParentEntry;
+
+        public VlanMemberStateRemoveWorker(DataBroker dataBroker, IdManagerService idManager, BigInteger dpId,
+                String interfaceName, List<ListenableFuture<Void>> futures,
+                InterfaceParentEntry interfaceParentEntry) {
+            super();
+            this.dataBroker = dataBroker;
+            this.idManager = idManager;
+            this.dpId = dpId;
+            this.interfaceName = interfaceName;
+            this.futures = futures;
+            this.interfaceParentEntry = interfaceParentEntry;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
+            // FIXME: If the no. of child entries exceeds 100, perform txn
+            // updates in batches of 100.
+            for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
+                LOG.debug("removing interface state for vlan trunk member {}", interfaceChildEntry.getChildInterface());
+                InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),
+                        operShardTransaction, idManager);
+                FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker,
+                        futures);
+                FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName,
+                        interfaceParentEntry.getParentInterface());
+            }
+
+            futures.add(operShardTransaction.submit());
+            return futures;
+        }
+
     }
 }
