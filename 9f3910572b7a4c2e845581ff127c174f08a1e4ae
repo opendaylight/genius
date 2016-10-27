@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_7bb9f0e8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-10-27T14:22:20Z",
+      "side": 1,
+      "message": "could you please give me the usecase where parent-interface will be null for vlan member?",
+      "revId": "9f3910572b7a4c2e845581ff127c174f08a1e4ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
