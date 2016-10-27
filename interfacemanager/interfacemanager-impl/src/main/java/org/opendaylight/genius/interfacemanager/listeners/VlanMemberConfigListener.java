@@ -12,12 +12,14 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigUpdateHelper;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -65,14 +67,16 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         }
 
         String lowerLayerIf = parentRefs.getParentInterface();
-        if (lowerLayerIf.equals(interfaceOld.getName())) {
+        String interfaceName = interfaceOld.getName();
+        if (lowerLayerIf.equals(interfaceName)) {
             LOG.error("Attempt to remove Vlan Trunk-Member {} with same parent interface name.", interfaceOld);
             return;
         }
 
+        String synchronizationKey = getPrimordialParent(interfaceName, parentRefs);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker removeWorker = new RendererConfigRemoveWorker(key, interfaceOld, parentRefs, ifL2vlan);
-        coordinator.enqueueJob(lowerLayerIf, removeWorker, IfmConstants.JOB_MAX_RETRIES);
+        coordinator.enqueueJob(synchronizationKey, removeWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -90,16 +94,18 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         }
 
         String lowerLayerIf = parentRefsNew.getParentInterface();
-        if (lowerLayerIf.equals(interfaceNew.getName())) {
+        String interfaceName = interfaceNew.getName();
+        if (lowerLayerIf.equals(interfaceName)) {
             LOG.error("Configuration Error. Attempt to update Vlan Trunk-Member {} with same parent " +
                     "interface name.", interfaceNew);
             return;
         }
 
+        String synchronizationKey = getPrimordialParent(interfaceName, parentRefsNew);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigUpdateWorker updateWorker = new RendererConfigUpdateWorker(key, interfaceNew, interfaceOld,
                 parentRefsNew, ifL2vlanNew);
-        coordinator.enqueueJob(lowerLayerIf, updateWorker, IfmConstants.JOB_MAX_RETRIES);
+        coordinator.enqueueJob(synchronizationKey, updateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -115,14 +121,16 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         }
 
         String lowerLayerIf = parentRefs.getParentInterface();
-        if (lowerLayerIf.equals(interfaceNew.getName())) {
+        String interfaceName = interfaceNew.getName();
+        if (lowerLayerIf.equals(interfaceName)) {
             LOG.error("Attempt to add Vlan Trunk-Member {} with same parent interface name.", interfaceNew);
             return;
         }
 
+        String synchronizationKey = getPrimordialParent(interfaceName, parentRefs);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs, ifL2vlan);
-        coordinator.enqueueJob(lowerLayerIf, configWorker, IfmConstants.JOB_MAX_RETRIES);
+        coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -199,5 +207,46 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
             return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld,
                     ifL2vlan, idManager);
         }
+    }
+
+    /**
+     * Get the primordial parent interface name of the VLAN member interface.
+     * <br>
+     * 1) Get the vlan trunk referenced by the VLAN member<br>
+     * 2) If the vlan trunk has no referenced parent interface the primordial
+     * parent is the vlan trunk<br>
+     * 3) If the VLAN trunk has parent interface it will be used as the
+     * primordial parent<br>
+     *
+     *
+     * @param interfaceName
+     *            VLAN member interface name
+     * @param parentRefs
+     *            VLAN member parent reference
+     * @return the primordial parent name
+     */
+    private String getPrimordialParent(String interfaceName, ParentRefs parentRefs) {
+        String parentIfaceName = parentRefs.getParentInterface();
+        if (parentIfaceName == null) {
+            LOG.debug("No parent ref found for interface {}", interfaceName);
+            return null;
+        }
+
+        Interface parentIface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(parentIfaceName),
+                dataBroker);
+        if (parentIface == null) {
+            LOG.debug("No parent interface {} found for interface {}", parentIfaceName, interfaceName);
+            return parentIfaceName;
+        }
+
+        ParentRefs primordialParentRefs = parentIface.getAugmentation(ParentRefs.class);
+        if (primordialParentRefs == null) {
+            LOG.debug("Parent interface {} has no premordial parent {}", parentIfaceName);
+            return parentIfaceName;
+        }
+
+        String primordialIfaceName = primordialParentRefs.getParentInterface();
+        LOG.debug("Primordial parent of {} is {}", interfaceName, primordialIfaceName);
+        return primordialIfaceName != null ? primordialIfaceName : parentIfaceName;
     }
 }
