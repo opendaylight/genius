@@ -248,7 +248,8 @@ public class InterfaceManagerTestUtil {
         NodeConnectorBuilder ncBuilder = new NodeConnectorBuilder()
                 .setId(ncId)
                 .setKey(new NodeConnectorKey(ncId));
-        FlowCapableNodeConnectorBuilder flowCapableNodeConnectorBuilder = new FlowCapableNodeConnectorBuilder().setHardwareAddress(MacAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA"));
+        FlowCapableNodeConnectorBuilder flowCapableNodeConnectorBuilder = new FlowCapableNodeConnectorBuilder().
+                setHardwareAddress(MacAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA")).setName(InterfaceManagerTestUtil.interfaceName);
         ncBuilder.addAugmentation(FlowCapableNodeConnector.class,flowCapableNodeConnectorBuilder.build());
         return ncBuilder.build();
     }
