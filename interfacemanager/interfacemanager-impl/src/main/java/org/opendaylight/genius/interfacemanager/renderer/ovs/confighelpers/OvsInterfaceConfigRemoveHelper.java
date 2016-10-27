@@ -108,7 +108,7 @@ public class OvsInterfaceConfigRemoveHelper {
             LOG.debug("removing interface state for  vlan trunk member {}", interfaceChildEntry.getChildInterface());
             InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(), defaultOperationalShardTransaction, idManagerService);
             FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker, futures);
-            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
+            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName,interfaceParentEntry.getParentInterface());
         }
     }
 

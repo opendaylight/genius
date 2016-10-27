@@ -325,10 +325,16 @@ public class FlowBasedServicesUtils {
                 .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();
     }
 
-    public static void unbindDefaultEgressDispatcherService(DataBroker dataBroker, String interfaceName) {
+    public static InstanceIdentifier<BoundServices> buildServiceId(String interfaceName, short serviceIndex, Class<? extends ServiceModeBase> serviceMode) {
+        return InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class,
+                new ServicesInfoKey(interfaceName, serviceMode))
+                .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();
+    }
+
+    public static void unbindDefaultEgressDispatcherService(DataBroker dataBroker, String interfaceName, String parentInterface) {
         IfmUtil.unbindService(dataBroker, interfaceName, buildServiceId(interfaceName,
-                ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)),
-                ServiceModeEgress.class);
+                ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
+                ServiceModeEgress.class), parentInterface);
     }
 
     public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
