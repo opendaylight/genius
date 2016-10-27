@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c8883fc9",
+        "filename": "features/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-10-27T14:15:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_e8f89b4b",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_7d6e0bcb",
         "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
         "patchSetId": 3
@@ -108,6 +126,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_7b461025",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-10-27T14:15:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_3b049814",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_bd40a336",
         "filename": "resourcemanager/resourcemanager-impl/src/main/resources/org/opendaylight/blueprint/resourcemanager.xml",
         "patchSetId": 3
@@ -155,6 +191,24 @@
       "side": 1,
       "message": "The alignment. All the other files align inetrface with id above it, same for odl:type. rpc-service below should be the same also.",
       "parentUuid": "3a65312a_a8fea336",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1b039cb9",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/resources/org/opendaylight/blueprint/resourcemanager.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-10-27T14:15:28Z",
+      "side": 1,
+      "message": "Ok. This is Eclipse formatting the file, but I look at the other files.",
+      "parentUuid": "3a65312a_db12c457",
       "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
