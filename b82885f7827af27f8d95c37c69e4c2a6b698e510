@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_eea6e352",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilCounters.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 6177
+      },
+      "writtenOn": "2016-10-27T09:26:12Z",
+      "side": 1,
+      "message": "lets keep one convention of counter names with lowercase letters and underscores (like all other counters)",
+      "revId": "b82885f7827af27f8d95c37c69e4c2a6b698e510",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
