@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_2ed57b43",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-10-27T05:31:38Z",
+      "side": 1,
+      "message": "Sam, it is application\u0027s responsibility for releasing the resources themselves. Else in controller reboot scenarios and all we will end up deleting everything and reassigning ids which is not the recommended way.",
+      "parentUuid": "3a65312a_7d6e0bcb",
+      "revId": "000b0df3dc526c6a5078f1e34c2f3b72b19ccceb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_bd40a336",
         "filename": "resourcemanager/resourcemanager-impl/src/main/resources/org/opendaylight/blueprint/resourcemanager.xml",
         "patchSetId": 3
