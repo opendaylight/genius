@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d1f7438b",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 605,
+      "author": {
+        "id": 6328
+      },
+      "writtenOn": "2016-10-28T08:45:45Z",
+      "side": 1,
+      "message": "Why can\u0027t we use the offernotification() method with a timeout?",
+      "range": {
+        "startLine": 605,
+        "startChar": 75,
+        "endLine": 605,
+        "endChar": 92
+      },
+      "revId": "1c6c749d68e2d363d2b182b76484c6d259c84ed2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
