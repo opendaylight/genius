@@ -487,10 +487,10 @@ public class IfmUtil {
     }
 
     public static void unbindService(DataBroker dataBroker, String interfaceName, InstanceIdentifier<BoundServices>
-            boundServicesInstanceIdentifier, Class<? extends ServiceModeBase> serviceMode){
+            boundServicesInstanceIdentifier, String parentInterface){
         LOG.info("Unbinding Service from : {}", interfaceName);
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
-        dataStoreJobCoordinator.enqueueJob(interfaceName,
+        dataStoreJobCoordinator.enqueueJob(parentInterface,
                 () -> {
                     WriteTransaction t = dataBroker.newWriteOnlyTransaction();
                     t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
