@@ -88,6 +88,24 @@
       "revId": "0202dd698d26420b0429ef6b1047733d3f27bde8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d101033b",
+        "filename": "features/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-10-28T09:38:29Z",
+      "side": 0,
+      "message": "no, if this review goes in, fcaps will break..",
+      "parentUuid": "3a65312a_31ccb735",
+      "revId": "0202dd698d26420b0429ef6b1047733d3f27bde8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
