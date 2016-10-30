@@ -12,13 +12,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.genius</groupId>
     <artifactId>config-parent</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.1-Boron-SR1</version>
     <relativePath>../../commons/config-parent</relativePath>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>alivenessmonitor-impl</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1-Boron-SR1</version>
   <packaging>bundle</packaging>
 
   <dependencies>
@@ -86,7 +86,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.controller.model</groupId>
       <artifactId>model-inventory</artifactId>
-      <version>1.4.1-SNAPSHOT</version>
+      <version>1.4.1-Boron-SR1</version>
     </dependency>
   </dependencies>
 </project>

@@ -14,13 +14,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>odlparent-lite</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.7.1-Boron-SR1</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>commons</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1-Boron-SR1</version>
   <name>${project.artifactId}</name> <!-- Used by Sonar to set project name -->
   <packaging>pom</packaging>
 

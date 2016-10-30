@@ -11,28 +11,28 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.controller</groupId>
     <artifactId>config-parent</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.1-Boron-SR1</version>
     <relativePath/>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>config-parent</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1-Boron-SR1</version>
   <packaging>pom</packaging>
 
   <properties>
     <!-- ODL -->
-    <genius.version>0.1.1-SNAPSHOT</genius.version>
-    <yangtools.version>1.0.1-SNAPSHOT</yangtools.version>
-    <mdsal.model.version>0.9.1-SNAPSHOT</mdsal.model.version>
-    <controller.mdsal.version>1.4.1-SNAPSHOT</controller.mdsal.version>
-    <genius.mdsalutil.version>0.1.1-SNAPSHOT</genius.mdsalutil.version>
-    <genius.infrautils.version>1.0.1-SNAPSHOT</genius.infrautils.version>
-    <model.bgp.version>2013.07.15.9.1-SNAPSHOT</model.bgp.version>
-    <openflowplugin.version>0.3.1-SNAPSHOT</openflowplugin.version>
-    <genius.ovsdb.version>1.3.1-SNAPSHOT</genius.ovsdb.version>
-    <liblldp.version>0.11.1-SNAPSHOT</liblldp.version>
+    <genius.version>0.1.1-Boron-SR1</genius.version>
+    <yangtools.version>1.0.1-Boron-SR1</yangtools.version>
+    <mdsal.model.version>0.9.1-Boron-SR1</mdsal.model.version>
+    <controller.mdsal.version>1.4.1-Boron-SR1</controller.mdsal.version>
+    <genius.mdsalutil.version>0.1.1-Boron-SR1</genius.mdsalutil.version>
+    <genius.infrautils.version>1.0.1-Boron-SR1</genius.infrautils.version>
+    <model.bgp.version>2013.07.15.9.1-Boron-SR1</model.bgp.version>
+    <openflowplugin.version>0.3.1-Boron-SR1</openflowplugin.version>
+    <genius.ovsdb.version>1.3.1-Boron-SR1</genius.ovsdb.version>
+    <liblldp.version>0.11.1-Boron-SR1</liblldp.version>
     <karaf.shell.console.version>3.0.3</karaf.shell.console.version>
   </properties>
 
@@ -41,7 +41,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <dependency>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>mdsal-artifacts</artifactId>
-        <version>2.1.1-SNAPSHOT</version>
+        <version>2.1.1-Boron-SR1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

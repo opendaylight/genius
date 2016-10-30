@@ -12,13 +12,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.controller</groupId>
     <artifactId>config-parent</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.1-Boron-SR1</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>lockmanager-impl</artifactId>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.1.1-Boron-SR1</version>
   <packaging>bundle</packaging>
 
   <dependencies>
@@ -61,7 +61,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                       yang-maven-plugin
                     </artifactId>
                     <versionRange>
-                      [0.8.1-SNAPSHOT,)
+                      [0.8.1-Boron-SR1,)
                     </versionRange>
                     <goals>
                       <goal>generate-sources</goal>
