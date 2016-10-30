@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_261ab86e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigUpdateHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-10-30T17:14:14Z",
+      "side": 0,
+      "message": "why are these removed? update state entry is not submitted till this point",
+      "revId": "14cf9e5b8988c9a5139811e2132febcc2f645501",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
