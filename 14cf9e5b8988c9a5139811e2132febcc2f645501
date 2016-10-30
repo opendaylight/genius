@@ -16,6 +16,24 @@
       "revId": "14cf9e5b8988c9a5139811e2132febcc2f645501",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_8682ac50",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigUpdateHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-10-30T19:05:28Z",
+      "side": 0,
+      "message": "The calling method updateConfiguration() is calling futures.add(transaction.submit()); right after calling handleInterfaceAdminStateUpdates",
+      "parentUuid": "3a65312a_261ab86e",
+      "revId": "14cf9e5b8988c9a5139811e2132febcc2f645501",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
