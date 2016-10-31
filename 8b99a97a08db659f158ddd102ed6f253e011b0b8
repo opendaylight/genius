@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_8c264db9",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-31T15:46:47Z",
+      "side": 1,
+      "message": "the AutoCloseable is a very CSS thing; I would remove that at this opportunity.  Perhapse use extends AbstractLifecycle instead if you like, see https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines, and then @Override instead of @PostConstruct start() and stop() instead of close()",
+      "revId": "8b99a97a08db659f158ddd102ed6f253e011b0b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_89311f0e",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-10-31T15:46:47Z",
+      "side": 1,
+      "message": "Minor: I would keep this method just after the start() method, always together, not one after the constructor and one at the end of the class - it\u0027s just more easy to see when reading the code.",
+      "revId": "8b99a97a08db659f158ddd102ed6f253e011b0b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
