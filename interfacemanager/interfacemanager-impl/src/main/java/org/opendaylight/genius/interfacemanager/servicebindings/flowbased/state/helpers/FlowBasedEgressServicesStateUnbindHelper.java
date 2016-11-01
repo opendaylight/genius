@@ -114,9 +114,9 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
             }
         });
         BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeEgressDispatcherFlow(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
+        FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeEgressDispatcherFlow(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
         }
         futures.add(t.submit());
         return futures;
