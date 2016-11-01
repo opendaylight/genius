@@ -101,7 +101,7 @@ public class OvsInterfaceConfigRemoveHelper {
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         VlanMemberStateRemoveWorker vlanMemberStateRemoveWorker = new VlanMemberStateRemoveWorker(dataBroker,
-                idManagerService, dpId, interfaceName, futures, interfaceParentEntry);
+                idManagerService, dpId, interfaceName, interfaceParentEntry);
         coordinator.enqueueJob(interfaceName, vlanMemberStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
 
     }
@@ -191,23 +191,21 @@ public class OvsInterfaceConfigRemoveHelper {
         private IdManagerService idManager;
         private BigInteger dpId;
         private String interfaceName;
-        private List<ListenableFuture<Void>> futures;
         private InterfaceParentEntry interfaceParentEntry;
 
         public VlanMemberStateRemoveWorker(DataBroker dataBroker, IdManagerService idManager, BigInteger dpId,
-                String interfaceName, List<ListenableFuture<Void>> futures,
-                InterfaceParentEntry interfaceParentEntry) {
+                String interfaceName, InterfaceParentEntry interfaceParentEntry) {
             super();
             this.dataBroker = dataBroker;
             this.idManager = idManager;
             this.dpId = dpId;
             this.interfaceName = interfaceName;
-            this.futures = futures;
             this.interfaceParentEntry = interfaceParentEntry;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
             // FIXME: If the no. of child entries exceeds 100, perform txn
             // updates in batches of 100.
