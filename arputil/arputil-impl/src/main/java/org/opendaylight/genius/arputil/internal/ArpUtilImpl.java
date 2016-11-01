@@ -437,9 +437,10 @@ public class ArpUtilImpl implements OdlArputilService,
 
             List<Action> actions = getEgressAction(interfaceName);
             sendPacketOutWithActions(dpnId, payload, ref, actions);
-            if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("sent the arp response for "
-                        + input.getSrcIpaddress());
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Sent ARP response for IP {}, from source MAC {} to target MAC {} and target IP {} via dpnId {}",
+                        input.getSrcIpaddress().getIpv4Address().getValue(), HexEncode.bytesToHexStringFormat(srcMac),
+                        HexEncode.bytesToHexStringFormat(dstMac), input.getDstIpaddress().getIpv4Address().getValue(), dpnId);
             }
         } catch (Throwable e) {
             LOGGER.error("failed to send arp response for {} {}",
