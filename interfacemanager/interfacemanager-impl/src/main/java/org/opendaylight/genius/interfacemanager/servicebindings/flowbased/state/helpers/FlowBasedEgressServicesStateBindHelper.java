@@ -111,16 +111,16 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         });
         BoundServices highestPriority = allServices.remove(0);
         short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority() : highestPriority.getServicePriority() + 1);
-        FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, highestPriority, ifState.getName(), t, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex);
+        FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), t, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, dataBroker);
         BoundServices prev = null;
         for (BoundServices boundService : allServices) {
             if (prev!=null) {
-                FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority());
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority(), dataBroker);
             }
             prev = boundService;
         }
         if (prev!=null) {
-            FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority()+1));
+            FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority()+1), dataBroker);
         }
         futures.add(t.submit());
         return futures;
