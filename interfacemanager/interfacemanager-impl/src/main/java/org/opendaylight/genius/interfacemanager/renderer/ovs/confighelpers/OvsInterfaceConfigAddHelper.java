@@ -82,16 +82,9 @@ public class OvsInterfaceConfigAddHelper {
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, defaultOperShardTransaction,
                 idManager, futures, ifState);
 
-        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
-        InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
-        if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
-            return;
-        }
-
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(dataBroker, idManager, futures,
-                interfaceParentEntry.getInterfaceChildEntry(), ifState);
+        VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(dataBroker, idManager,
+                interfaceNew.getName(), futures, ifState);
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -154,26 +147,33 @@ public class OvsInterfaceConfigAddHelper {
 
         private DataBroker dataBroker;
         private IdManagerService idManager;
+        private String interfaceName;
         private List<ListenableFuture<Void>> futures;
-        private List<InterfaceChildEntry> interfaceChildEntries;
         private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState;
 
-        public VlanMemberStateAddWorker(DataBroker dataBroker, IdManagerService idManager,
-                List<ListenableFuture<Void>> futures, List<InterfaceChildEntry> interfaceChildEntries,
+        public VlanMemberStateAddWorker(DataBroker dataBroker, IdManagerService idManager, String interfaceName,
+                List<ListenableFuture<Void>> futures,
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
             this.dataBroker = dataBroker;
             this.idManager = idManager;
+            this.interfaceName = interfaceName;
             this.futures = futures;
-            this.interfaceChildEntries = interfaceChildEntries;
             this.ifState = ifState;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
+            InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
+            InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
+                    .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
+            if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
+                return futures;
+            }
+
             WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
             // FIXME: If the no. of child entries exceeds 100, perform txn
             // updates in batches of 100.
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+            for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
                 LOG.debug("adding interface state for vlan trunk member {}", interfaceChildEntry.getChildInterface());
                 InterfaceManagerCommonUtils.addStateEntry(interfaceChildEntry.getChildInterface(), dataBroker,
                         operShardTransaction, idManager, futures, ifState);
@@ -185,8 +185,7 @@ public class OvsInterfaceConfigAddHelper {
 
         @Override
         public String toString() {
-            return "VlanMemberStateAddWorker [interfaceChildEntries=" + interfaceChildEntries + ", ifState=" + ifState
-                    + "]";
+            return "VlanMemberStateAddWorker [interfaceName=" + interfaceName + ", ifState=" + ifState + "]";
         }
     }
 }
