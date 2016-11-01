@@ -109,8 +109,8 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
         if (allServices.size() == 1) {
             //calling LportDispatcherTableForService with current service index as 0 and next service index as
             // some value since this is the only service bound.
-            FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, boundServiceNew, ifState.getName(),
-                    transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, (short) (boundServiceNew.getServicePriority() + 1));
+            FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew, ifState.getName(),
+                    transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, (short) (boundServiceNew.getServicePriority() + 1), dataBroker);
             if (transaction != null) {
                 futures.add(transaction.submit());
             }
@@ -129,7 +129,8 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
                 //In this case the match criteria of existing service should be changed.
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, low)[0];
                 short lowerServiceIndex = (short) ((lower != null) ? lower.getServicePriority() : low.getServicePriority() + 1);
-                FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, low, ifState.getName(), transaction, ifState.getIfIndex(), low.getServicePriority(), lowerServiceIndex);
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, ifState.getName(), transaction, ifState.getIfIndex(),
+                        low.getServicePriority(), lowerServiceIndex, dataBroker);
             } else {
                 currentServiceIndex = boundServiceNew.getServicePriority();
             }
@@ -137,12 +138,12 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
         if (high != null) {
             currentServiceIndex = boundServiceNew.getServicePriority();
             if (high.equals(highest)) {
-                FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex, dataBroker);
             } else {
-                FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex);
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex, dataBroker);
             }
         }
-        FlowBasedServicesUtils.installEgressDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction, ifState.getIfIndex(), currentServiceIndex, nextServiceIndex);
+        FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew, ifState.getName(), transaction, ifState.getIfIndex(), currentServiceIndex, nextServiceIndex, dataBroker);
         futures.add(transaction.submit());
         return futures;
     }

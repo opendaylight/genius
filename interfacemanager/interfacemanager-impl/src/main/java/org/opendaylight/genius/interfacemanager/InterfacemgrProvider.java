@@ -483,9 +483,9 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     }
 
     @Override
-    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo) {
+    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo, String parentInterface) {
         IfmUtil.unbindService(dataBroker, interfaceName,
-                FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode), interfaceName);
+                FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority()), parentInterface);
     }
 
     @Override
