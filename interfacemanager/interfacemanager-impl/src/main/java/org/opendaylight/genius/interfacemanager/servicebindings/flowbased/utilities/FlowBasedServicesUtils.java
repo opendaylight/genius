@@ -24,6 +24,10 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.MatchInfoBase;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.InstructionInfo;
+import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -31,6 +35,7 @@ import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -271,9 +276,16 @@ public class FlowBasedServicesUtils {
         installFlow(dpId, ingressFlow, t);
     }
 
-    public static void installEgressDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
-                                                  WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
+    public static void installEgressDispatcherFlows(BigInteger dpId, BoundServices boundService, String interfaceName,
+                                                  WriteTransaction t, int interfaceTag, short currentServiceIndex,
+                                                  short nextServiceIndex, DataBroker dataBroker) {
         LOG.debug("Installing Egress Dispatcher Flows {}, {}", dpId, interfaceName);
+        installEgressDispatcherFlow(dpId, boundService, interfaceName, t, interfaceTag, currentServiceIndex, nextServiceIndex);
+        installEgressDispatcherSplitHorizonFlow(dpId, boundService, interfaceName, t, interfaceTag, currentServiceIndex, dataBroker);
+    }
+
+    private static void installEgressDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
+            WriteTransaction t, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
         String serviceRef = boundService.getServiceName();
         List<? extends MatchInfoBase> matches;
         matches = FlowBasedServicesUtils.getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex);
@@ -305,11 +317,40 @@ public class FlowBasedServicesUtils {
 
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService, currentServiceIndex);
-        Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
+        Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
-        installFlow(dpId, ingressFlow, t);
+        installFlow(dpId, egressFlow, t);
     }
 
+    public static void installEgressDispatcherSplitHorizonFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
+            WriteTransaction t, int interfaceTag, short currentServiceIndex, DataBroker dataBroker) {
+        Interface itf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+        
+        // only install split horizon drop flows for external interfaces
+        if (!isExternal(itf))
+        {
+            return;
+        }
+
+        BigInteger shFlagSet = BigInteger.ONE; // BigInteger.ONE is used for checking the Split-Horizon flag
+        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
+        List<MatchInfoBase> shMatches = new ArrayList<>();
+        shMatches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] { shFlagSet, MetaDataUtil.METADATA_MASK_SH_FLAG }));
+        shMatches.add(new NxMatchInfo(NxMatchFieldType.nxm_reg_6, new long[] {
+                MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, currentServiceIndex)}));
+        List<InstructionInfo> shInstructions = new ArrayList<>();
+        List<ActionInfo> actionsInfos = new ArrayList<>();
+        actionsInfos.add(new ActionInfo(ActionType.drop_action, new String[] {}));
+        shInstructions.add(new InstructionInfo(InstructionType.apply_actions, actionsInfos));
+
+        String flowRef = getSplitHorizonFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, currentServiceIndex, shFlagSet);
+        String serviceRef = boundService.getServiceName();
+        int splitHorizonFlowPriority = boundService.getServicePriority() + 1; // this must be higher priority than the egress flow
+        Flow egressSplitHorizonFlow = MDSALUtil.buildFlow(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
+                splitHorizonFlowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), shMatches, shInstructions);
+
+        installFlow(dpId, egressSplitHorizonFlow, t);
+    }
 
     public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
                                                  BigInteger cookie, List<Instruction> instructions) {
@@ -325,16 +366,10 @@ public class FlowBasedServicesUtils {
                 .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();
     }
 
-    public static InstanceIdentifier<BoundServices> buildServiceId(String interfaceName, short serviceIndex, Class<? extends ServiceModeBase> serviceMode) {
-        return InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class,
-                new ServicesInfoKey(interfaceName, serviceMode))
-                .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();
-    }
-
     public static void unbindDefaultEgressDispatcherService(DataBroker dataBroker, String interfaceName, String parentInterface) {
-        IfmUtil.unbindService(dataBroker, interfaceName, buildServiceId(interfaceName,
-                ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
-                ServiceModeEgress.class), parentInterface);
+        IfmUtil.unbindService(dataBroker, interfaceName, buildServiceId(interfaceName, 
+                ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)), 
+                parentInterface);
     }
 
     public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
@@ -390,6 +425,19 @@ public class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey).build();
 
         t.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+
+        removeEgressSplitHorizonDispatcherFlow(dpId, iface, t, currentServiceIndex);
+    }
+
+    public static void removeEgressSplitHorizonDispatcherFlow(BigInteger dpId, String iface, WriteTransaction t, short currentServiceIndex) {
+        String shFlowRef = getSplitHorizonFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface, currentServiceIndex, BigInteger.ONE);
+        FlowKey shFlowKey = new FlowKey(new FlowId(shFlowRef));
+        Node nodeDpn = buildInventoryDpnNode(dpId);
+        InstanceIdentifier<Flow> shFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, shFlowKey).build();
+
+        t.delete(LogicalDatastoreType.CONFIGURATION, shFlowInstanceId);
     }
 
     private static String getFlowRef(BigInteger dpnId, short tableId, String iface, BoundServices service, short currentServiceIndex) {
@@ -397,6 +445,10 @@ public class FlowBasedServicesUtils {
                 .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(currentServiceIndex).toString();
     }
 
+    private static String getSplitHorizonFlowRef(BigInteger dpnId, short tableId, String iface, short currentServiceIndex, BigInteger shFlag) {
+        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR)
+                .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(shFlag.toString()).toString();
+    }
     /**
      * This util method returns an array of ServiceInfo in which index 0 will
      * have the immediate lower priority service and index 1 will have the

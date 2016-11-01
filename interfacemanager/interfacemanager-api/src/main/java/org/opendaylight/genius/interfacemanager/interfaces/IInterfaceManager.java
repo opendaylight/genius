@@ -52,7 +52,8 @@ public interface IInterfaceManager {
             String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
-    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
+    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo, String parentInterface);
+
     List<Interface> getVlanInterfaces();
     List<Interface> getVxlanInterfaces();
     public Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
