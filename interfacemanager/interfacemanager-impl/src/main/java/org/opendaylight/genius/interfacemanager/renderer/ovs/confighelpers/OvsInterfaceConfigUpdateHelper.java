@@ -154,7 +154,7 @@ public class OvsInterfaceConfigUpdateHelper{
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(dataBroker,
-                operStatus, futures, interfaceParentEntry.getInterfaceChildEntry());
+                operStatus, interfaceParentEntry.getInterfaceChildEntry());
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -175,19 +175,18 @@ public class OvsInterfaceConfigUpdateHelper{
 
         private DataBroker dataBroker;
         private OperStatus operStatus;
-        private List<ListenableFuture<Void>> futures;
         private List<InterfaceChildEntry> interfaceChildEntries;
 
         public VlanMemberStateUpdateWorker(DataBroker dataBroker, OperStatus operStatus,
-                List<ListenableFuture<Void>> futures, List<InterfaceChildEntry> interfaceChildEntries) {
+                List<InterfaceChildEntry> interfaceChildEntries) {
             this.dataBroker = dataBroker;
             this.operStatus = operStatus;
-            this.futures = futures;
             this.interfaceChildEntries = interfaceChildEntries;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
