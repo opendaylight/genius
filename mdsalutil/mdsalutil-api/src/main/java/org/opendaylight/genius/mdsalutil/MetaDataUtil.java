@@ -20,6 +20,7 @@ public class MetaDataUtil {
     public static final BigInteger METADA_MASK_TUNNEL_ID =       new BigInteger("00000000FFFFFF00", 16);
     public static final BigInteger METADATA_MASK_SERVICE_SH_FLAG = new BigInteger("000000FFFF000001", 16);
     public static final BigInteger METADATA_MASK_LPORT_TAG_SH_FLAG =     new BigInteger("1FFFFF0000000001", 16);
+    public static final BigInteger METADATA_MASK_SH_FLAG = new BigInteger("0000000000000001", 16);
     public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("0000FFFF00000000", 16);
     public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("0000FFFFFFFFFFFE", 16);
 
