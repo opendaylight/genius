@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_af405b57",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-01T17:35:19Z",
+      "side": 1,
+      "message": "why can\u0027t me make this common and do read only once at the beginning?",
+      "revId": "3ce67a892f7d46238bcab3918c2724d416b98e53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ef21b3b5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigUnbindHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-01T17:35:19Z",
+      "side": 1,
+      "message": "same comment as previous file, read in one common place",
+      "revId": "3ce67a892f7d46238bcab3918c2724d416b98e53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
