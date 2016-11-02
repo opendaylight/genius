@@ -20,6 +20,7 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
@@ -48,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.impl.rev160406.modules.module.configuration.interfacemanager.impl.Mdsalutil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceKey;
@@ -128,6 +130,19 @@ public class InterfaceManagerTestUtil {
         return ifaceBuilder.build();
     }
 
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface buildStateInterface(
+            String ifName, String dpnId, String portNo, String phyAddress) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder ifaceBuilder =
+                new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder();
+        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(ifName));
+        ifaceBuilder.setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
+        ifaceBuilder.setLowerLayerIf(Arrays.asList("openflow:"+dpnId+":"+portNo));
+        if(phyAddress != null) {
+            ifaceBuilder.setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress.getDefaultInstance(phyAddress));
+        }
+        return ifaceBuilder.build();
+    }
+
     public static InstanceIdentifier<NodeConnector> getNcIdent(String nodeKey, NodeConnectorId ncId) {
         return InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(new NodeId(nodeKey)))
@@ -157,6 +172,24 @@ public class InterfaceManagerTestUtil {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).setParentInterface(ifName).build();
+        builder.addAugmentation(ParentRefs.class, parentRefs);
+        if(ifType.equals(L2vlan.class)){
+            IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))
+                    .setL2vlanMode(IfL2vlan.L2vlanMode.Trunk).build();
+            builder.addAugmentation(IfL2vlan.class, l2vlan);
+        }else if(ifType.equals(IfTunnel.class)){
+            IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null).setTunnelSource(null)
+                    .setTunnelInterfaceType(null).build();
+            builder.addAugmentation(IfTunnel.class, tunnel);
+        }
+        return builder.build();
+    }
+
+    public static Interface buildInterface(String ifName, String desc, boolean enabled, Object ifType,
+                                           String parentInterface) {
+        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+                .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
+        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
         if(ifType.equals(L2vlan.class)){
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))
