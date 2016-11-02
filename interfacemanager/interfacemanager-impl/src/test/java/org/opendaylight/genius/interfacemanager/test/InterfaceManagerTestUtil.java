@@ -170,6 +170,24 @@ public class InterfaceManagerTestUtil {
         return builder.build();
     }
 
+    public static Interface buildInterface(String ifName, String desc, boolean enabled, Object ifType,
+                                           String parentInterface) {
+        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+                .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
+        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
+        builder.addAugmentation(ParentRefs.class, parentRefs);
+        if(ifType.equals(L2vlan.class)){
+            IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))
+                    .setL2vlanMode(IfL2vlan.L2vlanMode.Trunk).build();
+            builder.addAugmentation(IfL2vlan.class, l2vlan);
+        }else if(ifType.equals(IfTunnel.class)){
+            IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null).setTunnelSource(null)
+                    .setTunnelInterfaceType(null).build();
+            builder.addAugmentation(IfTunnel.class, tunnel);
+        }
+        return builder.build();
+    }
+
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled, Class<? extends TunnelTypeBase> tunType,
                                                  String remoteIpStr, String localIpStr) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
