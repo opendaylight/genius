@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_d5cd645f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-11-02T06:13:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_3a9f6761",
+      "revId": "0dc0862e417a2e5d71abc04136e766bc38be385b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_5abfc3d0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-01T19:47:03Z",
       "side": 1,
       "message": "this change looks okay..this will solve the race condition..do you want to put everything in the same worker? If not, adding state entry can be made to execute parallelly just like your previous implementation..",
+      "revId": "0dc0862e417a2e5d71abc04136e766bc38be385b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7504507e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-11-02T06:13:26Z",
+      "side": 1,
+      "message": "I think it would be safer to leave this read as part of this worker",
+      "parentUuid": "3a65312a_5abfc3d0",
       "revId": "0dc0862e417a2e5d71abc04136e766bc38be385b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
