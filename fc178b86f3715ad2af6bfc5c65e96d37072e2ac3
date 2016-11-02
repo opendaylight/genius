@@ -16,6 +16,24 @@
       "revId": "fc178b86f3715ad2af6bfc5c65e96d37072e2ac3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_551794a3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-11-02T06:44:05Z",
+      "side": 1,
+      "message": "Fixed.\nAre those improvements planned for Carbon?",
+      "parentUuid": "3a65312a_15efdcb1",
+      "revId": "fc178b86f3715ad2af6bfc5c65e96d37072e2ac3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
