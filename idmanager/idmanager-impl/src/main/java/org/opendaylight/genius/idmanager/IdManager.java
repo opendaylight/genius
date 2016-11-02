@@ -10,7 +10,6 @@ package org.opendaylight.genius.idmanager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,7 +19,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -67,19 +67,19 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 
-public class IdManager implements IdManagerService, AutoCloseable {
+@Singleton
+public class IdManager implements IdManagerService {
+
     private static final Logger LOG = LoggerFactory.getLogger(IdManager.class);
     private static final long DEFAULT_IDLE_TIME = 24 * 60 * 60;
+
     private final DataBroker broker;
-    private LockManagerService lockManager;
-    private ConcurrentMap<String, IdLocalPool> localPool;
-    private Timer cleanJobTimer = new Timer();
+    private final LockManagerService lockManager;
 
-    @Override
-    public void close() throws Exception {
-        LOG.info("IDManager Closed");
-    }
+    private final ConcurrentMap<String, IdLocalPool> localPool;
+    private final Timer cleanJobTimer = new Timer();
 
+    @Inject
     public IdManager(DataBroker db, LockManagerService lockManager) {
         broker = db;
         this.lockManager = lockManager;
@@ -91,7 +91,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
     private void populateCache() {
         // If IP changes during reboot, then there will be orphaned child pools.
         InstanceIdentifier<IdPools> idPoolsInstance = IdUtils.getIdPools();
-        Optional<IdPools> idPoolsOptional= MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, idPoolsInstance);
+        Optional<IdPools> idPoolsOptional = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, idPoolsInstance);
         if (!idPoolsOptional.isPresent()) {
             return;
         }
@@ -123,15 +123,8 @@ public class IdManager implements IdManagerService, AutoCloseable {
                     .parallelStream()
                     .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                             .getId(), delayedIdEntry.getReadyTimeSec()))
-                            .sorted(new Comparator<DelayedIdEntry>() {
-
-                                @Override
-                                public int compare(DelayedIdEntry idEntry1,
-                                        DelayedIdEntry idEntry2) {
-                                    return Long.compare(idEntry1.getReadyTimeSec(),
-                                            idEntry2.getReadyTimeSec());
-                                }
-                            }).collect(Collectors.toList());
+                            .sorted((idEntry1, idEntry2) -> Long.compare(idEntry1.getReadyTimeSec(),
+                                    idEntry2.getReadyTimeSec())).collect(Collectors.toList());
         }
         releasedIdHolder.setDelayedEntries(delayedIdEntryInCache);
         idLocalPool.setAvailableIds(availableIdHolder);
@@ -427,12 +420,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
     private long getIdsFromOtherChildPools(ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool) {
         List<ChildPools> childPoolsList = parentIdPool.getChildPools();
         // Sorting the child pools on last accessed time so that the pool that was not accessed for a long time comes first.
-        Collections.sort(childPoolsList, new Comparator<ChildPools>() {
-            @Override
-            public int compare(ChildPools childPool1, ChildPools childPool2) {
-                return childPool1.getLastAccessTime().compareTo(childPool2.getLastAccessTime());
-            }
-        });
+        Collections.sort(childPoolsList, (childPool1, childPool2) -> childPool1.getLastAccessTime().compareTo(childPool2.getLastAccessTime()));
         long currentTime = System.currentTimeMillis() / 1000;
         for (ChildPools childPools : childPoolsList) {
             if (childPools.getLastAccessTime() + DEFAULT_IDLE_TIME > currentTime) {
@@ -482,14 +470,8 @@ public class IdManager implements IdManagerService, AutoCloseable {
                 .parallelStream()
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                         .getId(), delayedIdEntry.getReadyTimeSec()))
-                .sorted(new Comparator<DelayedIdEntry>() {
-                    @Override
-                    public int compare(DelayedIdEntry idEntry1,
-                            DelayedIdEntry idEntry2) {
-                        return Long.compare(idEntry1.getReadyTimeSec(),
-                                idEntry2.getReadyTimeSec());
-                    }
-                }).collect(Collectors.toList());
+                .sorted((idEntry1, idEntry2) -> Long.compare(idEntry1.getReadyTimeSec(),
+                        idEntry2.getReadyTimeSec())).collect(Collectors.toList());
         releasedIds.setDelayedEntries(delayedIdEntriesLocalCache);
         releasedIds.setAvailableIdCount(releasedIds.getAvailableIdCount() + idCount);
         localIdPool.setReleasedIds(releasedIds);

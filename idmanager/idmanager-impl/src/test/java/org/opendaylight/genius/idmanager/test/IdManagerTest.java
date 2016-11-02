@@ -24,21 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
@@ -80,7 +76,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -122,11 +117,6 @@ public class IdManagerTest {
         childPoolIdentifier = buildChildPoolInstanceIdentifier(poolName, localPoolName);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        idManager.close();
-    }
-
     private String getLocalPoolName(String poolName) {
         return new StringBuilder(poolName).append(".").append(BLADE_ID).toString();
     }
@@ -137,34 +127,22 @@ public class IdManagerTest {
         when(lockManager.lock(any(LockInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build()));
         when(lockManager.unlock(any(UnlockInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder.<Void>success().build()));
         doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
-        doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
-            @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {
-                configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
-                return null;
-            }
-        }).when(mockWriteTx).put(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any(), any(IdPool.class), eq(true));
-        doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
-            @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {
-                configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
-                return null;
-            }
-        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<ChildPools>>any(), any(ChildPools.class), eq(true));
-        doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
-            @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {
-                configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
-                return null;
-            }
-        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any(), any(IdPool.class), eq(true));
-        doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
-            @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {
-                configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), null);
-                return null;
-            }
-        }).when(mockWriteTx).delete(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any());
+        doAnswer(invocation -> {
+		    configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
+		    return null;
+		}).when(mockWriteTx).put(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any(), any(IdPool.class), eq(true));
+        doAnswer(invocation -> {
+		    configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
+		    return null;
+		}).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<ChildPools>>any(), any(ChildPools.class), eq(true));
+        doAnswer(invocation -> {
+		    configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
+		    return null;
+		}).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any(), any(IdPool.class), eq(true));
+        doAnswer(invocation -> {
+		    configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), null);
+		    return null;
+		}).when(mockWriteTx).delete(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any());
 
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(eq(LogicalDatastoreType.CONFIGURATION), anyObject());
         if (idPools != null && !idPools.isEmpty()) {
@@ -479,7 +457,7 @@ public class IdManagerTest {
     }
 
     private IdPoolBuilder buildLocalIdPool(int blockSize, int start, int end, int cursor, String localPoolName, String parentPoolName) {
-        ReleasedIdsHolder releasedIdsHolder = createReleasedIdsHolder(0, null, (long) 30);
+        ReleasedIdsHolder releasedIdsHolder = createReleasedIdsHolder(0, null, 30);
         return new IdPoolBuilder().setBlockSize(blockSize)
                 .setKey(new IdPoolKey(localPoolName))
                 .setParentPoolName(parentPoolName)

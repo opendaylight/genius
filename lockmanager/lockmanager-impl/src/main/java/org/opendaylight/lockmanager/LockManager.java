@@ -29,7 +29,10 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class LockManager implements LockManagerService {
     private static final Logger LOG = LoggerFactory.getLogger(LockManager.class);
 
@@ -38,6 +41,7 @@ public class LockManager implements LockManagerService {
 
     private final DataBroker broker;
 
+    @Inject
     public LockManager(final DataBroker db) {
         broker = db;
     }
@@ -65,7 +69,8 @@ public class LockManager implements LockManagerService {
         String lockName = input.getLockName();
         LOG.info("Locking {}" , lockName);
         long waitTime = input.getTime() == null ? DEFAULT_WAIT_TIME_IN_MILLIS * DEFAULT_RETRY_COUNT : input.getTime();
-        TimeUnit timeUnit = (TimeUnit) (input.getTimeUnit() == null ? TimeUnit.MILLISECONDS: LockManagerUtils.convertToTimeUnit(input.getTimeUnit()));
+        TimeUnit timeUnit = input.getTimeUnit() == null ? TimeUnit.MILLISECONDS
+                : LockManagerUtils.convertToTimeUnit(input.getTimeUnit());
         waitTime = timeUnit.toMillis(waitTime);
         long retryCount = waitTime / DEFAULT_WAIT_TIME_IN_MILLIS;
         InstanceIdentifier<Lock> lockInstanceIdentifier = LockManagerUtils.getLockInstanceIdentifier(lockName);
@@ -98,10 +103,9 @@ public class LockManager implements LockManagerService {
 
     /**
      * Try to acquire lock indefinitely until it is successful.
-     * @param lockInstanceIdentifier
-     * @param lockData
      */
-    private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData) throws InterruptedException {
+    private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
+            throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
         for (int retry = 1; ; retry++) {
             try {
@@ -119,11 +123,6 @@ public class LockManager implements LockManagerService {
 
     /**
      * Try to acquire lock for mentioned retryCount. Returns true if successfully acquired lock.
-     * @param lockInstanceIdentifier
-     * @param lockData
-     * @param retryCount
-     * @return
-     * @throws InterruptedException
      */
     private boolean getLock(InstanceIdentifier<Lock> lockInstanceIdentifier,
             Lock lockData, long retryCount) throws InterruptedException {
@@ -146,13 +145,9 @@ public class LockManager implements LockManagerService {
 
     /**
      * Read and write the lock immediately if available. Returns true if successfully locked.
-     * @param lockInstanceIdentifier
-     * @param lockData
-     * @return
-     * @throws InterruptedException
-     * @throws ExecutionException
      */
-    private boolean readWriteLock (final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData) throws InterruptedException, ExecutionException {
+    private boolean readWriteLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
+            throws InterruptedException, ExecutionException {
         ReadWriteTransaction tx = broker.newReadWriteTransaction();
         Optional<Lock> result = Optional.absent();
         result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();

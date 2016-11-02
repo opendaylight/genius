@@ -10,7 +10,6 @@ package org.opendaylight.genius.idmanager;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
@@ -42,14 +41,15 @@ public class IdManagerServiceProvider implements BindingAwareProvider,
     }
 
     @Override
-    public void onSessionInitiated(ProviderContext session){
+    public void onSessionInitiated(ProviderContext session) {
         LOG.info("IDManagerserviceProvider Session Initiated");
         try {
             final  DataBroker dataBroker = session.getSALService(DataBroker.class);
             idManager = new IdManager(dataBroker, lockManager);
             idPoolListener = new IdPoolListener(dataBroker, idManager);
             idPoolListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-            final BindingAwareBroker.RpcRegistration<IdManagerService> rpcRegistration = getRpcProviderRegistry().addRpcImplementation(IdManagerService.class, idManager);
+            // final BindingAwareBroker.RpcRegistration<IdManagerService> rpcRegistration =
+            getRpcProviderRegistry().addRpcImplementation(IdManagerService.class, idManager);
         } catch (Exception e) {
             LOG.error("Error initializing services", e);
         }
@@ -61,6 +61,5 @@ public class IdManagerServiceProvider implements BindingAwareProvider,
 
     @Override
     public void close() throws Exception {
-        idManager.close();
     }
 }
