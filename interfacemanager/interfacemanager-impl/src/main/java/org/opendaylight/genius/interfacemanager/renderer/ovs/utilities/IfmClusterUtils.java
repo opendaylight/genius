@@ -51,6 +51,7 @@ public class IfmClusterUtils {
                     LOG.trace("job is not run as node is not owner for :{} ", IFACE_ENTITY);
                 }
             }
+
             @Override
             public void onFailure(Throwable error) {
                 LOG.error("Failed to identify owner for entity {} due to {}", IFACE_ENTITY, error);
