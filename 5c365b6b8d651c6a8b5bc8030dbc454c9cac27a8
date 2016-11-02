@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d59f244f",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-02T05:41:43Z",
+      "side": 1,
+      "message": "do you want this to be info? I think it is better to put it as TRACE itself.",
+      "revId": "5c365b6b8d651c6a8b5bc8030dbc454c9cac27a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
