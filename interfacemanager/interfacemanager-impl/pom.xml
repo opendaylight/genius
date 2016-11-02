@@ -48,6 +48,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
+      <!-- TODO This *.impl here as a not even <scope>test depenency seems wrong.. -->
       <artifactId>idmanager-impl</artifactId>
       <version>${genius.version}</version>
     </dependency>
@@ -63,6 +64,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.opendaylight.controller</groupId>
+      <!-- TODO This *.impl here as a not even <scope>test depenency seems wrong.. -->
       <artifactId>sal-binding-broker-impl</artifactId>
     </dependency>
     <dependency>
@@ -77,27 +79,36 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <!-- Testing Dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>testutils</artifactId>
+      <version>${genius.version}</version>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>lockmanager-impl</artifactId>
+      <version>${genius.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
       <scope>test</scope>
-      <version>1.6.4</version>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
-      <version>1.6.4</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.xtend</groupId>
+        <artifactId>xtend-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

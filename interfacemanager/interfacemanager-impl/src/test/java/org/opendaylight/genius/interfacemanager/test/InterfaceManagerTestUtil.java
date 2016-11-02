@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
@@ -128,6 +130,19 @@ public class InterfaceManagerTestUtil {
         return ifaceBuilder.build();
     }
 
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface buildStateInterface(
+            String ifName, String dpnId, String portNo, String phyAddress) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder ifaceBuilder =
+                new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder();
+        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(ifName));
+        ifaceBuilder.setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
+        ifaceBuilder.setLowerLayerIf(Arrays.asList("openflow:"+dpnId+":"+portNo));
+        if(phyAddress != null) {
+            ifaceBuilder.setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress.getDefaultInstance(phyAddress));
+        }
+        return ifaceBuilder.build();
+    }
+
     public static InstanceIdentifier<NodeConnector> getNcIdent(String nodeKey, NodeConnectorId ncId) {
         return InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(new NodeId(nodeKey)))
@@ -157,6 +172,31 @@ public class InterfaceManagerTestUtil {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).setParentInterface(ifName).build();
+        builder.addAugmentation(ParentRefs.class, parentRefs);
+        if(ifType.equals(L2vlan.class)){
+            IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))
+                    .setL2vlanMode(IfL2vlan.L2vlanMode.Trunk).build();
+            builder.addAugmentation(IfL2vlan.class, l2vlan);
+        }else if(ifType.equals(IfTunnel.class)){
+            IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null).setTunnelSource(null)
+                    .setTunnelInterfaceType(null).build();
+            builder.addAugmentation(IfTunnel.class, tunnel);
+        }
+        return builder.build();
+    }
+
+    public static Node buildInventoryDpnNode(BigInteger dpnId) {
+        NodeId nodeId = new NodeId("openflow:" + dpnId);
+        Node nodeDpn = new NodeBuilder().setId(nodeId).setKey(new NodeKey(nodeId)).build();
+
+        return nodeDpn;
+    }
+
+    public static Interface buildInterface(String ifName, String desc, boolean enabled, Object ifType,
+                                           String parentInterface) {
+        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+                .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
+        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
         if(ifType.equals(L2vlan.class)){
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))

@@ -76,6 +76,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <artifactId>awaitility</artifactId>
     <scope>test</scope>
   </dependency>
+  <dependency>
+    <groupId>org.opendaylight.mdsal</groupId>
+    <artifactId>mdsal-binding-test-utils</artifactId>
+    <scope>test</scope>
+  </dependency>
 </dependencies>
  <build>
     <plugins>
