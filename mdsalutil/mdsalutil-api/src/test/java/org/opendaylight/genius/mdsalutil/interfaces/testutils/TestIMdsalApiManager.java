@@ -7,14 +7,18 @@
  */
 package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 
+import static org.junit.Assert.assertTrue;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.mockito.Mockito;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.mdsal.binding.testutils.AssertDataObjects;
 
 /**
  * Fake IMdsalApiManager useful for tests.
@@ -46,6 +50,16 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             flows = initializeFlows();
         }
         return flows;
+    }
+
+    public void assertFlows(Iterable<FlowEntity> expectedFlows) {
+        List<FlowEntity> flows = this.getFlows();
+        if (!Iterables.isEmpty(expectedFlows)) {
+            assertTrue("No Flows created (bean wiring may be broken?)", !flows.isEmpty());
+        }
+        // TODO Support Iterable <-> List directly within XtendBeanGenerator
+        List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
+        AssertDataObjects.assertEqualBeans(expectedFlowsAsNewArrayList, flows);
     }
 
     @Override
