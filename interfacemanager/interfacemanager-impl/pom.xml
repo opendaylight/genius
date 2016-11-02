@@ -81,10 +81,20 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>inject.guice.testutils</artifactId>
+      <version>${genius.infrautils.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-binding-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
