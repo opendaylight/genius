@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_15efdcb1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-02T06:22:45Z",
+      "side": 1,
+      "message": "returning null should be sufficient..did you check that?\nBtw, I had suggested some improvements in this area..we can have the read in one queue, and the subsequent for loop can be executed in parallel jobs..However, adding DJC within another DJC has the disadvantage that, even if the first job fails, we will end up retrying the second job as well",
+      "revId": "fc178b86f3715ad2af6bfc5c65e96d37072e2ac3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
