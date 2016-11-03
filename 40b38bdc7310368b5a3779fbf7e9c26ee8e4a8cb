@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_4169938a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 701,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "doesn\u0027t add much value by being separate function. since only one caller, better move this code in-line.",
+      "range": {
+        "startLine": 701,
+        "startChar": 99,
+        "endLine": 701,
+        "endChar": 117
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2141f739",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "would prefer use of constant with self-explanatory name for this.",
+      "range": {
+        "startLine": 704,
+        "startChar": 63,
+        "endLine": 704,
+        "endChar": 65
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_e17c1f75",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 720,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "these comments not needed.",
+      "range": {
+        "startLine": 718,
+        "startChar": 8,
+        "endLine": 720,
+        "endChar": 11
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_c1aac3d3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "we don\u0027t throw exceptions for any of other actions. I\u0027d prefer not to throw just to follow convention but would like some Java experts to chime in if this is good idea or not. If yes, would be good to do same for others.",
+      "range": {
+        "startLine": 724,
+        "startChar": 12,
+        "endLine": 728,
+        "endChar": 13
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_214bb72c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "these two don\u0027t really add any value by being separate functions. could probably do the same inline like other actions.",
+      "range": {
+        "startLine": 736,
+        "startChar": 8,
+        "endLine": 748,
+        "endChar": 9
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_c15c8328",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "would prefer use of a constant with self explanatory name.",
+      "range": {
+        "startLine": 770,
+        "startChar": 28,
+        "endLine": 770,
+        "endChar": 30
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_41b6b33e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 817,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "15 for?",
+      "range": {
+        "startLine": 817,
+        "startChar": 53,
+        "endLine": 817,
+        "endChar": 55
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_8163abb0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 831,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-03T15:12:36Z",
+      "side": 1,
+      "message": "Thanks for adding these here. I was planning to do these and refactor rest of code to use these functions.\n\nmove this next to nxLoadRegAction, for better readability.",
+      "range": {
+        "startLine": 827,
+        "startChar": 4,
+        "endLine": 831,
+        "endChar": 5
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
