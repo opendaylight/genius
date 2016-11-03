@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c3112bae",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-03T10:59:53Z",
+      "side": 1,
+      "message": "Got it, if there is a possibility of egress service unsetting it, this is the right approach",
+      "parentUuid": "3a65312a_c325abac",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_b0c71312",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 8
@@ -100,6 +118,24 @@
       "writtenOn": "2016-11-03T10:30:02Z",
       "side": 1,
       "message": "I saw the third parameter on buildFlowNew is the priority.. this is used for the flow priority, no?\n\nThe priority used for this is boundService.getServicePriority()..\n\nWe need to have this as a higher priority flow, otherwise OVS can arbitrarily choose one of the flows - it doesn\u0027t choose the most exact match if they both have the same priority.",
+      "parentUuid": "3a65312a_504b1fb0",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_632017f8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-03T10:59:53Z",
+      "side": 1,
+      "message": "Okaay..i was thinking OVS will match on the most matching flow. just noticed that flow priority is being taken as service priority, actually there is a separate flow-priority in yang model, (interface-service-bindings.yang), however it is not being used :) it is a bug in the existing code",
       "parentUuid": "3a65312a_504b1fb0",
       "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
