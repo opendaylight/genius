@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d0d60fc5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-03T07:03:54Z",
+      "side": 1,
+      "message": "I have a concern on calling this from here. This method is getting called for each of the services bound on the interface, since we do check for the service index, it will not cause any harm, but do we really need it? If we program the splithorizonflow with the default service index, it will be the last executed flow in 220.. is that the expectation? or is it okaay to have an entry with highest service priority to drop the packet before even forwarding to egress services? This is just a question..I am not sure about the requirement.",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_b0c71312",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-03T07:03:54Z",
+      "side": 1,
+      "message": "can\u0027t we use matches \u003d FlowBasedServicesUtils.getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex); and then append split horizon match to this?",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_504b1fb0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-03T07:03:54Z",
+      "side": 1,
+      "message": "service priority and flow priority are two different things. Making flowpriority greater than service priority will not help the problem you are sloving..Also there is no need to do this.. Actual egress flow will match only register value..Since split horizon flow is having a match on ingress metadata as well, what is the problem even if this is lower priority?",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
