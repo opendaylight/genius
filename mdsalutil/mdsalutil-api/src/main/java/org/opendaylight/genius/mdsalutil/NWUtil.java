@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
@@ -96,6 +97,56 @@ public class NWUtil {
 
         sb.setLength(17);
         return sb.toString();
+    }
+    
+    /**
+     * Accepts a MAC address and returns the corresponding long, where the MAC
+     * bytes are set on the lower order bytes of the long.
+     * 
+     * @param macAddress
+     * @return a long containing the mac address bytes
+     */
+    public static long macByteToLong(byte[] macAddress) {
+            long mac = 0;
+            for (int i = 0; i < 6; i++) {
+                    long t = (macAddress[i] & 0xffL) << ((5 - i) * 8);
+                    mac |= t;
+            }
+            return mac;
+    }
+
+    /**
+     * Accepts a MAC address of the form 00:aa:11:bb:22:cc, case does not
+     * matter, and returns the corresponding long, where the MAC bytes are set
+     * on the lower order bytes of the long.
+     *
+     * @param macAddress
+     *            in String format
+     * @return a long containing the mac address bytes
+     */
+    public static long macToLong(MacAddress macAddress) {
+            return macByteToLong(macStrToByte(macAddress.getValue()));
+    }
+
+    /**
+     * Accepts a MAC address of the form 00:aa:11:bb:22:cc, case does not
+     * matter, and returns a corresponding byte[].
+     * 
+     * @param macAddress
+     * @return
+     */
+    public static byte[] macStrToByte(String macAddress) {
+            final String HEXES = "0123456789ABCDEF";
+            byte[] address = new byte[6];
+            String[] macBytes = macAddress.split(":");
+            if (macBytes.length != 6)
+                    throw new IllegalArgumentException(
+                                    "Specified MAC Address must contain 12 hex digits" + " separated pairwise by :'s.");
+            for (int i = 0; i < 6; ++i) {
+                    address[i] = (byte) ((HEXES.indexOf(macBytes[i].toUpperCase().charAt(0)) << 4)
+                                    | HEXES.indexOf(macBytes[i].toUpperCase().charAt(1)));
+            }
+            return address;
     }
 
     public static String toStringMacAddress(byte[] macAddress)
