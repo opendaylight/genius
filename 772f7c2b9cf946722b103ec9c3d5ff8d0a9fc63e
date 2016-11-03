@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c325abac",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-03T10:30:02Z",
+      "side": 1,
+      "message": "I thought you were bothered (correctly so) by installFlow being called per-service. This was the method to just install it once for the default service, otherwise we will call it multiple times even if with the same flow.\n\nWe could have put the rule for the first service today.. but theoretically I think in the future one of the egress services *could* want to unset the SH bit. Since we only have one egress service (ACL) today, not entirely sure what the correct approach is. Leaving it with the default is ok I think.",
+      "parentUuid": "3a65312a_d0d60fc5",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_b0c71312",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c3464b23",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-03T10:30:02Z",
+      "side": 1,
+      "message": "Yeah, fixed, needed to change return type of getMatchInfoForEgress otherwise .add of metadata didn\u0027t work",
+      "parentUuid": "3a65312a_b0c71312",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_504b1fb0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 8
@@ -47,6 +83,24 @@
       "writtenOn": "2016-11-03T07:03:54Z",
       "side": 1,
       "message": "service priority and flow priority are two different things. Making flowpriority greater than service priority will not help the problem you are sloving..Also there is no need to do this.. Actual egress flow will match only register value..Since split horizon flow is having a match on ingress metadata as well, what is the problem even if this is lower priority?",
+      "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_63c49740",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-03T10:30:02Z",
+      "side": 1,
+      "message": "I saw the third parameter on buildFlowNew is the priority.. this is used for the flow priority, no?\n\nThe priority used for this is boundService.getServicePriority()..\n\nWe need to have this as a higher priority flow, otherwise OVS can arbitrarily choose one of the flows - it doesn\u0027t choose the most exact match if they both have the same priority.",
+      "parentUuid": "3a65312a_504b1fb0",
       "revId": "772f7c2b9cf946722b103ec9c3d5ff8d0a9fc63e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
