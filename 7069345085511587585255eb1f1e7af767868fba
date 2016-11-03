@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_50e2ff9f",
+        "filename": "features/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-11-03T07:14:48Z",
+      "side": 1,
+      "message": "should be 1.0.1-SNAPSHOT",
+      "revId": "7069345085511587585255eb1f1e7af767868fba",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
