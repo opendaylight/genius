@@ -13,23 +13,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
-    static Logger s_logger = LoggerFactory.getLogger(Activator.class);
-    private Runnable listener;
+
+    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+
+    private AlarmNotificationListeners notificationListeners;
     private Thread listenerThread;
 
-    public void start(BundleContext context) {
-        s_logger.info("Starting alarmmanager bundle");
-        AlarmNotificationListeners notificationListeners = new AlarmNotificationListeners(context);
-        try {
-            listener = notificationListeners;
-            listenerThread = new Thread(listener);
-            listenerThread.start();
-        } catch (Exception e) {
-            s_logger.error("Exception in alarm thread {}", e);
-        }
+    @Override
+    public void start(BundleContext context) throws Exception {
+        LOG.info("Starting alarmmanager bundle");
+        notificationListeners = new AlarmNotificationListeners(context);
+        listenerThread = new Thread(notificationListeners);
+        listenerThread.start();
     }
 
+    @Override
     public void stop(BundleContext context) {
-        s_logger.info("Stopping alarmmanager bundle");
+        LOG.info("Stopping alarmmanager bundle");
+        notificationListeners.setShouldContinue(false);
+        listenerThread.interrupt();
     }
 }
