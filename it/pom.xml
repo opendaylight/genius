@@ -14,7 +14,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <artifactId>it-parent</artifactId>
     <groupId>org.opendaylight.genius</groupId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
     <relativePath>../commons/it-parent</relativePath>
   </parent>
 
