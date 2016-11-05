@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_872c54ad",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-05T18:10:30Z",
+      "side": 1,
+      "message": "while we\u0027re at it, maybe we should add set_tunnel_src_ip as well for completeness? you already added it to NxMatchFieldType",
+      "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_a72fd0a0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-05T18:10:30Z",
+      "side": 1,
+      "message": "cosmetic - push groupBucket definition down to the line before it is used",
+      "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_e718a886",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-05T18:10:30Z",
+      "side": 1,
+      "message": "cosmetics - src before dst like the rest of the file",
+      "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
