@@ -9,12 +9,12 @@
 .project
 .settings
 .metadata
-target
 *.iml
 .idea
 bin
 xtend-gen
 target
+target-ide
 .DS_Store
 .checkstyle
 yang-gen-config
