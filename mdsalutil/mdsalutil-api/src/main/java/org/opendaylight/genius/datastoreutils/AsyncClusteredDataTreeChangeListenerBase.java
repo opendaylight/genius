@@ -9,9 +9,15 @@
 package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Preconditions;
+import java.util.Collection;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.PreDestroy;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -21,13 +27,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.PreDestroy;
+public abstract class AsyncClusteredDataTreeChangeListenerBase
+    <T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
+        implements ClusteredDataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
-public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObject, K extends ClusteredDataTreeChangeListener> implements ClusteredDataTreeChangeListener<T>, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataTreeChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -37,6 +40,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
     private static final int STARTUP_LOOP_MAX_RETRIES = 8;
 
     private ListenerRegistration<K> listenerRegistration;
+    private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
 
     private static ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
@@ -51,6 +55,11 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
         this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
+    }
+
+    @Override
+    public void addAfterListener(DataTreeChangeListener<T> listener) {
+        chainingDelegate.addAfterListener(listener);
     }
 
     @Override
@@ -95,13 +104,11 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
     protected abstract K getDataTreeChangeListener();
 
     public class DataTreeChangeHandler implements Runnable {
-        Collection<DataTreeModification<T>> changes;
+        private final Collection<DataTreeModification<T>> changes;
 
         public DataTreeChangeHandler(Collection<DataTreeModification<T>> changes) {
             this.changes = changes;
         }
-
-
 
         @Override
         public void run() {
@@ -128,6 +135,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
             }
+            chainingDelegate.notifyAfterOnDataTreeChanged(changes);
         }
     }
 }
