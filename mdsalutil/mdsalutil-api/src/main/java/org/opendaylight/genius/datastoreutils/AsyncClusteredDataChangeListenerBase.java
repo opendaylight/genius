@@ -12,13 +12,13 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -28,7 +28,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject, K extends ClusteredDataChangeListener> implements ClusteredDataChangeListener, AutoCloseable {
+@Deprecated
+public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject, K extends ClusteredDataChangeListener>
+        implements ClusteredDataChangeListener, ChainableDataChangeListener, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -45,6 +48,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
             new LinkedBlockingQueue<>());
 
     private ListenerRegistration<K> listenerRegistration;
+    private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
     private final Class<K> eventClazz;
 
@@ -56,15 +60,16 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
         this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
+    @Override
+    public void addAfterListener(DataChangeListener listener) {
+        chainingDelegate.addAfterListener(listener);
+    }
+
+    @SuppressWarnings("unchecked")
     public void registerListener(final LogicalDatastoreType dsType, final DataBroker db) {
         try {
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(new Callable<ListenerRegistration<K>>() {
-                @Override
-                public ListenerRegistration call() throws Exception {
-                    return db.registerDataChangeListener(dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope());
-                }
-            });
+            listenerRegistration = (ListenerRegistration<K>) looper.loopUntilNoException(() -> db.registerDataChangeListener(dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope()));
         } catch (final Exception e) {
             LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
             LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
@@ -155,7 +160,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     protected abstract AsyncDataBroker.DataChangeScope getDataChangeScope();
 
     public class DataChangeHandler implements Runnable {
-        final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
+        private final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
 
         public DataChangeHandler(final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent) {
             this.changeEvent = changeEvent;
@@ -181,6 +186,8 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
             createData(createdData);
             updateData(updateData, originalData);
             removeData(removeData, originalData);
+
+            chainingDelegate.notifyAfterOnDataChanged(changeEvent);
         }
     }
 }
