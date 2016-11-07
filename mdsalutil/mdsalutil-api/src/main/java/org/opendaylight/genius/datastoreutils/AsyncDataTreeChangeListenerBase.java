@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener>
+        extends TestableAsyncListenerBase
         implements DataTreeChangeListener<T>, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AsyncDataTreeChangeListenerBase.class);
@@ -143,6 +144,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
             }
+            consumedEvents();
         }
     }
 }
