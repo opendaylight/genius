@@ -28,7 +28,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extends DataChangeListener> implements DataChangeListener, AutoCloseable {
+public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extends DataChangeListener>
+        extends TestableAsyncListenerBase
+        implements DataChangeListener, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncDataChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -181,6 +184,8 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
             createData(createdData);
             updateData(updateData, originalData);
             removeData(removeData, originalData);
+
+            consumedEvents();
         }
     }
 }
