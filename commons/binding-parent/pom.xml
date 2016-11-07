@@ -32,4 +32,16 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <controller.mdsal.version>1.5.0-SNAPSHOT</controller.mdsal.version>
     <genius.mdsalutil.version>0.2.0-SNAPSHOT</genius.mdsalutil.version>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <!--<propertyExpansion>checkstyle.violationSeverity=error</propertyExpansion>-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
