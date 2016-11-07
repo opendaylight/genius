@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright © 2016 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License v1.0 which accompanies this distribution,
+and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
+           odl:use-default-for-reference-types="true">
+
+    <reference id="dataBroker"
+               interface="org.opendaylight.controller.md.sal.binding.api.DataBroker"
+               odl:type="default" />
+
+    <odl:rpc-service id="lockManagerService"
+                     interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413
+                     .LockManagerService" />
+
+    <bean id="idManager" class="org.opendaylight.genius.idmanager.IdManager"
+          destroy-method="close" >
+        <argument ref="dataBroker" />
+        <argument ref="lockManagerService" />
+    </bean>
+
+    <odl:rpc-implementation ref="idManager" />
+
+    <bean id="idPoolListener" class="org.opendaylight.genius.idmanager.IdPoolListener"
+          destroy-method="close" >
+        <argument ref="dataBroker" />
+        <argument ref="idManager" />
+    </bean>
+
+</blueprint>
