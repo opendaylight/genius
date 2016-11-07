@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -28,7 +29,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject, K extends ClusteredDataChangeListener> implements ClusteredDataChangeListener, AutoCloseable {
+@Deprecated
+public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject, K extends ClusteredDataChangeListener>
+        implements ClusteredDataChangeListener, ChainableDataChangeListener, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -45,6 +49,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
             new LinkedBlockingQueue<>());
 
     private ListenerRegistration<K> listenerRegistration;
+    private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
     private final Class<K> eventClazz;
 
@@ -54,6 +59,11 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     public AsyncClusteredDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
         this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
+    }
+
+    @Override
+    public void addAfterListener(DataChangeListener listener) {
+        chainingDelegate.addAfterListener(listener);
     }
 
     public void registerListener(final LogicalDatastoreType dsType, final DataBroker db) {
@@ -155,7 +165,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     protected abstract AsyncDataBroker.DataChangeScope getDataChangeScope();
 
     public class DataChangeHandler implements Runnable {
-        final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
+        private final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
 
         public DataChangeHandler(final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent) {
             this.changeEvent = changeEvent;
@@ -181,6 +191,8 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
             createData(createdData);
             updateData(updateData, originalData);
             removeData(removeData, originalData);
+
+            chainingDelegate.notifyAfterOnDataChanged(changeEvent);
         }
     }
 }
