@@ -18,6 +18,7 @@ target-ide
 .tox
 .DS_Store
 .checkstyle
+.fbExcludeFilterFile
 .factorypath
 yang-gen-config
 yang-gen-sal
