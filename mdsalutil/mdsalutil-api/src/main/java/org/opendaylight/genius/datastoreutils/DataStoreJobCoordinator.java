@@ -32,9 +32,11 @@ public class DataStoreJobCoordinator {
     private static final int THREADPOOL_SIZE = Runtime.getRuntime().availableProcessors();
     private static final long RETRY_WAIT_BASE_TIME = 100;
 
+    // package local instead of private for TestDataStoreJobCoordinator
+    final ForkJoinPool fjPool;
+    final Map<Integer, Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
+
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
-    private final ForkJoinPool fjPool;
-    private final Map<Integer, Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final Condition waitCondition = reentrantLock.newCondition();
 
@@ -325,4 +327,5 @@ public class DataStoreJobCoordinator {
 
         return true;
     }
+
 }
