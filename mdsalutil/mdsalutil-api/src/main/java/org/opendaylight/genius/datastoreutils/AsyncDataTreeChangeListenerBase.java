@@ -27,8 +27,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener>
-        implements DataTreeChangeListener<T>, AutoCloseable {
+public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener<T>>
+        implements DataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AsyncDataTreeChangeListenerBase.class);
 
@@ -39,6 +39,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     private static final int STARTUP_LOOP_MAX_RETRIES = 8;
 
     private ListenerRegistration<K> listenerRegistration;
+    private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
 
     private static ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
@@ -53,6 +54,11 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     public AsyncDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
         this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
+    }
+
+    @Override
+    public void addAfterListener(DataTreeChangeListener<T> listener) {
+        chainingDelegate.addAfterListener(listener);
     }
 
     @Override
@@ -112,7 +118,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     protected abstract K getDataTreeChangeListener();
 
     public class DataTreeChangeHandler implements Runnable {
-        Collection<DataTreeModification<T>> changes;
+        private final Collection<DataTreeModification<T>> changes;
 
         public DataTreeChangeHandler(Collection<DataTreeModification<T>> changes) {
             this.changes = changes;
@@ -143,6 +149,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
             }
+            chainingDelegate.notifyAfterOnDataTreeChanged(changes);
         }
     }
 }

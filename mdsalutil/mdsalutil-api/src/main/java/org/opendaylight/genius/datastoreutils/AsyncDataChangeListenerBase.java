@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +27,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extends DataChangeListener> implements DataChangeListener, AutoCloseable {
+@Deprecated
+public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extends DataChangeListener>
+        implements DataChangeListener, ChainableDataChangeListener, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncDataChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -45,6 +47,7 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
             new LinkedBlockingQueue<>());
 
     private ListenerRegistration<K> listenerRegistration;
+    private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
     private final Class<K> eventClazz;
 
@@ -56,15 +59,16 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
         this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
+    @Override
+    public void addAfterListener(DataChangeListener listener) {
+        chainingDelegate.addAfterListener(listener);
+    }
+
+    @SuppressWarnings("unchecked")
     public void registerListener(final LogicalDatastoreType dsType, final DataBroker db) {
         try {
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(new Callable<ListenerRegistration<K>>() {
-                @Override
-                public ListenerRegistration call() throws Exception {
-                    return db.registerDataChangeListener(dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope());
-                }
-            });
+            listenerRegistration = (ListenerRegistration<K>) looper.loopUntilNoException(() -> db.registerDataChangeListener(dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope()));
         } catch (final Exception e) {
             LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
             LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
@@ -155,7 +159,7 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
     protected abstract AsyncDataBroker.DataChangeScope getDataChangeScope();
 
     public class DataChangeHandler implements Runnable {
-        final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
+        private final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
 
         public DataChangeHandler(final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent) {
             this.changeEvent = changeEvent;
@@ -181,6 +185,8 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
             createData(createdData);
             updateData(updateData, originalData);
             removeData(removeData, originalData);
+
+            chainingDelegate.notifyAfterOnDataChanged(changeEvent);
         }
     }
 }
