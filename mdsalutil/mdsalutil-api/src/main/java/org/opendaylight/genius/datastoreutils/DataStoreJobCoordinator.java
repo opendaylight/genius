@@ -26,10 +26,12 @@ public class DataStoreJobCoordinator {
 
     private static final int THREADPOOL_SIZE = Runtime.getRuntime().availableProcessors();
     private static final long RETRY_WAIT_BASE_TIME = 100;
-    private ScheduledExecutorService scheduledExecutorService =
-            Executors.newScheduledThreadPool(5);
-    private final ForkJoinPool fjPool;
-    private final Map<Integer,Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
+
+    // package local instead of private for TestDataStoreJobCoordinator
+    final ForkJoinPool fjPool;
+    final Map<Integer, Map<String, JobQueue>> jobQueueMap = new ConcurrentHashMap<>();
+
+    private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final Condition waitCondition = reentrantLock.newCondition();
 
@@ -50,7 +52,7 @@ public class DataStoreJobCoordinator {
         fjPool = new ForkJoinPool();
 
         for (int i = 0; i < THREADPOOL_SIZE; i++) {
-            Map<String, JobQueue> jobEntriesMap = new ConcurrentHashMap<String, JobQueue>();
+            Map<String, JobQueue> jobEntriesMap = new ConcurrentHashMap<>();
             jobQueueMap.put(i, jobEntriesMap);
         }
 
@@ -185,7 +187,7 @@ public class DataStoreJobCoordinator {
 
             int retryCount = jobEntry.decrementRetryCountAndGet();
             if ( retryCount > 0) {
-                long waitTime = (RETRY_WAIT_BASE_TIME * 10)/retryCount;
+                long waitTime = RETRY_WAIT_BASE_TIME * 10/retryCount;
                 scheduledExecutorService.schedule(
                         () -> {
                             MainTask worker = new MainTask(jobEntry);
@@ -338,4 +340,5 @@ public class DataStoreJobCoordinator {
 
         return true;
     }
+
 }
