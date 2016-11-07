@@ -71,6 +71,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <artifactId>testutils</artifactId>
     <scope>test</scope>
   </dependency>
+  <dependency>
+    <groupId>org.awaitility</groupId>
+    <artifactId>awaitility</artifactId>
+    <!-- TODO move version up to odlparent dependencyManagement
+         Note it's also alredy used in netconf/netconf/netconf-topology/pom.xml -->
+    <version>2.0.0</version>
+    <scope>test</scope>
+  </dependency>
 </dependencies>
  <build>
     <plugins>
