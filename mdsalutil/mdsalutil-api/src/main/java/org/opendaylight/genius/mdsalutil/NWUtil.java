@@ -7,12 +7,15 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.base.Optional;
+import com.google.common.net.InetAddresses;
+import com.google.common.primitives.UnsignedBytes;
 import java.math.BigInteger;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -20,12 +23,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
-import com.google.common.base.Optional;
-import com.google.common.net.InetAddresses;
-import com.google.common.primitives.UnsignedBytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NWUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NWUtil.class);
 
     public static  long convertInetAddressToLong(InetAddress address) {
         byte[] ipAddressRaw = address.getAddress();
@@ -173,5 +176,35 @@ public class NWUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Utility API to check if the supplied ipAddress is IPv4 Address
+     *
+     * @param ipAddress
+     * @return true if ipAddress is an IPv4Address and false otherwise
+     */
+    public static Boolean isIpv4Address(String ipAddress) {
+        try {
+            InetAddress address = InetAddress.getByName(ipAddress);
+            if (address instanceof Inet4Address) {
+                return true;
+            }
+        } catch (UnknownHostException e) {
+            LOGGER.error("Exception while checking the address type {}", e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Utility API that returns the corresponding ipPrefix based on the ipAddress
+     *
+     * @param ipAddress
+     * @return ipAddress appended with a "/32" prefix (if IPv4), else "/128" prefix (for IPv6)
+     */
+    public static String toIpPrefix(String ipAddress) {
+        String ipPrefix = (isIpv4Address(ipAddress)) ? ipAddress + "/32" : ipAddress + "/128";
+        return ipPrefix;
     }
 }
