@@ -190,6 +190,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_3fb0e48a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 728,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-07T11:17:47Z",
+      "side": 1,
+      "message": "I\u0027d prefer to continue way we\u0027re doing alreay and take error handling in a different patch. Ading this here may have impact on code using it as they will have to appropriately catch it.",
+      "parentUuid": "3a65312a_721d7b73",
+      "range": {
+        "startLine": 724,
+        "startChar": 12,
+        "endLine": 728,
+        "endChar": 13
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_214bb72c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
         "patchSetId": 2
@@ -272,6 +296,30 @@
       "side": 1,
       "message": "Since its Offset bit length let me know if we need to add this to constants.",
       "parentUuid": "3a65312a_c15c8328",
+      "range": {
+        "startLine": 770,
+        "startChar": 28,
+        "endLine": 770,
+        "endChar": 30
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7faa5c1a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-07T11:17:47Z",
+      "side": 1,
+      "message": "okay, then leave it as is.",
+      "parentUuid": "3a65312a_78ef1db1",
       "range": {
         "startLine": 770,
         "startChar": 28,
@@ -389,6 +437,30 @@
       "side": 1,
       "message": "parseMacAddress Method does not look like case insensitive. Hence Added this method. Let me know your view if we need to retain this method or not?",
       "parentUuid": "3a65312a_c19e4356",
+      "range": {
+        "startLine": 138,
+        "startChar": 25,
+        "endLine": 138,
+        "endChar": 37
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ff44ac75",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-07T11:17:47Z",
+      "side": 1,
+      "message": "would prefer using existing method as it is already used and teted quite a bit. If it is not case insensitive and we need it to be, better modify that one. Maybe java expert can chime in but existing one seems to be more efficient.",
+      "parentUuid": "3a65312a_b23a7334",
       "range": {
         "startLine": 138,
         "startChar": 25,
