@@ -35,7 +35,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <dlux.version>0.4.2-SNAPSHOT</dlux.version>
     <liblldp.version>0.11.2-SNAPSHOT</liblldp.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
-    <infrautils.version>1.0.1-SNAPSHOT</infrautils.version>
+    <infrautils.version>1.0.2-SNAPSHOT</infrautils.version>
   </properties>
 
   <dependencyManagement>
