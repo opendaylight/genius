@@ -27,7 +27,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 
-public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObject, K extends ClusteredDataTreeChangeListener> implements ClusteredDataTreeChangeListener<T>, AutoCloseable {
+public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObject, K extends ClusteredDataTreeChangeListener>
+        extends TestableAsyncListenerBase
+        implements ClusteredDataTreeChangeListener<T>, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataTreeChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
@@ -101,8 +104,6 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
             this.changes = changes;
         }
 
-
-
         @Override
         public void run() {
             for (DataTreeModification<T> change : changes) {
@@ -128,6 +129,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
             }
+            consumedEvents();
         }
     }
 }
