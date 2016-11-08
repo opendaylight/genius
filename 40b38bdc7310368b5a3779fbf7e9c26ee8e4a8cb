@@ -332,6 +332,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_296f0e94",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 5350
+      },
+      "writtenOn": "2016-11-08T09:43:24Z",
+      "side": 1,
+      "message": "This 47 needs an explanation for readability, either the constant or at least a comment like /* bit offset */ or similar.\nSame goes for the 15 below",
+      "parentUuid": "3a65312a_7faa5c1a",
+      "range": {
+        "startLine": 770,
+        "startChar": 28,
+        "endLine": 770,
+        "endChar": 30
+      },
+      "revId": "40b38bdc7310368b5a3779fbf7e9c26ee8e4a8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_41b6b33e",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
         "patchSetId": 2
