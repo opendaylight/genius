@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_69c1062e",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-08T10:25:54Z",
+      "side": 1,
+      "message": "see https://git.opendaylight.org/gerrit/#/c/48109/",
+      "revId": "33aaf12626d2776316e21f713a7404e9947bf329",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
