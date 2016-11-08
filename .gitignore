@@ -15,6 +15,7 @@ bin
 xtend-gen
 target
 target-ide
+.tox
 .DS_Store
 .checkstyle
 .factorypath
