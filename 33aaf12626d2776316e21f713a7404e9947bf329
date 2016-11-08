@@ -16,6 +16,29 @@
       "revId": "33aaf12626d2776316e21f713a7404e9947bf329",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_8a1d7112",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 2759
+      },
+      "writtenOn": "2016-11-08T15:17:56Z",
+      "side": 1,
+      "message": "Typo: already",
+      "range": {
+        "startLine": 78,
+        "startChar": 24,
+        "endLine": 78,
+        "endChar": 30
+      },
+      "revId": "33aaf12626d2776316e21f713a7404e9947bf329",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
