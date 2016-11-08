@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_ee407c58",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 761,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-08T09:01:43Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 761,
+        "startChar": 0,
+        "endLine": 761,
+        "endChar": 12
+      },
+      "revId": "aab41b38634cff72432cade46e5b6e4d422cb169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_8e06281f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-08T09:01:43Z",
+      "side": 1,
+      "message": "doesn\u0027t make sense to add a new function and mark it deprecated straight away. does your code fail if you use existing one? If yes, why? Your comment is also confusing, you mention using parseMacAddress if case-insensitive is required. I still don\u0027t see any reason why your code can\u0027t use the existing one. Your code looks less efficient and in fact existing method looks better than yours on all fronts.",
+      "range": {
+        "startLine": 138,
+        "startChar": 4,
+        "endLine": 138,
+        "endChar": 15
+      },
+      "revId": "aab41b38634cff72432cade46e5b6e4d422cb169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
