@@ -96,7 +96,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 
 public class MDSALUtil {
 
-    public enum MdsalOp {  CREATION_OP, UPDATE_OP, REMOVAL_OP };
+    public enum MdsalOp {  CREATION_OP, UPDATE_OP, REMOVAL_OP }
 
     public static final String NODE_PREFIX = "openflow";
     public static final int GROUP_WEIGHT = 0;

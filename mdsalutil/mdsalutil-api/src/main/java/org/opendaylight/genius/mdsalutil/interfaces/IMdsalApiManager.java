@@ -21,7 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group
 
 public interface IMdsalApiManager {
 
-    public void installFlow(FlowEntity flowEntity);
+    void installFlow(FlowEntity flowEntity);
 
     /**
      * Add a Flow to batched transaction.
@@ -32,9 +32,9 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
+    void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
 
-    public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
+    CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
 
     /**
      * Add a Flow to batched transaction
@@ -47,11 +47,11 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
+    void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
 
-    public CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
+    CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
 
-    public CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, FlowEntity flowEntity);
+    CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, FlowEntity flowEntity);
 
     /**
      * Remove a Flow using batched transaction.
@@ -64,11 +64,11 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
+    void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
 
-    public CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
+    CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
 
-    public void removeFlow(FlowEntity flowEntity);
+    void removeFlow(FlowEntity flowEntity);
 
     /**
      *  Remove a Flow using batched transaction.
@@ -79,9 +79,9 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
+    void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
 
-    public void installGroup(GroupEntity groupEntity);
+    void installGroup(GroupEntity groupEntity);
 
     /**
      * Add a Group using batched transaction
@@ -92,7 +92,7 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void addGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
+    void addGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
 
     /**
      * Add a Group using batched transaction
@@ -105,11 +105,11 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void addGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
+    void addGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
-    public void modifyGroup(GroupEntity groupEntity);
+    void modifyGroup(GroupEntity groupEntity);
 
-    public void removeGroup(GroupEntity groupEntity);
+    void removeGroup(GroupEntity groupEntity);
 
     /**
      * Remove a Group using batched transaction
@@ -120,7 +120,7 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
+    void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
 
     /**
      * Remove a Group using batched transaction
@@ -133,13 +133,13 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    public void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
+    void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
-    public void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload);
+    void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload);
 
-    public void sendPacketOutWithActions(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos);
+    void sendPacketOutWithActions(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos);
 
-    public void sendARPPacketOutWithActions(BigInteger dpnId, byte[] payload, List<ActionInfo> action_info);
+    void sendARPPacketOutWithActions(BigInteger dpnId, byte[] payload, List<ActionInfo> action_info);
 
     /**
      * API to remove the flow on Data Plane Node synchronously. It internally waits for
@@ -148,8 +148,8 @@ public interface IMdsalApiManager {
      * @param flowEntity
      * @param delayTime
      */
-    public void syncRemoveFlow(FlowEntity flowEntity, long delayTime);
-    public void syncInstallFlow(FlowEntity flowEntity, long delayTime);
+    void syncRemoveFlow(FlowEntity flowEntity, long delayTime);
+    void syncInstallFlow(FlowEntity flowEntity, long delayTime);
 
     /**
      * API to install the Group on Data Plane Node synchronously. It internally waits for
@@ -158,9 +158,9 @@ public interface IMdsalApiManager {
      * @param groupEntity
      * @param delayTime
      */
-    public void syncInstallGroup(GroupEntity groupEntity, long delayTime);
+    void syncInstallGroup(GroupEntity groupEntity, long delayTime);
 
-    public void syncInstallGroup(BigInteger dpId, Group group, long delayTime);
+    void syncInstallGroup(BigInteger dpId, Group group, long delayTime);
 
     /**
      * API to remove the Group on Data Plane Node synchronously. It internally waits for
@@ -168,7 +168,7 @@ public interface IMdsalApiManager {
      *
      * @param groupEntity
      */
-    public void syncRemoveGroup(GroupEntity groupEntity);
+    void syncRemoveGroup(GroupEntity groupEntity);
 
-    public void syncRemoveGroup(BigInteger dpId, Group groupEntity);
+    void syncRemoveGroup(BigInteger dpId, Group groupEntity);
 }

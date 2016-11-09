@@ -32,7 +32,7 @@ public class OvsInterfaceTopologyStateRemoveHelper {
     public static List<ListenableFuture<Void>> removePortFromBridge(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
                                                                     OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();;
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         BigInteger dpnId = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
         if (dpnId == null) {

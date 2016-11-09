@@ -15,6 +15,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import java.util.List;
 
 public interface FlowBasedServicesConfigAddable {
-    public List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                                    BoundServices boundServiceNew);
+    List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
+            BoundServices boundServiceNew);
 }

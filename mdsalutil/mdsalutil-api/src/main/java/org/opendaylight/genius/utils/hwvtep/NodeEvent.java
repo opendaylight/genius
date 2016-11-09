@@ -39,8 +39,8 @@ public abstract class NodeEvent extends DebugEvent {
         return nodeId != null ? nodeId.hashCode() : 0;
     }
 
-    static enum NodeStatus {
-        Connected,Disconnected;
+    enum NodeStatus {
+        Connected,Disconnected
     }
 
     public static class NodeConnectedEvent extends NodeEvent {
