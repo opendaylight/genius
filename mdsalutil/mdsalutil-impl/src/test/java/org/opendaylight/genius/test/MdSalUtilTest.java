@@ -200,7 +200,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
         }
 
         private String getFlowRef(short termSvcTable, int svcId) {
-            return new StringBuffer().append(termSvcTable).append(svcId).toString();
+            return String.valueOf(termSvcTable) + svcId;
         }
 
         public GroupEntity createGroupEntity(String Nodeid, String inport, int vlanid) {

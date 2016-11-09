@@ -165,11 +165,11 @@ public class VtepSchemaShow extends OsgiCommandSupport {
      * @return the vtep config schema header output
      */
     private String getHeaderOutput() {
-        StringBuilder headerBuilder = new StringBuilder();
-        headerBuilder.append(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, "SchemaName", "PortName", "VlanID", "Subnet",
-                "GatewayIP", "TransportZone", "TunnelType", "DPN-IDS", "ExcludeIpFilter"));
-        headerBuilder.append('\n');
-        headerBuilder.append(HEADER_UNDERLINE);
-        return headerBuilder.toString();
+        String headerBuilder =
+                String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, "SchemaName", "PortName", "VlanID", "Subnet",
+                        "GatewayIP", "TransportZone", "TunnelType", "DPN-IDS", "ExcludeIpFilter") +
+                        '\n' +
+                        HEADER_UNDERLINE;
+        return headerBuilder;
     }
 }

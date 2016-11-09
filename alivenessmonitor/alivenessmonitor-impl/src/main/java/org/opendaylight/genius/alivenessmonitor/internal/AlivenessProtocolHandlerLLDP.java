@@ -113,7 +113,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         }
 
         if(!Strings.isNullOrEmpty(interfaceName)) {
-            String monitorKey = new StringBuilder().append(interfaceName).append(EtherTypes.LLDP).toString();
+            String monitorKey = interfaceName + EtherTypes.LLDP;
             return monitorKey;
         } else {
             LOG.debug("No associated interface found to handle received LLDP Packet");
@@ -266,7 +266,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
     @Override
     public String getUniqueMonitoringKey(MonitoringInfo monitorInfo) {
         String interfaceName = getInterfaceName(monitorInfo.getSource().getEndpointType());
-        return new StringBuilder().append(interfaceName).append(EtherTypes.LLDP).toString();
+        return interfaceName + EtherTypes.LLDP;
     }
 
     private String getInterfaceName(EndpointType endpoint) {

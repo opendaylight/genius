@@ -154,10 +154,9 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     }
 
     private String getDpnPrefixedPortName(NodeConnectorId nodeConnectorId, String portName) {
-        portName = new StringBuilder(
-                (IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId)).toString())
-                        .append(IfmConstants.OF_URI_SEPARATOR)
-                        .append(portName).toString();
+        portName = (IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId)).toString() +
+                IfmConstants.OF_URI_SEPARATOR +
+                portName;
         return portName;
     }
     private class InterfaceStateAddWorker implements Callable {

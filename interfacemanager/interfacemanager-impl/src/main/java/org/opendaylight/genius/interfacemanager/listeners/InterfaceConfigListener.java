@@ -135,10 +135,9 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     private static ParentRefs updateParentInterface(boolean isTunnelInterface, ParentRefs parentRefs) {
         if (!isTunnelInterface && parentRefs.getDatapathNodeIdentifier() != null) {
-            StringBuilder parentInterface = new StringBuilder(parentRefs.getDatapathNodeIdentifier().toString());
-            parentInterface.append(IfmConstants.OF_URI_SEPARATOR);
-            parentInterface.append(parentRefs.getParentInterface());
-            parentRefs = new ParentRefsBuilder(parentRefs).setParentInterface(parentInterface.toString()).build();
+            String parentInterface = parentRefs.getDatapathNodeIdentifier().toString() + IfmConstants.OF_URI_SEPARATOR +
+                    parentRefs.getParentInterface();
+            parentRefs = new ParentRefsBuilder(parentRefs).setParentInterface(parentInterface).build();
         }
         return parentRefs;
     }
