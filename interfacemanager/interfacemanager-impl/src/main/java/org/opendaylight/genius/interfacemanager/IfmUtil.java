@@ -7,14 +7,14 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import com.google.common.util.concurrent.ListenableFuture;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -24,8 +24,8 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -49,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan.L2vlanMode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -79,7 +80,9 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
@@ -475,6 +478,48 @@ public class IfmUtil {
 
         }
         return vlanInterfaceInfo;
+    }
+
+    /**
+     * Gets the interface from config ds.
+     *
+     * @param interfaceName
+     *            the interface name
+     * @param dataBroker
+     *            the data broker
+     * @return the interface from config ds
+     */
+    public static Interface getInterfaceFromConfigDS(String interfaceName, DataBroker dataBroker) {
+        InstanceIdentifier<Interface> ifaceId = createInterfaceInstanceIdentifier(interfaceName);
+        Optional<Interface> iface = MDSALUtil.read(dataBroker, LogicalDatastoreType.CONFIGURATION, ifaceId);
+        return iface.isPresent() ? iface.get() : null;
+    }
+
+    /**
+     * Creates the interface instance identifier.
+     *
+     * @param interfaceName
+     *            the interface name
+     * @return the instance identifier
+     */
+    public static InstanceIdentifier<Interface> createInterfaceInstanceIdentifier(String interfaceName) {
+        InstanceIdentifierBuilder<Interface> idBuilder =
+                InstanceIdentifier.builder(Interfaces.class)
+                .child(Interface.class, new InterfaceKey(interfaceName));
+        return idBuilder.build();
+    }
+
+    public static boolean isExternal(String interfaceName, DataBroker broker) {
+        return isExternal(getInterfaceFromConfigDS(interfaceName, broker));
+    }
+
+    public static boolean isExternal(Interface iface) {
+        if (iface == null) {
+            return false;
+        }
+
+        IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
+        return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
     }
 
     public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
