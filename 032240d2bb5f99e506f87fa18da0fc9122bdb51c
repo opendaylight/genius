@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d35280dc",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "Need to add the limitations with this features also. Like we can not use BFD with such OF-tunnels. May be its a candidate for \u0027not supported\u0027 section below.",
+      "range": {
+        "startLine": 10,
+        "startChar": 8,
+        "endLine": 10,
+        "endChar": 19
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1364f8b7",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "remove tab space",
+      "range": {
+        "startLine": 59,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 3
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_f355fcc6",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "can we have multiple VTEPs on one DPN?",
+      "range": {
+        "startLine": 127,
+        "startChar": 12,
+        "endLine": 127,
+        "endChar": 32
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5347901f",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "What configuration parameters we are mentioning here? Are we not talking about changes in IFM API? we have a new configuration parameter \u0027option-of-tunnel\u0027 and \u0027tunnel-optional-params\u0027 in API.",
+      "range": {
+        "startLine": 175,
+        "startChar": 12,
+        "endLine": 175,
+        "endChar": 23
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7359ecfd",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "TBD? need to capture API usage/sample JSON.",
+      "range": {
+        "startLine": 213,
+        "startChar": 34,
+        "endLine": 213,
+        "endChar": 58
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_f3e7bc3e",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "Do you see any impact on these projects because of this feature addition? Do these projects require any change?",
+      "range": {
+        "startLine": 258,
+        "startChar": 10,
+        "endLine": 258,
+        "endChar": 18
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_535e70e7",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2016-11-09T10:29:15Z",
+      "side": 1,
+      "message": "https://wiki.opendaylight.org/view/Genius:Carbon_Release_Plan",
+      "range": {
+        "startLine": 299,
+        "startChar": 2,
+        "endLine": 299,
+        "endChar": 5
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
