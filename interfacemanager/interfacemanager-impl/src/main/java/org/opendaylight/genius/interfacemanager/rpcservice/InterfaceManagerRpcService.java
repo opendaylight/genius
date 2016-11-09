@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -248,7 +248,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             InterfaceKey interfaceKey = new InterfaceKey(bridgeInterfaceEntry.getInterfaceName());
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             IfTunnel tunnel = interfaceInfo.getAugmentation(IfTunnel.class);
-            GetEndpointIpForDpnOutputBuilder endpointIpForDpnOutput = new GetEndpointIpForDpnOutputBuilder().setLocalIps(Arrays.asList(tunnel.getTunnelSource()));
+            GetEndpointIpForDpnOutputBuilder endpointIpForDpnOutput =
+                    new GetEndpointIpForDpnOutputBuilder().setLocalIps(
+                            Collections.singletonList(tunnel.getTunnelSource()));
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(endpointIpForDpnOutput.build());
         }catch(Exception e){

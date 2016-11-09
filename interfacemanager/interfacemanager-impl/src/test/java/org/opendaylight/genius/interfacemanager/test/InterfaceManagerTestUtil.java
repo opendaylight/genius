@@ -11,7 +11,7 @@ import com.google.common.collect.Maps;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -124,7 +124,7 @@ public class InterfaceManagerTestUtil {
                 new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder();
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(ifName));
         ifaceBuilder.setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
-        ifaceBuilder.setLowerLayerIf(Arrays.asList(ncId.getValue()));
+        ifaceBuilder.setLowerLayerIf(Collections.singletonList(ncId.getValue()));
         return ifaceBuilder.build();
     }
 
@@ -283,7 +283,7 @@ public class InterfaceManagerTestUtil {
     public static BridgeEntry buildBridgeEntry(BigInteger dpn, BridgeInterfaceEntry bridgeInterfaceEntry){
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpn);
         BridgeEntry bridgeEntry = new BridgeEntryBuilder().setKey(bridgeEntryKey).setDpid(dpn).
-                setBridgeInterfaceEntry(Arrays.asList(bridgeInterfaceEntry)).build();
+                setBridgeInterfaceEntry(Collections.singletonList(bridgeInterfaceEntry)).build();
         return bridgeEntry;
     }
 

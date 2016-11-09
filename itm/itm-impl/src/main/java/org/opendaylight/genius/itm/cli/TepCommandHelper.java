@@ -476,7 +476,7 @@ public class TepCommandHelper {
                         result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", tZ.getZoneName(), strTunnelType, sub
                                 .getPrefix().getIpv4Prefix().getValue(), sub.getGatewayIp().getIpv4Address()
                                 .getValue(), sub.getVlanId().toString(), vtep.getDpnId().toString(), vtep
-                                .getIpAddress().getIpv4Address().getValue(), vtep.getPortname().toString()));
+                                .getIpAddress().getIpv4Address().getValue(), vtep.getPortname()));
                     }
                 }
             }
@@ -571,15 +571,15 @@ public void showCache(String cacheName) {
                             vtepDelCommitList.add(vtepCli);
                         }
                         else if(session != null) {
-                                session.getConsole().println(String.format("vtep with this vlan or gateway doesnt exist"));
+                                session.getConsole().println("vtep with this vlan or gateway doesnt exist");
                         }
                     }
                 }
                 else if(session != null) {
-                        session.getConsole().println(String.format("Vtep with this ipaddress doesnt exist"));
+                        session.getConsole().println("Vtep with this ipaddress doesnt exist");
                 }
             } else if(session != null) {
-                    session.getConsole().println(String.format("Vtep Doesnt exist"));
+                    session.getConsole().println("Vtep Doesnt exist");
             }
         }
     }
