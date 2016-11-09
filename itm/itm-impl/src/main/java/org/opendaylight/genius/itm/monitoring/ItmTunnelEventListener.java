@@ -112,7 +112,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                     logger.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}", isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
                     if(isTunnelInterfaceUp(update)) {
                         logger.trace("ITM Tunnel State is UP b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode, tunnelType);
-                        clearExternalDataPathAlarm(srcNode.toString(),dstNode.toString(),tunnelType);
+                        clearExternalDataPathAlarm(srcNode, dstNode,tunnelType);
                     }else {
                         logger.trace("ITM Tunnel State is DOWN b/w srcNode: {} and dstNode: {}", srcNode, dstNode);
                         StringBuilder alarmText = new StringBuilder();
