@@ -35,7 +35,7 @@ public enum ValidatorErrorCode {
         return message;
     }
 
-    private ValidatorErrorCode(int val, String msg) {
+    ValidatorErrorCode(int val, String msg) {
         this.value = val;
         this.message = msg;
     }

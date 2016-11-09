@@ -178,7 +178,7 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
 
     @Override
     public void addGroupToTx(BigInteger dpId, Group group, WriteTransaction tx) {
-        mdSalMgr.writeGroup(dpId, group, tx);;
+        mdSalMgr.writeGroup(dpId, group, tx);
     }
 
     @Override

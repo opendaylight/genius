@@ -15,6 +15,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import java.util.List;
 
 public interface FlowBasedServicesConfigRemovable {
-    public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                                    BoundServices boundServiceNew);
+    List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
+            BoundServices boundServiceNew);
 }

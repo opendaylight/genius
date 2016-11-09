@@ -19,7 +19,7 @@ public interface AlarmServiceFacade {
      *            Source of the alarm ex: dpnId=openflow:1
      *            the source node that caused this alarm
      */
-    public void raiseAlarm(String alarmName, String additionalText, String source);
+    void raiseAlarm(String alarmName, String additionalText, String source);
 
     /**
      * Clears the given alarm in platform environment
@@ -32,5 +32,5 @@ public interface AlarmServiceFacade {
      *            Source of the alarm ex:  dpnId=openflow:1
      *            the source node that caused this alarm
      */
-    public void clearAlarm(String alarmName, String additionalText, String source);
+    void clearAlarm(String alarmName, String additionalText, String source);
 }
