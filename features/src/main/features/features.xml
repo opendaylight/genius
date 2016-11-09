@@ -61,7 +61,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <configfile finalname="${configfile.directory}/lockmanager-impl-default-config.xml">mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/mdsalutil-impl-default-config.xml">mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/interfacemanager-impl-default-config.xml">mvn:org.opendaylight.genius/interfacemanager-impl/{{VERSION}}/xml/config</configfile>
-    <configfile finalname="${configfile.directory}/arputil-impl-default-config.xml">mvn:org.opendaylight.genius/arputil-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/itm-impl-default-config.xml">mvn:org.opendaylight.genius/itm-impl/{{VERSION}}/xml/config</configfile>
    </feature>
   <feature name='odl-genius-rest' version='${project.version}' description='OpenDaylight :: genius :: REST'>
