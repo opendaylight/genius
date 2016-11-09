@@ -697,7 +697,7 @@ public class ItmUtils {
         return (subnet == null) ? StringUtils.EMPTY : String.valueOf(subnet.getValue());
     }
     public static <T> List<T> emptyIfNull(List<T> list) {
-        return (list == null) ? Collections.<T> emptyList() : list;
+        return (list == null) ? Collections.emptyList() : list;
     }
     public static <T> boolean isEmpty(Collection<T> collection) {
         return (collection == null || collection.isEmpty()) ? true : false;

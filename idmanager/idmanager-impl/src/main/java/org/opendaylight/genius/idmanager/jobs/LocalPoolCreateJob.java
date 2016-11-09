@@ -48,7 +48,7 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
         if (LOG.isDebugEnabled()) {
             LOG.debug("Started localPoolCreateJob for {}", localPoolName);
         }
-        ArrayList<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
         InstanceIdentifier<IdPool> localPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
         IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName)).setBlockSize(blockSize).setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);

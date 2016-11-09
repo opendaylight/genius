@@ -34,7 +34,7 @@ public class HwVTEPInterfaceConfigUpdateHelper {
     public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker, InstanceIdentifier<Node> physicalSwitchNodeId,
                                                                    InstanceIdentifier<Node> globalNodeId,
                                                                    Interface interfaceNew, IfTunnel ifTunnel) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
         // create hwvtep through ovsdb plugin
@@ -54,7 +54,7 @@ public class HwVTEPInterfaceConfigUpdateHelper {
      */
     public static List<ListenableFuture<Void>> updateBfdMonitoring(DataBroker dataBroker, InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchId,
                                                                    IfTunnel ifTunnel) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         TunnelsBuilder tBuilder = new TunnelsBuilder();
         InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier =

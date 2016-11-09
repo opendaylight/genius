@@ -70,7 +70,7 @@ public class ItmInternalTunnelAddWorker {
             //#####if dpn is not in meshedDpnList
             build_tunnel_from(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, t, futures);
             if(null == meshedDpnList) {
-                meshedDpnList = new ArrayList<DPNTEPsInfo>() ;
+                meshedDpnList = new ArrayList<>() ;
             }
             meshedDpnList.add(dpn) ;
             // Update the operational datastore -- FIXME -- Error Handling
@@ -83,7 +83,7 @@ public class ItmInternalTunnelAddWorker {
     private static void updateOperationalDatastore(DataBroker dataBroker, DPNTEPsInfo dpn, WriteTransaction t, List<ListenableFuture<Void>> futures) {
         logger.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder( DpnEndpoints.class).build() ;
-        List<DPNTEPsInfo> dpnList = new ArrayList<DPNTEPsInfo>() ;
+        List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
         t.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder, true);

@@ -59,7 +59,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         if (resourceHandlerMapper.contains(resourceType)) {
             throw new RuntimeException("Resource type already registered");
         }
-        resourceHandlerMapper.put(resourceType, new ImmutablePair<BlockingQueue, ResourceHandler>(resQueue, resHandler));
+        resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
         ScheduledThreadPoolExecutor resDelegatorService =(ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,

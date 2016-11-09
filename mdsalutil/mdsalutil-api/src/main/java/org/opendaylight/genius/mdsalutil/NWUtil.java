@@ -156,7 +156,7 @@ public class NWUtil {
      * @return
      */
     public static List<BigInteger> getOperativeDPNs(DataBroker dataBroker) {
-        List<BigInteger> result = new LinkedList<BigInteger>();
+        List<BigInteger> result = new LinkedList<>();
         InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
         Optional<Nodes> nodesOptional = MDSALUtil.read(dataBroker, LogicalDatastoreType.OPERATIONAL,
                                                        nodesInstanceIdentifier);

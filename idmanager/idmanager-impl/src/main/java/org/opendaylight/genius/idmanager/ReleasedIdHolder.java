@@ -27,7 +27,7 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     public ReleasedIdHolder(long timeDelaySec) {
         this.timeDelaySec = timeDelaySec;
-        this.delayedEntries = new CopyOnWriteArrayList<DelayedIdEntry>();
+        this.delayedEntries = new CopyOnWriteArrayList<>();
         availableIdCount.set(0);
     }
 
@@ -73,7 +73,7 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
         long curTimeSec = System.currentTimeMillis() / 1000;
         DelayedIdEntry entry = new DelayedIdEntry(id, curTimeSec + timeDelaySec);
         if (delayedEntries == null) {
-            delayedEntries = new CopyOnWriteArrayList<DelayedIdEntry>();
+            delayedEntries = new CopyOnWriteArrayList<>();
         }
         availableIdCount.incrementAndGet();
         delayedEntries.add(entry);

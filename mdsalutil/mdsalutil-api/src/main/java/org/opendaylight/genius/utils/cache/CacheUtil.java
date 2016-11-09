@@ -11,8 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class CacheUtil {
-    private static final ConcurrentMap<String, ConcurrentMap<?, ?>> m_mapCache = 
-            new ConcurrentHashMap<String, ConcurrentMap<?, ?>>();
+    private static final ConcurrentMap<String, ConcurrentMap<?, ?>> m_mapCache =
+            new ConcurrentHashMap<>();
 
     public static ConcurrentMap<?, ?> getCache(String sCacheName) {
         return m_mapCache.get(sCacheName);
@@ -20,7 +20,7 @@ public class CacheUtil {
 
     public static void createCache(String sCacheName) {
         if (m_mapCache.get(sCacheName) == null)
-            m_mapCache.put(sCacheName, new ConcurrentHashMap<Object, Object>());
+            m_mapCache.put(sCacheName, new ConcurrentHashMap<>());
     }
 
     public static boolean isCacheValid( String cacheName ) {

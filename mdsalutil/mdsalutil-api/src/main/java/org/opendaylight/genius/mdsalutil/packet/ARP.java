@@ -43,15 +43,15 @@ public class ARP extends Packet {
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
         private static final long serialVersionUID = 1L;
         {
-            put(HWTYPE, new ImmutablePair<Integer, Integer>(0, 16));
-            put(PTYPE, new ImmutablePair<Integer, Integer>(16, 16));
-            put(HWADDRLENGTH, new ImmutablePair<Integer, Integer>(32, 8));
-            put(PADDRLENGTH, new ImmutablePair<Integer, Integer>(40, 8));
-            put(OPCODE, new ImmutablePair<Integer, Integer>(48, 16));
-            put(SENDERHWADDR, new ImmutablePair<Integer, Integer>(64, 48));
-            put(SENDERPADDR, new ImmutablePair<Integer, Integer>(112, 32));
-            put(TARGETHWADDR, new ImmutablePair<Integer, Integer>(144, 48));
-            put(TARGETPADDR, new ImmutablePair<Integer, Integer>(192, 32));
+            put(HWTYPE, new ImmutablePair<>(0, 16));
+            put(PTYPE, new ImmutablePair<>(16, 16));
+            put(HWADDRLENGTH, new ImmutablePair<>(32, 8));
+            put(PADDRLENGTH, new ImmutablePair<>(40, 8));
+            put(OPCODE, new ImmutablePair<>(48, 16));
+            put(SENDERHWADDR, new ImmutablePair<>(64, 48));
+            put(SENDERPADDR, new ImmutablePair<>(112, 32));
+            put(TARGETHWADDR, new ImmutablePair<>(144, 48));
+            put(TARGETPADDR, new ImmutablePair<>(192, 32));
 
         }
     };
@@ -62,14 +62,14 @@ public class ARP extends Packet {
      */
     public ARP() {
         super();
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
     }
 
     public ARP(boolean writeAccess) {
         super(writeAccess);
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
     }
