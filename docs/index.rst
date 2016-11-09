@@ -5,10 +5,13 @@
 
 Genius Documentation
 ====================
+This documentation provides critical information needed to help you write ODL
+Applications/Projects that can co-exist with other ODL Projects.
 
 Contents:
 
 .. toctree::
    :maxdepth: 1
 
+   pipeline
    specs/index
