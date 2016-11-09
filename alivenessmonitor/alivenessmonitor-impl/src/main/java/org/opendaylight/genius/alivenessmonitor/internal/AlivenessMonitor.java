@@ -938,8 +938,8 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         LOG.debug("Sending notification for id {}  - state {}", monitorId, state);
         EventData data = new EventDataBuilder().setMonitorId(monitorId)
                                                .setMonitorState(state).build();
-        MonitorEvent event = new MonitorEventBuilder().setEventData(data).build();;
-        final ListenableFuture<? extends Object> eventFuture = notificationPublishService.offerNotification(event);
+        MonitorEvent event = new MonitorEventBuilder().setEventData(data).build();
+        final ListenableFuture<?> eventFuture = notificationPublishService.offerNotification(event);
         Futures.addCallback(eventFuture, new FutureCallback<Object>() {
             @Override
             public void onFailure(Throwable error) {

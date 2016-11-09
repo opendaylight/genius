@@ -9,6 +9,6 @@ package org.opendaylight.genius.interfacemanager.statusanddiag;
 
 public interface InterfaceStatusMonitorMBean {
 
-    public String acquireServiceStatus();
+    String acquireServiceStatus();
 
 }

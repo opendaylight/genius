@@ -13,11 +13,11 @@ public interface CounterForOFPortReceiveDropMBean {
     //-----------
     // operations
     //-----------
-    public void setCounterDetails(Map<String, Integer> map);
-    public Map<String, Integer> getCounterDetails();
+    void setCounterDetails(Map<String, Integer> map);
+    Map<String, Integer> getCounterDetails();
     //-----------
     // attributes
     //-----------
-    public void invokePMManagedObjects(Map<String, Integer> map);
-    public Map<String, String> retrieveCounterMap();
+    void invokePMManagedObjects(Map<String, Integer> map);
+    Map<String, String> retrieveCounterMap();
 }

@@ -49,8 +49,8 @@ public class ItmInternalTunnelAddWorker {
 
                 public void onFailure(Throwable error) {
                     logger.error("Error in Datastore operation", error);
-                };
-            };
+                }
+             };
 
 
     public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker, IdManagerService idManagerService,IMdsalApiManager mdsalManager,

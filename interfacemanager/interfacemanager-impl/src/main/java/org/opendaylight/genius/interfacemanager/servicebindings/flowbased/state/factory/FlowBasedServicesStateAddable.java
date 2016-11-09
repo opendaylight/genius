@@ -17,5 +17,5 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import java.util.List;
 
 public interface FlowBasedServicesStateAddable {
-    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState);
+    List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState);
 }

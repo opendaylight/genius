@@ -9,6 +9,6 @@ package org.opendaylight.genius.itm.snd;
 
 public interface ITMStatusMonitorMBean {
 
-    public String acquireServiceStatus();
+    String acquireServiceStatus();
 
 }

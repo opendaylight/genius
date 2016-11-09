@@ -22,13 +22,13 @@ public interface MatchInfoBase {
      *
      * @param mapMatchBuilder the map which holds the matches.
      */
-    public void createInnerMatchBuilder(Map<Class<?>, Object> mapMatchBuilder);
+    void createInnerMatchBuilder(Map<Class<?>, Object> mapMatchBuilder);
 
     /**
      * Set the match to the match builder.
      * @param matchBuilder the matchbuilder to set the match
      * @param mapMatchBuilder the map containing the matches
      */
-    public void setMatch(MatchBuilder matchBuilder, Map<Class<?>, Object> mapMatchBuilder);
+    void setMatch(MatchBuilder matchBuilder, Map<Class<?>, Object> mapMatchBuilder);
 
 }

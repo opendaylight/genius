@@ -21,41 +21,42 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 
 public interface IInterfaceManager {
     @Deprecated
-    public Long getPortForInterface(String ifName);
+    Long getPortForInterface(String ifName);
 
     @Deprecated
-    public BigInteger getDpnForInterface(String ifName);
+    BigInteger getDpnForInterface(String ifName);
 
     @Deprecated
-    public BigInteger getDpnForInterface(Interface intrf);
+    BigInteger getDpnForInterface(Interface intrf);
 
     @Deprecated
-    public String getEndpointIpForDpn(BigInteger dpnId);
+    String getEndpointIpForDpn(BigInteger dpnId);
 
     @Deprecated
-    public List<ActionInfo> getInterfaceEgressActions(String ifName);
+    List<ActionInfo> getInterfaceEgressActions(String ifName);
 
     @Deprecated
-    public Long getPortForInterface(Interface intf);
+    Long getPortForInterface(Interface intf);
 
-    public InterfaceInfo getInterfaceInfo(String intInfo);
+    InterfaceInfo getInterfaceInfo(String intInfo);
 
-    public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName, InterfaceInfo.InterfaceType interfaceType);
-    public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
+    InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName,
+            InterfaceInfo.InterfaceType interfaceType);
+    InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
 
-    public Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
+    Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
 
-    public void createVLANInterface(String interfaceName, String portName, BigInteger dpId,  Integer vlanId,
-                             String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
+    void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
+            String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
-    public void createVLANInterface(String interfaceName, String portName, BigInteger dpId,  Integer vlanId,
+    void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
-    public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
-    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
+    void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
+    void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
     List<Interface> getVlanInterfaces();
     List<Interface> getVxlanInterfaces();
 
-    public boolean isExternalInterface(String interfaceName);
+    boolean isExternalInterface(String interfaceName);
 
 }

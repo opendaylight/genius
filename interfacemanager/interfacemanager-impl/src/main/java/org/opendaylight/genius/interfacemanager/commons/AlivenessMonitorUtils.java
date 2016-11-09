@@ -261,7 +261,7 @@ public class AlivenessMonitorUtils {
         profileBuilder.setProtocolType(protocolType);
         buildGetProfile.setProfile(profileBuilder.build());
         return (buildGetProfile.build());
-    };
+    }
 
     public static long allocateProfile(AlivenessMonitorService alivenessMonitor, long FAILURE_THRESHOLD, long MONITORING_INTERVAL,
                                        long MONITORING_WINDOW, EtherTypes etherTypes) {

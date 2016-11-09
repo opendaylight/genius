@@ -75,7 +75,7 @@ public class FlowBasedServicesUtils {
 
     public enum ServiceMode  {
         INGRESS,
-        EGRESS;
+        EGRESS
     }
 
     public static final ImmutableBiMap SERVICE_MODE_MAP =

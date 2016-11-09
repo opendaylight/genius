@@ -178,7 +178,7 @@ public enum IPProtocols {
     private String protocolName;
     private int protocolNumber;
 
-    private IPProtocols(String name, int number) {
+    IPProtocols(String name, int number) {
         protocolName = name;
         protocolNumber = number;
     }
