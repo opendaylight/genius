@@ -141,8 +141,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             String subnetCidr = ItmUtils.getSubnetCidrAsString(schema.getSubnet());
             deleteVtepIpPool(subnetCidr);
         } catch (Exception e) {
-            String error = new StringBuilder("Failed to handle DCN for delete VtepConfigSchema: ").append(schema)
-                    .toString();
+            String error = "Failed to handle DCN for delete VtepConfigSchema: " + schema;
             LOG.error(error, e);
         }
     }
@@ -177,8 +176,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             handleUpdateOfDpnIds(orignalSchema, updatedSchema);
 
         } catch (Exception e) {
-            String error = new StringBuilder("Failed to handle DCN for update VtepConfigSchema original:")
-                    .append(original).append(", updated: ").append(updated).toString();
+            String error = "Failed to handle DCN for update VtepConfigSchema original:" +
+                    original + ", updated: " + updated;
             LOG.error(error, e);
         }
     }

@@ -497,7 +497,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     private String getFlowRef(BigInteger dpnId, short tableId, BigInteger tunnelKey) {
-        return new StringBuffer().append(IfmConstants.TUNNEL_TABLE_FLOWID_PREFIX).append(dpnId).append(NwConstants.FLOWID_SEPARATOR)
-                .append(tableId).append(NwConstants.FLOWID_SEPARATOR).append(tunnelKey).toString();
+        return IfmConstants.TUNNEL_TABLE_FLOWID_PREFIX + dpnId + NwConstants.FLOWID_SEPARATOR +
+                tableId + NwConstants.FLOWID_SEPARATOR + tunnelKey;
     }
 }
