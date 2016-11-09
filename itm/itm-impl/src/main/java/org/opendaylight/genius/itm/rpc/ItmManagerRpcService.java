@@ -148,8 +148,9 @@ public class ItmManagerRpcService implements ItmRpcService {
             }
 
             @Override public void onFailure(Throwable error) {
-                String msg = String.format("Unable to delete DcGatewayIp {} in datastore "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
-                LOG.error("Unable to delete DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
+                String msg =
+                        "Unable to delete DcGatewayIp " + input.getDestinationIp() + " in datastore and tunnel type " + input.getTunnelType();
+                LOG.error(msg);
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
             }
@@ -184,7 +185,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
                 @Override
                 public void onFailure(Throwable error) {
-                    String msg = String.format("Unable to create ext tunnel");
+                    String msg = "Unable to create ext tunnel";
                     LOG.error("create ext tunnel failed. {}. {}", msg, error);
                     result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                 }
@@ -214,8 +215,9 @@ public class ItmManagerRpcService implements ItmRpcService {
             }
 
             @Override public void onFailure(Throwable error) {
-                String msg = String.format("Unable to create DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
-                LOG.error("Unable to create DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType());
+                String msg =
+                        "Unable to create DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType();
+                LOG.error(msg);
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
             }

@@ -95,9 +95,8 @@ public class AlarmNotificationListeners implements Runnable {
                         + notification.getSource()
                         + " for attribute:" + acn.getAttributeName() );
 
-                if(acn.getAttributeName().toString().equals("raiseAlarmObject")){
-
-                    String value=acn.getNewValue().toString();
+                if (acn.getAttributeName().equals("raiseAlarmObject")) {
+                    String value = acn.getNewValue().toString();
                     value = value.replace(value.charAt(0), ' ');
                     value = value.replace(value.charAt(value.lastIndexOf("]")), ' ');
 
@@ -108,10 +107,8 @@ public class AlarmNotificationListeners implements Runnable {
                     } else {
                         s_logger.debug("Alarm service not available");
                     }
-
-                } else if(acn.getAttributeName().toString().equals("clearAlarmObject")){
-
-                    String value=acn.getNewValue().toString();
+                } else if (acn.getAttributeName().equals("clearAlarmObject")) {
+                    String value = acn.getNewValue().toString();
                     value = value.replace(value.charAt(0), ' ');
                     value = value.replace(value.charAt(value.lastIndexOf("]")), ' ');
 
