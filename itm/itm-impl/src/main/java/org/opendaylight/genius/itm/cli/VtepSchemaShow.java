@@ -104,7 +104,7 @@ public class VtepSchemaShow extends OsgiCommandSupport {
      *            the schema
      */
     private void printSchema(VtepConfigSchema schema) {
-        List<BigInteger> lstDpnIds = (schema.getDpnIds() == null) ? Collections.<BigInteger> emptyList()
+        List<BigInteger> lstDpnIds = (schema.getDpnIds() == null) ? Collections.emptyList()
                 : ItmUtils.getDpnIdList(schema.getDpnIds());
         List<String> lstIpFilter = getExcludeIpFilterAsList(schema.getExcludeIpFilter());
 

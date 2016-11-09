@@ -143,21 +143,21 @@ public class IdManagerTest {
                 configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
                 return null;
             }
-        }).when(mockWriteTx).put(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any(), any(IdPool.class), eq(true));
+        }).when(mockWriteTx).put(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), any(IdPool.class), eq(true));
         doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
             @Override
             public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {
                 configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
                 return null;
             }
-        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<ChildPools>>any(), any(ChildPools.class), eq(true));
+        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), any(ChildPools.class), eq(true));
         doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
             @Override
             public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {
                 configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), invocation.getArgumentAt(2, IdPool.class));
                 return null;
             }
-        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any(), any(IdPool.class), eq(true));
+        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), any(IdPool.class), eq(true));
         doAnswer(new Answer<CheckedFuture<Void, TransactionCommitFailedException>>() {
             @Override
             public CheckedFuture<Void, TransactionCommitFailedException> answer(InvocationOnMock invocation) throws Throwable {

@@ -79,7 +79,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                         @Override
                         public List<ListenableFuture<Void>> call() throws Exception {
                             // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
-                            final List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+                            final List<ListenableFuture<Void>> futures = new ArrayList<>();
                             LOG.debug("updating tunnel state for interface {}", terminationPointNew.getName());
                             WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                             InterfaceManagerCommonUtils.updateOpState(transaction, terminationPointNew.getName(), interfaceOperStatus);

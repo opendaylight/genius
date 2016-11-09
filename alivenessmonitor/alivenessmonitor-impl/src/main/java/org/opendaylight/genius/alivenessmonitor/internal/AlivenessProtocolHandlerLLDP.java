@@ -185,7 +185,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             return Collections.emptyList();
         }
 
-        List<ActionInfo> actionInfos  = new ArrayList<ActionInfo>();
+        List<ActionInfo> actionInfos  = new ArrayList<>();
         // Set the LLDP service Id which is 0
         if(Tunnel.class.equals(intfType)) {
             actionInfos.add(new ActionInfo(ActionType.set_field_tunnel_id, new BigInteger[] {

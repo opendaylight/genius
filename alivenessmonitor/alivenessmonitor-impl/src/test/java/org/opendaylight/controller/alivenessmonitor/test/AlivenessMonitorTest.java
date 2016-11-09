@@ -225,16 +225,16 @@ public class AlivenessMonitorTest {
         MonitorPauseInput input = new MonitorPauseInputBuilder().setMonitorId(2L).build();
         Optional<MonitorProfile> optProfile = Optional.of(getTestMonitorProfile());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)))).
-                                               thenReturn(Futures.<Optional<MonitorProfile>, ReadFailedException>immediateCheckedFuture(optProfile));
+                                               thenReturn(Futures.immediateCheckedFuture(optProfile));
         Optional<MonitoringInfo> optInfo = Optional.of(new MonitoringInfoBuilder().setId(2L).setProfileId(1L).build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringInfo.class)))).
-                         thenReturn(Futures.<Optional<MonitoringInfo>, ReadFailedException>immediateCheckedFuture(optInfo));
+                         thenReturn(Futures.immediateCheckedFuture(optInfo));
         Optional<MonitoringState> optState = Optional.of(new MonitoringStateBuilder().setStatus(MonitorStatus.Started).build());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringState.class)))).
-                         thenReturn(Futures.<Optional<MonitoringState>, ReadFailedException>immediateCheckedFuture(optState));
+                         thenReturn(Futures.immediateCheckedFuture(optState));
         Optional<MonitoridKeyEntry> optMap = Optional.of(new MonitoridKeyEntryBuilder().setMonitorId(2L).setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoridKeyEntry.class)))).
-                                               thenReturn(Futures.<Optional<MonitoridKeyEntry>, ReadFailedException>immediateCheckedFuture(optMap));
+                                               thenReturn(Futures.immediateCheckedFuture(optMap));
         alivenessMonitor.monitorPause(input).get();
         verify(readWriteTx).merge(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringState.class)), stateCaptor.capture());
         assertEquals(MonitorStatus.Paused, stateCaptor.getValue().getStatus());
@@ -245,16 +245,16 @@ public class AlivenessMonitorTest {
         MonitorUnpauseInput input = new  MonitorUnpauseInputBuilder().setMonitorId(2L).build();
         Optional<MonitoringState> optState = Optional.of(new MonitoringStateBuilder().setStatus(MonitorStatus.Paused).build());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringState.class)))).
-                         thenReturn(Futures.<Optional<MonitoringState>, ReadFailedException>immediateCheckedFuture(optState));
+                         thenReturn(Futures.immediateCheckedFuture(optState));
         Optional<MonitoringInfo> optInfo = Optional.of(new MonitoringInfoBuilder().setId(2L).setProfileId(1L).build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringInfo.class)))).
-                         thenReturn(Futures.<Optional<MonitoringInfo>, ReadFailedException>immediateCheckedFuture(optInfo));
+                         thenReturn(Futures.immediateCheckedFuture(optInfo));
         Optional<MonitorProfile> optProfile = Optional.of(getTestMonitorProfile());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)))).
-                         thenReturn(Futures.<Optional<MonitorProfile>, ReadFailedException>immediateCheckedFuture(optProfile));
+                         thenReturn(Futures.immediateCheckedFuture(optProfile));
         Optional<MonitoridKeyEntry> optMap = Optional.of(new MonitoridKeyEntryBuilder().setMonitorId(2L).setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoridKeyEntry.class)))).
-                                               thenReturn(Futures.<Optional<MonitoridKeyEntry>, ReadFailedException>immediateCheckedFuture(optMap));
+                                               thenReturn(Futures.immediateCheckedFuture(optMap));
         RpcResult<Void> result = alivenessMonitor.monitorUnpause(input).get();
         verify(readWriteTx).merge(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringState.class)), stateCaptor.capture());
         assertEquals(MonitorStatus.Started, stateCaptor.getValue().getStatus());
@@ -270,13 +270,13 @@ public class AlivenessMonitorTest {
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringInfo.class)))).thenReturn(outFuture);
         Optional<MonitoridKeyEntry> optMap = Optional.of(new MonitoridKeyEntryBuilder().setMonitorId(2L).setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoridKeyEntry.class)))).
-                                               thenReturn(Futures.<Optional<MonitoridKeyEntry>, ReadFailedException>immediateCheckedFuture(optMap));
+                                               thenReturn(Futures.immediateCheckedFuture(optMap));
         Optional<MonitorProfile> optProfile = Optional.of(getTestMonitorProfile());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)))).
-                                               thenReturn(Futures.<Optional<MonitorProfile>, ReadFailedException>immediateCheckedFuture(optProfile));
+                                               thenReturn(Futures.immediateCheckedFuture(optProfile));
         Optional<InterfaceMonitorEntry> optEntry = Optional.of(getInterfaceMonitorEntry());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(InterfaceMonitorEntry.class)))).
-                                               thenReturn(Futures.<Optional<InterfaceMonitorEntry>, ReadFailedException>immediateCheckedFuture(optEntry));
+                                               thenReturn(Futures.immediateCheckedFuture(optEntry));
         RpcResult<Void> result = alivenessMonitor.monitorStop(input).get();
         verify(idManager).releaseId(any(ReleaseIdInput.class));
         verify(writeTx, times(2)).delete(eq(LogicalDatastoreType.OPERATIONAL), any(InstanceIdentifier.class));
@@ -288,7 +288,7 @@ public class AlivenessMonitorTest {
         MonitorProfileDeleteInput input = new MonitorProfileDeleteInputBuilder().setProfileId(1L).build();
         Optional<MonitorProfile> optProfile = Optional.of(getTestMonitorProfile());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)))).
-                      thenReturn(Futures.<Optional<MonitorProfile>, ReadFailedException>immediateCheckedFuture(optProfile));
+                      thenReturn(Futures.immediateCheckedFuture(optProfile));
         RpcResult<Void> result = alivenessMonitor.monitorProfileDelete(input).get();
         verify(idManager).releaseId(any(ReleaseIdInput.class));
         verify(readWriteTx).delete(eq(LogicalDatastoreType.OPERATIONAL), Matchers.<InstanceIdentifier<MonitorProfile>>any());

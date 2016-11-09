@@ -29,7 +29,7 @@ public class PMRegistrationListener implements Runnable {
     static MBeanServer mbs = null;
 
     private static String DOMAIN = "SDNC.PM";
-    public static HashSet<ObjectName> beanNames = new HashSet<ObjectName>();
+    public static HashSet<ObjectName> beanNames = new HashSet<>();
     private BundleContext context = null;
 
     public PMRegistrationListener(BundleContext context){
@@ -96,7 +96,7 @@ public class PMRegistrationListener implements Runnable {
      */
     public void queryMbeans() {
         Set<ObjectName> names =
-                new TreeSet<ObjectName>(mbs.queryNames(null, null));
+                new TreeSet<>(mbs.queryNames(null, null));
         LOG.debug("\nQueried MBeanServer for MBeans:");
         for (ObjectName name : names) {
             if(name.toString().contains(DOMAIN)){

@@ -244,9 +244,9 @@ public class ArpUtilImpl implements OdlArputilService,
         byte[] srcMac = null;
 
         RpcResultBuilder<Void> failureBuilder = RpcResultBuilder
-                .<Void> failed();
+                .failed();
         RpcResultBuilder<Void> successBuilder = RpcResultBuilder
-                .<Void> success();
+                .success();
 
         try {
             dstIpBytes = getIpAddressBytes(arpReqInput.getIpaddress());

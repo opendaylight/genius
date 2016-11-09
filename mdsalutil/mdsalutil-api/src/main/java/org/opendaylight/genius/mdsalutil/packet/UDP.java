@@ -32,16 +32,16 @@ public class UDP extends Packet {
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
         private static final long serialVersionUID = 1L;
         {
-            put(SRCPORT, new ImmutablePair<Integer, Integer>(0, 16));
-            put(DESTPORT, new ImmutablePair<Integer, Integer>(16, 16));
-            put(LENGTH, new ImmutablePair<Integer, Integer>(32, 16));
-            put(CHECKSUM, new ImmutablePair<Integer, Integer>(48, 16));
+            put(SRCPORT, new ImmutablePair<>(0, 16));
+            put(DESTPORT, new ImmutablePair<>(16, 16));
+            put(LENGTH, new ImmutablePair<>(32, 16));
+            put(CHECKSUM, new ImmutablePair<>(48, 16));
         }
     };
 
     public UDP() {
         super();
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
         /* Setting all remaining header field values to
@@ -54,7 +54,7 @@ public class UDP extends Packet {
 
     public UDP(boolean writeAccess) {
         super(writeAccess);
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
         /* Setting all remaining header field values to

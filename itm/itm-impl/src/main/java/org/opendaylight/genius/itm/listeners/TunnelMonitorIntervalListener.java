@@ -45,7 +45,7 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
     @Override
     protected void remove(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
         LOG.debug("remove TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
-        List<HwVtep> hwVteps = new ArrayList<HwVtep>();
+        List<HwVtep> hwVteps = new ArrayList<>();
         Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
@@ -82,7 +82,7 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
                                     TunnelMonitorInterval dataObjectModificationBefore,
                                     TunnelMonitorInterval dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorIntervalListener called with {}",dataObjectModificationAfter.getInterval());
-        List<HwVtep> hwVteps = new ArrayList<HwVtep>();
+        List<HwVtep> hwVteps = new ArrayList<>();
         Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
@@ -117,7 +117,7 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
     @Override
     protected void add(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
         LOG.debug("Add TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
-        List<HwVtep> hwVteps = new ArrayList<HwVtep>();
+        List<HwVtep> hwVteps = new ArrayList<>();
         Boolean hwVtepsExist = false;
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
