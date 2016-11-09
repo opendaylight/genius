@@ -180,9 +180,10 @@ public enum MatchFieldType {
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
 
-            StringBuffer nodeConnectorId = new StringBuffer().append("openflow:").append(matchInfo.getBigMatchValues()[0])
-            .append(':').append(matchInfo.getBigMatchValues()[1]);
-            matchBuilderInOut.setInPort(new NodeConnectorId(nodeConnectorId.toString()));
+
+            String nodeConnectorId = "openflow:" + matchInfo.getBigMatchValues()[0] +
+                    ':' + matchInfo.getBigMatchValues()[1];
+            matchBuilderInOut.setInPort(new NodeConnectorId(nodeConnectorId));
         }
     },
 

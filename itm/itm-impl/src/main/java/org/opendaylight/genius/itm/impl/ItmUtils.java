@@ -458,7 +458,7 @@ public class ItmUtils {
     }
 
     private static String getFlowRef(long termSvcTable, int svcId) {
-        return new StringBuffer().append(termSvcTable).append(svcId).toString();
+        return String.valueOf(termSvcTable) + svcId;
     }
     public static InstanceIdentifier<VtepConfigSchema> getVtepConfigSchemaIdentifier(String schemaName) {
         return InstanceIdentifier.builder(VtepConfigSchemas.class)
@@ -482,8 +482,8 @@ public class ItmUtils {
             if (!StringUtils.equalsIgnoreCase(schema.getSchemaName(), existingSchema.getSchemaName())
                     && schema.getSubnet().equals(existingSchema.getSubnet())) {
                 String subnetCidr = getSubnetCidrAsString(schema.getSubnet());
-                Preconditions.checkArgument(false, new StringBuilder("VTEP schema with subnet [").append(subnetCidr)
-                        .append("] already exists. Multiple VTEP schemas with same subnet is not allowed.").toString());
+                Preconditions.checkArgument(false, "VTEP schema with subnet [" + subnetCidr +
+                        "] already exists. Multiple VTEP schemas with same subnet is not allowed.");
             }
         }
         if (isNotEmpty(getDpnIdList(validSchema.getDpnIds()))) {
@@ -492,9 +492,8 @@ public class ItmUtils {
                     getDpnIdList(validSchema.getDpnIds()), existingSchemas);
             if (!lstDpns.isEmpty()) {
                 Preconditions.checkArgument(false,
-                        new StringBuilder("DPN's ").append(lstDpns).append(" already configured for transport zone ")
-                                .append(tzone).append(". Only one end point per transport Zone per Dpn is allowed.")
-                                .toString());
+                        "DPN's " + lstDpns + " already configured for transport zone " +
+                                tzone + ". Only one end point per transport Zone per Dpn is allowed.");
             }
             if (schema.getTunnelType().equals(TunnelTypeGre.class)){
                 validateForSingleGreTep(validSchema.getSchemaName(), getDpnIdList(validSchema.getDpnIds()), existingSchemas);
@@ -510,9 +509,8 @@ public class ItmUtils {
                 List<BigInteger> lstConflictingDpns = new ArrayList<>(getDpnIdList(existingSchema.getDpnIds()));
                 lstConflictingDpns.retainAll(emptyIfNull(lstDpnsForAdd));
                 if (!lstConflictingDpns.isEmpty()) {
-                    String errMsg = new StringBuilder("DPN's ").append(lstConflictingDpns)
-                            .append(" already configured with GRE TEP. Mutiple GRE TEP's on a single DPN are not allowed.")
-                            .toString();
+                    String errMsg = "DPN's " + lstConflictingDpns +
+                            " already configured with GRE TEP. Mutiple GRE TEP's on a single DPN are not allowed.";
                     Preconditions.checkArgument(false, errMsg);
                 }
             }
@@ -532,8 +530,8 @@ public class ItmUtils {
         if (gatewayIp != null) {
             String strGatewayIp = String.valueOf(gatewayIp.getValue());
             if (!strGatewayIp.equals(ITMConstants.DUMMY_IP_ADDRESS) && !subnetUtils.getInfo().isInRange(strGatewayIp)) {
-                Preconditions.checkArgument(false, new StringBuilder("Gateway IP address ").append(strGatewayIp)
-                        .append(" is not in subnet range ").append(subnetCidr).toString());
+                Preconditions.checkArgument(false, "Gateway IP address " + strGatewayIp +
+                        " is not in subnet range " + subnetCidr);
             }
         }
         ItmUtils.getExcludeIpAddresses(schema.getExcludeIpFilter(), subnetUtils.getInfo());
@@ -544,9 +542,8 @@ public class ItmUtils {
             tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
         } else {
             tunnelType = StringUtils.upperCase(tunnelType);
-            String error = new StringBuilder("Invalid tunnel type. Valid values: ")
-                    .append(ITMConstants.TUNNEL_TYPE_VXLAN).append(" | ").append(ITMConstants.TUNNEL_TYPE_GRE)
-                    .toString();
+            String error = "Invalid tunnel type. Valid values: " +
+                    ITMConstants.TUNNEL_TYPE_VXLAN + " | " + ITMConstants.TUNNEL_TYPE_GRE;
             Preconditions.checkArgument(ITMConstants.TUNNEL_TYPE_VXLAN.equals(tunnelType)
                     || ITMConstants.TUNNEL_TYPE_GRE.equals(tunnelType), error);
         }
@@ -595,23 +592,20 @@ public class ItmUtils {
                 String strStartIp = StringUtils.trim(arrIpRange[0]);
                 String strEndIp = StringUtils.trim(arrIpRange[1]);
                 Preconditions.checkArgument(InetAddresses.isInetAddress(strStartIp),
-                        new StringBuilder("Invalid exclude IP filter: invalid IP address value ").append(strStartIp)
-                                .toString());
+                        "Invalid exclude IP filter: invalid IP address value " + strStartIp);
                 Preconditions.checkArgument(InetAddresses.isInetAddress(strEndIp),
-                        new StringBuilder("Invalid exclude IP filter: invalid IP address value ").append(strEndIp)
-                                .toString());
+                        "Invalid exclude IP filter: invalid IP address value " + strEndIp);
                 Preconditions.checkArgument(subnetInfo.isInRange(strStartIp),
-                        new StringBuilder("Invalid exclude IP filter: IP address [").append(strStartIp)
-                                .append("] not in subnet range ").append(subnetInfo.getCidrSignature()).toString());
+                        "Invalid exclude IP filter: IP address [" + strStartIp +
+                                "] not in subnet range " + subnetInfo.getCidrSignature());
                 Preconditions.checkArgument(subnetInfo.isInRange(strEndIp),
-                        new StringBuilder("Invalid exclude IP filter: IP address [").append(strEndIp)
-                                .append("] not in subnet range ").append(subnetInfo.getCidrSignature()).toString());
+                        "Invalid exclude IP filter: IP address [" + strEndIp +
+                                "] not in subnet range " + subnetInfo.getCidrSignature());
                 int startIp = subnetInfo.asInteger(strStartIp);
                 int endIp = subnetInfo.asInteger(strEndIp);
 
                 Preconditions.checkArgument(startIp < endIp,
-                        new StringBuilder("Invalid exclude IP filter: Invalid range [").append(ip).append("] ")
-                                .toString());
+                        "Invalid exclude IP filter: Invalid range [" + ip + "] ");
                 for (int i = startIp; i <= endIp; i++) {
                     String ipAddress = ipFormat(toIpArray(i));
                     validateAndAddIpAddressToList(subnetInfo, lstIpAddress, ipAddress);
@@ -626,10 +620,10 @@ public class ItmUtils {
                                                       String ipAddress) {
         String ip = StringUtils.trim(ipAddress);
         Preconditions.checkArgument(InetAddresses.isInetAddress(ip),
-                new StringBuilder("Invalid exclude IP filter: invalid IP address value ").append(ip).toString());
+                "Invalid exclude IP filter: invalid IP address value " + ip);
         Preconditions.checkArgument(subnetInfo.isInRange(ip),
-                new StringBuilder("Invalid exclude IP filter: IP address [").append(ip).append("] not in subnet range ")
-                        .append(subnetInfo.getCidrSignature()).toString());
+                "Invalid exclude IP filter: IP address [" + ip + "] not in subnet range " +
+                        subnetInfo.getCidrSignature());
         lstIpAddress.add(new IpAddress(ip.toCharArray()));
     }
     private static int[] toIpArray(int val) {
@@ -655,13 +649,12 @@ public class ItmUtils {
         if ((lstDpnsForAdd == null || lstDpnsForAdd.isEmpty())
                 && (lstDpnsForDelete == null || lstDpnsForDelete.isEmpty())) {
             Preconditions.checkArgument(false,
-                    new StringBuilder("DPN ID list for add | delete is null or empty in schema ").append(schemaName)
-                            .toString());
+                    "DPN ID list for add | delete is null or empty in schema " + schemaName);
         }
         VtepConfigSchema schema = itmProvider.getVtepConfigSchema(schemaName);
         if (schema == null) {
-            Preconditions.checkArgument(false, new StringBuilder("Specified VTEP Schema [").append(schemaName)
-                    .append("] doesn't exists!").toString());
+            Preconditions.checkArgument(false, "Specified VTEP Schema [" + schemaName +
+                    "] doesn't exists!");
         }
         List<BigInteger> existingDpnIds = getDpnIdList(schema.getDpnIds());
         if (isNotEmpty(lstDpnsForAdd)) {
@@ -669,8 +662,8 @@ public class ItmUtils {
             List<BigInteger> lstAlreadyExistingDpns = new ArrayList<>(existingDpnIds);
             lstAlreadyExistingDpns.retainAll(lstDpnsForAdd);
             Preconditions.checkArgument(lstAlreadyExistingDpns.isEmpty(),
-                    new StringBuilder("DPN ID's ").append(lstAlreadyExistingDpns)
-                            .append(" already exists in VTEP schema [").append(schemaName).append("]").toString());
+                    "DPN ID's " + lstAlreadyExistingDpns +
+                            " already exists in VTEP schema [" + schemaName + "]");
             //    }
             if (schema.getTunnelType().equals(TunnelTypeGre.class)) {
                 validateForSingleGreTep(schema.getSchemaName(), lstDpnsForAdd, itmProvider.getAllVtepConfigSchemas());
@@ -678,17 +671,17 @@ public class ItmUtils {
         }
         if (isNotEmpty(lstDpnsForDelete)) {
             if (existingDpnIds == null || existingDpnIds.isEmpty()) {
-                StringBuilder builder = new StringBuilder("DPN ID's ").append(lstDpnsForDelete)
-                        .append(" specified for delete from VTEP schema [").append(schemaName)
-                        .append("] are not configured in the schema.");
-                Preconditions.checkArgument(false, builder.toString());
+                String builder = "DPN ID's " + lstDpnsForDelete +
+                        " specified for delete from VTEP schema [" + schemaName +
+                        "] are not configured in the schema.";
+                Preconditions.checkArgument(false, builder);
             } else if (!existingDpnIds.containsAll(lstDpnsForDelete)) {
                 List<BigInteger> lstConflictingDpns = new ArrayList<>(lstDpnsForDelete);
                 lstConflictingDpns.removeAll(existingDpnIds);
-                StringBuilder builder = new StringBuilder("DPN ID's ").append(lstConflictingDpns)
-                        .append(" specified for delete from VTEP schema [").append(schemaName)
-                        .append("] are not configured in the schema.");
-                Preconditions.checkArgument(false, builder.toString());
+                String builder = "DPN ID's " + lstConflictingDpns +
+                        " specified for delete from VTEP schema [" + schemaName +
+                        "] are not configured in the schema.";
+                Preconditions.checkArgument(false, builder);
             }
         }
         return schema;

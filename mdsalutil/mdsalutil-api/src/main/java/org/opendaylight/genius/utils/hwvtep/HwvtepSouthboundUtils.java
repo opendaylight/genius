@@ -390,8 +390,8 @@ public class HwvtepSouthboundUtils {
     public static String getTerminationPointKeyString(String ipAddress) {
         String tpKeyStr = null;
         if(ipAddress != null) {
-            tpKeyStr = new StringBuilder(HwvtepSouthboundConstants.TEP_PREFIX).
-                    append(ipAddress).toString();
+            tpKeyStr = HwvtepSouthboundConstants.TEP_PREFIX +
+                    ipAddress;
         }
         return tpKeyStr;
     }

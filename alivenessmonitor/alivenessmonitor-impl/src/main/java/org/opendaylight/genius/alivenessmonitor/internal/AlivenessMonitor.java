@@ -1063,10 +1063,10 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
 
     private String getUniqueProfileKey(Long failureThreshold, Long monitorInterval, Long monitorWindow,
                                        EtherTypes ethType) {
-        return new StringBuilder().append(failureThreshold).append(AlivenessMonitorConstants.SEPERATOR)
-                                  .append(monitorInterval).append(AlivenessMonitorConstants.SEPERATOR)
-                                  .append(monitorWindow).append(AlivenessMonitorConstants.SEPERATOR)
-                                  .append(ethType).append(AlivenessMonitorConstants.SEPERATOR).toString();
+        return String.valueOf(failureThreshold) + AlivenessMonitorConstants.SEPERATOR +
+                monitorInterval + AlivenessMonitorConstants.SEPERATOR +
+                monitorWindow + AlivenessMonitorConstants.SEPERATOR +
+                ethType + AlivenessMonitorConstants.SEPERATOR;
     }
 
     @Override

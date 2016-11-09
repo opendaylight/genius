@@ -344,7 +344,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     private String getFlowRef(long termSvcTable, int svcId) {
-        return new StringBuffer().append(termSvcTable).append(svcId).toString();
+        return String.valueOf(termSvcTable) + svcId;
     }
 
     @Override
