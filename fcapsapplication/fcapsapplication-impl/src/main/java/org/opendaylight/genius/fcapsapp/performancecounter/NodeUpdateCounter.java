@@ -20,9 +20,9 @@ public class NodeUpdateCounter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeUpdateCounter.class);
     private String nodeListEFSCountStr;
-    private static HashSet<String> dpnList = new HashSet<String>();
+    private static HashSet<String> dpnList = new HashSet<>();
     public static final PMAgent pmagent = new PMAgent();
-    Map<String, String> counter_map = new HashMap<String, String>();
+    Map<String, String> counter_map = new HashMap<>();
 
     public NodeUpdateCounter() {
     }

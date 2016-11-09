@@ -50,7 +50,7 @@ public class DataStoreJobCoordinator {
         fjPool = new ForkJoinPool();
 
         for (int i = 0; i < THREADPOOL_SIZE; i++) {
-            Map<String, JobQueue> jobEntriesMap = new ConcurrentHashMap<String, JobQueue>();
+            Map<String, JobQueue> jobEntriesMap = new ConcurrentHashMap<>();
             jobQueueMap.put(i, jobEntriesMap);
         }
 

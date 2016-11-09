@@ -42,7 +42,7 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        ArrayList<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
             IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName));
             idHolder.refreshDataStore(idPool);
             InstanceIdentifier<IdPool> localPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);

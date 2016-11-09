@@ -24,10 +24,10 @@ public class IEEE8021Q extends Ethernet {
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
         private static final long serialVersionUID = 1L;
         {
-            put(PRIORITY, new ImmutablePair<Integer, Integer>(0, 3));
-            put(CFI, new ImmutablePair<Integer, Integer>(3, 1));
-            put(VLAN_ID, new ImmutablePair<Integer, Integer>(4, 12));
-            put(ETHT, new ImmutablePair<Integer, Integer>(16, 16));
+            put(PRIORITY, new ImmutablePair<>(0, 3));
+            put(CFI, new ImmutablePair<>(3, 1));
+            put(VLAN_ID, new ImmutablePair<>(4, 12));
+            put(ETHT, new ImmutablePair<>(16, 16));
         }
     };
     private Map<String, byte[]> fieldValues;
@@ -37,14 +37,14 @@ public class IEEE8021Q extends Ethernet {
      */
     public IEEE8021Q() {
         super();
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
     }
 
     public IEEE8021Q(boolean writeAccess) {
         super(writeAccess);
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
     }

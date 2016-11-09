@@ -218,9 +218,9 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      */
     private void handleUpdateOfDpnIds(VtepConfigSchema original, VtepConfigSchema updated) {
         // Handling add/delete DPNs from schema
-        List<DpnIds> originalDpnIds = (original.getDpnIds() == null) ? new ArrayList<DpnIds>()
+        List<DpnIds> originalDpnIds = (original.getDpnIds() == null) ? new ArrayList<>()
                 : original.getDpnIds();
-        List<DpnIds> updatedDpnIds = (updated.getDpnIds() == null) ? new ArrayList<DpnIds>()
+        List<DpnIds> updatedDpnIds = (updated.getDpnIds() == null) ? new ArrayList<>()
                 : updated.getDpnIds();
 
         handleDeletedDpnsFromSchema(original, originalDpnIds, updatedDpnIds);
@@ -453,7 +453,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
         List<IpAddress> availableIps = calculateAvailableIps(subnetUtils, schema.getExcludeIpFilter(),
                 schema.getGatewayIp());
         VtepIpPool vtepIpPool = new VtepIpPoolBuilder().setSubnetCidr(subnetCidr).setAvailableIpaddress(availableIps)
-                .setAllocatedIpaddress(new ArrayList<IpAddress>()).build();
+                .setAllocatedIpaddress(new ArrayList<>()).build();
 
         MDSALUtil.syncWrite(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
                 ItmUtils.getVtepIpPoolIdentifier(subnetCidr), vtepIpPool);

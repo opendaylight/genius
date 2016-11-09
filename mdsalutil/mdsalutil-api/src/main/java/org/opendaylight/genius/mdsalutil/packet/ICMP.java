@@ -34,11 +34,11 @@ public class ICMP extends Packet {
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
         private static final long serialVersionUID = 1L;
         {
-            put(TYPE, new ImmutablePair<Integer, Integer>(0, 8));
-            put(CODE, new ImmutablePair<Integer, Integer>(8, 8));
-            put(CHECKSUM, new ImmutablePair<Integer, Integer>(16, 16));
-            put(IDENTIFIER, new ImmutablePair<Integer, Integer>(32, 16));
-            put(SEQNUMBER, new ImmutablePair<Integer, Integer>(48, 16));
+            put(TYPE, new ImmutablePair<>(0, 8));
+            put(CODE, new ImmutablePair<>(8, 8));
+            put(CHECKSUM, new ImmutablePair<>(16, 16));
+            put(IDENTIFIER, new ImmutablePair<>(32, 16));
+            put(SEQNUMBER, new ImmutablePair<>(48, 16));
         }
     };
 
@@ -47,7 +47,7 @@ public class ICMP extends Packet {
      */
     public ICMP() {
         super();
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
     }
@@ -58,7 +58,7 @@ public class ICMP extends Packet {
      */
     public ICMP(boolean writeAccess) {
         super(writeAccess);
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
     }

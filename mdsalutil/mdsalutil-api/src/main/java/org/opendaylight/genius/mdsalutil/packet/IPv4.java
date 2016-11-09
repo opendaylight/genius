@@ -55,7 +55,7 @@ public class IPv4 extends Packet {
 
     public static final Map<Byte, Class<? extends Packet>> protocolClassMap;
     static {
-        protocolClassMap = new HashMap<Byte, Class<? extends Packet>>();
+        protocolClassMap = new HashMap<>();
         protocolClassMap.put(IPProtocols.ICMP.byteValue(), ICMP.class);
         protocolClassMap.put(IPProtocols.UDP.byteValue(), UDP.class);
         protocolClassMap.put(IPProtocols.TCP.byteValue(), TCP.class);
@@ -63,20 +63,20 @@ public class IPv4 extends Packet {
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
         private static final long serialVersionUID = 1L;
         {
-            put(VERSION, new ImmutablePair<Integer, Integer>(0, 4));
-            put(HEADERLENGTH, new ImmutablePair<Integer, Integer>(4, 4));
-            put(DIFFSERV, new ImmutablePair<Integer, Integer>(8, 6));
-            put(ECN, new ImmutablePair<Integer, Integer>(14, 2));
-            put(TOTLENGTH, new ImmutablePair<Integer, Integer>(16, 16));
-            put(IDENTIFICATION, new ImmutablePair<Integer, Integer>(32, 16));
-            put(FLAGS, new ImmutablePair<Integer, Integer>(48, 3));
-            put(FRAGOFFSET, new ImmutablePair<Integer, Integer>(51, 13));
-            put(TTL, new ImmutablePair<Integer, Integer>(64, 8));
-            put(PROTOCOL, new ImmutablePair<Integer, Integer>(72, 8));
-            put(CHECKSUM, new ImmutablePair<Integer, Integer>(80, 16));
-            put(SIP, new ImmutablePair<Integer, Integer>(96, 32));
-            put(DIP, new ImmutablePair<Integer, Integer>(128, 32));
-            put(OPTIONS, new ImmutablePair<Integer, Integer>(160, 0));
+            put(VERSION, new ImmutablePair<>(0, 4));
+            put(HEADERLENGTH, new ImmutablePair<>(4, 4));
+            put(DIFFSERV, new ImmutablePair<>(8, 6));
+            put(ECN, new ImmutablePair<>(14, 2));
+            put(TOTLENGTH, new ImmutablePair<>(16, 16));
+            put(IDENTIFICATION, new ImmutablePair<>(32, 16));
+            put(FLAGS, new ImmutablePair<>(48, 3));
+            put(FRAGOFFSET, new ImmutablePair<>(51, 13));
+            put(TTL, new ImmutablePair<>(64, 8));
+            put(PROTOCOL, new ImmutablePair<>(72, 8));
+            put(CHECKSUM, new ImmutablePair<>(80, 16));
+            put(SIP, new ImmutablePair<>(96, 32));
+            put(DIP, new ImmutablePair<>(128, 32));
+            put(OPTIONS, new ImmutablePair<>(160, 0));
         }
     };
 
@@ -90,7 +90,7 @@ public class IPv4 extends Packet {
      */
     public IPv4() {
         super();
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
         corrupted = false;
@@ -113,7 +113,7 @@ public class IPv4 extends Packet {
      */
     public IPv4(boolean writeAccess) {
         super(writeAccess);
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
         corrupted = false;

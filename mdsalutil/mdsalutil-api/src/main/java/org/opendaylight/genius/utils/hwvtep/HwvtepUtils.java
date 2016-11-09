@@ -669,7 +669,7 @@ public final class HwvtepUtils {
         NodeId nodeId = new NodeId(deviceNodeId);
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
                 .createHwvtepPhysicalLocatorAugmentation(String.valueOf(remoteVtepIp.getValue()));
-        List<RemoteUcastMacs> macs = new ArrayList<RemoteUcastMacs>();
+        List<RemoteUcastMacs> macs = new ArrayList<>();
         for (PhysAddress mac : macAddresses) {
             // TODO: Query ARP cache to get IP address corresponding to
             // the MAC

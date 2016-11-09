@@ -383,11 +383,11 @@ public class MDSALManager implements AutoCloseable {
         NodeConnectorId _nodeConnectorId = new NodeConnectorId(_string);
         NodeConnectorKey _nodeConnectorKey = new NodeConnectorKey(_nodeConnectorId);
         NodeConnectorKey nConKey = _nodeConnectorKey;
-        InstanceIdentifierBuilder<Nodes> _builder = InstanceIdentifier.<Nodes> builder(Nodes.class);
+        InstanceIdentifierBuilder<Nodes> _builder = InstanceIdentifier.builder(Nodes.class);
         NodeId _nodeId = new NodeId(nodeId);
         NodeKey _nodeKey = new NodeKey(_nodeId);
-        InstanceIdentifierBuilder<Node> _child = _builder.<Node, NodeKey> child(Node.class, _nodeKey);
-        InstanceIdentifierBuilder<NodeConnector> _child_1 = _child.<NodeConnector, NodeConnectorKey> child(
+        InstanceIdentifierBuilder<Node> _child = _builder.child(Node.class, _nodeKey);
+        InstanceIdentifierBuilder<NodeConnector> _child_1 = _child.child(
                 NodeConnector.class, nConKey);
         InstanceIdentifier<NodeConnector> path = _child_1.toInstance();
         NodeConnectorRef _nodeConnectorRef = new NodeConnectorRef(path);

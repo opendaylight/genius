@@ -46,7 +46,7 @@ public class InterfaceServiceUtil {
 
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie, List<Instruction> instructions) {
-        List<BoundServices>  boundService = new ArrayList<BoundServices>();
+        List<BoundServices>  boundService = new ArrayList<>();
         boundService.add(new BoundServicesBuilder().setServicePriority((short)servicePriority).setServiceName(serviceName).build());
         return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
@@ -61,13 +61,13 @@ public class InterfaceServiceUtil {
 
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie) {
-        List<BoundServices>  boundService = new ArrayList<BoundServices>();
+        List<BoundServices>  boundService = new ArrayList<>();
         boundService.add(new BoundServicesBuilder().setServicePriority((short)servicePriority).setServiceName(serviceName).build());
         return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
     public static List<MatchInfo> getMatchInfoForVlanLPort(BigInteger dpId, long portNo, long vlanId, boolean isVlanTransparent) {
-        List<MatchInfo> matches = new ArrayList<MatchInfo>();
+        List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] {dpId, BigInteger.valueOf(portNo)}));
         if (vlanId != 0 && !isVlanTransparent) {
             matches.add(new MatchInfo(MatchFieldType.vlan_vid, new long[] { vlanId }));
@@ -88,7 +88,7 @@ public class InterfaceServiceUtil {
     }
 
     public static Set<Object> getStatRequestKeys(BigInteger dpId, short tableId, List<MatchInfo> matches, String flowId, long groupId) {
-        Set<Object> statRequestKeys = new HashSet<Object>();
+        Set<Object> statRequestKeys = new HashSet<>();
         statRequestKeys.add(getFlowStatisticsKey(dpId, tableId, matches, flowId));
         statRequestKeys.add(getGroupStatisticsKey(dpId, groupId));
         return statRequestKeys;
@@ -103,7 +103,7 @@ public class InterfaceServiceUtil {
     }
 
     public static List<MatchInfo> getLPortDispatcherMatches(short serviceIndex, int interfaceTag) {
-        List<MatchInfo> mkMatches = new ArrayList<MatchInfo>();
+        List<MatchInfo> mkMatches = new ArrayList<>();
         mkMatches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
                  MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, serviceIndex),
                  MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));

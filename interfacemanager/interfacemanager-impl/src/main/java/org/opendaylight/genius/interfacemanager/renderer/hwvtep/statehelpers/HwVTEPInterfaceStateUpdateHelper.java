@@ -31,7 +31,7 @@ public class HwVTEPInterfaceStateUpdateHelper {
 
     public static List<ListenableFuture<Void>> updatePhysicalSwitch(DataBroker dataBroker, InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier,
                                                                     Tunnels tunnelsNew, Tunnels tunnelsOld) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("updating physical switch for tunnels");
         String interfaceName =
                 InterfaceMetaUtils.getInterfaceForTunnelInstanceIdentifier(tunnelsInstanceIdentifier.toString(), dataBroker);
@@ -70,7 +70,7 @@ public class HwVTEPInterfaceStateUpdateHelper {
     public static List<ListenableFuture<Void>> startBfdMonitoring(DataBroker dataBroker,
                                                                   InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier,
                                                                   Tunnels tunnelsNew) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         /*String interfaceName =
                 InterfaceMetaUtils.getInterfaceForTunnelInstanceIdentifier(tunnelsInstanceIdentifier.toString(), dataBroker);
         if (interfaceName == null) {
