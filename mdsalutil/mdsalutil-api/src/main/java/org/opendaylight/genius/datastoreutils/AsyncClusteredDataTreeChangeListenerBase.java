@@ -43,7 +43,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase<T extends DataObj
             DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
             TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>());
+            new LinkedBlockingQueue<>());
 
     protected final Class<T> clazz;
     private final Class<K> eventClazz;

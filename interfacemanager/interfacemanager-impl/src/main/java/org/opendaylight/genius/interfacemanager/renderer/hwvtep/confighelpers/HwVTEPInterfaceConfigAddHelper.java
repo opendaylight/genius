@@ -36,7 +36,7 @@ public class HwVTEPInterfaceConfigAddHelper {
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, InstanceIdentifier<Node> physicalSwitchNodeId,
                                                                 InstanceIdentifier<Node> globalNodeId,
                                                                 Interface interfaceNew, IfTunnel ifTunnel) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
         // create hwvtep through ovsdb plugin

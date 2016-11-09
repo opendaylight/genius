@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NumberOfOFSwitchCounter implements NumberOfOFSwitchCounterMBean {
-    private static Map<String,String> counterCache = new HashMap<String,String>();
+    private static Map<String,String> counterCache = new HashMap<>();
 
     @Override
     public void updateCounter(Map<String, String> map) {

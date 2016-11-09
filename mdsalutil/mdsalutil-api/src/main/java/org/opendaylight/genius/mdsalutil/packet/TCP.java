@@ -36,16 +36,16 @@ public class TCP extends Packet {
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
         private static final long serialVersionUID = 1L;
         {
-            put(SRCPORT, new ImmutablePair<Integer, Integer>(0, 16));
-            put(DESTPORT, new ImmutablePair<Integer, Integer>(16, 16));
-            put(SEQNUMBER, new ImmutablePair<Integer, Integer>(32, 32));
-            put(ACKNUMBER, new ImmutablePair<Integer, Integer>(64, 32));
-            put(DATAOFFSET, new ImmutablePair<Integer, Integer>(96, 4));
-            put(RESERVED, new ImmutablePair<Integer, Integer>(100, 3));
-            put(HEADERLENFLAGS, new ImmutablePair<Integer, Integer>(103, 9));
-            put(WINDOWSIZE, new ImmutablePair<Integer, Integer>(112, 16));
-            put(CHECKSUM, new ImmutablePair<Integer, Integer>(128, 16));
-            put(URGENTPOINTER, new ImmutablePair<Integer, Integer>(144, 16));
+            put(SRCPORT, new ImmutablePair<>(0, 16));
+            put(DESTPORT, new ImmutablePair<>(16, 16));
+            put(SEQNUMBER, new ImmutablePair<>(32, 32));
+            put(ACKNUMBER, new ImmutablePair<>(64, 32));
+            put(DATAOFFSET, new ImmutablePair<>(96, 4));
+            put(RESERVED, new ImmutablePair<>(100, 3));
+            put(HEADERLENFLAGS, new ImmutablePair<>(103, 9));
+            put(WINDOWSIZE, new ImmutablePair<>(112, 16));
+            put(CHECKSUM, new ImmutablePair<>(128, 16));
+            put(URGENTPOINTER, new ImmutablePair<>(144, 16));
         }
     };
 
@@ -56,7 +56,7 @@ public class TCP extends Packet {
      */
     public TCP() {
         super();
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
         /* Setting all remaining header field values to
@@ -80,7 +80,7 @@ public class TCP extends Packet {
      */
     public TCP(boolean writeAccess) {
         super(writeAccess);
-        fieldValues = new HashMap<String, byte[]>();
+        fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
         /* Setting all remaining header field values to

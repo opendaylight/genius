@@ -88,8 +88,8 @@ public class ItmInternalTunnelDeleteTest {
     TunnelEndPoints tunnelEndPointsVxlan = null;
     TunnelEndPoints tunnelEndPointsVxlanNew = null;
     DpnEndpoints dpnEndpoints = null;
-    List<DPNTEPsInfo> meshDpnListVxlan = new ArrayList<DPNTEPsInfo>() ;
-    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<DPNTEPsInfo>() ;
+    List<DPNTEPsInfo> meshDpnListVxlan = new ArrayList<>() ;
+    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListVxlanNew = new ArrayList<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;

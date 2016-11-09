@@ -15,7 +15,7 @@ public class JobQueue {
     private JobEntry executingEntry;
 
     public JobQueue() {
-        waitingEntries = new ConcurrentLinkedQueue<JobEntry>();
+        waitingEntries = new ConcurrentLinkedQueue<>();
     }
 
     public void addEntry(JobEntry entry) {

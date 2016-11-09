@@ -250,7 +250,7 @@ public enum IPProtocols {
     }
 
     public static List<String> getProtocolNameList() {
-        List<String> protoList = new ArrayList<String>();
+        List<String> protoList = new ArrayList<>();
         for (IPProtocols proto : IPProtocols.values()) {
             protoList.add(proto.toString());
         }

@@ -33,7 +33,7 @@ public class HwVTEPConfigRemoveHelper {
     public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, Interface interfaceOld,
                                                                    InstanceIdentifier<Node> globalNodeId,
                                                                    InstanceIdentifier<Node> physicalSwitchNodeId) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("removing hwvtep configuration for {}", interfaceOld.getName());
         if(globalNodeId != null) {

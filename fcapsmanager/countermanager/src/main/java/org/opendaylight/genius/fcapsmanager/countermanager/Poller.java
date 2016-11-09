@@ -60,7 +60,7 @@ public class Poller {
 class Pollerthread implements Runnable {
     private final static org.slf4j.Logger LOG = LoggerFactory.getLogger(Pollerthread.class);
     MBeanServer mbs = null;
-    Map<String,String> getCounter = new HashMap<String,String>();
+    Map<String,String> getCounter = new HashMap<>();
     Poller poller = new Poller();
 
     /**

@@ -24,7 +24,7 @@ public class HwVTEPInterfaceStateRemoveHelper {
 
     public static List<ListenableFuture<Void>> removeExternalTunnel(DataBroker dataBroker,
                                                                     InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier) {
-        List<ListenableFuture<Void>> futures = new ArrayList<ListenableFuture<Void>>();
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("Removing HwVTEP tunnel entries for tunnel: {}", tunnelsInstanceIdentifier);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         transaction.delete(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier);

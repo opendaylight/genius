@@ -44,7 +44,7 @@ public class HwvtepHACache {
             return;
         }
         if (parentToChildMap.get(parent) == null) {
-            parentToChildMap.put(parent, new HashSet<InstanceIdentifier<Node>>());
+            parentToChildMap.put(parent, new HashSet<>());
         }
         parentToChildMap.get(parent).add(child);
         childToParentMap.put(child, parent);

@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CounterForOFPortDuration implements CounterForOFPortDurationMBean{
 
-    Map<String, Integer> counterCache = new HashMap<String, Integer>();
+    Map<String, Integer> counterCache = new HashMap<>();
     public static Map counterMap = new HashMap<String,String>();
     public void invokePMManagedObjects(Map<String, Integer> map) {
         setCounterDetails(map);
