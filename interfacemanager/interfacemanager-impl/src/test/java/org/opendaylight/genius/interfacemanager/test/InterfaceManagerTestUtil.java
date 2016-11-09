@@ -233,8 +233,8 @@ public class InterfaceManagerTestUtil {
     }
 
     public static String buildFlowRef(BigInteger dpnId, short tableId, String iface, short currentServiceIndex) {
-        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR)
-                .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(currentServiceIndex).toString();
+        return String.valueOf(dpnId) + tableId + NwConstants.FLOWID_SEPARATOR +
+                iface + NwConstants.FLOWID_SEPARATOR + currentServiceIndex;
     }
 
     public static NodeConnector buildNodeConnector(NodeConnectorId ncId) {
@@ -267,9 +267,9 @@ public class InterfaceManagerTestUtil {
     }
 
     public static String buildNodeConnectorString(BigInteger dpn, long portNo){
-        return new StringBuffer().append(IfmConstants.OF_URI_PREFIX).
-                append(dpn).append(IfmConstants.OF_URI_SEPARATOR).
-                append(portNo).toString();
+        return IfmConstants.OF_URI_PREFIX +
+                dpn + IfmConstants.OF_URI_SEPARATOR +
+                portNo;
     }
 
     public static InstanceIdentifier<BridgeInterfaceEntry> buildBridgeEntryId(BigInteger dpn, String interfaceName){

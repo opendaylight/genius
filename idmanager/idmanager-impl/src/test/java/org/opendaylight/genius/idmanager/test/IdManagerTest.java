@@ -128,7 +128,7 @@ public class IdManagerTest {
     }
 
     private String getLocalPoolName(String poolName) {
-        return new StringBuilder(poolName).append(".").append(BLADE_ID).toString();
+        return poolName + "." + BLADE_ID;
     }
 
     private void setupMocks(List<IdPool> idPools) {

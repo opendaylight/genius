@@ -178,8 +178,8 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     }
 
     private String getMonitoringKey(String interfaceName, String sourceIp, String targetIp) {
-        return new StringBuilder().append(interfaceName).append(SEPERATOR).append(sourceIp)
-                .append(SEPERATOR).append(targetIp).append(SEPERATOR).append(EtherTypes.Arp).toString();
+        return interfaceName + SEPERATOR + sourceIp +
+                SEPERATOR + targetIp + SEPERATOR + EtherTypes.Arp;
     }
 
     private String getIpAddress(EndpointType source) {

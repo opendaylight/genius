@@ -337,7 +337,7 @@ public class HwVtepTunnelsStateHandler extends AbstractDataChangeListener<Tunnel
     }
 
     private String getBfdMonitorKey(String interfaceName) {
-        return new StringBuilder().append(interfaceName).append("bfd").toString();
+        return interfaceName + "bfd";
     }
 
     private String getInterfaceName(EndpointType endpoint) {
