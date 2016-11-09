@@ -19,6 +19,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -86,6 +88,16 @@ public class IdManager implements IdManagerService {
         CacheUtil.createCache(IdUtils.ID_POOL_CACHE);
         localPool = (ConcurrentMap<String, IdLocalPool>) CacheUtil.getCache(IdUtils.ID_POOL_CACHE);
         populateCache();
+    }
+
+    @PostConstruct
+    public void start() {
+        LOG.info("{} start", getClass().getSimpleName());
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("{} close", getClass().getSimpleName());
     }
 
     private void populateCache() {
