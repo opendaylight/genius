@@ -218,7 +218,7 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
-        return new StringBuilder().append(dpnId).append(tableId).append(ifName).toString();
+        return String.valueOf(dpnId) + tableId + ifName;
     }
 
     public static void setOpStateForInterface(DataBroker broker, String interfaceName,

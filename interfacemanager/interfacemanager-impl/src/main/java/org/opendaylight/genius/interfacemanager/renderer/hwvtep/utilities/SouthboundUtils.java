@@ -134,8 +134,8 @@ public class SouthboundUtils {
     public static String getTerminationPointKeyString(String ipAddress) {
         String tpKeyStr = null;
         if(ipAddress != null) {
-            tpKeyStr = new StringBuilder(TEP_PREFIX).
-                    append(ipAddress).toString();
+            tpKeyStr = TEP_PREFIX +
+                    ipAddress;
         }
         return tpKeyStr;
     }

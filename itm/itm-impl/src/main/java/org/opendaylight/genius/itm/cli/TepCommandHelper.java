@@ -225,9 +225,8 @@ public class TepCommandHelper {
         if (isConfiguredTepGreType && isGreType) {
             for (Vteps vtep : vtepList) {
                 if (vtep.getDpnId().equals(dpnId)) {
-                    String errMsg = new StringBuilder("DPN [").append(dpnId)
-                            .append("] already configured with GRE TEP. Mutiple GRE TEP's on a single DPN are not allowed.")
-                            .toString();
+                    String errMsg = "DPN [" + dpnId +
+                            "] already configured with GRE TEP. Mutiple GRE TEP's on a single DPN are not allowed.";
                     Preconditions.checkArgument(false, errMsg);
                 }
             }
@@ -822,10 +821,10 @@ public void showCache(String cacheName) {
         // if (tZone != null) {
         if (tZoneFromConfigDS != null) {
             if( (!tZoneFromConfigDS.getTunnelType().equals(tunType))  && ItmUtils.isNotEmpty(tZoneFromConfigDS.getSubnets())) {
-                String errorMsg = new StringBuilder("Changing the tunnel type from ").append(tZoneFromConfigDS.getTunnelType())
-                        .append(" to ").append(strTunnelType)
-                        .append(" is not allowed for already configured transport zone [").append(tZoneName)
-                        .append("].").toString();
+                String errorMsg = "Changing the tunnel type from " + tZoneFromConfigDS.getTunnelType() +
+                        " to " + strTunnelType +
+                        " is not allowed for already configured transport zone [" + tZoneName +
+                        "].";
                 Preconditions.checkArgument(false, errorMsg);
             }
         }

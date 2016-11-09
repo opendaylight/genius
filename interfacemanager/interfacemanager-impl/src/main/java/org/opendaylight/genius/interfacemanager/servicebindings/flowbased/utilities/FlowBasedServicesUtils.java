@@ -393,8 +393,8 @@ public class FlowBasedServicesUtils {
     }
 
     private static String getFlowRef(BigInteger dpnId, short tableId, String iface, BoundServices service, short currentServiceIndex) {
-        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR)
-                .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(currentServiceIndex).toString();
+        return String.valueOf(dpnId) + tableId + NwConstants.FLOWID_SEPARATOR +
+                iface + NwConstants.FLOWID_SEPARATOR + currentServiceIndex;
     }
 
     /**
