@@ -25,7 +25,7 @@ public class InterfaceInfo implements Serializable {
         MPLS_OVER_GRE,
         MPLS_OVER_UDP,
         LOGICAL_GROUP_INTERFACE,
-        UNKNOWN_INTERFACE;
+        UNKNOWN_INTERFACE
     }
 
     public enum InterfaceAdminState {

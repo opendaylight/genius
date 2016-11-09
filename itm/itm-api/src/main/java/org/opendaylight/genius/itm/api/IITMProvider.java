@@ -23,22 +23,23 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 
 public interface IITMProvider {
     // APIs used by i
-    public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask, String gatewayIp, String transportZone, CommandSession session);
+    void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
+            String gatewayIp, String transportZone, CommandSession session);
 
-    public void commitTeps();
+    void commitTeps();
 
-    public DataBroker getDataBroker();
+    DataBroker getDataBroker();
 
-    public void showTeps(CommandSession session);
+    void showTeps(CommandSession session);
 
-    public void showState(List<StateTunnelList> tunnels, CommandSession session);
+    void showState(List<StateTunnelList> tunnels, CommandSession session);
 
-    public void showCache(String cacheName);
+    void showCache(String cacheName);
 
-    public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                           String gatewayIp, String transportZone, CommandSession session);
+    void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
+            String gatewayIp, String transportZone, CommandSession session);
     // public void showState(TunnelsState tunnelsState);
-    public void configureTunnelType(String transportZone, String tunnelType);
+    void configureTunnelType(String transportZone, String tunnelType);
 
 
     /**
@@ -47,7 +48,7 @@ public interface IITMProvider {
      * @param vtepConfigSchema
      *            the vtep config schema
      */
-    public void addVtepConfigSchema(VtepConfigSchema vtepConfigSchema);
+    void addVtepConfigSchema(VtepConfigSchema vtepConfigSchema);
 
     /**
      * Gets the vtep config schema.
@@ -56,14 +57,14 @@ public interface IITMProvider {
      *            the schema name
      * @return the vtep config schema
      */
-    public VtepConfigSchema getVtepConfigSchema(String schemaName);
+    VtepConfigSchema getVtepConfigSchema(String schemaName);
 
     /**
      * Gets the all vtep config schemas.
      *
      * @return the all vtep config schemas
      */
-    public List<VtepConfigSchema> getAllVtepConfigSchemas();
+    List<VtepConfigSchema> getAllVtepConfigSchemas();
 
     /**
      * Update VTEP schema.
@@ -75,20 +76,20 @@ public interface IITMProvider {
      * @param lstDpnsForDelete
      *            the lst dpns for delete
      */
-    public void updateVtepSchema(String schemaName, List<BigInteger> lstDpnsForAdd, List<BigInteger> lstDpnsForDelete);
+    void updateVtepSchema(String schemaName, List<BigInteger> lstDpnsForAdd, List<BigInteger> lstDpnsForDelete);
 
     /**
      * Delete all vtep schemas.
      */
-    public void deleteAllVtepSchemas();
+    void deleteAllVtepSchemas();
 
-    public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol);
+    void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol);
 
-    public void configureTunnelMonitorInterval(int interval);
+    void configureTunnelMonitorInterval(int interval);
 
-    public void addExternalEndpoint(java.lang.Class<? extends TunnelTypeBase> tunType, IpAddress dcgwIP);
+    void addExternalEndpoint(java.lang.Class<? extends TunnelTypeBase> tunType, IpAddress dcgwIP);
 
-    public void remExternalEndpoint(java.lang.Class<? extends TunnelTypeBase> tunType, IpAddress dcgwIP);
+    void remExternalEndpoint(java.lang.Class<? extends TunnelTypeBase> tunType, IpAddress dcgwIP);
 
-    public boolean validateIP (final String ip);
+    boolean validateIP(final String ip);
 }

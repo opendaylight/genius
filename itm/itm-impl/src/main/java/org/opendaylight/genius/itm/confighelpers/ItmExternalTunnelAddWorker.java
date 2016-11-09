@@ -61,7 +61,6 @@ public class ItmExternalTunnelAddWorker {
                     logger.error("Error in Datastore operation", error);
                 }
 
-                ;
             };
 
     public static List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(DataBroker dataBroker, IdManagerService idManagerService,

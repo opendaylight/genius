@@ -13,6 +13,6 @@ public interface PacketInCounterMBean {
     //-----------
     // operations
     //-----------
-    public void updateCounter(Map<String, String> map);
-    public Map<String, String> retrieveCounterMap();
+    void updateCounter(Map<String, String> map);
+    Map<String, String> retrieveCounterMap();
 }

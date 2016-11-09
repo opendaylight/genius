@@ -17,5 +17,5 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import java.util.List;
 
 public interface FlowBasedServicesStateRemovable {
-    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState);
+    List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState);
 }

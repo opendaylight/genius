@@ -13,8 +13,8 @@ import com.google.common.base.Optional;
 
 public interface IdHolder {
     Optional<Long> allocateId();
-    public void addId(long id);
-    public boolean isIdAvailable();
-    public long getAvailableIdCount();
-    public void refreshDataStore(IdPoolBuilder idPoolBuilder);
+    void addId(long id);
+    boolean isIdAvailable();
+    long getAvailableIdCount();
+    void refreshDataStore(IdPoolBuilder idPoolBuilder);
 }

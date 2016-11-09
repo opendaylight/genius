@@ -11,6 +11,6 @@ import java.lang.String;
 import java.util.Map;
 
 public interface PortNameMappingMBean {
-    public Map<String,String> getPortIdtoPortNameMap();
-    public String getPortName(String portId);
+    Map<String,String> getPortIdtoPortNameMap();
+    String getPortName(String portId);
 }
