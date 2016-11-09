@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_13d99857",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-09T11:16:01Z",
+      "side": 1,
+      "message": "Yes, will be added to \u0027not supported\u0027. I had added it but missed when had to rejig for formatting errors.",
+      "parentUuid": "3a65312a_d35280dc",
+      "range": {
+        "startLine": 10,
+        "startChar": 8,
+        "endLine": 10,
+        "endChar": 19
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_1364f8b7",
         "filename": "docs/specs/of-tunnels.rst",
         "patchSetId": 1
@@ -71,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_b3e70412",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-09T11:16:01Z",
+      "side": 1,
+      "message": "There are already use cases to support it, though not in same Transport zone.",
+      "parentUuid": "3a65312a_f355fcc6",
+      "range": {
+        "startLine": 127,
+        "startChar": 12,
+        "endLine": 127,
+        "endChar": 32
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_5347901f",
         "filename": "docs/specs/of-tunnels.rst",
         "patchSetId": 1
@@ -82,6 +130,30 @@
       "writtenOn": "2016-11-09T10:29:15Z",
       "side": 1,
       "message": "What configuration parameters we are mentioning here? Are we not talking about changes in IFM API? we have a new configuration parameter \u0027option-of-tunnel\u0027 and \u0027tunnel-optional-params\u0027 in API.",
+      "range": {
+        "startLine": 175,
+        "startChar": 12,
+        "endLine": 175,
+        "endChar": 23
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d3ee00ec",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-09T11:16:01Z",
+      "side": 1,
+      "message": "This mainly refers to xml or cfg file parameters. e.g. controller based dhcp or not, stateful or transparent security groups. yang based configuration is covered as part of yang changes.",
+      "parentUuid": "3a65312a_5347901f",
       "range": {
         "startLine": 175,
         "startChar": 12,
@@ -117,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_13c0784f",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-09T11:16:01Z",
+      "side": 1,
+      "message": "Yeah, TBD. I need to make yang changes and use restconf API browser to capture it. Want to have basic agreement on yang changes first.",
+      "parentUuid": "3a65312a_7359ecfd",
+      "range": {
+        "startLine": 213,
+        "startChar": 34,
+        "endLine": 213,
+        "endChar": 58
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_f3e7bc3e",
         "filename": "docs/specs/of-tunnels.rst",
         "patchSetId": 1
@@ -128,6 +224,30 @@
       "writtenOn": "2016-11-09T10:29:15Z",
       "side": 1,
       "message": "Do you see any impact on these projects because of this feature addition? Do these projects require any change?",
+      "range": {
+        "startLine": 258,
+        "startChar": 10,
+        "endLine": 258,
+        "endChar": 18
+      },
+      "revId": "032240d2bb5f99e506f87fa18da0fc9122bdb51c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_73b56ced",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-09T11:16:01Z",
+      "side": 1,
+      "message": "Since this change is backwards compatible, they will not be impacted. They may have to make changes to leverage this. Idea here is to keep list of projects who have announced dependency on us to make sure they get added to our reviews.",
+      "parentUuid": "3a65312a_f3e7bc3e",
       "range": {
         "startLine": 258,
         "startChar": 10,
