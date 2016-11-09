@@ -105,7 +105,7 @@ public class MDSALUtil {
     public static final String SEPARATOR = ":";
     private static final Buckets EMPTY_Buckets = new BucketsBuilder().build();
     private static final Instructions EMPTY_Instructions = new InstructionsBuilder().setInstruction(
-            new ArrayList<Instruction>()).build();
+            new ArrayList<>()).build();
     private static final Match EMPTY_Matches = new MatchBuilder().build();
     private static final Logger logger = LoggerFactory.getLogger(MDSALUtil.class);
 
@@ -345,9 +345,9 @@ public class MDSALUtil {
         nodeId = new NodeId(sNodeId);
         nodeKey = new NodeKey(nodeId);
 
-        nodesInstanceIdentifierBuilder = InstanceIdentifier.<Nodes> builder(Nodes.class);
-        nodeInstanceIdentifierBuilder = nodesInstanceIdentifierBuilder.<Node, NodeKey> child(Node.class, nodeKey);
-        nodeConnectorInstanceIdentifierBuilder = nodeInstanceIdentifierBuilder.<NodeConnector, NodeConnectorKey> child(
+        nodesInstanceIdentifierBuilder = InstanceIdentifier.builder(Nodes.class);
+        nodeInstanceIdentifierBuilder = nodesInstanceIdentifierBuilder.child(Node.class, nodeKey);
+        nodeConnectorInstanceIdentifierBuilder = nodeInstanceIdentifierBuilder.child(
                 NodeConnector.class, nodeConnectorKey);
         nodeConnectorInstanceIdentifier = nodeConnectorInstanceIdentifierBuilder.toInstance();
         nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);

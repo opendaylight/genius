@@ -139,7 +139,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
         }
 
         public void addFlowCapableNode(NodeKey nodeKey) throws ExecutionException, InterruptedException {
-            Nodes nodes = new NodesBuilder().setNode(Collections.<Node>emptyList()).build();
+            Nodes nodes = new NodesBuilder().setNode(Collections.emptyList()).build();
             InstanceIdentifier<Node> flowNodeIdentifier = InstanceIdentifier.create(Nodes.class)
                     .child(Node.class, nodeKey);
 
@@ -164,14 +164,14 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
             int SERVICE_ID = 0;
             FlowEntity terminatingServiceTableFlowEntity = null;
 
-            List<ActionInfo> listActionInfo = new ArrayList<ActionInfo>();
+            List<ActionInfo> listActionInfo = new ArrayList<>();
             listActionInfo.add(new ActionInfo(ActionType.punt_to_controller,
                     new String[] {}));
 
             try {
                 dpId = new BigInteger(dpnId.split(":")[1]);
 
-                List<MatchInfo> mkMatches = new ArrayList<MatchInfo>();
+                List<MatchInfo> mkMatches = new ArrayList<>();
                 BigInteger COOKIE = new BigInteger("9000000", 16);
 
                 short s_tableId = Short.parseShort(tableId) ;
@@ -179,7 +179,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
                 mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] {
                         new BigInteger("0000000000000000", 16) }));
 
-                List<InstructionInfo> mkInstructions = new ArrayList<InstructionInfo>();
+                List<InstructionInfo> mkInstructions = new ArrayList<>();
                 mkInstructions.add(new InstructionInfo(InstructionType.write_actions,
                         listActionInfo));
 
@@ -206,8 +206,8 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
         public GroupEntity createGroupEntity(String Nodeid, String inport, int vlanid) {
             GroupEntity groupEntity;
             long id = getUniqueValue(Nodeid, inport);
-            List<BucketInfo> listBucketInfo = new ArrayList<BucketInfo>();
-            List<ActionInfo> listActionInfo = new ArrayList<ActionInfo>();
+            List<BucketInfo> listBucketInfo = new ArrayList<>();
+            List<ActionInfo> listActionInfo = new ArrayList<>();
             if (vlanid > 0) {
                 listActionInfo.add(new ActionInfo(ActionType.push_vlan, new String[] { null }));
                 listActionInfo.add(new ActionInfo(ActionType.set_field_vlan_vid, new String[] { String.valueOf(vlanid) }));

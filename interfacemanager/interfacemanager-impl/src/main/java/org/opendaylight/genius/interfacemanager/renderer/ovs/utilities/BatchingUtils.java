@@ -91,7 +91,7 @@ public class BatchingUtils {
     }
 
     static {
-        topologyConfigShardBufferQ = new LinkedBlockingQueue<ActionableResource>();
-        defaultConfigShardBufferQ = new LinkedBlockingQueue<ActionableResource>();
+        topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
+        defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
     }
 }

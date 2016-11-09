@@ -210,8 +210,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         byte[] dstIpBytes = null;
         byte[] srcMac = null;
 
-        RpcResultBuilder<Void> failureBuilder = RpcResultBuilder.<Void>failed();
-        RpcResultBuilder<Void> successBuilder = RpcResultBuilder.<Void>success();
+        RpcResultBuilder<Void> failureBuilder = RpcResultBuilder.failed();
+        RpcResultBuilder<Void> successBuilder = RpcResultBuilder.success();
 
         try {
             dstIpBytes = getIpAddressBytes(arpReqInput.getIpaddress());

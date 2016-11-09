@@ -74,7 +74,7 @@ public class InterfaceManagerCommonUtils {
     private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
-            new ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus>();
+            new ConcurrentHashMap<>();
 
     private static final String NOVA_OR_TUNNEL_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}";
     private static final Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
