@@ -700,7 +700,7 @@ public enum ActionType {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
 
-            final String ipAddress = (String) actionInfo.getActionValues()[0];
+            final String ipAddress = actionInfo.getActionValues()[0];
             final long ipl = InetAddresses
                     .coerceToInteger(InetAddresses.forString(ipAddress)) & 0xffffffffL;
             return new ActionBuilder().setKey(new ActionKey(newActionKey))

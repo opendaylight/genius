@@ -141,9 +141,9 @@ public class TepCommandHelper {
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
         SubnetObject subObCli = new SubnetObject(gatewayIpObj, subnetsKey, subnetMaskObj, vlanId);
         if (tZones.containsKey(transportZone)) {
-            Map<SubnetObject, List<Vteps>> subVtepMapTemp = (Map<SubnetObject, List<Vteps>>) tZones.get(transportZone);
+            Map<SubnetObject, List<Vteps>> subVtepMapTemp = tZones.get(transportZone);
             if (subVtepMapTemp.containsKey(subObCli)) { // if Subnet exists
-                List<Vteps> vtepListTemp = (List<Vteps>) subVtepMapTemp.get(subObCli);
+                List<Vteps> vtepListTemp = subVtepMapTemp.get(subObCli);
                 if (vtepListTemp.contains(vtepCli)) {
                     // do nothing
                 } else {
@@ -194,7 +194,7 @@ public class TepCommandHelper {
         // Checking for duplicates in local cache
         for (String tZ : tZones.keySet()) {
             boolean isGreType = isGreTunnelType(tZ, tZoneMap);
-            Map<SubnetObject, List<Vteps>> subVtepMapTemp = (Map<SubnetObject, List<Vteps>>) tZones.get(tZ);
+            Map<SubnetObject, List<Vteps>> subVtepMapTemp = tZones.get(tZ);
             for (SubnetObject subOb : subVtepMapTemp.keySet()) {
                 List<Vteps> vtepList = subVtepMapTemp.get(subOb);
                 validateForDuplicateAndSingleGreTep(inputVtep, isConfiguredTepGreType, isGreType, vtepList);
@@ -337,7 +337,7 @@ public class TepCommandHelper {
     public boolean checkTepPerTzPerDpn(String tzone, BigInteger dpnId) {
         // check in local cache
         if (tZones.containsKey(tzone)) {
-            Map<SubnetObject, List<Vteps>> subVtepMapTemp = (Map<SubnetObject, List<Vteps>>) tZones.get(tzone);
+            Map<SubnetObject, List<Vteps>> subVtepMapTemp = tZones.get(tzone);
             for (SubnetObject subOb : subVtepMapTemp.keySet()) {
                 List<Vteps> vtepList = subVtepMapTemp.get(subOb);
                 for (Vteps vtep : vtepList)
@@ -379,7 +379,7 @@ public class TepCommandHelper {
                 for (String tZ : tZones.keySet()) {
                     LOG.debug("tZones" + tZ);
                     subnetList = new ArrayList<>();
-                    Map<SubnetObject, List<Vteps>> subVtepMapTemp = (Map<SubnetObject, List<Vteps>>) tZones.get(tZ);
+                    Map<SubnetObject, List<Vteps>> subVtepMapTemp = tZones.get(tZ);
                     for (SubnetObject subOb : subVtepMapTemp.keySet()) {
                         LOG.debug("subnets" + subOb.get_prefix());
                         List<Vteps> vtepList = subVtepMapTemp.get(subOb);
@@ -731,9 +731,9 @@ public void showCache(String cacheName) {
         SubnetObject subObCli = new SubnetObject(gatewayIpObj, subnetsKey, subnetMaskObj, vlanId);
 
         if (tZones.containsKey(transportZone)) {
-            Map<SubnetObject, List<Vteps>> subVtepMapTemp = (Map<SubnetObject, List<Vteps>>) tZones.get(transportZone);
+            Map<SubnetObject, List<Vteps>> subVtepMapTemp = tZones.get(transportZone);
             if (subVtepMapTemp.containsKey(subObCli)) { // if Subnet exists
-                List<Vteps> vtepListTemp = (List<Vteps>) subVtepMapTemp.get(subObCli);
+                List<Vteps> vtepListTemp = subVtepMapTemp.get(subObCli);
                 if (vtepListTemp.contains(vtepCli)) {
                     exists = true; // return true if tzones has vtep
                     vtepListTemp.remove(vtepCli);
