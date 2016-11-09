@@ -274,7 +274,7 @@ public class IdUtils {
         List<DelayedIdEntries> delayedIdEntriesList = new ArrayList<>();
         List<DelayedIdEntry> delayList = releasedIdHolder.getDelayedEntries();
         for (DelayedIdEntry delayedId : delayList) {
-            DelayedIdEntries delayedIdEntry = IdUtils.createDelayedIdEntry((long)delayedId.getId(), delayedId.getReadyTimeSec());
+            DelayedIdEntries delayedIdEntry = IdUtils.createDelayedIdEntry(delayedId.getId(), delayedId.getReadyTimeSec());
             delayedIdEntriesList.add(delayedIdEntry);
         }
         releasedIdsBuilder.setAvailableIdCount((long)delayedIdEntriesList.size()).setDelayedTimeSec(delayTime).setDelayedIdEntries(delayedIdEntriesList);
