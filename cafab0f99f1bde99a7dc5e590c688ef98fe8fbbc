@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_bf5225db",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-10T11:09:41Z",
+      "side": 1,
+      "message": "hold on - why on assertNotNull? We can offer a MUCH stronger and tighter verification, using assertEqualBeans!",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1f5fd9e6",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-10T11:09:41Z",
+      "side": 1,
+      "message": "same",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5f5951fd",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-10T11:09:41Z",
+      "side": 1,
+      "message": "same",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3f5e15e7",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-10T11:09:41Z",
+      "side": 1,
+      "message": "same",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7f488d2d",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestExpectedFlowEntries.xtend",
+        "patchSetId": 10
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-10T11:09:41Z",
+      "side": 1,
+      "message": "don\u0027t we need more Flows here? Or are we not asserting Flows anymore at all now? In that case, we should remove this (but see also the comment about not using assertNotNull in InterfaceManagerTest)",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
