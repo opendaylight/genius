@@ -8,18 +8,14 @@
 package org.opendaylight.genius.utils.clustering;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
-
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
+import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.utils.SystemPropertyReader;
@@ -28,8 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ClusteringUtils {
+
     private static final Logger LOG = LoggerFactory.getLogger(ClusteringUtils.class);
-    static DataStoreJobCoordinator dataStoreJobCoordinator;
+    private static DataStoreJobCoordinator dataStoreJobCoordinator;
 
     static DataStoreJobCoordinator getDataStoreJobCoordinator() {
         if (dataStoreJobCoordinator == null) {
@@ -37,6 +34,7 @@ public class ClusteringUtils {
         }
         return dataStoreJobCoordinator;
     }
+
     public static void setDataStoreJobCoordinator(DataStoreJobCoordinator ds) {
         dataStoreJobCoordinator = ds;
     }
@@ -44,17 +42,18 @@ public class ClusteringUtils {
     public static ListenableFuture<Boolean> checkNodeEntityOwner(EntityOwnershipService entityOwnershipService,
                                                                  String entityType, String nodeId) {
         return checkNodeEntityOwner(entityOwnershipService, new Entity(entityType, nodeId),
-                SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
+               SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
     }
 
     public static ListenableFuture<Boolean> checkNodeEntityOwner(EntityOwnershipService entityOwnershipService,
                                                                  String entityType, YangInstanceIdentifier nodeId) {
         return checkNodeEntityOwner(entityOwnershipService, new Entity(entityType, nodeId),
-                SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
+               SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
     }
 
     public static ListenableFuture<Boolean> checkNodeEntityOwner(EntityOwnershipService entityOwnershipService,
-                                                                 Entity entity, long sleepBetweenRetries, int maxRetries) {
+                                                                 Entity entity, long sleepBetweenRetries,
+                                                                 int maxRetries) {
         SettableFuture<Boolean> checkNodeEntityfuture = SettableFuture.create();
         CheckEntityOwnerTask checkEntityOwnerTask = new CheckEntityOwnerTask(entityOwnershipService, entity,
                 checkNodeEntityfuture, sleepBetweenRetries, maxRetries);
@@ -69,8 +68,9 @@ public class ClusteringUtils {
         long sleepBetweenRetries;
         int retries;
 
-        public CheckEntityOwnerTask(EntityOwnershipService entityOwnershipService, Entity entity,
-                                    SettableFuture<Boolean> checkNodeEntityfuture, long sleepBetweenRetries, int retries) {
+        CheckEntityOwnerTask(EntityOwnershipService entityOwnershipService, Entity entity,
+                                    SettableFuture<Boolean> checkNodeEntityfuture, long sleepBetweenRetries,
+                                    int retries) {
             this.entityOwnershipService = entityOwnershipService;
             this.entity = entity;
             this.checkNodeEntityfuture = checkNodeEntityfuture;
@@ -99,10 +99,7 @@ public class ClusteringUtils {
         }
 
         private List<ListenableFuture<Void>> getResultFuture() {
-            ListenableFuture<Void> future = Futures.immediateFuture(null);
-            ArrayList<ListenableFuture<Void>> futureList = Lists.newArrayList();
-            futureList.add(future);
-            return futureList;
+            return Collections.singletonList(Futures.immediateFuture(null));
         }
     }
 }
