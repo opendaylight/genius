@@ -22,6 +22,30 @@
       "revId": "2e5a3dd944a941e839da02743ac3215b909dfbdf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5f45d16e",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-10T13:21:57Z",
+      "side": 1,
+      "message": "Yes, that will work. You can also have vxlan and gre both OF based. Issue with having both of same type is in coming pkts can belong to both. I don\u0027t think OVS allows creation of such ports.\n\nGood catch though, Vxlan+GRE on same should be a supported use case as encapsulation is different so OVS knows which port to tag incoming packets with.",
+      "parentUuid": "3a65312a_bf9ce56a",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 75
+      },
+      "revId": "2e5a3dd944a941e839da02743ac3215b909dfbdf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
