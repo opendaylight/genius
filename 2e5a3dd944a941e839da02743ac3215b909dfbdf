@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_bf9ce56a",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 6641
+      },
+      "writtenOn": "2016-11-10T12:12:20Z",
+      "side": 1,
+      "message": "What if they are different tunnel types? Can I have on the same device:\n1) VxLAN tunnel TEPs (for the DPNs mesh) that are non-flow based and, \n2) A flow based GRE (unidirectional) TEP",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 75
+      },
+      "revId": "2e5a3dd944a941e839da02743ac3215b909dfbdf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
