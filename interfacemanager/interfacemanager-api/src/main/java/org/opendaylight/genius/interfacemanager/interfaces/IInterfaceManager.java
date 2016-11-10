@@ -16,11 +16,9 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 
-@Deprecated
 public interface IInterfaceManager {
     @Deprecated
     public Long getPortForInterface(String ifName);
@@ -45,6 +43,8 @@ public interface IInterfaceManager {
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName, InterfaceInfo.InterfaceType interfaceType);
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
 
+    public Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
+
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId,  Integer vlanId,
                              String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
@@ -55,5 +55,7 @@ public interface IInterfaceManager {
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
     List<Interface> getVlanInterfaces();
     List<Interface> getVxlanInterfaces();
-    public Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
+
+    public boolean isExternalInterface(String interfaceName);
+
 }
