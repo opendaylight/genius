@@ -84,6 +84,24 @@
       "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5f279164",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestExpectedFlowEntries.xtend",
+        "patchSetId": 10
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-10T11:23:29Z",
+      "side": 1,
+      "message": "actually we are not using this currently...\ni was validating only if flow is present or not..\ncould you please give an example on how to write this xtend to validate one of the existing flow asserts in my review?",
+      "parentUuid": "3a65312a_7f488d2d",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
