@@ -102,6 +102,24 @@
       "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_47b7c786",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestExpectedFlowEntries.xtend",
+        "patchSetId": 10
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-10T21:32:10Z",
+      "side": 1,
+      "message": "see assertEqualBeans in line 97 of InterfaceManagerTest.  We can also have a screen share to go over this in more details, if that\u0027s useful.",
+      "parentUuid": "3a65312a_5f279164",
+      "revId": "cafab0f99f1bde99a7dc5e590c688ef98fe8fbbc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
