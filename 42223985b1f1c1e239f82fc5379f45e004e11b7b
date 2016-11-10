@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_ffbf7dce",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/PMRegistrationListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-11-10T11:47:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_bfe4e53b",
+      "revId": "42223985b1f1c1e239f82fc5379f45e004e11b7b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_3fd0d54f",
         "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/PMRegistrationListener.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-10T10:58:17Z",
       "side": 1,
       "message": "probably much better to LOG.error than debug for this? And I was thinking if this should have a \"return;\" as well, but probably not (so that it works anyways even if there is some JMX problem).",
+      "revId": "42223985b1f1c1e239f82fc5379f45e004e11b7b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5fb5d1ec",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/PMRegistrationListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-11-10T11:47:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_3fd0d54f",
       "revId": "42223985b1f1c1e239f82fc5379f45e004e11b7b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
