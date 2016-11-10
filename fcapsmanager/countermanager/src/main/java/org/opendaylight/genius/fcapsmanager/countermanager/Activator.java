@@ -9,32 +9,27 @@ package org.opendaylight.genius.fcapsmanager.countermanager;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MalformedObjectNameException;
-import javax.management.ReflectionException;
-import java.io.IOException;
-
 public class Activator implements BundleActivator {
-    private final static org.slf4j.Logger LOG = LoggerFactory.getLogger(Activator.class);
-    private Runnable listener;
+    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+
+    private PMRegistrationListener notificationListeners;
     private Thread listenerThread;
 
-    public void start(BundleContext context) throws InstanceNotFoundException, MalformedObjectNameException, MBeanException, ReflectionException, IOException {
-        LOG.info("Starting countermanager bundle ");
-        PMRegistrationListener notificationListeners = new PMRegistrationListener(context);
-        try {
-            listener = notificationListeners;
-            listenerThread = new Thread(listener);
-            listenerThread.start();
-        } catch (Exception e) {
-            LOG.error("Exception in counter thread {}", e);
-        }
+    @Override
+    public void start(BundleContext context) throws Exception {
+        LOG.info("Starting alarmmanager bundle");
+        notificationListeners = new PMRegistrationListener(context);
+        listenerThread = new Thread(notificationListeners);
+        listenerThread.start();
     }
 
+    @Override
     public void stop(BundleContext context) {
-        LOG.info("Stopping countermanager bundle ");
+        LOG.info("Stopping alarmmanager bundle");
+        notificationListeners.setShouldContinue(false);
+        listenerThread.interrupt();
     }
 }
