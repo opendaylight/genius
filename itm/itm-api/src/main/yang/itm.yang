@@ -66,6 +66,11 @@ module itm {
                     leaf ip-address {
                         type inet:ip-address;
                     }
+                    leaf option-of-tunnel {
+                        description "Use flow based tunnels for remote-ip";
+                        type boolean;
+                        default false;
+                    }
                 }
                  list device-vteps {
                   key "node-id ip-address";
