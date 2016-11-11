@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_45e97f7f",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-11T11:39:43Z",
+      "side": 1,
+      "message": "if we have any interest of using tun_dest_ip match and tun_src_ip action, they would probably be added to the pipeline similarly..",
+      "revId": "beb3c163ca95666f2c41e9e9b6149a8e26b9a8a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_65ff5b35",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-11T11:39:43Z",
+      "side": 1,
+      "message": "do we actually need this? isn\u0027t it enough to check for existence of tunnel-source-ip-flow or tunnel-remote-ip-flow optional params?",
+      "revId": "beb3c163ca95666f2c41e9e9b6149a8e26b9a8a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
