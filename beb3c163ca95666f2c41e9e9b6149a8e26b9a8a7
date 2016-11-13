@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_9f13df0c",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-13T06:18:04Z",
+      "side": 1,
+      "message": "Yeah, they\u0027 been added to MDSALUtil as part of this patch so if you have use case, you can use them too. If you already have use case I can add with this feature, else it will have to come in separate feature.",
+      "parentUuid": "3a65312a_45e97f7f",
+      "revId": "beb3c163ca95666f2c41e9e9b6149a8e26b9a8a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_65ff5b35",
         "filename": "docs/specs/of-tunnels.rst",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-11T11:39:43Z",
       "side": 1,
       "message": "do we actually need this? isn\u0027t it enough to check for existence of tunnel-source-ip-flow or tunnel-remote-ip-flow optional params?",
+      "revId": "beb3c163ca95666f2c41e9e9b6149a8e26b9a8a7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_fff933c9",
+        "filename": "docs/specs/of-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-13T06:18:04Z",
+      "side": 1,
+      "message": "This is ITM yang while optional params are in IFM. When using ITM, flow is: ITM \u003e IFM \u003e OVSDB Plugin. IFM can be configured directly too, for use cases where don\u0027t need ITM.",
+      "parentUuid": "3a65312a_65ff5b35",
       "revId": "beb3c163ca95666f2c41e9e9b6149a8e26b9a8a7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
