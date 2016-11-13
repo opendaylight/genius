@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_5f8ca735",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-13T11:27:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_872c54ad",
+      "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_a72fd0a0",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_bf833b03",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-13T11:27:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_a72fd0a0",
+      "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_e718a886",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
         "patchSetId": 4
@@ -47,6 +83,24 @@
       "writtenOn": "2016-11-05T18:10:30Z",
       "side": 1,
       "message": "cosmetics - src before dst like the rest of the file",
+      "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_9f863f12",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-13T11:27:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_e718a886",
       "revId": "a89d493f04da441d499e5426651ffaa1fc0a988e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
