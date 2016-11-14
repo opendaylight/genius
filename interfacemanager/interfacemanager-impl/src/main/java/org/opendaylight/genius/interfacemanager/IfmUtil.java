@@ -29,6 +29,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.NxmRegister;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
@@ -308,9 +309,9 @@ public class IfmUtil {
                     result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
                 }else{
                     long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
-                    result.add(new ActionInfo(ActionType.nx_load_reg_6,
+                    result.add(new ActionInfo(ActionType.nx_load_reg,
                             new String[]{Integer.toString(IfmConstants.REG6_START_INDEX), Integer.toString(IfmConstants.REG6_END_INDEX),
-                                    Long.toString(regValue)}, actionKeyStart++));
+                                    Long.toString(regValue)}, actionKeyStart++, NxmRegister.REG6));
                     result.add(new ActionInfo(ActionType.nx_resubmit,
                             new String[]{Short.toString(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)}, actionKeyStart++));
                 }

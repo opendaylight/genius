@@ -18,6 +18,7 @@ import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.InstructionType;
+import org.opendaylight.genius.mdsalutil.NxmRegister;
 
 public class ActionInfoImmutableTest {
 
@@ -36,6 +37,35 @@ public class ActionInfoImmutableTest {
         assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
         flowEntity.getFlowBuilder();
         assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+    }
+
+    @Test
+    public void actionInfoTestForRegLoadAction() {
+        FlowEntity flowEntity = new FlowEntity(BigInteger.valueOf(123L));
+        flowEntity.setFlowId("TESTFLOWWITHREGLOAD");
+        flowEntity.setCookie(BigInteger.valueOf(110100481L));
+        ActionInfo actionInfo = new ActionInfo(ActionType.nx_load_reg, new String[] { "0", "31", "100" }, 1, NxmRegister.REG6);
+        List<ActionInfo> actionInfos = new ArrayList<>();
+        actionInfos.add(actionInfo);
+        flowEntity.getInstructionInfoList().add(new InstructionInfo(InstructionType.apply_actions, actionInfos));
+        assertEquals(NxmRegister.REG6, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getNxmRegister());
+        flowEntity.getFlowBuilder();
+        assertEquals(NxmRegister.REG6, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getNxmRegister());
+    }
+
+    @Test
+    public void actionInfoTestForRegMoveToMplsAction() {
+        FlowEntity flowEntity = new FlowEntity(BigInteger.valueOf(123L));
+        flowEntity.setFlowId("TESTFLOWWITHREGMOVE");
+        flowEntity.setCookie(BigInteger.valueOf(110100481L));
+        ActionInfo actionInfo = new ActionInfo(ActionType.nx_reg_move_mpls_label, new String[] { "0", "31" }, 1, NxmRegister.REG1);
+        List<ActionInfo> actionInfos = new ArrayList<>();
+        actionInfos.add(actionInfo);
+        flowEntity.getInstructionInfoList().add(new InstructionInfo(InstructionType.apply_actions, actionInfos));
+        assertEquals(ActionType.nx_reg_move_mpls_label, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionType());
+        flowEntity.getFlowBuilder();
+        assertEquals(ActionType.nx_reg_move_mpls_label, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionType());
+        assertEquals(NxmRegister.REG1, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getNxmRegister());
     }
 
 }

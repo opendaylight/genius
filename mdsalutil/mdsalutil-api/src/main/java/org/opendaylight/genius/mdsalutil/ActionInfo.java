@@ -12,7 +12,10 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class ActionInfo implements Serializable {
@@ -24,6 +27,7 @@ public class ActionInfo implements Serializable {
     private final String[][] m_asActionValuesMatrix;
     private final BigInteger[] m_aBigIntValues;
     private final int m_actionKey;
+    private final NxmRegister nxmRegister;
 
     public ActionInfo(ActionInfo action) {
         super();
@@ -36,6 +40,7 @@ public class ActionInfo implements Serializable {
 
         m_asActionValues = Arrays.copyOf(action.m_asActionValues, action.m_asActionValues.length);
         m_aBigIntValues = null;
+        nxmRegister = null;
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues) {
@@ -44,6 +49,17 @@ public class ActionInfo implements Serializable {
         m_asActionValues = asActionValues;
         m_asActionValuesMatrix = null;
         m_aBigIntValues = null;
+        nxmRegister = null;
+    }
+
+    public ActionInfo(ActionType actionType, String[] asActionValues, int actionKey, NxmRegister nxmNxReg) {
+        m_actionType = actionType;
+        m_actionKey = actionKey;
+        m_asActionValues = asActionValues;
+        m_asActionValuesMatrix = null;
+        m_aBigIntValues = null;
+        nxmRegister = nxmNxReg;
+
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, int actionKey) {
@@ -52,6 +68,7 @@ public class ActionInfo implements Serializable {
         m_asActionValues = asActionValues;
         m_asActionValuesMatrix = null;
         m_aBigIntValues = null;
+        nxmRegister = null;
     }
 
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues) {
@@ -60,6 +77,7 @@ public class ActionInfo implements Serializable {
         m_aBigIntValues = aBigIntValues;
         m_asActionValuesMatrix = null;
         m_asActionValues = null;
+        nxmRegister = null;
     }
 
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues, int actionKey) {
@@ -68,6 +86,7 @@ public class ActionInfo implements Serializable {
         m_aBigIntValues = aBigIntValues;
         m_asActionValuesMatrix = null;
         m_asActionValues = null;
+        nxmRegister = null;
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, String[][] asActionValuesMatrix, int actionKey) {
@@ -76,6 +95,7 @@ public class ActionInfo implements Serializable {
         m_aBigIntValues = null;
         m_asActionValuesMatrix = asActionValuesMatrix;
         m_asActionValues = asActionValues;
+        nxmRegister = null;
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, String[][] asActionValuesMatrix) {
@@ -106,12 +126,16 @@ public class ActionInfo implements Serializable {
         return m_asActionValuesMatrix;
     }
 
+    public NxmRegister getNxmRegister() {
+        return nxmRegister;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this).omitNullValues().add("actionType", m_actionType)
                 .add("actionValues", Arrays.deepToString(m_asActionValues))
                 .add("bigActionValues", Arrays.deepToString(m_aBigIntValues))
-                .add("actionKey", m_actionKey).toString();
+                .add("actionKey", m_actionKey).add("nxmRegister", nxmRegister).toString();
     }
 
     @Override
@@ -120,7 +144,7 @@ public class ActionInfo implements Serializable {
         // Arrays.hashCode(). deepHashCode() would have to be used for nested
         // arrays.
         return Objects.hash(m_actionType, Arrays.hashCode(m_asActionValues), Arrays.hashCode(m_aBigIntValues),
-                m_actionKey);
+                m_actionKey, nxmRegister);
     }
 
     @Override
@@ -133,6 +157,11 @@ public class ActionInfo implements Serializable {
             (self, other) -> Objects.equals(self.m_actionType, other.m_actionType)
                           && Arrays.equals(self.m_asActionValues, other.m_asActionValues)
                           && Arrays.equals(self.m_aBigIntValues, other.m_aBigIntValues)
-                          && self.m_actionKey == other.m_actionKey);
+                          && (self.m_actionKey == other.m_actionKey)
+                          && Objects.equals(self.nxmRegister, other.nxmRegister));
+    }
+
+    Optional<Class<? extends NxmNxReg>> getNxmRegisterName() {
+        return Optional.ofNullable(nxmRegister).map(s -> s.getNxmNxRegClass());
     }
 }
