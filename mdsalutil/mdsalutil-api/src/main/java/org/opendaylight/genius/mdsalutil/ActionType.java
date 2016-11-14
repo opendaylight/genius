@@ -55,6 +55,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.protocol.match.fields.PbbBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.vlan.match.fields.VlanIdBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg0;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg1;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.add.group.input.buckets.bucket.action.action.NxActionResubmitRpcAddGroupCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.DstChoice;
@@ -67,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpTpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfEthDstCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfIpDstCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfMplsLabelCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromValueCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModCopyFieldIntoFieldCaseBuilder;
@@ -98,6 +102,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.SrcChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxArpShaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfArpSpaCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxRegCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfEthSrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfIpSrcCaseBuilder;
 
@@ -557,16 +562,30 @@ public enum ActionType {
             String[] actionValues = actionInfo.getActionValues();
             NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
             Dst dst =  new DstBuilder()
-                    .setDstChoice(new DstNxRegCaseBuilder().setNxReg(NxmNxReg6.class).build())
-                    .setStart(Integer.valueOf(actionValues[0]))
-                    .setEnd(Integer.valueOf(actionValues[1]))
-                    .build();
+                .setDstChoice(new DstNxRegCaseBuilder().setNxReg(NxmNxReg6.class).build())
+                .setStart(Integer.valueOf(actionValues[0]))
+                .setEnd(Integer.valueOf(actionValues[1]))
+                .build();
             nxRegLoadBuilder.setDst(dst);
             nxRegLoadBuilder.setValue(new BigInteger(actionValues[2]));
             ActionBuilder ab = new ActionBuilder();
             ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build());
             ab.setKey(new ActionKey(actionInfo.getActionKey()));
             return ab.build();
+        }
+    },
+
+    nx_load {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            return ActionType.getNxLoadAction(actionInfo);
+        }
+    },
+
+    nx_move {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            return getNxRegMoveAction(actionInfo);
         }
     },
 
@@ -820,6 +839,47 @@ public enum ActionType {
             return new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                     .setNxRegLoad(reg).build();
         }
+    }
+
+
+    private static Action getNxRegMoveAction(ActionInfo actionInfo) {
+        String[] actionValues = actionInfo.getActionValues();
+        NxRegMoveBuilder nxRegMoveBuilder = new NxRegMoveBuilder();
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.Src src =
+            new org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder()
+                .setSrcChoice(new SrcNxRegCaseBuilder().setNxReg(actionInfo.getNxmNxReg()).build())
+                .setStart(Integer.valueOf(actionValues[0]))
+                .setEnd(Integer.valueOf(actionValues[1]))
+                .build();
+
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.Dst dst =
+            new org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder()
+                .setDstChoice(new DstOfMplsLabelCaseBuilder().setOfMplsLabel(true).build())
+                .setStart(Integer.valueOf(actionValues[0]))
+                .setEnd(Integer.valueOf(actionValues[1]))
+                .build();
+
+        nxRegMoveBuilder.setSrc(src).setDst(dst);
+        ActionBuilder ab = new ActionBuilder();
+
+        ab.setAction(new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegMove(nxRegMoveBuilder.build()).build())
+            .setKey(new ActionKey(actionInfo.getActionKey()));
+        return ab.build();
+    }
+
+    private static Action getNxLoadAction(ActionInfo actionInfo) {
+        String[] actionValues = actionInfo.getActionValues();
+        NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
+        Dst dst =  new DstBuilder()
+            .setDstChoice(new DstNxRegCaseBuilder().setNxReg(actionInfo.getNxmNxReg()).build())
+            .setStart(Integer.valueOf(actionValues[0]))
+            .setEnd(Integer.valueOf(actionValues[1]))
+            .build();
+        nxRegLoadBuilder.setDst(dst).setValue(new BigInteger(actionValues[2]));
+        ActionBuilder ab = new ActionBuilder();
+        ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build())
+            .setKey(new ActionKey(actionInfo.getActionKey()));
+        return ab.build();
     }
 
 }
