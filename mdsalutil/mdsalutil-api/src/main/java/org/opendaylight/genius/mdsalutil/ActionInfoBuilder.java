@@ -23,6 +23,7 @@ public class ActionInfoBuilder implements Builder<ActionInfo> {
     // Do NOT use List<String/BigInteger> here.. XtendBeanGenerator needs this to match with ActionInfo's types
     private String[] actionValues;
     private BigInteger[] bigActionValues;
+    private NxmRegisters nxmRegister;
 
     public ActionInfo build() {
         if (actionType == null) {
@@ -31,6 +32,8 @@ public class ActionInfoBuilder implements Builder<ActionInfo> {
             return new ActionInfo(actionType, actionValues, actionKey);
         } else if (actionValues == null && bigActionValues != null) {
             return new ActionInfo(actionType, bigActionValues, actionKey);
+        } else if (actionValues != null && nxmRegister != null) {
+            return new ActionInfo(actionType, actionValues, actionKey, nxmRegister);
         } else if (actionValues != null && bigActionValues != null) {
             throw new IllegalStateException("Cannot set (add to) both actionValues and bigActionValues");
         } else {
