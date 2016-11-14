@@ -62,22 +62,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpThaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxRegCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4DstCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4SrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpOpCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpSpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpTpaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4SrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfEthDstCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfIpDstCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4DstCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4DstCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrack;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrackBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfMplsLabelCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromValueCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModCopyFieldIntoFieldCaseBuilder;
@@ -108,7 +100,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.resubmit.grouping.NxResubmitBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.SrcChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxArpShaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxTunIpv4SrcCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxRegCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfArpSpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfEthSrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfIpSrcCaseBuilder;
@@ -123,8 +115,8 @@ public enum ActionType {
             long groupId = Long.parseLong(actionInfo.getActionValues()[0]);
 
             return new ActionBuilder().setAction(
-                            new GroupActionCaseBuilder().setGroupAction(
-                                    new GroupActionBuilder().setGroupId(groupId).build()).build())
+                    new GroupActionCaseBuilder().setGroupAction(
+                            new GroupActionBuilder().setGroupId(groupId).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -143,7 +135,7 @@ public enum ActionType {
             return new ActionBuilder().setAction(
                     new OutputActionCaseBuilder().setOutputAction(
                             new OutputActionBuilder().setMaxLength(maxLength)
-                                            .setOutputNodeConnector(new Uri(port)).build()).build())
+                            .setOutputNodeConnector(new Uri(port)).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -182,8 +174,8 @@ public enum ActionType {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
             return new ActionBuilder().setAction(new PushMplsActionCaseBuilder().setPushMplsAction(
-                                    new PushMplsActionBuilder().setEthernetType(
-                                            NwConstants.ETHTYPE_MPLS_UC).build()).build())
+                    new PushMplsActionBuilder().setEthernetType(
+                            NwConstants.ETHTYPE_MPLS_UC).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -193,8 +185,8 @@ public enum ActionType {
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
             return new ActionBuilder().setAction(
                     new PushPbbActionCaseBuilder().setPushPbbAction(
-                                    new PushPbbActionBuilder()
-                                            .setEthernetType(NwConstants.ETHTYPE_PBB).build()).build())
+                            new PushPbbActionBuilder()
+                            .setEthernetType(NwConstants.ETHTYPE_PBB).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -204,8 +196,8 @@ public enum ActionType {
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
             return new ActionBuilder().setAction(
                     new PushVlanActionCaseBuilder().setPushVlanAction(
-                                    new PushVlanActionBuilder().setEthernetType(
-                                            NwConstants.ETHTYPE_802_1Q).build()).build())
+                            new PushVlanActionBuilder().setEthernetType(
+                                    NwConstants.ETHTYPE_802_1Q).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -218,8 +210,8 @@ public enum ActionType {
 
             return new ActionBuilder().setAction(
                     new SetFieldCaseBuilder().setSetField(new SetFieldBuilder().setProtocolMatchFields(
-                                            new ProtocolMatchFieldsBuilder().setMplsLabel(label).build()).build())
-                                    .build()).setKey(new ActionKey(newActionKey)).build();
+                            new ProtocolMatchFieldsBuilder().setMplsLabel(label).build()).build())
+                    .build()).setKey(new ActionKey(newActionKey)).build();
         }
     },
 
@@ -232,9 +224,9 @@ public enum ActionType {
             return new ActionBuilder().setAction(
                     new SetFieldCaseBuilder().setSetField(
                             new SetFieldBuilder().setProtocolMatchFields(
-                                            new ProtocolMatchFieldsBuilder().setPbb(
-                                                    new PbbBuilder().setPbbIsid(label).build()).build()).build())
-                                    .build()).setKey(new ActionKey(newActionKey)).build();
+                                    new ProtocolMatchFieldsBuilder().setPbb(
+                                            new PbbBuilder().setPbbIsid(label).build()).build()).build())
+                    .build()).setKey(new ActionKey(newActionKey)).build();
         }
     },
 
@@ -248,8 +240,8 @@ public enum ActionType {
                     new SetFieldCaseBuilder().setSetField(
                             new SetFieldBuilder().setVlanMatch(
                                     new VlanMatchBuilder().setVlanId(
-                                                    new VlanIdBuilder().setVlanId(new VlanId(vlanId))
-                                                            .setVlanIdPresent(true).build()).build()).build()).build())
+                                            new VlanIdBuilder().setVlanId(new VlanId(vlanId))
+                                            .setVlanIdPresent(true).build()).build()).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -260,20 +252,20 @@ public enum ActionType {
             BigInteger [] actionValues = actionInfo.getBigActionValues();
             if (actionValues.length == 2) {
                 return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                        new SetFieldBuilder()
-                            .setTunnel(new TunnelBuilder().setTunnelId(actionValues[0])
-                                           .setTunnelMask(actionValues[1]).build()).build())
+                        new SetFieldCaseBuilder().setSetField(
+                                new SetFieldBuilder()
+                                .setTunnel(new TunnelBuilder().setTunnelId(actionValues[0])
+                                        .setTunnelMask(actionValues[1]).build()).build())
                         .build())
-                    .setKey(new ActionKey(newActionKey)).build();
+                        .setKey(new ActionKey(newActionKey)).build();
             } else {
                 return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                        new SetFieldBuilder()
-                            .setTunnel(new TunnelBuilder().setTunnelId(actionValues[0])
-                                           .build()).build())
+                        new SetFieldCaseBuilder().setSetField(
+                                new SetFieldBuilder()
+                                .setTunnel(new TunnelBuilder().setTunnelId(actionValues[0])
+                                        .build()).build())
                         .build())
-                    .setKey(new ActionKey(newActionKey)).build();
+                        .setKey(new ActionKey(newActionKey)).build();
             }
 
         }
@@ -286,10 +278,10 @@ public enum ActionType {
             BigInteger[] actionValues = actionInfo.getBigActionValues();
             NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
             Dst dst = new DstBuilder()
-                .setDstChoice(new DstNxTunIpv4SrcCaseBuilder().setNxTunIpv4Src(Boolean.TRUE).build())
-                .setStart(0)
-                .setEnd(31)
-                .build();
+                    .setDstChoice(new DstNxTunIpv4SrcCaseBuilder().setNxTunIpv4Src(Boolean.TRUE).build())
+                    .setStart(0)
+                    .setEnd(31)
+                    .build();
             nxRegLoadBuilder.setDst(dst);
             nxRegLoadBuilder.setValue(actionValues[0]);
             ActionBuilder ab = new ActionBuilder();
@@ -297,10 +289,10 @@ public enum ActionType {
             boolean groupBucket = (actionValues.length > 1);
             if (groupBucket) {
                 ab.setAction(new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                        .setNxRegLoad(nxRegLoadBuilder.build()).build());
             } else {
                 ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                        .setNxRegLoad(nxRegLoadBuilder.build()).build());
             }
             ab.setKey(new ActionKey(actionInfo.getActionKey()));
             return ab.build();
@@ -314,10 +306,10 @@ public enum ActionType {
             BigInteger[] actionValues = actionInfo.getBigActionValues();
             NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
             Dst dst = new DstBuilder()
-                .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Boolean.TRUE).build())
-                .setStart(0)
-                .setEnd(31)
-                .build();
+                    .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Boolean.TRUE).build())
+                    .setStart(0)
+                    .setEnd(31)
+                    .build();
             nxRegLoadBuilder.setDst(dst);
             nxRegLoadBuilder.setValue(actionValues[0]);
             ActionBuilder ab = new ActionBuilder();
@@ -325,10 +317,10 @@ public enum ActionType {
             boolean groupBucket = (actionValues.length > 1);
             if (groupBucket) {
                 ab.setAction(new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                        .setNxRegLoad(nxRegLoadBuilder.build()).build());
             } else {
                 ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                        .setNxRegLoad(nxRegLoadBuilder.build()).build());
             }
             ab.setKey(new ActionKey(actionInfo.getActionKey()));
             return ab.build();
@@ -347,8 +339,8 @@ public enum ActionType {
                     new SetFieldCaseBuilder().setSetField(
                             new SetFieldBuilder().setEthernetMatch(
                                     new EthernetMatchBuilder().setEthernetDestination(
-                                                    new EthernetDestinationBuilder().setAddress(mac).build()).build())
-                                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
+                                            new EthernetDestinationBuilder().setAddress(mac).build()).build())
+                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
 
         }
 
@@ -362,7 +354,7 @@ public enum ActionType {
                     new SetFieldCaseBuilder().setSetField(
                             new SetFieldBuilder().setIpMatch(
                                     new IpMatchBuilder().setIpProtocol((short) 17).build()).
-                                    build()).build()).setKey(new ActionKey(newActionKey)).build();
+                            build()).build()).setKey(new ActionKey(newActionKey)).build();
 
         }
 
@@ -547,11 +539,11 @@ public enum ActionType {
             String sourceMask = (actionValues.length > 1) ? actionValues[1] : "32";
             String source = sourceIp + "/" + sourceMask;
             return new ActionBuilder().setAction(
-                                        new SetFieldCaseBuilder().setSetField(
-                                                new SetFieldBuilder().setLayer3Match(
-                                                        new Ipv4MatchBuilder().setIpv4Source(
-                                                                new Ipv4Prefix(source)).build()).
-                                                                build()).build()).setKey(new ActionKey(newActionKey)).build();
+                    new SetFieldCaseBuilder().setSetField(
+                            new SetFieldBuilder().setLayer3Match(
+                                    new Ipv4MatchBuilder().setIpv4Source(
+                                            new Ipv4Prefix(source)).build()).
+                            build()).build()).setKey(new ActionKey(newActionKey)).build();
 
 
         }
@@ -570,7 +562,7 @@ public enum ActionType {
                             new SetFieldBuilder().setLayer3Match(
                                     new Ipv4MatchBuilder().setIpv4Destination(
                                             new Ipv4Prefix(destination)).build())
-                                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
+                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
 
         }
 
@@ -586,8 +578,8 @@ public enum ActionType {
                     new SetFieldCaseBuilder().setSetField(
                             new SetFieldBuilder().setEthernetMatch(
                                     new EthernetMatchBuilder().setEthernetSource(
-                                                    new EthernetSourceBuilder().setAddress(mac).build()).build())
-                                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
+                                            new EthernetSourceBuilder().setAddress(mac).build()).build())
+                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
 
         }
     },
@@ -638,6 +630,20 @@ public enum ActionType {
         }
     },
 
+    nx_load_reg {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            return ActionType.getNxLoadAction(actionInfo);
+        }
+    },
+
+    nx_reg_move_mpls_label {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            return getNxRegMoveAction(actionInfo);
+        }
+    },
+
     goto_table {
 
         @Override
@@ -661,7 +667,7 @@ public enum ActionType {
                     .setRecircTable(recircTable);
             ActionBuilder ab = new ActionBuilder();
             ab.setAction(new NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder()
-                .setNxConntrack(ctb.build()).build());
+                    .setNxConntrack(ctb.build()).build());
             ab.setKey(new ActionKey(newActionKey));
             return ab.build();
 
@@ -750,7 +756,7 @@ public enum ActionType {
                     actionInfo.getActionValues()[0]);
             return new ActionBuilder().setKey(new ActionKey(newActionKey))
                     .setAction(nxLoadRegAction(new DstNxArpShaCaseBuilder()
-                    .setNxArpSha(Boolean.TRUE).build(), BigInteger.valueOf(NWUtil.macToLong(mac)), 47, false))
+                            .setNxArpSha(Boolean.TRUE).build(), BigInteger.valueOf(NWUtil.macToLong(mac)), 47, false))
                     .build();
         }
     },
@@ -791,9 +797,9 @@ public enum ActionType {
             return new ActionBuilder().setKey(new ActionKey(newActionKey))
                     .setAction(nxMoveRegAction(
                             new SrcNxArpShaCaseBuilder()
-                                    .setNxArpSha(Boolean.TRUE).build(),
+                            .setNxArpSha(Boolean.TRUE).build(),
                             new DstNxArpThaCaseBuilder()
-                                    .setNxArpTha(Boolean.TRUE).build(),
+                            .setNxArpTha(Boolean.TRUE).build(),
                             47, false)) //Length of the SHA is 6Byte, hence the end offset bit is 47
                     .build();
         }
@@ -812,9 +818,9 @@ public enum ActionType {
             return new ActionBuilder().setKey(new ActionKey(newActionKey))
                     .setAction(nxMoveRegAction(
                             new SrcOfArpSpaCaseBuilder()
-                                    .setOfArpSpa(Boolean.TRUE).build(),
+                            .setOfArpSpa(Boolean.TRUE).build(),
                             new DstOfArpTpaCaseBuilder()
-                                    .setOfArpTpa(Boolean.TRUE).build()))
+                            .setOfArpTpa(Boolean.TRUE).build()))
                     .build();
         }
     },
@@ -831,7 +837,7 @@ public enum ActionType {
             return new ActionBuilder().setKey(new ActionKey(newActionKey))
                     .setAction(nxLoadRegAction(
                             new DstOfArpOpCaseBuilder().setOfArpOp(Boolean.TRUE)
-                                    .build(),
+                            .build(),
                             BigInteger.valueOf(val), 15, false)) // The length of ARP operation field is 2Byte, hence end offset bit is 15
                     .build();
         }
@@ -888,6 +894,42 @@ public enum ActionType {
             return new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                     .setNxRegLoad(reg).build();
         }
+    }
+
+
+    private static Action getNxRegMoveAction(ActionInfo actionInfo) {
+        String [] actionValues = actionInfo.getActionValues();
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.Src src =
+                new org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder()
+                .setSrcChoice(new SrcNxRegCaseBuilder().setNxReg(actionInfo.getNxmNxReg().orElseThrow(() -> new IllegalArgumentException("nxmRegister value "
+                        + "is not provided"))).build()).setStart(Integer.valueOf(actionValues[0])).setEnd(Integer.valueOf(actionValues[1])).build();
+
+        org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.Dst dst =
+                new org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder()
+                .setDstChoice(new DstOfMplsLabelCaseBuilder().setOfMplsLabel(true).build())
+                .setStart(Integer.valueOf(actionValues[0]))
+                .setEnd(Integer.valueOf(actionValues[1]))
+                .build();
+
+        NxRegMoveBuilder nxRegMoveBuilder = new NxRegMoveBuilder().setSrc(src).setDst(dst);
+        ActionBuilder ab = new ActionBuilder();
+        ab.setAction(new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegMove(nxRegMoveBuilder.build()).build())
+        .setKey(new ActionKey(actionInfo.getActionKey()));
+        return ab.build();
+    }
+
+    private static Action getNxLoadAction(ActionInfo actionInfo) {
+        String [] actionValues = actionInfo.getActionValues();
+        Dst dst =  new DstBuilder().setDstChoice(new DstNxRegCaseBuilder().setNxReg(actionInfo.getNxmNxReg()
+                .orElseThrow(() -> new IllegalArgumentException("nxmRegister value is not provided"))).build())
+                .setStart(Integer.valueOf(actionValues[0]))
+                .setEnd(Integer.valueOf(actionValues[1]))
+                .build();
+        NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder().setDst(dst).setValue(new BigInteger(actionValues[2]));
+        ActionBuilder ab = new ActionBuilder();
+        ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build())
+        .setKey(new ActionKey(actionInfo.getActionKey()));
+        return ab.build();
     }
 
 }
