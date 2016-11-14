@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_a2f7a2f4",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-14T09:33:05Z",
+      "side": 1,
+      "message": "hey..just noticed this...actually interface info is fetched from cache..only for a cache miss, we fetch it from config DS...",
+      "revId": "4a5654baeefd133cff350cfc372ac0e51b1807ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
