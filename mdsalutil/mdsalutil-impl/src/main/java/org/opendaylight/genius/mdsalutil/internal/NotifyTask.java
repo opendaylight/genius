@@ -11,11 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class NotifyTask implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(NotifyTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NotifyTask.class);
 
     @Override
     public void run() {
-        logger.debug("Notify Task is running for the task {}", this);
+        LOG.debug("Notify Task is running for the task {}", this);
         synchronized (this) {
             notifyAll();
         }
