@@ -217,8 +217,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
     }
 
     private boolean isTunnelInterfaceUp( Interface intf) {
-        boolean interfaceUp = (intf.getOperStatus().equals(Interface.OperStatus.Up)) ? true :false ;
-        return interfaceUp ;
+        return Interface.OperStatus.Up.equals(intf.getOperStatus());
     }
 
 }

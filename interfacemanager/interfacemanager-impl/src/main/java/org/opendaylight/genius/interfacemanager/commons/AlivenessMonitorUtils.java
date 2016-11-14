@@ -273,11 +273,8 @@ public class AlivenessMonitorUtils {
     }
 
     public static boolean lldpMonitoringEnabled(IfTunnel ifTunnel){
-        if(ifTunnel.isInternal() && ifTunnel.isMonitorEnabled() &&
-                TunnelMonitoringTypeLldp.class.isAssignableFrom(ifTunnel.getMonitorProtocol())){
-            return true;
-        }
-        return false;
+        return ifTunnel.isInternal() && ifTunnel.isMonitorEnabled() &&
+                TunnelMonitoringTypeLldp.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
 
     public static Profile getDefaultMonitorProfile(EtherTypes etherType) {

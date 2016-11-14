@@ -313,7 +313,7 @@ public class IdUtils {
 
     public static boolean getPoolUpdatedMap(String localPoolName) {
         Integer value = poolUpdatedMap.get(localPoolName);
-        return value!=null && value >= 0 ? true : false;
+        return value != null && value >= 0;
     }
 
     public static void removeFromPoolUpdatedMap(String localPoolName) {

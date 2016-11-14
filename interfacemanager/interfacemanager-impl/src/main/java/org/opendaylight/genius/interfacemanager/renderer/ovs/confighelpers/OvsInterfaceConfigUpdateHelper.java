@@ -106,10 +106,7 @@ public class OvsInterfaceConfigUpdateHelper{
     private static boolean TunnelMonitoringAttributesModified(Interface interfaceOld, Interface interfaceNew) {
         IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
         IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
-        if (checkAugmentations(ifTunnelOld, ifTunnelNew)) {
-            return true;
-        }
-        return false;
+        return checkAugmentations(ifTunnelOld, ifTunnelNew);
     }
 
     /*
@@ -164,11 +161,7 @@ public class OvsInterfaceConfigUpdateHelper{
             return true;
         }
 
-        if (newAug != null && oldAug != null && !newAug.equals(oldAug)) {
-            return true;
-        }
-
-        return false;
+        return newAug != null && !newAug.equals(oldAug);
     }
 
     private static class VlanMemberStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {

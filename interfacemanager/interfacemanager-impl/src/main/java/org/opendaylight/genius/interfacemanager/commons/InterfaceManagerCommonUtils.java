@@ -98,12 +98,7 @@ public class InterfaceManagerCommonUtils {
         NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(nodeID)).build();
-        Optional<Node> node = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, dataBroker);
-
-        if (node.isPresent()) {
-            return true;
-        }
-        return false;
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, dataBroker).isPresent();
     }
 
     public static InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
@@ -461,17 +456,11 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static boolean isTunnelInterface(Interface interfaceInfo) {
-        if (interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null) {
-            return true;
-        }
-        return false;
+        return interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null;
     }
 
     public static boolean isVlanInterface(Interface interfaceInfo) {
-        if (interfaceInfo != null && interfaceInfo.getAugmentation(IfL2vlan.class) != null) {
-            return true;
-        }
-        return false;
+        return interfaceInfo != null && interfaceInfo.getAugmentation(IfL2vlan.class) != null;
     }
 
     // Cache Util methods

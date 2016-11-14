@@ -324,17 +324,11 @@ public class SouthboundUtils {
     }
 
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
-        if (ifTunnel.isMonitorEnabled()
-                && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) {
-            return true;
-        }
-        return false;
+        return ifTunnel.isMonitorEnabled()
+                && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
 
     public static boolean isMonitorProtocolBfd(IfTunnel ifTunnel) {
-        if (TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) {
-            return true;
-        }
-        return false;
+        return TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
 }

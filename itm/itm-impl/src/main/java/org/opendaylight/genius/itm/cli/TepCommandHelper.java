@@ -265,10 +265,7 @@ public class TepCommandHelper {
             return true;
         }
         */
-        if( (tzone != null) && (tzone.getTunnelType()).equals(TunnelTypeGre.class) ) {
-            return true;
-        }
-        return false;
+        return (tzone != null) && (tzone.getTunnelType()).equals(TunnelTypeGre.class);
     }
 
     /**
@@ -479,14 +476,14 @@ public class TepCommandHelper {
                     }
                 }
             }
-            if (flag == true) {
-                for (String p : result) {
-                    if(session != null) {
+            if (session != null) {
+                if (flag) {
+                    for (String p : result) {
                         session.getConsole().println(p);
                     }
-                }
-            } else if (session != null) {
+                } else {
                     session.getConsole().println("No teps to display");
+                }
             }
         } else if(session != null){
             session.getConsole().println("No teps configured");

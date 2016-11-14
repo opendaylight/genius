@@ -461,10 +461,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                 return result;
             }
 
-            if(foundVxlanTzone == false)
+            if (!foundVxlanTzone) {
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, "No VxLan TransportZones configured")
                         .build());
+            }
 
             return result;
         } catch (Exception e) {
@@ -539,10 +540,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                 return result;
             }
 
-            if(foundVxlanTzone == false)
+            if (!foundVxlanTzone) {
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, "No VxLan TransportZones configured")
                         .build());
+            }
 
             return result;
         } catch (Exception e) {

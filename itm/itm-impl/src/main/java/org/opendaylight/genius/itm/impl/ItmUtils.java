@@ -423,7 +423,7 @@ public class ItmUtils {
     }
 
     public static void setUpOrRemoveTerminatingServiceTable(BigInteger dpnId, IMdsalApiManager mdsalManager, boolean addFlag) {
-        String logmsg = ( addFlag == true) ? "Installing" : "Removing";
+        String logmsg = addFlag ? "Installing" : "Removing";
         LOG.trace( logmsg + " PUNT to Controller flow in DPN {} ", dpnId );
         List<ActionInfo> listActionInfo = new ArrayList<>();
         listActionInfo.add(new ActionInfo(ActionType.punt_to_controller,
@@ -693,7 +693,7 @@ public class ItmUtils {
         return (list == null) ? Collections.emptyList() : list;
     }
     public static <T> boolean isEmpty(Collection<T> collection) {
-        return (collection == null || collection.isEmpty()) ? true : false;
+        return collection == null || collection.isEmpty();
     }
     public static <T> boolean isNotEmpty(Collection<T> collection) {
         return !isEmpty(collection);
@@ -979,10 +979,7 @@ public class ItmUtils {
 
 
     public static boolean isItmIfType(Class<? extends InterfaceType> ifType) {
-        if( (ifType != null) && (ifType.isAssignableFrom(Tunnel.class)) ) {
-            return true;
-        }
-        return false;
+        return (ifType != null) && (ifType.isAssignableFrom(Tunnel.class));
     }
 
     public static StateTunnelListKey getTunnelStateKey( org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {

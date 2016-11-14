@@ -331,7 +331,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         }
         interfaceInfo.setDpId(dpId);
         interfaceInfo.setPortNo(portNo);
-        interfaceInfo.setAdminState((intf.isEnabled() == true) ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
+        interfaceInfo.setAdminState(intf.isEnabled() ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);

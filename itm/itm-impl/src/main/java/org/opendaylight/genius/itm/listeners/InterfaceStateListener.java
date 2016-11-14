@@ -116,7 +116,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         StateTunnelList tunnelStateList;
         StateTunnelListBuilder stlBuilder;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = (iface.getOperStatus().equals(OperStatus.Up)) ? (true):(false);
+        boolean tunnelState = iface.getOperStatus().equals(OperStatus.Up);
         switch (iface.getOperStatus()) {
             case Up:
                 tunnelOperStatus = TunnelOperStatus.Up;

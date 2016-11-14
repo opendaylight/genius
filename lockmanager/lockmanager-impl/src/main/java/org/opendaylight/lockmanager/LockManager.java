@@ -157,10 +157,7 @@ public class LockManager implements LockManagerService {
             futures.get();
             return true;
         }
-        if (result.get().getLockOwner() == Thread.currentThread().getName()) {
-            return true;
-        }
-        return false;
+        return result.get().getLockOwner() == Thread.currentThread().getName();
     }
 
     private void unlock(final String lockName, final InstanceIdentifier<Lock> lockInstanceIdentifier) {

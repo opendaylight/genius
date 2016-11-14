@@ -50,8 +50,6 @@ public class NodeUpdateCounter {
     }
 
     public boolean isDpnConnectedLocal(String sNode) {
-        if (dpnList.contains(sNode))
-            return true;
-        return false;
+        return dpnList.contains(sNode);
     }
 }

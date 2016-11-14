@@ -123,10 +123,10 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                 boolean original_portstatus = original.getConfiguration().isPORTDOWN();
                 boolean update_portstatus = update.getConfiguration().isPORTDOWN();
 
-                if (update_portstatus == true) {
+                if (update_portstatus) {
                     //port has gone down
                     LOG.debug("Node Connector {} updated port is down", sNodeConnectorIdentifier);
-                } else if (original_portstatus == true) {
+                } else if (original_portstatus) {
                     //port has come up
                     LOG.debug("Node Connector {} updated port is up", sNodeConnectorIdentifier);
                 }
