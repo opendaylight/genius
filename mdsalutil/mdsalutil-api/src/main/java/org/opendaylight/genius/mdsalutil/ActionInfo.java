@@ -12,7 +12,10 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
+
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class ActionInfo implements Serializable {
@@ -24,6 +27,7 @@ public class ActionInfo implements Serializable {
     private final String[][] m_asActionValuesMatrix;
     private final BigInteger[] m_aBigIntValues;
     private final int m_actionKey;
+    private NxmRegisters nxmRegister;
 
     public ActionInfo(ActionInfo action) {
         super();
@@ -44,6 +48,16 @@ public class ActionInfo implements Serializable {
         m_asActionValues = asActionValues;
         m_asActionValuesMatrix = null;
         m_aBigIntValues = null;
+    }
+
+    public ActionInfo(ActionType actionType, String[] asActionValues, int actionKey, NxmRegisters nxmNxReg) {
+        m_actionType = actionType;
+        m_actionKey = actionKey;
+        m_asActionValues = asActionValues;
+        m_asActionValuesMatrix = null;
+        m_aBigIntValues = null;
+        nxmRegister = nxmNxReg;
+
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, int actionKey) {
@@ -134,5 +148,9 @@ public class ActionInfo implements Serializable {
                           && Arrays.equals(self.m_asActionValues, other.m_asActionValues)
                           && Arrays.equals(self.m_aBigIntValues, other.m_aBigIntValues)
                           && self.m_actionKey == other.m_actionKey);
+    }
+
+    public Optional<Class<? extends NxmNxReg>> getNxmNxReg() {
+        return Optional.ofNullable(nxmRegister).map(s -> s.getClassName());
     }
 }
