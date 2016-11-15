@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_83d70523",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-15T13:42:03Z",
+      "side": 1,
+      "message": "Trying to keep number of across-pipeline interactions to minimum here. The dotted lines in original doc are hard to follow there and even harder in ascii. Haven\u0027t figured out perfect solution yet. Thinking about not capturing \u0027go to ODL\u0027 actions in this one either but in individual pipelines, something similar to your simplifie pipeline. Thoughts?",
+      "parentUuid": "3a65312a_e3cb59a3",
+      "range": {
+        "startLine": 23,
+        "startChar": 10,
+        "endLine": 23,
+        "endChar": 22
+      },
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_31547a20",
         "filename": "docs/images/pipeline-high-level.txt",
         "patchSetId": 1
@@ -36,6 +60,30 @@
       "writtenOn": "2016-11-15T13:18:11Z",
       "side": 1,
       "message": "I suggest you put these in priority order.",
+      "range": {
+        "startLine": 25,
+        "startChar": 53,
+        "endLine": 25,
+        "endChar": 72
+      },
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_23fa71bd",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-15T13:42:03Z",
+      "side": 1,
+      "message": "Good catch. This was supposed to be priority order.",
+      "parentUuid": "3a65312a_31547a20",
       "range": {
         "startLine": 25,
         "startChar": 53,
@@ -87,6 +135,54 @@
         "startChar": 11,
         "endLine": 51,
         "endChar": 17
+      },
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_63f2a9d3",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-15T13:42:03Z",
+      "side": 1,
+      "message": "see comment above.",
+      "parentUuid": "3a65312a_43e32d33",
+      "range": {
+        "startLine": 49,
+        "startChar": 11,
+        "endLine": 51,
+        "endChar": 17
+      },
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_43ededee",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-15T13:42:03Z",
+      "side": 1,
+      "message": "yeah, left it out to solicit comments on if \u0027go to ODL\u0027 should be captured in here or in individual pipeline.",
+      "parentUuid": "3a65312a_63e8e910",
+      "range": {
+        "startLine": 51,
+        "startChar": 48,
+        "endLine": 51,
+        "endChar": 59
       },
       "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
