@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.idmanager;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
@@ -15,11 +17,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdPool, IdPoolListener> implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdPoolListener.class);
     DataBroker broker;
     IdManager idManager;
+
+    @Inject
     public IdPoolListener(DataBroker broker, IdManager idManager) {
         super(IdPool.class, IdPoolListener.class);
         this.broker = broker;
