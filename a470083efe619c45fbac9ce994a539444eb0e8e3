@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "3a65312a_c3af3d93",
+        "filename": "docs/images/pipeline-acl-egress.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-15T13:45:11Z",
+      "side": 1,
+      "message": "Table 251/252/253 are used in Semi-Stateful implementation and Table 251/252 are used in Stateful SG implementation.\n\nShall we capture diagrams for both the modes here?",
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_03913552",
+        "filename": "docs/images/pipeline-acl-ingress.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-15T13:45:11Z",
+      "side": 1,
+      "message": "This is for the Learn SG implementation (i.e., Semi-Stateful) which uses tables 40/41 and 42. \n\nIn Stateful SG, only table 40/41 are used.",
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_e3cb59a3",
         "filename": "docs/images/pipeline-high-level.txt",
         "patchSetId": 1
