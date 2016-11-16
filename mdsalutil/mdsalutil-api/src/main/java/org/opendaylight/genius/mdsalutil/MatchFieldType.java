@@ -202,7 +202,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(IpMatchBuilder.class, ipMatchBuilder);
             }
 
-            ipMatchBuilder.setIpProtocol(Short.valueOf((short) matchInfo.getMatchValues()[0])).build();
+            ipMatchBuilder.setIpProtocol((short) matchInfo.getMatchValues()[0]).build();
         }
 
         @Override
@@ -402,7 +402,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
             }
 
-            arpMatchBuilder.setArpOp(Integer.valueOf((int) matchInfo.getMatchValues()[0]));
+            arpMatchBuilder.setArpOp((int) matchInfo.getMatchValues()[0]);
         }
 
         @Override
@@ -613,7 +613,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(ProtocolMatchFieldsBuilder.class, protocolMatchFieldsBuilder);
             }
 
-            protocolMatchFieldsBuilder.setPbb(new PbbBuilder().setPbbIsid(Long.valueOf(matchInfo.getMatchValues()[0]))
+            protocolMatchFieldsBuilder.setPbb(new PbbBuilder().setPbbIsid(matchInfo.getMatchValues()[0])
                     .build());
         }
 
@@ -643,7 +643,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(TcpMatchBuilder.class, tcpMatchBuilder);
             }
 
-            tcpMatchBuilder.setTcpDestinationPort(new PortNumber(Integer.valueOf((int) matchInfo.getMatchValues()[0])));
+            tcpMatchBuilder.setTcpDestinationPort(new PortNumber((int) matchInfo.getMatchValues()[0]));
         }
 
         @Override
@@ -671,7 +671,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(TcpMatchBuilder.class, tcpMatchBuilder);
             }
 
-            tcpMatchBuilder.setTcpSourcePort(new PortNumber(Integer.valueOf((int) matchInfo.getMatchValues()[0])));
+            tcpMatchBuilder.setTcpSourcePort(new PortNumber((int) matchInfo.getMatchValues()[0]));
         }
 
         @Override
@@ -731,7 +731,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(UdpMatchBuilder.class, udpMatchBuilder);
             }
 
-            udpMatchBuilder.setUdpDestinationPort(new PortNumber(Integer.valueOf((int) matchInfo.getMatchValues()[0])));
+            udpMatchBuilder.setUdpDestinationPort(new PortNumber((int) matchInfo.getMatchValues()[0]));
         }
 
         @Override
@@ -759,7 +759,7 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(UdpMatchBuilder.class, udpMatchBuilder);
             }
 
-            udpMatchBuilder.setUdpSourcePort(new PortNumber(Integer.valueOf((int) matchInfo.getMatchValues()[0])));
+            udpMatchBuilder.setUdpSourcePort(new PortNumber((int) matchInfo.getMatchValues()[0]));
         }
 
         @Override
@@ -821,7 +821,7 @@ public enum MatchFieldType {
             }
 
             vlanMatchBuilder.setVlanId(new VlanIdBuilder()
-            .setVlanId(new VlanId(Integer.valueOf((int) matchInfo.getMatchValues()[0])))
+            .setVlanId(new VlanId((int) matchInfo.getMatchValues()[0]))
             .setVlanIdPresent(((int) matchInfo.getMatchValues()[0] == 0) ? Boolean.FALSE : Boolean.TRUE)
             .build());
         }

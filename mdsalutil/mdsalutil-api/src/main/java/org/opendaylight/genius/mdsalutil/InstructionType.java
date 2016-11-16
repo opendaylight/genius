@@ -53,7 +53,7 @@ public enum InstructionType {
             return new InstructionBuilder()
                     .setInstruction(
                             new GoToTableCaseBuilder().setGoToTable(
-                                    new GoToTableBuilder().setTableId(Short.valueOf(tableId)).build()).build())
+                                    new GoToTableBuilder().setTableId(tableId).build()).build())
                     .setKey(new InstructionKey(instructionKey)).build();
         }
     },

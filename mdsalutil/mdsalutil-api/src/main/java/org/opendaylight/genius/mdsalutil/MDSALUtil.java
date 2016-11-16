@@ -140,9 +140,9 @@ public class MDSALUtil {
             List<InstructionInfo> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
         return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
-                .setPriority(Integer.valueOf(priority)).setInstructions(buildInstructions(listInstructionInfo))
+                .setPriority(priority).setInstructions(buildInstructions(listInstructionInfo))
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
-                .setFlowName(flowName).setTableId(Short.valueOf(tableId)).setStrict(isStrict)
+                .setFlowName(flowName).setTableId(tableId).setStrict(isStrict)
                 .setCookie(new FlowCookie(cookie)).build();
     }
 
@@ -161,9 +161,9 @@ public class MDSALUtil {
                                   List<Instruction> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
         return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
-                .setPriority(Integer.valueOf(priority)).setInstructions(new InstructionsBuilder().setInstruction(listInstructionInfo).build())
+                .setPriority(priority).setInstructions(new InstructionsBuilder().setInstruction(listInstructionInfo).build())
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
-                .setFlowName(flowName).setTableId(Short.valueOf(tableId)).setStrict(isStrict)
+                .setFlowName(flowName).setTableId(tableId).setStrict(isStrict)
                 .setCookie(new FlowCookie(cookie)).build();
     }
 
@@ -619,7 +619,7 @@ public class MDSALUtil {
     public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {
 
         NxRegLoad r = new NxRegLoadBuilder().setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
-                .setStart(Integer.valueOf(0)).setEnd(Integer.valueOf(15)).build()).setValue(BigInteger.valueOf(inPortVal)).build();
+                .setStart(0).setEnd(15).build()).setValue(BigInteger.valueOf(inPortVal)).build();
         ActionBuilder abExt = new ActionBuilder();
         abExt.setKey(new ActionKey(actionKey));
         abExt.setOrder(actionKey);

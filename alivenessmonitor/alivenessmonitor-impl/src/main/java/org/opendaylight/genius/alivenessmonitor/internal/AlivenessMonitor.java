@@ -963,7 +963,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         final Long monitorWindow = profile.getMonitorWindow();
         final EtherTypes ethType = profile.getProtocolType();
         String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, ethType);
-        final Long profileId = Long.valueOf(getUniqueId(idKey));
+        final Long profileId = (long) getUniqueId(idKey);
 
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitorProfile>> readFuture =
@@ -1058,7 +1058,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         LOG.debug("getExistingProfileId for profile : {}", input.getProfile());
         String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, ethType);
         LOG.debug("Obtained existing profile ID for profile : {}", input.getProfile());
-        return (Long.valueOf(getUniqueId(idKey)));
+        return ((long) getUniqueId(idKey));
     }
 
     private String getUniqueProfileKey(Long failureThreshold, Long monitorInterval, Long monitorWindow,
