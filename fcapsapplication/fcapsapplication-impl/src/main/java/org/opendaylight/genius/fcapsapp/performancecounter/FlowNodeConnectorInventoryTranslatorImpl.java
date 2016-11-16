@@ -15,7 +15,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
@@ -65,12 +64,8 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         try {
             SimpleTaskRetryLooper looper = new SimpleTaskRetryLooper(STARTUP_LOOP_TICK,
                     STARTUP_LOOP_MAX_RETRIES);
-            dataTreeChangeListenerRegistration = looper.loopUntilNoException(new Callable<ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl>>() {
-                @Override
-                public ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> call() throws Exception {
-                    return dataBroker.registerDataTreeChangeListener(treeId, FlowNodeConnectorInventoryTranslatorImpl.this);
-                }
-            });
+            dataTreeChangeListenerRegistration = looper.loopUntilNoException(
+                    () -> dataBroker.registerDataTreeChangeListener(treeId, FlowNodeConnectorInventoryTranslatorImpl.this));
         } catch (final Exception e) {
             LOG.warn(" FlowNodeConnectorInventoryTranslatorImpl listener registration fail!");
             LOG.debug("FlowNodeConnectorInventoryTranslatorImpl DataChange listener registration fail ..", e);

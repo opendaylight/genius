@@ -59,12 +59,8 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     public void registerListener(final LogicalDatastoreType dsType, final DataBroker db) {
         try {
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(new Callable<ListenerRegistration<K>>() {
-                @Override
-                public ListenerRegistration call() throws Exception {
-                    return db.registerDataChangeListener(dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope());
-                }
-            });
+            listenerRegistration = looper.loopUntilNoException(
+                    (Callable<ListenerRegistration<K>>) () -> db.registerDataChangeListener(dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope()));
         } catch (final Exception e) {
             LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
             LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
