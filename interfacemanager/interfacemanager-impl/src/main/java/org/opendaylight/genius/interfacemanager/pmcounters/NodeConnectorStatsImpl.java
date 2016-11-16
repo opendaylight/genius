@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -154,12 +153,8 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
     private ThreadFactory getThreadFactory(String threadNameFormat) {
         ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
         builder.setNameFormat(threadNameFormat);
-        builder.setUncaughtExceptionHandler( new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                logger.error("Received Uncaught Exception event in Thread: {}", t.getName(), e);
-            }
-        });
+        builder.setUncaughtExceptionHandler(
+                (t, e) -> logger.error("Received Uncaught Exception event in Thread: {}", t.getName(), e));
         return builder.build();
     }
 

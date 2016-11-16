@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
@@ -71,23 +70,17 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         final Interface.OperStatus interfaceOperStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         InterfaceManagerCommonUtils.addBfdStateToCache(terminationPointNew.getName(), interfaceOperStatus);
         if(interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown) {
-            IfmClusterUtils.runOnlyInLeaderNode(new Runnable() {
-                @Override
-                public void run() {
-                    DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-                    jobCoordinator.enqueueJob(terminationPointNew.getName(), new Callable<List<ListenableFuture<Void>>>() {
-                        @Override
-                        public List<ListenableFuture<Void>> call() throws Exception {
-                            // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
-                            final List<ListenableFuture<Void>> futures = new ArrayList<>();
-                            LOG.debug("updating tunnel state for interface {}", terminationPointNew.getName());
-                            WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                            InterfaceManagerCommonUtils.updateOpState(transaction, terminationPointNew.getName(), interfaceOperStatus);
-                            futures.add(transaction.submit());
-                            return futures;
-                        }
-                    });
-                }
+            IfmClusterUtils.runOnlyInLeaderNode(() -> {
+                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+                jobCoordinator.enqueueJob(terminationPointNew.getName(), () -> {
+                    // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
+                    final List<ListenableFuture<Void>> futures = new ArrayList<>();
+                    LOG.debug("updating tunnel state for interface {}", terminationPointNew.getName());
+                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+                    InterfaceManagerCommonUtils.updateOpState(transaction, terminationPointNew.getName(), interfaceOperStatus);
+                    futures.add(transaction.submit());
+                    return futures;
+                });
             });
         }
         return null;

@@ -27,7 +27,6 @@ import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -222,12 +221,8 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
     private ThreadFactory getMonitoringThreadFactory(String threadNameFormat) {
         ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
         builder.setNameFormat(threadNameFormat);
-        builder.setUncaughtExceptionHandler( new UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                LOG.error("Received Uncaught Exception event in Thread: {}", t.getName(), e);
-            }
-        });
+        builder.setUncaughtExceptionHandler(
+                (t, e) -> LOG.error("Received Uncaught Exception event in Thread: {}", t.getName(), e));
         return builder.build();
     }
 
@@ -669,12 +664,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         final Long monitorId = input.getMonitorId();
 
         //Set the monitoring status to Paused
-        updateMonitorStatusTo(monitorId, MonitorStatus.Paused, new Predicate<MonitorStatus>() {
-            @Override
-            public boolean apply(MonitorStatus currentStatus) {
-                return currentStatus == MonitorStatus.Started;
-            }
-        });
+        updateMonitorStatusTo(monitorId, MonitorStatus.Paused, currentStatus -> currentStatus == MonitorStatus.Started);
 
         if (stopMonitoringTask(monitorId)) {
             result.set(RpcResultBuilder.<Void>success().build());
@@ -729,13 +719,8 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
                             tx.close();
                             if (optProfile.isPresent()) {
                                 updateMonitorStatusTo(monitorId, MonitorStatus.Started,
-                                        new Predicate<MonitorStatus>() {
-                                    @Override
-                                    public boolean apply(MonitorStatus currentStatus) {
-                                        return (currentStatus == MonitorStatus.Paused ||
-                                                    currentStatus == MonitorStatus.Stopped);
-                                    }
-                                });
+                                        currentStatus -> (currentStatus == MonitorStatus.Paused ||
+                                                    currentStatus == MonitorStatus.Stopped));
                                 MonitorProfile profile = optProfile.get();
                                 LOG.debug("Monitor Resume - Scheduling monitoring task with Id: {}", monitorId);
                                 EtherTypes protocolType = profile.getProtocolType();
@@ -1225,12 +1210,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
     }
 
     private void stopMonitoring(long monitorId) {
-        updateMonitorStatusTo(monitorId, MonitorStatus.Stopped, new Predicate<MonitorStatus>() {
-            @Override
-            public boolean apply(MonitorStatus currentStatus) {
-                return currentStatus != MonitorStatus.Stopped;
-            }
-        });
+        updateMonitorStatusTo(monitorId, MonitorStatus.Stopped, currentStatus -> currentStatus != MonitorStatus.Stopped);
         if (!stopMonitoringTask(monitorId)) {
             LOG.warn("No monitoring task running to perform cancel operation for monitorId {}", monitorId);
         }
@@ -1306,12 +1286,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
                             tx.close();
                             if (optProfile.isPresent()) {
                                 updateMonitorStatusTo(monitorId, MonitorStatus.Started,
-                                        new Predicate<MonitorStatus>() {
-                                    @Override
-                                    public boolean apply(MonitorStatus currentStatus) {
-                                        return currentStatus != MonitorStatus.Started;
-                                    }
-                                });
+                                        currentStatus -> currentStatus != MonitorStatus.Started);
                                 MonitorProfile profile = optProfile.get();
                                 LOG.debug("Monitor Resume - Scheduling monitoring task for Id: {}", monitorId);
                                 scheduleMonitoringTask(info, profile.getMonitorInterval());

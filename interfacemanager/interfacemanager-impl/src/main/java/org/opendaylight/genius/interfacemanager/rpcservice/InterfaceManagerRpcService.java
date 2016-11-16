@@ -435,7 +435,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             if (entry.isPresent()) {
                 List<InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
                 if (interfaceNameEntries != null && !interfaceNameEntries.isEmpty()) {
-                    List<String> interfaceList = interfaceNameEntries.stream().map((a) -> a.getInterfaceName()).collect(Collectors.toList());
+                    List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName).collect(Collectors.toList());
                     GetDpnInterfaceListOutputBuilder output = new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList);
                     rpcResultBuilder = RpcResultBuilder.success();
                     rpcResultBuilder.withResult(output.build());
