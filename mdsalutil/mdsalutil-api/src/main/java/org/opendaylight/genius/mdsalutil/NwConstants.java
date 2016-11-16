@@ -86,6 +86,12 @@ public final class NwConstants {
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
     public static final BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
+    public static final BigInteger COOKIE_ARP_RESPONDER = new BigInteger("8220000", 16);
+
+    /**
+     * Value for group id for Arp Responder is one+max of NextHop Group Id
+     */
+    public static final long ARP_RESPONDER_GROUP_IDFR=175001L;
 
     //Table IDs
     public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
