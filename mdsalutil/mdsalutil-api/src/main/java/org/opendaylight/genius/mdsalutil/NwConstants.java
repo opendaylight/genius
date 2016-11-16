@@ -86,6 +86,7 @@ public final class NwConstants {
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
     public static final BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
+    public static final BigInteger COOKIE_ARP_RESPONDER = new BigInteger("8220000", 16);
 
     //Table IDs
     public static final short VLAN_INTERFACE_INGRESS_TABLE = 0;
