@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_dcd27ad1",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-16T10:16:15Z",
+      "side": 1,
+      "message": "The changes in this class appear to be extensive refactorings, some code disappeared.. this seems goes quite a bit beyond \"just\" CSS to BP migration.  It would probably be good if someone else with a better understanding of this code could make sure it\u0027s OK to remove some of the methods that are removed here, and could functionally test non-regression of this change..",
+      "revId": "8506d257a5d6ce2524e571726f01693e7886f809",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_dc5b9a85",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-16T10:16:15Z",
+      "side": 1,
+      "message": "David are you sure that you need this here? Given that you\u0027re using the maven plugin and have marked the MDSALManager with @Singleton, normally this \u003cbean\u003e declaration should now have been generated.. don\u0027t you have a duplicate with this?",
+      "revId": "8506d257a5d6ce2524e571726f01693e7886f809",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
