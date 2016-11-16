@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_57e12399",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-11-16T13:27:08Z",
+      "side": 1,
+      "message": "Yes, I had to migrate the code that was present in the provider class to the MDSALManager, so I was forced to make some refactoring. I think the class would deserve even more refactoring, since having so many lines and methods makes difficult to follow. That\u0027s why I stopped and leave some other changes for a later patch.",
+      "parentUuid": "3a65312a_dcd27ad1",
+      "revId": "8506d257a5d6ce2524e571726f01693e7886f809",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_dc5b9a85",
         "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-16T10:16:15Z",
       "side": 1,
       "message": "David are you sure that you need this here? Given that you\u0027re using the maven plugin and have marked the MDSALManager with @Singleton, normally this \u003cbean\u003e declaration should now have been generated.. don\u0027t you have a duplicate with this?",
+      "revId": "8506d257a5d6ce2524e571726f01693e7886f809",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_17504b5d",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-11-16T13:27:08Z",
+      "side": 1,
+      "message": "Yes, you are right, I\u0027ll remove it.",
+      "parentUuid": "3a65312a_dc5b9a85",
       "revId": "8506d257a5d6ce2524e571726f01693e7886f809",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
