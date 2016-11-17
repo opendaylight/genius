@@ -88,6 +88,24 @@
       "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2842483e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-11-17T07:03:39Z",
+      "side": 1,
+      "message": "Karthik, What I meant is that the cookie + table id needs to be in NwConstants. I see the table id is already there but I think the cookie should stay in this def file as well.\nRegarding the gorup id - I think it should not be constant and allocated by one of the pools.\nHow can you make sure some other application in the pipeline (like sfc) won\u0027t take this id as part of other allocation pool?",
+      "parentUuid": "3a65312a_e82170a0",
+      "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
