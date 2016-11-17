@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
@@ -486,6 +487,12 @@ public class MDSALUtil {
             .setKey(new InstructionKey(instructionKey)).build();
     }
 
+    /**
+     * Deprecated read.
+     * @deprecated Use {@link SingleTransactionDataBroker#syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+     * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
@@ -496,6 +503,12 @@ public class MDSALUtil {
         }
     }
 
+    /**
+     * Deprecated read.
+     * @deprecated Use {@link SingleTransactionDataBroker#syncReadOptional(
+     * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
     public static <T extends DataObject> Optional<T> read(DataBroker broker,
                                                           LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
