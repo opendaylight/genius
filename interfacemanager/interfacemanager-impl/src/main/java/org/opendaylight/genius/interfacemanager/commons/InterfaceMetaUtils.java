@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
-import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -63,12 +62,7 @@ public class InterfaceMetaUtils {
 
     public static BridgeRefEntry getBridgeRefEntryFromOperDS(InstanceIdentifier<BridgeRefEntry> dpnBridgeEntryIid,
                                                              DataBroker dataBroker) {
-        Optional<BridgeRefEntry> bridgeRefEntryOptional =
-                IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpnBridgeEntryIid, dataBroker);
-        if (!bridgeRefEntryOptional.isPresent()) {
-            return null;
-        }
-        return bridgeRefEntryOptional.get();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpnBridgeEntryIid, dataBroker).orNull();
     }
 
     public static OvsdbBridgeRef getBridgeRefEntryFromOperDS(BigInteger dpId,
@@ -104,11 +98,7 @@ public class InterfaceMetaUtils {
         if (bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getBridgeReference().getValue();
-            Optional<OvsdbBridgeAugmentation> bridgeNodeOptional =
-                    IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeIid, dataBroker);
-            if (bridgeNodeOptional.isPresent()) {
-                return true;
-            }
+            return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeIid, dataBroker).isPresent();
         }
         return false;
     }
@@ -130,12 +120,7 @@ public class InterfaceMetaUtils {
 
     public static BridgeEntry getBridgeEntryFromConfigDS(InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier,
                                                          DataBroker dataBroker) {
-        Optional<BridgeEntry> bridgeEntryOptional =
-                IfmUtil.read(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, dataBroker);
-        if (!bridgeEntryOptional.isPresent()) {
-            return null;
-        }
-        return bridgeEntryOptional.get();
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, dataBroker).orNull();
     }
 
     public static InstanceIdentifier<BridgeInterfaceEntry> getBridgeInterfaceEntryIdentifier(BridgeEntryKey bridgeEntryKey,
@@ -192,12 +177,7 @@ public class InterfaceMetaUtils {
 
     public static InterfaceParentEntry getInterfaceParentEntryFromConfigDS(
             InstanceIdentifier<InterfaceParentEntry> intfId, DataBroker dataBroker) {
-        Optional<InterfaceParentEntry> interfaceParentEntryOptional =
-                IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfId, dataBroker);
-        if (!interfaceParentEntryOptional.isPresent()) {
-            return null;
-        }
-        return interfaceParentEntryOptional.get();
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfId, dataBroker).orNull();
     }
 
     public static InterfaceChildEntry getInterfaceChildEntryFromConfigDS(InterfaceParentEntryKey interfaceParentEntryKey,
@@ -211,12 +191,7 @@ public class InterfaceMetaUtils {
 
     public static InterfaceChildEntry getInterfaceChildEntryFromConfigDS(
             InstanceIdentifier<InterfaceChildEntry> intfChildIid, DataBroker dataBroker) {
-        Optional<InterfaceChildEntry> interfaceChildEntryOptional =
-                IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker);
-        if (!interfaceChildEntryOptional.isPresent()) {
-            return null;
-        }
-        return interfaceChildEntryOptional.get();
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker).orNull();
     }
 
     public static void createLportTagInterfaceMap(WriteTransaction t, String infName, Integer ifIndex) {
@@ -299,11 +274,8 @@ public class InterfaceMetaUtils {
                                                                  DataBroker dataBroker) {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class).
                 child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        Optional<TunnelInstanceInterface> tunnelInstanceInterfaceOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
-        if(tunnelInstanceInterfaceOptional.isPresent()){
-            return tunnelInstanceInterfaceOptional.get().getInterfaceName();
-        }
-        return null;
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).transform(
+                TunnelInstanceInterface::getInterfaceName).orNull();
     }
 
     public static void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey, List<BridgeInterfaceEntry> bridgeInterfaceEntries,

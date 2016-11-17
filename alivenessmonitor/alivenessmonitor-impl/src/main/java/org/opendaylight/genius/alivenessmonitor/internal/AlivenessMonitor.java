@@ -231,13 +231,8 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
                 .build(new CacheLoader<Long, String>() {
                     @Override
                     public String load(Long monitorId) throws Exception {
-                        String monitorKey = null;
-                        Optional<MonitoridKeyEntry> optKey =
-                                read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId));
-                        if (optKey.isPresent()) {
-                            monitorKey = optKey.get().getMonitorKey();
-                        }
-                        return monitorKey;
+                        return read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId)).transform(
+                                MonitoridKeyEntry::getMonitorKey).orNull();
                     }
                 });
     }
@@ -758,11 +753,11 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
 
     private boolean stopMonitoringTask(Long monitorId, boolean interruptTask) {
         Optional<MonitoringInfo> optInfo = read(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
-        MonitoringInfo monitoringInfo = optInfo.get();
-        if (monitoringInfo == null) {
+        if (!optInfo.isPresent()) {
             LOG.warn("There is no monitoring info present for monitor id {}", monitorId);
             return false;
         }
+        MonitoringInfo monitoringInfo = optInfo.get();
         Optional<MonitorProfile> optProfile = read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(monitoringInfo.getProfileId()));
         EtherTypes protocolType = optProfile.get().getProtocolType();
@@ -1308,18 +1303,13 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
 
     //DATA STORE OPERATIONS
     <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
-        ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Error reading data from path {} in datastore {}", path, datastoreType, e);
-        } finally {
-            tx.close();
         }
 
-        return result;
+        return Optional.absent();
     }
 
     @Override
@@ -1349,13 +1339,8 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
     }
 
     private List<Long> getMonitorIds(String interfaceName) {
-        Optional<InterfaceMonitorEntry> optEntry = read(LogicalDatastoreType.OPERATIONAL,
-                                                           getInterfaceMonitorMapId(interfaceName));
-        if (optEntry.isPresent()) {
-            InterfaceMonitorEntry entry = optEntry.get();
-            return entry.getMonitorIds();
-        }
-        return Collections.emptyList();
+        return read(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName)).transform(
+                InterfaceMonitorEntry::getMonitorIds).or(Collections.emptyList());
     }
 
 }

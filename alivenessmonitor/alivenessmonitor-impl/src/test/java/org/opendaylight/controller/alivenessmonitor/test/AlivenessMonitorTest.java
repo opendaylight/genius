@@ -212,11 +212,9 @@ public class AlivenessMonitorTest {
                                                                 .setMode(MonitoringMode.OneOne)
                                                                 .setProfileId(profileId).build()).build();
         @SuppressWarnings("unchecked")
-        Optional<MonitorProfile> optionalProfile = (Optional<MonitorProfile>)mock(Optional.class);
+        Optional<MonitorProfile> optionalProfile = Optional.of(getTestMonitorProfile());
         CheckedFuture<Optional<MonitorProfile>, ReadFailedException> proFuture = Futures.immediateCheckedFuture(optionalProfile);
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitorProfile.class)))).thenReturn(proFuture);
-        doReturn(true).when(optionalProfile).isPresent();
-        doReturn(getTestMonitorProfile()).when(optionalProfile).get();
         CheckedFuture<Optional<MonitoringInfo>, ReadFailedException> outFuture = Futures.immediateCheckedFuture(Optional.<MonitoringInfo>absent());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL), argThat(isType(MonitoringInfo.class)))).thenReturn(outFuture);
         RpcResult<MonitorStartOutput> output = alivenessMonitor.monitorStart(input).get();

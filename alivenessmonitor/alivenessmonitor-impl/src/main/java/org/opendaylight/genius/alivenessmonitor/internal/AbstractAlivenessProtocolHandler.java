@@ -54,8 +54,7 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
         InstanceIdentifier<Interface> id =  InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(interfaceName)).build();
 
-        Optional<Interface> port = read(LogicalDatastoreType.CONFIGURATION, id);
-        if(port.isPresent()) {
+        if (read(LogicalDatastoreType.CONFIGURATION, id).isPresent()) {
             NodeConnectorId ncId = getNodeConnectorIdFromInterface(interfaceName);
             NodeId nodeId = getNodeIdFromNodeConnectorId(ncId);
 
@@ -95,11 +94,7 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
                 InstanceIdentifier.builder(InterfacesState.class).child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
                         new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(interfaceName));
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder.build();
-        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateOptional = read(LogicalDatastoreType.OPERATIONAL, id);
-        if(interfaceStateOptional.isPresent()) {
-            return interfaceStateOptional.get();
-        }
-        return null;
+        return read(LogicalDatastoreType.OPERATIONAL, id).orNull();
     }
 
     protected byte[] getMacAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface interfaceState, String interfaceName) {
@@ -119,28 +114,16 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
     protected Interface getInterfaceFromConfigDS(String interfaceName) {
         InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
         InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(interfaceKey);
-        Optional<Interface> interfaceOptional = read(LogicalDatastoreType.CONFIGURATION, interfaceId);
-        if (!interfaceOptional.isPresent()) {
-            return null;
-        }
-
-        return interfaceOptional.get();
+        return read(LogicalDatastoreType.CONFIGURATION, interfaceId).orNull();
     }
 
     private <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                     InstanceIdentifier<T> path) {
 
-        ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
-            tx.close();
         }
-
-        return result;
     }
 }

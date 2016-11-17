@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.fcapsapp;
 
-import com.google.common.base.Optional;
 import java.net.InetAddress;
 import java.util.Collection;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
@@ -120,11 +119,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
      */
     public boolean isNodeOwner(String nodeId) {
         Entity entity = new Entity("openflow", nodeId);
-        Optional<EntityOwnershipState> entityState = this.entityOwnershipService.getOwnershipState(entity);
-        if (entityState.isPresent()) {
-            return entityState.get().isOwner();
-        }
-        return false;
+        return this.entityOwnershipService.getOwnershipState(entity).transform(EntityOwnershipState::isOwner).or(false);
     }
 
     @Override

@@ -149,8 +149,7 @@ public class LockManager implements LockManagerService {
     private boolean readWriteLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException, ExecutionException {
         ReadWriteTransaction tx = broker.newReadWriteTransaction();
-        Optional<Lock> result = Optional.absent();
-        result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+        Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
         if (!result.isPresent()) {
             tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
             CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
@@ -162,9 +161,8 @@ public class LockManager implements LockManagerService {
 
     private void unlock(final String lockName, final InstanceIdentifier<Lock> lockInstanceIdentifier) {
         ReadWriteTransaction tx = broker.newReadWriteTransaction();
-        Optional<Lock> result = Optional.absent();
         try {
-            result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
             if (!result.isPresent()) {
                 LOG.info("{} is already unlocked", lockName);
                 return;

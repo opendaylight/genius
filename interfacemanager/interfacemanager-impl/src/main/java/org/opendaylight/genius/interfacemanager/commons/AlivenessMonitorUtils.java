@@ -112,17 +112,14 @@ public class AlivenessMonitorUtils {
 
     public static String getInterfaceFromMonitorId(DataBroker broker, Long monitorId) {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class).child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        Optional<MonitorIdInterface> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
-        if(interfaceMonitorIdMap.isPresent()) {
-            return interfaceMonitorIdMap.get().getInterfaceName();
-        }
-        return null;
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).transform(
+                MonitorIdInterface::getInterfaceName).orNull();
     }
 
     private static void removeMonitorIdInterfaceMap(DataBroker broker, long monitorId) {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class).child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
         Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
-        if(monitorIdInterfaceMap.isPresent()) {
+        if (monitorIdInterfaceMap.isPresent()) {
             MDSALUtil.syncDelete(broker, LogicalDatastoreType.OPERATIONAL, id);
         }
     }
@@ -130,7 +127,7 @@ public class AlivenessMonitorUtils {
     private static void removeMonitorIdFromInterfaceMonitorIdMap(DataBroker broker, String infName, long monitorId) {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class).child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
         Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
-        if(interfaceMonitorIdMap.isPresent()) {
+        if (interfaceMonitorIdMap.isPresent()) {
             InterfaceMonitorId interfaceMonitorIdInstance = interfaceMonitorIdMap.get();
             List<Long> existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
             if (existingMonitorIds != null && existingMonitorIds.contains(monitorId)) {
@@ -218,11 +215,8 @@ public class AlivenessMonitorUtils {
 
     public static List<Long> getMonitorIdForInterface(DataBroker broker, String infName) {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class).child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
-        if(interfaceMonitorIdMap.isPresent()) {
-            return interfaceMonitorIdMap.get().getMonitorId();
-        }
-        return null;
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).transform(
+                InterfaceMonitorId::getMonitorId).orNull();
     }
 
     public static long createMonitorProfile(AlivenessMonitorService alivenessMonitor, MonitorProfileCreateInput monitorProfileCreateInput) {
