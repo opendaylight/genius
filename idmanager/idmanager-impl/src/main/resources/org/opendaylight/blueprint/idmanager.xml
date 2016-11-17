@@ -19,10 +19,4 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <odl:rpc-implementation ref="idManager" />
 
-    <bean id="idPoolListener" class="org.opendaylight.genius.idmanager.IdPoolListener"
-          destroy-method="close" >
-        <argument ref="dataBroker" />
-        <argument ref="idManager" />
-    </bean>
-
 </blueprint>
