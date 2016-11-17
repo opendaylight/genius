@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
@@ -63,9 +62,9 @@ public abstract class AbstractDataChangeListener<T extends DataObject> implement
         for (InstanceIdentifier<?> key : keys) {
             if (clazz.equals(key.getTargetType())) {
                 InstanceIdentifier<T> createKeyIdent = key.firstIdentifierOf(clazz);
-                final Optional<DataObject> value = Optional.of(createdData.get(key));
-                if (value.isPresent()) {
-                    this.add(createKeyIdent, (T)value.get());
+                DataObject value = createdData.get(key);
+                if (value != null) {
+                    this.add(createKeyIdent, (T)value);
                 }
             }
         }
@@ -80,10 +79,10 @@ public abstract class AbstractDataChangeListener<T extends DataObject> implement
         for (InstanceIdentifier<?> key : keys) {
             if (clazz.equals(key.getTargetType())) {
                 InstanceIdentifier<T> updateKeyIdent = key.firstIdentifierOf(clazz);
-                final Optional<DataObject> value = Optional.of(updateData.get(key));
-                final Optional<DataObject> original = Optional.of(originalData.get(key));
-                if (value.isPresent() && original.isPresent()) {
-                    this.update(updateKeyIdent, (T)original.get(), (T)value.get());
+                DataObject value = updateData.get(key);
+                DataObject original = originalData.get(key);
+                if (value != null && original != null) {
+                    this.update(updateKeyIdent, (T)original, (T)value);
                 }
             }
         }

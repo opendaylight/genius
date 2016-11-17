@@ -203,17 +203,11 @@ public class IfmUtil {
 
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
-
-        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        return result;
     }
 
     public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey, Integer actionKey,
@@ -415,13 +409,8 @@ public class IfmUtil {
                 InstanceIdentifier.builder(Nodes.class)
                         .child(Node.class, new NodeKey(getNodeIdFromNodeConnectorId(ncId)))
                         .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
-        Optional<NodeConnector> optNc = read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker);
-        if(optNc.isPresent()) {
-            NodeConnector nc = optNc.get();
-            FlowCapableNodeConnector fcnc = nc.getAugmentation(FlowCapableNodeConnector.class);
-            return fcnc.getName();
-        }
-        return null;
+        return read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker).transform(
+                nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
     }
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState){

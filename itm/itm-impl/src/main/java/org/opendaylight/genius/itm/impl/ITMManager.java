@@ -85,13 +85,9 @@ public class ITMManager implements AutoCloseable {
     }
 
     protected boolean getTunnelMonitorEnabledFromConfigDS() {
-        boolean tunnelMonitorEnabled = true;
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if (storedTunnelMonitor.isPresent()) {
-            tunnelMonitorEnabled = storedTunnelMonitor.get().isEnabled();
-        }
-        return tunnelMonitorEnabled;
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker).transform(
+                TunnelMonitorParams::isEnabled).or(true);
     }
 
     protected Class<? extends TunnelMonitoringTypeBase> getTunnelMonitorTypeFromConfigDS() {
@@ -99,18 +95,15 @@ public class ITMManager implements AutoCloseable {
         Class<? extends TunnelMonitoringTypeBase> tunnelMonitorType = TunnelMonitoringTypeBfd.class;
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
         Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if(storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol()!=null )
+        if (storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol() != null) {
             tunnelMonitorType = storedTunnelMonitor.get().getMonitorProtocol();
+        }
         return tunnelMonitorType;
     }
 
     protected int getTunnelMonitorIntervalFromConfigDS() {
-        int tunnelMonitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
         InstanceIdentifier<TunnelMonitorInterval> path = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-        Optional<TunnelMonitorInterval> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if (storedTunnelMonitor.isPresent()) {
-            tunnelMonitorInterval = storedTunnelMonitor.get().getInterval();
-        }
-        return tunnelMonitorInterval;
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker).transform(
+                TunnelMonitorInterval::getInterval).or(ITMConstants.DEFAULT_MONITOR_INTERVAL);
     }
 }
