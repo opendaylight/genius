@@ -259,14 +259,9 @@ public class ItmExternalTunnelDeleteWorker {
 
     private static boolean trunkExists( String srcDpnOrNode,  String dstDpnOrNode,
                                         Class<? extends TunnelTypeBase> tunType,DataBroker dataBroker) {
-        boolean existsFlag = false ;
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
                 ExternalTunnelList.class)
                 .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(dstDpnOrNode, srcDpnOrNode, tunType));
-        Optional<ExternalTunnel> exTunnels = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker) ;
-        if( exTunnels.isPresent()) {
-            existsFlag = true;
-        }
-        return existsFlag ;
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
     }
 }

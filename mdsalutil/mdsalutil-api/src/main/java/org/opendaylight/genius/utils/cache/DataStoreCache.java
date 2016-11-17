@@ -11,7 +11,6 @@ import com.google.common.base.Optional;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -40,15 +39,11 @@ public class DataStoreCache {
 
     public static <T extends DataObject> Object get(String cacheName, InstanceIdentifier<T> identifier, String key, DataBroker broker, boolean isConfig) {
         Object dataObject = getCache(cacheName).get(key);
-        Optional<T> optionalObject = Optional.absent();
         if (dataObject == null) {
-            if (isConfig) {
-                optionalObject = MDSALDataStoreUtils.read(broker, LogicalDatastoreType.CONFIGURATION, identifier);
-            } else {
-                optionalObject = MDSALDataStoreUtils.read(broker, LogicalDatastoreType.OPERATIONAL, identifier);
-            }
-            if (optionalObject.isPresent()) {
-                dataObject = optionalObject.get();
+            Optional<T> datastoreObject = MDSALDataStoreUtils.read(broker,
+                    isConfig ? LogicalDatastoreType.CONFIGURATION : LogicalDatastoreType.OPERATIONAL, identifier);
+            if (datastoreObject.isPresent()) {
+                dataObject = datastoreObject.get();
                 add(cacheName, key, dataObject);
             }
         }

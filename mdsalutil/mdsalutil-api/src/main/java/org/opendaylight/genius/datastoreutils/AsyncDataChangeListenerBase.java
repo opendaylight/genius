@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.datastoreutils;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Map;
@@ -85,9 +84,9 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
         for (InstanceIdentifier<?> key : keys) {
             if (clazz.equals(key.getTargetType())) {
                 InstanceIdentifier<T> createKeyIdent = key.firstIdentifierOf(clazz);
-                final Optional<DataObject> value = Optional.of(createdData.get(key));
-                if (value.isPresent()) {
-                    this.add(createKeyIdent, (T)value.get());
+                final DataObject value = createdData.get(key);
+                if (value != null) {
+                    this.add(createKeyIdent, (T) value);
                 }
             }
         }
@@ -102,10 +101,10 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
         for (InstanceIdentifier<?> key : keys) {
             if (clazz.equals(key.getTargetType())) {
                 InstanceIdentifier<T> updateKeyIdent = key.firstIdentifierOf(clazz);
-                final Optional<DataObject> value = Optional.of(updateData.get(key));
-                final Optional<DataObject> original = Optional.of(originalData.get(key));
-                if (value.isPresent() && original.isPresent()) {
-                    this.update(updateKeyIdent, (T) original.get(), (T) value.get());
+                final DataObject value = updateData.get(key);
+                final DataObject original = originalData.get(key);
+                if (value != null && original != null) {
+                    this.update(updateKeyIdent, (T) original, (T) value);
                 }
             }
         }

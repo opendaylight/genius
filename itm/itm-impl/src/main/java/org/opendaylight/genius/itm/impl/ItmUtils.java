@@ -142,17 +142,11 @@ public class ItmUtils {
 
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
-
-        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        return result;
     }
 
     public static <T extends DataObject> void asyncWrite(LogicalDatastoreType datastoreType,
@@ -810,10 +804,11 @@ public class ItmUtils {
         InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).
                 child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-        Class<? extends TunnelTypeBase> tunType = tZoneOptional.get().getTunnelType();
         if (tZoneOptional.isPresent()) {
-            if (tZoneOptional.get().getSubnets() != null && !tZoneOptional.get().getSubnets().isEmpty()) {
-                for (Subnets sub : tZoneOptional.get().getSubnets()) {
+            TransportZone transportZone = tZoneOptional.get();
+            Class<? extends TunnelTypeBase> tunType = transportZone.getTunnelType();
+            if (transportZone.getSubnets() != null && !transportZone.getSubnets().isEmpty()) {
+                for (Subnets sub : transportZone.getSubnets()) {
                     if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
                         for (Vteps vtepLocal : sub.getVteps()) {
                             for (Vteps vtepRemote : sub.getVteps()) {
@@ -825,8 +820,9 @@ public class ItmUtils {
                                     Optional<InternalTunnel> TunnelsOptional =
                                             ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
                                     if (TunnelsOptional.isPresent()) {
-                                        LOG.trace("Internal Tunnel added {}",TunnelsOptional.get().getTunnelInterfaceName());
-                                        tunnels.add(TunnelsOptional.get().getTunnelInterfaceName());
+                                        String tunnelInterfaceName = TunnelsOptional.get().getTunnelInterfaceName();
+                                        LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
+                                        tunnels.add(tunnelInterfaceName);
                                     }
                                 }
                             }
@@ -842,13 +838,13 @@ public class ItmUtils {
                     }
                 }
             }
-        }
-        if (hwVtepsExist) {
-            for (HwVtep hwVtep : hwVteps) {
-                for (HwVtep hwVtepOther : hwVteps) {
-                    if (!hwVtep.getHwIp().equals(hwVtepOther.getHwIp())) {
-                        tunnels.add(getExtTunnel(hwVtep.getNode_id(), hwVtepOther.getNode_id(), tunType, dataBroker));
-                        tunnels.add(getExtTunnel(hwVtepOther.getNode_id(), hwVtep.getNode_id(), tunType, dataBroker));
+            if (hwVtepsExist) {
+                for (HwVtep hwVtep : hwVteps) {
+                    for (HwVtep hwVtepOther : hwVteps) {
+                        if (!hwVtep.getHwIp().equals(hwVtepOther.getHwIp())) {
+                            tunnels.add(getExtTunnel(hwVtep.getNode_id(), hwVtepOther.getNode_id(), tunType, dataBroker));
+                            tunnels.add(getExtTunnel(hwVtepOther.getNode_id(), hwVtep.getNode_id(), tunType, dataBroker));
+                        }
                     }
                 }
             }
@@ -863,22 +859,25 @@ public class ItmUtils {
                 child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         if (tZoneOptional.isPresent()) {
-            if (tZoneOptional.get().getSubnets() != null && !tZoneOptional.get().getSubnets().isEmpty()) {
-                for (Subnets sub : tZoneOptional.get().getSubnets()) {
+            TransportZone transportZone = tZoneOptional.get();
+            if (transportZone.getSubnets() != null && !transportZone.getSubnets().isEmpty()) {
+                for (Subnets sub : transportZone.getSubnets()) {
                     if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
                         for (Vteps vtepLocal : sub.getVteps()) {
                             for (Vteps vtepRemote : sub.getVteps()) {
                                 if (!vtepLocal.equals(vtepRemote)) {
-                                    InternalTunnelKey key = new InternalTunnelKey(vtepRemote.getDpnId(), vtepLocal.getDpnId(), tZoneOptional.get().getTunnelType());
+                                    InternalTunnelKey key =
+                                            new InternalTunnelKey(vtepRemote.getDpnId(), vtepLocal.getDpnId(),
+                                                    transportZone.getTunnelType());
                                     InstanceIdentifier<InternalTunnel> intIID =
                                             InstanceIdentifier.builder(TunnelList.class).
                                                     child(InternalTunnel.class, key).build();
-                                    Optional<InternalTunnel> TunnelsOptional =
+                                    Optional<InternalTunnel> tunnelsOptional =
                                             ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
-                                    if (TunnelsOptional.isPresent()) {
-                                        LOG.trace("Internal Tunnel added {}",
-                                                TunnelsOptional.get().getTunnelInterfaceName());
-                                        tunnels.add(TunnelsOptional.get().getTunnelInterfaceName());
+                                    if (tunnelsOptional.isPresent()) {
+                                        String tunnelInterfaceName = tunnelsOptional.get().getTunnelInterfaceName();
+                                        LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
+                                        tunnels.add(tunnelInterfaceName);
                                     }
                                 }
                             }
@@ -895,11 +894,12 @@ public class ItmUtils {
         ExternalTunnelKey key = getExternalTunnelKey(dpId, node_id, tunType);
         InstanceIdentifier<ExternalTunnel> intIID = InstanceIdentifier.builder(ExternalTunnelList.class).
                 child(ExternalTunnel.class, key).build();
-        Optional<ExternalTunnel> TunnelsOptional =
+        Optional<ExternalTunnel> tunnelsOptional =
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
-        if (TunnelsOptional.isPresent()) {
-            LOG.trace("ext tunnel returned {} ",TunnelsOptional.get().getTunnelInterfaceName());
-            return TunnelsOptional.get().getTunnelInterfaceName();
+        if (tunnelsOptional.isPresent()) {
+            String tunnelInterfaceName = tunnelsOptional.get().getTunnelInterfaceName();
+            LOG.trace("ext tunnel returned {} ", tunnelInterfaceName);
+            return tunnelInterfaceName;
         }
         return null;
     }
@@ -923,11 +923,7 @@ public class ItmUtils {
     }
     public static TunnelList getAllInternalTunnels(DataBroker broker) {
         InstanceIdentifier<TunnelList> tunnelListInstanceIdentifier = InstanceIdentifier.builder(TunnelList.class).build();
-        Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, tunnelListInstanceIdentifier, broker);
-        if (tunnelList.isPresent()) {
-            return tunnelList.get();
-        }
-        return null;
+        return read(LogicalDatastoreType.CONFIGURATION, tunnelListInstanceIdentifier, broker).orNull();
     }
     public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
         InternalTunnel internalTunnel = null;

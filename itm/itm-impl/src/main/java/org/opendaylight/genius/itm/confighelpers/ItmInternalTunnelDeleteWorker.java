@@ -179,13 +179,9 @@ public class ItmInternalTunnelDeleteWorker {
                 .getValue(),dstTep.getTunnelType().getName());
     }
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
-        boolean existsFlag = false ;
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
                 TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType));
-        Optional<InternalTunnel> internalTunnels = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker) ;
-        if( internalTunnels.isPresent())
-            existsFlag = true ;
-        return existsFlag ;
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
     }
 }
