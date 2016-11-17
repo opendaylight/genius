@@ -15,11 +15,18 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.DataBrokerUtils;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class MDSALDataStoreUtils {
 
+    /**
+     * Deprecated read.
+     * @deprecated Use {@link DataBrokerUtils#syncReadOptional(
+     * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
     public static <T extends DataObject> Optional<T> read(final DataBroker broker,final LogicalDatastoreType datastoreType,
             InstanceIdentifier<T> path) {
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
