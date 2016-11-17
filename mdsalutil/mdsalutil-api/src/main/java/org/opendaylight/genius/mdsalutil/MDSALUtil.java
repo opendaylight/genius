@@ -8,19 +8,21 @@
 
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import org.opendaylight.controller.liblldp.HexEncode;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
@@ -91,9 +93,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdenti
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
-
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class MDSALUtil {
 
     public enum MdsalOp {  CREATION_OP, UPDATE_OP, REMOVAL_OP }
@@ -486,21 +486,29 @@ public class MDSALUtil {
             .setKey(new InstructionKey(instructionKey)).build();
     }
 
+    /**
+     * Deprecated read.
+     * @deprecated Use {@link SingleTransactionDataBroker#syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+     * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
-            return tx.read(datastoreType, path).get();
-        } catch (Exception e) {
-            logger.error("An error occured while reading data from the path {} with the exception {}", path, e);
-            return Optional.absent();
-        }
+        return SingleTransactionDataBroker
+                .syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(broker, datastoreType, path);
     }
 
-    public static <T extends DataObject> Optional<T> read(DataBroker broker,
-                                                          LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
-            return tx.read(datastoreType, path).get();
-        } catch (Exception e) {
+    /**
+     * Deprecated read.
+     * @deprecated Use {@link SingleTransactionDataBroker#syncReadOptional(
+     * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
+    public static <T extends DataObject> Optional<T> read(DataBroker broker, LogicalDatastoreType datastoreType,
+                                                          InstanceIdentifier<T> path) {
+        try {
+            return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, path);
+        } catch (ReadFailedException e) {
             throw new RuntimeException(e);
         }
     }
