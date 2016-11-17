@@ -106,6 +106,24 @@
       "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_e86fb0c3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 6550
+      },
+      "writtenOn": "2016-11-17T07:39:51Z",
+      "side": 1,
+      "message": "Currently I see all the pool ranges are hard coded in respective modules. Here are some of the examples\n\n----- ELAN -----\npublic static final String ELAN_ID_POOL_NAME \u003d \"elan.ids.pool\";\n    public static final long ELAN_ID_LOW_VALUE \u003d 5000L;\n    public static final long ELAN_ID_HIGH_VALUE \u003d 10000L;\n---- NextHop Manager ----\n\nCreateIdPoolInput createPool \u003d new CreateIdPoolInputBuilder()\n                .setPoolName(NEXTHOP_ID_POOL_NAME)\n                .setLow(150000L)\n                .setHigh(175000L)\n                .build();\n\n\nHence only we to set a unique range is to go through each modules and find out the group pools and its range. Since we needed only single entry we had set  175001L which is one value more than that of nexthop manager pool. other solution is to move all the pool information to NwConstant.java and create enum similar to NxmOfFieldType. here is an example\n\n\n\tpublic enum GroupTable {\n\t\n\t\tNEXTHOP_MANAGER(\"nextHopPointerPool\",150000L,175000L),\n        ARP_REPONDER(\"Arp_Responder\", 175001L, 175001L);\n\t\t\n\t\tprivate final String name;\n        private final long min;\n\t\tprivate final long max;\n\n        Group(final String name, final long min, final long max) {\n            this.name \u003d name;\n\t\t\tthis.min \u003d min;\n\t\t\tthis.max \u003d max;\n        }\n\n\t\tpublic String poolName() {\n            return this.name;\n        }\n\t\t\n\t\tpublic long min() {\n            return this.min;\n        }\n\t\t\n        public long min() {\n            return this.max;\n        }\n    }\n\n\nUsage:\n\nCreateIdPoolInput createPool \u003d new CreateIdPoolInputBuilder()\n                .setPoolName(GroupTable.NEXTHOP_MANAGER.poolName())\n                .setLow(GroupTable.NEXTHOP_MANAGER.min())\n                .setHigh(GroupTable.NEXTHOP_MANAGER.max())\n                .build();",
+      "parentUuid": "3a65312a_2842483e",
+      "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
