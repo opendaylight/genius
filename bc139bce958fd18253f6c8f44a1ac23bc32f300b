@@ -52,6 +52,24 @@
       "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2d0d3a3f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-11-17T06:09:15Z",
+      "side": 1,
+      "message": "Referring a constant in netvirt and based on that skewing a value in genius , is not a good design practice..\n\nLet us move this to netvirt.",
+      "parentUuid": "3a65312a_ad194a8a",
+      "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
