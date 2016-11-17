@@ -124,6 +124,24 @@
       "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_eed699f0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-11-17T16:09:35Z",
+      "side": 1,
+      "message": "Hi Tali,\n\nWe donot have a pool allocation service today for the IDs to be used by the services.\n\nWhile that is a good point, am not sure if this review should be making such a change.\n\nAnd Karthik,\nIf you need only one group id for ARP management, please use the InterfaceManager pool (or) ELAN pool itself to allocate that group-id as it shouldn\u0027t cause any harm.   \n\nWhile other services can be decided whether they should run or not in a private cloud, but InterfaceManager and ELAN will always be there :)",
+      "parentUuid": "3a65312a_e86fb0c3",
+      "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
