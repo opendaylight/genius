@@ -34,6 +34,24 @@
       "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ad194a8a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 6550
+      },
+      "writtenOn": "2016-11-17T05:58:15Z",
+      "side": 1,
+      "message": "Nope, its not being used any where in Genius. Moving as per review comments for Netvirt changes.\n\u003e\u003eAll the table ids/cookies are placed in NwConstants so it would be possible to track pipeline changes. Pls place the table-id + cookie definitions there\u003c\u003c",
+      "parentUuid": "3a65312a_adeaea0c",
+      "revId": "bc139bce958fd18253f6c8f44a1ac23bc32f300b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
