@@ -80,12 +80,11 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
 
     @SuppressWarnings("unchecked")
     private void createData(final Map<InstanceIdentifier<?>, DataObject> createdData) {
-        final Set<InstanceIdentifier<?>> keys = createdData.keySet() != null
-                ? createdData.keySet() : Collections.emptySet();
-        for (InstanceIdentifier<?> key : keys) {
+        for (Map.Entry<InstanceIdentifier<?>, DataObject> createdEntry : createdData.entrySet()) {
+            InstanceIdentifier<?> key = createdEntry.getKey();
             if (clazz.equals(key.getTargetType())) {
                 InstanceIdentifier<T> createKeyIdent = key.firstIdentifierOf(clazz);
-                final DataObject value = createdData.get(key);
+                DataObject value = createdEntry.getValue();
                 if (value != null) {
                     this.add(createKeyIdent, (T) value);
                 }
@@ -96,13 +95,11 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
     @SuppressWarnings("unchecked")
     private void updateData(final Map<InstanceIdentifier<?>, DataObject> updateData,
                             final Map<InstanceIdentifier<?>, DataObject> originalData) {
-
-        final Set<InstanceIdentifier<?>> keys = updateData.keySet() != null
-                ? updateData.keySet() : Collections.emptySet();
-        for (InstanceIdentifier<?> key : keys) {
+        for (Map.Entry<InstanceIdentifier<?>, DataObject> updatedEntry : updateData.entrySet()) {
+            InstanceIdentifier<?> key = updatedEntry.getKey();
             if (clazz.equals(key.getTargetType())) {
                 InstanceIdentifier<T> updateKeyIdent = key.firstIdentifierOf(clazz);
-                final DataObject value = updateData.get(key);
+                final DataObject value = updatedEntry.getValue();
                 final DataObject original = originalData.get(key);
                 if (value != null && original != null) {
                     this.update(updateKeyIdent, (T) original, (T) value);
