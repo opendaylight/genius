@@ -17,9 +17,8 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 import java.math.BigInteger;
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import com.google.common.base.Optional;
+import org.junit.*;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -68,11 +67,15 @@ public class InterfaceManagerTest {
 
     @Inject DataBroker dataBroker;
 
-    @Test public void newVlanInterface() throws Exception {
-        // 1. Given
+    @Before
+    public void start(){
         // TODO This is silly, because onSessionInitiated(), or later it's BP
         // equivalent, for clearer testability should just propagate the exception
         assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
+    }
+    @Ignore
+    @Test public void newVlanInterface() throws Exception {
+        // 1. Given
         BigInteger dpnId = BigInteger.valueOf(1);
         // 2. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
