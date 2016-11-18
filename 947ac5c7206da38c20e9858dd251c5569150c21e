@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_d4afeae1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataBrokerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-18T09:20:31Z",
+      "side": 1,
+      "message": "try-with-resources (throughout).",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_f4b4a636",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/ExpectedDataObjectNotFoundException.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-18T09:20:31Z",
+      "side": 1,
+      "message": "I don\u0027t think the extension is appropriate here; ReadFailedException is a technical error, not a functional one.",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_34861e66",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALDataStoreUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-18T09:20:31Z",
+      "side": 1,
+      "message": "You might as well replace the implementation with a delegate.",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_947d7271",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-18T09:20:31Z",
+      "side": 1,
+      "message": "Please delegate the implementation.",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d496ca93",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 519,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-18T09:20:31Z",
+      "side": 1,
+      "message": "As above.",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
