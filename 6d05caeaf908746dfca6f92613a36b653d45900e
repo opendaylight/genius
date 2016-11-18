@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_174cc46f",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/datastoreutils/TestDataStoreJobCoordinator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-18T13:21:09Z",
+      "side": 1,
+      "message": "Michael,\n  when a job is currently under execution, the job cannot be found in the queue. What we need is a mechanism to wait till the job finishes execution. in such a scenario, how different is this from the normal Thread.sleep() what we have put in individual tests?",
+      "revId": "6d05caeaf908746dfca6f92613a36b653d45900e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
