@@ -326,7 +326,7 @@ public class IfmUtil {
             case GRE_TRUNK_INTERFACE:
                 if (tunnelKey != null) {
                     result.add(new ActionInfo(ActionType.set_field_tunnel_id,
-                            new BigInteger[]{BigInteger.valueOf(tunnelKey.longValue())},
+                            new BigInteger[]{BigInteger.valueOf(tunnelKey)},
                             actionKeyStart++));
                 }
 

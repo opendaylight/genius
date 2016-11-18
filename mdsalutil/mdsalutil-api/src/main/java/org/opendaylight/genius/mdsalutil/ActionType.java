@@ -142,7 +142,7 @@ public enum ActionType {
 
             return new ActionBuilder().setAction(
                     new OutputActionCaseBuilder().setOutputAction(
-                            new OutputActionBuilder().setMaxLength(Integer.valueOf(maxLength))
+                            new OutputActionBuilder().setMaxLength(maxLength)
                                             .setOutputNodeConnector(new Uri(port)).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
@@ -154,7 +154,7 @@ public enum ActionType {
             return new ActionBuilder().setAction(
                     new PopMplsActionCaseBuilder().setPopMplsAction(
                             new PopMplsActionBuilder().setEthernetType(
-                                    Integer.valueOf(NwConstants.ETHTYPE_IPV4)).build()).build())
+                                    NwConstants.ETHTYPE_IPV4).build()).build())
 
                     .setKey(new ActionKey(newActionKey)).build();
         }
@@ -183,7 +183,7 @@ public enum ActionType {
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
             return new ActionBuilder().setAction(new PushMplsActionCaseBuilder().setPushMplsAction(
                                     new PushMplsActionBuilder().setEthernetType(
-                                            Integer.valueOf(NwConstants.ETHTYPE_MPLS_UC)).build()).build())
+                                            NwConstants.ETHTYPE_MPLS_UC).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -194,7 +194,7 @@ public enum ActionType {
             return new ActionBuilder().setAction(
                     new PushPbbActionCaseBuilder().setPushPbbAction(
                                     new PushPbbActionBuilder()
-                                            .setEthernetType(Integer.valueOf(NwConstants.ETHTYPE_PBB)).build()).build())
+                                            .setEthernetType(NwConstants.ETHTYPE_PBB).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -205,7 +205,7 @@ public enum ActionType {
             return new ActionBuilder().setAction(
                     new PushVlanActionCaseBuilder().setPushVlanAction(
                                     new PushVlanActionBuilder().setEthernetType(
-                                            Integer.valueOf(NwConstants.ETHTYPE_802_1Q)).build()).build())
+                                            NwConstants.ETHTYPE_802_1Q).build()).build())
                     .setKey(new ActionKey(newActionKey)).build();
         }
     },
@@ -723,7 +723,7 @@ public enum ActionType {
             NxRegLoad rb = new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
                             .setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
-                            .setStart(Integer.valueOf(0)).setEnd(Integer.valueOf(15)).build())
+                            .setStart(0).setEnd(15).build())
                     .setValue(actionValues[0]).build();
             ActionBuilder ab = new ActionBuilder();
             ab.setKey(new ActionKey(newActionKey));
@@ -853,11 +853,11 @@ public enum ActionType {
             final int endOffset, final boolean groupBucket) {
         final NxRegMove reg = new NxRegMoveBuilder()
                 .setSrc(new SrcBuilder().setSrcChoice(srcChoice)
-                        .setStart(Integer.valueOf(0))
-                        .setEnd(Integer.valueOf(endOffset)).build())
+                        .setStart(0)
+                        .setEnd(endOffset).build())
                 .setDst(new org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder()
-                        .setDstChoice(dstChoice).setStart(Integer.valueOf(0))
-                        .setEnd(Integer.valueOf(endOffset)).build())
+                        .setDstChoice(dstChoice).setStart(0)
+                        .setEnd(endOffset).build())
                 .build();
         if (groupBucket) {
             return new NxActionRegMoveNodesNodeGroupBucketsBucketActionsCaseBuilder()
@@ -878,8 +878,8 @@ public enum ActionType {
             final int endOffset, final boolean groupBucket) {
         final NxRegLoad reg = new NxRegLoadBuilder()
                 .setDst(new DstBuilder().setDstChoice(dstChoice)
-                        .setStart(Integer.valueOf(0))
-                        .setEnd(Integer.valueOf(endOffset)).build())
+                        .setStart(0)
+                        .setEnd(endOffset).build())
                 .setValue(value).build();
         if (groupBucket) {
             return new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
