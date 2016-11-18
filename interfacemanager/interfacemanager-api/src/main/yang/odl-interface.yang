@@ -64,7 +64,7 @@ module odl-interface {
         description "Tunnel type for vxlan tunnels";
         base tunnel-type-base;
     }
-    
+
     identity tunnel-type-vxlan-gpe {
         description "Tunnel type for vxlan-gpe";
         base tunnel-type-base;
@@ -92,6 +92,31 @@ module odl-interface {
     identity tunnel-monitoring-type-bfd {
         description "Tunnel monitoring using bfd support on OVS";
         base tunnel-monitoring-type-base;
+    }
+
+    grouping tunnel-optional-params {
+        leaf tunnel-source-ip-flow {
+            description "Use local_ip=flow for this tunnel";
+            type boolean;
+            default false;
+        }
+        leaf tunnel-remote-ip-flow {
+            description "Use remote_ip=flow for this tunnel";
+            type boolean;
+            default false;
+        }
+
+        list tunnel-options {
+            key "tunnel-option";
+            leaf tunnel-option {
+                description "Tunnel Option name";
+                type string;
+            }
+            leaf value {
+                description "Option value";
+                type string;
+            }
+        }
     }
 
     grouping monitor-params {
@@ -238,7 +263,7 @@ module odl-interface {
             description
               "represents whether this is an internal or external tunnel.";
         }
-        
+
         leaf tunnel-interface-type {
             type identityref {
                 base tunnel-type-base;
@@ -260,6 +285,7 @@ module odl-interface {
             description "gateway IP address";
         }
 
+        uses tunnel-optional-params;
         uses monitor-params;
     }
 
