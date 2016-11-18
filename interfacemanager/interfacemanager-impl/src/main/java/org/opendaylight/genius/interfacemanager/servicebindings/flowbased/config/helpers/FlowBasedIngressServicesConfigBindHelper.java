@@ -149,7 +149,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         } else {
             BoundServices serviceToReplace = tmpServicesMap.get(highestPriority);
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, serviceToReplace, ifState.getName(), transaction,
-                    ifState.getIfIndex(), boundServiceNew.getServicePriority(), (short) (boundServiceNew.getServicePriority()+1));
+                    ifState.getIfIndex(), serviceToReplace.getServicePriority(), (short) (serviceToReplace.getServicePriority()+1));
             List<MatchInfo> matches = null;
             matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable (dpId, portNo);
 
