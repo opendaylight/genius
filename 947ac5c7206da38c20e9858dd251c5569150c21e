@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_ab0ac81e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataBrokerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-21T18:16:14Z",
+      "side": 1,
+      "message": "OK, done.  And I should have thought of that.. ;)  Just saw that you introduced that a few days ago during your \"Cleanup Optional uses\" change.",
+      "parentUuid": "3a65312a_d4afeae1",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_f4b4a636",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/ExpectedDataObjectNotFoundException.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_8b726cab",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/ExpectedDataObjectNotFoundException.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-21T18:16:14Z",
+      "side": 1,
+      "message": "NOK, I see what you mean, but I did this intentionally.. see the JavaDoc on both this Exception as well as in DataBrokerUtils which I just pushed now, and let me know if you agree this makes sense?",
+      "parentUuid": "3a65312a_f4b4a636",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_34861e66",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALDataStoreUtils.java",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2016-11-18T09:20:31Z",
       "side": 1,
       "message": "You might as well replace the implementation with a delegate.",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_eb968093",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALDataStoreUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-21T18:16:14Z",
+      "side": 1,
+      "message": "NOK, may I double check if you are 100% sure that we want to do this? I\u0027m asking because the new method handles exception differently, and therefore has a different signature, so if we delegate then we either have to change this methods\u0027 signature, which has huge ripple effects which I\u0027m not willing to deal with in this Gerrit, or we have to keep the } catch (Exception e) { throw new RuntimeException(e) here.. which has no ripple effects - but it\u0027s technically strictly speaking still an incompatible API change, because the root cause exception of the RuntimeException is different if we delegate - we don\u0027t care? Sure?? ;-)",
+      "parentUuid": "3a65312a_34861e66",
       "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
