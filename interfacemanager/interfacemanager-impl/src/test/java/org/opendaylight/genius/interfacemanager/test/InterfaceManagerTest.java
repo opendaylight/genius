@@ -73,7 +73,7 @@ public class InterfaceManagerTest {
         // equivalent, for clearer testability should just propagate the exception
         assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
     }
-    @Ignore
+
     @Test public void newVlanInterface() throws Exception {
         // 1. Given
         BigInteger dpnId = BigInteger.valueOf(1);
@@ -137,6 +137,82 @@ public class InterfaceManagerTest {
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class,egressFlowKey).build();
         Assert.assertNotNull(dataBroker.newReadOnlyTransaction().read(CONFIGURATION, egressFlowInstanceId).checkedGet().get());
+    }
+
+    @Test public void deleteVlanInterface() throws Exception {
+        // 1. Given
+        BigInteger dpnId = BigInteger.valueOf(1);
+        // 2. When
+        // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
+        putInterfaceState(interfaceName);
+        Thread.sleep(1000);
+        // ii) Vlan interface written to config/ietf-interfaces DS and corresponding parent-interface is not present
+        //     in operational/ietf-interface-state
+        putInterfaceConfig(childInterface, interfaceName);
+        // TODO Must think about proper solution for better synchronization here instead of silly wait()...
+        // TODO use TestDataStoreJobCoordinator.waitForAllJobs() when https://git.opendaylight.org/gerrit/#/c/48061/ is merged
+        Thread.sleep(1000);
+
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState =
+                dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+                        IfmUtil.buildStateInterfaceId(childInterface)).checkedGet().get();
+        // iii) vlan interface is deleted from config/ietf-interfaces
+        deleteInterfaceConfig(interfaceName);
+        Thread.sleep(2000);
+        // 3. Then
+        // a) check expected interface-child entry mapping in odl-interface-meta/config/interface-child-info is deleted
+        InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryInstanceIdentifier = InterfaceMetaUtils
+                .getInterfaceChildEntryIdentifier(new InterfaceParentEntryKey(interfaceName),
+                        new InterfaceChildEntryKey(childInterface));
+
+        // TODO Later use nicer abstraction for DB access here.. see ElanServiceTest
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+                .read(CONFIGURATION, interfaceChildEntryInstanceIdentifier).get());
+
+        // Then
+        // a) check if operational/ietf-interfaces-state is deleted for the vlan interface
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+                IfmUtil.buildStateInterfaceId(childInterface)).get());
+
+        // b) check if lport-tag to interface mapping is deleted
+        InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(
+                IfIndexInterface.class, new IfIndexInterfaceKey(ifaceState.getIfIndex())).build();
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+                ifIndexInterfaceInstanceIdentifier).get());
+
+        // c) check expected flow entries were created in Interface Ingress Table
+        String ingressFlowRef = FlowBasedServicesUtils.getFlowRef(NwConstants.VLAN_INTERFACE_INGRESS_TABLE, dpnId, childInterface);
+        FlowKey ingressFlowKey = new FlowKey(new FlowId(ingressFlowRef));
+        Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
+        InstanceIdentifier<Flow> ingressFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class,ingressFlowKey).build();
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).get());
+
+        // d) check if default egress service is bound on the interface
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
+                .child(ServicesInfo.class, new ServicesInfoKey(childInterface, ServiceModeEgress.class))
+                .child(BoundServices.class, new BoundServicesKey(NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)).build();
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, boundServicesInstanceIdentifier).get());
+
+        Thread.sleep(500);
+        // d) check expected flow entries are created in Egress Dispatcher Table
+        String egressFlowRef = getFlowRef(dpnId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE,
+                childInterface, NwConstants.DEFAULT_SERVICE_INDEX);
+        FlowKey egressFlowKey = new FlowKey(new FlowId(egressFlowRef));
+        InstanceIdentifier<Flow> egressFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class,egressFlowKey).build();
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, egressFlowInstanceId).get());
+    }
+
+
+    public void deleteInterfaceConfig(String ifaceName){
+        InstanceIdentifier<Interface> vlanInterfaceEnabledInterfaceInstanceIdentifier = IfmUtil.buildId(
+                InterfaceManagerTestUtil.childInterface);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.delete(CONFIGURATION, vlanInterfaceEnabledInterfaceInstanceIdentifier);
+        tx.submit();
     }
 
     public void putInterfaceConfig(String ifaceName, String parentInterface){
