@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServicesStateAddable{
@@ -103,12 +102,8 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        Collections.sort(allServices, new Comparator<BoundServices>() {
-            @Override
-            public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {
-                return serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority());
-            }
-        });
+        Collections.sort(allServices,
+                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
         BoundServices highestPriority = allServices.remove(0);
         short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority() : highestPriority.getServicePriority() + 1);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);

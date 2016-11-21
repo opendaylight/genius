@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableBiMap;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -479,12 +478,8 @@ public class FlowBasedServicesUtils {
             return new BoundServices[]{lower, higher};
         }
         List <BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
-        Collections.sort(availableServiceInfos, new Comparator<BoundServices>() {
-            @Override
-            public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {
-                return serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority());
-            }
-        });
+        Collections.sort(availableServiceInfos,
+                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
         for (BoundServices availableServiceInfo: availableServiceInfos) {
             if (currentServiceInfo.getServicePriority() < availableServiceInfo.getServicePriority()) {
                 lower = availableServiceInfo;

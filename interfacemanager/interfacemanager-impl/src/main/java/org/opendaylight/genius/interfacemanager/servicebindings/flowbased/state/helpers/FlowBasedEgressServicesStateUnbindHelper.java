@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
@@ -107,12 +106,8 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
             return futures;
         }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        Collections.sort(allServices, new Comparator<BoundServices>() {
-            @Override
-            public int compare(BoundServices serviceInfo1, BoundServices serviceInfo2) {
-                return serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority());
-            }
-        });
+        Collections.sort(allServices,
+                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
         BoundServices highestPriority = allServices.remove(0);
         FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
