@@ -498,13 +498,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                 for (TransportZone tzone : tZones.getTransportZone()) {
                     if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class)))
                         continue;
-                    foundVxlanTzone = true;
                     String transportZone = tzone.getZoneName();
                     if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
-                        result.set(RpcResultBuilder.<Void>failed()
-                                .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
-                        return result;
+                        continue;
                     }
+                    foundVxlanTzone = true;
                     SubnetsKey subnetsKey = tzone.getSubnets().get(0).getKey();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, node_id);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
