@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -58,13 +60,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased;
@@ -86,12 +82,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentationBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeName;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbPortInterfaceAttributes;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsKey;
@@ -101,11 +92,15 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 
 public class InterfaceManagerTestUtil {
-    public static final String interfaceName = "s1-eth1";
-    public static final String childInterface = "s1-eth1-trunk";
-    public static final String tunnelInterfaceName = "s2-gre1";
+    public static final String parentInterface = "tap23701c04-7e";
+    public static final String interfaceName = "23701c04-7e58-4c65-9425-78a80d49a218";
+    public static final String tunnelInterfaceName = "tun414a856a7a4";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
     public static final NodeKey nodeKey = new NodeKey(new NodeId("openflow:1"));
 
@@ -131,9 +126,12 @@ public class InterfaceManagerTestUtil {
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface buildStateInterface(
-            String ifName, String dpnId, String portNo, String phyAddress) {
+            String ifName, String dpnId, String portNo, String phyAddress, Class<? extends InterfaceType> ifType) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder ifaceBuilder =
                 new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder();
+        if(ifType != null) {
+            ifaceBuilder.setType(ifType);
+        }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(ifName));
         ifaceBuilder.setOperStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
         ifaceBuilder.setLowerLayerIf(Arrays.asList("openflow:"+dpnId+":"+portNo));
@@ -289,7 +287,7 @@ public class InterfaceManagerTestUtil {
                 .setId(ncId)
                 .setKey(new NodeConnectorKey(ncId));
         FlowCapableNodeConnectorBuilder flowCapableNodeConnectorBuilder = new FlowCapableNodeConnectorBuilder().
-                setHardwareAddress(MacAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA")).setName(InterfaceManagerTestUtil.interfaceName);
+                setHardwareAddress(MacAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA")).setName(InterfaceManagerTestUtil.parentInterface);
         ncBuilder.addAugmentation(FlowCapableNodeConnector.class,flowCapableNodeConnectorBuilder.build());
         return ncBuilder.build();
     }
@@ -418,5 +416,50 @@ public class InterfaceManagerTestUtil {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void deleteInterfaceConfig(DataBroker dataBroker, String ifaceName){
+        InstanceIdentifier<Interface> vlanInterfaceEnabledInterfaceInstanceIdentifier = IfmUtil.buildId(
+                ifaceName);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.delete(CONFIGURATION, vlanInterfaceEnabledInterfaceInstanceIdentifier);
+        tx.submit();
+    }
+
+    public static void putInterfaceConfig(DataBroker dataBroker, String ifaceName, ParentRefs parentRefs,
+                                          Class<? extends InterfaceType> ifType){
+        Interface interfaceInfo;
+        if(!Tunnel.class.equals(ifType)) {
+            interfaceInfo = InterfaceManagerTestUtil.buildInterface(
+                    ifaceName, ifaceName, true, ifType, parentRefs.getParentInterface());
+        }else{
+            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier(),ifaceName, ifaceName, true, TunnelTypeVxlan.class,
+                    "1.1.1.1", "2.2.2.2");
+        }
+        InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(
+                ifaceName);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
+        tx.submit();
+    }
+
+    public static void putInterfaceState(DataBroker dataBroker, String interfaceName, Class<? extends InterfaceType> ifType){
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState =
+                InterfaceManagerTestUtil.buildStateInterface(interfaceName, "1", "2", "AA:AA:AA:AA:AA:AA", ifType);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.put(OPERATIONAL, IfmUtil.buildStateInterfaceId(interfaceName), ifaceState, true);
+        tx.submit();
+    }
+
+    public static NodeId createNodeId(String ip, String port) {
+        String uriString = SouthboundUtils.OVSDB_TOPOLOGY_ID + "://"
+                + ip + ":" + port;
+        Uri uri = new Uri(uriString);
+        return new NodeId(uri);
+    }
+
+    public static String getFlowRef(BigInteger dpnId, short tableId, String iface, short currentServiceIndex) {
+        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR)
+                .append(iface).append(NwConstants.FLOWID_SEPARATOR).append(currentServiceIndex).toString();
     }
 }

@@ -11,7 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
-import org.mockito.Mockito;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
@@ -41,7 +41,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 
 /**
- * Dependency Injection Wiring for {@link InterfaceManagerTest}.
+ * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTests}.
  *
  * <p>This class looks a little bit more complicated than it could and later will be
  * just because interfacemanager is still using CSS instead of BP with @Inject.

@@ -12,10 +12,15 @@ import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrExc
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import com.google.common.util.concurrent.CheckedFuture;
 import org.mockito.Mockito;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.mdsal.binding.testutils.AssertDataObjects;
@@ -65,6 +70,12 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     @Override
     public void installFlow(FlowEntity flowEntity) {
         getFlows().add(flowEntity);
+    }
+
+    @Override
+    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId, FlowEntity flowEntity) {
+        getFlows().remove(flowEntity);
+        return null;
     }
 
 }
