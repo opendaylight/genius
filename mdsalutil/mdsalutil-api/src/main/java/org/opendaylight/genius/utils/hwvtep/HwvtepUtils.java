@@ -40,7 +40,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 
 /**
@@ -162,11 +161,7 @@ public final class HwvtepUtils {
                                                    String logicalSwitchName) {
         final InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName));
-        Optional<LogicalSwitches> optLogicalSwitch = MDSALUtil.read(broker, datastoreType, iid);
-        if (optLogicalSwitch.isPresent()) {
-            return optLogicalSwitch.get();
-        }
-        return null;
+        return MDSALUtil.read(broker, datastoreType, iid).orNull();
     }
 
     /**
@@ -186,11 +181,7 @@ public final class HwvtepUtils {
             LogicalDatastoreType datastoreType, NodeId nodeId, String portName) {
         TerminationPointKey tpKey = new TerminationPointKey(new TpId(portName));
         InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createTerminationPointId(nodeId, tpKey);
-        Optional<TerminationPoint> physicalPortTerminationPoint = MDSALUtil.read(broker, datastoreType, iid);
-        if (physicalPortTerminationPoint.isPresent()) {
-            return physicalPortTerminationPoint.get();
-        }
-        return null;
+        return MDSALUtil.read(broker, datastoreType, iid).orNull();
     }
 
     /**
@@ -209,13 +200,7 @@ public final class HwvtepUtils {
         InstanceIdentifier<LogicalSwitches> logicalSwitchesIdentifier = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(vni));
 
-        Optional<LogicalSwitches> logicalSwitches = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION,
-                logicalSwitchesIdentifier);
-        if (!logicalSwitches.isPresent()) {
-            return null;
-        }
-
-        return logicalSwitches.get();
+        return MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, logicalSwitchesIdentifier).orNull();
     }
 
     /**
@@ -278,11 +263,7 @@ public final class HwvtepUtils {
         InstanceIdentifier<HwvtepPhysicalLocatorAugmentation> iid = HwvtepSouthboundUtils
                 .createPhysicalLocatorInstanceIdentifier(nodeId, phyLocatorAug)
                 .augmentation(HwvtepPhysicalLocatorAugmentation.class);
-        Optional<HwvtepPhysicalLocatorAugmentation> optPhyLocator = MDSALUtil.read(broker, datastoreType, iid);
-        if (optPhyLocator.isPresent()) {
-            return optPhyLocator.get();
-        }
-        return null;
+        return MDSALUtil.read(broker, datastoreType, iid).orNull();
     }
 
     /**
@@ -489,11 +470,7 @@ public final class HwvtepUtils {
                                                     NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey) {
         final InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils
                 .createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey);
-        Optional<RemoteMcastMacs> optRemoteMcastMac = MDSALUtil.read(broker, datastoreType, iid);
-        if (optRemoteMcastMac.isPresent()) {
-            return optRemoteMcastMac.get();
-        }
-        return null;
+        return MDSALUtil.read(broker, datastoreType, iid).orNull();
     }
 
     /**
@@ -640,12 +617,8 @@ public final class HwvtepUtils {
      * @return the hw vtep node
      */
     public static Node getHwVtepNode(DataBroker dataBroker, LogicalDatastoreType datastoreType, NodeId nodeId) {
-        Optional<Node> optNode = MDSALUtil.read(dataBroker, datastoreType,
-                HwvtepSouthboundUtils.createInstanceIdentifier(nodeId));
-        if (optNode.isPresent()) {
-            return optNode.get();
-        }
-        return null;
+        return MDSALUtil.read(dataBroker, datastoreType,
+                HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)).orNull();
     }
 
     /**

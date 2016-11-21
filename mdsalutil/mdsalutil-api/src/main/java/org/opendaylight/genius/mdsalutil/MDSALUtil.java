@@ -488,30 +488,21 @@ public class MDSALUtil {
 
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
-
-        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             logger.error("An error occured while reading data from the path {} with the exception {}", path, e);
+            return Optional.absent();
         }
-        return result;
     }
 
     public static <T extends DataObject> Optional<T> read(DataBroker broker,
                                                           LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
-
-        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return result;
     }
 
     public static <T extends DataObject> void syncWrite(DataBroker broker,
@@ -581,28 +572,14 @@ public class MDSALUtil {
                 .child(Node.class, new NodeKey(nodeId))
                 .child(NodeConnector.class,
                         new NodeConnectorKey(nodeConnectorId)).build();
-
-        Optional<NodeConnector> nodeConnectorOptional = read(
-                dataBroker,
-                LogicalDatastoreType.OPERATIONAL, ncIdentifier);
-        if (!nodeConnectorOptional.isPresent()) {
-            return null;
-        }
-        NodeConnector nc = nodeConnectorOptional.get();
-        FlowCapableNodeConnector fc = nc
-                .getAugmentation(FlowCapableNodeConnector.class);
-        return fc.getName();
+        return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).transform(
+                nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
     }
 
     public static NodeConnectorId getNodeConnectorId(DataBroker dataBroker,
             NodeConnectorRef ref) {
-        Optional<NodeConnector> nc = (Optional<NodeConnector>) read(
-                dataBroker,
-                LogicalDatastoreType.OPERATIONAL, ref.getValue());
-        if(nc.isPresent()){
-            return nc.get().getId();
-        }
-        return null;
+        return ((Optional<NodeConnector>) read(dataBroker, LogicalDatastoreType.OPERATIONAL, ref.getValue())).transform(
+                NodeConnector::getId).orNull();
     }
 
     public static TransmitPacketInput getPacketOut(List<Action> actions, byte[] payload, BigInteger dpnId) {

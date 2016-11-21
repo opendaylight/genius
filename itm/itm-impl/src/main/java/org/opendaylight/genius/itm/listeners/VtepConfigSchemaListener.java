@@ -305,12 +305,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      * @return the all vtep config schemas
      */
     private List<VtepConfigSchema> getAllVtepConfigSchemas() {
-        Optional<VtepConfigSchemas> schemas = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
-                ItmUtils.getVtepConfigSchemasIdentifier(), this.dataBroker);
-        if (schemas.isPresent()) {
-            return schemas.get().getVtepConfigSchema();
-        }
-        return null;
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, ItmUtils.getVtepConfigSchemasIdentifier(),
+                this.dataBroker).transform(VtepConfigSchemas::getVtepConfigSchema).orNull();
     }
 
     /**
@@ -468,12 +464,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      * @return the vtep ip pool
      */
     private VtepIpPool getVtepIpPool(final String subnetCidr) {
-        Optional<VtepIpPool> vtepIpPool = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
-                ItmUtils.getVtepIpPoolIdentifier(subnetCidr), this.dataBroker);
-        if (vtepIpPool.isPresent()) {
-            return vtepIpPool.get();
-        }
-        return null;
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, ItmUtils.getVtepIpPoolIdentifier(subnetCidr),
+                this.dataBroker).orNull();
     }
 
     /**

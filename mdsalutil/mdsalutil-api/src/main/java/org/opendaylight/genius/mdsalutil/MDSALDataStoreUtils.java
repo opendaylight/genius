@@ -22,17 +22,11 @@ public class MDSALDataStoreUtils {
 
     public static <T extends DataObject> Optional<T> read(final DataBroker broker,final LogicalDatastoreType datastoreType,
             InstanceIdentifier<T> path) {
-
-        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
-
-        Optional<T> result = Optional.absent();
-        try {
-            result = tx.read(datastoreType, path).get();
+        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        return result;
     }
 
    public static <T extends DataObject> void asyncWrite(final DataBroker broker, final LogicalDatastoreType datastoreType,

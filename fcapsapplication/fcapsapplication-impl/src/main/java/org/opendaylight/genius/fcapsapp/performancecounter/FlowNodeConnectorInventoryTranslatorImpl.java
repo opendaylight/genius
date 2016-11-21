@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
@@ -165,11 +164,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
      */
     public boolean isNodeOwner(String nodeId) {
         Entity entity = new Entity("openflow", nodeId);
-        Optional<EntityOwnershipState> eState = this.entityOwnershipService.getOwnershipState(entity);
-        if(eState.isPresent()) {
-            return eState.get().isOwner();
-        }
-        return false;
+        return this.entityOwnershipService.getOwnershipState(entity).transform(EntityOwnershipState::isOwner).or(false);
     }
 
     private boolean compareInstanceIdentifierTail(InstanceIdentifier<?> identifier1,

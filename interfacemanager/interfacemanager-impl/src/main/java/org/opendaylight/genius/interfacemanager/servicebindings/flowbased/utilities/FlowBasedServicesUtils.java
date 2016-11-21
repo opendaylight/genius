@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableBiMap;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -88,14 +87,8 @@ public class FlowBasedServicesUtils {
         ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName,serviceMode);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder =
                 InstanceIdentifier.builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
-        Optional<ServicesInfo> servicesInfoOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION,
-                servicesInfoIdentifierBuilder.build(), dataBroker);
-
-        if (servicesInfoOptional.isPresent()) {
-            return servicesInfoOptional.get();
-        }
-
-        return null;
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, servicesInfoIdentifierBuilder.build(),
+                dataBroker).orNull();
     }
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName, DataBroker dataBroker) {
