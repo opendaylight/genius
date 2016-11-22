@@ -143,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_0e1caac0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALDataStoreUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-22T10:06:46Z",
+      "side": 1,
+      "message": "OK, you got it, my friend! ;-)  Done, changed everywhere.  Would you mind to double-check it to make sure it\u0027s as you saw it?  So we catch (ReadFailedException e) instead of catch (Exception e) everywhere, then yes?  Again, strictly speaking we\u0027re changing behaviour here, and you\u0027re pushing this further than I dared - but as you insisted.. I\u0027m in!",
+      "parentUuid": "3a65312a_eef84e7e",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_947d7271",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 1
