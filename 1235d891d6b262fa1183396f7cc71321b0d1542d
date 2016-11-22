@@ -16,6 +16,24 @@
       "revId": "1235d891d6b262fa1183396f7cc71321b0d1542d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_840d393a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-22T14:27:45Z",
+      "side": 1,
+      "message": "No, it won\u0027t.  It\u0027s not strictly speaking doing nothing at all, but if you look at the code, unless any chained listener delegates are added (such as tests would, based on skitt\u0027s design), then this will just iterate through an empty list an immediately return, and therefore this will have no real measurable impact.",
+      "parentUuid": "3a65312a_2e9406e1",
+      "revId": "1235d891d6b262fa1183396f7cc71321b0d1542d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
