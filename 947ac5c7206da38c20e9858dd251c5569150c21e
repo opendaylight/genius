@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_8eeb9aaf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALDataStoreUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-22T09:45:43Z",
+      "side": 1,
+      "message": "I care more about handling the rampant copy-paste coding practices in ODL than about preserving exception causes. I\u0027d rather have\n\n    try {\n        return DataBrokerUtils.syncReadOptional(broker, datastoreType, path);\n    } catch (ReadFailedException e) {\n        throw new RuntimeException(e);\n    }\n\nin the deprecated code, at least it\u0027s obvious that the method is obsolete (people don\u0027t read documentation).\n\nAn additional aspect for me is that it removes some Optional alerts in IntelliJ ;-). Replacing the code also ensures the transaction is close properly...",
+      "parentUuid": "3a65312a_eb968093",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_947d7271",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 1
