@@ -125,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_eef84e7e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALDataStoreUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-22T09:47:46Z",
+      "side": 1,
+      "message": "\"than about preserving exception causes\" — I\u0027ll qualify that: I want real exception causes to be preserved of course when logging etc., I don\u0027t care about the causes remaining identical when refactoring.",
+      "parentUuid": "3a65312a_8eeb9aaf",
+      "revId": "947ac5c7206da38c20e9858dd251c5569150c21e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_947d7271",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 1
