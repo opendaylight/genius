@@ -21,9 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by edimjai on 8/4/2016.
  */
-public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorInterval, ItmMonitoringIntervalListener>
-    implements AutoCloseable {
-
+public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorInterval, ItmMonitoringIntervalListener> {
 
   private static final Logger logger = LoggerFactory.getLogger(ItmMonitoringIntervalListener.class);
 
@@ -37,12 +35,6 @@ public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeL
     }
   }
 
-  @Override
-  public void close() {
-    logger.info("ItmMonitoring Interval listener Closed");
-  }
-
-  @Override
   protected void remove(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
     DataStoreCache.remove(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME, "Interval");
 
@@ -68,6 +60,3 @@ public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeL
     return this;
   }
 }
-
-
-

@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.listeners.cache;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -16,7 +15,6 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
-
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +22,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by edimjai on 8/4/2016.
  */
-public class ItmMonitoringListener  extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorParams, ItmMonitoringListener>
-    implements AutoCloseable {
+public class ItmMonitoringListener  extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorParams, ItmMonitoringListener>{
+
   private static final Logger logger = LoggerFactory.getLogger(ItmMonitoringListener.class);
 
   public ItmMonitoringListener(final DataBroker broker) {
@@ -38,13 +36,6 @@ public class ItmMonitoringListener  extends AsyncClusteredDataTreeChangeListener
     }
   }
 
-  @Override
-  public void close() {
-  
-    logger.info("ItmMonitoring listener Closed");
-  }
-
-  @Override
   protected void remove(InstanceIdentifier<TunnelMonitorParams> key, TunnelMonitorParams dataObjectModification) {
     DataStoreCache.remove(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME, "MonitorParams");
   }
@@ -70,11 +61,4 @@ public class ItmMonitoringListener  extends AsyncClusteredDataTreeChangeListener
   protected ItmMonitoringListener getDataTreeChangeListener() {
     return this;
   }
-
-
-
-
 }
-
-
-
