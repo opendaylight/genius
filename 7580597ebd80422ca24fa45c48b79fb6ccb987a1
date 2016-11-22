@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_ce2112fe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-22T10:01:24Z",
+      "side": 1,
+      "message": "You could signal this by deprecating the method ;-). That way its uses are flagged as requiring attention, and you can remove it out-of-cycle as soon as it\u0027s no longer used!",
+      "revId": "7580597ebd80422ca24fa45c48b79fb6ccb987a1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
