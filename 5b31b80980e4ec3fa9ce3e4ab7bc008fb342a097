@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_4e16a2a8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataBrokerUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-22T10:06:46Z",
+      "side": 1,
+      "message": "OK, Ja ja... it was inserted by Eclipse.. ;) done, removed.",
+      "parentUuid": "3a65312a_0ea94a7b",
+      "revId": "5b31b80980e4ec3fa9ce3e4ab7bc008fb342a097",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_4eba22c1",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataBrokerUtils.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-22T09:45:43Z",
       "side": 1,
       "message": "Could you document why?",
+      "revId": "5b31b80980e4ec3fa9ce3e4ab7bc008fb342a097",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ee268e15",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataBrokerUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-22T10:06:46Z",
+      "side": 1,
+      "message": "OK, JavaDoc amended.  Amendments from you to this Gerrit with clearer JavaDoc most welcome! ;-)",
+      "parentUuid": "3a65312a_4eba22c1",
       "revId": "5b31b80980e4ec3fa9ce3e4ab7bc008fb342a097",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
