@@ -17,19 +17,15 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 import java.math.BigInteger;
 import javax.inject.Inject;
 
-import com.google.common.base.Optional;
 import org.junit.*;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -73,7 +69,7 @@ public class InterfaceManagerTest {
         // equivalent, for clearer testability should just propagate the exception
         assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
     }
-    @Ignore
+
     @Test public void newVlanInterface() throws Exception {
         // 1. Given
         BigInteger dpnId = BigInteger.valueOf(1);
