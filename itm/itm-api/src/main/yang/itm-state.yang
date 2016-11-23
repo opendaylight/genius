@@ -98,6 +98,11 @@ module itm-state {
                                 base odlif:tunnel-type-base;
                             }
                        }
+                       leaf option-of-tunnel {
+                           description "Use flow based tunnels for remote-ip";
+                           type boolean;
+                           default false;
+                       }
                  }
 
                }

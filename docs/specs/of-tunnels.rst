@@ -133,6 +133,31 @@ A new parameter ``option-of-tunnel`` will be added to ``list-vteps``
         }
     }
 
+Same parameter will also be added to ``tunnel-end-points`` in ``itm-state.yang``.
+This will help eliminate need to retrieve information from TransportZones when configuring
+tunnel interfaces.
+
+.. code-block:: none
+   :caption: itm-state.yang
+   :emphasize-lines: 11-14
+
+    list tunnel-end-points {
+        ordered-by user;
+        key "portname VLAN-ID ip-address tunnel-type";
+        /* Multiple tunnels on the same physical port but on different VLAN can be supported */
+
+        leaf portname {
+            type string;
+        }
+        ...
+        ...
+        leaf option-of-tunnel {
+            type boolean;
+            default false;
+        }
+    }
+
+
 This will allow to set OF Tunnels on per VTEP basis. So in a transport-zone
 we can have some VTEPs (devices) that use OF Tunnels and others that don't.
 Default of false means it will not impact existing behavior and will need to
