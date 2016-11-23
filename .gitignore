@@ -19,6 +19,7 @@ target-ide
 .DS_Store
 .checkstyle
 .factorypath
+.fbExcludeFilterFile
 yang-gen-config
 yang-gen-sal
 classes
