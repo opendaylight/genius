@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_1aab401e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-23T11:15:14Z",
+      "side": 1,
+      "message": "how about setTunnelSource - we assume localIp here, do you want to tie it to a configurable IP if it is given?",
+      "revId": "b0d02cc94d915c886fc932881c22356d24a3a3e8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
