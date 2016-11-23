@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_fa8be465",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-23T08:19:53Z",
+      "side": 1,
+      "message": "http://stackoverflow.com/questions/3421720/append-or-operator-in-stringbuffer",
+      "revId": "388888e533f6246d51c6deb3016d3fd9a4684f1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
