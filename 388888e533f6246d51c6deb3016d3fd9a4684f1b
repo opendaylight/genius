@@ -16,6 +16,24 @@
       "revId": "388888e533f6246d51c6deb3016d3fd9a4684f1b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_9ae91083",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-23T10:40:29Z",
+      "side": 1,
+      "message": "Are you suggesting that I change this as follows?\n\n        StringBuilder IpPrefixBuild \u003d new StringBuilder(ipAddress);\n        String ipPrefix \u003d (isIpv4Address(ipAddress)) ? IpPrefixBuild.append(\"/32\").toString() :\n                          IpPrefixBuild.append(\"/128\").toString();\n        return ipPrefix;",
+      "parentUuid": "3a65312a_fa8be465",
+      "revId": "388888e533f6246d51c6deb3016d3fd9a4684f1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
