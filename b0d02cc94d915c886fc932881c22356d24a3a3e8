@@ -16,6 +16,24 @@
       "revId": "b0d02cc94d915c886fc932881c22356d24a3a3e8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_400e6a35",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-23T12:02:21Z",
+      "side": 1,
+      "message": "Actually we do get this from tep ip configured when adding TEP, so it IS tied to a configurable IP. Normally you\u0027d choose the IP as given in local_ip on OVS, but you don\u0027t have to.",
+      "parentUuid": "3a65312a_1aab401e",
+      "revId": "b0d02cc94d915c886fc932881c22356d24a3a3e8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
