@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_9aff5067",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTests.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-23T10:00:10Z",
+      "side": 1,
+      "message": "you should add a new line with your name here as a 2nd @author now... ;-)",
+      "revId": "754dda1ecd6af8ba305b5d8645d51c96dc2dfb78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5a05b878",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTests.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-23T10:00:10Z",
+      "side": 1,
+      "message": "Careful, Maven (the maven-surefire-plugin) WILL NOT run this test as part of the build - because it ends with *Tests instead of *Test (see http://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html) - therefore please rename it from InterfaceManagerConfigurationTests to InterfaceManagerConfigurationTest (same but without \u0027s\u0027 at the end)",
+      "revId": "754dda1ecd6af8ba305b5d8645d51c96dc2dfb78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7a023470",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedFlowEntries.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-23T10:00:10Z",
+      "side": 1,
+      "message": "This isn\u0027t used, right?  IT was a left over in the first iteration, I think I cleaned it up at some point - don\u0027t bring it back here, just remove this?",
+      "revId": "754dda1ecd6af8ba305b5d8645d51c96dc2dfb78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_daf8a87e",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceChildEntry.xtend",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-23T10:00:10Z",
+      "side": 1,
+      "message": "as per our private email exchange, the #[] here is wrong, because you don\u0027t want a list, but just an instance?",
+      "revId": "754dda1ecd6af8ba305b5d8645d51c96dc2dfb78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5a2c9802",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-23T10:00:10Z",
+      "side": 1,
+      "message": "return Futures.immediateCheckedFuture(null); instead of null here",
+      "revId": "754dda1ecd6af8ba305b5d8645d51c96dc2dfb78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
