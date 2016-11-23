@@ -52,6 +52,24 @@
       "revId": "388888e533f6246d51c6deb3016d3fd9a4684f1b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_a0de5e6b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-23T12:33:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_405caa25",
+      "revId": "388888e533f6246d51c6deb3016d3fd9a4684f1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
