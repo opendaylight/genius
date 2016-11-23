@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_5a83f855",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-23T08:16:39Z",
+      "side": 1,
+      "message": "Currently this API kind of assumes that the input (ipAddress) is a valid IPv4/IPv6 address. I agree with you that this is not a safe assumption. \n\nI\u0027ll update the patch. Thanks for reviewing @Kiran.",
+      "parentUuid": "3a65312a_df5eda44",
+      "range": {
+        "startLine": 189,
+        "startChar": 10,
+        "endLine": 191,
+        "endChar": 9
+      },
+      "revId": "00b3447615ff85980012e2d48b9d01d728784f0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_9f458272",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2016-11-23T06:32:58Z",
       "side": 1,
       "message": "This looks unused. Please remove if not required.",
+      "range": {
+        "startLine": 202,
+        "startChar": 8,
+        "endLine": 202,
+        "endChar": 67
+      },
+      "revId": "00b3447615ff85980012e2d48b9d01d728784f0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3a86fc65",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-23T08:16:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_9f458272",
       "range": {
         "startLine": 202,
         "startChar": 8,
