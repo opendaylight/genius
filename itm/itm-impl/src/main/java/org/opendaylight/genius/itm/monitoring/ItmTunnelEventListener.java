@@ -23,8 +23,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.math.BigInteger;
 
+@Singleton
 public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface> implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(ItmTunnelEventListener.class);
@@ -32,11 +37,30 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
     private ListenerRegistration<DataChangeListener> listenerRegistration;
     public static final JMXAlarmAgent alarmAgent = new JMXAlarmAgent();
 
+    @Inject
     public ItmTunnelEventListener(final DataBroker db){
         super(Interface.class);
         broker = db;
-        registerListener(db);
-        alarmAgent.registerMbean();
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.broker);
+        this.alarmAgent.registerMbean();
+        logger.info("ItmTunnelEventListener Started");
+    }
+
+    @Override
+    @PreDestroy
+    public void close() throws Exception {
+        if (listenerRegistration != null) {
+            try {
+                listenerRegistration.close();
+            } catch (final Exception e) {
+                logger.error("Error when cleaning up DataChangeListener.", e);
+            }
+            listenerRegistration = null;
+        }
     }
 
     private void registerListener(final DataBroker db) {
@@ -162,18 +186,6 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                     }
                 }
             }
-        }
-    }
-
-    @Override
-    public void close() throws Exception {
-        if (listenerRegistration != null) {
-            try {
-                listenerRegistration.close();
-            } catch (final Exception e) {
-                logger.error("Error when cleaning up DataChangeListener.", e);
-            }
-            listenerRegistration = null;
         }
     }
 

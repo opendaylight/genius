@@ -18,14 +18,19 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by edimjai on 8/4/2016.
  */
-public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorInterval, ItmMonitoringIntervalListener>
-{
+@Singleton
+public class ItmMonitoringIntervalListener
+        extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorInterval, ItmMonitoringIntervalListener> {
 
   private static final Logger logger = LoggerFactory.getLogger(ItmMonitoringIntervalListener.class);
 
+  @Inject
   public ItmMonitoringIntervalListener(final DataBroker broker) {
     super(TunnelMonitorInterval.class, ItmMonitoringIntervalListener.class);
 

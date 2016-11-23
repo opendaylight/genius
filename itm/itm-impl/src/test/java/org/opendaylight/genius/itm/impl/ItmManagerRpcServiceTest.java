@@ -230,8 +230,7 @@ public class ItmManagerRpcServiceTest {
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        itmManagerRpcService = new ItmManagerRpcService(dataBroker,idManagerService);
-        itmManagerRpcService.setMdsalManager(mdsalApiManager);
+        itmManagerRpcService = new ItmManagerRpcService(dataBroker,idManagerService,mdsalApiManager);
     }
 
     @After

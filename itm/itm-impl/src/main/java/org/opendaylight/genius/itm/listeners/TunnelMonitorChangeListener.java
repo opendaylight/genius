@@ -28,15 +28,22 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorParams, TunnelMonitorChangeListener>
         implements  AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorChangeListener.class);
     private final DataBroker broker;
     // private final IInterfaceManager interfaceManager;
 
-    public TunnelMonitorChangeListener(final DataBroker db) {
+    @Inject
+    public TunnelMonitorChangeListener(final DataBroker dataBroker) {
         super(TunnelMonitorParams.class, TunnelMonitorChangeListener.class);
-        broker = db;
+        this.broker = dataBroker;
         // interfaceManager = ifManager;
         // registerListener(db);
     }
@@ -51,7 +58,15 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
              throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
          }
      }
- */    @Override
+ */
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
+        LOG.info("Tunnel Monitor listeners Started");
+    }
+
+    @Override
+    @PreDestroy
     public void close() throws Exception {
        /* if (monitorEnabledListenerRegistration != null) {
             try {

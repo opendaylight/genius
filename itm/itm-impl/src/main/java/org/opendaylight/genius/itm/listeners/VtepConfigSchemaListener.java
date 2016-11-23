@@ -43,6 +43,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +57,7 @@ import java.util.List;
  *
  * @see VtepConfigSchema
  */
+@Singleton
 public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepConfigSchema> implements AutoCloseable {
 
     /** The Constant LOG. */
@@ -67,13 +72,13 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
     /**
      * Instantiates a new vtep config schema listener.
      *
-     * @param db
-     *            the db
+     * @param dataBroker
+     *            the dataBroker
      */
-    public VtepConfigSchemaListener(final DataBroker db) {
+    @Inject
+    public VtepConfigSchemaListener(final DataBroker dataBroker) {
         super(VtepConfigSchema.class);
-        this.dataBroker = db;
-        registerListener(db);
+        this.dataBroker = dataBroker;
     }
 
     /*
@@ -81,7 +86,14 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      *
      * @see java.lang.AutoCloseable#close()
      */
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.dataBroker);
+        LOG.info("VtepConfigSchemaListener Started");
+    }
+
     @Override
+    @PreDestroy
     public void close() throws Exception {
         if (this.listenerRegistration != null) {
             try {

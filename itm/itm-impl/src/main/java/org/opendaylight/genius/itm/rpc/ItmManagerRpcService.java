@@ -86,22 +86,27 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class ItmManagerRpcService implements ItmRpcService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmManagerRpcService.class);
     DataBroker dataBroker;
     private IMdsalApiManager mdsalManager;
+    IdManagerService idManagerService;
 
+    @Inject
+    public ItmManagerRpcService(DataBroker dataBroker, IdManagerService idManagerService,
+                                IMdsalApiManager mdsalManager) {
+        this.dataBroker = dataBroker;
+        this.idManagerService = idManagerService;
+        setMdsalManager(mdsalManager);
+    }
 
     public void setMdsalManager(IMdsalApiManager mdsalManager) {
         this.mdsalManager = mdsalManager;
-    }
-
-    IdManagerService idManagerService;
-
-    public ItmManagerRpcService(DataBroker dataBroker, IdManagerService idManagerService) {
-        this.dataBroker = dataBroker;
-        this.idManagerService = idManagerService;
     }
 
     @Override

@@ -26,10 +26,18 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by ehemgop on 18-08-2016.
  */
-public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBase<DPNTEPsInfo,DpnTepsInfoListener> implements AutoCloseable{
+@Singleton
+public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBase<DPNTEPsInfo,DpnTepsInfoListener>
+        implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(DpnTepsInfoListener.class);
     private final DataBroker broker;
 
@@ -37,15 +45,20 @@ public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBas
      * Responsible for listening to DPNTEPsInfo change
      *
      */
-
+    @Inject
     public DpnTepsInfoListener(final DataBroker broker) {
         super(DPNTEPsInfo.class, DpnTepsInfoListener.class);
         this.broker = broker;
-        registerListener(LogicalDatastoreType.CONFIGURATION, broker);
     }
 
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
+        LOG.info("dpnTepsInfo Listener Started");
+    }
 
     @Override
+    @PreDestroy
     public void close() throws Exception {
         LOG.info("dpnTepsInfo Listener Closed");
     }
