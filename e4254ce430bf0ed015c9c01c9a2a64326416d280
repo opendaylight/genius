@@ -16,6 +16,24 @@
       "revId": "e4254ce430bf0ed015c9c01c9a2a64326416d280",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_b4b05c44",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/ChainableDataChangeListenerImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-24T11:49:41Z",
+      "side": 1,
+      "message": "\u003e use parallel stream to do it for better performance.\n\nInteresting, but there is already too much async parallelization going on everywhere, and this started as an attempt to make it possible to keep one\u0027s sanity while writing tests... I\u0027m therefore very hesitant to introduce more parallelism here. -- I guess when you\u0027ll be using this, for non-tests purposes, you could make the \"after\" DCL you add be one that is itself async and parallel? So you could do it at the next level, but perhaps we should keep this simple.  You could also propose a follow-up Gerrit yourself to this one, where you introduce a new class ParallelChainableDataChangeListenerImpl implements ChainableDataChangeListener yourself? ;-)\n\n\u003e Also swallow the exception if it thrown by a listener which doesn\u0027t impact other listeners to get the data change.\n\nThat\u0027s a very good point; I\u0027ve just changed that - thanks for pointing it out!",
+      "parentUuid": "3a65312a_66ea9e76",
+      "revId": "e4254ce430bf0ed015c9c01c9a2a64326416d280",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
