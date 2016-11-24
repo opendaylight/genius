@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_86509a5f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-24T06:35:28Z",
+      "side": 1,
+      "message": "I\u0027ve seen that its used in some genius files like MDSALUtil. But its fine, I\u0027ll update it to LOG (which is more readable). Thanks.",
+      "parentUuid": "3a65312a_20624e3e",
+      "range": {
+        "startLine": 31,
+        "startChar": 32,
+        "endLine": 31,
+        "endChar": 38
+      },
+      "revId": "99b15bb34ef1706d847ff794a99e4b9aa5d0e24a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_405f8a72",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
         "patchSetId": 4
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_46d682c6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-24T06:35:28Z",
+      "side": 1,
+      "message": "@Faseela can you please share your comments on this?",
+      "parentUuid": "3a65312a_405f8a72",
+      "range": {
+        "startLine": 207,
+        "startChar": 8,
+        "endLine": 207,
+        "endChar": 21
+      },
+      "revId": "99b15bb34ef1706d847ff794a99e4b9aa5d0e24a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_00a632c1",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
         "patchSetId": 4
@@ -59,6 +107,24 @@
       "writtenOn": "2016-11-23T13:27:17Z",
       "side": 1,
       "message": "would you like to put the prefix as a constant? Had mentioned in the previous patch",
+      "revId": "99b15bb34ef1706d847ff794a99e4b9aa5d0e24a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_a6dcb6e5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2016-11-24T06:35:28Z",
+      "side": 1,
+      "message": "Sure, I will update it when I respin this patch.",
+      "parentUuid": "3a65312a_00a632c1",
       "revId": "99b15bb34ef1706d847ff794a99e4b9aa5d0e24a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
