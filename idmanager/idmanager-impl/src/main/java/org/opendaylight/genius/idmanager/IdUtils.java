@@ -65,7 +65,8 @@ public class IdUtils {
         try {
             BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
         } catch (Exception e) {
-            LOGGER.error("IdManager - Exception - {}", e.getMessage());
+            LOGGER.error("IdManager static { InetAddresses.coerceToInteger(InetAddress.getLocalHost()) } failed "
+                    + "due to caught Exception", e);
         }
     }
 
@@ -127,13 +128,14 @@ public class IdUtils {
     }
 
     protected static boolean isIdAvailable(AvailableIdsHolderBuilder availableIds) {
-        if (availableIds.getCursor() != null && availableIds.getEnd() != null)
-            return availableIds.getCursor() < availableIds.getEnd();
+        if (availableIds.getCursor() != null && availableIds.getEnd() != null) {
+			return availableIds.getCursor() < availableIds.getEnd();
+		}
         return false;
     }
 
     protected static String getLocalPoolName(String poolName) {
-        return (poolName + "." + BLADE_ID);
+        return poolName + "." + BLADE_ID;
     }
 
     protected static ChildPools createChildPool(String childPoolName) {
@@ -142,15 +144,17 @@ public class IdUtils {
 
     protected static AvailableIdsHolderBuilder getAvailableIdsHolderBuilder(IdPool pool) {
         AvailableIdsHolder availableIds = pool.getAvailableIdsHolder();
-        if (availableIds != null )
-            return new AvailableIdsHolderBuilder(availableIds);
+        if (availableIds != null ) {
+			return new AvailableIdsHolderBuilder(availableIds);
+		}
         return new AvailableIdsHolderBuilder();
     }
 
     protected static ReleasedIdsHolderBuilder getReleaseIdsHolderBuilder(IdPool pool) {
         ReleasedIdsHolder releasedIds = pool.getReleasedIdsHolder();
-        if (releasedIds != null)
-            return new ReleasedIdsHolderBuilder(releasedIds);
+        if (releasedIds != null) {
+			return new ReleasedIdsHolderBuilder(releasedIds);
+		}
         return new ReleasedIdsHolderBuilder();
     }
 
@@ -218,7 +222,7 @@ public class IdUtils {
          LockInput input = new LockInputBuilder().setLockName(poolName).build();
          Future<RpcResult<Void>> result = lockManager.lock(input);
          try {
-             if ((result != null) && (result.get().isSuccessful())) {
+             if (result != null && result.get().isSuccessful()) {
                  if (LOGGER.isDebugEnabled()) {
                      LOGGER.debug("Acquired lock {}", poolName);
                  }
@@ -226,7 +230,7 @@ public class IdUtils {
                  throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName));
              }
          } catch (InterruptedException | ExecutionException e) {
-             LOGGER.error("Unable to getLock for pool {}", poolName);
+             LOGGER.error("Unable to getLock for pool {}", poolName, e);
              throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName), e.getCause());
          }
     }
@@ -235,7 +239,7 @@ public class IdUtils {
         UnlockInput input = new UnlockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
-            if ((result != null) && (result.get().isSuccessful())) {
+            if (result != null && result.get().isSuccessful()) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Unlocked {}", poolName);
                 }
@@ -245,7 +249,7 @@ public class IdUtils {
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Unable to unlock for pool {}", poolName);
+            LOGGER.error("Unable to unlock for pool {}", poolName, e);
             throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e.getCause());
         }
     }
@@ -255,8 +259,8 @@ public class IdUtils {
         try {
             futures.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error writing to datastore tx", tx);
-            throw new RuntimeException(e.getMessage());
+            LOGGER.error("Error writing to datastore tx", e);
+            throw new RuntimeException(e);
         }
     }
 
