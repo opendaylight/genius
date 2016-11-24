@@ -22,6 +22,30 @@
       "revId": "1bbfd18a37718375a2d5231188a1d3b45d586eac",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ba97a58f",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/AvailableIdHolder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-24T20:10:42Z",
+      "side": 1,
+      "message": "That\u0027s already done; YOU just merged it, remember? ;-) see https://git.opendaylight.org/gerrit/#/c/48670/3/idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/AvailableIdHolder.java",
+      "parentUuid": "3a65312a_af6e492d",
+      "range": {
+        "startLine": 17,
+        "startChar": 12,
+        "endLine": 17,
+        "endChar": 22
+      },
+      "revId": "1bbfd18a37718375a2d5231188a1d3b45d586eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
