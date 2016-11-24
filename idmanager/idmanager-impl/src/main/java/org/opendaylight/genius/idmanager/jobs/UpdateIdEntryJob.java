@@ -22,11 +22,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> {
 
-    String parentPoolName;
-    String localPoolName;
-    String idKey;
-    List<Long> newIdValues;
-    DataBroker broker;
+    private final String parentPoolName;
+    private final String localPoolName;
+    private final String idKey;
+    private final List<Long> newIdValues;
+    private final DataBroker broker;
 
     public UpdateIdEntryJob(String parentPoolName, String localPoolName,
             String idKey, List<Long> newIdValues, DataBroker broker) {

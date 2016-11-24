@@ -26,8 +26,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolDeleteJob.class);
-    private String poolName;
-    private DataBroker broker;
+
+    private final String poolName;
+    private final DataBroker broker;
 
     public LocalPoolDeleteJob(String poolName, DataBroker broker) {
         super();

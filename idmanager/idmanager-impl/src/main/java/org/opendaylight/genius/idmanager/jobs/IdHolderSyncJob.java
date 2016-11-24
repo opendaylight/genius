@@ -28,9 +28,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdHolderSyncJob.class);
-    private String localPoolName;
-    private IdHolder idHolder;
-    private DataBroker broker;
+
+    private final String localPoolName;
+    private final IdHolder idHolder;
+    private final DataBroker broker;
 
     public IdHolderSyncJob(String localPoolName, IdHolder idHolder,
             DataBroker broker) {

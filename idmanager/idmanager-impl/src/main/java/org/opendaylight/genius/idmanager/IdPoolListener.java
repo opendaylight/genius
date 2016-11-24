@@ -21,8 +21,9 @@ import org.slf4j.LoggerFactory;
 public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdPool, IdPoolListener> implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdPoolListener.class);
-    DataBroker broker;
-    IdManager idManager;
+
+    private final DataBroker broker;
+    private final IdManager idManager;
 
     @Inject
     public IdPoolListener(DataBroker broker, IdManager idManager) {

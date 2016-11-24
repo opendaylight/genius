@@ -53,14 +53,17 @@ import com.google.common.util.concurrent.CheckedFuture;
 public class IdUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdUtils.class);
+
     public static final long DEFAULT_DELAY_TIME = 30;
     private static final long DEFAULT_AVAILABLE_ID_COUNT = 0;
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
-    public static ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
     public static final String ID_POOL_CACHE = "ID_POOL_CACHE";
 
+    public static ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
+
     private static int BLADE_ID;
+
     static {
         try {
             BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
@@ -127,13 +130,14 @@ public class IdUtils {
     }
 
     protected static boolean isIdAvailable(AvailableIdsHolderBuilder availableIds) {
-        if (availableIds.getCursor() != null && availableIds.getEnd() != null)
+        if (availableIds.getCursor() != null && availableIds.getEnd() != null) {
             return availableIds.getCursor() < availableIds.getEnd();
+        }
         return false;
     }
 
     protected static String getLocalPoolName(String poolName) {
-        return (poolName + "." + BLADE_ID);
+        return poolName + "." + BLADE_ID;
     }
 
     protected static ChildPools createChildPool(String childPoolName) {
@@ -142,15 +146,17 @@ public class IdUtils {
 
     protected static AvailableIdsHolderBuilder getAvailableIdsHolderBuilder(IdPool pool) {
         AvailableIdsHolder availableIds = pool.getAvailableIdsHolder();
-        if (availableIds != null )
+        if (availableIds != null ) {
             return new AvailableIdsHolderBuilder(availableIds);
+        }
         return new AvailableIdsHolderBuilder();
     }
 
     protected static ReleasedIdsHolderBuilder getReleaseIdsHolderBuilder(IdPool pool) {
         ReleasedIdsHolder releasedIds = pool.getReleasedIdsHolder();
-        if (releasedIds != null)
+        if (releasedIds != null) {
             return new ReleasedIdsHolderBuilder(releasedIds);
+        }
         return new ReleasedIdsHolderBuilder();
     }
 
@@ -218,7 +224,7 @@ public class IdUtils {
          LockInput input = new LockInputBuilder().setLockName(poolName).build();
          Future<RpcResult<Void>> result = lockManager.lock(input);
          try {
-             if ((result != null) && (result.get().isSuccessful())) {
+             if (result != null && result.get().isSuccessful()) {
                  if (LOGGER.isDebugEnabled()) {
                      LOGGER.debug("Acquired lock {}", poolName);
                  }
@@ -235,7 +241,7 @@ public class IdUtils {
         UnlockInput input = new UnlockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
-            if ((result != null) && (result.get().isSuccessful())) {
+            if (result != null && result.get().isSuccessful()) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("Unlocked {}", poolName);
                 }

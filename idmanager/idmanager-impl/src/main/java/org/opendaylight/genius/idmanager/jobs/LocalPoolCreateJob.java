@@ -28,10 +28,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolCreateJob.class);
-    private IdLocalPool idLocalPool;
-    private DataBroker broker;
-    private String parentPoolName;
-    private int blockSize;
+
+    private final IdLocalPool idLocalPool;
+    private final DataBroker broker;
+    private final String parentPoolName;
+    private final int blockSize;
 
     public LocalPoolCreateJob(IdLocalPool idLocalPool, DataBroker broker,
             String parentPoolName, int blockSize) {
