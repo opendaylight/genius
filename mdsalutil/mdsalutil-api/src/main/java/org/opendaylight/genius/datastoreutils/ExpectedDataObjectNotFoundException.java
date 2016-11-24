@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * Exception thrown from code which expects data to necessarily be present in the
  * data store.
  *
- * <p>While this could be considered a functional problem than a technical error,
+ * <p>While this could be considered a functional problem instead of a technical error,
  * and thus should not extend ReadFailedException (which is for technical
  * errors), it does still for convenience of being able to propagate all
  * ReadFailedException with a single "throws ReadFailedException" clause,
