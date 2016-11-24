@@ -324,12 +324,12 @@ public class IfmUtil {
             case MPLS_OVER_GRE:
             case VXLAN_TRUNK_INTERFACE:
             case GRE_TRUNK_INTERFACE:
-                if (tunnelKey != null) {
-                    result.add(new ActionInfo(ActionType.set_field_tunnel_id,
-                            new BigInteger[]{BigInteger.valueOf(tunnelKey.longValue())},
-                            actionKeyStart++));
-                }
-
+                //TODO tunnel_id to encode GRE key, once it is supported
+                // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
+                if (tunnelKey == null)
+                    tunnelKey = 0L;
+                result.add(new ActionInfo(ActionType.set_field_tunnel_id,
+                    new BigInteger[]{BigInteger.valueOf(tunnelKey)},actionKeyStart++));
                 result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
                 break;
 
