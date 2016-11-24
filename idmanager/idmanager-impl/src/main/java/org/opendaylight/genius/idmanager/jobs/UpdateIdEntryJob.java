@@ -8,17 +8,15 @@
 
 package org.opendaylight.genius.idmanager.jobs;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> {
 
@@ -45,7 +43,8 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         IdUtils.updateChildPool(tx, parentPoolName, localPoolName);
         if (newIdValues != null && !newIdValues.isEmpty()) {
             IdEntries newIdEntry = IdUtils.createIdEntries(idKey, newIdValues);
-            tx.merge(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
+            tx.merge(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey),
+                    newIdEntry);
             futures.add(tx.submit());
             return futures;
         }

@@ -27,9 +27,9 @@ public class IdLocalPool {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((availableIds == null) ? 0 : availableIds.hashCode());
-        result = prime * result + ((poolName == null) ? 0 : poolName.hashCode());
-        result = prime * result + ((releasedIds == null) ? 0 : releasedIds.hashCode());
+        result = prime * result + (availableIds == null ? 0 : availableIds.hashCode());
+        result = prime * result + (poolName == null ? 0 : poolName.hashCode());
+        result = prime * result + (releasedIds == null ? 0 : releasedIds.hashCode());
         return result;
     }
 
@@ -41,28 +41,37 @@ public class IdLocalPool {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         IdLocalPool other = (IdLocalPool) obj;
         if (availableIds == null) {
-            if (other.availableIds != null)
+            if (other.availableIds != null) {
                 return false;
-        } else if (!availableIds.equals(other.availableIds))
+            }
+        } else if (!availableIds.equals(other.availableIds)) {
             return false;
+        }
         if (poolName == null) {
-            if (other.poolName != null)
+            if (other.poolName != null) {
                 return false;
-        } else if (!poolName.equals(other.poolName))
+            }
+        } else if (!poolName.equals(other.poolName)) {
             return false;
+        }
         if (releasedIds == null) {
-            if (other.releasedIds != null)
+            if (other.releasedIds != null) {
                 return false;
-        } else if (!releasedIds.equals(other.releasedIds))
+            }
+        } else if (!releasedIds.equals(other.releasedIds)) {
             return false;
+        }
         return true;
     }
 
