@@ -31,8 +31,7 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
     private final IdHolder idHolder;
     private final DataBroker broker;
 
-    public IdHolderSyncJob(String localPoolName, IdHolder idHolder,
-            DataBroker broker) {
+    public IdHolderSyncJob(String localPoolName, IdHolder idHolder, DataBroker broker) {
         super();
         this.localPoolName = localPoolName;
         this.idHolder = idHolder;

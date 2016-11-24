@@ -17,9 +17,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
-import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.Futures;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +35,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
@@ -73,21 +73,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdManagerTest {
-    private static final Logger LOG = LoggerFactory.getLogger(IdManagerTest.class);
-    private static int BLADE_ID;
 
-    static {
-        try {
-            BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
-        } catch (Exception e) {
-            LOG.error("IdManager - Exception - {}", e.getMessage());
-        }
-    }
+    private static int BLADE_ID = IdUtils.getLocalHostInetAddressesCoercedToInteger();
 
     Map<InstanceIdentifier<?>, DataObject> configDataStore = new HashMap<>();
     @Mock DataBroker dataBroker;
@@ -120,7 +110,7 @@ public class IdManagerTest {
         return poolName + "." + BLADE_ID;
     }
 
-    private void setupMocks(List<IdPool> idPools) {
+    private void setupMocks(List<IdPool> idPools) throws ReadFailedException {
         when(dataBroker.newReadOnlyTransaction()).thenReturn(mockReadTx);
         when(dataBroker.newWriteOnlyTransaction()).thenReturn(mockWriteTx);
         when(lockManager.lock(any(LockInput.class)))
@@ -156,7 +146,7 @@ public class IdManagerTest {
             doReturn(Futures.immediateCheckedFuture(optionalIdPools)).when(mockReadTx)
                     .read(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdPools());
         }
-        idManager = new IdManager(dataBroker, lockManager);
+        idManager = new IdManager(dataBroker, new SingleTransactionDataBroker(dataBroker), lockManager);
     }
 
     @Test

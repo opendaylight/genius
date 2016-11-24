@@ -14,11 +14,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdLocalPool;
+import org.opendaylight.genius.idmanager.IdManagerException;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -53,7 +56,8 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
         return futures;
     }
 
-    private void cleanupExcessIds(String parentPoolName, int blockSize, IdLocalPool idLocalPool) {
+    private void cleanupExcessIds(String parentPoolName, int blockSize, IdLocalPool idLocalPool)
+            throws IdManagerException, ReadFailedException, TransactionCommitFailedException {
         // We can update the availableCount here... and update it in DS using IdHolderSyncJob
         long totalAvailableIdCount = idLocalPool.getAvailableIds().getAvailableIdCount()
                 + idLocalPool.getReleasedIds().getAvailableIdCount();
@@ -68,9 +72,9 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
             // We need lock manager because maybe one cluster tries to read the
             // available ids from the global pool while the other is writing. We
             // cannot rely on DSJC because that is not cluster-aware
-            IdUtils.lockPool(lockManager, parentPoolName);
             try {
-                Optional<ReleasedIdsHolder> releasedIdsHolder = MDSALUtil.read(broker,
+                IdUtils.lockPool(lockManager, parentPoolName);
+                Optional<ReleasedIdsHolder> releasedIdsHolder = SingleTransactionDataBroker.syncReadOptional(broker,
                         LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier);
                 ReleasedIdsHolderBuilder releasedIdsParent;
                 if (!releasedIdsHolder.isPresent()) {
@@ -85,8 +89,8 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                 IdUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - blockSize * 2);
                 IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker);
                 DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
-                MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier,
-                        releasedIdsParent.build());
+                SingleTransactionDataBroker.syncWrite(broker, LogicalDatastoreType.CONFIGURATION,
+                        releasedIdInstanceIdentifier, releasedIdsParent.build());
             } finally {
                 IdUtils.unlockPool(lockManager, parentPoolName);
             }

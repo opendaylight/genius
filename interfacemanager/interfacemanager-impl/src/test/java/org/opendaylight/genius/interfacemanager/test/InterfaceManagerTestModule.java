@@ -9,13 +9,14 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
-import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.routing.RouteChangeListener;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RoutedRpcRegistration;
@@ -23,12 +24,14 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistr
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.infrautils.inject.ModuleSetupRuntimeException;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
@@ -54,7 +57,6 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  *
  * @author Michael Vorburger
  */
-@SuppressWarnings("deprecation")
 public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
@@ -70,7 +72,14 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         LockManagerService lockManager = new LockManager(dataBroker);
         bind(LockManagerService.class).toInstance(lockManager);
 
-        IdManagerService idManager = new IdManager(dataBroker, lockManager);
+        IdManagerService idManager;
+        try {
+            idManager = new IdManager(dataBroker,
+                    new SingleTransactionDataBroker(dataBroker), lockManager);
+        } catch (ReadFailedException e) {
+            // TODO Support AbstractGuiceJsr250Module
+            throw new ModuleSetupRuntimeException(e);
+        }
         bind(IdManagerService.class).toInstance(idManager);
 
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
