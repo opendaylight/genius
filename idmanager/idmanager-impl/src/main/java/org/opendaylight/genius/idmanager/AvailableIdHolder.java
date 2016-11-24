@@ -37,7 +37,7 @@ public class AvailableIdHolder implements IdHolder {
 
     @Override
     public void addId(long id) {
-        throw new RuntimeException(new UnsupportedOperationException("addId is not supported"));
+        throw new UnsupportedOperationException("addId is not supported");
     }
 
     @Override
