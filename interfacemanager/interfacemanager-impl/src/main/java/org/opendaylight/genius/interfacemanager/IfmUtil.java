@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import com.google.common.util.concurrent.ListenableFuture;
+import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -321,10 +322,23 @@ public class IfmUtil {
             case GRE_TRUNK_INTERFACE:
                 //TODO tunnel_id to encode GRE key, once it is supported
                 // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
-                if (tunnelKey == null)
+                if (tunnelKey == null) {
                     tunnelKey = 0L;
+                }
                 result.add(new ActionInfo(ActionType.set_field_tunnel_id,
                     new BigInteger[]{BigInteger.valueOf(tunnelKey)},actionKeyStart++));
+
+                IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+                if(BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
+                    BigInteger destIp = MDSALUtil.getBigIntIpFromIpAddress(ifTunnel.getTunnelDestination());
+                    result.add(new ActionInfo(ActionType.set_tunnel_dest_ip, new BigInteger[]{destIp},
+                            actionKeyStart++));
+                }
+                if(BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
+                    BigInteger sourceIp = MDSALUtil.getBigIntIpFromIpAddress(ifTunnel.getTunnelSource());
+                    result.add(new ActionInfo(ActionType.set_tunnel_src_ip, new BigInteger[]{sourceIp},
+                            actionKeyStart++));
+                }
                 result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
                 break;
 

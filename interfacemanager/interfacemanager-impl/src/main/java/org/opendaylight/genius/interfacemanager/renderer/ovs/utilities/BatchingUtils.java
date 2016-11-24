@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BatchingUtils {
-    private static final Logger LOG = LoggerFactory.getLogger((Class)BatchingUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BatchingUtils.class);
     public static final int BATCH_SIZE = 1000;
     public static final int PERIODICITY = 500;
     public static Integer batchSize;
@@ -82,7 +82,7 @@ public class BatchingUtils {
        return null;
     }
 
-    static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
+    public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.DELETE);
         actResource.setInstanceIdentifier(path);
