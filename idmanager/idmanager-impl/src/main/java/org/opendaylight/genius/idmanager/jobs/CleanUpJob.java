@@ -31,11 +31,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CleanUpJob.class);
-    private IdLocalPool idLocalPool;
-    private DataBroker broker;
-    private String parentPoolName;
-    private int blockSize;
-    private LockManagerService lockManager;
+
+    private final IdLocalPool idLocalPool;
+    private final DataBroker broker;
+    private final String parentPoolName;
+    private final int blockSize;
+    private final LockManagerService lockManager;
 
     public CleanUpJob(IdLocalPool idLocalPool, DataBroker broker,
             String parentPoolName, int blockSize, LockManagerService lockManager) {
@@ -78,7 +79,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                     LOG.debug("Releasing excesss Ids from local pool");
                 }
                 ReleasedIdHolder releasedIds = (ReleasedIdHolder) idLocalPool.getReleasedIds();
-                IdUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - (blockSize * 2));
+                IdUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - blockSize * 2);
                 IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker);
                 DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
                 MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier, releasedIdsParent.build());
