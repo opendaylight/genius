@@ -7,10 +7,11 @@
  */
 package org.opendaylight.genius.idmanager.jobs;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
@@ -25,17 +26,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
-
 public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CleanUpJob.class);
-    private IdLocalPool idLocalPool;
-    private DataBroker broker;
-    private String parentPoolName;
-    private int blockSize;
-    private LockManagerService lockManager;
+    private final IdLocalPool idLocalPool;
+    private final DataBroker broker;
+    private final String parentPoolName;
+    private final int blockSize;
+    private final LockManagerService lockManager;
 
     public CleanUpJob(IdLocalPool idLocalPool, DataBroker broker,
             String parentPoolName, int blockSize, LockManagerService lockManager) {
@@ -56,18 +54,23 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
 
     private void cleanupExcessIds(String parentPoolName, int blockSize, IdLocalPool idLocalPool) {
         // We can update the availableCount here... and update it in DS using IdHolderSyncJob
-        long totalAvailableIdCount = idLocalPool.getAvailableIds().getAvailableIdCount() + idLocalPool.getReleasedIds().getAvailableIdCount();
+        long totalAvailableIdCount = idLocalPool.getAvailableIds().getAvailableIdCount()
+                + idLocalPool.getReleasedIds().getAvailableIdCount();
         if (totalAvailableIdCount > blockSize * 2) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Condition for cleanUp Satisfied for localPool {} - totalAvailableIdCount {}", idLocalPool, totalAvailableIdCount);
+                LOG.debug("Condition for cleanUp Satisfied for localPool {} - totalAvailableIdCount {}",
+                        idLocalPool, totalAvailableIdCount);
             }
             parentPoolName = parentPoolName.intern();
-            InstanceIdentifier<ReleasedIdsHolder> releasedIdInstanceIdentifier = IdUtils.getReleasedIdsHolderInstance(parentPoolName);
-            // We need lock manager because maybe one cluster tries to read the available ids from the global pool while the other is writing. We cannot rely on DSJC
-            // because that is not cluster-aware
+            InstanceIdentifier<ReleasedIdsHolder> releasedIdInstanceIdentifier = IdUtils
+                    .getReleasedIdsHolderInstance(parentPoolName);
+            // We need lock manager because maybe one cluster tries to read the
+            // available ids from the global pool while the other is writing. We
+            // cannot rely on DSJC because that is not cluster-aware
             IdUtils.lockPool(lockManager, parentPoolName);
             try {
-                Optional<ReleasedIdsHolder> releasedIdsHolder = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier);
+                Optional<ReleasedIdsHolder> releasedIdsHolder = MDSALUtil.read(broker,
+                        LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier);
                 ReleasedIdsHolderBuilder releasedIdsParent;
                 if (!releasedIdsHolder.isPresent()) {
                     LOG.error("ReleasedIds not present in parent pool. Unable to cleanup excess ids");
@@ -78,10 +81,11 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                     LOG.debug("Releasing excesss Ids from local pool");
                 }
                 ReleasedIdHolder releasedIds = (ReleasedIdHolder) idLocalPool.getReleasedIds();
-                IdUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - (blockSize * 2));
+                IdUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - blockSize * 2);
                 IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker);
                 DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
-                MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier, releasedIdsParent.build());
+                MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier,
+                        releasedIdsParent.build());
             } finally {
                 IdUtils.unlockPool(lockManager, parentPoolName);
             }

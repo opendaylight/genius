@@ -7,14 +7,12 @@
  */
 package org.opendaylight.genius.idmanager;
 
+import com.google.common.base.Optional;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
-
-import com.google.common.base.Optional;
 
 public class ReleasedIdHolder implements IdHolder, Serializable {
 

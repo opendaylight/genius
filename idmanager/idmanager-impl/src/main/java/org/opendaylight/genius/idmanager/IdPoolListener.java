@@ -18,7 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdPool, IdPoolListener> implements AutoCloseable {
+public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdPool, IdPoolListener>
+        implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdPoolListener.class);
     DataBroker broker;
@@ -43,7 +44,8 @@ public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdP
     @Override
     protected void update(InstanceIdentifier<IdPool> identifier,
             IdPool original, IdPool update) {
-        if (update.getAvailableIdsHolder() != original.getAvailableIdsHolder() || update.getReleasedIdsHolder() != original.getReleasedIdsHolder()) {
+        if (update.getAvailableIdsHolder() != original.getAvailableIdsHolder()
+                || update.getReleasedIdsHolder() != original.getReleasedIdsHolder()) {
             String parentPoolName = update.getParentPoolName();
             String poolName = update.getPoolName();
             if (parentPoolName != null && !parentPoolName.isEmpty()) {

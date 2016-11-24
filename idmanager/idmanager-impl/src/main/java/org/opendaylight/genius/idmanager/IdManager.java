@@ -8,6 +8,12 @@
 
 package org.opendaylight.genius.idmanager;
 
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.genius.idmanager.IdUtils.RETRY_COUNT;
+
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -65,10 +71,6 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
-
 @Singleton
 public class IdManager implements IdManagerService {
 
@@ -116,14 +118,14 @@ public class IdManager implements IdManagerService {
                         && IdUtils.getLocalPoolName(idPool.getParentPoolName())
                                 .equals(idPool.getPoolName()))
                 .forEach(
-                        idPool -> updateLocalIdPoolCache(idPool,
-                                idPool.getParentPoolName()));
+                    idPool -> updateLocalIdPoolCache(idPool,
+                        idPool.getParentPoolName()));
     }
 
     public boolean updateLocalIdPoolCache(IdPool idPool, String parentPoolName) {
-        IdLocalPool idLocalPool = new IdLocalPool(idPool.getPoolName());
         AvailableIdsHolder availableIdsHolder = idPool.getAvailableIdsHolder();
-        AvailableIdHolder availableIdHolder = new AvailableIdHolder(availableIdsHolder.getStart(), availableIdsHolder.getEnd());
+        AvailableIdHolder availableIdHolder = new AvailableIdHolder(availableIdsHolder.getStart(),
+                availableIdsHolder.getEnd());
         availableIdHolder.setCur(availableIdsHolder.getCursor());
         ReleasedIdsHolder releasedIdsHolder = idPool.getReleasedIdsHolder();
         ReleasedIdHolder releasedIdHolder = new ReleasedIdHolder(releasedIdsHolder.getDelayedTimeSec());
@@ -139,6 +141,8 @@ public class IdManager implements IdManagerService {
                                     idEntry2.getReadyTimeSec())).collect(Collectors.toList());
         }
         releasedIdHolder.setDelayedEntries(delayedIdEntryInCache);
+
+        IdLocalPool idLocalPool = new IdLocalPool(idPool.getPoolName());
         idLocalPool.setAvailableIds(availableIdHolder);
         idLocalPool.setReleasedIds(releasedIdHolder);
         localPool.put(parentPoolName, idLocalPool);
@@ -225,7 +229,7 @@ public class IdManager implements IdManagerService {
             output.setIdValues(newIdValuesList);
             allocateIdRangeRpcBuilder = RpcResultBuilder.success();
             allocateIdRangeRpcBuilder.withResult(output.build());
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             LOG.error("Not enough Ids available in the pool {} for requested size {}", poolName, size);
             allocateIdRangeRpcBuilder = RpcResultBuilder.failed();
             allocateIdRangeRpcBuilder.withError(ErrorType.APPLICATION, e.getMessage());
@@ -247,7 +251,7 @@ public class IdManager implements IdManagerService {
         try {
             InstanceIdentifier<IdPool> idPoolToBeDeleted = IdUtils.getIdPoolInstance(poolName);
             poolName = poolName.intern();
-            synchronized(poolName) {
+            synchronized (poolName) {
                 IdPool idPool = getIdPool(idPoolToBeDeleted);
                 List<ChildPools> childPoolList = idPool.getChildPools();
                 if (childPoolList != null) {
@@ -259,8 +263,7 @@ public class IdManager implements IdManagerService {
                 }
             }
             deleteIdPoolRpcBuilder = RpcResultBuilder.success();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             LOG.error("Delete id in pool {} failed due to {}", poolName, ex);
             deleteIdPoolRpcBuilder = RpcResultBuilder.failed();
             deleteIdPoolRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
@@ -286,7 +289,8 @@ public class IdManager implements IdManagerService {
 
     private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName, String idKey, long size) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
+            LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
+                    idKey);
         }
         long newIdValue = -1;
         List<Long> newIdValuesList = new ArrayList<>();
@@ -321,7 +325,8 @@ public class IdManager implements IdManagerService {
             newIdValuesList.add(newIdValue);
         } else {
             IdPool parentIdPool = getIdPool(parentIdPoolInstanceIdentifier);
-            long totalAvailableIdCount = localIdPool.getAvailableIds().getAvailableIdCount() + localIdPool.getReleasedIds().getAvailableIdCount();
+            long totalAvailableIdCount = localIdPool.getAvailableIds().getAvailableIdCount()
+                    + localIdPool.getReleasedIds().getAvailableIdCount();
             AvailableIdsHolderBuilder availableParentIds = IdUtils.getAvailableIdsHolderBuilder(parentIdPool);
             ReleasedIdsHolderBuilder releasedParentIds = IdUtils.getReleaseIdsHolderBuilder(parentIdPool);
             totalAvailableIdCount = totalAvailableIdCount + releasedParentIds.getAvailableIdCount()
@@ -334,8 +339,8 @@ public class IdManager implements IdManagerService {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Releasing IDs to pool {}", localPoolName);
                         }
-                        //Releasing the IDs added in newIdValuesList since a null list would be returned now, as the
-                        //requested size of list IDs exceeds the number of available IDs.
+                        // Releasing the IDs added in newIdValuesList since a null list would be returned now, as the
+                        // requested size of list IDs exceeds the number of available IDs.
                         updateDelayedEntriesInLocalCache(newIdValuesList, parentPoolName, localIdPool);
                     }
                     newIdValuesList.add(newIdValue);
@@ -359,7 +364,8 @@ public class IdManager implements IdManagerService {
             Optional<Long> releasedId = releasedIds.allocateId();
             if (releasedId.isPresent()) {
                 IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localIdPool.getPoolName(), releasedIds, broker);
-                DataStoreJobCoordinator.getInstance().enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
+                DataStoreJobCoordinator.getInstance().enqueueJob(localIdPool.getPoolName(), poolSyncJob,
+                        IdUtils.RETRY_COUNT);
                 return releasedId.get();
             }
             IdHolder availableIds = localIdPool.getAvailableIds();
@@ -367,7 +373,8 @@ public class IdManager implements IdManagerService {
                 Optional<Long> availableId = availableIds.allocateId();
                 if (availableId.isPresent()) {
                     IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localIdPool.getPoolName(), availableIds, broker);
-                    DataStoreJobCoordinator.getInstance().enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
+                    DataStoreJobCoordinator.getInstance().enqueueJob(localIdPool.getPoolName(), poolSyncJob,
+                            IdUtils.RETRY_COUNT);
                     return availableId.get();
                 }
             }
@@ -382,11 +389,7 @@ public class IdManager implements IdManagerService {
     }
 
     /**
-     * Changes made to availableIds and releasedIds will not be persisted to the datastore
-     * @param parentPoolName
-     * @param availableIdsBuilder
-     * @param releasedIdsBuilder
-     * @return
+     * Changes made to availableIds and releasedIds will not be persisted to the datastore.
      */
     private long getIdBlockFromParentPool(String parentPoolName, IdLocalPool localIdPool) {
         if (LOG.isDebugEnabled()) {
@@ -401,8 +404,7 @@ public class IdManager implements IdManagerService {
             long idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
             submitTransaction(tx);
             return idCount;
-        }
-        finally {
+        } finally {
             IdUtils.unlockPool(lockManager, parentPoolName);
         }
     }
@@ -431,19 +433,23 @@ public class IdManager implements IdManagerService {
 
     private long getIdsFromOtherChildPools(ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool) {
         List<ChildPools> childPoolsList = parentIdPool.getChildPools();
-        // Sorting the child pools on last accessed time so that the pool that was not accessed for a long time comes first.
-        Collections.sort(childPoolsList, (childPool1, childPool2) -> childPool1.getLastAccessTime().compareTo(childPool2.getLastAccessTime()));
+        // Sorting the child pools on last accessed time so that the pool that
+        // was not accessed for a long time comes first.
+        Collections.sort(childPoolsList,
+            (childPool1, childPool2) -> childPool1.getLastAccessTime().compareTo(childPool2.getLastAccessTime()));
         long currentTime = System.currentTimeMillis() / 1000;
         for (ChildPools childPools : childPoolsList) {
             if (childPools.getLastAccessTime() + DEFAULT_IDLE_TIME > currentTime) {
                 break;
             }
             if (!childPools.getChildPoolName().equals(IdUtils.getLocalPoolName(parentIdPool.getPoolName()))) {
-                InstanceIdentifier<IdPool> idPoolInstanceIdentifier = IdUtils.getIdPoolInstance(childPools.getChildPoolName());
+                InstanceIdentifier<IdPool> idPoolInstanceIdentifier = IdUtils
+                        .getIdPoolInstance(childPools.getChildPoolName());
                 IdPool otherChildPool = getIdPool(idPoolInstanceIdentifier);
                 ReleasedIdsHolderBuilder releasedIds = IdUtils.getReleaseIdsHolderBuilder(otherChildPool);
                 AvailableIdsHolderBuilder availableIds = IdUtils.getAvailableIdsHolderBuilder(otherChildPool);
-                long totalAvailableIdCount = releasedIds.getDelayedIdEntries().size() + IdUtils.getAvailableIdsCount(availableIds);
+                long totalAvailableIdCount = releasedIds.getDelayedIdEntries().size()
+                        + IdUtils.getAvailableIdsCount(availableIds);
                 List<DelayedIdEntries> delayedIdEntriesChild = releasedIds.getDelayedIdEntries();
                 List<DelayedIdEntries> delayedIdEntriesParent = releasedIdsBuilderParent.getDelayedIdEntries();
                 if (delayedIdEntriesParent == null) {
@@ -459,14 +465,17 @@ public class IdManager implements IdManagerService {
                 long count = releasedIdsBuilderParent.getAvailableIdCount() + totalAvailableIdCount;
                 releasedIdsBuilderParent.setDelayedIdEntries(delayedIdEntriesParent).setAvailableIdCount(count);
                 MDSALUtil.syncUpdate(broker, LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier,
-                        new IdPoolBuilder().setKey(new IdPoolKey(otherChildPool.getPoolName())).setAvailableIdsHolder(availableIds.build()).setReleasedIdsHolder(releasedIds.build()).build());
+                        new IdPoolBuilder().setKey(new IdPoolKey(otherChildPool.getPoolName()))
+                                .setAvailableIdsHolder(availableIds.build()).setReleasedIdsHolder(releasedIds.build())
+                                .build());
                 return totalAvailableIdCount;
             }
         }
         return 0;
     }
 
-    private long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool, ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool, WriteTransaction tx) {
+    private long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool,
+            ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool, WriteTransaction tx) {
         if (releasedIdsBuilderParent.getAvailableIdCount() == 0) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Ids unavailable in releasedIds of parent pool {}", parentIdPool);
@@ -496,11 +505,13 @@ public class IdManager implements IdManagerService {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
         }
-        tx.merge(LogicalDatastoreType.CONFIGURATION, releasedIdsHolderInstanceIdentifier, releasedIdsBuilderParent.build(), true);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, releasedIdsHolderInstanceIdentifier,
+                releasedIdsBuilderParent.build(), true);
         return idCount;
     }
 
-    private long allocateIdBlockFromAvailableIdsHolder(IdLocalPool localIdPool, IdPool parentIdPool, WriteTransaction tx) {
+    private long allocateIdBlockFromAvailableIdsHolder(IdLocalPool localIdPool, IdPool parentIdPool,
+            WriteTransaction tx) {
         long idCount = 0;
         AvailableIdsHolderBuilder availableIdsBuilderParent = IdUtils.getAvailableIdsHolderBuilder(parentIdPool);
         long end = availableIdsBuilderParent.getEnd();
@@ -523,7 +534,8 @@ public class IdManager implements IdManagerService {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Allocated {} ids from availableIds of global pool {}", idCount, parentIdPool);
         }
-        tx.merge(LogicalDatastoreType.CONFIGURATION, availableIdsHolderInstanceIdentifier, availableIdsBuilderParent.build(), true);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, availableIdsHolderInstanceIdentifier,
+                availableIdsBuilderParent.build(), true);
         return idCount;
     }
 
@@ -537,9 +549,11 @@ public class IdManager implements IdManagerService {
             throw new RuntimeException("Id Entries does not exist");
         }
         InstanceIdentifier<IdEntries> existingId = IdUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
-        Optional<IdEntries> existingIdEntryObject = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, existingId);
+        Optional<IdEntries> existingIdEntryObject = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION,
+                existingId);
         if (!existingIdEntryObject.isPresent()) {
-            throw new RuntimeException(String.format("Specified Id key %s does not exist in id pool %s", idKey, parentPoolName));
+            throw new RuntimeException(
+                    String.format("Specified Id key %s does not exist in id pool %s", idKey, parentPoolName));
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
         List<Long> idValuesList = existingIdEntry.getIdValue();
@@ -566,7 +580,7 @@ public class IdManager implements IdManagerService {
             @Override
             public void run() {
                 CleanUpJob job = new CleanUpJob(localIdPoolCache, broker, parentPoolName, blockSize, lockManager);
-                DataStoreJobCoordinator.getInstance().enqueueJob(localIdPoolCache.getPoolName(), job, IdUtils.RETRY_COUNT);
+                DataStoreJobCoordinator.getInstance().enqueueJob(localIdPoolCache.getPoolName(), job, RETRY_COUNT);
             }
         };
         cleanJobTimer.schedule(scheduledTask, IdUtils.DEFAULT_DELAY_TIME * 1000);
@@ -575,15 +589,14 @@ public class IdManager implements IdManagerService {
     private IdPool createGlobalPool(WriteTransaction tx, String poolName, long low, long high, long blockSize) {
         IdPool idPool;
         InstanceIdentifier<IdPool> idPoolInstanceIdentifier = IdUtils.getIdPoolInstance(poolName);
-        Optional<IdPool> existingIdPool = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier);
+        Optional<IdPool> existingIdPool = MDSALUtil.read(broker, CONFIGURATION, idPoolInstanceIdentifier);
         if (!existingIdPool.isPresent()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Creating new global pool {}", poolName);
             }
             idPool = IdUtils.createGlobalPool(poolName, low, high, blockSize);
             tx.put(LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier, idPool, true);
-        }
-        else {
+        } else {
             idPool = existingIdPool.get();
             if (LOG.isDebugEnabled()) {
                 LOG.debug("GlobalPool exists {}", idPool);
@@ -598,7 +611,8 @@ public class IdManager implements IdManagerService {
         allocateIdBlockFromParentPool(idLocalPool, idPool, tx);
         String parentPool = idPool.getPoolName();
         localPool.put(parentPool, idLocalPool);
-        LocalPoolCreateJob job = new LocalPoolCreateJob(idLocalPool, broker, idPool.getPoolName(), idPool.getBlockSize());
+        LocalPoolCreateJob job = new LocalPoolCreateJob(idLocalPool, broker, idPool.getPoolName(),
+                idPool.getBlockSize());
         DataStoreJobCoordinator.getInstance().enqueueJob(localPoolName, job, IdUtils.RETRY_COUNT);
         return idLocalPool;
     }
@@ -609,7 +623,7 @@ public class IdManager implements IdManagerService {
     }
 
     private IdPool getIdPool(InstanceIdentifier<IdPool> idPoolInstanceIdentifier) {
-        Optional<IdPool> idPool = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier);
+        Optional<IdPool> idPool = MDSALUtil.read(broker, CONFIGURATION, idPoolInstanceIdentifier);
         if (!idPool.isPresent()) {
             throw new NoSuchElementException(String.format("Specified pool %s does not exist" , idPool));
         }
@@ -638,8 +652,9 @@ public class IdManager implements IdManagerService {
         }
     }
 
-    private void updateDelayedEntriesInLocalCache(List<Long> idsList, String parentPoolName, IdLocalPool localPoolCache) {
-        for(long idValue : idsList) {
+    private void updateDelayedEntriesInLocalCache(List<Long> idsList, String parentPoolName,
+            IdLocalPool localPoolCache) {
+        for (long idValue : idsList) {
             localPoolCache.getReleasedIds().addId(idValue);
         }
         localPool.put(parentPoolName, localPoolCache);
