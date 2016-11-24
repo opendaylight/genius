@@ -20,7 +20,8 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final int INITIAL_INDEX = 0;
-    private AtomicLong availableIdCount = new AtomicLong();
+
+    private final AtomicLong availableIdCount = new AtomicLong();
 
     private long timeDelaySec;
     private List<DelayedIdEntry> delayedEntries;
