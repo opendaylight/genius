@@ -66,7 +66,8 @@ public class IdUtils {
         try {
             BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
         } catch (Exception e) {
-            LOGGER.error("IdManager - Exception - {}", e.getMessage());
+            LOGGER.error("IdManager static { InetAddresses.coerceToInteger(InetAddress.getLocalHost()) } failed "
+                    + "due to caught Exception", e);
         }
     }
 
@@ -233,7 +234,7 @@ public class IdUtils {
                 throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName));
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Unable to getLock for pool {}", poolName);
+            LOGGER.error("Unable to getLock for pool {}", poolName, e);
             throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName), e.getCause());
         }
     }
@@ -252,7 +253,7 @@ public class IdUtils {
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Unable to unlock for pool {}", poolName);
+            LOGGER.error("Unable to unlock for pool {}", poolName, e);
             throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e.getCause());
         }
     }
@@ -262,8 +263,8 @@ public class IdUtils {
         try {
             futures.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error writing to datastore tx", tx);
-            throw new RuntimeException(e.getMessage());
+            LOGGER.error("Error writing to datastore tx", e);
+            throw new RuntimeException(e);
         }
     }
 
