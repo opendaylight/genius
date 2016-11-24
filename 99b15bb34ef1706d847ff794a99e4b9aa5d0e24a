@@ -96,6 +96,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c6e1f29b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-24T06:44:05Z",
+      "side": 1,
+      "message": "Hi Sridhar, looks like java8 internally uses stringbuilder for \"+\".. so both ways should be fine..",
+      "parentUuid": "3a65312a_46d682c6",
+      "range": {
+        "startLine": 207,
+        "startChar": 8,
+        "endLine": 207,
+        "endChar": 21
+      },
+      "revId": "99b15bb34ef1706d847ff794a99e4b9aa5d0e24a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_00a632c1",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
         "patchSetId": 4
