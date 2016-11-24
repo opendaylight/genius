@@ -446,7 +446,7 @@ public class MDSALUtil {
 
     public static List<Instruction> buildInstructionsDrop(int instructionKey) {
         List<Instruction> mkInstructions = new ArrayList<>();
-        List <Action> actionsInfos = new ArrayList <> ();
+        List<Action> actionsInfos = new ArrayList<>();
         actionsInfos.add(new ActionInfo(ActionType.drop_action, new String[]{}).buildAction());
         mkInstructions.add(getWriteActionsInstruction(actionsInfos, instructionKey));
         return mkInstructions;
@@ -527,30 +527,38 @@ public class MDSALUtil {
         }
     }
 
+    /**
+     * Deprecated update.
+     *
+     * @deprecated Use
+     *             {@link SingleTransactionDataBroker#syncUpdate(DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
+     */
+    @Deprecated
     public static <T extends DataObject> void syncUpdate(DataBroker broker,
                                                          LogicalDatastoreType datastoreType, InstanceIdentifier<T> path,
                                                          T data) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(datastoreType, path, data, true);
-        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
         try {
-            futures.get();
-        } catch (InterruptedException | ExecutionException e) {
+            SingleTransactionDataBroker.syncUpdate(broker, datastoreType, path, data);
+        } catch (TransactionCommitFailedException e) {
             logger.error("Error writing to datastore (path, data) : ({}, {})", path, data);
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Deprecated delete.
+     *
+     * @deprecated Use
+     *             {@link SingleTransactionDataBroker#syncDelete(DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
     public static <T extends DataObject> void syncDelete(DataBroker broker,
-                                                         LogicalDatastoreType datastoreType, InstanceIdentifier<T> obj) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(datastoreType, obj);
-        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
         try {
-            futures.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error("Error deleting from datastore (path) : ({})", obj);
-            throw new RuntimeException(e.getMessage());
+            SingleTransactionDataBroker.syncDelete(broker, datastoreType, path);
+        } catch (TransactionCommitFailedException e) {
+            logger.error("Error deleting from datastore (path) : ({})", path, e);
+            throw new RuntimeException(e);
         }
     }
 

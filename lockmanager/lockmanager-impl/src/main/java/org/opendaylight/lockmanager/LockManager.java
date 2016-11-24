@@ -86,7 +86,7 @@ public class LockManager implements LockManagerService {
             return Futures.immediateFuture(lockRpcBuilder.build());
         } catch (Exception e) {
             RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.failed();
-            LOG.info("Failed to get lock {}" , lockName);
+            LOG.info("Failed to get lock {}", lockName, e);
             return Futures.immediateFuture(lockRpcBuilder.build());
         }
     }
@@ -171,7 +171,7 @@ public class LockManager implements LockManagerService {
             CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
             futures.get();
         } catch (Exception e) {
-            LOG.error("In unlock unable to unlock due to {}", e.getMessage());
+            LOG.error("In unlock unable to unlock", e);
         }
     }
 

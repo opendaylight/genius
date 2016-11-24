@@ -9,11 +9,14 @@ package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Optional;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Vorburger
  */
+@Singleton
 public class SingleTransactionDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionDataBroker.class);
@@ -70,16 +74,16 @@ public class SingleTransactionDataBroker {
     }
 
     /**
-     * Synchronously read; method variant to use by code which expecting that data must exist at given path.
+     * Synchronously read; method variant to use by code which expecting that data MUST exist at given path.
+     *
+     * <p>This variant is only recommended if the calling code would treat the Optional
+     * returned by the other method variant as a terminal failure anyway, and would itself throw
+     * an Exception for that.
      *
      * <p>If calling code can more sensibly handle non-present data, then use
      * {@link #syncRead(LogicalDatastoreType, InstanceIdentifier)} instead of this.
      *
      * <p>See {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)}.
-     *
-     * @deprecated This variant is only recommended if the calling code would treat the Optional
-     *             returned by the other method variant as a terminal failure anyway, and would itself throw
-     *             an Exception for that.
      *
      * @param datastoreType
      *            Logical data store from which read should occur.
@@ -92,16 +96,15 @@ public class SingleTransactionDataBroker {
      * @throws ReadFailedException in case of a technical (!) error while reading
      * @throws ExpectedDataObjectNotFoundException a ReadFailedException sub-type, if no data exists at path
      */
-    @Deprecated
     public <T extends DataObject> T syncRead(
             LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
-            throws ExpectedDataObjectNotFoundException, ReadFailedException {
+            throws ReadFailedException {
         return syncRead(broker, datastoreType, path);
     }
 
     public static <T extends DataObject> T syncRead(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
-            throws ExpectedDataObjectNotFoundException, ReadFailedException {
+            throws ReadFailedException {
 
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
             Optional<T> optionalDataObject = tx.read(datastoreType, path).checkedGet();
@@ -116,12 +119,12 @@ public class SingleTransactionDataBroker {
     /**
      * Synchronously read; swallowing (!) ReadFailedException.
      *
-     * <p>This variant is not recommended, and only exists for legacy purposes
-     * for code which does not yet correctly propagate technical exceptions.
-     * Prefer using {@link #syncRead(LogicalDatastoreType, InstanceIdentifier)},
-     * if you can.
-     *
      * <p>See {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)}.
+     *
+     * @deprecated This variant is not recommended, and only exists for legacy
+     *             purposes for code which does not yet correctly propagate
+     *             technical exceptions. Prefer using
+     *             {@link #syncReadOptional(LogicalDatastoreType, InstanceIdentifier)}.
      *
      * @param datastoreType
      *            Logical data store from which read should occur.
@@ -132,13 +135,24 @@ public class SingleTransactionDataBroker {
      *
      * @return If the data at the supplied path exists, returns an Optional
      *         object containing the data; if the data at the supplied path does
-     *         not exist, or a technical error occurred (logged), returns Optional#absent().
+     *         not exist, or a technical error occurred (logged), returns
+     *         Optional#absent().
      */
+    @Deprecated
     public <T extends DataObject> Optional<T> syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
             LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
         return syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(broker, datastoreType, path);
     }
 
+    /**
+     * Synchronously read; swallowing (!) ReadFailedException.
+     *
+     * @deprecated This variant is not recommended, and only exists for legacy
+     *             purposes for code which does not yet correctly propagate
+     *             technical exceptions. Prefer using
+     *             {@link #syncReadOptional(DataBroker, LogicalDatastoreType, InstanceIdentifier)}.
+     */
+    @Deprecated
     public static <T extends DataObject> Optional<T> syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
 
@@ -151,7 +165,37 @@ public class SingleTransactionDataBroker {
         }
     }
 
-    // TODO syncWrite/syncUpdate/syncDelete, from org.opendaylight.genius.mdsalutil.MDSALUtil
+    public <T extends DataObject> void syncUpdate(
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
+            throws TransactionCommitFailedException {
+        syncUpdate(broker, datastoreType, path, data);
+    }
+
+    public static <T extends DataObject> void syncUpdate(
+            DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
+            throws TransactionCommitFailedException {
+
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        tx.merge(datastoreType, path, data, true);
+        tx.submit().checkedGet();
+    }
+
+    public <T extends DataObject> void syncDelete(
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
+            throws TransactionCommitFailedException {
+        syncDelete(broker, datastoreType, path);
+    }
+
+    public static <T extends DataObject> void syncDelete(
+            DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
+            throws TransactionCommitFailedException {
+
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        tx.delete(datastoreType, path);
+        tx.submit().checkedGet();
+    }
+
+    // TODO syncWrite, from org.opendaylight.genius.mdsalutil.MDSALUtil
 
     // TODO Move asyncWrite/asyncUpdate/asyncRemove from org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils to here
 
