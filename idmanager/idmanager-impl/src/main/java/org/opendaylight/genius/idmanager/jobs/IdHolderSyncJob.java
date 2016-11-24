@@ -7,13 +7,14 @@
  */
 package org.opendaylight.genius.idmanager.jobs;
 
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdHolder;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -30,23 +31,24 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
     private final String localPoolName;
     private final IdHolder idHolder;
     private final DataBroker broker;
+    private final IdUtils idUtils;
 
     public IdHolderSyncJob(String localPoolName, IdHolder idHolder,
-            DataBroker broker) {
-        super();
+            DataBroker broker, IdUtils idUtils) {
         this.localPoolName = localPoolName;
         this.idHolder = idHolder;
         this.broker = broker;
+        this.idUtils = idUtils;
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
         IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName));
         idHolder.refreshDataStore(idPool);
-        InstanceIdentifier<IdPool> localPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
+        InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
         WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
-        IdUtils.incrementPoolUpdatedMap(localPoolName);
+        tx.merge(CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
+        idUtils.incrementPoolUpdatedMap(localPoolName);
 
         ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
         futures.add(tx.submit());

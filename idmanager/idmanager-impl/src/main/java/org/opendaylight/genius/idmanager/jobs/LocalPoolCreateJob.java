@@ -31,14 +31,15 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
     private final DataBroker broker;
     private final String parentPoolName;
     private final int blockSize;
+    private final IdUtils idUtils;
 
     public LocalPoolCreateJob(IdLocalPool idLocalPool, DataBroker broker,
-            String parentPoolName, int blockSize) {
-        super();
+            String parentPoolName, int blockSize, IdUtils idUtils) {
         this.idLocalPool = idLocalPool;
         this.broker = broker;
         this.parentPoolName = parentPoolName;
         this.blockSize = blockSize;
+        this.idUtils = idUtils;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
         if (LOG.isDebugEnabled()) {
             LOG.debug("Started localPoolCreateJob for {}", localPoolName);
         }
-        InstanceIdentifier<IdPool> localPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
+        InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
         IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName)).setBlockSize(blockSize)
                 .setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);

@@ -24,7 +24,10 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     private long timeDelaySec;
     private List<DelayedIdEntry> delayedEntries;
 
-    public ReleasedIdHolder(long timeDelaySec) {
+    private final IdUtils idUtils;
+
+    public ReleasedIdHolder(IdUtils idUtils, long timeDelaySec) {
+        this.idUtils = idUtils;
         this.timeDelaySec = timeDelaySec;
         this.delayedEntries = new CopyOnWriteArrayList<>();
         availableIdCount.set(0);
@@ -134,6 +137,6 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     @Override
     public void refreshDataStore(IdPoolBuilder idPoolBuilder) {
-        IdUtils.syncReleaseIdHolder(this, idPoolBuilder);
+        idUtils.syncReleaseIdHolder(this, idPoolBuilder);
     }
 }

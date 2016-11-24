@@ -78,14 +78,16 @@ import org.slf4j.LoggerFactory;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdManagerTest {
+
     private static final Logger LOG = LoggerFactory.getLogger(IdManagerTest.class);
+
     private static int BLADE_ID;
 
     static {
         try {
             BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
         } catch (Exception e) {
-            LOG.error("IdManager - Exception - {}", e.getMessage());
+            LOG.error("IdManager - Exception - {}", e);
         }
     }
 
@@ -95,6 +97,7 @@ public class IdManagerTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock LockManagerService lockManager;
     Future<RpcResult<Void>> rpcResult;
+    IdUtils idUtils;
     IdManager idManager;
     IdPool globalIdPool;
     String allocateIdPoolName = "allocateIdTest";
@@ -151,19 +154,20 @@ public class IdManagerTest {
 
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx)
                 .read(eq(LogicalDatastoreType.CONFIGURATION), anyObject());
+        idUtils = new IdUtils();
         if (idPools != null && !idPools.isEmpty()) {
             Optional<IdPools> optionalIdPools = Optional.of(new IdPoolsBuilder().setIdPool(idPools).build());
             doReturn(Futures.immediateCheckedFuture(optionalIdPools)).when(mockReadTx)
-                    .read(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdPools());
+                    .read(LogicalDatastoreType.CONFIGURATION, idUtils.getIdPools());
         }
-        idManager = new IdManager(dataBroker, lockManager);
+        idManager = new IdManager(dataBroker, lockManager, idUtils);
     }
 
     @Test
     public void testCreateIdPool() throws Exception {
         setupMocks(null);
         CreateIdPoolInput createPoolTest = buildCreateIdPool(poolName, idStart, idEnd);
-        long expectedBlockSize = IdUtils.computeBlockSize(idStart, idEnd);
+        long expectedBlockSize = idUtils.computeBlockSize(idStart, idEnd);
 
         Future<RpcResult<Void>> result = idManager.createIdPool(createPoolTest);
         IdPool pool;

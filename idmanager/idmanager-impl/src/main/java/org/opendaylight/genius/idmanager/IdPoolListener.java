@@ -25,12 +25,14 @@ public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdP
 
     private final DataBroker broker;
     private final IdManager idManager;
+    private final IdUtils idUtils;
 
     @Inject
-    public IdPoolListener(DataBroker broker, IdManager idManager) {
+    public IdPoolListener(DataBroker broker, IdManager idManager, IdUtils idUtils) {
         super(IdPool.class, IdPoolListener.class);
         this.broker = broker;
         this.idManager = idManager;
+        this.idUtils = idUtils;
     }
 
     @Override
@@ -50,11 +52,11 @@ public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdP
             String parentPoolName = update.getParentPoolName();
             String poolName = update.getPoolName();
             if (parentPoolName != null && !parentPoolName.isEmpty()) {
-                if (!IdUtils.getPoolUpdatedMap(poolName)) {
+                if (!idUtils.getPoolUpdatedMap(poolName)) {
                     LOG.info("Received update for NAME {} : {} - {}", update.getPoolName(), original, update);
                     idManager.updateLocalIdPoolCache(update, parentPoolName);
                 } else {
-                    IdUtils.decrementPoolUpdatedMap(poolName);
+                    idUtils.decrementPoolUpdatedMap(poolName);
                 }
             }
         }

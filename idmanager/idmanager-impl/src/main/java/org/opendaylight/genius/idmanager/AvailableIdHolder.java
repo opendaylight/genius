@@ -17,11 +17,10 @@ public class AvailableIdHolder implements IdHolder {
     private long high = 0;
     private final AtomicLong cur = new AtomicLong();
 
-    public AvailableIdHolder(long low, long high) {
-        addIdBlock(low, high);
-    }
+    private final IdUtils idUtils;
 
-    private void addIdBlock(long low, long high) {
+    public AvailableIdHolder(IdUtils idUtils, long low, long high) {
+        this.idUtils = idUtils;
         this.low = low;
         this.high = high;
         cur.set(low - 1);
@@ -74,6 +73,6 @@ public class AvailableIdHolder implements IdHolder {
 
     @Override
     public void refreshDataStore(IdPoolBuilder idPoolBuilder) {
-        IdUtils.syncAvailableIdHolder(this, idPoolBuilder);
+        idUtils.syncAvailableIdHolder(this, idPoolBuilder);
     }
 }

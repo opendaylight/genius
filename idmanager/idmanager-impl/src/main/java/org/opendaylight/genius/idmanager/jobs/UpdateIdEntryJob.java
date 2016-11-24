@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.idmanager.jobs;
 
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,30 +27,30 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     private final String idKey;
     private final List<Long> newIdValues;
     private final DataBroker broker;
+    private final IdUtils idUtils;
 
     public UpdateIdEntryJob(String parentPoolName, String localPoolName,
-            String idKey, List<Long> newIdValues, DataBroker broker) {
-        super();
+            String idKey, List<Long> newIdValues, DataBroker broker, IdUtils idUtils) {
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
         this.idKey = idKey;
         this.newIdValues = newIdValues;
         this.broker = broker;
+        this.idUtils = idUtils;
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = broker.newWriteOnlyTransaction();
-        IdUtils.updateChildPool(tx, parentPoolName, localPoolName);
+        idUtils.updateChildPool(tx, parentPoolName, localPoolName);
         if (newIdValues != null && !newIdValues.isEmpty()) {
-            IdEntries newIdEntry = IdUtils.createIdEntries(idKey, newIdValues);
-            tx.merge(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey),
-                    newIdEntry);
+            IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
+            tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
             futures.add(tx.submit());
             return futures;
         }
-        tx.delete(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
+        tx.delete(LogicalDatastoreType.CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         futures.add(tx.submit());
         return futures;
     }

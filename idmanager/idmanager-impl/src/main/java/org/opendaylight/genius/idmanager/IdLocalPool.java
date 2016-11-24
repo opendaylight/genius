@@ -8,19 +8,20 @@
 package org.opendaylight.genius.idmanager;
 
 public class IdLocalPool {
+
     private String poolName;
     private IdHolder availableIds; // List of available IDs
     private IdHolder releasedIds; // List of released IDs
 
-    public IdLocalPool(String poolName, long low, long high) {
+    public IdLocalPool(IdUtils idUtils, String poolName, long low, long high) {
         this.poolName = poolName;
-        availableIds = new AvailableIdHolder(low, high);
-        releasedIds = new ReleasedIdHolder(IdUtils.DEFAULT_DELAY_TIME);
+        availableIds = new AvailableIdHolder(idUtils, low, high);
+        releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
     }
 
-    public IdLocalPool(String poolName) {
+    public IdLocalPool(IdUtils idUtils, String poolName) {
         this.poolName = poolName;
-        releasedIds = new ReleasedIdHolder(IdUtils.DEFAULT_DELAY_TIME);
+        releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
     }
 
     @Override
