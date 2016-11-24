@@ -17,13 +17,14 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -31,8 +32,11 @@ import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
+import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -175,14 +179,23 @@ public class InterfaceManagerCommonUtils {
         LOG.debug("make tunnel ingress flow for {}", interfaceName);
         String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
                 NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
-        List<MatchInfo> matches = new ArrayList<>();
+        List<MatchInfoBase> matches = new ArrayList<>();
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
             matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] { dpnId, BigInteger.valueOf(portNo) }));
+            if(BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
+                matches.add(new NxMatchInfo(NxMatchFieldType.tun_src_ip,
+                        new String[] { tunnel.getTunnelDestination().getIpv4Address().getValue() }));
+            }
+            if(BooleanUtils.isTrue(tunnel.isTunnelSourceIpFlow())) {
+                matches.add(new NxMatchInfo(NxMatchFieldType.tun_dst_ip,
+                        new String[] { tunnel.getTunnelSource().getIpv4Address().getValue() }));
+            }
+
             mkInstructions.add(new InstructionInfo(InstructionType.write_metadata,
                     new BigInteger[] { MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
                             MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG }));
-            short tableId = (tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class))
+            short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
                     ? NwConstants.L3_LFIB_TABLE
                     : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
             mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[] { tableId }));
@@ -214,14 +227,22 @@ public class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
-    public static void createInterfaceChildEntry(WriteTransaction t, String parentInterface, String childInterface) {
+    public static void createInterfaceChildEntry(String parentInterface, String childInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
         InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+        BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+    }
+
+    public static void deleteInterfaceChildEntry(String parentInterface, String childInterface) {
+        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
+        InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
+        InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
+                .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
+        BatchingUtils.delete(intfId, BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus updateStateEntry(
@@ -332,7 +353,7 @@ public class InterfaceManagerCommonUtils {
     public static boolean checkIfBfdStateIsDown(String interfaceName){
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus =
                 InterfaceManagerCommonUtils.getBfdStateFromCache(interfaceName);
-        return (operStatus == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down);
+        return operStatus == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
@@ -345,8 +366,8 @@ public class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         Integer ifIndex = null;
         if (interfaceInfo != null) {
-            if(!interfaceInfo.isEnabled() || (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo) &&
-                    checkIfBfdStateIsDown(interfaceInfo.getName()))){
+            if(!interfaceInfo.isEnabled() || InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo) &&
+                    checkIfBfdStateIsDown(interfaceInfo.getName())){
                 operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
             }
 
@@ -419,11 +440,14 @@ public class InterfaceManagerCommonUtils {
         return true;
     }
 
-    public static boolean deleteParentInterfaceEntry(WriteTransaction t, String parentInterface) {
+    public static boolean deleteParentInterfaceEntry(String parentInterface) {
+        if(parentInterface == null) {
+            return false;
+        }
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        t.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
+        BatchingUtils.delete(interfaceParentEntryIdentifier, BatchingUtils.EntityType.DEFAULT_CONFIG);
         return true;
     }
 
