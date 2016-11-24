@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_66ea9e76",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/ChainableDataChangeListenerImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-24T06:54:38Z",
+      "side": 1,
+      "message": "is it mandatory to notify the listeners in chained(sequential) manner ? If this is not a requirement, then you can use parallel stream to do it for better performance. Also swallow the exception if it thrown by a listener which doesn\u0027t impact other listeners to get the data change.",
+      "revId": "e4254ce430bf0ed015c9c01c9a2a64326416d280",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
