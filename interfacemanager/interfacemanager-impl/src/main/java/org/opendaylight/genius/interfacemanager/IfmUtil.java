@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.net.InetAddresses;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -31,6 +33,7 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -324,6 +327,18 @@ public class IfmUtil {
                     tunnelKey = 0L;
                 result.add(new ActionInfo(ActionType.set_field_tunnel_id,
                     new BigInteger[]{BigInteger.valueOf(tunnelKey)},actionKeyStart++));
+
+                IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+                if(SouthboundUtils.getFalseIfNull(ifTunnel.isTunnelRemoteIpFlow())) {
+                    BigInteger destIp = getBigIntIpFromIpAddress(ifTunnel.getTunnelDestination());
+                    result.add(new ActionInfo(ActionType.set_tunnel_dest_ip, new BigInteger[]{destIp},
+                            actionKeyStart++));
+                }
+                if(SouthboundUtils.getFalseIfNull(ifTunnel.isTunnelSourceIpFlow())) {
+                    BigInteger sourceIp = getBigIntIpFromIpAddress(ifTunnel.getTunnelSource());
+                    result.add(new ActionInfo(ActionType.set_tunnel_src_ip, new BigInteger[]{sourceIp},
+                            actionKeyStart++));
+                }
                 result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
                 break;
 
@@ -332,6 +347,12 @@ public class IfmUtil {
                 break;
         }
         return result;
+    }
+
+    private static BigInteger getBigIntIpFromIpAddress(IpAddress ipAddr) {
+        String ipString = ipAddr.getIpv4Address().getValue();
+        int ipInt = InetAddresses.coerceToInteger(InetAddresses.forString(ipString));
+        return BigInteger.valueOf(ipInt & 0xffffffffL);
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
