@@ -56,7 +56,6 @@ public class IdUtils {
     private static final long DEFAULT_AVAILABLE_ID_COUNT = 0;
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
-    public static final String ID_POOL_CACHE = "ID_POOL_CACHE";
 
     public static ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
 

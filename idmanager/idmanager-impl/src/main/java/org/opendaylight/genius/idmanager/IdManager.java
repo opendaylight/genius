@@ -16,11 +16,14 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -35,13 +38,13 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
+import org.opendaylight.genius.idmanager.api.IdManagerMonitor;
 import org.opendaylight.genius.idmanager.jobs.CleanUpJob;
 import org.opendaylight.genius.idmanager.jobs.IdHolderSyncJob;
 import org.opendaylight.genius.idmanager.jobs.LocalPoolCreateJob;
 import org.opendaylight.genius.idmanager.jobs.LocalPoolDeleteJob;
 import org.opendaylight.genius.idmanager.jobs.UpdateIdEntryJob;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.utils.cache.CacheUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
@@ -72,7 +75,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class IdManager implements IdManagerService {
+public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdManager.class);
     private static final long DEFAULT_IDLE_TIME = 24 * 60 * 60;
@@ -85,11 +88,17 @@ public class IdManager implements IdManagerService {
 
     @Inject
     public IdManager(DataBroker db, LockManagerService lockManager) {
-        broker = db;
+        this.broker = db;
         this.lockManager = lockManager;
-        CacheUtil.createCache(IdUtils.ID_POOL_CACHE);
-        localPool = (ConcurrentMap<String, IdLocalPool>) CacheUtil.getCache(IdUtils.ID_POOL_CACHE);
+        this.localPool = new ConcurrentHashMap<>();
         populateCache();
+    }
+
+    @Override
+    public Map<String, String> getLocalPoolsDetails() {
+        Map<String, String> map = new HashMap<>();
+        localPool.entrySet().stream().forEach(entry -> map.put(entry.getKey(), entry.getValue().toString()));
+        return map;
     }
 
     @PostConstruct
@@ -659,4 +668,5 @@ public class IdManager implements IdManagerService {
         }
         localPool.put(parentPoolName, localPoolCache);
     }
+
 }
