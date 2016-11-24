@@ -173,7 +173,7 @@ public class IdManager implements IdManagerService {
             submitTransaction(tx);
             createIdPoolRpcBuilder = RpcResultBuilder.success();
         } catch (Exception ex) {
-            LOG.error("Creation of Id Pool {} failed due to {}", poolName, ex);
+            LOG.error("Creation of Id Pool {} failed", poolName, ex);
             createIdPoolRpcBuilder = RpcResultBuilder.failed();
             createIdPoolRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
         } finally {
@@ -200,7 +200,7 @@ public class IdManager implements IdManagerService {
             allocateIdRpcBuilder = RpcResultBuilder.success();
             allocateIdRpcBuilder.withResult(output.build());
         } catch (Exception ex) {
-            LOG.error("Allocate id in pool {} failed due to {}", poolName, ex);
+            LOG.error("Allocate id in pool {} failed", poolName, ex);
             allocateIdRpcBuilder = RpcResultBuilder.failed();
             allocateIdRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
         }
@@ -261,7 +261,7 @@ public class IdManager implements IdManagerService {
             deleteIdPoolRpcBuilder = RpcResultBuilder.success();
         }
         catch (Exception ex) {
-            LOG.error("Delete id in pool {} failed due to {}", poolName, ex);
+            LOG.error("Delete id in pool {} failed", poolName, ex);
             deleteIdPoolRpcBuilder = RpcResultBuilder.failed();
             deleteIdPoolRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
         }
@@ -277,7 +277,7 @@ public class IdManager implements IdManagerService {
             releaseIdFromLocalPool(poolName, IdUtils.getLocalPoolName(poolName), idKey);
             releaseIdRpcBuilder = RpcResultBuilder.success();
         } catch (Exception ex) {
-            LOG.error("Release id {} from pool {} failed due to {}", idKey, poolName, ex);
+            LOG.error("Release id {} from pool {} failed", idKey, poolName, ex);
             releaseIdRpcBuilder = RpcResultBuilder.failed();
             releaseIdRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
         }
