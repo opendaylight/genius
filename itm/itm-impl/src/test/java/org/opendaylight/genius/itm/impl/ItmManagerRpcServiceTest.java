@@ -297,7 +297,7 @@ public class ItmManagerRpcServiceTest {
                 (tunnelType1).setDestinationNode(destinationDevice).setSourceNode(sourceDevice).build();
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,tunnelEndPointsVxlan.getIpAddress()
-                ,ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null);
+                ,ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null, false);
         subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);

@@ -234,12 +234,15 @@ public class ItmUtils {
         return new DPNTEPsInfoBuilder().setKey(new DPNTEPsInfoKey(dpId)).setTunnelEndPoints(endpoints).build();
     }
 
-    public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName, int vlanId,
-                                                        IpPrefix prefix, IpAddress gwAddress, String zoneName, Class<? extends TunnelTypeBase>  tunnel_type) {
+    public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName,
+                                                        boolean isOfTunnel, int vlanId, IpPrefix prefix,
+                                                        IpAddress gwAddress, String zoneName,
+                                                        Class<? extends TunnelTypeBase>  tunnel_type) {
         // when Interface Mgr provides support to take in Dpn Id
         return new TunnelEndPointsBuilder().setKey(new TunnelEndPointsKey(ipAddress, portName,tunnel_type, vlanId))
                 .setSubnetMask(prefix).setGwIpAddress(gwAddress).setTransportZone(zoneName)
-                .setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId)).setTunnelType(tunnel_type).build();
+                .setOptionOfTunnel(isOfTunnel).setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId))
+                .setTunnelType(tunnel_type).build();
     }
 
     public static DpnEndpoints createDpnEndpoints(List<DPNTEPsInfo> dpnTepInfo) {
@@ -253,8 +256,12 @@ public class ItmUtils {
         return id;
     }
 
-    public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled, Class<? extends TunnelTypeBase> tunType,
-                                                 IpAddress localIp, IpAddress remoteIp, IpAddress gatewayIp,Integer vlanId, boolean internal, Boolean monitorEnabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitorInterval) {
+    public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
+                                                 Class<? extends TunnelTypeBase> tunType, IpAddress localIp,
+                                                 IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
+                                                 boolean internal, Boolean monitorEnabled,
+                                                 Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
+                                                 Integer monitorInterval, boolean useOfTunnel) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
@@ -267,13 +274,15 @@ public class ItmUtils {
         LOG.debug("buildTunnelInterface: monitorProtocol = {} and monitorInterval = {}",monitorProtocol.getName(),monitorInterval);
 
        
-        if(monitorInterval!= null)
+        if(monitorInterval != null) {
             monitoringInterval = monitorInterval.longValue();
-        
-        IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(
-                        gatewayIp).setTunnelSource(localIp)
-                        .setTunnelInterfaceType(tunType).setInternal(internal).setMonitorEnabled(
-                monitorEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(monitoringInterval).build();
+        }
+
+        IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(gatewayIp)
+                .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(internal)
+                .setMonitorEnabled(monitorEnabled).setMonitorProtocol(monitorProtocol)
+                .setMonitorInterval(monitoringInterval).setTunnelRemoteIpFlow(useOfTunnel)
+                .build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
     }
@@ -1073,5 +1082,9 @@ public class ItmUtils {
             }
         }
         return null;
+    }
+
+    public static boolean falseIfNull(Boolean value) {
+        return (value == null) ? false : value;
     }
 }

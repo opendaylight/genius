@@ -225,9 +225,10 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                         BigInteger dpnID = vteps.getDpnId();
                         String port = vteps.getPortname();
                         IpAddress ipAddress = vteps.getIpAddress();
+                        boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOptionOfTunnel());
                         LOG.trace("DpnID: {}, port: {}, ipAddress: {}", dpnID, port, ipAddress);
-                        TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, vlanID,
-                                ipPrefix, gatewayIP, zoneName, tunnelType);
+                        TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port,
+                            useOfTunnel, vlanID,  ipPrefix, gatewayIP, zoneName, tunnelType);
                         List<TunnelEndPoints> tunnelEndPointsList = mapDPNToTunnelEndpt.get(dpnID);
                         if (tunnelEndPointsList != null) {
                             LOG.trace("Existing DPN info list in the Map: {} ", dpnID);
