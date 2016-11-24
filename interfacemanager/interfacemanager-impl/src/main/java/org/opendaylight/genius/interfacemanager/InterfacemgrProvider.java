@@ -31,6 +31,7 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.listeners.AlivenessMonitorListener;
+import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
@@ -118,6 +119,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private NodeConnectorStatsImpl nodeConnectorStatsManager;
     private CacheInterfaceConfigListener cacheInterfaceConfigListener;
     private CacheInterfaceStateListener cacheInterfaceStateListener;
+    private CacheBridgeEntryConfigListener cacheBridgeEntryConfigListener;
     private EntityOwnershipService entityOwnershipService;
 
     public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
@@ -198,6 +200,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
             cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
 
+            cacheBridgeEntryConfigListener = new CacheBridgeEntryConfigListener(dataBroker);
+
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
                     session.getRpcService(OpendaylightPortStatisticsService.class), session.getRpcService(OpendaylightFlowTableStatisticsService.class));
@@ -219,7 +223,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         //TODO: Error handling
         Future<RpcResult<Void>> result = idManager.createIdPool(createPool);
         try {
-            if ((result != null) && (result.get().isSuccessful())) {
+            if (result != null && result.get().isSuccessful()) {
                 LOG.debug("Created IdPool for InterfaceMgr");
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -234,6 +238,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         rpcRegistration.close();
         cacheInterfaceConfigListener.close();
         cacheInterfaceStateListener.close();
+        cacheBridgeEntryConfigListener.close();
         topologyStateListener.close();
         interfaceInventoryStateListener.close();
         hwVTEPConfigListener.close();
@@ -374,7 +379,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
-        interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
+        interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
@@ -417,7 +422,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
-        interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
+        interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setOpState(opState);

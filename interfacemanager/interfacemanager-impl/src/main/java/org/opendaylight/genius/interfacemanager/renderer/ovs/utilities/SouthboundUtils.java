@@ -9,10 +9,13 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -31,6 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
@@ -141,6 +145,10 @@ public class SouthboundUtils {
                     if (ifTunnel != null) {
                         addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
                     }
+                    if(SouthboundUtils.isOfTunnel(ifTunnel)) {
+                        LOG.debug("Using OFTunnel. Only one tunnel port will be added");
+                        return;
+                    }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
                 }
@@ -149,7 +157,7 @@ public class SouthboundUtils {
     }
 
     /*
-     * add all tunnels ports corresponding to the bridge to the topology config
+     * delete all tunnels ports corresponding to the bridge to the topology config
      * DS
      */
     public static void removeAllPortsFromBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
@@ -168,6 +176,10 @@ public class SouthboundUtils {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
                         removeTerminationEndPoint(futures, dataBroker, bridgeIid, iface.getName());
+                    }
+                    if(SouthboundUtils.isOfTunnel(ifTunnel)) {
+                        LOG.debug("Using OFTunnel. Only one tunnel port to be removed");
+                        return;
                     }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
@@ -206,11 +218,18 @@ public class SouthboundUtils {
         Map<String, String> options = Maps.newHashMap();
 
         // Options common to any kind of tunnel
-        IpAddress localIp = ifTunnel.getTunnelSource();
-        options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
-
-        IpAddress remoteIp = ifTunnel.getTunnelDestination();
-        options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        if(BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
+            options.put(TUNNEL_OPTIONS_LOCAL_IP, TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress localIp = ifTunnel.getTunnelSource();
+            options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
+        }
+        if(getFalseIfNull(ifTunnel.isTunnelRemoteIpFlow())) {
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress remoteIp = ifTunnel.getTunnelDestination();
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        }
 
         // Specific options for each type of tunnel
         if (!ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
@@ -227,6 +246,13 @@ public class SouthboundUtils {
             // VxLAN-GPE interfaces will not use the default UDP port to avoid problems with other meshes
             options.put(TUNNEL_OPTIONS_DESTINATION_PORT, TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT);
         }
+
+        if(ifTunnel.getTunnelOptions() != null) {
+            for(TunnelOptions tunOpt : ifTunnel.getTunnelOptions()) {
+                options.putIfAbsent(tunOpt.getTunnelOption(), tunOpt.getValue());
+            }
+        }
+
         addTerminationPoint(bridgeIid, portName, vlanId, type, options, ifTunnel);
     }
 
@@ -235,6 +261,10 @@ public class SouthboundUtils {
             String portName, WriteTransaction transaction) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
+        if(isOfTunnel(ifTunnel)) {
+            LOG.warn("BFD monitoring not supported for OFTunnels. Skipping BFD parameters for {}", portName);
+            return;
+        }
         LOG.debug("update bfd parameters for interface {}", tpIid);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
         List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
@@ -277,8 +307,12 @@ public class SouthboundUtils {
         }
 
         if (bfdMonitoringEnabled(ifTunnel)) {
-            List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
-            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+            if(isOfTunnel(ifTunnel)) {
+                LOG.warn("BFD Monitoring not supported for OFTunnels");
+            } else {
+                List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
+                tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+            }
         }
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
@@ -331,4 +365,30 @@ public class SouthboundUtils {
     public static boolean isMonitorProtocolBfd(IfTunnel ifTunnel) {
         return TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
+
+    public static boolean getFalseIfNull(Boolean value) {
+        return value == null ? false : value;
+    }
+
+    public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
+        String sourceKey = ifTunnel.getTunnelSource().getIpv4Address().getValue();
+        String remoteKey = ifTunnel.getTunnelDestination().getIpv4Address().getValue();
+        if( ifTunnel.isTunnelSourceIpFlow() != null) {
+            sourceKey = "flow";
+        }
+        if( ifTunnel.isTunnelRemoteIpFlow() != null) {
+            remoteKey = "flow";
+        }
+        String tunnelNameKey = dpId.toString()+sourceKey+remoteKey;
+        String uuidStr = UUID.nameUUIDFromBytes(tunnelNameKey.getBytes()).toString().substring(0, 12).replace("-", "");
+        return String.format("%s%s", "tun", uuidStr);
+    }
+
+    public static boolean isOfTunnel(IfTunnel ifTunnel) {
+        if( BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow()) || getFalseIfNull(ifTunnel.isTunnelSourceIpFlow()) ) {
+            return true;
+        }
+        return false;
+    }
+
 }
