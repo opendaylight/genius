@@ -31,8 +31,7 @@ public class OvsVlanMemberConfigAddHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
 
-        InterfaceManagerCommonUtils.createInterfaceChildEntry(defaultConfigShardTransaction, parentRefs.getParentInterface(), interfaceNew.getName());
-        futures.add(defaultConfigShardTransaction.submit());
+        InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName());
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
