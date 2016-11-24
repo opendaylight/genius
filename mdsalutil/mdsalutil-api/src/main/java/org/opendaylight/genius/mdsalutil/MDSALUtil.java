@@ -541,8 +541,15 @@ public class MDSALUtil {
         }
     }
 
+    /**
+     * Deprecate delete.
+     *
+     * @deprecated Use
+     *             {@link SingleTransactionDataBroker#syncDelete(DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     */
+    @Deprecated
     public static <T extends DataObject> void syncDelete(DataBroker broker,
-                                                         LogicalDatastoreType datastoreType, InstanceIdentifier<T> obj) {
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> obj) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, obj);
         CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();

@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.CheckedFuture;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,12 +63,17 @@ public class IdUtils {
 
     private static int BLADE_ID;
 
-    static {
-        try {
-            BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
-        } catch (Exception e) {
-            LOGGER.error("IdManager - Exception - {}", e.getMessage());
+    // public only to re-use this from IdManagerTest
+    public static int getLocalHostInetAddressesCoercedToInteger() {
+        if (BLADE_ID == 0) {
+            try {
+                return InetAddresses.coerceToInteger(InetAddress.getLocalHost());
+            } catch (UnknownHostException e) {
+                LOGGER.error("IdManager IdUtils getLocalHostInetAddressesCoercedToInteger()", e);
+                throw new IllegalStateException("getLocalHostInetAddressesCoercedToInteger() failed", e);
+            }
         }
+        return BLADE_ID;
     }
 
     protected static InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
@@ -135,7 +141,7 @@ public class IdUtils {
     }
 
     protected static String getLocalPoolName(String poolName) {
-        return poolName + "." + BLADE_ID;
+        return poolName + "." + getLocalHostInetAddressesCoercedToInteger();
     }
 
     protected static ChildPools createChildPool(String childPoolName) {
