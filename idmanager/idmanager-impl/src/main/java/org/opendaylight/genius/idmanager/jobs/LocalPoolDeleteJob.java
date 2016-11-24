@@ -27,17 +27,18 @@ public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>
 
     private final String poolName;
     private final DataBroker broker;
+    private final IdUtils idUtils;
 
-    public LocalPoolDeleteJob(String poolName, DataBroker broker) {
-        super();
+    public LocalPoolDeleteJob(String poolName, DataBroker broker, IdUtils idUtils) {
         this.poolName = poolName;
         this.broker = broker;
+        this.idUtils = idUtils;
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
         ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
-        InstanceIdentifier<IdPool> idPoolToBeDeleted = IdUtils.getIdPoolInstance(poolName);
+        InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
         if (LOG.isDebugEnabled()) {
