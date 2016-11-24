@@ -34,6 +34,24 @@
       "revId": "e4254ce430bf0ed015c9c01c9a2a64326416d280",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_14095095",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/ChainableDataChangeListenerImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-24T13:24:34Z",
+      "side": 1,
+      "message": "Okay. Let us implement async DCL Impl later when there is a need :)",
+      "parentUuid": "3a65312a_b4b05c44",
+      "revId": "e4254ce430bf0ed015c9c01c9a2a64326416d280",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
