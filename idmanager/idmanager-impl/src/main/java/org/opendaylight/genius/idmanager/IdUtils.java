@@ -10,8 +10,8 @@ package org.opendaylight.genius.idmanager;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
-import com.google.common.util.concurrent.CheckedFuture;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +21,6 @@ import java.util.concurrent.Future;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -61,15 +60,10 @@ public class IdUtils {
 
     private final ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
 
-    private static int BLADE_ID;
+    private final int bladeId;
 
-    static {
-        try {
-            BLADE_ID = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
-        } catch (Exception e) {
-            LOGGER.error("IdManager static { InetAddresses.coerceToInteger(InetAddress.getLocalHost()) } failed "
-                    + "due to caught Exception", e);
-        }
+    public IdUtils() throws UnknownHostException {
+        bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
     }
 
     protected InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
@@ -136,8 +130,9 @@ public class IdUtils {
         return false;
     }
 
-    protected String getLocalPoolName(String poolName) {
-        return poolName + "." + BLADE_ID;
+    // public only to re-use this from IdManagerTest
+    public String getLocalPoolName(String poolName) {
+        return poolName + "." + bladeId;
     }
 
     protected ChildPools createChildPool(String childPoolName) {
@@ -222,7 +217,7 @@ public class IdUtils {
         return 0;
     }
 
-    public void lockPool(LockManagerService lockManager, String poolName) {
+    public void lockPool(LockManagerService lockManager, String poolName) throws IdManagerException {
         LockInput input = new LockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.lock(input);
         try {
@@ -231,15 +226,15 @@ public class IdUtils {
                     LOGGER.debug("Acquired lock {}", poolName);
                 }
             } else {
-                throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName));
+                throw new IdManagerException(String.format("Unable to getLock for pool %s", poolName));
             }
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.error("Unable to getLock for pool {}", poolName, e);
-            throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName), e.getCause());
+            throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName), e);
         }
     }
 
-    public void unlockPool(LockManagerService lockManager, String poolName) {
+    public void unlockPool(LockManagerService lockManager, String poolName) throws IdManagerException {
         UnlockInput input = new UnlockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
@@ -254,17 +249,7 @@ public class IdUtils {
             }
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.error("Unable to unlock for pool {}", poolName, e);
-            throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e.getCause());
-        }
-    }
-
-    public void submitTransaction(WriteTransaction tx) {
-        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-        try {
-            futures.get();
-        } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error writing to datastore tx", e);
-            throw new RuntimeException(e);
+            throw new IdManagerException(String.format("Unable to unlock pool %s", poolName), e);
         }
     }
 
@@ -274,7 +259,6 @@ public class IdUtils {
         InstanceIdentifier<IdPools> id = idPoolsBuilder.build();
         return id;
     }
-
 
     public void syncReleaseIdHolder(ReleasedIdHolder releasedIdHolder, IdPoolBuilder idPool) {
         long delayTime = releasedIdHolder.getTimeDelaySec();
