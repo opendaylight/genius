@@ -28,18 +28,20 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolCreateJob.class);
-    private IdLocalPool idLocalPool;
-    private DataBroker broker;
-    private String parentPoolName;
-    private int blockSize;
+
+    private final IdLocalPool idLocalPool;
+    private final DataBroker broker;
+    private final String parentPoolName;
+    private final int blockSize;
+    private final IdUtils idUtils;
 
     public LocalPoolCreateJob(IdLocalPool idLocalPool, DataBroker broker,
-            String parentPoolName, int blockSize) {
-        super();
+            String parentPoolName, int blockSize, IdUtils idUtils) {
         this.idLocalPool = idLocalPool;
         this.broker = broker;
         this.parentPoolName = parentPoolName;
         this.blockSize = blockSize;
+        this.idUtils = idUtils;
     }
 
     @Override
@@ -49,7 +51,7 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
             LOG.debug("Started localPoolCreateJob for {}", localPoolName);
         }
         ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
-        InstanceIdentifier<IdPool> localPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
+        InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
         IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName)).setBlockSize(blockSize).setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);
         idLocalPool.getReleasedIds().refreshDataStore(idPool);

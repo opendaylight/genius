@@ -8,21 +8,20 @@
 package org.opendaylight.genius.idmanager;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 
 import com.google.common.base.Optional;
 
 public class AvailableIdHolder implements IdHolder {
+
     private long low = 0;
     private long high = 0;
-    private AtomicLong cur = new AtomicLong();
+    private final AtomicLong cur = new AtomicLong();
 
-    public AvailableIdHolder(long low, long high) {
-        addIdBlock(low, high);
-    }
+    private final IdUtils idUtils;
 
-    private void addIdBlock(long low, long high) {
+    public AvailableIdHolder(IdUtils idUtils, long low, long high) {
+        this.idUtils = idUtils;
         this.low = low;
         this.high = high;
         cur.set(low - 1);
@@ -75,6 +74,6 @@ public class AvailableIdHolder implements IdHolder {
 
     @Override
     public void refreshDataStore(IdPoolBuilder idPoolBuilder) {
-        IdUtils.syncAvailableIdHolder(this, idPoolBuilder);
+        idUtils.syncAvailableIdHolder(this, idPoolBuilder);
     }
 }

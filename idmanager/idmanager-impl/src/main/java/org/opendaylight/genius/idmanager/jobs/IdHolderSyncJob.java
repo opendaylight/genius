@@ -28,16 +28,18 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdHolderSyncJob.class);
-    private String localPoolName;
-    private IdHolder idHolder;
-    private DataBroker broker;
+
+    private final String localPoolName;
+    private final IdHolder idHolder;
+    private final DataBroker broker;
+    private final IdUtils idUtils;
 
     public IdHolderSyncJob(String localPoolName, IdHolder idHolder,
-            DataBroker broker) {
-        super();
+            DataBroker broker, IdUtils idUtils) {
         this.localPoolName = localPoolName;
         this.idHolder = idHolder;
         this.broker = broker;
+        this.idUtils = idUtils;
     }
 
     @Override
@@ -45,10 +47,10 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
         ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
             IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName));
             idHolder.refreshDataStore(idPool);
-            InstanceIdentifier<IdPool> localPoolInstanceIdentifier = IdUtils.getIdPoolInstance(localPoolName);
+            InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             tx.merge(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
-            IdUtils.incrementPoolUpdatedMap(localPoolName);
+            idUtils.incrementPoolUpdatedMap(localPoolName);
             futures.add(tx.submit());
             if (LOG.isDebugEnabled()) {
                 LOG.debug("IdHolder synced {}", idHolder);

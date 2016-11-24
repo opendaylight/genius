@@ -12,9 +12,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import com.google.common.base.Optional;
 
 public interface IdHolder {
+
     Optional<Long> allocateId();
+
     void addId(long id);
+
     boolean isIdAvailable();
+
     long getAvailableIdCount();
+
     void refreshDataStore(IdPoolBuilder idPoolBuilder);
 }

@@ -31,20 +31,22 @@ import com.google.common.util.concurrent.ListenableFuture;
 public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CleanUpJob.class);
-    private IdLocalPool idLocalPool;
-    private DataBroker broker;
-    private String parentPoolName;
-    private int blockSize;
-    private LockManagerService lockManager;
+
+    private final IdLocalPool idLocalPool;
+    private final DataBroker broker;
+    private final String parentPoolName;
+    private final int blockSize;
+    private final LockManagerService lockManager;
+    private final IdUtils idUtils;
 
     public CleanUpJob(IdLocalPool idLocalPool, DataBroker broker,
-            String parentPoolName, int blockSize, LockManagerService lockManager) {
-        super();
+            String parentPoolName, int blockSize, LockManagerService lockManager, IdUtils idUtils) {
         this.idLocalPool = idLocalPool;
         this.broker = broker;
         this.parentPoolName = parentPoolName;
         this.blockSize = blockSize;
         this.lockManager = lockManager;
+        this.idUtils = idUtils;
     }
 
     @Override
@@ -62,10 +64,10 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                 LOG.debug("Condition for cleanUp Satisfied for localPool {} - totalAvailableIdCount {}", idLocalPool, totalAvailableIdCount);
             }
             parentPoolName = parentPoolName.intern();
-            InstanceIdentifier<ReleasedIdsHolder> releasedIdInstanceIdentifier = IdUtils.getReleasedIdsHolderInstance(parentPoolName);
+            InstanceIdentifier<ReleasedIdsHolder> releasedIdInstanceIdentifier = idUtils.getReleasedIdsHolderInstance(parentPoolName);
             // We need lock manager because maybe one cluster tries to read the available ids from the global pool while the other is writing. We cannot rely on DSJC
             // because that is not cluster-aware
-            IdUtils.lockPool(lockManager, parentPoolName);
+            idUtils.lockPool(lockManager, parentPoolName);
             try {
                 Optional<ReleasedIdsHolder> releasedIdsHolder = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier);
                 ReleasedIdsHolderBuilder releasedIdsParent;
@@ -78,12 +80,12 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                     LOG.debug("Releasing excesss Ids from local pool");
                 }
                 ReleasedIdHolder releasedIds = (ReleasedIdHolder) idLocalPool.getReleasedIds();
-                IdUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - (blockSize * 2));
-                IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker);
-                DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
+                idUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - blockSize * 2);
+                IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker, idUtils);
+                DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, idUtils.RETRY_COUNT);
                 MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier, releasedIdsParent.build());
             } finally {
-                IdUtils.unlockPool(lockManager, parentPoolName);
+                idUtils.unlockPool(lockManager, parentPoolName);
             }
         }
     }

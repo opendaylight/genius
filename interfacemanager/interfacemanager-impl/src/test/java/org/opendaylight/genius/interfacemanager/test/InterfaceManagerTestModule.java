@@ -11,7 +11,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
-import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
@@ -24,6 +23,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
 import org.opendaylight.genius.idmanager.IdManager;
+import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
@@ -70,7 +70,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         LockManagerService lockManager = new LockManager(dataBroker);
         bind(LockManagerService.class).toInstance(lockManager);
 
-        IdManagerService idManager = new IdManager(dataBroker, lockManager);
+        IdUtils idUtils = new IdUtils();
+        IdManagerService idManager = new IdManager(dataBroker, lockManager, idUtils);
         bind(IdManagerService.class).toInstance(idManager);
 
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
