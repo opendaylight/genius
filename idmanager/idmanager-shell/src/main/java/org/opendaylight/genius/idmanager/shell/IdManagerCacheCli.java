@@ -8,13 +8,11 @@
 
 package org.opendaylight.genius.idmanager.shell;
 
-import java.util.concurrent.ConcurrentMap;
-
+import java.util.Map;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.commands.Option;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.opendaylight.genius.idmanager.IdUtils;
-import org.opendaylight.genius.utils.cache.CacheUtil;
+import org.opendaylight.genius.idmanager.api.IdManagerMonitor;
 
 @Command(scope = "idmanager", name = "show", description = "display local pool id cache")
 public class IdManagerCacheCli extends OsgiCommandSupport {
@@ -24,18 +22,19 @@ public class IdManagerCacheCli extends OsgiCommandSupport {
             required = false, multiValued = false)
     String poolName;
 
-    @Override
-    protected Object doExecute() throws Exception {
-        showIdPoolCache();
-        return null;
+    private IdManagerMonitor idManagerMonitor;
+
+    public void setIdManagerMonitor(IdManagerMonitor idManagerMonitor) {
+        this.idManagerMonitor = idManagerMonitor;
     }
 
-    private void showIdPoolCache() {
-        ConcurrentMap<String, Object> cache =  (ConcurrentMap<String, Object>) CacheUtil.getCache(IdUtils.ID_POOL_CACHE);
-        if (cache == null) {
-            session.getConsole().println("No caches available");
-            return;
+    @Override
+    protected Object doExecute() throws Exception {
+        if (idManagerMonitor == null) {
+            session.getConsole().println("No IdManagerMonitor service available");
+            return null;
         }
+        Map<String, String> cache = idManagerMonitor.getLocalPoolsDetails();
         session.getConsole().println("No of pools in cluster " + cache.keySet().size());
         session.getConsole().println(DEMARCATION);
         if (poolName == null) {
@@ -44,18 +43,19 @@ public class IdManagerCacheCli extends OsgiCommandSupport {
                 session.getConsole().println(DEMARCATION);
                 session.getConsole().println(DEMARCATION);
             }
-            return;
+        } else {
+            Object idPool = cache.get(poolName);
+            if (idPool == null) {
+                session.getConsole().println("Local Id pool not found for " + poolName);
+            } else {
+                print(poolName, idPool);
+            }
         }
-        Object idPool = cache.get(poolName);
-        if (idPool == null) {
-            session.getConsole().println("Local Id pool not found for " + poolName);
-            return;
-        }
-        print(poolName, idPool);
+        return null;
     }
 
     private void print(String idPoolName, Object idPool) {
-        session.getConsole().println("Pool name : " + idPoolName);
-        session.getConsole().println("IdPool " + idPool);
+        session.getConsole().println("Pool name: " + idPoolName);
+        session.getConsole().println("IdPool: " + idPool);
     }
 }

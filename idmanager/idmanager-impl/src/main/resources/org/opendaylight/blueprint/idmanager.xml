@@ -19,4 +19,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <odl:rpc-implementation ref="idManager" />
 
+    <service ref="idManager" interface="org.opendaylight.genius.idmanager.api.IdManagerMonitor" />
+
 </blueprint>
