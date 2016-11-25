@@ -240,8 +240,9 @@ public class ItmExternalTunnelDeleteTest {
                 .setIdKey("1:phy0:100:192.168.56.30:192.168.56.40:VXLAN").build();
         doReturn(idOutputOptional8).when(idManagerService).allocateId(getIdInput8);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1).setIpAddress
-                (ipAddress3).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName).setTransportZone
-                (transportZone1).setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest).build();
+                (ipAddress3).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName).setTzMembership
+                (ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1).setSubnetMask
+                (ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId2).setUp(true).setKey(new DPNTEPsInfoKey(dpId2))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
