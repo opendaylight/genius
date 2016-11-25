@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_1accd934",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-25T04:50:59Z",
+      "side": 1,
+      "message": "may i know, how the vxlan_tunnel_key is passed while this method is being called for a gre tunnel?",
+      "revId": "9c57af705bd8a1c5b6a2be456e24fcf0b7e5c2f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
