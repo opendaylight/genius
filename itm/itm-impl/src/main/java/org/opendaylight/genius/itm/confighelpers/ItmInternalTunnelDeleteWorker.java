@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -63,14 +64,14 @@ public class ItmInternalTunnelDeleteWorker {
                 logger.debug( "Entries in meshEndPointCache {} ", meshedEndPtCache.size() );
                 for (TunnelEndPoints srcTep : srcDpn.getTunnelEndPoints()) {
                     logger.trace("Processing srcTep " + srcTep);
-                    String srcTZone = srcTep.getTransportZone();
+                    List<TzMembership> srcTZones = srcTep.getTzMembership();
 
                     // run through all other DPNS other than srcDpn
                     for (DPNTEPsInfo dstDpn : meshedDpnList) {
-                        if (!(srcDpn.getDPNID().equals(dstDpn.getDPNID()))) {
+                        if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
                             for (TunnelEndPoints dstTep : dstDpn.getTunnelEndPoints()) {
                                 logger.trace("Processing dstTep " + dstTep);
-                                if (dstTep.getTransportZone().equals(srcTZone)) {
+                                if (!ItmUtils.getIntersection(dstTep.getTzMembership(), srcTZones).isEmpty()) {
                                     if( checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(), srcTep.getTunnelType(),dataBroker)) {
                                         // remove all trunk interfaces
                                         logger.trace("Invoking removeTrunkInterface between source TEP {} , Destination TEP {} " ,srcTep , dstTep);

@@ -12,7 +12,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -43,10 +42,12 @@ public class ItmInternalTunnelAddWorker {
   private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
   private static final FutureCallback<Void> DEFAULT_CALLBACK =
              new FutureCallback<Void>() {
-                 public void onSuccess(Void result) {
+                 @Override
+                public void onSuccess(Void result) {
                      logger.debug("Success in Datastore operation");
                  }
 
+                @Override
                 public void onFailure(Throwable error) {
                     logger.error("Error in Datastore operation", error);
                 }
@@ -97,8 +98,9 @@ public class ItmInternalTunnelAddWorker {
             return ;
         }
         for( DPNTEPsInfo dstDpn: meshedDpnList) {
-            if ( ! srcDpn.equals(dstDpn) )
+            if ( ! srcDpn.equals(dstDpn) ) {
                 wireUpWithinTransportZone(srcDpn, dstDpn, dataBroker, idManagerService, mdsalManager, t, futures) ;
+            }
         }
 
     }
@@ -113,7 +115,7 @@ public class ItmInternalTunnelAddWorker {
             for( TunnelEndPoints dstte : dstEndPts ) {
                 // Compare the Transport zones
                 if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
-                    if( (srcte.getTransportZone().equals(dstte.getTransportZone()))) {
+                    if( !ItmUtils.getIntersection(srcte.getTzMembership(), dstte.getTzMembership()).isEmpty()) {
                         // wire them up
                         wireUpBidirectionalTunnel( srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), dataBroker, idManagerService,  mdsalManager, t, futures );
                         // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
@@ -127,19 +129,21 @@ public class ItmInternalTunnelAddWorker {
     private static void wireUpBidirectionalTunnel( TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
                                                    DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
-        
+
         if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
             ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
             ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
         }
         // Create the forward direction tunnel
-        if(!wireUp( srcte, dstte, srcDpnId, dstDpnId, dataBroker, idManagerService, t, futures ))
+        if(!wireUp( srcte, dstte, srcDpnId, dstDpnId, dataBroker, idManagerService, t, futures )) {
             logger.error("Could not build tunnel between end points {}, {} " , srcte, dstte );
+        }
 
         // CHECK IF FORWARD IS NOT BUILT , REVERSE CAN BE BUILT
         // Create the tunnel for the reverse direction
-        if(! wireUp( dstte, srcte, dstDpnId, srcDpnId, dataBroker, idManagerService, t, futures ))
+        if(! wireUp( dstte, srcte, dstDpnId, srcDpnId, dataBroker, idManagerService, t, futures )) {
             logger.error("Could not build tunnel between end points {}, {} " , dstte, srcte);
+        }
     }
 
     private static boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId ,
@@ -155,7 +159,7 @@ public class ItmInternalTunnelAddWorker {
                 dstte.getIpAddress().getIpv4Address().getValue(),
                 tunTypeStr) ;
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
-        IpAddress gwyIpAddress = ( srcte.getSubnetMask().equals(dstte.getSubnetMask()) ) ? gatewayIpObj : srcte.getGwIpAddress() ;
+        IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
         logger.debug(  " Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",trunkInterfaceName, interfaceName, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,

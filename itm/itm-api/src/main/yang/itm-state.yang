@@ -19,7 +19,7 @@ module itm-state {
       import odl-interface {
           prefix odlif; revision-date "2016-04-06";
       }
-    
+
 
       description "This YANG module defines operation part of the model.";
 
@@ -87,8 +87,11 @@ module itm-state {
                        leaf gw-ip-address {
                                 type inet:ip-address;
                        }
-                       leaf transport-zone {
-                                type string;
+                       list tz-membership {
+                           key "zone-name";
+                           leaf zone-name {
+                               type string;
+                           }
                        }
                        leaf interface-name {
                                 type string;
