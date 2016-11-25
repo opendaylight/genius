@@ -38,6 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -209,9 +210,9 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone) {
         Map<BigInteger, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> dpnTepInfo = new ArrayList<>();
-        String zoneName = transportZone.getZoneName();
+        List<TzMembership> zones = ItmUtils.createTransportZoneMembership(transportZone.getZoneName());
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
-        LOG.trace("Transport Zone_name: {}", zoneName);
+        LOG.trace("Transport Zone_name: {}", transportZone.getZoneName());
         List<Subnets> subnetsList = transportZone.getSubnets();
         if (subnetsList != null) {
             for (Subnets subnet : subnetsList) {
@@ -226,8 +227,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                         String port = vteps.getPortname();
                         IpAddress ipAddress = vteps.getIpAddress();
                         LOG.trace("DpnID: {}, port: {}, ipAddress: {}", dpnID, port, ipAddress);
-                        TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, vlanID,
-                                ipPrefix, gatewayIP, zoneName, tunnelType);
+                        TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port,
+                            vlanID, ipPrefix, gatewayIP, zones, tunnelType);
                         List<TunnelEndPoints> tunnelEndPointsList = mapDPNToTunnelEndpt.get(dpnID);
                         if (tunnelEndPointsList != null) {
                             LOG.trace("Existing DPN info list in the Map: {} ", dpnID);

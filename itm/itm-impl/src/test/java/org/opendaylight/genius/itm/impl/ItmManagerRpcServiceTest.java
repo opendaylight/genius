@@ -257,8 +257,9 @@ public class ItmManagerRpcServiceTest {
                 .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1).setIpAddress
-                (ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName).setTransportZone
-                (transportZone1).setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest).setKey(new TunnelEndPointsKey
+                (ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName).setTzMembership
+                (ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1).setSubnetMask
+                (ipPrefixTest).setKey(new TunnelEndPointsKey
                 (ipAddress1,portName1,tunnelType1,vlanId)).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
