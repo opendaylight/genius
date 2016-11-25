@@ -16,6 +16,41 @@
       "revId": "9c57af705bd8a1c5b6a2be456e24fcf0b7e5c2f3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7a6fcdfd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-25T06:18:54Z",
+      "side": 1,
+      "message": "Does it harm the data path even if tunnel_id is set in the gre key ?",
+      "parentUuid": "3a65312a_1accd934",
+      "revId": "9c57af705bd8a1c5b6a2be456e24fcf0b7e5c2f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1a6859f4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-25T06:18:54Z",
+      "side": 1,
+      "message": "Nit: remove tab",
+      "revId": "9c57af705bd8a1c5b6a2be456e24fcf0b7e5c2f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
