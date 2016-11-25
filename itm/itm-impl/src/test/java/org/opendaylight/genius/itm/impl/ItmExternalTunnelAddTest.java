@@ -205,8 +205,9 @@ public class ItmExternalTunnelAddTest {
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
         ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1).setIpAddress
-                (ipAddress3).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName).setTransportZone
-                (transportZone1).setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest).build();
+                (ipAddress3).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
+                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
+                .setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).setKey(new DPNTEPsInfoKey(dpId1))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
