@@ -37,6 +37,42 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_f54c8e72",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 6641
+      },
+      "writtenOn": "2016-11-25T08:14:31Z",
+      "side": 1,
+      "message": "Hi Peri, it does. This is blocking us, cause we can\u0027t complete datapath testing. Namespace simulating end user device is dropping the packet, cause it does not expect key field to be \"5\". \n\nPing from namespace (10.0.0.140) to a VM (10.0.0.16), on the same ELAN but different compute node (meaning that GRE TEP is on a compute node, and VM on a different one).\n\nFirst packet sent from namespace is an ARP request, and its ARP response is dropped, since it has a wrong key value:\n\n16:44:37.383901  In 52:54:00:3f:60:c3 ethertype 802.1Q (0x8100), length 90: vlan 1111, p 0, ethertype IPv4, 172.0.22.11 \u003e 192.168.3.140: GREv0, key\u003d0x5, proto TEB (0x6558), length 50: fa:16:3e:fc:5c:55 \u003e 96:d3:c8:c4:c2:bd, ethertype ARP (0x0806), length 42: Reply 10.0.0.16 is-at fa:16:3e:fc:5c:55, length 28\n\nThat key is wrong, since it has a value that it is only used by the vxlan mesh between OVS. I think that \"internal use\" of the \"tun_id\" should not be passed to external destinations via access tunnels... \n\nGRE key can be used for different purposes (e.g to differentiate different groups of users, for security, etc), but we don\u0027t support it yet.",
+      "parentUuid": "3a65312a_7a6fcdfd",
+      "revId": "9c57af705bd8a1c5b6a2be456e24fcf0b7e5c2f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_555c6225",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 6641
+      },
+      "writtenOn": "2016-11-25T08:14:31Z",
+      "side": 1,
+      "message": "I think it might be better explained in the bug 7230. Issue is that the packet coming from another compute node has the vxlan tun_id that is used in table\u003d36 to \"choose\" the output. \n\nIn this case, the output is a GRE port. Since we\u0027re not cleaning the tun_id value (no action setting any other \"tun_id\" value), that value is getting passed to the GRE key in the output packet. \n\n[compute_node2 - last rule] [node-17] cookie\u003d0x9000005, duration\u003d2848.224s, table\u003d36, n_packets\u003d785, n_bytes\u003d32970, priority\u003d5,tun_id\u003d0x5 actions\u003doutput:4 \n\nWhere \"output:4\" is a GRE port.",
+      "parentUuid": "3a65312a_1accd934",
+      "revId": "9c57af705bd8a1c5b6a2be456e24fcf0b7e5c2f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_1a6859f4",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
         "patchSetId": 3
