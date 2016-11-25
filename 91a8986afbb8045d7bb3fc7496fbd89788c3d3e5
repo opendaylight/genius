@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_7aa18d46",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-25T06:15:55Z",
+      "side": 1,
+      "message": "Yes, not necessary to use CacheUtil since it is just a java concurrent hash map and not required to leak outside.",
+      "revId": "91a8986afbb8045d7bb3fc7496fbd89788c3d3e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_daa6e152",
+        "filename": "idmanager/idmanager-shell/src/main/java/org/opendaylight/genius/idmanager/shell/IdManagerCacheCli.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-25T06:15:55Z",
+      "side": 1,
+      "message": "you could replace it with cache.keySet().stream().forEach(action);",
+      "revId": "91a8986afbb8045d7bb3fc7496fbd89788c3d3e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
