@@ -8,25 +8,26 @@
 package org.opendaylight.genius.itm.impl;
 
 import org.junit.Test;
+import org.mockito.Mock;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.genius.itm.impl.ItmProvider;
+import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 
 import static org.mockito.Mockito.mock;
 
 public class ItmProviderTest {
-    @Test
-    public void testOnSessionInitiated() {
-        ItmProvider provider = new ItmProvider();
 
-        // ensure no exceptions
-        // currently this method is empty
-        provider.onSessionInitiated(mock(BindingAwareBroker.ProviderContext.class));
-    }
+    @Mock DataBroker dataBroker;
+    @Mock IdManagerService idManagerService;
+    @Mock IMdsalApiManager iMdsalApiManager;
+    @Mock ItmManagerRpcService itmManagerRpcService;
 
     @Test
     public void testClose() throws Exception {
-        ItmProvider provider = new ItmProvider();
-
+        ItmProvider provider = new ItmProvider(dataBroker, idManagerService, iMdsalApiManager, itmManagerRpcService);
         // ensure no exceptions
         // currently this method is empty
         provider.close();

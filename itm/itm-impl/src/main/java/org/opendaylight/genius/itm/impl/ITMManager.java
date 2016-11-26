@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -31,7 +30,6 @@ public class ITMManager implements AutoCloseable {
 
     private final DataBroker broker;
     private IMdsalApiManager mdsalManager;
-    private NotificationPublishService notificationPublishService;
 
     List<DPNTEPsInfo> meshedDpnList;
 
@@ -48,9 +46,6 @@ public class ITMManager implements AutoCloseable {
         this.mdsalManager = mdsalManager;
     }
 
-    public void setNotificationPublishService(NotificationPublishService notificationPublishService) {
-        this.notificationPublishService = notificationPublishService;
-    }
     protected void initTunnelMonitorDataInConfigDS() {
         new Thread() {
             public void run() {

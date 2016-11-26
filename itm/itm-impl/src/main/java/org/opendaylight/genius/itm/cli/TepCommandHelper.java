@@ -18,7 +18,6 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -70,7 +69,6 @@ public class TepCommandHelper {
     private List<Subnets> subnetList = new ArrayList<>();
     private List<TransportZone> tZoneList = new ArrayList<>();
     private List<Vteps> vtepDelCommitList = new ArrayList<>();
-    private IInterfaceManager interfaceManager;
 
     // private List<InstanceIdentifier<? extends DataObject>> vtepPaths = new
     // ArrayList<>();
@@ -78,11 +76,6 @@ public class TepCommandHelper {
 
     public TepCommandHelper(final DataBroker broker) {
         this.dataBroker = broker;
-    }
-
-
-    public void setInterfaceManager(IInterfaceManager interfaceManager) {
-        this.interfaceManager = interfaceManager;
     }
 
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress,

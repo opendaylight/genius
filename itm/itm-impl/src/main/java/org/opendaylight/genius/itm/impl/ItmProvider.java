@@ -18,13 +18,7 @@ import java.util.regex.Pattern;
 import org.apache.felix.service.command.CommandSession;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
-import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
@@ -52,7 +46,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
@@ -62,24 +55,22 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMProvider /*,ItmStateService */{
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */{
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
-    private IInterfaceManager interfaceManager;
-    private ITMManager itmManager;
-    private IMdsalApiManager mdsalManager;
     private DataBroker dataBroker;
-    private NotificationPublishService notificationPublishService;
-    private ItmManagerRpcService itmRpcService ;
     private IdManagerService idManager;
-    private NotificationService notificationService;
+    private ITMManager itmManager;
+    private ItmManagerRpcService itmRpcService ;
     private TepCommandHelper tepCommandHelper;
     private TransportZoneListener tzChangeListener;
     private TunnelMonitorChangeListener tnlToggleListener;
     private TunnelMonitorIntervalListener tnlIntervalListener;
     private VtepConfigSchemaListener vtepConfigSchemaListener;
     private InterfaceStateListener ifStateListener;
-    private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor itmStatusMonitor = ITMStatusMonitor.getInstance();
     private ItmTunnelEventListener itmStateListener;
     private ItmMonitoringListener itmMonitoringListener;
@@ -87,80 +78,48 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
     static short flag = 0;
     private StateTunnelListListener tunnelStateListener ;
     private DpnTepsInfoListener dpnTepsInfoListener ;
-    public ItmProvider() {
+
+    public ItmProvider(DataBroker dataBroker, IdManagerService idManagerService, IMdsalApiManager iMdsalApiManager,
+                       ItmManagerRpcService itmManagerRpcService) {
         LOG.info("ItmProvider Before register MBean");
         itmStatusMonitor.registerMbean();
+        this.dataBroker = dataBroker;
+        this.idManager = idManagerService;
+        this.itmManager = new ITMManager(dataBroker);
+        this.itmRpcService = itmManagerRpcService;
+        this.tzChangeListener = new TransportZoneListener(dataBroker, idManagerService) ;
+        this.vtepConfigSchemaListener = new VtepConfigSchemaListener(dataBroker);
+        this.ifStateListener = new InterfaceStateListener(dataBroker);
+        this.tnlToggleListener = new TunnelMonitorChangeListener(dataBroker);
+        this.tnlIntervalListener = new TunnelMonitorIntervalListener(dataBroker);
+        itmManager.setMdsalManager(iMdsalApiManager);
+        itmManager.setMdsalManager(iMdsalApiManager);
+        tzChangeListener.setMdsalManager(iMdsalApiManager);
+        tzChangeListener.setItmManager(this.itmManager);
+        tzChangeListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        tnlIntervalListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        tnlToggleListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        this.tepCommandHelper = new TepCommandHelper(dataBroker);
+        tepCommandHelper.configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
+        this.itmStateListener =new ItmTunnelEventListener(dataBroker);
+        createIdPool();
+        itmStatusMonitor.reportStatus("OPERATIONAL");
+        DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
+        this.itmMonitoringListener = new ItmMonitoringListener(dataBroker);
+        this.itmMonitoringIntervalListener = new ItmMonitoringIntervalListener(dataBroker);
+        DataStoreCache.create(ITMConstants.TUNNEL_STATE_CACHE_NAME) ;
+        this.tunnelStateListener = new StateTunnelListListener(dataBroker);
+        DataStoreCache.create(ITMConstants.DPN_TEPs_Info_CACHE_NAME) ;
+        this.dpnTepsInfoListener = new DpnTepsInfoListener(dataBroker);
     }
 
-    public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
-        this.rpcProviderRegistry = rpcProviderRegistry;
-    }
-
-    public RpcProviderRegistry getRpcProviderRegistry() {
-        return this.rpcProviderRegistry;
-    }
-
-    @Override
-    public void onSessionInitiated(ProviderContext session) {
-        LOG.info("ItmProvider Session Initiated");
-        itmStatusMonitor.reportStatus("STARTING");
-        try {
-            dataBroker = session.getSALService(DataBroker.class);
-            idManager = getRpcProviderRegistry().getRpcService(IdManagerService.class);
-
-            itmManager = new ITMManager(dataBroker);
-            tzChangeListener = new TransportZoneListener(dataBroker, idManager) ;
-            itmRpcService = new ItmManagerRpcService(dataBroker, idManager);
-            vtepConfigSchemaListener = new VtepConfigSchemaListener(dataBroker);
-            this.ifStateListener = new InterfaceStateListener(dataBroker);
-            tnlToggleListener = new TunnelMonitorChangeListener(dataBroker);
-            tnlIntervalListener = new TunnelMonitorIntervalListener(dataBroker);
-            tepCommandHelper = new TepCommandHelper(dataBroker);
-            getRpcProviderRegistry().addRpcImplementation(ItmRpcService.class, itmRpcService);
-            itmRpcService.setMdsalManager(mdsalManager);
-            itmManager.setMdsalManager(mdsalManager);
-            itmManager.setNotificationPublishService(notificationPublishService);
-            itmManager.setMdsalManager(mdsalManager);
-            tzChangeListener.setMdsalManager(mdsalManager);
-            tzChangeListener.setItmManager(itmManager);
-            tzChangeListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-            tnlIntervalListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-            tnlToggleListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-            tepCommandHelper = new TepCommandHelper(dataBroker);
-            tepCommandHelper.setInterfaceManager(interfaceManager);
-            tepCommandHelper.configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
-            itmStateListener =new ItmTunnelEventListener(dataBroker);
-            createIdPool();
-            itmStatusMonitor.reportStatus("OPERATIONAL");
-            DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
-            itmMonitoringListener = new ItmMonitoringListener(dataBroker);
-            itmMonitoringIntervalListener = new ItmMonitoringIntervalListener(dataBroker);
-            DataStoreCache.create(ITMConstants.TUNNEL_STATE_CACHE_NAME) ;
-            tunnelStateListener = new StateTunnelListListener(dataBroker);
-            DataStoreCache.create(ITMConstants.DPN_TEPs_Info_CACHE_NAME) ;
-            dpnTepsInfoListener = new DpnTepsInfoListener(dataBroker);
-        } catch (Exception e) {
-            LOG.error("Error initializing services", e);
-            itmStatusMonitor.reportStatus("ERROR");
-        }
-    }
-
-    public void setInterfaceManager(IInterfaceManager interfaceManager) {
-        this.interfaceManager = interfaceManager;
-    }
-
-    public void setNotificationPublishService(NotificationPublishService notificationPublishService) {
-        this.notificationPublishService = notificationPublishService;
-    }
-
-    public void setMdsalApiManager(IMdsalApiManager mdsalMgr) {
-        this.mdsalManager = mdsalMgr;
-    }
-    public void setNotificationService(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    @PostConstruct
+    public void start() throws Exception {
+        LOG.info("ItmProvider Started");
     }
 
     @Override
+    @PreDestroy
     public void close() throws Exception {
         if (itmManager != null) {
             itmManager.close();
