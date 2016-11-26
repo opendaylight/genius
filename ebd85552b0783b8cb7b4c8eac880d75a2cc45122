@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_4a004067",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-26T07:23:17Z",
+      "side": 1,
+      "message": "There must be some existing common util library that we can use instead of this but am not aware of it. Any suggestions?",
+      "range": {
+        "startLine": 368,
+        "startChar": 4,
+        "endLine": 370,
+        "endChar": 5
+      },
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
