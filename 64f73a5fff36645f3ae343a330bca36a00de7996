@@ -16,6 +16,40 @@
       "revId": "64f73a5fff36645f3ae343a330bca36a00de7996",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_933ddcbe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-11-27T15:48:40Z",
+      "side": 1,
+      "message": "This variable is not used",
+      "revId": "64f73a5fff36645f3ae343a330bca36a00de7996",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3374c89b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1111,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-11-27T15:48:40Z",
+      "side": 1,
+      "message": "You can use the builtin List#retainAll()",
+      "revId": "64f73a5fff36645f3ae343a330bca36a00de7996",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
