@@ -29,6 +29,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
@@ -72,6 +73,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -309,9 +311,8 @@ public class IfmUtil {
                     result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
                 }else{
                     long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
-                    result.add(new ActionInfo(ActionType.nx_load_reg_6,
-                            new String[]{Integer.toString(IfmConstants.REG6_START_INDEX), Integer.toString(IfmConstants.REG6_END_INDEX),
-                                    Long.toString(regValue)}, actionKeyStart++));
+                    result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
+                            IfmConstants.REG6_END_INDEX, regValue));
                     result.add(new ActionInfo(ActionType.nx_resubmit,
                             new String[]{Short.toString(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)}, actionKeyStart++));
                 }
