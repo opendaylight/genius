@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_53034473",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/cache/DataStoreCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T05:04:51Z",
+      "side": 1,
+      "message": "I fully agree to your observations. As you mentioned we should provide ability to populate local caches based data changes in MD-SAL data tree , applications to populate caches, cache eviction/invalidation policies etc.",
+      "revId": "01f6c82d0e250ee3e1b7bb28259902b67bfb12d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
