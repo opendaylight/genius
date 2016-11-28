@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_1609ba95",
+        "filename": "docs/images/pipeline-acl-egress.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T10:35:59Z",
+      "side": 1,
+      "message": "The txt files are currently only used for generating diagrams in main doc, so can\u0027t join ingres and egress here. All content will still need to go in there, for now. Idea with separating it out is am exploring some tools that can convert ascii diagrams to images. This way we can leverage these files to create better looking images for wiki, ppts etc.\n\nIt is also possible to have complete text in separate files, but am still learning all this. So, let us put all content in main rst file, I\u0027ll do chopping later.",
+      "parentUuid": "1a622d24_f380908d",
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_03913552",
         "filename": "docs/images/pipeline-acl-ingress.txt",
         "patchSetId": 1
