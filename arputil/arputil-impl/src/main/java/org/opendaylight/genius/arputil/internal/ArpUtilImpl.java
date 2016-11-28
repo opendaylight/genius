@@ -30,6 +30,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.liblldp.HexEncode;
 import org.opendaylight.controller.liblldp.NetUtils;
 import org.opendaylight.controller.liblldp.Packet;
@@ -351,8 +353,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             byte[] srcIpBytes = getIpAddressBytes(input.getSrcIpaddress());
             byte[] dstIpBytes = getIpAddressBytes(input.getDstIpaddress());
             if (input.getSrcMacaddress() == null) {
-                srcMac = MDSALUtil.getMacAddressForNodeConnector(dataBroker,
-                        (InstanceIdentifier<NodeConnector>) ref.getValue());
+                srcMac = portResult.getPhyAddress().getBytes();
             } else {
                 String macAddr = input.getSrcMacaddress().getValue();
                 srcMac = HexEncode.bytesFromHexString(macAddr);
