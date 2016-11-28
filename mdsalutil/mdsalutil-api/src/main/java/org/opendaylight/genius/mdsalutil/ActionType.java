@@ -7,11 +7,13 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import com.google.common.net.InetAddresses;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.genius.mdsalutil.NwConstants.LearnFlowModsType;
+import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
+import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -61,7 +63,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpShaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpThaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxRegCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4DstCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4SrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpOpCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpSpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpTpaCaseBuilder;
@@ -100,8 +103,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfArpSpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfEthSrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfIpSrcCaseBuilder;
-
-import com.google.common.net.InetAddresses;
 
 
 public enum ActionType {
@@ -551,22 +552,36 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     nx_load_reg_6 {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
-            Dst dst =  new DstBuilder()
-                    .setDstChoice(new DstNxRegCaseBuilder().setNxReg(NxmNxReg6.class).build())
-                    .setStart(Integer.valueOf(actionValues[0]))
-                    .setEnd(Integer.valueOf(actionValues[1]))
-                    .build();
-            nxRegLoadBuilder.setDst(dst);
-            nxRegLoadBuilder.setValue(new BigInteger(actionValues[2]));
-            ActionBuilder ab = new ActionBuilder();
-            ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build());
-            ab.setKey(new ActionKey(actionInfo.getActionKey()));
-            return ab.build();
+            // TODO Migrate all users to ActionRegLoad
+            return new ActionRegLoad(NxmNxReg6.class, actionInfo.getActionValues()).buildAction(newActionKey);
+        }
+    },
+
+    @Deprecated
+    nx_load_reg {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            if (actionInfo instanceof ActionRegLoad) {
+                return ((ActionRegLoad) actionInfo).buildAction(newActionKey);
+            }
+            throw new IllegalStateException(
+                    "nx_load_reg with an ActionInfo that's not ActionRegLoad but " + actionInfo.getClass());
+        }
+    },
+
+    @Deprecated
+    nx_reg_move_mpls_label {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            if (actionInfo instanceof ActionRegMove) {
+                return ((ActionRegMove) actionInfo).buildAction(newActionKey);
+            }
+            throw new IllegalStateException(
+                    "nx_reg_move_mpls_label with an ActionInfo that's not ActionRegMove but " + actionInfo.getClass());
         }
     },
 
