@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_76446e74",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_16bb7ac5",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_56ecd2c7",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-28T10:41:50Z",
       "side": 1,
       "message": "createInterfaceChildEntry should be done for all interfaces, not just for parent of port",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_164ffa93",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "It is being done for all ports. Check isOfTunnel will return true for all tunnel interfaces, not just first.",
+      "parentUuid": "1a622d24_56ecd2c7",
       "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_5649728a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_d6d742ec",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_76fe2e6d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigAddHelper.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2016-11-28T10:41:50Z",
       "side": 1,
       "message": "is this transaction being used anywhere else? if not pls remove it",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_965aea4e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "I thought I removed this. Will do.",
+      "parentUuid": "1a622d24_76fe2e6d",
       "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_3631560c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "done.",
+      "parentUuid": "1a622d24_96f4aa88",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_f6f19e96",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_56405256",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_f6f19e96",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_563a1237",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -115,6 +223,24 @@
       "writtenOn": "2016-11-28T10:41:50Z",
       "side": 1,
       "message": "BooleanUtils.isTrue()",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_96214ab7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-28T12:15:32Z",
+      "side": 1,
+      "message": "Thank you :)",
+      "parentUuid": "1a622d24_563a1237",
       "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
