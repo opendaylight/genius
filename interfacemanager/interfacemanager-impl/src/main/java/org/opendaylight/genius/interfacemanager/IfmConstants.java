@@ -36,4 +36,7 @@ public class IfmConstants {
 
     public static final int JOB_MAX_RETRIES = 6;
     public static final long DELAY_TIME_IN_MILLISECOND = 10000;
+
+    public static final String DEAD_BEEF_MAC_PREFIX = "DEADBEEF";
+    public static final String INVALID_MAC = "00:00:00:00:00:00";
 }
