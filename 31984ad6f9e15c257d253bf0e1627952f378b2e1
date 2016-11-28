@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_07906694",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-11-28T17:39:15Z",
+      "side": 1,
+      "message": "oh man, don\u0027t go changing the existing text - this is used all over the place.",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_f94a2f54",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
         "patchSetId": 6
