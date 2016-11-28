@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_f380908d",
+        "filename": "docs/images/pipeline-acl-egress.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-11-28T08:45:18Z",
+      "side": 1,
+      "message": "Typo - \"Egress ACL 2\" shows up twice\nDo you still need info on details of 1,2,3?\n\nNow that you have a separate file for ACLs, we could even describe all three implementations here.\n\nSame notes on Ingress ACL, which leads to me to think these two should be in a combined file",
+      "parentUuid": "3a65312a_e3b199e2",
+      "revId": "a470083efe619c45fbac9ce994a539444eb0e8e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_03913552",
         "filename": "docs/images/pipeline-acl-ingress.txt",
         "patchSetId": 1
