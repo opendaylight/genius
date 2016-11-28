@@ -9,6 +9,7 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.math.BigInteger;
@@ -17,7 +18,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnectorBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 
 public class IfmUtilTest {
@@ -35,6 +41,14 @@ public class IfmUtilTest {
         assertEquals("openflow:101", NodeId);
         when(ncId.getValue()).thenReturn("openflow:101:11");
         assertEquals(new BigInteger("101"),IfmUtil.getDpnFromNodeConnectorId(ncId));
+    }
+
+    @Test
+    public void testGetPhyAddress() {
+        FlowCapableNodeConnector flowCapableNodeConnector = new FlowCapableNodeConnectorBuilder().
+                setHardwareAddress(new MacAddress("00:00:00:00:00:00")).setName("s1-eth1").build();
+        PhysAddress macAddress = IfmUtil.getPhyAddress(2, flowCapableNodeConnector);
+        assertTrue(macAddress.getValue().contains(IfmConstants.DEAD_BEEF_MAC_PREFIX));
     }
 
 }

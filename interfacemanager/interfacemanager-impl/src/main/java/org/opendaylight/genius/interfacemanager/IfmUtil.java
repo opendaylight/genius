@@ -35,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
@@ -464,6 +465,29 @@ public class IfmUtil {
 
         }
         return vlanInterfaceInfo;
+    }
+
+    public static BigInteger getDeadBeefBytesForMac() {
+        return new BigInteger("FFFFFFFF", 16).and(new BigInteger(IfmConstants.DEAD_BEEF_MAC_PREFIX, 16)).shiftLeft(16);
+    }
+
+    public static BigInteger fillPortNumberToMac(long portNumber) {
+        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portNumber));
+    }
+
+    public static String generateMacAddress(long portNo){
+        char divisionChar = ':';
+        String unformattedMAC = getDeadBeefBytesForMac().or(fillPortNumberToMac(portNo)).toString(16);
+        return unformattedMAC.replaceAll("(.{2})", "$1"+divisionChar).substring(0,17);
+    }
+
+    public static PhysAddress getPhyAddress(long portNo, FlowCapableNodeConnector flowCapableNodeConnector){
+        String southboundMacAddres = flowCapableNodeConnector.getHardwareAddress().getValue();
+        if(IfmConstants.INVALID_MAC.equals(southboundMacAddres)){
+            LOG.debug("Invalid MAC Address received for {}, generating MAC Address", flowCapableNodeConnector.getName());
+            southboundMacAddres = generateMacAddress(portNo);
+        }
+        return new PhysAddress(southboundMacAddres);
     }
 
     public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
