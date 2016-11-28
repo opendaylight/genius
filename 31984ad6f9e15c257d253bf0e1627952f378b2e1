@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_f94a2f54",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:53:36Z",
+      "side": 1,
+      "message": "Since you are making IdUtils as singleton, we can make BLADE_ID as immutable and have this assigning logic inside constructor.",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_796e1fcb",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:53:36Z",
+      "side": 1,
+      "message": "Good catch :)",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_597363b1",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:53:36Z",
+      "side": 1,
+      "message": "Nit: can we make string.intern() in constructor itself and use parentPoolName directly here ?",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3974a79b",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:53:36Z",
+      "side": 1,
+      "message": "is static imports still intact ?",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
