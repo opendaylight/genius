@@ -2,6 +2,125 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_16bb7ac5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "I think this utility can go in mdsalutil",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_56ecd2c7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "createInterfaceChildEntry should be done for all interfaces, not just for parent of port",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d6d742ec",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "canDeleteTunnelPort will be more apt",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_76fe2e6d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "is this transaction being used anywhere else? if not pls remove it",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_96f4aa88",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "can u change this description? ;)",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f6f19e96",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "this is remove method",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_563a1237",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-28T10:41:50Z",
+      "side": 1,
+      "message": "BooleanUtils.isTrue()",
+      "revId": "ebd85552b0783b8cb7b4c8eac880d75a2cc45122",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_4a004067",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
