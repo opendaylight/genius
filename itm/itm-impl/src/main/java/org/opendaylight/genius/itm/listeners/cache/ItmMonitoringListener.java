@@ -19,23 +19,41 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by edimjai on 8/4/2016.
  */
+@Singleton
 public class ItmMonitoringListener  extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorParams, ItmMonitoringListener>
 {
 
 
   private static final Logger logger = LoggerFactory.getLogger(ItmMonitoringListener.class);
 
-  public ItmMonitoringListener(final DataBroker broker) {
+  @Inject
+  public ItmMonitoringListener(final DataBroker dataBroker) {
     super(TunnelMonitorParams.class, ItmMonitoringListener.class);
+    DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
 
     try {
-      registerListener(LogicalDatastoreType.OPERATIONAL, broker);
+      registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     } catch (final Exception e) {
       logger.error("ItmMonitoring DataChange listener registration fail!", e);
     }
+  }
+
+  @PostConstruct
+  public void start() throws Exception {
+    logger.info("ItmMonitoring Started");
+  }
+
+  @PreDestroy
+  public void close() throws Exception {
+    logger.info("ItmMonitoring Closed");
   }
 
   @Override

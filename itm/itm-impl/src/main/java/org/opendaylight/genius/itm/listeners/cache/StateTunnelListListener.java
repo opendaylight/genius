@@ -24,6 +24,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListenerBase<StateTunnelList,StateTunnelListListener> implements AutoCloseable{
     private static final Logger LOG = LoggerFactory.getLogger(StateTunnelListListener.class);
     private final DataBroker broker;
@@ -32,19 +38,25 @@ public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListene
      * Responsible for listening to tunnel interface state change
      *
      */
-
-     public StateTunnelListListener(final DataBroker broker) {
+    @Inject
+     public StateTunnelListListener(final DataBroker dataBroker) {
          super(StateTunnelList.class, StateTunnelListListener.class);
-             this.broker = broker;
+         DataStoreCache.create(ITMConstants.TUNNEL_STATE_CACHE_NAME);
+             this.broker = dataBroker;
          try {
-             registerListener(LogicalDatastoreType.OPERATIONAL, broker);
+             registerListener(LogicalDatastoreType.OPERATIONAL, this.broker);
           } catch (final Exception e) {
              LOG.error("StateTunnelListListener DataChange listener registration fail!", e);
          }
     }
 
+    @PostConstruct
+    public void start() throws Exception {
+        LOG.info("Tunnel Interface State Listener Started");
+    }
 
     @Override
+    @PreDestroy
     public void close() throws Exception {
         LOG.info("Tunnel Interface State Listener Closed");
     }
