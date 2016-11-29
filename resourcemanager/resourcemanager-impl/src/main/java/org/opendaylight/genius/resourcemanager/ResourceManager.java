@@ -72,7 +72,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     private final String tablesStr = "resource.tables.startId";
     private final String tablesEnd = "resource.tables.endId";
     private final String groupsStr = "resource.groups.startId";
-    private final String groupsEnd = "resource.tables.endId";
+    private final String groupsEnd = "resource.groups.endId";
     private final String metersStr = "resource.meters.startId";
     private final String metersEnd = "resource.meters.endId";
 
