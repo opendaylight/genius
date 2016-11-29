@@ -28,6 +28,7 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
@@ -200,7 +201,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             actionInfos.add(new ActionInfo(ActionType.set_field_tunnel_id, new BigInteger[] {
                     BigInteger.valueOf(0)}));
         }
-        actionInfos.add(new ActionInfo(ActionType.output, new String[] { Long.toString(portNum) }));
+        actionInfos.add(new ActionOutput(portNum));
         return actionInfos;
     }
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.genius.mdsalutil.NwConstants.LearnFlowModsType;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
@@ -118,22 +119,16 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     output {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            String port = actionValues[0];
-            int maxLength = 0;
-
-            if (actionValues.length == 2) {
-                maxLength = Integer.valueOf(actionValues[1]);
+            if (actionInfo instanceof ActionOutput) {
+                return ((ActionOutput) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionOutput
+                return new ActionOutput(actionInfo.getActionValues()).buildAction(newActionKey);
             }
-
-            return new ActionBuilder().setAction(
-                    new OutputActionCaseBuilder().setOutputAction(
-                            new OutputActionBuilder().setMaxLength(maxLength)
-                                            .setOutputNodeConnector(new Uri(port)).build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
         }
     },
 
