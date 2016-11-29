@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_68400757",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "should we change the method name to getBridgeRefEntry() ? OperDS is no more relevant since we first fetch from cache",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a8217fb6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "same as above comment",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_fc47b849",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "deletebridgeinterfaceentry is called only when interfaces are delted, not during bridge deletion",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5c74ec9b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "there were issues when parent was deleted without child being deleted, thats why the code was made like this..are you sure it works this if else way?",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3c793094",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "there is a clustereddatatreechangelistenerbase in mdsalutil..can we use that?",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9c6e84c8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeRefEntryListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "what if the bridge comes up with a different dpnid next time?",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7c73a8b1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "can be made in one line",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_bc6420e6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "is this working? deletion of the parent when there are multiple children? There were some bugs during beryllium time frame",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_fc5e9811",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "cant we use booleanutils here also?",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1c6274d8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-29T17:18:05Z",
+      "side": 1,
+      "message": "this can be removed",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
