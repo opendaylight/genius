@@ -272,7 +272,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             try {
                 tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
                         String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp,
-                        schema.getTransportZoneName(), null);
+                        schema.getTransportZoneName(), false, null);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }

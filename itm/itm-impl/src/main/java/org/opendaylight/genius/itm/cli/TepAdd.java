@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.cli;
 
 import java.math.BigInteger;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
@@ -32,6 +33,9 @@ public class TepAdd extends OsgiCommandSupport {
     private String gatewayIp;
     @Argument(index = 6, name = "transportZone", description = "transport_zone", required = false, multiValued = false)
     private String transportZone;
+    @Argument(index = 7, name = "remoteIpFlow", description = "remote-ip-flow", required = false, multiValued = false)
+    private Boolean remoteIpFlow;
+
     private static final Logger LOG = LoggerFactory.getLogger(TepAdd.class);
     private IITMProvider itmProvider;
 
@@ -47,14 +51,14 @@ public class TepAdd extends OsgiCommandSupport {
                     || transportZone == null) {
                 session.getConsole().println("Insufficient Arguments");
                 session.getConsole().println("Correct Usage : exec tep-add dpnId portName vlanId ipAddress subnetMask "
-                        + "gatewayIp transportZone");
+                        + "gatewayIp transportZone remoteIpFlow");
                 return null;
             }
             LOG.debug("Executing create TEP command dpnId={}, portName={}, vlanId={}, ipAddress={},"
-                            + " subnetMask={}, gatewayIp={}, transportZone={}", dpnId, portName, vlanId, ipAddress,
-                    subnetMask, gatewayIp, transportZone);
+                            + " subnetMask={}, gatewayIp={}, transportZone={}, remoteIpFlow={}", dpnId, portName,
+                            vlanId, ipAddress, subnetMask, gatewayIp, transportZone, remoteIpFlow);
             itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
-                    transportZone, session);
+                    transportZone,BooleanUtils.isTrue(remoteIpFlow), session);
         } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"tep-add\"", e);
             throw e;

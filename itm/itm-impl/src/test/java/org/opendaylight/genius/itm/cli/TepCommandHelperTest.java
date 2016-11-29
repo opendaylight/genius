@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -261,7 +261,8 @@ public class TepCommandHelperTest {
     public void testCreateLocalCacheTzonesEmpty() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -287,8 +288,10 @@ public class TepCommandHelperTest {
                 .CONFIGURATION,transportZonesIdentifier);
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
-            tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp1, transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
+            tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp1, transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -312,8 +315,10 @@ public class TepCommandHelperTest {
 
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
-            tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp2, transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
+            tepCommandHelper.createLocalCache(dpId2,portName1,vlanId, tepIp1,subnetMask,gwyIp2, transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -329,7 +334,7 @@ public class TepCommandHelperTest {
         String output = null;
         try {
             tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp3, subnetMask, gwyIp1,
-                    transportZone1, null);
+                    transportZone1, false, null);
         } catch (Exception e) {
             output = e.getMessage();
         }
@@ -340,7 +345,8 @@ public class TepCommandHelperTest {
     public void testCreateLocalCacheGtwyIpNull() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,null,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,null,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -352,7 +358,8 @@ public class TepCommandHelperTest {
 
         String output = null;
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,tepIp2,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,tepIp2,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             output = e.getMessage();
         }
@@ -367,7 +374,7 @@ public class TepCommandHelperTest {
         String output = null;
         try {
             tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp4, subnetMask, gwyIp1,
-                    transportZone1, null);
+                    transportZone1, false, null);
         } catch (TepException e) {
             output = e.getMessage();
         }
@@ -486,7 +493,8 @@ public class TepCommandHelperTest {
     public void testBuildTepsTunnelTypeVxlan() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -504,7 +512,8 @@ public class TepCommandHelperTest {
                 LogicalDatastoreType.CONFIGURATION, transportZoneIdentifier);
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -522,7 +531,8 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+        tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                false, null);
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
@@ -602,7 +612,8 @@ public class TepCommandHelperTest {
     public void testIsInCache() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -616,7 +627,8 @@ public class TepCommandHelperTest {
     public void testValidateForDuplicates() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -630,7 +642,8 @@ public class TepCommandHelperTest {
     public void testCheckTepPerTzPerDpn() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1,
+                    false, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
