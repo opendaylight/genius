@@ -642,6 +642,7 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     nx_load_reg {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
@@ -653,6 +654,7 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     nx_reg_move_mpls_label {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
