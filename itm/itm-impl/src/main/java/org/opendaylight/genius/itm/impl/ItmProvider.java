@@ -155,7 +155,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                 .build();
         try {
             Future<RpcResult<Void>> result = idManager.createIdPool(createPool);
-            if ((result != null) && (result.get().isSuccessful())) {
+            if (result != null && result.get().isSuccessful()) {
                 LOG.debug("Created IdPool for ITM Service");
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -168,6 +168,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         return dataBroker;
     }
 
+    @Override
     public void addExternalEndpoint(Class<? extends TunnelTypeBase> tunnelType, IpAddress dcgwIP) {
         AddExternalTunnelEndpointInput addExternalTunnelEndpointInput =
                 new AddExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType)
@@ -175,6 +176,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         itmRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
     }
 
+    @Override
     public void remExternalEndpoint(Class<? extends TunnelTypeBase> tunnelType, IpAddress dcgwIP) {
         RemoveExternalTunnelEndpointInput removeExternalTunnelEndpointInput =
                 new RemoveExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType)
@@ -183,10 +185,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
     @Override
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                                 String gatewayIp, String transportZone, CommandSession session) {
+                                 String gatewayIp, String transportZone, Boolean remoteIpFlow, CommandSession session) {
         if (tepCommandHelper != null) {
             try {
-                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
+                        transportZone, remoteIpFlow, session);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
@@ -214,6 +217,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
     }
 
+    @Override
     public void showState(List<StateTunnelList> tunnels,CommandSession session) {
         if (tunnels != null) {
             try {
@@ -221,8 +225,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             }catch(TepException e) {
                 LOG.error(e.getMessage());
             }
-        }else
+        } else {
             LOG.debug("No tunnels available");
+        }
     }
 
     @Override
@@ -230,6 +235,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         tepCommandHelper.showCache(cacheName);
     }
 
+    @Override
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
                            String gatewayIp, String transportZone, CommandSession session) {
         try {
@@ -313,14 +319,17 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         LOG.debug("Deleted all Vtep schemas from config DS");
     }
 
+    @Override
     public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol) {
         tepCommandHelper.configureTunnelMonitorParams(monitorEnabled, monitorProtocol);
     }
 
+    @Override
     public void configureTunnelMonitorInterval(int interval) {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
     }
-    
+
+    @Override
     public boolean validateIP (final String ip){
         if (ip == null || ip.equals("")) {
             return false;
