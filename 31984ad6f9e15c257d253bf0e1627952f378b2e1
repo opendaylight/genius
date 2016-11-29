@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_8da5b506",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-29T09:42:03Z",
+      "side": 1,
+      "message": "OK, reverted.. :)",
+      "parentUuid": "1a622d24_07906694",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_f94a2f54",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-28T12:53:36Z",
       "side": 1,
       "message": "Since you are making IdUtils as singleton, we can make BLADE_ID as immutable and have this assigning logic inside constructor.",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6d73f9b1",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-29T09:42:03Z",
+      "side": 1,
+      "message": "OK, that\u0027s a good idea; done. (Minor complication was that IdManagerTest needs this, but solved that.)",
+      "parentUuid": "1a622d24_f94a2f54",
       "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_ad64f1e5",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-29T09:42:03Z",
+      "side": 1,
+      "message": "Don\u0027t thank me, thank Checkstyle.. ;-)",
+      "parentUuid": "1a622d24_796e1fcb",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_597363b1",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
         "patchSetId": 6
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_0d6245d8",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-29T09:42:03Z",
+      "side": 1,
+      "message": "NOK, thias already was like that.. and I was actually tempted to remove that - do you have any idea what this intern is supposed to be good for? I don\u0027t.",
+      "parentUuid": "1a622d24_597363b1",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3974a79b",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
         "patchSetId": 6
@@ -81,6 +153,24 @@
       "writtenOn": "2016-11-28T12:53:36Z",
       "side": 1,
       "message": "is static imports still intact ?",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4d9b9dc9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-29T09:42:03Z",
+      "side": 1,
+      "message": "OK, if you mean to use a static import here instead, Done.",
+      "parentUuid": "1a622d24_3974a79b",
       "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
