@@ -29,6 +29,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
@@ -307,7 +308,7 @@ public class IfmUtil {
                         result.add(new ActionInfo(ActionType.set_field_vlan_vid,
                                 new String[]{Long.toString(vlanVid)}, actionKeyStart++));
                     }
-                    result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
+                    result.add(new ActionOutput(actionKeyStart++, Long.parseLong(portNo)));
                 }else{
                     long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
                     result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
@@ -325,7 +326,7 @@ public class IfmUtil {
                     tunnelKey = 0L;
                 result.add(new ActionInfo(ActionType.set_field_tunnel_id,
                     new BigInteger[]{BigInteger.valueOf(tunnelKey)},actionKeyStart++));
-                result.add(new ActionInfo(ActionType.output, new String[]{portNo}, actionKeyStart++));
+                result.add(new ActionOutput(actionKeyStart++, Long.parseLong(portNo)));
                 break;
 
             default:
