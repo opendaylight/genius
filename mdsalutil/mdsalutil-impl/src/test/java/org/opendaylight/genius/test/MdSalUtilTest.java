@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -212,7 +213,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
                 listActionInfo.add(new ActionInfo(ActionType.push_vlan, new String[] { null }));
                 listActionInfo.add(new ActionInfo(ActionType.set_field_vlan_vid, new String[] { String.valueOf(vlanid) }));
             }
-            listActionInfo.add(new ActionInfo(ActionType.output, new String[] { inport, "65535" }));
+            listActionInfo.add(new ActionOutput(Long.parseLong(inport), 65535));
             listBucketInfo.add(new BucketInfo(listActionInfo));
 
             String groupName = "Test Group";
