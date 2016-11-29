@@ -646,14 +646,14 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     goto_table {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            new ActionBuilder();
             return null;
         }
     },
+    
     nx_conntrack {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
