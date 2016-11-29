@@ -8,26 +8,23 @@
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
-public class ActionInfo implements Serializable {
+public class ActionInfo extends AbstractActionInfo {
 
     private static final long serialVersionUID = 1L;
 
-    private final ActionType m_actionType;
     private final String[] m_asActionValues;
     private final String[][] m_asActionValuesMatrix;
     private final BigInteger[] m_aBigIntValues;
     private final int m_actionKey;
 
     public ActionInfo(ActionInfo action) {
-        super();
-        m_actionType = action.m_actionType;
+        super(action.getActionType());
         m_actionKey = action.m_actionKey;
         m_asActionValuesMatrix = new String[action.m_asActionValuesMatrix.length][];
         for(int i = 0; i < action.m_asActionValuesMatrix.length; i++){
@@ -39,7 +36,7 @@ public class ActionInfo implements Serializable {
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues) {
-        m_actionType = actionType;
+        super(actionType);
         m_actionKey = 0;
         m_asActionValues = asActionValues;
         m_asActionValuesMatrix = null;
@@ -47,7 +44,7 @@ public class ActionInfo implements Serializable {
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, int actionKey) {
-        m_actionType = actionType;
+        super(actionType);
         m_actionKey = actionKey;
         m_asActionValues = asActionValues;
         m_asActionValuesMatrix = null;
@@ -55,7 +52,7 @@ public class ActionInfo implements Serializable {
     }
 
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues) {
-        m_actionType = actionType;
+        super(actionType);
         m_actionKey = 0;
         m_aBigIntValues = aBigIntValues;
         m_asActionValuesMatrix = null;
@@ -63,7 +60,7 @@ public class ActionInfo implements Serializable {
     }
 
     public ActionInfo(ActionType actionType, BigInteger[] aBigIntValues, int actionKey) {
-        m_actionType = actionType;
+        super(actionType);
         m_actionKey = actionKey;
         m_aBigIntValues = aBigIntValues;
         m_asActionValuesMatrix = null;
@@ -71,7 +68,7 @@ public class ActionInfo implements Serializable {
     }
 
     public ActionInfo(ActionType actionType, String[] asActionValues, String[][] asActionValuesMatrix, int actionKey) {
-        m_actionType = actionType;
+        super(actionType);
         m_actionKey = actionKey;
         m_aBigIntValues = null;
         m_asActionValuesMatrix = asActionValuesMatrix;
@@ -86,12 +83,9 @@ public class ActionInfo implements Serializable {
         return m_actionKey;
     }
 
+    @Override
     public Action buildAction() {
-        return m_actionType.buildAction(getActionKey(), this);
-    }
-
-    public ActionType getActionType() {
-        return m_actionType;
+        return getActionType().buildAction(getActionKey(), this);
     }
 
     public String[] getActionValues() {
@@ -108,7 +102,7 @@ public class ActionInfo implements Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).omitNullValues().add("actionType", m_actionType)
+        return MoreObjects.toStringHelper(this).omitNullValues().add("actionType", getActionType())
                 .add("actionValues", Arrays.deepToString(m_asActionValues))
                 .add("bigActionValues", Arrays.deepToString(m_aBigIntValues))
                 .add("actionKey", m_actionKey).toString();
@@ -119,7 +113,7 @@ public class ActionInfo implements Serializable {
         // BEWARE, Caveat Emptor: Array ([]) type fields must use
         // Arrays.hashCode(). deepHashCode() would have to be used for nested
         // arrays.
-        return Objects.hash(m_actionType, Arrays.hashCode(m_asActionValues), Arrays.hashCode(m_aBigIntValues),
+        return Objects.hash(getActionType(), Arrays.hashCode(m_asActionValues), Arrays.hashCode(m_aBigIntValues),
                 m_actionKey);
     }
 
@@ -130,7 +124,7 @@ public class ActionInfo implements Serializable {
         // arrays. Use == only for primitive types; if ever changing
         // those field types, must change to Objects.equals.
         return EvenMoreObjects.equalsHelper(this, obj,
-            (self, other) -> Objects.equals(self.m_actionType, other.m_actionType)
+            (self, other) -> Objects.equals(self.getActionType(), other.getActionType())
                           && Arrays.equals(self.m_asActionValues, other.m_asActionValues)
                           && Arrays.equals(self.m_aBigIntValues, other.m_aBigIntValues)
                           && self.m_actionKey == other.m_actionKey);
