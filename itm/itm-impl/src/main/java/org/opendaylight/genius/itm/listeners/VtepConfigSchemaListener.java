@@ -217,9 +217,9 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      */
     private void handleUpdateOfDpnIds(VtepConfigSchema original, VtepConfigSchema updated) {
         // Handling add/delete DPNs from schema
-        List<DpnIds> originalDpnIds = (original.getDpnIds() == null) ? new ArrayList<>()
+        List<DpnIds> originalDpnIds = original.getDpnIds() == null ? new ArrayList<>()
                 : original.getDpnIds();
-        List<DpnIds> updatedDpnIds = (updated.getDpnIds() == null) ? new ArrayList<>()
+        List<DpnIds> updatedDpnIds = updated.getDpnIds() == null ? new ArrayList<>()
                 : updated.getDpnIds();
 
         handleDeletedDpnsFromSchema(original, originalDpnIds, updatedDpnIds);
@@ -247,7 +247,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             delnAddRequired = true;
         } else if (!StringUtils.equalsIgnoreCase(original.getTransportZoneName(), updated.getTransportZoneName())) {
             delnAddRequired = true;
-        } else if (!(original.getTunnelType().equals(updated.getTunnelType()) )) {
+        } else if (!original.getTunnelType().equals(updated.getTunnelType())) {
             delnAddRequired = true;
         }
         return delnAddRequired;
@@ -333,10 +333,11 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
-        if( tunnelType.equals(TunnelTypeVxlan.class))
+        if( tunnelType.equals(TunnelTypeVxlan.class)) {
             tunType = ITMConstants.TUNNEL_TYPE_VXLAN ;
-        else
+        } else {
             tunType =  ITMConstants.TUNNEL_TYPE_GRE;
+        }
         tepCommandHelper.configureTunnelType(schema.getTransportZoneName(),
                 StringUtils.upperCase(tunType));
 
@@ -353,7 +354,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             }
             try {
                 tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
-                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(),
+                        false, null);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
@@ -380,7 +382,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      * @return the string
      */
     private String handleGatewayIp(IpAddress gatewayIp) {
-        String strGatewayIp = (gatewayIp == null) ? null : String.valueOf(gatewayIp.getValue());
+        String strGatewayIp = gatewayIp == null ? null : String.valueOf(gatewayIp.getValue());
         if (StringUtils.isBlank(strGatewayIp) || StringUtils.equals(ITMConstants.DUMMY_IP_ADDRESS, strGatewayIp)) {
             // To avoid a validation exception in TepCommandHelper
             strGatewayIp = null;

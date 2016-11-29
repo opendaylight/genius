@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 public class TepCommandHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
     static int check = 0;
     static short flag = 0;
     /*
@@ -69,7 +69,7 @@ public class TepCommandHelper {
     final Map<String, Map<SubnetObject, List<Vteps>>> tZones = new HashMap<>();
     private List<Subnets> subnetList = new ArrayList<>();
     private List<TransportZone> tZoneList = new ArrayList<>();
-    private List<Vteps> vtepDelCommitList = new ArrayList<>();
+    private final List<Vteps> vtepDelCommitList = new ArrayList<>();
     private IInterfaceManager interfaceManager;
 
     // private List<InstanceIdentifier<? extends DataObject>> vtepPaths = new
@@ -86,7 +86,8 @@ public class TepCommandHelper {
     }
 
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress,
-                                 String subnetMask, String gatewayIp, String transportZone, CommandSession session) throws TepException{
+                                 String subnetMask, String gatewayIp, String transportZone, Boolean remoteIpFlow,
+                                 CommandSession session) throws TepException{
 
         check++;
         IpAddress ipAddressObj = null;
@@ -123,8 +124,12 @@ public class TepCommandHelper {
             }
             return;
         }
-        Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
-                .setPortname(portName).build();
+        VtepsBuilder vtepBuilder = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
+                .setPortname(portName);
+        if(remoteIpFlow != null) {
+            vtepBuilder.setOptionOfTunnel(remoteIpFlow);
+        }
+        Vteps vtepCli = vtepBuilder.build();
         validateForDuplicates(vtepCli, transportZone);
 
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
@@ -160,7 +165,7 @@ public class TepCommandHelper {
 
     private boolean validateIPs(String ipAddress, String subnetMask, String gatewayIp) {
         SubnetUtils utils = new SubnetUtils(subnetMask);
-        if ((utils.getInfo().isInRange(ipAddress)) && ((gatewayIp == null) || (utils.getInfo().isInRange(gatewayIp)))) {
+        if (utils.getInfo().isInRange(ipAddress) && (gatewayIp == null || utils.getInfo().isInRange(gatewayIp))) {
             return true;
         } else {
             LOG.trace("InValid IP");
@@ -254,7 +259,7 @@ public class TepCommandHelper {
             return true;
         }
         */
-        return (tzone != null) && (tzone.getTunnelType()).equals(TunnelTypeGre.class);
+        return tzone != null && tzone.getTunnelType().equals(TunnelTypeGre.class);
     }
 
     /**
@@ -296,10 +301,12 @@ public class TepCommandHelper {
     public boolean checkExistingSubnet(Map<SubnetObject, List<Vteps>> subVtepMapTemp, SubnetObject subObCli) {
         for (SubnetObject subOb : subVtepMapTemp.keySet()) {
             if (subOb.get_key().equals(subObCli.get_key())) {
-                if (!(subOb.get_vlanId().equals(subObCli.get_vlanId())))
+                if (!subOb.get_vlanId().equals(subObCli.get_vlanId())) {
                     return true;
-                if (!(subOb.get_gatewayIp().equals(subObCli.get_gatewayIp())))
+                }
+                if (!subOb.get_gatewayIp().equals(subObCli.get_gatewayIp())) {
                     return true;
+                }
             }
         }
         return false;
@@ -311,9 +318,11 @@ public class TepCommandHelper {
             Map<SubnetObject, List<Vteps>> subVtepMapTemp = tZones.get(tzone);
             for (SubnetObject subOb : subVtepMapTemp.keySet()) {
                 List<Vteps> vtepList = subVtepMapTemp.get(subOb);
-                for (Vteps vtep : vtepList)
-                    if (vtep.getDpnId().equals(dpnId))
+                for (Vteps vtep : vtepList) {
+                    if (vtep.getDpnId().equals(dpnId)) {
                         return true;
+                    }
+                }
             }
         }
 
@@ -325,11 +334,13 @@ public class TepCommandHelper {
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
         if (tZoneOptional.isPresent()) {
             TransportZone tz = tZoneOptional.get();
-            if (tz.getSubnets() == null || tz.getSubnets().isEmpty())
+            if (tz.getSubnets() == null || tz.getSubnets().isEmpty()) {
                 return false;
+            }
             for (Subnets sub : tz.getSubnets()) {
-                if (sub.getVteps() == null || sub.getVteps().isEmpty())
+                if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
                     continue;
+                }
                 for (Vteps vtep : sub.getVteps()) {
                     if (vtep.getDpnId().equals(dpnId)) {
                         return true;
@@ -371,12 +382,12 @@ public class TepCommandHelper {
                         TransportZone tzoneFromDs = tZoneOptional.get();
                         LOG.debug("read tzone container" + tzoneFromDs.toString());
                         if (tzoneFromDs.getTunnelType() == null
-                                || (tzoneFromDs.getTunnelType()).equals(TunnelTypeVxlan.class)) {
+                                || tzoneFromDs.getTunnelType().equals(TunnelTypeVxlan.class)) {
                             tZone =
                                     new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
                                             .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList)
                                             .setZoneName(tZ).build();
-                        } else if ((tzoneFromDs.getTunnelType()).equals(TunnelTypeGre.class)) {
+                        } else if (tzoneFromDs.getTunnelType().equals(TunnelTypeGre.class)) {
                             tZone =
                                     new TransportZoneBuilder().setKey(new TransportZoneKey(tZ))
                                             .setTunnelType(TunnelTypeGre.class).setSubnets(subnetList)
@@ -421,7 +432,7 @@ public class TepCommandHelper {
                 return;
             }
             List<String> result = new ArrayList<>();
-            result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", (monitorEnabled ? "On" : "Off")));
+            result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", monitorEnabled ? "On" : "Off"));
             result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval));
             result.add(System.lineSeparator());
             result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", "TransportZone", "TunnelType", "SubnetMask",
@@ -440,10 +451,11 @@ public class TepCommandHelper {
                     for (Vteps vtep : sub.getVteps()) {
                         flag = true;
                         String strTunnelType ;
-                        if( (tZ.getTunnelType()).equals(TunnelTypeGre.class) )
+                        if( tZ.getTunnelType().equals(TunnelTypeGre.class) ) {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
-                        else
+                        } else {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+                        }
                         result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", tZ.getZoneName(), strTunnelType, sub
                                 .getPrefix().getIpv4Prefix().getValue(), sub.getGatewayIp().getIpv4Address()
                                 .getValue(), sub.getVlanId().toString(), vtep.getDpnId().toString(), vtep
@@ -480,8 +492,9 @@ public void showCache(String cacheName) {
                 System.out.println() ;
             }
 
-        }else
+        } else {
             System.out.println( "No data in cache for " + cacheName ) ;
+        }
         }
 
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
@@ -571,8 +584,9 @@ public void showCache(String cacheName) {
                 if (tZonesOptional.isPresent()) {
                     TransportZones tZones = tZonesOptional.get();
                     for (TransportZone tZ : tZones.getTransportZone()) {
-                        if (tZ.getSubnets() == null || tZ.getSubnets().isEmpty())
+                        if (tZ.getSubnets() == null || tZ.getSubnets().isEmpty()) {
                             continue;
+                        }
                         for (Subnets sub : tZ.getSubnets()) {
                             vtepDelList.addAll(vtepDelCommitList);
                             for (Vteps vtep : vtepDelList) {
@@ -594,8 +608,9 @@ public void showCache(String cacheName) {
                     }
 
                     for (TransportZone tZ : tZones.getTransportZone()) {
-                        if (tZ.getSubnets() == null || tZ.getSubnets().isEmpty())
+                        if (tZ.getSubnets() == null || tZ.getSubnets().isEmpty()) {
                             continue;
+                        }
                         for (Subnets sub : subDelList) {
                             if (tZ.getSubnets().remove(sub)) {
                                 InstanceIdentifier<T> spath =
@@ -662,22 +677,24 @@ public void showCache(String cacheName) {
                 String tunnelInterfaceName = tunnelInst.getTunnelInterfaceName();
                 LOG.trace("tunnelInterfaceName::: {}", tunnelInterfaceName);
                 String tunnelState = ITMConstants.TUNNEL_STATE_UNKNOWN;
-                if (tunnelInst.getOperState() == TunnelOperStatus.Up)
+                if (tunnelInst.getOperState() == TunnelOperStatus.Up) {
                     tunnelState = ITMConstants.TUNNEL_STATE_UP;
-                else if (tunnelInst.getOperState() == TunnelOperStatus.Down )
+                } else if (tunnelInst.getOperState() == TunnelOperStatus.Down ) {
                     tunnelState = ITMConstants.TUNNEL_STATE_DOWN;
+                }
                 Class<? extends TunnelTypeBase> tunType = tunnelInst.getTransportType();
                 String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
-                if( tunType.equals(TunnelTypeVxlan.class))
-                   tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
-                else if( tunType.equals(TunnelTypeGre.class) )
-                   tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
-                else if (tunType.equals(TunnelTypeMplsOverGre.class))
+                if( tunType.equals(TunnelTypeVxlan.class)) {
+                    tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+                } else if( tunType.equals(TunnelTypeGre.class) ) {
+                    tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
+                } else if (tunType.equals(TunnelTypeMplsOverGre.class)) {
                     tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
+                }
                 session.getConsole().println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(), tunnelInst.getSrcInfo().getTepDeviceId(),
                         tunnelInst.getDstInfo().getTepDeviceId(), tunnelInst.getSrcInfo().getTepIp().getIpv4Address().getValue(), tunnelInst.getDstInfo().getTepIp().getIpv4Address().getValue(), tunnelState,
                         tunnelType));
-                
+
             }
         }
     }
@@ -738,10 +755,11 @@ public void showCache(String cacheName) {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-        if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN))
+        if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
             tunType = TunnelTypeVxlan.class ;
-        else if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) )
+        } else if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) ) {
             tunType = TunnelTypeGre.class ;
+        }
 
         TransportZone tZone = new TransportZoneBuilder().setKey(new TransportZoneKey(tZoneName))
                 .setTunnelType(tunType).build();
@@ -785,14 +803,15 @@ public void showCache(String cacheName) {
         */
         String strTunnelType = ItmUtils.validateTunnelType(tunnelType);
         Class<? extends TunnelTypeBase> tunType ;
-        if( strTunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN))
+        if( strTunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
             tunType = TunnelTypeVxlan.class ;
-        else
+        } else {
             tunType = TunnelTypeGre.class ;
+        }
         //TransportZone tZone = getTransportZone(tZoneName);
         // if (tZone != null) {
         if (tZoneFromConfigDS != null) {
-            if( (!tZoneFromConfigDS.getTunnelType().equals(tunType))  && ItmUtils.isNotEmpty(tZoneFromConfigDS.getSubnets())) {
+            if( !tZoneFromConfigDS.getTunnelType().equals(tunType)  && ItmUtils.isNotEmpty(tZoneFromConfigDS.getSubnets())) {
                 String errorMsg = "Changing the tunnel type from " + tZoneFromConfigDS.getTunnelType() +
                         " to " + strTunnelType +
                         " is not allowed for already configured transport zone [" + tZoneName +
@@ -806,14 +825,15 @@ public void showCache(String cacheName) {
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
         Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         Class<? extends TunnelMonitoringTypeBase> monitorType ;
-        if(storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol()!=null )
+        if(storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol()!=null ) {
             monitorType = storedTunnelMonitor.get().getMonitorProtocol();
-        else
+        } else
         {
-            if(monitorProtocol!=null && monitorProtocol.equalsIgnoreCase(ITMConstants.MONITOR_TYPE_LLDP))
+            if(monitorProtocol!=null && monitorProtocol.equalsIgnoreCase(ITMConstants.MONITOR_TYPE_LLDP)) {
                 monitorType = TunnelMonitoringTypeLldp.class ;
-            else
+            } else {
                 monitorType = TunnelMonitoringTypeBfd.class ;
+            }
         }
         if (!storedTunnelMonitor.isPresent()|| storedTunnelMonitor.get().isEnabled() != monitorEnabled)  {
             TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled).setMonitorProtocol(monitorType).build();
