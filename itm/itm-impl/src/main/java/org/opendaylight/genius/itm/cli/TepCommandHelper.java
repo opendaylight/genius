@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -113,8 +113,8 @@ public class TepCommandHelper {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress,
-                                 String subnetMask, String gatewayIp, String transportZone,
-                                 CommandSession session) throws TepException {
+                                 String subnetMask, String gatewayIp, String transportZone, Boolean remoteIpFlow,
+                                 CommandSession session) throws TepException{
 
         check++;
         IpAddress ipAddressObj = null;
@@ -151,8 +151,12 @@ public class TepCommandHelper {
             }
             return;
         }
-        Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
-                .setPortname(portName).build();
+        VtepsBuilder vtepBuilder = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
+                .setPortname(portName);
+        if(remoteIpFlow != null) {
+            vtepBuilder.setOptionOfTunnel(remoteIpFlow);
+        }
+        Vteps vtepCli = vtepBuilder.build();
         validateForDuplicates(vtepCli, transportZone);
 
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
@@ -906,7 +910,6 @@ public class TepCommandHelper {
                     .setMonitorProtocol(monitorType).build();
             ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
                     ItmUtils.DEFAULT_CALLBACK);
-
         }
     }
 

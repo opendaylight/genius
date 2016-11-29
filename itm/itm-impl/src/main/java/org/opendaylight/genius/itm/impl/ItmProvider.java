@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -170,11 +170,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Override
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                                 String gatewayIp, String transportZone, CommandSession session) {
+                                 String gatewayIp, String transportZone, Boolean remoteIpFlow, CommandSession session) {
         if (tepCommandHelper != null) {
             try {
-                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask,
-                        gatewayIp, transportZone, session);
+                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
+                        transportZone, remoteIpFlow, session);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }

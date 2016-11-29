@@ -250,10 +250,17 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
+<<<<<<< HEAD
         if (tunnelType.equals(TunnelTypeVxlan.class)) {
             tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
         } else {
             tunType = ITMConstants.TUNNEL_TYPE_GRE;
+=======
+        if( tunnelType.equals(TunnelTypeVxlan.class)) {
+            tunType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+        } else {
+            tunType =  ITMConstants.TUNNEL_TYPE_GRE;
+>>>>>>> OFtunnels: Add remote-ip-flow option to tep:add
         }
         tepCommandHelper.configureTunnelType(schema.getTransportZoneName(),
                 StringUtils.upperCase(tunType));
@@ -271,8 +278,13 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             }
             try {
                 tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
+<<<<<<< HEAD
                         String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp,
                         schema.getTransportZoneName(), null);
+=======
+                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(),
+                        false, null);
+>>>>>>> OFtunnels: Add remote-ip-flow option to tep:add
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
