@@ -30,6 +30,7 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
@@ -304,7 +305,7 @@ public class IfmUtil {
                         isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
                     }
                     if (vlanVid != 0 && !isVlanTransparent) {
-                        result.add(new ActionInfo(ActionType.push_vlan, new String[]{}, actionKeyStart++));
+                        result.add(new ActionPushVlan(actionKeyStart++));
                         result.add(new ActionInfo(ActionType.set_field_vlan_vid,
                                 new String[]{Long.toString(vlanVid)}, actionKeyStart++));
                     }

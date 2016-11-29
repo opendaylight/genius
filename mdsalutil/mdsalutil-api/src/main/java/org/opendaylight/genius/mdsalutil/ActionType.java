@@ -14,6 +14,12 @@ import java.util.List;
 import org.opendaylight.genius.mdsalutil.NwConstants.LearnFlowModsType;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionPopMpls;
+import org.opendaylight.genius.mdsalutil.actions.ActionPopPbb;
+import org.opendaylight.genius.mdsalutil.actions.ActionPopVlan;
+import org.opendaylight.genius.mdsalutil.actions.ActionPushMpls;
+import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
+import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
@@ -22,22 +28,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.DropActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.OutputActionCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopMplsActionCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopPbbActionCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PushMplsActionCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PushPbbActionCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PushVlanActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.output.action._case.OutputActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.pop.mpls.action._case.PopMplsActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.pop.pbb.action._case.PopPbbActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.pop.vlan.action._case.PopVlanActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.push.mpls.action._case.PushMplsActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.push.pbb.action._case.PushPbbActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.push.vlan.action._case.PushVlanActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
@@ -135,65 +129,81 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     pop_mpls {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setAction(
-                    new PopMplsActionCaseBuilder().setPopMplsAction(
-                            new PopMplsActionBuilder().setEthernetType(
-                                    NwConstants.ETHTYPE_IPV4).build()).build())
-
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionPopMpls) {
+                return ((ActionPopMpls) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionPopMpls
+                return new ActionPopMpls().buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     pop_pbb {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder()
-                    .setAction(new PopPbbActionCaseBuilder().setPopPbbAction(new PopPbbActionBuilder().build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionPopPbb) {
+                return ((ActionPopPbb) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionPopPbb
+                return new ActionPopPbb().buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     pop_vlan {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setAction(
-                    new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionPopVlan) {
+                return ((ActionPopVlan) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionPopVlan
+                return new ActionPopVlan().buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     push_mpls {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setAction(new PushMplsActionCaseBuilder().setPushMplsAction(
-                                    new PushMplsActionBuilder().setEthernetType(
-                                            NwConstants.ETHTYPE_MPLS_UC).build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionPushMpls) {
+                return ((ActionPushMpls) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionPushMpls
+                return new ActionPushMpls().buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     push_pbb {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setAction(
-                    new PushPbbActionCaseBuilder().setPushPbbAction(
-                                    new PushPbbActionBuilder()
-                                            .setEthernetType(NwConstants.ETHTYPE_PBB).build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionPushPbb) {
+                return ((ActionPushPbb) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionPushPbb
+                return new ActionPushPbb().buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     push_vlan {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setAction(
-                    new PushVlanActionCaseBuilder().setPushVlanAction(
-                                    new PushVlanActionBuilder().setEthernetType(
-                                            NwConstants.ETHTYPE_802_1Q).build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionPushVlan) {
+                return ((ActionPushVlan) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionPushVlan
+                return new ActionPushVlan().buildAction(newActionKey);
+            }
         }
     },
 
