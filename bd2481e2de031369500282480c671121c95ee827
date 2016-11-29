@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_1cb9d42e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "It is relevant as entry in cache comes from operDS. Caller wants to get it from OperDS, caching is just an optimization to avoid read from actual DS. I too personally prefer not having OperDS in there unless this has a ConfigDS counterpart too.",
+      "parentUuid": "1a622d24_68400757",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_a8217fb6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2016-11-29T17:18:05Z",
       "side": 1,
       "message": "same as above comment",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5c822c53",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "Is there a bridgeEntry in Operational? If no, then we can drop the configDS. Main reason I retained names were to avoid changing all callers.",
+      "parentUuid": "1a622d24_a8217fb6",
       "revId": "bd2481e2de031369500282480c671121c95ee827",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_9c7cc474",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "Yes, but if interfaceEntry.size() \u003c\u003d 1, we\u0027re going to delete bridgeEntry itself, right? Why require explicit delete on interface too? Besides, it adds unnecessary delay.",
+      "parentUuid": "1a622d24_fc47b849",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_5c74ec9b",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
         "patchSetId": 6
@@ -64,6 +118,24 @@
       "writtenOn": "2016-11-29T17:18:05Z",
       "side": 1,
       "message": "there were issues when parent was deleted without child being deleted, thats why the code was made like this..are you sure it works this if else way?",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3c877063",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "It should work, not working must\u0027ve been a bug. We already do it in many places. We can revisit this after testing if needed.",
+      "parentUuid": "1a622d24_5c74ec9b",
       "revId": "bd2481e2de031369500282480c671121c95ee827",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_dc959c89",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "We could, but way it is written it made sense for code that was using DataChangeListenerBase during Lithium/Berylium. This works better for this use case. Unless you think would be easier to write test case if we use base.",
+      "parentUuid": "1a622d24_3c793094",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_9c6e84c8",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeRefEntryListener.java",
         "patchSetId": 6
@@ -98,6 +188,24 @@
       "writtenOn": "2016-11-29T17:18:05Z",
       "side": 1,
       "message": "what if the bridge comes up with a different dpnid next time?",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3cee5023",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeRefEntryListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "That would require deletion of tep and all interfaces? Won\u0027t we clear this in OperDS when user deletes tep?",
+      "parentUuid": "1a622d24_9c6e84c8",
       "revId": "bd2481e2de031369500282480c671121c95ee827",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_7cf8c8e5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "1a622d24_7c73a8b1",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_bc6420e6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
         "patchSetId": 6
@@ -132,6 +258,24 @@
       "writtenOn": "2016-11-29T17:18:05Z",
       "side": 1,
       "message": "is this working? deletion of the parent when there are multiple children? There were some bugs during beryllium time frame",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_dcdc7c77",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "We\u0027re only deleting parent when there is only one child and we\u0027re about to delete it. It should work, bug should\u0027ve been fixed by now, if it was raised :) We can test and revisit this if needed.",
+      "parentUuid": "1a622d24_bc6420e6",
       "revId": "bd2481e2de031369500282480c671121c95ee827",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_bcd9c085",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "Oops! missed this one.",
+      "parentUuid": "1a622d24_fc5e9811",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_1c6274d8",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 6
@@ -166,6 +328,24 @@
       "writtenOn": "2016-11-29T17:18:05Z",
       "side": 1,
       "message": "this can be removed",
+      "revId": "bd2481e2de031369500282480c671121c95ee827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1ce71442",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-11-29T17:50:16Z",
+      "side": 1,
+      "message": "I thought I did, must have done Ctrl+Z to fix something else and got this back in.",
+      "parentUuid": "1a622d24_1c6274d8",
       "revId": "bd2481e2de031369500282480c671121c95ee827",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
