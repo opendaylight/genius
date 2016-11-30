@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_3f0ac2d2",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-30T06:17:39Z",
+      "side": 1,
+      "message": "It was used for locking local id pool using pool name intrinsic lock. But intern() is used for pool names even now. This can be safely removed because there is no necessity of locking policy on local id pools now.",
+      "parentUuid": "1a622d24_0d6245d8",
+      "revId": "31984ad6f9e15c257d253bf0e1627952f378b2e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3974a79b",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
         "patchSetId": 6
