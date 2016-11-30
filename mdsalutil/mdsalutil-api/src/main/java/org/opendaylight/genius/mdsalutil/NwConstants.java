@@ -116,6 +116,8 @@ public final class NwConstants {
     public static final short IPV6_TABLE = 45;
     public static final short OUTBOUND_NAPT_TABLE = 46;
     public static final short NAPT_PFIB_TABLE = 47;
+    public static final short ELAN_PRETEMP_SMAC_TABLE = 48;
+    public static final short ELAN_TEMP_SMAC_TABLE = 49;
     public static final short ELAN_SMAC_TABLE = 50;
     public static final short ELAN_DMAC_TABLE = 51;
     public static final short ELAN_UNKNOWN_DMAC_TABLE = 52;
