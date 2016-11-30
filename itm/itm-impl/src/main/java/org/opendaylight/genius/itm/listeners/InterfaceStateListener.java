@@ -35,20 +35,32 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener> implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
     private final DataBroker broker;
 
-    public InterfaceStateListener(final DataBroker db) {
+    @Inject
+    public InterfaceStateListener(final DataBroker dataBroker) {
         super(Interface.class, InterfaceStateListener.class);
-        broker = db;
-        registerListener(broker);
+        this.broker = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.broker);
+        LOG.info("Interface state listener Started");
     }
 
     @Override
+    @PreDestroy
     public void close() throws Exception {
-        
         LOG.info("Interface state listener Closed");
     }
 
