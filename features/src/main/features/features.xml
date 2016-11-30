@@ -58,7 +58,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <bundle>mvn:org.opendaylight.genius/itm-impl/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/resourcemanager-impl/{{VERSION}}</bundle>
     <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
-    <configfile finalname="${configfile.directory}/lockmanager-impl-default-config.xml">mvn:org.opendaylight.genius/lockmanager-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/mdsalutil-impl-default-config.xml">mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/interfacemanager-impl-default-config.xml">mvn:org.opendaylight.genius/interfacemanager-impl/{{VERSION}}/xml/config</configfile>
     <configfile finalname="${configfile.directory}/itm-impl-default-config.xml">mvn:org.opendaylight.genius/itm-impl/{{VERSION}}/xml/config</configfile>
