@@ -7,14 +7,18 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import java.math.BigInteger;
 import org.opendaylight.yangtools.concepts.Builder;
 
 /**
  * Builder for ActionInfo.
  * This class, even if not directly called from anywhere statically, is needed
- * by the XtendBeanGenerator in order to be able to generate code which creates
- * ActionInfo instances.
+ * by the {@link XtendBeanGenerator} in order to be able to generate code which creates
+ * ActionInfo instances.  This is because the XtendBeanGenerator cannot figure out by
+ * itself which constructor to call for instances of this type.
+ *
+ * @author Michael Vorburger
  */
 public class ActionInfoBuilder implements Builder<ActionInfo> {
 
@@ -22,8 +26,10 @@ public class ActionInfoBuilder implements Builder<ActionInfo> {
     private int actionKey = 0;
     // Do NOT use List<String/BigInteger> here.. XtendBeanGenerator needs this to match with ActionInfo's types
     private String[] actionValues;
+    private String[][] actionValuesMatrix;
     private BigInteger[] bigActionValues;
 
+    @Override
     public ActionInfo build() {
         if (actionType == null) {
             throw new IllegalStateException("actionType must be set");
@@ -60,6 +66,14 @@ public class ActionInfoBuilder implements Builder<ActionInfo> {
 
     public void setActionValues(String[] actionValues) {
         this.actionValues = actionValues;
+    }
+
+    public String[][] getActionValuesMatrix() {
+        return actionValuesMatrix;
+    }
+
+    public void setActionValuesMatrix(String[][] actionValuesMatrix) {
+        this.actionValuesMatrix = actionValuesMatrix;
     }
 
     public BigInteger[] getBigActionValues() {
