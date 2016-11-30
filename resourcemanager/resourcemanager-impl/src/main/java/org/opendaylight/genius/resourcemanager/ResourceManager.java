@@ -9,10 +9,10 @@
 package org.opendaylight.genius.resourcemanager;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -60,37 +60,46 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ResourceManager implements ResourceManagerService, AutoCloseable {
-    private static final Logger LOG = LoggerFactory.getLogger(ResourceManager.class);
+    private static final String TABLES_NAME = "resource.tables.name";
+    private static final String GROUPS_NAME = "resource.groups.name";
+    private static final String METERS_NAME = "resource.meters.name";
+
+    private static final String TABLES_START_ID = "resource.tables.startId";
+    private static final String TABLES_END_ID = "resource.tables.endId";
+    private static final String GROUPS_START_ID = "resource.groups.startId";
+    private static final String GROUPS_END_ID = "resource.groups.endId";
+    private static final String METERS_START_ID = "resource.meters.startId";
+    private static final String METERS_END_ID = "resource.meters.endId";
+
+    // Messages
+    private static final String CREATING_POOL_WITH_DEFAULT_VALUES = "Creating pool with default values";
+    private static final String RESOURCE_TYPE_CANNOT_BE_NULL = "Resource type cannot be null";
+    private static final String RESOURCE_TYPE_NOT_FOUND = "Resource type not found";
+    private static final String RESOURCE_ID_CANNOT_BE_NULL = "Id key cannot be null";
+
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
 
-    private final ConcurrentHashMap<Class<? extends ResourceTypeBase>, String> resourceMap;
-    private final String tablesName = "resource.tables.name";
-    private final String groupsName = "resource.groups.name";
-    private final String metersName = "resource.meters.name";
+    // Cache of resources
+    private final ConcurrentHashMap<Class<? extends ResourceTypeBase>, String> resourcesCache;
 
-    private final String tablesStr = "resource.tables.startId";
-    private final String tablesEnd = "resource.tables.endId";
-    private final String groupsStr = "resource.groups.startId";
-    private final String groupsEnd = "resource.groups.endId";
-    private final String metersStr = "resource.meters.startId";
-    private final String metersEnd = "resource.meters.endId";
+    private static final Logger LOG = LoggerFactory.getLogger(ResourceManager.class);
 
     @Inject
     public ResourceManager(final DataBroker dataBroker, final IdManagerService idManager) {
         this.dataBroker = dataBroker;
         this.idManager = idManager;
-        this.resourceMap = new ConcurrentHashMap<>();
-        if (System.getProperty(tablesName) != null && System.getProperty(groupsName) != null
-                && System.getProperty(metersName) != null) {
-            resourceMap.put(ResourceTypeTableIds.class, System.getProperty(tablesName));
-            resourceMap.put(ResourceTypeGroupIds.class, System.getProperty(groupsName));
-            resourceMap.put(ResourceTypeMeterIds.class, System.getProperty(metersName));
+        this.resourcesCache = new ConcurrentHashMap<>();
+        if (System.getProperty(TABLES_NAME) != null && System.getProperty(GROUPS_NAME) != null
+                && System.getProperty(METERS_NAME) != null) {
+            resourcesCache.put(ResourceTypeTableIds.class, System.getProperty(TABLES_NAME));
+            resourcesCache.put(ResourceTypeGroupIds.class, System.getProperty(GROUPS_NAME));
+            resourcesCache.put(ResourceTypeMeterIds.class, System.getProperty(METERS_NAME));
         } else {
             // Updating Map with default values
-            resourceMap.put(ResourceTypeTableIds.class, "tables");
-            resourceMap.put(ResourceTypeGroupIds.class, "groups");
-            resourceMap.put(ResourceTypeMeterIds.class, "meters");
+            resourcesCache.put(ResourceTypeTableIds.class, "tables");
+            resourcesCache.put(ResourceTypeGroupIds.class, "groups");
+            resourcesCache.put(ResourceTypeMeterIds.class, "meters");
         }
     }
 
@@ -102,16 +111,13 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
     @Override
     public Future<RpcResult<AllocateResourceOutput>> allocateResource(AllocateResourceInput input) {
-        try {
-            Preconditions.checkNotNull(input.getResourceType());
-            Preconditions.checkNotNull(input.getIdKey());
-            Preconditions.checkNotNull(input.getSize());
-            Preconditions.checkNotNull(resourceMap.get(input.getResourceType()));
-        } catch (NullPointerException e) {
-            LOG.error("Incorrect parameters for AllocateResourceInput");
-        }
+        Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
+        Objects.requireNonNull(input.getIdKey(), RESOURCE_ID_CANNOT_BE_NULL);
+        Objects.requireNonNull(input.getSize(), "Size cannot be null");
+        Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_NOT_FOUND);
+
         AllocateIdRangeInputBuilder allocateIdRangeBuilder = new AllocateIdRangeInputBuilder();
-        allocateIdRangeBuilder.setIdKey(input.getIdKey()).setPoolName(resourceMap.get(input.getResourceType()))
+        allocateIdRangeBuilder.setIdKey(input.getIdKey()).setPoolName(resourcesCache.get(input.getResourceType()))
                 .setSize(input.getSize());
         Future<RpcResult<AllocateIdRangeOutput>> output = idManager.allocateIdRange(allocateIdRangeBuilder.build());
         AllocateResourceOutputBuilder allocateResourceOutputBuilder = new AllocateResourceOutputBuilder();
@@ -126,10 +132,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
                 allocateResourceOutputRpcBuilder.withResult(allocateResourceOutputBuilder.build());
             }
         } catch (InterruptedException | ExecutionException e) {
-            allocateResourceOutputRpcBuilder = RpcResultBuilder.failed();
-            allocateResourceOutputRpcBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
-        } catch (NullPointerException e) {
-            LOG.error("Allocate Resource failed for resource {} due to {} ", input.getResourceType(), e);
+            LOG.error("Allocate Resource failed for resource {} due to ", input.getResourceType(), e);
             allocateResourceOutputRpcBuilder = RpcResultBuilder.failed();
             allocateResourceOutputRpcBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
         }
@@ -143,26 +146,18 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
     @Override
     public Future<RpcResult<GetResourcePoolOutput>> getResourcePool(GetResourcePoolInput input) {
-        IdPool parentIdPool = null;
-        IdPool localIdPool = null;
-        GetResourcePoolOutputBuilder outputBuilder = null;
-        RpcResultBuilder<GetResourcePoolOutput> rpcOutputBuilder = null;
         long currentTimeSec = System.currentTimeMillis() / 1000;
-        try {
-            Preconditions.checkNotNull(input.getResourceType());
-            Preconditions.checkNotNull(resourceMap.get(input.getResourceType()));
-        } catch (NullPointerException e) {
-            LOG.error("Incorrect parameters for GetResourcePool");
-        }
+        Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
+        Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_CANNOT_BE_NULL);
 
         List<AvailableIds> availableIdsList = new ArrayList<>();
         List<DelayedResourceEntries> delayedIdEntriesList = new ArrayList<>();
         InstanceIdentifier<IdPool> parentId = ResourceManagerUtils
-                .getIdPoolInstance(resourceMap.get(input.getResourceType()));
+                .getIdPoolInstance(resourcesCache.get(input.getResourceType()));
         Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId,
                 dataBroker);
         if (optionalParentIdPool != null && optionalParentIdPool.isPresent()) {
-            parentIdPool = optionalParentIdPool.get();
+            IdPool parentIdPool = optionalParentIdPool.get();
             AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
             if (availableParentIdsHolder.getStart() < availableParentIdsHolder.getEnd()) {
                 availableIdsList.add(new AvailableIdsBuilder().setStart(availableParentIdsHolder.getStart())
@@ -180,11 +175,11 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
             }
         }
 
-        String localPool = ResourceManagerUtils.getLocalPoolName(resourceMap.get(input.getResourceType()));
+        String localPool = ResourceManagerUtils.getLocalPoolName(resourcesCache.get(input.getResourceType()));
         InstanceIdentifier<IdPool> localId = ResourceManagerUtils.getIdPoolInstance(localPool);
         Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId, dataBroker);
         if (optionalLocalId != null && optionalLocalId.isPresent()) {
-            localIdPool = optionalLocalId.get();
+            IdPool localIdPool = optionalLocalId.get();
             AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
             if (availableLocalIdsHolder != null
                     && availableLocalIdsHolder.getStart() < availableLocalIdsHolder.getEnd()) {
@@ -206,38 +201,24 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
             }
         }
-
-        try {
-            outputBuilder = new GetResourcePoolOutputBuilder().setAvailableIds(availableIdsList)
-                    .setDelayedResourceEntries(delayedIdEntriesList);
-            rpcOutputBuilder = RpcResultBuilder.success();
-            rpcOutputBuilder.withResult(outputBuilder.build());
-        } catch (NullPointerException e) {
-            rpcOutputBuilder = RpcResultBuilder.failed();
-            rpcOutputBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
-        }
-        return Futures.immediateFuture(rpcOutputBuilder.build());
+        GetResourcePoolOutput output = new GetResourcePoolOutputBuilder().setAvailableIds(availableIdsList)
+                .setDelayedResourceEntries(delayedIdEntriesList).build();
+        return RpcResultBuilder.success(output).buildFuture();
     }
 
     @Override
     public Future<RpcResult<GetAvailableResourcesOutput>> getAvailableResources(GetAvailableResourcesInput input) {
-
-        IdPool parentIdPool = null;
-        IdPool localIdPool = null;
         long totalIdsAvailableForAllocation = 0;
         long currentTimeSec = System.currentTimeMillis() / 1000;
-        try {
-            Preconditions.checkNotNull(input.getResourceType());
-            Preconditions.checkNotNull(resourceMap.get(input.getResourceType()));
-        } catch (NullPointerException e) {
-            LOG.error("Incorrect parameters for GetAvailableResources");
-        }
+        Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
+        Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_NOT_FOUND);
+
         InstanceIdentifier<IdPool> parentId = ResourceManagerUtils
-                .getIdPoolInstance(resourceMap.get(input.getResourceType()));
+                .getIdPoolInstance(resourcesCache.get(input.getResourceType()));
         Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId,
                 dataBroker);
         if (optionalParentIdPool != null && optionalParentIdPool.isPresent()) {
-            parentIdPool = optionalParentIdPool.get();
+            IdPool parentIdPool = optionalParentIdPool.get();
             AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
             totalIdsAvailableForAllocation = availableParentIdsHolder.getEnd() - availableParentIdsHolder.getCursor();
             ReleasedIdsHolder releasedParentIdsHolder = parentIdPool.getReleasedIdsHolder();
@@ -249,11 +230,11 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
             }
         }
 
-        String localPool = ResourceManagerUtils.getLocalPoolName(resourceMap.get(input.getResourceType()));
+        String localPool = ResourceManagerUtils.getLocalPoolName(resourcesCache.get(input.getResourceType()));
         InstanceIdentifier<IdPool> localId = ResourceManagerUtils.getIdPoolInstance(localPool);
         Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId, dataBroker);
         if (optionalLocalId != null && optionalLocalId.isPresent()) {
-            localIdPool = optionalLocalId.get();
+            IdPool localIdPool = optionalLocalId.get();
             AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
             if (availableLocalIdsHolder != null) {
                 totalIdsAvailableForAllocation += availableLocalIdsHolder.getEnd()
@@ -286,21 +267,18 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
     @Override
     public Future<RpcResult<Void>> releaseResource(ReleaseResourceInput input) {
-        try {
-            Preconditions.checkNotNull(input.getResourceType());
-            Preconditions.checkNotNull(input.getIdKey());
-            Preconditions.checkNotNull(resourceMap.get(input.getResourceType()));
-        } catch (NullPointerException e) {
-            LOG.error("Incorrect parameters for the ReleaseResourceInput");
-        }
+        Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
+        Objects.requireNonNull(input.getIdKey(), RESOURCE_ID_CANNOT_BE_NULL);
+        Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_NOT_FOUND);
+
         ReleaseIdInputBuilder releaseIdInputBuilder = new ReleaseIdInputBuilder();
-        releaseIdInputBuilder.setIdKey(input.getIdKey()).setPoolName(resourceMap.get(input.getResourceType()));
+        releaseIdInputBuilder.setIdKey(input.getIdKey()).setPoolName(resourcesCache.get(input.getResourceType()));
         RpcResultBuilder<Void> releaseIdRpcBuilder;
         try {
             idManager.releaseId(releaseIdInputBuilder.build());
             releaseIdRpcBuilder = RpcResultBuilder.success();
         } catch (NullPointerException e) {
-            LOG.error("Release resource failed for resource {} due to {}", input.getResourceType(), e);
+            LOG.error("Release resource failed for resource {} due to ", input.getResourceType(), e);
             releaseIdRpcBuilder = RpcResultBuilder.failed();
             releaseIdRpcBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
         }
@@ -309,37 +287,37 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
     private void createIdpools() {
         // Create Tables Id Pool
-        if (System.getProperty(tablesName) != null && System.getProperty(tablesStr) != null
-                && System.getProperty(tablesEnd) != null) {
-            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(tablesName))
-                    .setLow(Long.valueOf(System.getProperty(tablesStr)))
-                    .setHigh(Long.valueOf(System.getProperty(tablesEnd))).build());
+        if (System.getProperty(TABLES_NAME) != null && System.getProperty(TABLES_START_ID) != null
+                && System.getProperty(TABLES_END_ID) != null) {
+            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(TABLES_NAME))
+                    .setLow(Long.valueOf(System.getProperty(TABLES_START_ID)))
+                    .setHigh(Long.valueOf(System.getProperty(TABLES_END_ID))).build());
         } else {
-            LOG.trace("Creating pool with default values");
+            LOG.trace(CREATING_POOL_WITH_DEFAULT_VALUES);
             idManager.createIdPool(
                     new CreateIdPoolInputBuilder().setPoolName("tables").setLow((long) 0).setHigh((long) 254).build());
         }
 
         // Create Groups Id Pool
-        if (System.getProperty(groupsName) != null && System.getProperty(groupsStr) != null
-                && System.getProperty(groupsEnd) != null) {
-            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(groupsName))
-                    .setLow(Long.valueOf(System.getProperty(groupsStr)))
-                    .setHigh(Long.valueOf(System.getProperty(groupsEnd))).build());
+        if (System.getProperty(GROUPS_NAME) != null && System.getProperty(GROUPS_START_ID) != null
+                && System.getProperty(GROUPS_END_ID) != null) {
+            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(GROUPS_NAME))
+                    .setLow(Long.valueOf(System.getProperty(GROUPS_START_ID)))
+                    .setHigh(Long.valueOf(System.getProperty(GROUPS_END_ID))).build());
         } else {
-            LOG.trace("Creating pool with default values");
+            LOG.trace(CREATING_POOL_WITH_DEFAULT_VALUES);
             idManager.createIdPool(
                     new CreateIdPoolInputBuilder().setPoolName("meters").setLow((long) 0).setHigh((long) 254).build());
         }
 
         // Create Meters Id Pool
-        if (System.getProperty(metersName) != null && System.getProperty(metersStr) != null
-                && System.getProperty(metersEnd) != null) {
-            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(metersName))
-                    .setLow(Long.valueOf(System.getProperty(metersStr)))
-                    .setHigh(Long.valueOf(System.getProperty(metersEnd))).build());
+        if (System.getProperty(METERS_NAME) != null && System.getProperty(METERS_START_ID) != null
+                && System.getProperty(METERS_END_ID) != null) {
+            idManager.createIdPool(new CreateIdPoolInputBuilder().setPoolName(System.getProperty(METERS_NAME))
+                    .setLow(Long.valueOf(System.getProperty(METERS_START_ID)))
+                    .setHigh(Long.valueOf(System.getProperty(METERS_END_ID))).build());
         } else {
-            LOG.trace("Creating pool with default values");
+            LOG.trace(CREATING_POOL_WITH_DEFAULT_VALUES);
             idManager.createIdPool(
                     new CreateIdPoolInputBuilder().setPoolName("groups").setLow((long) 0).setHigh((long) 254).build());
         }
