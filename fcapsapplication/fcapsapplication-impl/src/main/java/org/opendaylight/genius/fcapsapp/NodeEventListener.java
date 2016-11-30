@@ -85,7 +85,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                         if (mod.getDataBefore() == null) {
                             if (isNodeOwner(nodeId)) {
                                 LOG.debug("NodeAdded {} notification is received on host {}", nodeId, hostName);
-                                alarmAgent.clearControlPathAlarm(nodeId);
+                                alarmAgent.clearControlPathAlarm(nodeId,hostName);
                                 nodeUpdateCounter.nodeAddedNotification(nodeId, hostName);
                             } else {
                                 LOG.debug("ADD: Node {} is not connected to host {}", nodeId, hostName);
