@@ -9,12 +9,14 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.routing.RouteChangeListener;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RoutedRpcRegistration;
@@ -22,6 +24,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistr
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -29,6 +32,7 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.infrautils.inject.ModuleSetupRuntimeException;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
@@ -54,11 +58,10 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  *
  * @author Michael Vorburger
  */
-@SuppressWarnings("deprecation")
 public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() {
+    protected void configureBindings() throws Exception {
         // TODO Ordering as below.. hard to do currently, because of interdeps. due to CSS
         // Bindings for services from this project
         // Bindings for external services to "real" implementations
@@ -71,7 +74,14 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(LockManagerService.class).toInstance(lockManager);
 
         IdUtils idUtils = new IdUtils();
-        IdManagerService idManager = new IdManager(dataBroker, lockManager, idUtils);
+        IdManagerService idManager;
+        try {
+            idManager = new IdManager(dataBroker,
+                    new SingleTransactionDataBroker(dataBroker), lockManager, idUtils);
+        } catch (ReadFailedException e) {
+            // TODO Support AbstractGuiceJsr250Module
+            throw new ModuleSetupRuntimeException(e);
+        }
         bind(IdManagerService.class).toInstance(idManager);
 
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
@@ -82,7 +92,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
 
         // Temporary bindings which normally would be on top, but cauz of CSS vs BP are here, for now:
-        InterfacemgrProvider interfaceManager = interfaceManager(mdsalManager, entityOwnershipService, dataBroker, idManager);
+        InterfacemgrProvider interfaceManager = interfaceManager(mdsalManager, entityOwnershipService, dataBroker,
+                idManager);
         bind(IInterfaceManager.class).toInstance(interfaceManager);
         bind(Stopper.class).toInstance(new Stopper(interfaceManager));
     }
@@ -177,8 +188,10 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
     }
 
-    interface MockOpendaylightPortStatisticsRpcService extends OpendaylightPortStatisticsService, RpcService { }
+    interface MockOpendaylightPortStatisticsRpcService extends OpendaylightPortStatisticsService, RpcService {
+    }
 
-    interface MockOpendaylightFlowTableStatisticsRpcService extends OpendaylightFlowTableStatisticsService, RpcService { }
+    interface MockOpendaylightFlowTableStatisticsRpcService extends OpendaylightFlowTableStatisticsService, RpcService {
+    }
 
 }
