@@ -13,3 +13,4 @@ Contents:
    Design Specification Template <specs-template>
    of-tunnels
    itm-tunnel-auto-config
+   gre-tunnel-monitor-using-bfd
