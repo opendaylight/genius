@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -42,8 +44,18 @@ public class LockManager implements LockManagerService {
     private final DataBroker broker;
 
     @Inject
-    public LockManager(final DataBroker db) {
-        broker = db;
+    public LockManager(final DataBroker dataBroker) {
+        this.broker = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        LOG.info("LockManager Started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("LockManager Closed");
     }
 
     @Override
