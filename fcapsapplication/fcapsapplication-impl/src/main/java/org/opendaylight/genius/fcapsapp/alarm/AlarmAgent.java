@@ -98,18 +98,17 @@ public class AlarmAgent {
      *         Controller hostname
      */
     public void raiseControlPathAlarm(String nodeId,String host) {
-        StringBuilder alarmText = new StringBuilder();
+        String alarmText;
         StringBuilder source = new StringBuilder();
 
         if (host != null) {
             try {
-                alarmText.append("OF Switch ").append(nodeId).append(" lost heart beat communication with controller ")
-                        .append(host);
+                alarmText = getAlarmText(nodeId, host);
                 source.append("Dpn=").append(nodeId);
 
                 s_logger.debug("Raising ControlPathConnectionFailure alarm... alarmText {} source {} ", alarmText, source);
                 //Invokes JMX raiseAlarm method
-                invokeFMraisemethod("ControlPathConnectionFailure", alarmText.toString(), source.toString());
+                invokeFMraisemethod("ControlPathConnectionFailure", alarmText, source.toString());
             } catch (Exception e) {
                 s_logger.error("Exception before invoking raise method in jmx {}", e);
             }
@@ -123,17 +122,26 @@ public class AlarmAgent {
      * @param nodeId
      *         Source of the alarm dpnId
      */
-    public void clearControlPathAlarm(String nodeId) {
+    public void clearControlPathAlarm(String nodeId, String host) {
         StringBuilder source = new StringBuilder();
+        String alarmText;
 
-        try {
-            source.append("Dpn=").append(nodeId);
-            s_logger.debug("Clearing ControlPathConnectionFailure alarm of source {} ", source);
-            //Invokes JMX clearAlarm method
-            invokeFMclearmethod("ControlPathConnectionFailure", "OF Switch gained communication with controller",
-                    source.toString());
-        } catch (Exception e) {
-            s_logger.error("Exception before invoking clear method jmx {}", e);
+        if (host != null) {
+            try {
+                alarmText = getAlarmText(nodeId, host);
+                source.append("Dpn=").append(nodeId);
+                s_logger.debug("Clearing ControlPathConnectionFailure alarm of source {} ", source);
+                //Invokes JMX clearAlarm method
+                invokeFMclearmethod("ControlPathConnectionFailure", alarmText, source.toString());
+            } catch (Exception e) {
+                s_logger.error("Exception before invoking clear method jmx {}", e);
+            }
+        } else {
+            s_logger.error("Received hostname is null");
         }
+    }
+
+    private String getAlarmText(String nodeId, String host) {
+        return "OF Switch " + nodeId + " lost heart beat communication with controller " + host;
     }
 }
