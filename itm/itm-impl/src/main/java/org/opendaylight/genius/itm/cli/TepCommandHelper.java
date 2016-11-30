@@ -18,7 +18,6 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -55,10 +54,16 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class TepCommandHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
     static int check = 0;
     static short flag = 0;
     /*
@@ -70,19 +75,24 @@ public class TepCommandHelper {
     private List<Subnets> subnetList = new ArrayList<>();
     private List<TransportZone> tZoneList = new ArrayList<>();
     private List<Vteps> vtepDelCommitList = new ArrayList<>();
-    private IInterfaceManager interfaceManager;
 
     // private List<InstanceIdentifier<? extends DataObject>> vtepPaths = new
     // ArrayList<>();
 
-
-    public TepCommandHelper(final DataBroker broker) {
-        this.dataBroker = broker;
+    @Inject
+    public TepCommandHelper(final DataBroker dataBroker) {
+        this.dataBroker = dataBroker;
     }
 
+    @PostConstruct
+    public void start() throws Exception {
+        configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
+        LOG.info("TepCommandHelper Started");
+    }
 
-    public void setInterfaceManager(IInterfaceManager interfaceManager) {
-        this.interfaceManager = interfaceManager;
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("TepCommandHelper Closed");
     }
 
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress,
