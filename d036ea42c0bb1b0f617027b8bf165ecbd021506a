@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_451a4c18",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2016-12-01T15:04:20Z",
+      "side": 1,
+      "message": "Is there a better name than temp?",
+      "revId": "d036ea42c0bb1b0f617027b8bf165ecbd021506a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
