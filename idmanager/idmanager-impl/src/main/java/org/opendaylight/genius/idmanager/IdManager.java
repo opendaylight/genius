@@ -85,10 +85,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private final Timer cleanJobTimer = new Timer();
 
     @Inject
-    public IdManager(DataBroker db, SingleTransactionDataBroker singleTransactionDataBroker,
-            LockManagerService lockManager, IdUtils idUtils) throws ReadFailedException {
+    public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils) throws ReadFailedException {
         this.broker = db;
-        this.singleTxDB = singleTransactionDataBroker;
+        this.singleTxDB = new SingleTransactionDataBroker(db);
         this.lockManager = lockManager;
         this.idUtils = idUtils;
         this.localPool = new ConcurrentHashMap<>();

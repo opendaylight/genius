@@ -8,8 +8,6 @@
 package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Optional;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
@@ -27,14 +25,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Vorburger
  */
-@Singleton
+// do *NOT* make this a BP @Singleton; see https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene for why
 public class SingleTransactionDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionDataBroker.class);
 
     private final DataBroker broker;
 
-    @Inject
+    // do *NOT* use BP @Inject here, see comment above
     public SingleTransactionDataBroker(DataBroker broker) {
         this.broker = broker;
     }

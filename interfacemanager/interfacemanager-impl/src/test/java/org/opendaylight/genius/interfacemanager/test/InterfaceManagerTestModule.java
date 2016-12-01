@@ -24,7 +24,6 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistr
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -76,8 +75,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         IdUtils idUtils = new IdUtils();
         IdManagerService idManager;
         try {
-            idManager = new IdManager(dataBroker,
-                    new SingleTransactionDataBroker(dataBroker), lockManager, idUtils);
+            idManager = new IdManager(dataBroker, lockManager, idUtils);
         } catch (ReadFailedException e) {
             // TODO Support AbstractGuiceJsr250Module
             throw new ModuleSetupRuntimeException(e);

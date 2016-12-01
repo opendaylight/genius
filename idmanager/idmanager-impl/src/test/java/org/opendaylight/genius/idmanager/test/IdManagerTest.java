@@ -37,7 +37,6 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
@@ -145,7 +144,7 @@ public class IdManagerTest {
             doReturn(Futures.immediateCheckedFuture(optionalIdPools)).when(mockReadTx)
                     .read(LogicalDatastoreType.CONFIGURATION, idUtils.getIdPools());
         }
-        idManager = new IdManager(dataBroker, new SingleTransactionDataBroker(dataBroker), lockManager, idUtils);
+        idManager = new IdManager(dataBroker, lockManager, idUtils);
     }
 
     @Test
