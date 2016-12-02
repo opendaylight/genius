@@ -22,6 +22,30 @@
       "revId": "289bb4861fb4daa0f800de00ee1f426369a24a4f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_2b8d5f7c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 337,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-02T05:55:57Z",
+      "side": 1,
+      "message": "Done. Not sure where it came from as I didn\u0027t manually edit this code, probably rebase I had to do before push.",
+      "parentUuid": "1a622d24_d588cfc8",
+      "range": {
+        "startLine": 337,
+        "startChar": 0,
+        "endLine": 337,
+        "endChar": 3
+      },
+      "revId": "289bb4861fb4daa0f800de00ee1f426369a24a4f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
