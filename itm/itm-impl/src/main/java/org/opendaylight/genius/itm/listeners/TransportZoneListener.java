@@ -49,31 +49,45 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
+@Singleton
 public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<TransportZone, TransportZoneListener>
         implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(TransportZoneListener.class);
     private final DataBroker dataBroker;
     private final IdManagerService idManagerService;
-    private IMdsalApiManager mdsalManager;
-    private ITMManager itmManager;
+    private final IMdsalApiManager mdsalManager;
+    private final ITMManager itmManager;
 
-    public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService) {
+    @Inject
+    public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
+                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
-    }
-
-    public void setItmManager(ITMManager itmManager) {
         this.itmManager = itmManager;
+        this.mdsalManager = iMdsalApiManager;
     }
 
-    public void setMdsalManager(IMdsalApiManager mdsalManager) {
-        this.mdsalManager = mdsalManager;
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
+        LOG.info("tzChangeListener Started");
+    }
+
+    @Override
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("tzChangeListener Closed");
     }
 
     private void initializeTZNode(DataBroker db) {
@@ -92,11 +106,6 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         } catch (Exception e) {
             LOG.error("Error initializing TransportZones {}", e);
         }
-    }
-
-    @Override
-    public void close() throws Exception {
-        LOG.info("tzChangeListener Closed");
     }
 
     @Override
