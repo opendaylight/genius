@@ -50,6 +50,74 @@
       "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8e8f6123",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-12-02T12:20:52Z",
+      "side": 1,
+      "message": "This line is for external tunnel that is not of MPLSOverGRE type.",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6e948537",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-12-02T12:20:52Z",
+      "side": 1,
+      "message": "Link is incorrect.\n\nL3 Service link line to be the right side one.\n\nL2 Service link line to be the left side one.",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8e5e41e8",
+        "filename": "docs/images/pipeline-l2.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-12-02T12:20:52Z",
+      "side": 1,
+      "message": "I would suggest number can be below the Name of the table (or the number can be removed itself) as the number keeps changing.",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0e4b512c",
+        "filename": "docs/images/pipeline-l3.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-12-02T12:20:52Z",
+      "side": 1,
+      "message": "comes in a subsequent review :) ?",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
