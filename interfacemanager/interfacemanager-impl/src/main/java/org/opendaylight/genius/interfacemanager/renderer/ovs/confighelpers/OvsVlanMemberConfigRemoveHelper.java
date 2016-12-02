@@ -71,7 +71,6 @@ public class OvsVlanMemberConfigRemoveHelper {
                     IfmUtil.buildStateInterfaceId(interfaceOld.getName());
             defaultOperShardTransaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
             FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, dataBroker, futures);
-            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceOld.getName(), parentRefs.getParentInterface());
         }
 
         futures.add(defaultConfigShardTransaction.submit());
