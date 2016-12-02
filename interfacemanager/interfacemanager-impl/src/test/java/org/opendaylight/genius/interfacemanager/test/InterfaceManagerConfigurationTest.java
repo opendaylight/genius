@@ -152,9 +152,6 @@ public class InterfaceManagerConfigurationTest {
         // b) check if lport-tag to interface mapping is deleted
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 ifIndexInterfaceInstanceIdentifier).get());
-
-        // d) check if default egress service is bound on the interface
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, boundServicesInstanceIdentifier).get());
     }
 
     @Test public void newTunnelInterface() throws Exception {

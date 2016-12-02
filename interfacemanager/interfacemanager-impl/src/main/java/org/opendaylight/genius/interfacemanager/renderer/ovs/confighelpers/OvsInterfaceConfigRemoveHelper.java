@@ -90,7 +90,6 @@ public class OvsInterfaceConfigRemoveHelper {
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, dataBroker, defaultOperationalShardTransaction, idManagerService);
         BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
         FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
-        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName, parentRefs.getParentInterface());
         InterfaceManagerCommonUtils.deleteParentInterfaceEntry(defaultConfigShardTransaction, parentRefs.getParentInterface());
         // For Vlan-Trunk Interface, remove the trunk-member operstates as well...
 
@@ -215,8 +214,6 @@ public class OvsInterfaceConfigRemoveHelper {
                         operShardTransaction, idManager);
                 FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker,
                         futures);
-                FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName,
-                        interfaceParentEntry.getParentInterface());
             }
 
             futures.add(operShardTransaction.submit());
