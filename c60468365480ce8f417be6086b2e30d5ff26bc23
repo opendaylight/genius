@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_2eef2db2",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-02T12:45:32Z",
+      "side": 1,
+      "message": "These kind of details are tough to capture in ascii, should be explained in text. Would prefer module owners to add such information subsequently.",
+      "parentUuid": "1a622d24_8e8f6123",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_6e948537",
         "filename": "docs/images/pipeline-high-level.txt",
         "patchSetId": 2
@@ -81,6 +99,24 @@
       "writtenOn": "2016-12-02T12:20:52Z",
       "side": 1,
       "message": "Link is incorrect.\n\nL3 Service link line to be the right side one.\n\nL2 Service link line to be the left side one.",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_eef41589",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-02T12:45:32Z",
+      "side": 1,
+      "message": "Argh! fixed priority order but missed the links. will do.",
+      "parentUuid": "1a622d24_6e948537",
       "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +140,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_8e2be1ea",
+        "filename": "docs/images/pipeline-l2.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-02T12:45:32Z",
+      "side": 1,
+      "message": "Number change shouldn\u0027t happen without corresponding spec, which should also result in patches to edit pipeline. Highlighted numbers this way to make it easy to lookup when troubleshooting flows on switch.",
+      "parentUuid": "1a622d24_8e5e41e8",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_0e4b512c",
         "filename": "docs/images/pipeline-l3.txt",
         "patchSetId": 2
@@ -115,6 +169,24 @@
       "writtenOn": "2016-12-02T12:20:52Z",
       "side": 1,
       "message": "comes in a subsequent review :) ?",
+      "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0e3fd126",
+        "filename": "docs/images/pipeline-l3.txt",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-02T12:45:32Z",
+      "side": 1,
+      "message": "Whenever you\u0027re ready :P",
+      "parentUuid": "1a622d24_0e4b512c",
       "revId": "c60468365480ce8f417be6086b2e30d5ff26bc23",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
