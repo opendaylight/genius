@@ -84,6 +84,8 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
             return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         }
+        // remove the default egress service bound on the interface, once all flows are removed
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceState.getName());
         return futures;
     }
 

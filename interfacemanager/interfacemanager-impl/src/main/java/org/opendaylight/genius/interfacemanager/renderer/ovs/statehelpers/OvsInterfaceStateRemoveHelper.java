@@ -74,7 +74,6 @@ public class OvsInterfaceStateRemoveHelper {
             // skip this check for non-unique ports(Ex: br-int,br-ex)
             if(iface != null || (iface == null && !interfaceName.contains(fcNodeConnectorOld.getName()))) {
                 FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
-                FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName, parentInterface);
             }
 
             // Delete the Vpn Interface from DpnToInterface Op DS.
