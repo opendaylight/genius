@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-
 import org.opendaylight.controller.liblldp.HexEncode;
 import org.opendaylight.controller.liblldp.NetUtils;
 import org.opendaylight.controller.liblldp.Packet;
@@ -421,10 +420,10 @@ public class ArpUtilImpl implements OdlArputilService,
 
             byte[] srcIpBytes = getIpAddressBytes(input.getSrcIpaddress());
             byte[] dstIpBytes = getIpAddressBytes(input.getDstIpaddress());
-            if(input.getSrcMacaddress() == null) {
-                srcMac = MDSALUtil.getMacAddressForNodeConnector(dataBroker,
-                        (InstanceIdentifier<NodeConnector>) ref.getValue());
-            }else {
+
+            if (input.getSrcMacaddress() == null) {
+                srcMac = portResult.getPhyAddress().getBytes();
+            } else {
                 String macAddr = input.getSrcMacaddress().getValue();
                 srcMac = HexEncode.bytesFromHexString(macAddr);
             }
