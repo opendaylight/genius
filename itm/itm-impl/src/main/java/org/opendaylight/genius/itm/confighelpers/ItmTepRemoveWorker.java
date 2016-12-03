@@ -64,7 +64,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
                 }
             }
             for(DcGatewayIp dcGatewayIp : dcGatewayIpList){
-                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,  dpnDeleteList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,  dpnDeleteList, meshedDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
             }
         }
 

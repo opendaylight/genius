@@ -26,6 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.Itm;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class ItmExternalTunnelDeleteWorker {
     private static final Logger logger = LoggerFactory.getLogger(ItmExternalTunnelDeleteWorker.class ) ;
 
-    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService, List<DPNTEPsInfo> dpnTepsList,IpAddress extIp, Class<? extends TunnelTypeBase> tunType ) {
+    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService, List<DPNTEPsInfo> dpnTepsList,List<DPNTEPsInfo> meshedDpnList, IpAddress extIp, Class<? extends TunnelTypeBase> tunType ) {
         logger.trace( " Delete Tunnels towards DC Gateway with Ip  {}", extIp ) ;
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
@@ -49,26 +50,65 @@ public class ItmExternalTunnelDeleteWorker {
             return null ;
         }
         for( DPNTEPsInfo teps : dpnTepsList) {
-            TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0) ;
-            String interfaceName = firstEndPt.getInterfaceName() ;
-            String trunkInterfaceName = ItmUtils.getTrunkInterfaceName( idManagerService, interfaceName,
-                    firstEndPt.getIpAddress().getIpv4Address().getValue(),
-                    extIp.getIpv4Address().getValue(),
-                    tunType.getName());
+            TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
+            // The membership in the listener will always be 1, to get the actual membership read from the DS
+            List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt,teps.getDPNID(),meshedDpnList);
+            if (originalTzMembership.size() == 1) {
+                String interfaceName = firstEndPt.getInterfaceName();
+                String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName,
+                        firstEndPt.getIpAddress().getIpv4Address().getValue(),
+                        extIp.getIpv4Address().getValue(),
+                        tunType.getName());
+                InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
+                t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
+                ItmUtils.itmCache.removeInterface(trunkInterfaceName);
+
+                InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
+                        ExternalTunnelList.class)
+                        .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(extIp.toString(),
+                                teps.getDPNID().toString(),
+                                tunType));
+                t.delete(LogicalDatastoreType.CONFIGURATION, path);
+                logger.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
+                ItmUtils.itmCache.removeExternalTunnel(trunkInterfaceName);
+                // Release the Ids for the trunk interface Name
+                ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, interfaceName, firstEndPt.getIpAddress().getIpv4Address().getValue(), extIp.getIpv4Address().getValue(), tunType.getName());
+            }
+        }
+        futures.add(t.submit()) ;
+        return futures ;
+    }
+
+    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService, List<DPNTEPsInfo> dpnTepsList, IpAddress extIp, Class<? extends TunnelTypeBase> tunType ) {
+        logger.trace( " Delete Tunnels towards DC Gateway with Ip  {}", extIp ) ;
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+
+        if (dpnTepsList == null || dpnTepsList.size() == 0) {
+            logger.debug("no vtep to delete");
+            return null ;
+        }
+        for( DPNTEPsInfo teps : dpnTepsList) {
+            TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
+            String interfaceName = firstEndPt.getInterfaceName();
+            String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName,
+                        firstEndPt.getIpAddress().getIpv4Address().getValue(),
+                        extIp.getIpv4Address().getValue(),
+                        tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
             t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
             ItmUtils.itmCache.removeInterface(trunkInterfaceName);
 
             InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
-                    ExternalTunnelList.class)
-                    .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(extIp.toString(),
-                            teps.getDPNID().toString(),
-                            tunType));
+                        ExternalTunnelList.class)
+                        .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(extIp.toString(),
+                                teps.getDPNID().toString(),
+                                tunType));
             t.delete(LogicalDatastoreType.CONFIGURATION, path);
-            logger.debug( "Deleting tunnel towards DC gateway, Tunnel interface name {} ",trunkInterfaceName );
+            logger.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
             ItmUtils.itmCache.removeExternalTunnel(trunkInterfaceName);
             // Release the Ids for the trunk interface Name
-            ItmUtils.releaseIdForTrunkInterfaceName(idManagerService,interfaceName,firstEndPt.getIpAddress().getIpv4Address().getValue(), extIp.getIpv4Address().getValue(),tunType.getName());
+            ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, interfaceName, firstEndPt.getIpAddress().getIpv4Address().getValue(), extIp.getIpv4Address().getValue(), tunType.getName());
         }
         futures.add(t.submit()) ;
         return futures ;
