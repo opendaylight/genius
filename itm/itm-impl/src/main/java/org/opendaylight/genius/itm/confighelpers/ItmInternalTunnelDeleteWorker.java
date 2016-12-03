@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
@@ -61,69 +62,97 @@ public class ItmInternalTunnelDeleteWorker {
                     logger.debug("No Tunnel End Point configured for this DPN {}", srcDpn.getDPNID());
                     continue ;
                 }
-                logger.debug( "Entries in meshEndPointCache {} ", meshedEndPtCache.size() );
+                logger.debug( "Entries in meshEndPointCache {} for DPN Id{} ", meshedEndPtCache.size(), srcDpn.getDPNID() );
                 for (TunnelEndPoints srcTep : srcDpn.getTunnelEndPoints()) {
                     logger.trace("Processing srcTep " + srcTep);
                     List<TzMembership> srcTZones = srcTep.getTzMembership();
-
-                    // run through all other DPNS other than srcDpn
+                    boolean tepDeleteFlag = false;
+                    // First, take care of tunnel removal, so run through all other DPNS other than srcDpn
+                    // In the tep received from Delete DCN, the membership list will always be 1 as the DCN is at transport zone level
+                    // Hence if a tunnel is shared across TZs, compare the original membership list between end points to decide if tunnel to be deleted.
                     for (DPNTEPsInfo dstDpn : meshedDpnList) {
                         if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
                             for (TunnelEndPoints dstTep : dstDpn.getTunnelEndPoints()) {
-                                logger.trace("Processing dstTep " + dstTep);
                                 if (!ItmUtils.getIntersection(dstTep.getTzMembership(), srcTZones).isEmpty()) {
-                                    if( checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(), srcTep.getTunnelType(),dataBroker)) {
-                                        // remove all trunk interfaces
-                                        logger.trace("Invoking removeTrunkInterface between source TEP {} , Destination TEP {} " ,srcTep , dstTep);
-                                        removeTrunkInterface(dataBroker, idManagerService, srcTep, dstTep, srcDpn.getDPNID(), dstDpn.getDPNID(), t, futures);
+                                    List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(srcTep, srcDpn.getDPNID(), meshedDpnList);
+                                    if (ItmUtils.getIntersection(dstTep.getTzMembership(), originalTzMembership).size() == 1) {
+                                        if (checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(), srcTep.getTunnelType(), dataBroker)) {
+                                            // remove all trunk interfaces
+                                            logger.trace("Invoking removeTrunkInterface between source TEP {} , Destination TEP {} ", srcTep, dstTep);
+                                            removeTrunkInterface(dataBroker, idManagerService, srcTep, dstTep, srcDpn.getDPNID(), dstDpn.getDPNID(), t, futures);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    for (DPNTEPsInfo dstDpn : meshedDpnList) {
+                        // Second, take care of Tep TZ membership and identify if tep can be removed
+                        if(srcDpn.getDPNID().equals(dstDpn.getDPNID())){
+                            // Same DPN, so remove the TZ membership
+                            for (TunnelEndPoints dstTep : dstDpn.getTunnelEndPoints()) {
+                                if( dstTep.getIpAddress().equals(srcTep.getIpAddress())) {
+                                    // Remove the deleted TZ membership from the TEP
+                                    logger.debug("Removing TZ list {} from Existing TZ list {} ", srcTZones, dstTep.getTzMembership());
+                                    List<TzMembership> updatedList = ItmUtils.removeTransportZoneMembership(dstTep, srcTZones);
+                                    if( updatedList.isEmpty()) {
+                                        logger.debug(" This TEP can be deleted " + srcTep);
+                                        tepDeleteFlag = true;
+                                    }else {
+                                        TunnelEndPointsBuilder modifiedTepBld = new TunnelEndPointsBuilder(dstTep);
+                                        modifiedTepBld.setTzMembership(updatedList);
+                                        TunnelEndPoints modifiedTep = modifiedTepBld.build() ;
+                                        InstanceIdentifier<TunnelEndPoints> tepPath =
+                                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, dstDpn.getKey())
+                                                        .child(TunnelEndPoints.class, dstTep.getKey()).build();
 
-                    // removing vtep / dpn from Tunnels OpDs.
-                    InstanceIdentifier<TunnelEndPoints> tepPath =
-                            InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
-                                    .child(TunnelEndPoints.class, srcTep.getKey()).build();
-
-                    logger.trace("Tep Removal of TEP {} from DPNTEPSINFO CONFIG DS with Key {} " + srcTep, srcTep.getKey());
-                    t.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
-                    // remove the tep from the cache
-                    meshedEndPtCache.remove(srcTep) ;
-                    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
-                    InstanceIdentifier<DPNTEPsInfo> dpnPath =
-                            InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
-                                    .build();
-                    /*
-                    Optional<DPNTEPsInfo> dpnOptional =
-                                    ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dpnPath, dataBroker);
-                    if (dpnOptional.isPresent()) {
-                    */
-                    if( meshedEndPtCache.isEmpty()) {
-                        //DPNTEPsInfo dpnRead = dpnOptional.get();
-                        // remove dpn if no vteps exist on dpn
-                        //  if (dpnRead.getTunnelEndPoints() == null || dpnRead.getTunnelEndPoints().size() == 0) {
-                        if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
-                            logger.debug("Removing Terminating Service Table Flow ");
-                            ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager, false);
-                        }
-                        logger.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
-                        t.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
-                        InstanceIdentifier<DpnEndpoints> tnlContainerPath =
-                                InstanceIdentifier.builder(DpnEndpoints.class).build();
-                        Optional<DpnEndpoints> containerOptional =
-                                ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
-                                        tnlContainerPath, dataBroker);
-                        // remove container if no DPNs are present
-                        if (containerOptional.isPresent()) {
-                            DpnEndpoints deps = containerOptional.get();
-                            if (deps.getDPNTEPsInfo() == null || deps.getDPNTEPsInfo().isEmpty()) {
-                                logger.trace("Container Removal from DPNTEPSINFO CONFIG DS");
-                                t.delete(LogicalDatastoreType.CONFIGURATION, tnlContainerPath);
+                                        logger.debug(" Store the modified Tep in DS {} ", modifiedTep);
+                                        t.put(LogicalDatastoreType.CONFIGURATION, tepPath, modifiedTep);
+                                    }
+                                }
                             }
                         }
-                        //}
+                    }
+                    if( tepDeleteFlag) {
+                        // Third, removing vtep / dpn from Tunnels OpDs.
+                        InstanceIdentifier<TunnelEndPoints> tepPath =
+                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
+                                        .child(TunnelEndPoints.class, srcTep.getKey()).build();
+
+                        logger.trace("Tep Removal of TEP {} from DPNTEPSINFO CONFIG DS with Key {} " + srcTep, srcTep.getKey());
+                        t.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
+                        // remove the tep from the cache
+                        meshedEndPtCache.remove(srcTep);
+                        Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
+                        InstanceIdentifier<DPNTEPsInfo> dpnPath =
+                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
+                                        .build();
+
+                        if (meshedEndPtCache.isEmpty()) {
+                            //DPNTEPsInfo dpnRead = dpnOptional.get();
+                            // remove dpn if no vteps exist on dpn
+                            //  if (dpnRead.getTunnelEndPoints() == null || dpnRead.getTunnelEndPoints().size() == 0) {
+                            if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
+                                logger.debug("Removing Terminating Service Table Flow ");
+                                ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager, false);
+                            }
+                            logger.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
+                            t.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
+                            InstanceIdentifier<DpnEndpoints> tnlContainerPath =
+                                    InstanceIdentifier.builder(DpnEndpoints.class).build();
+                            Optional<DpnEndpoints> containerOptional =
+                                    ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                                            tnlContainerPath, dataBroker);
+                            // remove container if no DPNs are present
+                            if (containerOptional.isPresent()) {
+                                DpnEndpoints deps = containerOptional.get();
+                                if (deps.getDPNTEPsInfo() == null || deps.getDPNTEPsInfo().isEmpty()) {
+                                    logger.trace("Container Removal from DPNTEPSINFO CONFIG DS");
+                                    t.delete(LogicalDatastoreType.CONFIGURATION, tnlContainerPath);
+                                }
+                            }
+                            //}
+                        }
                     }
                 }
             }
