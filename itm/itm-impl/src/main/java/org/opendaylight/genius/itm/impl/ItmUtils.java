@@ -1132,6 +1132,7 @@ public class ItmUtils {
                 list.add(t);
             }
         }
+        LOG.debug( " getIntersection - L1 {}, L2 - {}, Intersection - {}", list1, list2, list);
         return list;
     }
 
@@ -1323,5 +1324,31 @@ public class ItmUtils {
 
         // return TunnelTypeBase object corresponding to tunnel-type
         return TUNNEL_TYPE_MAP.get(tunnelType);
+    }
+
+    public static List<TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts, List<TzMembership> zones){
+        LOG.trace( " RemoveTransportZoneMembership TEPs {}, Membership to be removed {} ", endPts, zones);
+        List<TzMembership> existingTzList = new ArrayList<>(endPts.getTzMembership()) ;
+        for( TzMembership membership : zones) {
+            existingTzList.remove(new TzMembershipBuilder().setZoneName(membership.getZoneName()).build());
+        }
+        LOG.debug( "Modified Membership List {}", existingTzList);
+        return existingTzList;
+    }
+
+    public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, BigInteger dpnId, List<DPNTEPsInfo> meshedDpnList) {
+        LOG.trace( "Original Membership for source DPN {}, source TEP {}", dpnId, srcTep) ;
+        for (DPNTEPsInfo dstDpn : meshedDpnList) {
+            if( dpnId.equals(dstDpn.getDPNID()) ){
+                List<TunnelEndPoints> endPts = dstDpn.getTunnelEndPoints();
+                for( TunnelEndPoints tep : endPts) {
+                    if( tep.getIpAddress().equals( srcTep.getIpAddress())){
+                        LOG.debug( "Original Membership size " + tep.getTzMembership().size()) ;
+                        return tep.getTzMembership() ;
+                    }
+                }
+            }
+        }
+        return null ;
     }
 }
