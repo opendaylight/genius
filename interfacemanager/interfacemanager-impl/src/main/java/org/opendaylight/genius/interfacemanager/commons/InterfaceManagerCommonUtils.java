@@ -75,8 +75,11 @@ public class InterfaceManagerCommonUtils {
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
             new ConcurrentHashMap<>();
 
-    private static final String NOVA_OR_TUNNEL_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}";
-    private static final Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+    // These port types are assumed to have unique names, which cannot show up on multiple DPNs
+    private static final String NOVA_OR_TUNNEL_OR_OCTAVIA_HM_PORT_REGEX =
+            "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}" + "|" +
+            org.opendaylight.genius.interfacemanager.globals.IfmConstants.PORT_LBAAS_OCTAVIA_HM_INTERFACE;
+    private static final Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_OR_OCTAVIA_HM_PORT_REGEX);
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
             DataBroker dataBroker) {
@@ -480,8 +483,7 @@ public class InterfaceManagerCommonUtils {
         return bfdStateMap.remove(interfaceName);
     }
 
-    public static boolean isNovaOrTunnelPort(String portName) {
-
+    public static boolean isUniquePortName(String portName) {
         Matcher matcher = pattern.matcher(portName);
         return matcher.matches();
     }
