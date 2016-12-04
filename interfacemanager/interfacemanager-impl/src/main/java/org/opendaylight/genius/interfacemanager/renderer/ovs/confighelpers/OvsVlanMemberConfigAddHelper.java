@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -29,10 +28,8 @@ public class OvsVlanMemberConfigAddHelper {
                                                                 IdManagerService idManager) {
         LOG.debug("add vlan member configuration {}",interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
 
-        InterfaceManagerCommonUtils.createInterfaceChildEntry(defaultConfigShardTransaction, parentRefs.getParentInterface(), interfaceNew.getName());
-        futures.add(defaultConfigShardTransaction.submit());
+        InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName());
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
