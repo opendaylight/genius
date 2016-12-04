@@ -82,11 +82,14 @@ public class InterfaceManagerCommonUtils {
     private static final String NOVA_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}";
     private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
     private static final String NOVA_OR_TUNNEL_PORT_REGEX = NOVA_PORT_REGEX + "|" + TUNNEL_PORT_REGEX;
+    // These port types are assumed to have unique names, which cannot show up on multiple DPNs
+    private static final String NOVA_OR_TUNNEL_OR_OCTAVIA_HM_PORT_REGEX = NOVA_OR_TUNNEL_PORT_REGEX + "|"
+            + org.opendaylight.genius.interfacemanager.globals.IfmConstants.PORT_LBAAS_OCTAVIA_HM_INTERFACE;
 
     private static final Pattern novaOrTunnelPortPattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+    private static final Pattern novaOrTunnelOrOctaviaPortPattern = Pattern.compile(NOVA_OR_TUNNEL_OR_OCTAVIA_HM_PORT_REGEX);
     private static final Pattern tunnelPortPattern = Pattern.compile(TUNNEL_PORT_REGEX);
     private static final Pattern novaPortPattern = Pattern.compile(NOVA_PORT_REGEX);
-
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
             DataBroker dataBroker) {
@@ -510,8 +513,8 @@ public class InterfaceManagerCommonUtils {
         return bfdStateMap.remove(interfaceName);
     }
 
-    public static boolean isNovaOrTunnelPort(String portName) {
-        Matcher matcher = novaOrTunnelPortPattern.matcher(portName);
+    public static boolean isUniquePortName(String portName) {
+        Matcher matcher = novaOrTunnelOrOctaviaPortPattern.matcher(portName);
         return matcher.matches();
     }
 

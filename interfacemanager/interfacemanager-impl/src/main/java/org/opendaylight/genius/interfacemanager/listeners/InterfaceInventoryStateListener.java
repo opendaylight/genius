@@ -80,7 +80,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             String portName = flowCapableNodeConnectorOld.getName();
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
 
-            if (!InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
+            if (!InterfaceManagerCommonUtils.isUniquePortName(portName)) {
                 portName = getDpnPrefixedPortName(nodeConnectorId, portName);
             }
             remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
@@ -109,7 +109,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
 
             //VM Migration: Delete existing interface entry for older DPN
-            if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
+            if (InterfaceManagerCommonUtils.isUniquePortName(portName)) {
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                     if (InterfaceManagerCommonUtils.isTunnelPort(portName)) {

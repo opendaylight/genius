@@ -34,4 +34,6 @@ public class IfmConstants {
     public static final BigInteger COOKIE_EGRESS_DISPATCHER_TABLE = new BigInteger("1300000", 16);
     //Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
+
+    public static final String PORT_LBAAS_OCTAVIA_HM_INTERFACE = "o-hm0"; // FIXME is this truly static? should be configurable.
 }
