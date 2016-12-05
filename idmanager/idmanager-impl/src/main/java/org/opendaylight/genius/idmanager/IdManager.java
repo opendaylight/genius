@@ -329,7 +329,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             LOG.debug("Got pool {}", localIdPool);
         }
         if (size == 1) {
-            newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
+            if (newIdValue == -1) {
+                newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
+            }
             newIdValuesList.add(newIdValue);
         } else {
             IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
