@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_843c5d95",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-12-05T15:30:33Z",
+      "side": 1,
+      "message": "I believe this will attempt to print the stacktrace twice. Maybe one of them may not be seen in the karaf log as its directed to stderr. \nWhy not leave this line in the original form as LOG.error(..., e) should already print the stack trace?",
+      "revId": "8c6f555469743445442e960f46b288f03f9ea870",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
