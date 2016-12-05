@@ -13,7 +13,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
-import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmMonitorIntervalWorker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
@@ -24,18 +23,36 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
+@Singleton
 public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorInterval, TunnelMonitorIntervalListener>
         implements  AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorIntervalListener.class);
     private ListenerRegistration<DataChangeListener> monitorIntervalListenerRegistration;
     private final DataBroker broker;
 
-    public TunnelMonitorIntervalListener(DataBroker db) {
+    @Inject
+    public TunnelMonitorIntervalListener(DataBroker dataBroker) {
         super(TunnelMonitorInterval.class, TunnelMonitorIntervalListener.class);
-        broker = db;
+        this.broker = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
+        LOG.info("TunnelMonitorIntervalListener Started");
+    }
+
+    @Override
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("TunnelMonitorIntervalListener Closed");
     }
 
     @Override protected InstanceIdentifier<TunnelMonitorInterval> getWildCardPath() {

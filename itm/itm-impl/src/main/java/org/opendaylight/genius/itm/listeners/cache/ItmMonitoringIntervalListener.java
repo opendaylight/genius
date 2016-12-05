@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.listeners.cache;
 
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
@@ -18,22 +17,39 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by edimjai on 8/4/2016.
  */
+@Singleton
 public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeListenerBase<TunnelMonitorInterval, ItmMonitoringIntervalListener>
 {
 
   private static final Logger logger = LoggerFactory.getLogger(ItmMonitoringIntervalListener.class);
 
-  public ItmMonitoringIntervalListener(final DataBroker broker) {
+  @Inject
+  public ItmMonitoringIntervalListener(final DataBroker dataBroker) {
     super(TunnelMonitorInterval.class, ItmMonitoringIntervalListener.class);
 
     try {
-      registerListener(LogicalDatastoreType.OPERATIONAL, broker);
+      registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     } catch (final Exception e) {
       logger.error("ItmMonitoring Interval listener registration fail!", e);
     }
+  }
+
+  @PostConstruct
+  public void start() throws Exception {
+    logger.info("ItmMonitoringIntervalListener Started");
+  }
+
+  @PreDestroy
+  public void close() throws Exception {
+    logger.info("ItmMonitoringIntervalListener Closed");
   }
 
   @Override
