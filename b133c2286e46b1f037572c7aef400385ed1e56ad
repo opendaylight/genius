@@ -70,6 +70,24 @@
       "revId": "b133c2286e46b1f037572c7aef400385ed1e56ad",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_711d8166",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-12-05T11:33:45Z",
+      "side": 1,
+      "message": "It still seems to me the build() call is unnecessary, but I guess since the other builders do the same we might as well clean everything up in one go.",
+      "parentUuid": "1a622d24_8e68fcf6",
+      "revId": "b133c2286e46b1f037572c7aef400385ed1e56ad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
