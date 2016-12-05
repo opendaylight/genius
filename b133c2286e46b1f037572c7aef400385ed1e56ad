@@ -52,6 +52,24 @@
       "revId": "b133c2286e46b1f037572c7aef400385ed1e56ad",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8e68fcf6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchFieldType.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-05T11:05:58Z",
+      "side": 1,
+      "message": "Stephen, please remove -1, if you are okay with the changes in the current context",
+      "parentUuid": "1a622d24_8ea63cc0",
+      "revId": "b133c2286e46b1f037572c7aef400385ed1e56ad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
