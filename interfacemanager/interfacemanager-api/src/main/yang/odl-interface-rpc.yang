@@ -58,9 +58,6 @@ module odl-interface-rpc {
             leaf portname {
                 type string;
             }
-            leaf phy-address {
-                type string;
-            }
         }
     }
 

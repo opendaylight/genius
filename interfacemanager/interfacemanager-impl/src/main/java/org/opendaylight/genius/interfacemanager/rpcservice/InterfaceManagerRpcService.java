@@ -364,10 +364,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
                 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-                String phyAddress = ifState.getPhysAddress().getValue();
                 // FIXME Assuming portName and interfaceName are same
                 GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
-                        setPortname(interfaceName).setPortno(portNo).setPhyAddress(phyAddress);
+                        setPortname(interfaceName).setPortno(portNo);
                 rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
             } else {
