@@ -25,6 +25,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+
+@Singleton
 public class NodeEventListener<D extends DataObject> implements ClusteredDataTreeChangeListener<D>,AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(NodeEventListener.class);
     public static final AlarmAgent alarmAgent = new AlarmAgent();
@@ -34,10 +39,21 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
 
     /**
      * Construcor set EntityOwnershipService
-     * @param eos
+     * @param entityOwnershipService
      */
-    public NodeEventListener(final EntityOwnershipService eos) {
-        this.entityOwnershipService = eos;
+    public NodeEventListener(final EntityOwnershipService entityOwnershipService) {
+        this.entityOwnershipService = entityOwnershipService;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        LOG.info("NodeEventListener started");
+    }
+
+    @PreDestroy
+    @Override
+    public void close() throws Exception {
+        LOG.info("NodeEventListener closed");
     }
 
     @Override
@@ -120,9 +136,5 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
     public boolean isNodeOwner(String nodeId) {
         Entity entity = new Entity("openflow", nodeId);
         return this.entityOwnershipService.getOwnershipState(entity).transform(EntityOwnershipState::isOwner).or(false);
-    }
-
-    @Override
-    public void close() throws Exception {
     }
 }
