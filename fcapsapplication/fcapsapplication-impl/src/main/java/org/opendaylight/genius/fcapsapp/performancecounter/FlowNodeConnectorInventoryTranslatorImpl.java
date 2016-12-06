@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
@@ -23,10 +25,13 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +41,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     public static final int STARTUP_LOOP_MAX_RETRIES = 8;
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodeConnectorInventoryTranslatorImpl.class);
     private final EntityOwnershipService entityOwnershipService;
-
+    private DataBroker dataBroker;
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
     public static final String SEPARATOR = ":";
@@ -55,7 +60,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,final EntityOwnershipService eos) {
         super( FlowCapableNodeConnector.class);
-        Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+        this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
 
         entityOwnershipService = eos;
         final DataTreeIdentifier<FlowCapableNodeConnector> treeId =
@@ -98,10 +103,13 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
             String sNodeConnectorIdentifier = getNodeConnectorId(String.valueOf(nodeConnIdent.firstKeyOf(NodeConnector.class).getId()));
             long nDpId = getDpIdFromPortName(sNodeConnectorIdentifier);
             if (dpnToPortMultiMap.containsKey(nDpId)) {
-                LOG.debug("Node Connector {} removed", sNodeConnectorIdentifier);
-                dpnToPortMultiMap.remove(nDpId, sNodeConnectorIdentifier);
-                sendNodeConnectorUpdation(nDpId);
-                PortNameMapping.updatePortMap("openflow:" + nDpId + ":" + del.getName(), sNodeConnectorIdentifier, "DELETE");
+                LOG.debug("Node Connector {} removal request", sNodeConnectorIdentifier);
+                if(getSwitchStatus(nDpId)) {
+                    dpnToPortMultiMap.remove(nDpId, sNodeConnectorIdentifier);
+                    sendNodeConnectorUpdation(nDpId);
+                    LOG.debug("Node Connector {} removed", sNodeConnectorIdentifier);
+                    PortNameMapping.updatePortMap("openflow:" + nDpId + ":" + del.getName(), sNodeConnectorIdentifier, "DELETE");
+                }
             }
         }
     }
@@ -141,7 +149,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                     sendNodeConnectorUpdation(nDpId);
                     PortNameMapping.updatePortMap("openflow:" + nDpId + ":" + add.getName(), sNodeConnectorIdentifier, "ADD");
                 } else {
-                    LOG.error("Duplicate Event.Node Connector already added");
+                    LOG.debug("Node Connector {} already added for dpn {}", sNodeConnectorIdentifier, nDpId);
                 }
             }
         }
@@ -190,5 +198,34 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         }
         LOG.debug("NumberOfOFPorts:" + nodeListPortsCountStr + " portlistsize " + portname.size());
         pmAgent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
+    }
+
+    public boolean getSwitchStatus(long switchId){
+        NodeId nodeId = new NodeId("openflow:" + switchId);
+        LOG.debug("Querying switch with dpnId {} is up/down", nodeId);
+        InstanceIdentifier<Node> nodeInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, new NodeKey(nodeId)).build();
+        Optional<Node> nodeOptional = read(dataBroker, LogicalDatastoreType.OPERATIONAL, nodeInstanceId);
+        if (nodeOptional.isPresent()) {
+            LOG.debug("Switch {} is up", nodeId);
+            return true;
+        }
+        LOG.debug("Switch {} is down", nodeId);
+        return false;
+    }
+
+    public static <T extends DataObject> Optional<T> read(DataBroker broker, LogicalDatastoreType datastoreType,
+                                                          InstanceIdentifier<T> path) {
+
+        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
+
+        Optional<T> result = Optional.absent();
+        try {
+            result = tx.read(datastoreType, path).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return result;
     }
 }
