@@ -11,17 +11,25 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class PacketInCounterHandler implements PacketProcessingListener {
     private static final Logger LOG = LoggerFactory.getLogger(PacketInCounterHandler.class);
     private static ConcurrentHashMap<String,AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
     private static HashMap<String,String> packetInMap = new HashMap<>();
     private static final Integer FIRST_VALUE = 1;
-    private static final PMAgent pmAgent =new PMAgent();
+    private final PMAgent pMAgent;
+
+    @Inject
+    public PacketInCounterHandler(final PMAgent pMAgent) {
+        this.pMAgent = pMAgent;
+    }
 
     @Override
     public void onPacketReceived(PacketReceived notification) {
@@ -57,7 +65,7 @@ public class PacketInCounterHandler implements PacketProcessingListener {
         }
     }
     private void connectToPMAgent(){
-        pmAgent.sendPacketInCounterUpdate(packetInMap);
+        pMAgent.sendPacketInCounterUpdate(packetInMap);
     }
     /*
      * Method to extract DpnId

@@ -11,11 +11,7 @@ import com.google.common.base.Preconditions;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.fcapsapp.performancecounter.FlowNodeConnectorInventoryTranslatorImpl;
-import org.opendaylight.genius.fcapsapp.alarm.AlarmAgent;
-import org.opendaylight.genius.fcapsapp.performancecounter.PMAgent;
 import org.opendaylight.genius.fcapsapp.performancecounter.PacketInCounterHandler;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -25,59 +21,61 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class FcapsProvider implements AutoCloseable {
 
     public static Logger s_logger = LoggerFactory.getLogger(FcapsProvider.class);
-    private final DataBroker dataService;
-    private final NotificationService notificationProviderService;
-    private final EntityOwnershipService entityOwnershipService;
-    private FlowNodeConnectorInventoryTranslatorImpl flowNodeConnectorInventoryTranslatorImpl;
-    private PacketInCounterHandler packetInCounterHandler;
-    private NodeEventListener<FlowCapableNode> nodeNodeEventListener;
-    private final AlarmAgent alarmAgent;
-    private final PMAgent pmAgent;
+    private final DataBroker dataBroker;
+    private final NotificationService notificationService;
+    private final PacketInCounterHandler packetInCounterHandler;
+    private final NodeEventListener<FlowCapableNode> nodeEventListener;
 
     /**
      * Contructor sets the services
      * @param dataBroker instance of databroker
      * @param notificationService instance of notificationservice
-     * @param eos instance of EntityOwnershipService
+     * @param packetInCounterHandler instance of PacketInCounterHandler
+     * @param nodeEventListener instance of NodeEventListener
      */
-    public FcapsProvider(DataBroker dataBroker,NotificationService notificationService,
-                         final EntityOwnershipService eos) {
-        this.dataService = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
-        s_logger.info("FcapsProvider dataBroket is set");
+    @Inject
+    public FcapsProvider(final DataBroker dataBroker,
+                         final NotificationService notificationService,
+                         final PacketInCounterHandler packetInCounterHandler,
+                         final NodeEventListener nodeEventListener){
+        this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+        s_logger.info("FcapsProvider dataBroker is set");
 
-        this.notificationProviderService = Preconditions.checkNotNull(notificationService,
-                "notificationService can not be null!");
+        this.notificationService = Preconditions.checkNotNull(notificationService, "notificationService can not be null!");
         s_logger.info("FcapsProvider notificationProviderService is set");
 
-        this.entityOwnershipService = Preconditions.checkNotNull(eos, "EntityOwnership service can not be null");
-        s_logger.info("FcapsProvider entityOwnershipService is set");
+        this.packetInCounterHandler = packetInCounterHandler;
+        this.nodeEventListener = nodeEventListener;
+    }
 
-        alarmAgent = new AlarmAgent();
-        pmAgent = new PMAgent();
-
-        alarmAgent.registerAlarmMbean();
-
-        pmAgent.registerMbeanForEFS();
-        pmAgent.registerMbeanForPorts();
-        pmAgent.registerMbeanForPacketIn();
+    @PostConstruct
+    public void start() throws Exception {
         PortNameMapping.registerPortMappingBean();
+        registerListener(dataBroker);
+        notificationService.registerNotificationListener(packetInCounterHandler);
+        s_logger.info("FcapsProvider started");
+    }
 
-        nodeNodeEventListener = new NodeEventListener<>(entityOwnershipService);
-        registerListener(dataService);
-        flowNodeConnectorInventoryTranslatorImpl = new
-                FlowNodeConnectorInventoryTranslatorImpl(dataService,entityOwnershipService);
-        packetInCounterHandler = new PacketInCounterHandler();
-        notificationProviderService.registerNotificationListener(packetInCounterHandler);
+    @PreDestroy
+    @Override
+    public void close() throws Exception {
+        s_logger.info("FcapsProvider closed");
     }
 
     private void registerListener(DataBroker dataBroker) {
         final DataTreeIdentifier<FlowCapableNode> treeId =
                 new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, getWildCardPath());
         try {
-            dataBroker.registerDataTreeChangeListener(treeId, nodeNodeEventListener);
+            dataBroker.registerDataTreeChangeListener(treeId, nodeEventListener);
         } catch (Exception e) {
             s_logger.error("Registeration failed on DataTreeChangeListener {}",e);
         }
@@ -89,8 +87,4 @@ public class FcapsProvider implements AutoCloseable {
                 .augmentation(FlowCapableNode.class);
     }
 
-    @Override
-    public void close() throws Exception {
-
-    }
 }

@@ -16,15 +16,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class NodeUpdateCounter {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeUpdateCounter.class);
     private String nodeListEFSCountStr;
     private static HashSet<String> dpnList = new HashSet<>();
-    public static final PMAgent pmagent = new PMAgent();
+    public final PMAgent pMAgent;
     Map<String, String> counter_map = new HashMap<>();
 
-    public NodeUpdateCounter() {
+    @Inject
+    public NodeUpdateCounter(final PMAgent pMAgent) {
+        this.pMAgent = pMAgent;
     }
 
     public void nodeAddedNotification(String sNode,String hostName) {
@@ -44,7 +50,7 @@ public class NodeUpdateCounter {
             LOG.debug("NumberOfEFS:" + nodeListEFSCountStr + " dpnList.size " + count);
 
             counter_map.put("NumberOfEFS:" + nodeListEFSCountStr, "" + count);
-            pmagent.connectToPMAgent(counter_map);
+            pMAgent.connectToPMAgent(counter_map);
         } else
             LOG.error("Hostname is null upon NumberOfEFS counter");
     }

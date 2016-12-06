@@ -31,16 +31,21 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEventListener<FlowCapableNodeConnector>  {
     public static final int STARTUP_LOOP_TICK = 500;
     public static final int STARTUP_LOOP_MAX_RETRIES = 8;
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodeConnectorInventoryTranslatorImpl.class);
     private final EntityOwnershipService entityOwnershipService;
-
+    private final DataBroker dataBroker;
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
     public static final String SEPARATOR = ":";
-    private static final PMAgent pmAgent = new PMAgent();
+    private final PMAgent pMAgent;
 
     private static final InstanceIdentifier<FlowCapableNodeConnector> II_TO_FLOW_CAPABLE_NODE_CONNECTOR
             = InstanceIdentifier.builder(Nodes.class)
@@ -53,11 +58,12 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     private static HashMap<String, String> nodeConnectorCountermap = new HashMap<>();
 
-    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,final EntityOwnershipService eos) {
+    @Inject
+    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService, final PMAgent pMAgent) {
         super( FlowCapableNodeConnector.class);
-        Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
-
-        entityOwnershipService = eos;
+        this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+        this.entityOwnershipService = entityOwnershipService;
+        this.pMAgent = pMAgent;
         final DataTreeIdentifier<FlowCapableNodeConnector> treeId =
                 new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, getWildCardPath());
         try {
@@ -80,6 +86,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                 .augmentation(FlowCapableNodeConnector.class);
     }
 
+    @PreDestroy
     @Override
     public void close() {
         if (dataTreeChangeListenerRegistration != null) {
@@ -189,6 +196,6 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
             nodeConnectorCountermap.remove(counterkey);
         }
         LOG.debug("NumberOfOFPorts:" + nodeListPortsCountStr + " portlistsize " + portname.size());
-        pmAgent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
+        pMAgent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
     }
 }
