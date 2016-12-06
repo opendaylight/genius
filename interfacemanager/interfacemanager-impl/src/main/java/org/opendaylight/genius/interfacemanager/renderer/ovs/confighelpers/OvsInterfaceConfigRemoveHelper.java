@@ -178,7 +178,7 @@ public class OvsInterfaceConfigRemoveHelper {
         if(ncId == null){
             LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
         }else{
-            long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
+            long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
             InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
                     ifTunnel,
                     dpId, portNo,interfaceName , -1,

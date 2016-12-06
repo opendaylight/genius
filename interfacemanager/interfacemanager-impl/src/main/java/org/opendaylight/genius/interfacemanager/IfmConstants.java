@@ -41,4 +41,6 @@ public class IfmConstants {
     public static final String INVALID_MAC = "00:00:00:00:00:00";
     public static final String MAC_SEPARATOR = ":";
     public static final Integer MAC_STRING_LENGTH = 17;
+
+    public static final long INVALID_PORT_NO = -1;
 }

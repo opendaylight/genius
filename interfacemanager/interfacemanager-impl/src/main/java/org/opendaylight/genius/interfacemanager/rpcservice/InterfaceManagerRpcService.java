@@ -363,7 +363,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
                 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-                portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+                portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
                 String phyAddress = ifState.getPhysAddress().getValue();
                 // FIXME Assuming portName and interfaceName are same
                 GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).

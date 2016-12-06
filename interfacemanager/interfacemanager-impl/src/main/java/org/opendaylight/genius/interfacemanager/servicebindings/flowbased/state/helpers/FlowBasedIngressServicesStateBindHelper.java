@@ -97,7 +97,7 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
-        long portNo = Long.parseLong(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable (dpId, portNo);
         BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
