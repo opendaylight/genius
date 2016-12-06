@@ -19,6 +19,10 @@ import org.opendaylight.genius.fcapsappjmx.PacketInCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Singleton;
+
+@Singleton
 public class PMAgent {
     private static Logger s_logger = LoggerFactory.getLogger(PMAgent.class);
     private MBeanServer mbs = null;
@@ -44,6 +48,14 @@ public class PMAgent {
 
         }
     }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerMbeanForEFS();
+        registerMbeanForPorts();
+        registerMbeanForPacketIn();
+    }
+
 
     public void registerMbeanForEFS() {
         try {
