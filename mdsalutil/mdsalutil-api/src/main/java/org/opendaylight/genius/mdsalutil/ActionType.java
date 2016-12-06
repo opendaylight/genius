@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.genius.mdsalutil.NwConstants.LearnFlowModsType;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
+import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPopMpls;
 import org.opendaylight.genius.mdsalutil.actions.ActionPopPbb;
@@ -65,9 +66,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfEthDstCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfIpDstCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrackBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
@@ -653,29 +652,20 @@ public enum ActionType {
             return null;
         }
     },
-    
+
+    @Deprecated
     nx_conntrack {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            Integer flags = new Integer(actionValues[0]);
-            Long zoneSrc = new Long(actionValues[1]);
-            Integer conntrackZone = new Integer(actionValues[2]);
-            Short recircTable = new Short(actionValues[3]);
-            NxConntrackBuilder ctb = new NxConntrackBuilder()
-                    .setFlags(flags)
-                    .setZoneSrc(zoneSrc)
-                    .setConntrackZone(conntrackZone)
-                    .setRecircTable(recircTable);
-            ActionBuilder ab = new ActionBuilder();
-            ab.setAction(new NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder()
-                .setNxConntrack(ctb.build()).build());
-            ab.setKey(new ActionKey(newActionKey));
-            return ab.build();
-
+            if (actionInfo instanceof ActionNxConntrack) {
+                return ((ActionNxConntrack) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionNxConntrack(actionInfo.getActionValues()).buildAction(newActionKey);
+            }
         }
 
     },
+
     move_src_dst_ip {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
