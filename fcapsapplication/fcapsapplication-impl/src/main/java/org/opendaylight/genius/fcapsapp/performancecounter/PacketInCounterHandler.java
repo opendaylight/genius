@@ -12,10 +12,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Singleton
 public class PacketInCounterHandler implements PacketProcessingListener {
     private static final Logger LOG = LoggerFactory.getLogger(PacketInCounterHandler.class);
     private static ConcurrentHashMap<String,AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
