@@ -84,8 +84,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <feature version="${openflowplugin.version}">odl-openflowplugin-flow-services</feature>
     <bundle>mvn:org.opendaylight.genius/fcapsapplication-jmxapi/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}</bundle>
-    <configfile finalname="etc/opendaylight/karaf/73-fcaps-app.xml">mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}/xml/config
-    </configfile>
   </feature>
 
 </features>
