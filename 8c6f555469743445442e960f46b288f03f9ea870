@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_87529f11",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 6365
+      },
+      "writtenOn": "2016-12-06T14:25:05Z",
+      "side": 1,
+      "message": "I don\u0027t know how this line got here, should be as original",
+      "parentUuid": "1a622d24_843c5d95",
+      "revId": "8c6f555469743445442e960f46b288f03f9ea870",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_98bafadf",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinatorCounters.java",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2016-12-06T12:21:55Z",
       "side": 1,
       "message": "Do you plan to provide CLIs for DJC with these counters ?",
+      "revId": "8c6f555469743445442e960f46b288f03f9ea870",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d3a57505",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinatorCounters.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 6365
+      },
+      "writtenOn": "2016-12-06T14:25:05Z",
+      "side": 1,
+      "message": "Do you mean CLIs to display the counters? it\u0027s still not supported in IfraUtils project\n\nhttps://wiki.opendaylight.org/view/Getting_started_with_Counters",
+      "parentUuid": "1a622d24_98bafadf",
       "revId": "8c6f555469743445442e960f46b288f03f9ea870",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
