@@ -67,7 +67,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
+                <!--<executions>
                     <execution>
                         <id>attach-artifacts</id>
                         <goals>
@@ -84,7 +84,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                             </artifacts>
                         </configuration>
                     </execution>
-                </executions>
+                </executions>-->
             </plugin>
         </plugins>
     </build>
