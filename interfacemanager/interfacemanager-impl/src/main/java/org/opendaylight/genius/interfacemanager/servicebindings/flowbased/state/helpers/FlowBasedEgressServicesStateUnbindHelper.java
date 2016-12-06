@@ -119,7 +119,6 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
             FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
         }
         futures.add(t.submit());
-      
         // remove the default egress service bound on the interface, once all flows are removed
         FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceState.getName());
         return futures;
