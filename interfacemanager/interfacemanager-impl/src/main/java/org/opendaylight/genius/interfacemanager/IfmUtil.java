@@ -510,10 +510,18 @@ public class IfmUtil {
     public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
                                    Class<? extends ServiceModeBase> serviceMode){
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
-                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
-                .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
-        t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
+        DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
+        dataStoreJobCoordinator.enqueueJob(interfaceName,
+                () -> {
+                    List<ListenableFuture<Void>> futures = new ArrayList<>();
+                    InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
+                            .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
+                            .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
+                    t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
+                    futures.add(t.submit());
+                    return futures;
+                }
+        );
     }
 
     public static void unbindService(DataBroker dataBroker, String interfaceName, InstanceIdentifier<BoundServices>
