@@ -137,7 +137,7 @@ public class OvsInterfaceConfigAddHelper {
             if(ifState != null){
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if(ncId != null) {
-                    long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
+                    long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
                     InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel,
                             dpId, portNo, interfaceNew.getName(),
                             ifState.getIfIndex(), NwConstants.ADD_FLOW);

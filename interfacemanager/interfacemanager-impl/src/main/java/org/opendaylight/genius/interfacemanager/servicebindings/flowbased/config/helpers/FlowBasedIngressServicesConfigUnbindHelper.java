@@ -157,7 +157,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
-        long portNo = Long.parseLong(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
         if (boundServices.isEmpty()) {

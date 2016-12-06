@@ -136,6 +136,16 @@ public class IfmUtil {
         return split[2];
     }
 
+    public static Long getPortNumberFromNodeConnectorId(NodeConnectorId portId) {
+        String portNo = getPortNoFromNodeConnectorId(portId);
+        try{
+            return Long.valueOf(portNo);
+        }catch(NumberFormatException ex){
+            LOG.trace("Unable to retrieve port number from nodeconnector id for {}", portId);
+        }
+        return IfmConstants.INVALID_PORT_NO;
+    }
+
     public static NodeId buildDpnNodeId(BigInteger dpnId) {
         return new NodeId(IfmConstants.OF_URI_PREFIX + dpnId);
     }

@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -50,12 +51,18 @@ public class OvsInterfaceStateAddHelper {
     public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
                                                         IMdsalApiManager mdsalApiManager,AlivenessMonitorService alivenessMonitorService,
                                                         NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
+        //Retrieve Port No from nodeConnectorId
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+        if(portNo == IfmConstants.INVALID_PORT_NO){
+            LOG.trace("Cannot derive port number, not proceeding with Interface State " +
+                    "addition for interface: {}", interfaceName);
+            return null;
+        }
+
+        //Retrieve PbyAddress & OperState from the DataObject
         LOG.debug("Adding Interface State to Oper DS for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
-
-        //Retrieve PbyAddress & OperState from the DataObject
-        long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
         PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
 
         Interface.OperStatus operStatus = Interface.OperStatus.Up;
