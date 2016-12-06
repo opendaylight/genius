@@ -17,6 +17,10 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
 
+import javax.inject.Singleton;
+import javax.annotation.PostConstruct;
+
+@Singleton
 public class AlarmAgent {
     static Logger s_logger = LoggerFactory.getLogger(AlarmAgent.class);
     private MBeanServer mbs = null;
@@ -34,6 +38,11 @@ public class AlarmAgent {
         } catch (MalformedObjectNameException e) {
             s_logger.error("ObjectName instance creation failed for BEANAME {} : {}",BEANNAME, e);
         }
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerAlarmMbean();
     }
 
     /**
