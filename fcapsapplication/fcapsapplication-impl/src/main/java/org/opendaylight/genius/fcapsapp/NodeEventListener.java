@@ -34,10 +34,10 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
 
     /**
      * Construcor set EntityOwnershipService
-     * @param eos
+     * @param entityOwnershipService
      */
-    public NodeEventListener(final EntityOwnershipService eos) {
-        this.entityOwnershipService = eos;
+    public NodeEventListener(final EntityOwnershipService entityOwnershipService) {
+        this.entityOwnershipService = entityOwnershipService;
     }
 
     @Override

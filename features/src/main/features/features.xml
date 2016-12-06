@@ -82,10 +82,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <feature name='odl-genius-fcaps-application' version='${project.version}' description='OpenDaylight :: genius :: fcapsapp'>
     <feature version="${openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+    <bundle>wrap:mvn:javax.inject/javax.inject/1</bundle>
     <bundle>mvn:org.opendaylight.genius/fcapsapplication-jmxapi/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}</bundle>
-    <configfile finalname="etc/opendaylight/karaf/73-fcaps-app.xml">mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}/xml/config
-    </configfile>
   </feature>
 
 </features>
