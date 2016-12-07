@@ -26,13 +26,21 @@ public class ActionSetFieldTunnelId extends ActionInfo {
     @Nullable private final BigInteger tunnelMask;
 
     public ActionSetFieldTunnelId(BigInteger tunnelId) {
-        super(ActionType.set_field_tunnel_id, new BigInteger[] {tunnelId});
+        this(0, tunnelId);
+    }
+
+    public ActionSetFieldTunnelId(int actionKey, BigInteger tunnelId) {
+        super(ActionType.set_field_tunnel_id, new BigInteger[] {tunnelId}, actionKey);
         this.tunnelId = tunnelId;
         this.tunnelMask = null;
     }
 
     public ActionSetFieldTunnelId(BigInteger tunnelId, BigInteger tunnelMask) {
-        super(ActionType.set_field_tunnel_id, new BigInteger[] {tunnelId, tunnelMask});
+        this(0, tunnelId, tunnelMask);
+    }
+
+    public ActionSetFieldTunnelId(int actionKey, BigInteger tunnelId, BigInteger tunnelMask) {
+        super(ActionType.set_field_tunnel_id, new BigInteger[] {tunnelId, tunnelMask}, actionKey);
         this.tunnelId = tunnelId;
         this.tunnelMask = tunnelMask;
     }
