@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfoBuilder;
 import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 
 /**
  * Test to illustrate why {@link ActionInfoBuilder} is required for
@@ -95,32 +96,38 @@ public class ActionInfoBuilderTest {
     @Test
     public void learnActionValuesMatrix() {
         ActionInfo actionInfo = new ActionInfo(ActionType.learn,
-                new String[] { "1", "2", "3", "4", "5", "6", "7", "8" },
-                new String[][] { { "2", "3" }, { "4", "5" } });
+            new String[] {"1", "2", "3", "4", "5", "6", "7", "8"},
+            new String[][] {
+                {NwConstants.LearnFlowModsType.COPY_FROM_VALUE.name(), "2", "3", "4"},
+                {NwConstants.LearnFlowModsType.OUTPUT_TO_PORT.name(), "4", "5"}
+            });
         actionInfo.buildAction();
         assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionType = ActionType.learn\n"
-                + "    actionValues = #[\n"
-                + "        \"1\",\n"
-                + "        \"2\",\n"
-                + "        \"3\",\n"
-                + "        \"4\",\n"
-                + "        \"5\",\n"
-                + "        \"6\",\n"
-                + "        \"7\",\n"
-                + "        \"8\"\n"
-                + "    ]\n"
-                + "    actionValuesMatrix = #[\n"
-                + "        #[\n"
-                + "            \"2\",\n"
-                + "            \"3\"\n"
-                + "        ],\n"
-                + "        #[\n"
-                + "            \"4\",\n"
-                + "            \"5\"\n"
-                + "        ]\n"
-                + "    ]\n"
-                + "]).build()", generator.getExpression(actionInfo));
+            + "    actionType = ActionType.learn\n"
+            + "    actionValues = #[\n"
+            + "        \"1\",\n"
+            + "        \"2\",\n"
+            + "        \"3\",\n"
+            + "        \"4\",\n"
+            + "        \"5\",\n"
+            + "        \"6\",\n"
+            + "        \"7\",\n"
+            + "        \"8\"\n"
+            + "    ]\n"
+            + "    actionValuesMatrix = #[\n"
+            + "        #[\n"
+            + "            \"COPY_FROM_VALUE\",\n"
+            + "            \"2\",\n"
+            + "            \"3\",\n"
+            + "            \"4\"\n"
+            + "        ],\n"
+            + "        #[\n"
+            + "            \"OUTPUT_TO_PORT\",\n"
+            + "            \"4\",\n"
+            + "            \"5\"\n"
+            + "        ]\n"
+            + "    ]\n"
+            + "]).build()", generator.getExpression(actionInfo));
     }
 
 }
