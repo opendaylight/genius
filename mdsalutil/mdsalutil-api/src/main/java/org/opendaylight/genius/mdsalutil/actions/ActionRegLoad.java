@@ -30,11 +30,7 @@ public class ActionRegLoad extends ActionInfo {
     private final long load;
 
     public ActionRegLoad(Class<? extends NxmNxReg> register, int start, int end, long load) {
-        super(ActionType.nx_load_reg, new String[0]);
-        this.register = register;
-        this.start = start;
-        this.end = end;
-        this.load = load;
+        this(0, register, start, end, load);
     }
 
     public ActionRegLoad(int actionKey, Class<? extends NxmNxReg> register, int start, int end, long load) {

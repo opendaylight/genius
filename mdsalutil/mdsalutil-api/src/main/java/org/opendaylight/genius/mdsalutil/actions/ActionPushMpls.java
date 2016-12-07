@@ -21,7 +21,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  */
 public class ActionPushMpls extends ActionInfo {
     public ActionPushMpls() {
-        super(ActionType.push_mpls, new String[0]);
+        this(0);
+    }
+
+    public ActionPushMpls(int actionKey) {
+        super(ActionType.push_mpls, new String[0], actionKey);
     }
 
     @Override
