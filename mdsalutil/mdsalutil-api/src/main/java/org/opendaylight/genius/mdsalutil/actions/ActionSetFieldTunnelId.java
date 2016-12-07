@@ -1,0 +1,58 @@
+package org.opendaylight.genius.mdsalutil.actions;
+
+import java.math.BigInteger;
+import javax.annotation.Nullable;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case
+    .SetFieldBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
+
+/**
+ * Set tunnel id field action.
+ */
+public class ActionSetFieldTunnelId extends ActionInfo {
+    private final BigInteger tunnelId;
+    @Nullable private final BigInteger tunnelMask;
+
+    public ActionSetFieldTunnelId(BigInteger tunnelId) {
+        super(ActionType.set_field_tunnel_id, new BigInteger[] {tunnelId});
+        this.tunnelId = tunnelId;
+        this.tunnelMask = null;
+    }
+
+    public ActionSetFieldTunnelId(BigInteger tunnelId, BigInteger tunnelMask) {
+        super(ActionType.set_field_tunnel_id, new BigInteger[] {tunnelId, tunnelMask});
+        this.tunnelId = tunnelId;
+        this.tunnelMask = tunnelMask;
+    }
+
+    @Deprecated
+    public ActionSetFieldTunnelId(BigInteger[] bigActionValues) {
+        super(ActionType.set_field_tunnel_id, bigActionValues);
+        this.tunnelId = bigActionValues[0];
+        this.tunnelMask = (bigActionValues.length > 1) ? bigActionValues[1] : null;
+    }
+
+    public Action buildAction(int newActionKey) {
+        TunnelBuilder tunnelBuilder = new TunnelBuilder()
+            .setTunnelId(tunnelId);
+        if (tunnelMask != null) {
+            tunnelBuilder.setTunnelMask(tunnelMask);
+        }
+        return new ActionBuilder()
+            .setAction(
+                new SetFieldCaseBuilder()
+                    .setSetField(
+                        new SetFieldBuilder()
+                            .setTunnel(tunnelBuilder.build())
+                            .build())
+                    .build())
+            .setKey(new ActionKey(newActionKey))
+            .build();
+    }
+}
