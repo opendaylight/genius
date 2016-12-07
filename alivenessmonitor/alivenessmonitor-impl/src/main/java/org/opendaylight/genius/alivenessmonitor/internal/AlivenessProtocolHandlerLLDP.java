@@ -26,9 +26,9 @@ import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -199,8 +199,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         List<ActionInfo> actionInfos  = new ArrayList<>();
         // Set the LLDP service Id which is 0
         if(Tunnel.class.equals(intfType)) {
-            actionInfos.add(new ActionInfo(ActionType.set_field_tunnel_id, new BigInteger[] {
-                    BigInteger.valueOf(0)}));
+            actionInfos.add(new ActionSetFieldTunnelId(BigInteger.ZERO));
         }
         actionInfos.add(new ActionOutput(new Uri(Long.toString(portNum))));
         return actionInfos;

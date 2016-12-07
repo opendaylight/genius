@@ -25,14 +25,16 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -312,15 +314,14 @@ public class IfmUtil {
                     IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
                     LOG.trace("L2Vlan: {}", vlanIface);
                     boolean isVlanTransparent = false;
-                    long vlanVid = 0;
+                    int vlanVid = 0;
                     if (vlanIface != null) {
                         vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue();
                         isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
                     }
                     if (vlanVid != 0 && !isVlanTransparent) {
                         result.add(new ActionPushVlan(actionKeyStart++));
-                        result.add(new ActionInfo(ActionType.set_field_vlan_vid,
-                                new String[]{Long.toString(vlanVid)}, actionKeyStart++));
+                        result.add(new ActionSetFieldVlanVid(actionKeyStart++, vlanVid));
                     }
                     result.add(new ActionOutput(actionKeyStart++, new Uri(portNo)));
                 }else{
@@ -339,8 +340,7 @@ public class IfmUtil {
                 if (tunnelKey == null) {
                     tunnelKey = 0L;
                 }
-                result.add(new ActionInfo(ActionType.set_field_tunnel_id,
-                    new BigInteger[]{BigInteger.valueOf(tunnelKey)},actionKeyStart++));
+                result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
 
                 IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
                 if(BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
