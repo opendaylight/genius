@@ -215,8 +215,6 @@ public class OvsInterfaceConfigRemoveHelper {
                         operShardTransaction, idManager);
                 FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker,
                         futures);
-                FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName,
-                        interfaceParentEntry.getParentInterface());
             }
 
             futures.add(operShardTransaction.submit());
