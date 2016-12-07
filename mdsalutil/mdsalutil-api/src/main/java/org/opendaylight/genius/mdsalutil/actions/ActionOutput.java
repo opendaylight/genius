@@ -24,21 +24,23 @@ public class ActionOutput extends ActionInfo {
     private final int maxLength;
 
     public ActionOutput(long portNum) {
-        super(ActionType.output, new String[] { Long.toString(portNum) });
-        this.portNum = portNum;
-        this.maxLength = 0;
+        this(0, portNum);
     }
 
     public ActionOutput(long portNum, int maxLength) {
-        super(ActionType.output, new String[] { Long.toString(portNum), Integer.toString(maxLength) });
-        this.portNum = portNum;
-        this.maxLength = maxLength;
+        this(0, portNum, maxLength);
     }
 
     public ActionOutput(int actionKey, long portNum) {
-        super(ActionType.output, new String[] { Long.toString(portNum) }, actionKey);
+        super(ActionType.output, new String[] {Long.toString(portNum)}, actionKey);
         this.portNum = portNum;
         this.maxLength = 0;
+    }
+
+    public ActionOutput(int actionKey, long portNum, int maxLength) {
+        super(ActionType.output, new String[] {Long.toString(portNum), Integer.toString(maxLength)}, actionKey);
+        this.portNum = portNum;
+        this.maxLength = maxLength;
     }
 
     @Deprecated

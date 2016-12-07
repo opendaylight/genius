@@ -31,10 +31,7 @@ public class ActionRegMove extends ActionInfo {
     private final int end;
 
     public ActionRegMove(Class<? extends NxmNxReg> register, int start, int end) {
-        super(ActionType.nx_load_reg, new String[0]);
-        this.register = register;
-        this.start = start;
-        this.end = end;
+        this(0, register, start, end);
     }
 
     public ActionRegMove(int actionKey, Class<? extends NxmNxReg> register, int start, int end) {

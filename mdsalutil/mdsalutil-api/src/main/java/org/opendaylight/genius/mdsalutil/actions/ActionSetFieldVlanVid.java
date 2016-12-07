@@ -25,7 +25,11 @@ public class ActionSetFieldVlanVid extends ActionInfo {
     private final int vlanId;
 
     public ActionSetFieldVlanVid(int vlanId) {
-        super(ActionType.set_field_pbb_isid, new String[] {Long.toString(vlanId)});
+        this(0, vlanId);
+    }
+
+    public ActionSetFieldVlanVid(int actionKey, int vlanId) {
+        super(ActionType.set_field_pbb_isid, new String[] {Long.toString(vlanId)}, actionKey);
         this.vlanId = vlanId;
     }
 

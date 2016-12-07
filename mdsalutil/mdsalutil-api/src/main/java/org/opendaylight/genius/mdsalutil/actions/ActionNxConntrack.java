@@ -25,12 +25,7 @@ public class ActionNxConntrack extends ActionInfo {
     private final short recircTable;
 
     public ActionNxConntrack(int flags, long zoneSrc, int conntrackZone, short recircTable) {
-        super(ActionType.nx_conntrack, new String[] {Integer.toString(flags), Long.toString(zoneSrc), Integer.toString(
-                conntrackZone), Short.toString(recircTable)});
-        this.flags = flags;
-        this.zoneSrc = zoneSrc;
-        this.conntrackZone = conntrackZone;
-        this.recircTable = recircTable;
+        this(0, flags, zoneSrc, conntrackZone, recircTable);
     }
 
     public ActionNxConntrack(int actionKey, int flags, long zoneSrc, int conntrackZone, short recircTable) {
