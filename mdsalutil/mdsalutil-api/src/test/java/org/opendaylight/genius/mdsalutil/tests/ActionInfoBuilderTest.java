@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfoBuilder;
 import org.opendaylight.genius.mdsalutil.ActionType;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 
 /**
  * Test to illustrate why {@link ActionInfoBuilder} is required for
@@ -96,7 +97,10 @@ public class ActionInfoBuilderTest {
     public void learnActionValuesMatrix() {
         ActionInfo actionInfo = new ActionInfo(ActionType.learn,
                 new String[] { "1", "2", "3", "4", "5", "6", "7", "8" },
-                new String[][] { { "2", "3" }, { "4", "5" } });
+                new String[][] {
+                    {NwConstants.LearnFlowModsType.COPY_FROM_VALUE.name(), "2", "3", "4"},
+                    {NwConstants.LearnFlowModsType.OUTPUT_TO_PORT.name(), "4", "5"}
+                });
         actionInfo.buildAction();
         assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
                 + "    actionType = ActionType.learn" + System.lineSeparator()
@@ -112,10 +116,13 @@ public class ActionInfoBuilderTest {
                 + "    ]" + System.lineSeparator()
                 + "    actionValuesMatrix = #[" + System.lineSeparator()
                 + "        #[" + System.lineSeparator()
+                + "            \"COPY_FROM_VALUE\"," + System.lineSeparator()
                 + "            \"2\"," + System.lineSeparator()
-                + "            \"3\"" + System.lineSeparator()
+                + "            \"3\"," + System.lineSeparator()
+                + "            \"4\"" + System.lineSeparator()
                 + "        ]," + System.lineSeparator()
                 + "        #[" + System.lineSeparator()
+                + "            \"OUTPUT_TO_PORT\"," + System.lineSeparator()
                 + "            \"4\"," + System.lineSeparator()
                 + "            \"5\"" + System.lineSeparator()
                 + "        ]" + System.lineSeparator()
