@@ -83,6 +83,11 @@ public class ActionLearn extends ActionInfo {
 
     public ActionLearn(int idleTimeout, int hardTimeout, int priority, BigInteger cookie, int flags, short tableId,
         int finIdleTimeout, int finHardTimeout, List<FlowMod> flowMods) {
+        this(0, idleTimeout, hardTimeout, priority, cookie, flags, tableId, finIdleTimeout, finHardTimeout, flowMods);
+    }
+
+    public ActionLearn(int actionKey, int idleTimeout, int hardTimeout, int priority, BigInteger cookie, int flags,
+        short tableId, int finIdleTimeout, int finHardTimeout, List<FlowMod> flowMods) {
         super(ActionType.learn, new String[] {
                 Integer.toString(idleTimeout),
                 Integer.toString(hardTimeout),
@@ -92,7 +97,7 @@ public class ActionLearn extends ActionInfo {
                 Short.toString(tableId),
                 Integer.toString(finIdleTimeout),
                 Integer.toString(finHardTimeout)
-            }, convertFlowModsToStrings(flowMods));
+            }, convertFlowModsToStrings(flowMods), actionKey);
         this.idleTimeout = idleTimeout;
         this.hardTimeout = hardTimeout;
         this.priority = priority;

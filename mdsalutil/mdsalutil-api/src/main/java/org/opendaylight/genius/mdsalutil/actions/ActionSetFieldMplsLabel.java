@@ -23,7 +23,11 @@ public class ActionSetFieldMplsLabel extends ActionInfo {
     private final long label;
 
     public ActionSetFieldMplsLabel(long label) {
-        super(ActionType.set_field_mpls_label, new String[] {Long.toString(label)});
+        this(0, label);
+    }
+
+    public ActionSetFieldMplsLabel(int actionKey, long label) {
+        super(ActionType.set_field_mpls_label, new String[] {Long.toString(label)}, actionKey);
         this.label = label;
     }
 

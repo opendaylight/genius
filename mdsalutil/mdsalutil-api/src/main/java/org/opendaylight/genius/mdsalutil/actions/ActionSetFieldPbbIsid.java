@@ -24,7 +24,11 @@ public class ActionSetFieldPbbIsid extends ActionInfo {
     private final long isid;
 
     public ActionSetFieldPbbIsid(long isid) {
-        super(ActionType.set_field_pbb_isid, new String[] {Long.toString(isid)});
+        this(0, isid);
+    }
+
+    public ActionSetFieldPbbIsid(int actionKey, long isid) {
+        super(ActionType.set_field_pbb_isid, new String[] {Long.toString(isid)}, actionKey);
         this.isid = isid;
     }
 

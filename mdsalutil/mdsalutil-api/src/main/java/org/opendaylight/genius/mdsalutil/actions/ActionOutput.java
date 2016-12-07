@@ -24,21 +24,23 @@ public class ActionOutput extends ActionInfo {
     private final int maxLength;
 
     public ActionOutput(Uri outputNodeConnector) {
-        super(ActionType.output, new String[] { outputNodeConnector.getValue() });
-        this.outputNodeConnector = outputNodeConnector;
-        this.maxLength = 0;
+        this(0, outputNodeConnector);
     }
 
     public ActionOutput(Uri outputNodeConnector, int maxLength) {
-        super(ActionType.output, new String[] { outputNodeConnector.getValue(), Integer.toString(maxLength) });
-        this.outputNodeConnector = outputNodeConnector;
-        this.maxLength = maxLength;
+        this(0, outputNodeConnector, maxLength);
     }
 
     public ActionOutput(int actionKey, Uri outputNodeConnector) {
         super(ActionType.output, new String[] { outputNodeConnector.getValue() }, actionKey);
         this.outputNodeConnector = outputNodeConnector;
         this.maxLength = 0;
+    }
+
+    public ActionOutput(int actionKey, Uri outputNodeConnector, int maxLength) {
+        super(ActionType.output, new String[] {outputNodeConnector.getValue(), Integer.toString(maxLength)}, actionKey);
+        this.outputNodeConnector = outputNodeConnector;
+        this.maxLength = maxLength;
     }
 
     @Deprecated
