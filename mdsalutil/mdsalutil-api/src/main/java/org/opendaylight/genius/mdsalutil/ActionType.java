@@ -13,16 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.genius.mdsalutil.NwConstants.LearnFlowModsType;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
-import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
-import org.opendaylight.genius.mdsalutil.actions.ActionPopMpls;
-import org.opendaylight.genius.mdsalutil.actions.ActionPopPbb;
-import org.opendaylight.genius.mdsalutil.actions.ActionPopVlan;
-import org.opendaylight.genius.mdsalutil.actions.ActionPushMpls;
-import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
-import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
-import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
-import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
+-import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
+-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+-import org.opendaylight.genius.mdsalutil.actions.ActionPopMpls;
+-import org.opendaylight.genius.mdsalutil.actions.ActionPopPbb;
+-import org.opendaylight.genius.mdsalutil.actions.ActionPopVlan;
+-import org.opendaylight.genius.mdsalutil.actions.ActionPushMpls;
+-import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
+-import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
+-import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
+-import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldDscp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -568,6 +569,14 @@ public enum ActionType {
         }
 
     },
+    @Deprecated
+    set_field_dscp {
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            return ((ActionSetFieldDscp) actionInfo).buildAction(newActionKey);
+        }
+    },
+
     set_field_eth_src {
 
         @Override
