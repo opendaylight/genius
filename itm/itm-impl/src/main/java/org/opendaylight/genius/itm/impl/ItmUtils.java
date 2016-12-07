@@ -34,7 +34,6 @@ import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.InstructionType;
@@ -42,6 +41,7 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -439,8 +439,7 @@ public class ItmUtils {
         String logmsg = addFlag ? "Installing" : "Removing";
         LOG.trace( logmsg + " PUNT to Controller flow in DPN {} ", dpnId );
         List<ActionInfo> listActionInfo = new ArrayList<>();
-        listActionInfo.add(new ActionInfo(ActionType.punt_to_controller,
-                new String[] {}));
+        listActionInfo.add(new ActionPuntToController());
 
         try {
             List<MatchInfo> mkMatches = new ArrayList<>();
