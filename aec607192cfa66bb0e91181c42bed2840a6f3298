@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_a6c87475",
+        "filename": "it/impl/src/test/java/org/opendaylight/genius/it/GeniusIT.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-07T23:11:18Z",
+      "side": 1,
+      "message": "This makes relatively little sense - you could just let it propagate, particularly as setup() already has \"throws Exception\" anyway?",
+      "revId": "aec607192cfa66bb0e91181c42bed2840a6f3298",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
