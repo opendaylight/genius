@@ -1,0 +1,9 @@
+Verified+1: Faseela K <faseela.k@ericsson.com>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Alon Kochba <alonko@hpe.com>
+Code-Review+2: Vishal Thapar <vishal.thapar@ericsson.com>
+Submitted-by: Vishal Thapar <vishal.thapar@ericsson.com>
+Submitted-at: Wed, 07 Dec 2016 10:35:03 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/48956
+Project: genius
+Branch: refs/heads/stable/boron
