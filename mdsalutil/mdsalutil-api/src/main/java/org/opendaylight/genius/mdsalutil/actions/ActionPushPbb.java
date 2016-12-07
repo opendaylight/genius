@@ -21,7 +21,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  */
 public class ActionPushPbb extends ActionInfo {
     public ActionPushPbb() {
-        super(ActionType.push_pbb, new String[0]);
+        this(0);
+    }
+
+    public ActionPushPbb(int actionKey) {
+        super(ActionType.push_pbb, new String[0], actionKey);
     }
 
     @Override

@@ -21,7 +21,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  */
 public class ActionPopMpls extends ActionInfo {
     public ActionPopMpls() {
-        super(ActionType.pop_mpls, new String[0]);
+        this(0);
+    }
+
+    public ActionPopMpls(int actionKey) {
+        super(ActionType.pop_mpls, new String[0], actionKey);
     }
 
     @Override
