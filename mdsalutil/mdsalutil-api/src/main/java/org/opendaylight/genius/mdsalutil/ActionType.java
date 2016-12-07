@@ -30,6 +30,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.DropActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.OutputActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Dscp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.output.action._case.OutputActionBuilder;
@@ -568,6 +569,21 @@ public enum ActionType {
         }
 
     },
+    set_field_dscp {
+
+        @Override
+        public Action buildAction(int newActionKey, ActionInfo actionInfo) {
+            String[] actionValues = actionInfo.getActionValues();
+            String dscp = actionValues[0];
+            return new ActionBuilder().setAction(
+                    new SetFieldCaseBuilder().setSetField(
+                            new SetFieldBuilder().setIpMatch(
+                                    new IpMatchBuilder().setIpDscp(
+                                            new Dscp(Short.valueOf(dscp))).build())
+                                    .build()).build()).setKey(new ActionKey(newActionKey)).build();
+        }
+    },
+
     set_field_eth_src {
 
         @Override

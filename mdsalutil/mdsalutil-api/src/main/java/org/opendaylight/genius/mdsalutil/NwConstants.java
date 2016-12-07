@@ -53,15 +53,17 @@ public final class NwConstants {
     public static final short DEFAULT_SERVICE_INDEX = 0;
     public static final short ACL_SERVICE_INDEX = 1;
     public static final short DHCP_SERVICE_INDEX = 2;
-    public static final short IPV6_SERVICE_INDEX = 3;
-    public static final short SCF_SERVICE_INDEX = 4;
-    public static final short SFC_SERVICE_INDEX = 4;
-    public static final short L3VPN_SERVICE_INDEX = 5;
-    public static final short ELAN_SERVICE_INDEX = 6;
+    public static final short QOS_SERVICE_INDEX = 3;
+    public static final short IPV6_SERVICE_INDEX = 4;
+    public static final short SCF_SERVICE_INDEX = 5;
+    public static final short SFC_SERVICE_INDEX = 5;
+    public static final short L3VPN_SERVICE_INDEX = 6;
+    public static final short ELAN_SERVICE_INDEX = 7;
     public static final short DEFAULT_EGRESS_SERVICE_INDEX = 7;
 
     public static final String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     public static final String ACL_SERVICE_NAME = "ACL_SERVICE";
+    public static final String QOS_SERVICE_NAME = "QOS_SERVICE";
     public static final String IPV6_SERVICE_NAME = "IPV6_SERVICE";
     public static final String SCF_SERVICE_NAME = "SCF_SERVICE";
     public static final String SFC_SERVICE_NAME = "SFC_SERVICE";
@@ -75,6 +77,7 @@ public final class NwConstants {
     public static final String EGRESS_ACL_SERVICE_NAME = "EGRESS_ACL_SERVICE";
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
+    public static final BigInteger COOKIE_QOS_TABLE = new BigInteger("4000001", 16);
     public static final BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
     public static final BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
     public static final BigInteger COOKIE_VM_LFIB_TABLE = new BigInteger("8000002", 16);
@@ -134,6 +137,7 @@ public final class NwConstants {
     public static final short SFC_TRANSPORT_PATH_MAPPER_ACL_TABLE = 85;
     public static final short SFC_TRANSPORT_NEXT_HOP_TABLE = 86;
     public static final short SFC_TRANSPORT_EGRESS_TABLE = 87;
+    public static final short QOS_DSCP_TABLE = 90;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 251;
     public static final short EGRESS_ACL_FILTER_TABLE = 252;
