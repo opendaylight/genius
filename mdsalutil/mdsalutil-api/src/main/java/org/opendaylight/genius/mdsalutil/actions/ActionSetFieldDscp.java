@@ -22,7 +22,11 @@ public class ActionSetFieldDscp extends ActionInfo {
     private final short dscp;
 
     public ActionSetFieldDscp(short dscp) {
-        super(ActionType.set_field_dscp, new String[] {Short.toString(dscp)});
+        this(0, dscp);
+    }
+
+    public ActionSetFieldDscp(int actionKey, short dscp) {
+        super(ActionType.set_field_dscp, new String[] {Short.toString(dscp)}, actionKey);
         this.dscp = dscp;
     }
 
