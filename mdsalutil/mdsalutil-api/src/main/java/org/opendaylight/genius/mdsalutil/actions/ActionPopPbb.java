@@ -20,7 +20,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  */
 public class ActionPopPbb extends ActionInfo {
     public ActionPopPbb() {
-        super(ActionType.pop_pbb, new String[0]);
+        this(0);
+    }
+
+    public ActionPopPbb(int actionKey) {
+        super(ActionType.pop_pbb, new String[0], actionKey);
     }
 
     @Override
