@@ -21,6 +21,10 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldMplsLabel;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldPbbIsid;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -36,20 +40,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.OutputPortValues;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetDestinationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.EthernetMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.TcpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.protocol.match.fields.PbbBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.vlan.match.fields.VlanIdBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.add.group.input.buckets.bucket.action.action.NxActionResubmitRpcAddGroupCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.DstChoice;
@@ -187,72 +185,55 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_field_mpls_label {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            long label = Long.valueOf(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(new SetFieldBuilder().setProtocolMatchFields(
-                                            new ProtocolMatchFieldsBuilder().setMplsLabel(label).build()).build())
-                                    .build()).setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionSetFieldMplsLabel) {
+                return ((ActionSetFieldMplsLabel) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionSetFieldMplsLabel
+                return new ActionSetFieldMplsLabel(actionInfo.getActionValues()).buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     set_field_pbb_isid {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            long label = Long.valueOf(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setProtocolMatchFields(
-                                            new ProtocolMatchFieldsBuilder().setPbb(
-                                                    new PbbBuilder().setPbbIsid(label).build()).build()).build())
-                                    .build()).setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionSetFieldPbbIsid) {
+                return ((ActionSetFieldPbbIsid) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionSetFieldPbbIsid
+                return new ActionSetFieldPbbIsid(actionInfo.getActionValues()).buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     set_field_vlan_vid {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            int vlanId = Integer.valueOf(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setVlanMatch(
-                                    new VlanMatchBuilder().setVlanId(
-                                                    new VlanIdBuilder().setVlanId(new VlanId(vlanId))
-                                                            .setVlanIdPresent(true).build()).build()).build()).build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionSetFieldVlanVid) {
+                return ((ActionSetFieldVlanVid) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionSetFieldVlanVid
+                return new ActionSetFieldVlanVid(actionInfo.getActionValues()).buildAction(newActionKey);
+            }
         }
     },
 
+    @Deprecated
     set_field_tunnel_id {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            BigInteger [] actionValues = actionInfo.getBigActionValues();
-            if (actionValues.length == 2) {
-                return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                        new SetFieldBuilder()
-                            .setTunnel(new TunnelBuilder().setTunnelId(actionValues[0])
-                                           .setTunnelMask(actionValues[1]).build()).build())
-                        .build())
-                    .setKey(new ActionKey(newActionKey)).build();
+            if (actionInfo instanceof ActionSetFieldTunnelId) {
+                return ((ActionSetFieldTunnelId) actionInfo).buildAction(newActionKey);
             } else {
-                return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                        new SetFieldBuilder()
-                            .setTunnel(new TunnelBuilder().setTunnelId(actionValues[0])
-                                           .build()).build())
-                        .build())
-                    .setKey(new ActionKey(newActionKey)).build();
+                // TODO Migrate all users to ActionSetFieldTunnelId
+                return new ActionSetFieldTunnelId(actionInfo.getBigActionValues()).buildAction(newActionKey);
             }
-
         }
 
     },
