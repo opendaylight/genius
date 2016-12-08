@@ -16,6 +16,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfoBuilder;
 import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 
 /**
  * Test to illustrate why {@link ActionInfoBuilder} is required for
@@ -34,11 +35,9 @@ public class ActionInfoBuilderTest {
 
     @Test
     public void noActionValues() {
-        ActionInfo actionInfo = new ActionInfo(ActionType.drop_action, (String[]) null);
+        ActionInfo actionInfo = new ActionDrop();
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionType = ActionType.drop_action\n"
-                + "]).build()", generator.getExpression(actionInfo));
+        assertEquals("new ActionDrop\n", generator.getExpression(actionInfo));
     }
 
     @Test
