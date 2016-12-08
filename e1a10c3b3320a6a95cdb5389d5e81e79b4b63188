@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_43206d49",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/JMXAlarmAgent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-08T13:26:21Z",
+      "side": 1,
+      "message": "if you\u0027re doing this anyway, let\u0027s do it completely right?  The current version as is isn\u0027t really as null safe yet as it could be.. you\u0027re accepting that alarmName may not be set, so it will be null, if in the constructor there is a MalformedObjectNameException.  So now you have to EITHER (1) check for if (alarmName !\u003d null) in all other methods, OR (2) you have to make the constructor propagate the exception (so that an instance of JMXAlarmAgent can never be created if there was a MalformedObjectNameException.  The decision between (1) and (2) should be taken based on whether you want to \"accept\" that JMXAlarmAgent may not work - like is it something to handle gracefully, or is this a must-have tool which if it cannot work, just let its callers forcefully now that it cannot, by propagating the exception in the constructor.  I don\u0027t know that much about JMX, but I think this is probably more a case of (1) than (2) here.",
+      "revId": "e1a10c3b3320a6a95cdb5389d5e81e79b4b63188",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
