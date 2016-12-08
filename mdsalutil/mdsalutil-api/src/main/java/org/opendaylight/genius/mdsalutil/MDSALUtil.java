@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
-import com.google.common.util.concurrent.CheckedFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +21,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
@@ -453,7 +453,7 @@ public class MDSALUtil {
     public static List<Instruction> buildInstructionsDrop(int instructionKey) {
         List<Instruction> mkInstructions = new ArrayList<>();
         List<Action> actionsInfos = new ArrayList<>();
-        actionsInfos.add(new ActionInfo(ActionType.drop_action, new String[]{}).buildAction());
+        actionsInfos.add(new ActionDrop().buildAction());
         mkInstructions.add(getWriteActionsInstruction(actionsInfos, instructionKey));
         return mkInstructions;
     }
