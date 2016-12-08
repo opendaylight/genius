@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -214,7 +215,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
                 listActionInfo.add(new ActionPushVlan());
                 listActionInfo.add(new ActionInfo(ActionType.set_field_vlan_vid, new String[] { String.valueOf(vlanid) }));
             }
-            listActionInfo.add(new ActionOutput(Long.parseLong(inport), 65535));
+            listActionInfo.add(new ActionOutput(new Uri(inport), 65535));
             listBucketInfo.add(new BucketInfo(listActionInfo));
 
             String groupName = "Test Group";

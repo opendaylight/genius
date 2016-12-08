@@ -20,30 +20,30 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Output action.
  */
 public class ActionOutput extends ActionInfo {
-    private final long portNum;
+    private final Uri outputNodeConnector;
     private final int maxLength;
 
-    public ActionOutput(long portNum) {
-        super(ActionType.output, new String[] { Long.toString(portNum) });
-        this.portNum = portNum;
+    public ActionOutput(Uri outputNodeConnector) {
+        super(ActionType.output, new String[] { outputNodeConnector.getValue() });
+        this.outputNodeConnector = outputNodeConnector;
         this.maxLength = 0;
     }
 
-    public ActionOutput(long portNum, int maxLength) {
-        super(ActionType.output, new String[] { Long.toString(portNum), Integer.toString(maxLength) });
-        this.portNum = portNum;
+    public ActionOutput(Uri outputNodeConnector, int maxLength) {
+        super(ActionType.output, new String[] { outputNodeConnector.getValue(), Integer.toString(maxLength) });
+        this.outputNodeConnector = outputNodeConnector;
         this.maxLength = maxLength;
     }
 
-    public ActionOutput(int actionKey, long portNum) {
-        super(ActionType.output, new String[] { Long.toString(portNum) }, actionKey);
-        this.portNum = portNum;
+    public ActionOutput(int actionKey, Uri outputNodeConnector) {
+        super(ActionType.output, new String[] { outputNodeConnector.getValue() }, actionKey);
+        this.outputNodeConnector = outputNodeConnector;
         this.maxLength = 0;
     }
 
     @Deprecated
     public ActionOutput(String[] actionValues) {
-        this(Long.parseLong(actionValues[0]), actionValues.length == 2 ? Integer.parseInt(actionValues[1]) : 0);
+        this(new Uri(actionValues[0]), actionValues.length == 2 ? Integer.parseInt(actionValues[1]) : 0);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ActionOutput extends ActionInfo {
         return new ActionBuilder().setAction(
                 new OutputActionCaseBuilder().setOutputAction(
                         new OutputActionBuilder().setMaxLength(maxLength)
-                                .setOutputNodeConnector(new Uri(Long.toString(portNum))).build()).build())
+                                .setOutputNodeConnector(outputNodeConnector).build()).build())
                 .setKey(new ActionKey(newActionKey)).build();
     }
 }
