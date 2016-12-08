@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +27,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.InstructionType;
@@ -45,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
@@ -60,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.SplitHorizon;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
@@ -177,10 +182,10 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void makeTunnelIngressFlow(List<ListenableFuture<Void>> futures, IMdsalApiManager mdsalApiManager,
-            IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
-        LOG.debug("make tunnel ingress flow for {}", interfaceName);
+            IfTunnel tunnel, BigInteger dpnId, long portNo, Interface iface, int ifIndex, int addOrRemoveFlow) {
+        LOG.debug("make tunnel ingress flow for {}", iface.getName());
         String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
-                NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
+                NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName());
         List<MatchInfoBase> matches = new ArrayList<>();
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
@@ -197,14 +202,21 @@ public class InterfaceManagerCommonUtils {
             mkInstructions.add(new InstructionInfo(InstructionType.write_metadata,
                     new BigInteger[] { MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
                             MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG }));
+            
             short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
                     ? NwConstants.L3_LFIB_TABLE
                     : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
+            final SplitHorizon splitHorizon = iface.getAugmentation(SplitHorizon.class);
+            boolean overrideSplitHorizonProtection = (splitHorizon != null && splitHorizon.isOverrideSplitHorizonProtection());
+            if (overrideSplitHorizonProtection) {
+                mkInstructions.add(new InstructionInfo(InstructionType.apply_actions, 
+                        Arrays.asList(new ActionInfo(ActionType.nx_load_in_port, new BigInteger[]{BigInteger.ZERO}))));
+            }
             mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[] { tableId }));
         }
 
         FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,
-                IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
+                IfmConstants.DEFAULT_FLOW_PRIORITY, iface.getName(), 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
                 mkInstructions);
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
             futures.add(mdsalApiManager.installFlow(dpnId, flowEntity));

@@ -73,7 +73,7 @@ public class OvsInterfaceStateAddHelper {
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
             handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
                     nodeConnectorId, defaultOperationalShardTransaction, ifState.getIfIndex(),
-                    iface.getAugmentation(IfTunnel.class), interfaceName, portNo);
+                    iface.getAugmentation(IfTunnel.class), iface, portNo);
             return futures;
         }
 
@@ -92,11 +92,11 @@ public class OvsInterfaceStateAddHelper {
     public static void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
                                                       IMdsalApiManager mdsalApiManager,AlivenessMonitorService alivenessMonitorService,
                                                       NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifindex,
-                                                      IfTunnel ifTunnel, String interfaceName, long portNo){
+                                                      IfTunnel ifTunnel, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface, long portNo){
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName,
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, iface,
                 ifindex, NwConstants.ADD_FLOW);
         futures.add(transaction.submit());
-        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, iface.getName());
     }
 }

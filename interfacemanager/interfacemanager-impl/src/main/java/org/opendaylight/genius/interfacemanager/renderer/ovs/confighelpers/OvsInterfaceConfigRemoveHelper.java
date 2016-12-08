@@ -56,7 +56,7 @@ public class OvsInterfaceConfigRemoveHelper {
 
         IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
-            removeTunnelConfiguration(alivenessMonitorService, parentRefs, dataBroker, interfaceOld.getName(), ifTunnel,
+            removeTunnelConfiguration(alivenessMonitorService, parentRefs, dataBroker, interfaceOld, ifTunnel,
                     idManager, mdsalApiManager, defaultOperationalShardTransaction, defaultConfigShardTransaction, futures);
         }else {
             removeVlanConfiguration(dataBroker, parentRefs, interfaceOld.getName(),
@@ -109,12 +109,13 @@ public class OvsInterfaceConfigRemoveHelper {
     }
 
     private static void removeTunnelConfiguration(AlivenessMonitorService alivenessMonitorService, ParentRefs parentRefs,
-                                                  DataBroker dataBroker, String interfaceName, IfTunnel ifTunnel,
+                                                  DataBroker dataBroker, Interface iface, IfTunnel ifTunnel,
                                                   IdManagerService idManager, IMdsalApiManager mdsalApiManager,
                                                   WriteTransaction defaultOperationalShardTransaction,
                                                   WriteTransaction defaultConfigShardTransaction,
                                                   List<ListenableFuture<Void>> futures) {
-        LOG.debug("removing tunnel configuration for {}",interfaceName);
+    	String interfaceName = iface.getName();
+        LOG.debug("removing tunnel configuration for {}", interfaceName);
         BigInteger dpId = null;
         if (parentRefs != null) {
             dpId = parentRefs.getDatapathNodeIdentifier();
@@ -152,7 +153,7 @@ public class OvsInterfaceConfigRemoveHelper {
         }
 
         // delete tunnel ingress flow
-        removeTunnelIngressFlow(futures, dataBroker, interfaceName, ifTunnel, mdsalApiManager, dpId);
+        removeTunnelIngressFlow(futures, dataBroker, iface, ifTunnel, mdsalApiManager, dpId);
 
         // delete bridge to tunnel interface mappings
         InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid, defaultConfigShardTransaction, interfaceName);
@@ -172,16 +173,16 @@ public class OvsInterfaceConfigRemoveHelper {
     }
 
     public static void removeTunnelIngressFlow(List<ListenableFuture<Void>> futures,
-                                               DataBroker dataBroker, String interfaceName, IfTunnel ifTunnel,
+                                               DataBroker dataBroker, Interface iface, IfTunnel ifTunnel,
                                                IMdsalApiManager mdsalApiManager, BigInteger dpId){
-        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
+        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(iface.getName(), dataBroker);
         if(ncId == null){
             LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
         }else{
             long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
             InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
                     ifTunnel,
-                    dpId, portNo,interfaceName , -1,
+                    dpId, portNo,iface , -1,
                     NwConstants.DEL_FLOW);
         }
     }

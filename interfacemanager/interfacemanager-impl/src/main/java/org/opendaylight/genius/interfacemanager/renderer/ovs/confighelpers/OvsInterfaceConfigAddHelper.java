@@ -139,7 +139,7 @@ public class OvsInterfaceConfigAddHelper {
                 if(ncId != null) {
                     long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(ncId));
                     InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel,
-                            dpId, portNo, interfaceNew.getName(),
+                            dpId, portNo, interfaceNew,
                             ifState.getIfIndex(), NwConstants.ADD_FLOW);
                     // start LLDP monitoring for the tunnel interface
                     AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,

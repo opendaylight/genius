@@ -65,7 +65,7 @@ public class OvsInterfaceStateRemoveHelper {
                 if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
                     InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);
                     handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId,
-                            iface.getName(), iface.getAugmentation(IfTunnel.class), defaultOperationalShardTransaction,
+                            iface, iface.getAugmentation(IfTunnel.class), defaultOperationalShardTransaction,
                             nodeConnectorId, futures);
                     return futures;
                 }
@@ -84,13 +84,13 @@ public class OvsInterfaceStateRemoveHelper {
     }
 
     public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService, IMdsalApiManager mdsalApiManager,
-                                                     DataBroker dataBroker, BigInteger dpId, String interfaceName,
+                                                     DataBroker dataBroker, BigInteger dpId, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
                                                      IfTunnel ifTunnel, WriteTransaction transaction,
                                                      NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures){
         long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName, -1,
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, iface, -1,
                 NwConstants.DEL_FLOW);
         futures.add(transaction.submit());
-        AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+        AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, iface.getName());
     }
 }
