@@ -87,7 +87,7 @@ public class OvsInterfaceStateRemoveHelper {
                                                      DataBroker dataBroker, BigInteger dpId, String interfaceName,
                                                      IfTunnel ifTunnel, WriteTransaction transaction,
                                                      NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures){
-        long portNo = Long.valueOf(IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId));
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName, -1,
                 NwConstants.DEL_FLOW);
         futures.add(transaction.submit());
