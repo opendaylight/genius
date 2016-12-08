@@ -26,10 +26,10 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
@@ -90,7 +90,10 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
 
 public class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
@@ -98,10 +101,10 @@ public class IfmUtil {
 
     private static final ImmutableMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType> TUNNEL_TYPE_MAP =
             new ImmutableMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
-                    .put(TunnelTypeGre.class, InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE)
-                    .put(TunnelTypeMplsOverGre.class, InterfaceInfo.InterfaceType.MPLS_OVER_GRE)
-                    .put(TunnelTypeVxlan.class, InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE)
-                    .put(TunnelTypeVxlanGpe.class, InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE)
+                    .put(TunnelTypeGre.class, GRE_TRUNK_INTERFACE)
+                    .put(TunnelTypeMplsOverGre.class, MPLS_OVER_GRE)
+                    .put(TunnelTypeVxlan.class, VXLAN_TRUNK_INTERFACE)
+                    .put(TunnelTypeVxlanGpe.class, VXLAN_TRUNK_INTERFACE)
                     .build();
 
     public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
@@ -330,8 +333,7 @@ public class IfmUtil {
                     long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
                     result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
                             IfmConstants.REG6_END_INDEX, regValue));
-                    result.add(new ActionInfo(ActionType.nx_resubmit,
-                            new String[]{Short.toString(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)}, actionKeyStart++));
+                    result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
                 }
                 break;
             case MPLS_OVER_GRE:
