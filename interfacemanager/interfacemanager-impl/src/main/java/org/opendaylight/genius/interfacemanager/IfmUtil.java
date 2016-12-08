@@ -35,6 +35,8 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -344,14 +346,10 @@ public class IfmUtil {
 
                 IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
                 if(BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
-                    BigInteger destIp = MDSALUtil.getBigIntIpFromIpAddress(ifTunnel.getTunnelDestination());
-                    result.add(new ActionInfo(ActionType.set_tunnel_dest_ip, new BigInteger[]{destIp},
-                            actionKeyStart++));
+                    result.add(new ActionSetTunnelDestinationIp(actionKeyStart++, ifTunnel.getTunnelDestination()));
                 }
                 if(BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
-                    BigInteger sourceIp = MDSALUtil.getBigIntIpFromIpAddress(ifTunnel.getTunnelSource());
-                    result.add(new ActionInfo(ActionType.set_tunnel_src_ip, new BigInteger[]{sourceIp},
-                            actionKeyStart++));
+                    result.add(new ActionSetTunnelSourceIp(actionKeyStart++, ifTunnel.getTunnelSource()));
                 }
                 result.add(new ActionOutput(actionKeyStart++, new Uri(portNo)));
                 break;
