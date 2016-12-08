@@ -28,6 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.SplitHorizon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,6 +101,12 @@ public class OvsInterfaceConfigUpdateHelper{
             }
         }
 
+        final SplitHorizon splitHorizonOld = interfaceOld.getAugmentation(SplitHorizon.class);
+        final SplitHorizon splitHorizonNew = interfaceNew.getAugmentation(SplitHorizon.class);
+        
+        if (checkAugmentations(splitHorizonOld,splitHorizonNew)) {
+        	return true;
+        }
         return false;
     }
 

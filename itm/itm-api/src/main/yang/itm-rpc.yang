@@ -269,5 +269,18 @@ module itm-rpc {
                 }
             }
         }
-
+        
+        rpc list-tunnel-interface-names-for-source-dpn {
+            description "Used for retriving the existing internal tunnel fo given source DPN";
+            input {
+                leaf source-dpn {
+                    type uint64;
+                }
+            }
+            output {
+                leaf-list tunnel-interface-name {
+                	type string;
+                }
+            }
+        }
     }
