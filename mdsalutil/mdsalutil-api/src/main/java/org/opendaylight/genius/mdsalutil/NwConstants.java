@@ -169,9 +169,9 @@ public final class NwConstants {
         NXM_NX_REG7(0x0001, 7, 4, -1);
 
         long hexType;
-        long flowModHeaderLen;
+        int flowModHeaderLen;
 
-        NxmOfFieldType(long vendor, long field, long length, long flowModHeaderLen) {
+        NxmOfFieldType(long vendor, long field, long length, int flowModHeaderLen) {
             hexType = nxmHeader(vendor, field, length);
             this.flowModHeaderLen = flowModHeaderLen;
         }
@@ -180,12 +180,22 @@ public final class NwConstants {
             return ((vendor) << 16) | ((field) << 9) | (length);
         }
 
+        @Deprecated
         public String getHexType() {
             return String.valueOf(hexType);
         }
 
+        public long getHexTypeLong() {
+            return hexType;
+        }
+
+        @Deprecated
         public String getFlowModHeaderLen() {
             return String.valueOf(flowModHeaderLen);
+        }
+
+        public int getFlowModHeaderLenInt() {
+            return flowModHeaderLen;
         }
     }
 
