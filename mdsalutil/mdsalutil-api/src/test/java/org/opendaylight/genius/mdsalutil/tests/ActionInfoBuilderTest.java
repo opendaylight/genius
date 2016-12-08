@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Red Hat, Inc. and others. All rights reserved.
+ * Copyright (c) 2016, 2017 Red Hat, Inc. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -16,6 +16,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfoBuilder;
 import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 
 /**
  * Test to illustrate why {@link ActionInfoBuilder} is required for
@@ -34,11 +35,8 @@ public class ActionInfoBuilderTest {
 
     @Test
     public void noActionValues() {
-        ActionInfo actionInfo = new ActionInfo(ActionType.drop_action, (String[]) null);
-        actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
-                + "    actionType = ActionType.drop_action" + System.lineSeparator()
-                + "]).build()", generator.getExpression(actionInfo));
+        ActionInfo actionInfo = new ActionDrop();
+        assertEquals("new ActionDrop", generator.getExpression(actionInfo));
     }
 
     @Test
