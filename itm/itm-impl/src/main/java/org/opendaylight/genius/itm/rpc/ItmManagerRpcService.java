@@ -14,8 +14,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -76,6 +78,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.I
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsTunnelInternalOrExternalOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsTunnelInternalOrExternalOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ListTunnelInterfaceNamesForSourceDpnInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ListTunnelInterfaceNamesForSourceDpnOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ListTunnelInterfaceNamesForSourceDpnOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
@@ -742,4 +747,16 @@ public class ItmManagerRpcService implements ItmRpcService {
         return Futures.immediateFuture(resultBld.build());
     }
 
+    @Override
+    public Future<RpcResult<ListTunnelInterfaceNamesForSourceDpnOutput>> listTunnelInterfaceNamesForSourceDpn(ListTunnelInterfaceNamesForSourceDpnInput input) {
+        RpcResultBuilder<ListTunnelInterfaceNamesForSourceDpnOutput> resultBld = RpcResultBuilder.failed();
+        Collection<InternalTunnel> internalTunnelList = ItmUtils.itmCache.getAllInternalTunnel();
+        List<String> tunnelInterfaceName =  internalTunnelList.stream().filter(v->v.getSourceDPN().equals(input.getSourceDpn()))
+                                                        .map(InternalTunnel::getTunnelInterfaceName).collect(Collectors.toList());
+
+        ListTunnelInterfaceNamesForSourceDpnOutputBuilder output = new ListTunnelInterfaceNamesForSourceDpnOutputBuilder().setTunnelInterfaceName(tunnelInterfaceName);
+        resultBld = RpcResultBuilder.success();
+        resultBld.withResult(output.build());
+        return Futures.immediateFuture(resultBld.build());
+    }
 }
