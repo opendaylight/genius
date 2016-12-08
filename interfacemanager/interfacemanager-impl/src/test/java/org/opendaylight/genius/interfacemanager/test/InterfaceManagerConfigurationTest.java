@@ -127,6 +127,7 @@ public class InterfaceManagerConfigurationTest {
                 .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class,ingressFlowKey).build();
         assertEqualBeans(ExpectedFlowEntries.newIngressFlow(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).checkedGet().get());
 
+        Thread.sleep(500);
         // d) check if default egress service is bound on the interface
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
                 .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, ServiceModeEgress.class))

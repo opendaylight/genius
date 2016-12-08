@@ -375,7 +375,6 @@ public class FlowBasedServicesUtils {
     public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
                                                           Interface interfaceInfo, String portNo,
                                                           String interfaceName, int ifIndex) {
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex);
         BoundServices
@@ -383,8 +382,7 @@ public class FlowBasedServicesUtils {
                 getBoundServices(String.format("%s.%s", "default", interfaceName),
                         ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), priority,
                         NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
-        IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
-        futures.add(tx.submit());
+        IfmUtil.bindService(dataBroker, interfaceName, serviceInfo, ServiceModeEgress.class);
     }
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId, WriteTransaction t) {
