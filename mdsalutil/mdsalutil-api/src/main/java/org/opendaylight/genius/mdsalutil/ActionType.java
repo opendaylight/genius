@@ -25,6 +25,8 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldMplsLabel;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldPbbIsid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -54,8 +56,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpShaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpThaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4DstCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4SrcCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpOpCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpSpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpTpaCaseBuilder;
@@ -64,7 +64,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegMoveNodesNodeGroupBucketsBucketActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder;
@@ -235,63 +234,32 @@ public enum ActionType {
                 return new ActionSetFieldTunnelId(actionInfo.getBigActionValues()).buildAction(newActionKey);
             }
         }
-
     },
 
+    @Deprecated
     set_tunnel_src_ip {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            BigInteger[] actionValues = actionInfo.getBigActionValues();
-            NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
-            Dst dst = new DstBuilder()
-                .setDstChoice(new DstNxTunIpv4SrcCaseBuilder().setNxTunIpv4Src(Boolean.TRUE).build())
-                .setStart(0)
-                .setEnd(31)
-                .build();
-            nxRegLoadBuilder.setDst(dst);
-            nxRegLoadBuilder.setValue(actionValues[0]);
-            ActionBuilder ab = new ActionBuilder();
-
-            boolean groupBucket = (actionValues.length > 1);
-            if (groupBucket) {
-                ab.setAction(new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+            if (actionInfo instanceof ActionSetTunnelSourceIp) {
+                return ((ActionSetTunnelSourceIp) actionInfo).buildAction(newActionKey);
             } else {
-                ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                // TODO Migrate all users to ActionSetTunnelSourceIp
+                return new ActionSetTunnelSourceIp(actionInfo.getBigActionValues()).buildAction(newActionKey);
             }
-            ab.setKey(new ActionKey(actionInfo.getActionKey()));
-            return ab.build();
         }
-
     },
 
+    @Deprecated
     set_tunnel_dest_ip {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            BigInteger[] actionValues = actionInfo.getBigActionValues();
-            NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
-            Dst dst = new DstBuilder()
-                .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Boolean.TRUE).build())
-                .setStart(0)
-                .setEnd(31)
-                .build();
-            nxRegLoadBuilder.setDst(dst);
-            nxRegLoadBuilder.setValue(actionValues[0]);
-            ActionBuilder ab = new ActionBuilder();
-
-            boolean groupBucket = (actionValues.length > 1);
-            if (groupBucket) {
-                ab.setAction(new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+            if (actionInfo instanceof ActionSetTunnelDestinationIp) {
+                return ((ActionSetTunnelDestinationIp) actionInfo).buildAction(newActionKey);
             } else {
-                ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
-                    .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                // TODO Migrate all users to ActionSetTunnelDestinationIp
+                return new ActionSetTunnelDestinationIp(actionInfo.getBigActionValues()).buildAction(newActionKey);
             }
-            ab.setKey(new ActionKey(actionInfo.getActionKey()));
-            return ab.build();
         }
-
     },
 
     set_field_eth_dest {
