@@ -17,41 +17,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
-import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
-import org.opendaylight.genius.interfacemanager.listeners.AlivenessMonitorListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.HwVTEPTunnelsStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.InterfaceConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.InterfaceInventoryStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
-import org.opendaylight.genius.interfacemanager.pmcounters.NodeConnectorStatsImpl;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.InterfaceBatchHandler;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
@@ -61,13 +40,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -86,132 +62,55 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable, IInterfaceManager {
+@Singleton
+public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
-    private static final InterfaceStatusMonitor interfaceStatusMonitor = InterfaceStatusMonitor.getInstance();
+    private final IdManagerService idManager;
+    private final DataBroker dataBroker;
+    private final InterfaceManagerRpcService interfaceManagerRpcService;
+    private final EntityOwnershipService entityOwnershipService;
 
-    private RpcProviderRegistry rpcProviderRegistry;
-    private IdManagerService idManager;
-    private NotificationService notificationService;
-    private AlivenessMonitorService alivenessManager;
-    private IMdsalApiManager mdsalManager;
-    private InterfaceConfigListener interfaceConfigListener;
-    private InterfaceTopologyStateListener topologyStateListener;
-    private TerminationPointStateListener terminationPointStateListener;
-    private HwVTEPTunnelsStateListener hwVTEPTunnelsStateListener;
-    private InterfaceInventoryStateListener interfaceInventoryStateListener;
-    private FlowBasedServicesInterfaceStateListener flowBasedServicesInterfaceStateListener;
-    private FlowBasedServicesConfigListener flowBasedServicesConfigListener;
-    private VlanMemberConfigListener vlanMemberConfigListener;
-    private HwVTEPConfigListener hwVTEPConfigListener;
-    private AlivenessMonitorListener alivenessMonitorListener;
-    private DataBroker dataBroker;
-    private InterfaceManagerRpcService interfaceManagerRpcService;
-    private BindingAwareBroker.RpcRegistration<OdlInterfaceRpcService> rpcRegistration;
-    private NodeConnectorStatsImpl nodeConnectorStatsManager;
-    private CacheInterfaceConfigListener cacheInterfaceConfigListener;
-    private CacheInterfaceStateListener cacheInterfaceStateListener;
-    private CacheBridgeEntryConfigListener cacheBridgeEntryConfigListener;
-    private EntityOwnershipService entityOwnershipService;
-
-    public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
-        this.rpcProviderRegistry = rpcProviderRegistry;
-        interfaceStatusMonitor.registerMbean();
-    }
-
-    public void setMdsalManager(IMdsalApiManager mdsalManager) {
-        this.mdsalManager = mdsalManager;
-    }
-
-    public void setEntityOwnershipService(
-            EntityOwnershipService entityOwnershipService) {
+    @Inject
+    public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
+                                final IdManagerService idManager,
+                                final InterfaceManagerRpcService interfaceManagerRpcService){
+        this.dataBroker = dataBroker;
         this.entityOwnershipService = entityOwnershipService;
+        this.idManager = idManager;
+        this.interfaceManagerRpcService = interfaceManagerRpcService;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        createIdPool();
+        IfmClusterUtils.registerEntityForOwnership(this, this.entityOwnershipService);
+        BatchingUtils.registerWithBatchManager(new InterfaceBatchHandler(), this.dataBroker);
+        LOG.info("InterfacemgrProvider Started");
+    }
+
+    @Override
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("InterfacemgrProvider Closed");
     }
 
     public EntityOwnershipService getEntityOwnershipService() {
         return entityOwnershipService;
     }
 
-    public void setNotificationService(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
-
     public DataBroker getDataBroker(){
         return this.dataBroker;
-    }
-
-    @Override
-    public void onSessionInitiated(ProviderContext session) {
-        LOG.info("InterfacemgrProvider Session Initiated");
-        interfaceStatusMonitor.reportStatus("STARTING");
-        try {
-            dataBroker = session.getSALService(DataBroker.class);
-            idManager = rpcProviderRegistry.getRpcService(IdManagerService.class);
-            createIdPool();
-
-            IfmClusterUtils.registerEntityForOwnership(this, entityOwnershipService);
-            BatchingUtils.registerWithBatchManager(new InterfaceBatchHandler(), this.dataBroker);
-            alivenessManager = rpcProviderRegistry.getRpcService(AlivenessMonitorService.class);
-            interfaceManagerRpcService = new InterfaceManagerRpcService(dataBroker, mdsalManager);
-            rpcRegistration = getRpcProviderRegistry().addRpcImplementation(
-                    OdlInterfaceRpcService.class, interfaceManagerRpcService);
-
-            interfaceConfigListener = new InterfaceConfigListener(dataBroker, idManager, alivenessManager, mdsalManager);
-            interfaceConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-
-            interfaceInventoryStateListener = new InterfaceInventoryStateListener(dataBroker, idManager, mdsalManager, alivenessManager);
-            interfaceInventoryStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-
-            topologyStateListener = new InterfaceTopologyStateListener(dataBroker);
-            topologyStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-
-            hwVTEPTunnelsStateListener = new HwVTEPTunnelsStateListener(dataBroker);
-            hwVTEPTunnelsStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-
-            terminationPointStateListener = new TerminationPointStateListener(dataBroker);
-            terminationPointStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-
-            flowBasedServicesConfigListener = new FlowBasedServicesConfigListener(this);
-            flowBasedServicesConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-
-            flowBasedServicesInterfaceStateListener =
-                    new FlowBasedServicesInterfaceStateListener(this);
-            flowBasedServicesInterfaceStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-
-            vlanMemberConfigListener =
-                    new VlanMemberConfigListener(dataBroker, idManager, alivenessManager, mdsalManager);
-            vlanMemberConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-
-            hwVTEPConfigListener = new HwVTEPConfigListener(dataBroker);
-            hwVTEPConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-
-            alivenessMonitorListener = new org.opendaylight.genius.interfacemanager.listeners.AlivenessMonitorListener(dataBroker);
-            notificationService.registerNotificationListener(alivenessMonitorListener);
-
-            cacheInterfaceConfigListener = new CacheInterfaceConfigListener(dataBroker);
-
-            cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
-
-            cacheBridgeEntryConfigListener = new CacheBridgeEntryConfigListener(dataBroker);
-
-            //Initialize nodeconnectorstatsimpl
-            nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
-                    session.getRpcService(OpendaylightPortStatisticsService.class), session.getRpcService(OpendaylightFlowTableStatisticsService.class));
-
-
-            interfaceStatusMonitor.reportStatus("OPERATIONAL");
-        } catch (Exception e) {
-            LOG.error("Error initializing services", e);
-            interfaceStatusMonitor.reportStatus("ERROR");
-        }
     }
 
     private void createIdPool() {
@@ -229,28 +128,6 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Failed to create idPool for InterfaceMgr", e);
         }
-    }
-
-    @Override
-    public void close() throws Exception {
-        LOG.info("InterfacemgrProvider Closed");
-        interfaceConfigListener.close();
-        rpcRegistration.close();
-        cacheInterfaceConfigListener.close();
-        cacheInterfaceStateListener.close();
-        cacheBridgeEntryConfigListener.close();
-        topologyStateListener.close();
-        interfaceInventoryStateListener.close();
-        hwVTEPConfigListener.close();
-        hwVTEPTunnelsStateListener.close();
-        vlanMemberConfigListener.close();
-        flowBasedServicesConfigListener.close();
-        flowBasedServicesInterfaceStateListener.close();
-        terminationPointStateListener.close();
-    }
-
-    public RpcProviderRegistry getRpcProviderRegistry() {
-        return rpcProviderRegistry;
     }
 
     @Override

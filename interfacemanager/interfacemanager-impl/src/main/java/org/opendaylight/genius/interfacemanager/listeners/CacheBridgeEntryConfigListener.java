@@ -23,20 +23,39 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * This class listens for bridgeEntry creation/removal/update in Configuration DS
  * and update the bridgeEntryCache as per changes in DS.
  *
  */
+@Singleton
 public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry>{
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheBridgeEntryConfigListener.class);
     private final DataBroker db;
     private ListenerRegistration<CacheBridgeEntryConfigListener> registration;
 
-    public CacheBridgeEntryConfigListener(DataBroker broker) {
-        this.db = broker;
-        registerListener(db);
+    @Inject
+    public CacheBridgeEntryConfigListener(final DataBroker dataBroker) {
+        this.db = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.db);
+        LOG.info("CacheBridgeEntryConfigListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        if(registration != null) {
+            registration.close();
+        }
     }
 
     private void registerListener(DataBroker dataBroker) {
@@ -52,12 +71,6 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
 
     protected InstanceIdentifier<BridgeEntry> getWildcardPath() {
         return InstanceIdentifier.create(BridgeInterfaceInfo.class).child(BridgeEntry.class);
-    }
-
-    public void close() throws Exception {
-        if(registration != null) {
-            registration.close();
-        }
     }
 
     @Override

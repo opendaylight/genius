@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.liste
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -27,17 +28,36 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@Singleton
 public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
-    private InterfacemgrProvider interfacemgrProvider;
+    private final DataBroker dataBroker;
+    private final InterfacemgrProvider interfacemgrProvider;
 
-    public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider) {
+    @Inject
+    public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider, DataBroker dataBroker) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
+        this.dataBroker = dataBroker;
         this.interfacemgrProvider = interfacemgrProvider;
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
+        LOG.info("FlowBasedServicesInterfaceStateListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("FlowBasedServicesInterfaceStateListener closed");
     }
 
     private void initializeFlowBasedServiceStateBindHelpers(InterfacemgrProvider interfaceMgrProvider) {

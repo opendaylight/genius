@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -36,6 +37,10 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  *
@@ -45,21 +50,34 @@ import java.util.concurrent.Callable;
  * NOTE: This class just creates an ifstate entry whose interface-name will be the same as the node-connector portname.
  * If PortName is not unique across DPNs, this implementation can have problems.
  */
-
+@Singleton
 public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
-    private DataBroker dataBroker;
-    private IdManagerService idManager;
-    private IMdsalApiManager mdsalApiManager;
-    private AlivenessMonitorService alivenessMonitorService;
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final IMdsalApiManager mdsalApiManager;
+    private final AlivenessMonitorService alivenessMonitorService;
 
-    public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManager,
-                                           final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
+    @Inject
+    public InterfaceInventoryStateListener(final AlivenessMonitorService alivenessMonitorService,
+                                           final DataBroker dataBroker, final IdManagerService idManagerService,
+                                           final IMdsalApiManager iMdsalApiManager) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
-        this.idManager = idManager;
-        this.mdsalApiManager = mdsalApiManager;
+        this.idManager = idManagerService;
+        this.mdsalApiManager = iMdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
+        LOG.info("InterfaceInventoryStateListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("InterfaceInventoryStateListener closed");
     }
 
     @Override

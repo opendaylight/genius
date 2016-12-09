@@ -8,12 +8,10 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -22,12 +20,12 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderCo
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RoutedRpcRegistration;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistration;
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
@@ -36,7 +34,6 @@ import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Mod
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.impl.rev160406.InterfacemgrImplModule;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -110,29 +107,11 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         }
     }
 
-    /**
-     * This method duplicates the logic in {@link InterfacemgrImplModule#createInstance()}.
-     * This isn't ideal, but as interface-manager will hopefully soon be converted from CSS to BP,
-     * at which point this can be simplified to be based on @Inject etc. just like e.g. the AclServiceModule
-     * and AclServiceTestModule or ElanServiceTestModule, we do it like this, for now.
-     */
     private InterfacemgrProvider interfaceManager(IMdsalApiManager mdsalManager,
-            EntityOwnershipService entityOwnershipService, DataBroker dataBroker, IdManagerService idManager) {
-
-        InterfacemgrProvider provider = new InterfacemgrProvider();
-
-        RpcProviderRegistry rpcProviderRegistry = mock(RpcProviderRegistry.class /* TODO how-to? exception() */);
-        when(rpcProviderRegistry.getRpcService(IdManagerService.class)).thenReturn(idManager);
-
-        provider.setRpcProviderRegistry(rpcProviderRegistry);
-        provider.setMdsalManager(mdsalManager);
-        provider.setEntityOwnershipService(entityOwnershipService);
-        provider.setNotificationService(mock(NotificationService.class));
-
-        // TODO just use rpcProviderRegistry, which IS-A ProviderContext here?
-        ProviderContext session = new TestProviderContext(dataBroker);
-        provider.onSessionInitiated(session);
-
+            EntityOwnershipService entityOwnershipService, DataBroker dataBroker, IdManagerService idManager)
+    {
+        InterfaceManagerRpcService interfaceManagerRpcService = new InterfaceManagerRpcService(dataBroker, mdsalManager);
+        InterfacemgrProvider provider = new InterfacemgrProvider(dataBroker, entityOwnershipService, idManager, interfaceManagerRpcService);
         return provider;
     }
 
