@@ -16,6 +16,24 @@
       "revId": "e1a10c3b3320a6a95cdb5389d5e81e79b4b63188",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4fd7e7c1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/JMXAlarmAgent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-12-11T17:54:01Z",
+      "side": 1,
+      "message": "I have followed your advise and I\u0027ve reviewed the agent and its lifecycle. That\u0027s why I changed the original commit message.",
+      "parentUuid": "1a622d24_43206d49",
+      "revId": "e1a10c3b3320a6a95cdb5389d5e81e79b4b63188",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
