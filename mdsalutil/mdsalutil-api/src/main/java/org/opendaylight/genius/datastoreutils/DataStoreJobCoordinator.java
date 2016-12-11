@@ -236,6 +236,7 @@ public class DataStoreJobCoordinator {
      * Execute the MainWorker callable.
      */
     private class MainTask implements Runnable {
+        private static final int LONG_JOBS_THRESHOLD = 1000; // MS
         private final JobEntry jobEntry;
 
         MainTask(JobEntry jobEntry) {
@@ -252,7 +253,7 @@ public class DataStoreJobCoordinator {
             try {
                 futures = jobEntry.getMainWorker().call();
                 long jobExecutionTime = System.currentTimeMillis() - jobStartTimestamp;
-                LOG.trace("Job {} took {}ms to complete", jobEntry.getKey(), jobExecutionTime);
+                printJobs(jobEntry.getKey(), jobExecutionTime);
             } catch (Exception e) {
                 LOG.error("Exception when executing jobEntry: {}", jobEntry, e);
             }
@@ -265,6 +266,14 @@ public class DataStoreJobCoordinator {
             ListenableFuture<List<Void>> listenableFuture = Futures.allAsList(futures);
             Futures.addCallback(listenableFuture, new JobCallback(jobEntry));
             jobEntry.setFutures(futures);
+        }
+
+        private void printJobs(String key, long jobExecutionTime) {
+            if (jobExecutionTime > LONG_JOBS_THRESHOLD) {
+                LOG.warn("Job {} took {}ms to complete", jobEntry.getKey(), jobExecutionTime);
+                return;
+            }
+            LOG.trace("Job {} took {}ms to complete", jobEntry.getKey(), jobExecutionTime);
         }
     }
 
