@@ -246,7 +246,7 @@ public class ItmManagerRpcServiceTest {
         when(idManagerService.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder
                 .<Void>success().build()));
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, tunnelInterfaceName, ipAddress1
-                .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1.getName());
+                .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1);
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1).setIpAddress
                 (ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName).setTzMembership

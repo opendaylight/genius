@@ -216,13 +216,16 @@ public class ItmUtils {
     }
 
     public static String getTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName,
-                                               String localHostName, String remoteHostName, String tunnelType) {
-        String tunnelTypeStr;
-        if(tunnelType.contains("TunnelTypeGre")) {
+                                               String localHostName, String remoteHostName, Class<? extends TunnelTypeBase> tunnelType) {
+
+        String tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
+
+        if( tunnelType.equals(TunnelTypeGre.class) ){
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
-        } else {
-            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
+        }else if(tunnelType.equals(TunnelTypeMplsOverGre.class)){
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
         }
+
         String trunkInterfaceName = String.format(  "%s:%s:%s:%s", parentInterfaceName, localHostName,
                 remoteHostName, tunnelTypeStr);
         LOG.trace("trunk interface name is {}", trunkInterfaceName);

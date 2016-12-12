@@ -74,8 +74,7 @@ public class ItmExternalTunnelAddWorker {
                 // CHECK -- Assumption -- Only one End Point / Dpn for GRE/Vxlan Tunnels
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 String interfaceName = firstEndPt.getInterfaceName();
-                String tunTypeStr = tunType.getName();
-                String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName, firstEndPt.getIpAddress().getIpv4Address().getValue(), extIp.getIpv4Address().getValue(), tunTypeStr);
+                String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName, firstEndPt.getIpAddress().getIpv4Address().getValue(), extIp.getIpv4Address().getValue(), tunType);
                 char[] subnetMaskArray = firstEndPt.getSubnetMask().getValue();
                 boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
                 String subnetMaskStr = String.valueOf(subnetMaskArray);
@@ -260,9 +259,8 @@ public class ItmExternalTunnelAddWorker {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gWIp;
         String parentIf =  ItmUtils.getHwParentIf(topo_id, srcNodeid);
-        String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
-                srcIp.getIpv4Address().getValue(), dstIp.getIpv4Address().getValue(), tunTypeStr);
+                srcIp.getIpv4Address().getValue(), dstIp.getIpv4Address().getValue(), tunType);
         logger.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp, dstIp, gwyIpAddress);
         Interface hwTunnelIf = ItmUtils.buildHwTunnelInterface(tunnelIfName, String.format("%s %s", tunType.getName(), "Trunk Interface"),
                 true, topo_id, srcNodeid, tunType, srcIp, dstIp, gwyIpAddress, monitorEnabled, monitorProtocol, monitorInterval);
@@ -289,9 +287,8 @@ public class ItmExternalTunnelAddWorker {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gWIp;
         String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);
-        String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
-                srcIp.getIpv4Address().getValue(), dstIp.getIpv4Address().getValue(), tunTypeStr);
+                srcIp.getIpv4Address().getValue(), dstIp.getIpv4Address().getValue(), tunType);
         logger.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp, dstIp, gwyIpAddress);
         Interface extTunnelIf = ItmUtils.buildTunnelInterface(dpnId, tunnelIfName,
                 String.format("%s %s", tunType.getName(), "Trunk Interface"), true, tunType, srcIp, dstIp, gwyIpAddress,
