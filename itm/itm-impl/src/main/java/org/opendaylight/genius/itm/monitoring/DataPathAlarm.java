@@ -7,53 +7,60 @@
  */
 package org.opendaylight.genius.itm.monitoring;
 
-import javax.management.AttributeChangeNotification;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
 import java.util.ArrayList;
+import java.util.List;
+import javax.management.AttributeChangeNotification;
+import javax.management.NotificationBroadcasterSupport;
 
+/**
+ * Implementation of the DataPath Alarm MBean. It can basically allow others to
+ * rise and clear alarms occurred on the Data Path.
+ *
+ * @author Ericsson India Global Services Pvt Ltd. and others
+ *
+ */
 public class DataPathAlarm extends NotificationBroadcasterSupport implements DataPathAlarmMBean {
-
-    ArrayList<String> raiseAlarmObject = new ArrayList<>();
-    ArrayList<String> clearAlarmObject = new ArrayList<>();
     private long sequenceNumber = 1;
 
-    public void setRaiseAlarmObject(ArrayList<String> raiseAlarmObject) {
+    private List<String> raiseAlarmObject = new ArrayList<>();
+    private List<String> clearAlarmObject = new ArrayList<>();
+
+    @Override
+    public void setRaiseAlarmObject(List<String> raiseAlarmObject) {
         this.raiseAlarmObject = raiseAlarmObject;
 
-        Notification n = new AttributeChangeNotification(this,
-                sequenceNumber++, System.currentTimeMillis(),
-                "raise alarm object notified ", "raiseAlarmObject", "ArrayList",
-                "", this.raiseAlarmObject);
-        sendNotification(n);
+        sendNotification(new AttributeChangeNotification(this, sequenceNumber++, System.currentTimeMillis(),
+                "raise alarm object notified ", "raiseAlarmObject", "ArrayList", "", this.raiseAlarmObject));
     }
 
-    public ArrayList<String> getRaiseAlarmObject() {
+    @Override
+    public List<String> getRaiseAlarmObject() {
         return raiseAlarmObject;
     }
 
-    public void setClearAlarmObject(ArrayList<String> clearAlarmObject) {
+    @Override
+    public void setClearAlarmObject(List<String> clearAlarmObject) {
         this.clearAlarmObject = clearAlarmObject;
-
-        Notification n = new AttributeChangeNotification(this,
-                sequenceNumber++, System.currentTimeMillis(),
-                "clear alarm object notified ", "clearAlarmObject", "ArrayList",
-                "", this.clearAlarmObject);
-        sendNotification(n);
+        sendNotification(new AttributeChangeNotification(this, sequenceNumber++, System.currentTimeMillis(),
+                "clear alarm object notified ", "clearAlarmObject", "ArrayList", "", this.clearAlarmObject));
     }
 
-    public ArrayList<String> getClearAlarmObject() {
+    @Override
+    public List<String> getClearAlarmObject() {
         return clearAlarmObject;
     }
 
-    public synchronized void raiseAlarm(String alarmName, String additionalText, String source){
+    @Override
+    public synchronized void raiseAlarm(String alarmName, String additionalText, String source) {
         raiseAlarmObject.add(alarmName);
         raiseAlarmObject.add(additionalText);
         raiseAlarmObject.add(source);
         setRaiseAlarmObject(raiseAlarmObject);
         raiseAlarmObject.clear();
     }
-    public synchronized void clearAlarm(String alarmName, String additionalText, String source){
+
+    @Override
+    public synchronized void clearAlarm(String alarmName, String additionalText, String source) {
         clearAlarmObject.add(alarmName);
         clearAlarmObject.add(additionalText);
         clearAlarmObject.add(source);

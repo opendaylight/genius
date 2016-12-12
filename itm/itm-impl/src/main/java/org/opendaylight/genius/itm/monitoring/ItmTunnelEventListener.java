@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.management.JMException;
 import java.math.BigInteger;
 
 @Singleton
@@ -35,19 +36,26 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
     private static final Logger logger = LoggerFactory.getLogger(ItmTunnelEventListener.class);
     private final DataBroker broker;
     private ListenerRegistration<DataChangeListener> listenerRegistration;
-    public static final JMXAlarmAgent alarmAgent = new JMXAlarmAgent();
+    private JMXAlarmAgent alarmAgent;
 
     @Inject
-    public ItmTunnelEventListener(final DataBroker dataBroker){
+    public ItmTunnelEventListener(final DataBroker dataBroker) {
         super(Interface.class);
         this.broker = dataBroker;
+        try {
+            this.alarmAgent = new JMXAlarmAgent();
+        } catch (JMException e) {
+            logger.error("Can not initialize the Alarm agent", e);
+        }
     }
 
     @PostConstruct
     public void start() throws Exception {
         registerListener(this.broker);
-        alarmAgent.registerMbean();
-       logger.info("ItmTunnelEventListener Started");
+        if (alarmAgent != null) {
+            alarmAgent.registerMbean();
+        }
+        logger.info("ItmTunnelEventListener Started");
     }
 
     @Override
@@ -55,6 +63,9 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
     public void close() throws Exception {
         if (listenerRegistration != null) {
             try {
+                if (alarmAgent != null) {
+                    alarmAgent.unregisterMbean();
+                }
                 listenerRegistration.close();
             } catch (final Exception e) {
                 logger.error("Error when cleaning up DataChangeListener.", e);
@@ -79,23 +90,25 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     @Override
     protected void remove(InstanceIdentifier<Interface> identifier, Interface del) {
-        String ifName = del.getName() ;
-        if( del.getType() != null && del.getType().equals(Tunnel.class)) {
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
-            if( internalTunnel != null) {
+        String ifName = del.getName();
+        if (del.getType() != null && del.getType().equals(Tunnel.class)) {
+            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
+            if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                logger.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId, tunnelType);
+                logger.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId,
+                        tunnelType);
                 String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                 clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-            }else {
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
-                if( externalTunnel != null) {
+            } else {
+                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
+                if (externalTunnel != null) {
                     String srcNode = externalTunnel.getSourceDevice();
                     String dstNode = externalTunnel.getDestinationDevice();
                     String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    logger.trace("ITM Tunnel removed b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode, tunnelType);
+                    logger.trace("ITM Tunnel removed b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode,
+                            dstNode, tunnelType);
                     String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
                     clearExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
                 }
@@ -105,41 +118,45 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     @Override
     protected void update(InstanceIdentifier<Interface> identifier, Interface original, Interface update) {
-        String ifName = update.getName() ;
-        if( update.getType() != null && update.getType().equals(Tunnel.class)) {
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
-            if( internalTunnel != null) {
+        String ifName = update.getName();
+        if (update.getType() != null && update.getType().equals(Tunnel.class)) {
+            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
+            if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                logger.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}", isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
-                if(isTunnelInterfaceUp(update)) {
-                    logger.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ", srcDpId, dstDpId, tunnelType);
+                logger.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
+                        isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
+                if (isTunnelInterfaceUp(update)) {
+                    logger.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ", srcDpId,
+                            dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-                }else {
+                } else {
                     logger.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
                 }
-            }else{
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
-                if( externalTunnel != null) {
+            } else {
+                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
+                if (externalTunnel != null) {
                     String srcNode = externalTunnel.getSourceDevice();
                     String dstNode = externalTunnel.getDestinationDevice();
-                    if(!srcNode.contains("hwvtep")){
+                    if (!srcNode.contains("hwvtep")) {
                         srcNode = "openflow:" + externalTunnel.getSourceDevice();
                     }
-                    if(!dstNode.contains("hwvtep")){
+                    if (!dstNode.contains("hwvtep")) {
                         dstNode = "openflow:" + externalTunnel.getDestinationDevice();
                     }
                     String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    logger.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}", isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
-                    if(isTunnelInterfaceUp(update)) {
-                        logger.trace("ITM Tunnel State is UP b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode, tunnelType);
+                    logger.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
+                            isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
+                    if (isTunnelInterfaceUp(update)) {
+                        logger.trace("ITM Tunnel State is UP b/w srcNode: {} and dstNode: {} for tunnelType: {}",
+                                srcNode, dstNode, tunnelType);
                         String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
                         clearExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
-                    }else {
+                    } else {
                         logger.trace("ITM Tunnel State is DOWN b/w srcNode: {} and dstNode: {}", srcNode, dstNode);
                         String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
                         raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
@@ -151,32 +168,36 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     @Override
     protected void add(InstanceIdentifier<Interface> identifier, Interface add) {
-        String ifName = add.getName() ;
-        if( add.getType() != null && add.getType().equals(Tunnel.class)) {
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
-            if( internalTunnel != null) {
+        String ifName = add.getName();
+        if (add.getType() != null && add.getType().equals(Tunnel.class)) {
+            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
+            if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                if(!isTunnelInterfaceUp(add)) {
-                    logger.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId, tunnelType);
+                if (!isTunnelInterfaceUp(add)) {
+                    logger.trace(
+                            "ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: {}",
+                            srcDpId, dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
                 }
-            }else {
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
-                if( externalTunnel != null) {
+            } else {
+                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
+                if (externalTunnel != null) {
                     String srcNode = externalTunnel.getSourceDevice();
                     String dstNode = externalTunnel.getDestinationDevice();
-                    if(!srcNode.contains("hwvtep")){
+                    if (!srcNode.contains("hwvtep")) {
                         srcNode = "openflow:" + externalTunnel.getSourceDevice();
                     }
-                    if(!dstNode.contains("hwvtep")){
+                    if (!dstNode.contains("hwvtep")) {
                         dstNode = "openflow:" + externalTunnel.getDestinationDevice();
                     }
                     String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    if(!isTunnelInterfaceUp(add)) {
-                        logger.trace("ITM Tunnel State during tep add is DOWN b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode, tunnelType);
+                    if (!isTunnelInterfaceUp(add)) {
+                        logger.trace(
+                                "ITM Tunnel State during tep add is DOWN b/w srcNode: {} and dstNode: {} for tunnelType: {}",
+                                srcNode, dstNode, tunnelType);
                         String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
                         raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
                     }
@@ -187,58 +208,67 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     public void raiseInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
-        source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId).append("-tunnelType").append(tunnelType);
+        source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId)
+                .append("-tunnelType").append(tunnelType);
 
         logger.trace("Raising DataPathConnectionFailure alarm... alarmText {} source {} ", alarmText, source);
-        //Invokes JMX raiseAlarm method
-        alarmAgent.invokeFMraisemethod("DataPathConnectionFailure", alarmText, source.toString());
+        // Invokes JMX raiseAlarm method
+        if (alarmAgent != null) {
+            alarmAgent.invokeFMraisemethod("DataPathConnectionFailure", alarmText, source.toString());
+        }
     }
 
     public void clearInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
 
-        source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId).append("-tunnelType").append(tunnelType);
+        source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId)
+                .append("-tunnelType").append(tunnelType);
         logger.trace("Clearing DataPathConnectionFailure alarm of source {} alarmText {} ", source, alarmText);
-        //Invokes JMX clearAlarm method
-        alarmAgent.invokeFMclearmethod("DataPathConnectionFailure", alarmText, source.toString());
+        // Invokes JMX clearAlarm method
+        if (alarmAgent != null) {
+            alarmAgent.invokeFMclearmethod("DataPathConnectionFailure", alarmText, source.toString());
+        }
     }
 
     public void raiseExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
 
         StringBuilder source = new StringBuilder();
-        source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType").append(tunnelType);
+        source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType")
+                .append(tunnelType);
 
         logger.trace("Raising DataPathConnectionFailure alarm... alarmText {} source {} ", alarmText, source);
-        //Invokes JMX raiseAlarm method
-        alarmAgent.invokeFMraisemethod("DataPathConnectionFailure", alarmText, source.toString());
+        // Invokes JMX raiseAlarm method
+        if (alarmAgent != null) {
+            alarmAgent.invokeFMraisemethod("DataPathConnectionFailure", alarmText, source.toString());
+        }
     }
-
 
     public void clearExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
-        source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType").append(tunnelType);
+        source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType")
+                .append(tunnelType);
         logger.trace("Clearing DataPathConnectionFailure alarm of source {} alarmText {} ", source, alarmText);
-        //Invokes JMX clearAlarm method
-        alarmAgent.invokeFMclearmethod("DataPathConnectionFailure", alarmText, source.toString());
-
+        // Invokes JMX clearAlarm method
+        if (alarmAgent != null) {
+            alarmAgent.invokeFMclearmethod("DataPathConnectionFailure", alarmText, source.toString());
+        }
     }
 
-    private boolean isTunnelInterfaceUp( Interface intf) {
+    private boolean isTunnelInterfaceUp(Interface intf) {
         return Interface.OperStatus.Up.equals(intf.getOperStatus());
     }
 
     private String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
         StringBuilder alarmText = new StringBuilder();
-        alarmText.append("Data Path Connectivity is lost between ").append("openflow:").append(srcDpId).append(" and openflow:")
-                .append(dstDpId).append(" for tunnelType:").append(tunnelType);
+        alarmText.append("Data Path Connectivity is lost between ").append("openflow:").append(srcDpId)
+                .append(" and openflow:").append(dstDpId).append(" for tunnelType:").append(tunnelType);
         return alarmText.toString();
     }
 
     private String getExternalAlarmText(String srcNode, String dstNode, String tunnelType) {
         StringBuilder alarmText = new StringBuilder();
-        alarmText.append("Data Path Connectivity is lost between ").append(srcNode).append(" and ").append(
-                dstNode).append(" for tunnelType:").append(tunnelType);
+        alarmText.append("Data Path Connectivity is lost between ").append(srcNode).append(" and ").append(dstNode)
+                .append(" for tunnelType:").append(tunnelType);
         return alarmText.toString();
     }
-
 }
