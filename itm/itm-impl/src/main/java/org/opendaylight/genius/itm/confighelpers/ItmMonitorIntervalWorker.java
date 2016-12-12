@@ -65,7 +65,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         if (tunnelInterfaceName != null) {
             logger.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
-            IfTunnel tunnel = new IfTunnelBuilder().setMonitorInterval(interval.longValue()).build();
+            IfTunnel tunnel = new IfTunnelBuilder().setMonitorInterval(interval).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
                     .addAugmentation(IfTunnel.class, tunnel);
             t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());

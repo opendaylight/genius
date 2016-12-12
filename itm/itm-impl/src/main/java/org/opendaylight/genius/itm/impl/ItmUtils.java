@@ -270,7 +270,7 @@ public class ItmUtils {
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
-        Long monitoringInterval=null;
+        Integer monitoringInterval=null;
         if( vlanId > 0) {
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(new VlanId(vlanId)).build();
             builder.addAugmentation(IfL2vlan.class, l2vlan);
@@ -279,7 +279,7 @@ public class ItmUtils {
 
 
         if(monitorInterval != null) {
-            monitoringInterval = monitorInterval.longValue();
+            monitoringInterval = monitorInterval;
         }
 
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(gatewayIp)
@@ -317,7 +317,7 @@ public class ItmUtils {
             monitoringProtocol = monitorProtocol;
         }
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(destIp).setTunnelGateway(gWIp).setTunnelSource(
-                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(100L).
+                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(100).
                 setTunnelInterfaceType(tunType).setInternal(false).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         LOG.trace("iftunnel {} built from hwvtep {} ", tunnel, node_id);
