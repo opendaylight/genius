@@ -140,7 +140,7 @@ public class ItmInternalTunnelDeleteWorker {
                 ItmUtils.getTrunkInterfaceName( idManagerService, srcTep.getInterfaceName(),
                         srcTep.getIpAddress().getIpv4Address().getValue(),
                         dstTep.getIpAddress().getIpv4Address().getValue(),
-                        srcTep.getTunnelType().getName());
+                        srcTep.getTunnelType());
         logger.trace("Removing forward Trunk Interface " + trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
         logger.debug(  " Removing Trunk Interface Name - {} , Id - {} from Config DS ", trunkfwdIfName, trunkIdentifier ) ;
@@ -161,7 +161,7 @@ public class ItmInternalTunnelDeleteWorker {
                 ItmUtils.getTrunkInterfaceName( idManagerService, dstTep.getInterfaceName(),
                         dstTep.getIpAddress().getIpv4Address().getValue(),
                         srcTep.getIpAddress().getIpv4Address().getValue(),
-                        srcTep.getTunnelType().getName());
+                        srcTep.getTunnelType());
         logger.trace("Removing Reverse Trunk Interface " + trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
         logger.debug(  " Removing Trunk Interface Name - {} , Id - {} from Config DS ", trunkRevIfName, trunkIdentifier ) ;
