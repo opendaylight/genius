@@ -163,7 +163,8 @@ public class ItmInternalTunnelDeleteWorker {
             WriteTransaction t, List<ListenableFuture<Void>> futures) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()), new String(dstTep.getIpAddress().getValue()),
-                srcTep.getTunnelType().getName());
+                srcTep.getTunnelType());
+
         logger.trace("Removing forward Trunk Interface " + trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
         logger.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ", trunkfwdIfName, trunkIdentifier);
@@ -179,10 +180,9 @@ public class ItmInternalTunnelDeleteWorker {
         ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()), new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
-
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
                 new String(dstTep.getIpAddress().getValue()), new String(srcTep.getIpAddress().getValue()),
-                srcTep.getTunnelType().getName());
+                srcTep.getTunnelType());
         logger.trace("Removing Reverse Trunk Interface " + trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
         logger.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ", trunkRevIfName, trunkIdentifier);

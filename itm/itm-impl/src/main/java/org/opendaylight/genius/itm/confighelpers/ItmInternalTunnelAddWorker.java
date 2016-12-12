@@ -151,13 +151,12 @@ public class ItmInternalTunnelAddWorker {
         logger.trace( "Wiring between source tunnel end points {}, destination tunnel end points {} " , srcte, dstte );
         String interfaceName = srcte.getInterfaceName() ;
         Class<? extends TunnelTypeBase> tunType = srcte.getTunnelType();
-        String tunTypeStr = srcte.getTunnelType().getName();
         // Form the trunk Interface Name
 
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName( idManagerService, interfaceName,
                 new String(srcte.getIpAddress().getValue()),
                 new String(dstte.getIpAddress().getValue()),
-                tunTypeStr) ;
+                        tunType) ;
 
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
         IpAddress gatewayIpObj = new IpAddress(gateway.toCharArray());

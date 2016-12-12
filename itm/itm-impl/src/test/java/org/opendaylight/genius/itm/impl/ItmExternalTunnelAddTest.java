@@ -271,7 +271,7 @@ public class ItmExternalTunnelAddTest {
 
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,
                 tunnelEndPointsVxlan.getIpAddress().getIpv4Address().getValue(),ipAddress2.getIpv4Address().getValue
-                        (),tunnelType1.getName());
+                        (),tunnelType1);
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, new ExternalTunnelKey(ipAddress2.toString(), dpId1.toString(), tunnelType1));
