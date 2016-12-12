@@ -2,7 +2,7 @@ module itm-config {
 
     namespace "urn:opendaylight:genius:itm:config";
 
-    prefix itm-config;
+    prefix "itmconfig";
 
     import ietf-interfaces {
         prefix if;
@@ -36,7 +36,9 @@ module itm-config {
          }
          default odlif:tunnel-monitoring-type-bfd;
       }
+
     }
+
     container tunnel-monitor-interval {
       leaf interval {
          type uint16 {
@@ -44,6 +46,7 @@ module itm-config {
          }
       }
     }
+
 
     /* Configuration data */
 

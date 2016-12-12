@@ -113,6 +113,7 @@ public class OvsInterfaceConfigAddHelper {
             createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ?
                     true : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
+            LOG.info("addTunnelConfiguration tunnelName {}", tunnelName);
             InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName());
         }
 
@@ -123,7 +124,7 @@ public class OvsInterfaceConfigAddHelper {
         BridgeRefEntry bridgeRefEntry =
                 InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
         if(bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
-            LOG.debug("creating bridge interface on dpn {}", dpId);
+            LOG.debug("creating bridge interface on dpn {} createTunnelPort{}", dpId,createTunnelPort);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getBridgeReference().getValue();
             if(createTunnelPort) {

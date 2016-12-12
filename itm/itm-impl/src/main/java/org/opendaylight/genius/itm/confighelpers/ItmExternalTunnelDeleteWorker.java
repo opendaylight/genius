@@ -54,7 +54,7 @@ public class ItmExternalTunnelDeleteWorker {
             String trunkInterfaceName = ItmUtils.getTrunkInterfaceName( idManagerService, interfaceName,
                     firstEndPt.getIpAddress().getIpv4Address().getValue(),
                     extIp.getIpv4Address().getValue(),
-                    tunType.getName());
+                    tunType);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
             t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
             ItmUtils.itmCache.removeInterface(trunkInterfaceName);
@@ -196,7 +196,7 @@ public class ItmExternalTunnelDeleteWorker {
             logger.trace("deleting tunnel from {} to {} ", dpnid.toString(), nodeId);
             String parentIf = interfaceName;
             String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(idManagerService,parentIf,cssIpAddress.getIpv4Address().getValue(),
-                    hWIpAddress.getIpv4Address().getValue(), tunType.getName());
+                    hWIpAddress.getIpv4Address().getValue(), tunType);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(fwdTrunkIf);
             t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
@@ -214,7 +214,7 @@ public class ItmExternalTunnelDeleteWorker {
 
             String parentIf = ItmUtils.getHwParentIf(topologyId,nodeId);
             String revTrunkIf = ItmUtils.getTrunkInterfaceName(idManagerService,parentIf, hWIpAddress.getIpv4Address().getValue(),
-                    cssIpAddress.getIpv4Address().getValue(), tunType.getName());
+                    cssIpAddress.getIpv4Address().getValue(), tunType);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(revTrunkIf);
             t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
@@ -238,7 +238,7 @@ public class ItmExternalTunnelDeleteWorker {
             String fwdTrunkIf = ItmUtils.getTrunkInterfaceName( idManagerService, parentIf,
                     hWIpAddress1.getIpv4Address().getValue(),
                     hWIpAddress2.getIpv4Address().getValue(),
-                    tunType.getName());
+                    tunType);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(fwdTrunkIf);
             t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
@@ -256,7 +256,7 @@ public class ItmExternalTunnelDeleteWorker {
 
             String parentIf = ItmUtils.getHwParentIf(topologyId2,nodeId2);
             String revTrunkIf = ItmUtils.getTrunkInterfaceName( idManagerService,parentIf, hWIpAddress2.getIpv4Address().getValue(),
-                    hWIpAddress1.getIpv4Address().getValue(), tunType.getName());
+                    hWIpAddress1.getIpv4Address().getValue(), tunType);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(revTrunkIf);
             t.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 

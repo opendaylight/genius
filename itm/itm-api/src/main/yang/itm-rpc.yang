@@ -8,8 +8,8 @@ module itm-rpc {
     }
 
     import ietf-yang-types {
-              prefix yang;
-      }
+        prefix yang;
+    }
 
     import ietf-interfaces {
         prefix if; revision-date 2014-05-08;
@@ -106,10 +106,11 @@ module itm-rpc {
                     type inet:ip-address;
                 }
                 leaf tunnel-type {
-                type identityref {
-                    base odlif:tunnel-type-base;
+                    type identityref {
+                        base odlif:tunnel-type-base;
+                    }
                 }
-                }
+                uses odlif:monitor-params;
             }
          }
 
@@ -120,10 +121,12 @@ module itm-rpc {
                      type inet:ip-address;
                 }
                 leaf tunnel-type {
-                type identityref {
+                    type identityref {
                     base odlif:tunnel-type-base;
                 }
                 }
+                uses odlif:monitor-params;
+
             }
         }
         rpc remove-external-tunnel-from-dpns {

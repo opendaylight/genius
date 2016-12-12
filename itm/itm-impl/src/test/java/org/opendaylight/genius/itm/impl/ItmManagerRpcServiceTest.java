@@ -34,6 +34,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -204,7 +205,7 @@ public class ItmManagerRpcServiceTest {
                 any(AsyncDataBroker.DataChangeScope.class)))
                 .thenReturn(dataChangeListenerRegistration);
         setupMocks();
-
+        DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
         externalTunnelOptional = Optional.of(externalTunnel);
         internalTunnelOptional = Optional.of(internalTunnel);
         dpnEndpointsOptional = Optional.of(dpnEndpoints);
@@ -246,7 +247,7 @@ public class ItmManagerRpcServiceTest {
         when(idManagerService.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder
                 .<Void>success().build()));
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, tunnelInterfaceName, ipAddress1
-                .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1.getName());
+                .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1);
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1).setIpAddress
                 (ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName).setTzMembership
@@ -290,7 +291,7 @@ public class ItmManagerRpcServiceTest {
                 (tunnelType1).setDestinationNode(destinationDevice).setSourceNode(sourceDevice).build();
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,tunnelEndPointsVxlan.getIpAddress()
-                ,ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null, false);
+                ,ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,monitorProtocol,null, false,null);
         subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);

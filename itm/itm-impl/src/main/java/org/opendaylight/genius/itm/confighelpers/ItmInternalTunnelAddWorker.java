@@ -151,12 +151,12 @@ public class ItmInternalTunnelAddWorker {
         logger.trace( "Wiring between source tunnel end points {}, destination tunnel end points {} " , srcte, dstte );
         String interfaceName = srcte.getInterfaceName() ;
         Class<? extends TunnelTypeBase> tunType = srcte.getTunnelType();
-        String tunTypeStr = srcte.getTunnelType().getName();
+
         // Form the trunk Interface Name
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName( idManagerService, interfaceName,
                 srcte.getIpAddress().getIpv4Address().getValue(),
                 dstte.getIpAddress().getIpv4Address().getValue(),
-                tunTypeStr) ;
+                srcte.getTunnelType()) ;
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
         logger.debug(  " Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",trunkInterfaceName, interfaceName, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
@@ -164,7 +164,7 @@ public class ItmInternalTunnelAddWorker {
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format( "%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
-                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel);
+                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, null);
         logger.debug(  " Trunk Interface builder - {} ", iface ) ;
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         logger.debug(  " Trunk Interface Identifier - {} ", trunkIdentifier ) ;

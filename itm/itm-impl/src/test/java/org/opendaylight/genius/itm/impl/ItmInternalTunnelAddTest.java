@@ -239,9 +239,9 @@ public class ItmInternalTunnelAddTest {
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp1,tepIp2,
-                tunnelType1.getName());
+                tunnelType1);
         trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp2,tepIp1,
-                tunnelType1.getName());
+                tunnelType1);
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
@@ -267,9 +267,9 @@ public class ItmInternalTunnelAddTest {
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp1,tepIp2,
-                tunnelType2.getName());
+                tunnelType2);
         trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp2,tepIp1,
-                tunnelType2.getName());
+                tunnelType2);
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
@@ -297,9 +297,9 @@ public class ItmInternalTunnelAddTest {
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp1,tepIp2,
-                tunnelType1.getName());
+                tunnelType1);
         trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp2,tepIp1,
-                tunnelType2.getName());
+                tunnelType2);
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 

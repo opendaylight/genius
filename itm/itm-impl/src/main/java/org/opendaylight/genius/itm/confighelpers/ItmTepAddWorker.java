@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -49,12 +50,20 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
         if(dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
-                futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+                TunnelParameter tunnelParameter = new TunnelParameter.Builder().setIdManagerService(idManagerService).setCfgdDpnList(cfgdDpnList).
+                        setDataBroker(dataBroker).setMonitorEnabled(ItmUtils.readMonitoringStateFromCache(dataBroker)).setMonitorInterval(ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL).setMonitorProtocol(ITMConstants.DEFAULT_MONITOR_PROTOCOL).setTunnelType(dcGatewayIp.getTunnnelType()).setDestinationIP(dcGatewayIp.getIpAddress()).build();
+                TunnelWorkerInterface externalTunnelToDCGW = new ItmExternalTunnelToDCGw(tunnelParameter);
+                futures.addAll( externalTunnelToDCGW.buildTunnelFutureList());
+//                futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
             }
         }
         //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
         logger.debug("invoking build hwVtepTunnels with hwVteplist {}", cfgdHwVteps );
-        futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService,cfgdDpnList,cfgdHwVteps));
+        TunnelParameter tunnelParameter =  new TunnelParameter.Builder().setIdManagerService(idManagerService).setCfgdDpnList(cfgdDpnList).setCfgdHwVteps(cfgdHwVteps).
+                setDataBroker(dataBroker).setMonitorEnabled(ItmUtils.readMonitoringStateFromCache(dataBroker)).setMonitorInterval(ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL).setMonitorProtocol(ITMConstants.DEFAULT_MONITOR_PROTOCOL).build();
+        TunnelWorkerInterface buildHwTepTunnel = new ExternalTunnelToHwVTeps(tunnelParameter);
+        futures.addAll(buildHwTepTunnel.buildTunnelFutureList());
+//        futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService,cfgdDpnList,cfgdHwVteps));
         return futures ;
     }
 

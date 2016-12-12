@@ -34,6 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.monitor.params.MonitorConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
@@ -306,6 +307,14 @@ public class SouthboundUtils {
             tpAugmentationBuilder.setVlanTag(new VlanId(vlanId));
         }
 
+        LOG.info(" SF-264 Bfd MOnitor"+ifTunnel);
+
+        if(ifTunnel != null){
+            LOG.info(" SF-264 bfd Monitoring for tunnel {} is {}",ifTunnel.toString(),bfdMonitoringEnabled(ifTunnel));
+            LOG.info(" Tunnel monitor {} with monitoring "+ifTunnel.isMonitorEnabled(),ifTunnel.getMonitorProtocol());
+
+        }
+
         if (bfdMonitoringEnabled(ifTunnel)) {
             if (isOfTunnel(ifTunnel)) {
                 LOG.warn("BFD Monitoring not supported for OFTunnels");
@@ -329,6 +338,12 @@ public class SouthboundUtils {
                 getIfBfdObj(BFD_PARAM_ENABLE, ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() : "false"));
         bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
                 ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+//        bfdParams.add(getIfBfdObj(BFD_DETECT_MULT,ifTunnel != null && ifTunnel.getBFDDetectMultiplier() != null?ifTunnel.getBFDDetectMultiplier().toString : BFD_MIN_DETECT_MUL_VAL));
+        if(ifTunnel != null){
+            for(MonitorConfig monitorConfig :ifTunnel.getMonitorConfig()){
+                bfdParams.add(getIfBfdObj(monitorConfig.getMonitorConfigKey(),monitorConfig.getMonitorConfigValue()));
+            }
+        }
         return bfdParams;
     }
 

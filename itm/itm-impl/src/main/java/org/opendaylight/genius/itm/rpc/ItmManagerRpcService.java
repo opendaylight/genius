@@ -23,8 +23,10 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
+import org.opendaylight.genius.itm.confighelpers.TunnelParameter;
+import org.opendaylight.genius.itm.confighelpers.TunnelWorkerInterface;
+import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelToDCGw;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -89,6 +91,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.opendaylight.openflowplugin.openflow.md.core.sal.convertor.common.OrderComparator.build;
 
 @Singleton
 public class ItmManagerRpcService implements ItmRpcService {
@@ -186,7 +190,17 @@ public class ItmManagerRpcService implements ItmRpcService {
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, idManagerService,input.getDpnId(), input.getDestinationIp(), input.getTunnelType());
+        List<DPNTEPsInfo> cfgDpnList = input.getDpnId() == null ? ItmUtils.getTunnelMeshInfo(dataBroker) : ItmUtils.getDPNTEPListFromDPNId(dataBroker, input.getDpnId());
+
+        TunnelParameter tunnelParameter =  new TunnelParameter.Builder().setIdManagerService(idManagerService).setCfgdDpnList(cfgDpnList).
+                setDataBroker(dataBroker).setMonitorEnabled(ItmUtils.readMonitoringStateFromCache(dataBroker))
+                .setMonitorInterval(ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL)
+                .setMonitorProtocol(ITMConstants.DEFAULT_MONITOR_PROTOCOL).setTunnelType( input.getTunnelType())
+                .setDestinationIP(input.getDestinationIp()).setMonitorConfig(input.getMonitorConfig()).build();
+
+        TunnelWorkerInterface externalTunnelToDCGW = new ItmExternalTunnelToDCGw(tunnelParameter);
+        List<ListenableFuture<Void>> extTunnelResultList = externalTunnelToDCGW.buildTunnelFutureList();
+//        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, idManagerService,input.getDpnId(), input.getDestinationIp(), input.getTunnelType(),input.getMonitorInterval());
         for (ListenableFuture<Void> extTunnelResult : extTunnelResultList) {
             Futures.addCallback(extTunnelResult, new FutureCallback<Void>(){
 
@@ -215,7 +229,13 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType()) ;InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+        TunnelParameter tunnelParameter = new TunnelParameter.Builder().setIdManagerService(idManagerService).setCfgdDpnList(meshedDpnList).
+                setDataBroker(dataBroker).setMonitorEnabled(ItmUtils.readMonitoringStateFromCache(dataBroker)).setMonitorInterval(ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL)
+                .setMonitorProtocol(ITMConstants.DEFAULT_MONITOR_PROTOCOL).setTunnelType(input.getTunnelType()).setDestinationIP(input.getDestinationIp()).build();
+        TunnelWorkerInterface externalTunnelToDCGW = new ItmExternalTunnelToDCGw(tunnelParameter);
+        externalTunnelToDCGW.buildTunnelFutureList();
+//        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType()) ;
+        InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp = new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp()).setTunnnelType(input.getTunnelType()).build();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         t.put(LogicalDatastoreType.CONFIGURATION, extPath,dcGatewayIp, true);

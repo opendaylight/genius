@@ -74,6 +74,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.monitor.params.MonitorConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
@@ -195,13 +196,19 @@ public class ItmUtils {
     }
 
     public static String getTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName,
-                                               String localHostName, String remoteHostName, String tunnelType) {
-        String tunnelTypeStr;
-        if(tunnelType.contains("TunnelTypeGre")) {
+                                               String localHostName, String remoteHostName, Class<? extends TunnelTypeBase> tunnelType) {
+        String tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
+        if( tunnelType.equals(TunnelTypeGre.class) ){
+            LOG.trace("getTrunkInterfaceName GRE");
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
-        } else {
+        }else if(tunnelType.equals(TunnelTypeMplsOverGre.class)){
+            LOG.trace("getTrunkInterfaceName MPLSoGRE");
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
+        }else if(tunnelType.equals(TunnelTypeVxlan.class)){
+            LOG.trace("getTrunkInterfaceName VXLAN");
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
+
         String trunkInterfaceName = String.format(  "%s:%s:%s:%s", parentInterfaceName, localHostName,
                 remoteHostName, tunnelTypeStr);
         LOG.trace("trunk interface name is {}", trunkInterfaceName);
@@ -265,12 +272,12 @@ public class ItmUtils {
                                                  IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
                                                  boolean internal, Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                                 Integer monitorInterval, boolean useOfTunnel) {
+                                                 Integer monitorInterval, boolean useOfTunnel, List<MonitorConfig> monitorConfigList) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
-        Long monitoringInterval=null;
+        Integer monitoringInterval = null;
         if( vlanId > 0) {
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(new VlanId(vlanId)).build();
             builder.addAugmentation(IfL2vlan.class, l2vlan);
@@ -279,21 +286,21 @@ public class ItmUtils {
 
 
         if(monitorInterval != null) {
-            monitoringInterval = monitorInterval.longValue();
+            monitoringInterval = monitorInterval;
         }
 
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(gatewayIp)
                 .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(internal)
                 .setMonitorEnabled(monitorEnabled).setMonitorProtocol(monitorProtocol)
                 .setMonitorInterval(monitoringInterval).setTunnelRemoteIpFlow(useOfTunnel)
-                .build();
+                .setMonitorConfig(monitorConfigList).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
     }
 
     public static Interface buildHwTunnelInterface(String tunnelIfName, String desc, boolean enabled, String topo_id,
                                                    String node_id, Class<? extends TunnelTypeBase> tunType, IpAddress srcIp, IpAddress destIp,
-                                                   IpAddress gWIp, Boolean monitor_enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitor_interval){
+                                                   IpAddress gWIp, Boolean monitor_enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitor_interval,List<MonitorConfig> monitorConfigList){
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelIfName)).setName(
                 tunnelIfName).setDescription(desc).
                 setEnabled(enabled).setType(Tunnel.class);
@@ -304,21 +311,21 @@ public class ItmUtils {
         nodeIds.add(hWnode);
         ParentRefs parent = new ParentRefsBuilder().setNodeIdentifier(nodeIds).build();
         builder.addAugmentation(ParentRefs.class, parent);
-        Long monitoringInterval = (long) ITMConstants.DEFAULT_MONITOR_INTERVAL;
+        Integer monitoringInterval =  ITMConstants.DEFAULT_MONITOR_INTERVAL;
         Boolean monitoringEnabled = true;
         Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-        if(monitor_interval!= null) {
-            monitoringInterval = monitor_interval.longValue();
+        if(monitor_interval != null) {
+            monitoringInterval = monitor_interval ;
         }
-        if(monitor_enabled!=null  ) {
+        if(monitor_enabled != null  ) {
             monitoringEnabled = monitor_enabled;
         }
-        if(monitorProtocol!=null) {
+        if(monitorProtocol != null) {
             monitoringProtocol = monitorProtocol;
         }
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(destIp).setTunnelGateway(gWIp).setTunnelSource(
-                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(100L).
-                setTunnelInterfaceType(tunType).setInternal(false).build();
+                srcIp).setMonitorEnabled(monitoringEnabled).setMonitorProtocol(monitorProtocol).setMonitorInterval(100).
+                setTunnelInterfaceType(tunType).setInternal(false).setMonitorConfig(monitorConfigList).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         LOG.trace("iftunnel {} built from hwvtep {} ", tunnel, node_id);
         return builder.build();
