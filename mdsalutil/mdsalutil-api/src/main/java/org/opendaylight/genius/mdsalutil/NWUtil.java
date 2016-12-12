@@ -9,6 +9,7 @@ package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
+import com.google.common.primitives.Ints;
 import com.google.common.primitives.UnsignedBytes;
 import java.math.BigInteger;
 import java.net.Inet4Address;
@@ -53,6 +54,11 @@ public class NWUtil {
            builder.append("/").append(mask);
         }
         return builder.toString();
+    }
+
+    public static int ipAddressToInt(String ipAddr) throws UnknownHostException {
+        InetAddress subnetAddress = InetAddress.getByName(ipAddr);
+        return Ints.fromByteArray(subnetAddress.getAddress());
     }
 
     public static byte[] parseIpAddress(String ipAddress) {
@@ -198,14 +204,42 @@ public class NWUtil {
     }
 
     /**
+     * Checks if a given ipAddress belongs to a specific subnet.
+     *
+     * @param ipAddress The Ip Address to check
+     * @param subnetCidr Subnet represented as string with CIDR
+     * @return true if the ipAddress belongs to the Subnet, or false if it
+     *     doesnt belong or the IpAddress string cannot be converted to an
+     *     InetAddress
+     */
+    public static boolean isIpInSubnet(int ipAddress, String subnetCidr) {
+        String[] subSplit = subnetCidr.split("/");
+        if (subSplit.length < 2) {
+            return false;
+        }
+
+        String subnetStr = subSplit[0];
+        int prefixLength = Integer.parseInt(subSplit[1]);
+        try {
+            int subnet = ipAddressToInt(subnetStr);
+            int mask = -1 << (32 - prefixLength);
+
+            return (subnet & mask) == (ipAddress & mask);
+
+        } catch (UnknownHostException ex) {
+            LOG.error("Subnet string {} not convertible to InetAdddress ", subnetStr, ex);
+            return false;
+        }
+    }
+
+    /**
      * Utility API that returns the corresponding ipPrefix based on the ipAddress
      *
      * @param ipAddress
      * @return ipAddress appended with a "/32" prefix (if IPv4), else "/128" prefix (for IPv6)
      */
     public static String toIpPrefix(String ipAddress) {
-        String ipPrefix = (isIpv4Address(ipAddress)) ? ipAddress + NwConstants.IPV4PREFIX :
-                           ipAddress + NwConstants.IPV6PREFIX;
-        return ipPrefix;
+        return isIpv4Address(ipAddress) ? ipAddress + NwConstants.IPV4PREFIX
+                                        : ipAddress + NwConstants.IPV6PREFIX;
     }
 }
