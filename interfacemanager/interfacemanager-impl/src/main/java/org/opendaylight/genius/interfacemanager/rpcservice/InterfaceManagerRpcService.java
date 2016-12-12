@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -103,9 +105,19 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private final IMdsalApiManager mdsalMgr;
 
     @Inject
-    public InterfaceManagerRpcService(DataBroker dataBroker, IMdsalApiManager mdsalMgr) {
+    public InterfaceManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager iMdsalApiManager) {
         this.dataBroker = dataBroker;
-        this.mdsalMgr = mdsalMgr;
+        this.mdsalMgr = iMdsalApiManager;
+    }
+
+    @PostConstruct
+    public  void start() throws Exception {
+        LOG.info("InterfaceManagerRpcService started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("InterfaceManagerRpcService closed");
     }
 
     @Override

@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -31,26 +32,42 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
+@Singleton
 public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
-    private DataBroker dataBroker;
-    private IdManagerService idManager;
-    private AlivenessMonitorService alivenessMonitorService;
-    private IMdsalApiManager mdsalApiManager;
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final AlivenessMonitorService alivenessMonitorService;
+    private final IMdsalApiManager mdsalApiManager;
 
-    public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
-                                   final AlivenessMonitorService alivenessMonitorService,
-                                   final IMdsalApiManager mdsalApiManager) {
+    @Inject
+    public InterfaceConfigListener(final AlivenessMonitorService alivenessMonitorService, final DataBroker dataBroker,
+                                   final IdManagerService idManagerService, final IMdsalApiManager iMdsalApiManager) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
-        this.idManager = idManager;
+        this.idManager = idManagerService;
         this.alivenessMonitorService = alivenessMonitorService;
-        this.mdsalApiManager = mdsalApiManager;
+        this.mdsalApiManager = iMdsalApiManager;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
+        LOG.info("InterfaceConfigListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("InterfaceConfigListener closed");
     }
 
     @Override
