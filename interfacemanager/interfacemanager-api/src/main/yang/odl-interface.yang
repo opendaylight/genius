@@ -126,7 +126,7 @@ module odl-interface {
         }
 
         leaf monitor-interval {
-            type uint32;
+            type uint16;
             default 10000;
         }
 
