@@ -73,13 +73,6 @@ public class InterfaceManagerConfigurationTest {
 
     @Inject DataBroker dataBroker;
 
-    @Before
-    public void start() {
-        // TODO This is silly, because onSessionInitiated(), or later it's BP
-        // equivalent, for clearer testability should just propagate the exception
-        assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
-    }
-
     @Test
     public void vlanInterfaceTests() throws Exception {
         // 1. Given
