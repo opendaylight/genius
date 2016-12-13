@@ -9,7 +9,7 @@ package org.opendaylight.genius.interfacemanager;
 
 
 import com.google.common.base.Optional;
-
+import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -563,5 +564,14 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
         IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
+    }
+
+    @SuppressWarnings("rawtypes")
+    public List<ChainableDataTreeChangeListener> getChainableDataTreeChangeListeners() {
+        return Lists.newArrayList(interfaceConfigListener, topologyStateListener, terminationPointStateListener,
+                hwVTEPTunnelsStateListener, interfaceInventoryStateListener, flowBasedServicesInterfaceStateListener,
+                flowBasedServicesConfigListener, vlanMemberConfigListener, hwVTEPConfigListener,
+                cacheInterfaceConfigListener, cacheInterfaceStateListener, cacheBridgeEntryConfigListener);
+                // TODO CacheBridgeRefEntryListener??? see https://git.opendaylight.org/gerrit/#/c/49316/
     }
 }

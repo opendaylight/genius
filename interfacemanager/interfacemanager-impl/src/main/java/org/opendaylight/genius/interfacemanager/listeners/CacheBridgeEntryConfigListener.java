@@ -9,12 +9,12 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collection;
-import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.ChainableClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeInterfaceInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
@@ -28,9 +28,10 @@ import org.slf4j.LoggerFactory;
  * and update the bridgeEntryCache as per changes in DS.
  *
  */
-public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry>{
+public class CacheBridgeEntryConfigListener extends ChainableClusteredDataTreeChangeListenerBase<BridgeEntry> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheBridgeEntryConfigListener.class);
+
     private final DataBroker db;
     private ListenerRegistration<CacheBridgeEntryConfigListener> registration;
 
@@ -61,7 +62,7 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
     }
 
     @Override
-    public void onDataTreeChanged(Collection<DataTreeModification<BridgeEntry>> changes) {
+    public void onDataTreeChanged2(Collection<DataTreeModification<BridgeEntry>> changes) {
         for (DataTreeModification<BridgeEntry> change : changes) {
         final DataObjectModification<BridgeEntry> mod = change.getRootNode();
             switch (mod.getModificationType()) {
