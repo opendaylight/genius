@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
 
 /**
- * DataStoreJobCoordinator companion class with wait method.
+ * {@link DataStoreJobCoordinator} companion class with wait method, for tests.
  *
  * @author Michael Vorburger
  */

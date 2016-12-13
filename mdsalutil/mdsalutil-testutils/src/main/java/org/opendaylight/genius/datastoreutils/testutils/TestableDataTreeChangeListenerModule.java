@@ -13,6 +13,8 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Guice wiring module which binds a {@link TestableDataTreeChangeListener} as
@@ -23,6 +25,8 @@ import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
  */
 public class TestableDataTreeChangeListenerModule extends AbstractModule {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TestableDataTreeChangeListenerModule.class);
+
     @Override
     protected void configure() {
     }
@@ -30,13 +34,15 @@ public class TestableDataTreeChangeListenerModule extends AbstractModule {
     @Provides
     @Singleton
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    AsyncEventsWaiter getTestableDataTreeChangeListener(Injector injector) {
+    protected AsyncEventsWaiter getTestableDataTreeChangeListener(Injector injector) {
         TestableDataTreeChangeListener testableDataTreeChangeListener = new TestableDataTreeChangeListener();
         for (Key<?> key : injector.getAllBindings().keySet()) {
             if (ChainableDataTreeChangeListener.class.isAssignableFrom(key.getTypeLiteral().getRawType())) {
                 ChainableDataTreeChangeListener chainableListener
                     = (ChainableDataTreeChangeListener) injector.getInstance(key);
                 chainableListener.addAfterListener(testableDataTreeChangeListener);
+                LOG.info("Including this ChainableDataTreeChangeListener for the AsyncEventsWaiter: {}",
+                        chainableListener);
             }
         }
         return testableDataTreeChangeListener;
