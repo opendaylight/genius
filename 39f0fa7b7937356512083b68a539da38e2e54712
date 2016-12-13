@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_ebe21ed4",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-13T13:24:56Z",
+      "side": 1,
+      "message": "NullPointerException should normally never by caught...",
+      "revId": "39f0fa7b7937356512083b68a539da38e2e54712",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4be872b4",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-13T13:24:56Z",
+      "side": 1,
+      "message": "NullPointerException should normally never by caught...",
+      "revId": "39f0fa7b7937356512083b68a539da38e2e54712",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_2bed36c4",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-13T13:24:56Z",
+      "side": 1,
+      "message": "NullPointerException should normally never by caught...",
+      "revId": "39f0fa7b7937356512083b68a539da38e2e54712",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8bd1eafd",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-13T13:24:56Z",
+      "side": 1,
+      "message": "NullPointerException should normally never by caught...",
+      "revId": "39f0fa7b7937356512083b68a539da38e2e54712",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
