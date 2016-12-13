@@ -31,7 +31,8 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     <T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
         implements ClusteredDataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataTreeChangeListenerBase.class);
+    // Using non-static Logger so that logs easily identifies actual listener class
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
@@ -78,8 +79,8 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
             listenerRegistration = looper.loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
+            log.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
+            log.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
             throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
         }
     }
@@ -91,7 +92,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             try {
                 listenerRegistration.close();
             } catch (final Exception e) {
-                LOG.error("Error when cleaning up DataTreeChangeListener.", e);
+                log.error("Error when cleaning up DataTreeChangeListener.", e);
             }
             listenerRegistration = null;
         }
@@ -108,6 +109,9 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
         public DataTreeChangeHandler(Collection<DataTreeModification<T>> changes) {
             this.changes = changes;
+            for (DataTreeModification<T> change : changes) {
+                log.debug("sync run() {}", change);
+            }
         }
 
         @Override
@@ -134,6 +138,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
                         // FIXME: May be not a good idea to throw.
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
+                log.debug("async run() {}", change);
             }
             chainingDelegate.notifyAfterOnDataTreeChanged(changes);
         }

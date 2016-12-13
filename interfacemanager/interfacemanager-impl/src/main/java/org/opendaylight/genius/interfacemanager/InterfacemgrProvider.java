@@ -9,7 +9,7 @@ package org.opendaylight.genius.interfacemanager;
 
 
 import com.google.common.base.Optional;
-
+import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -565,5 +566,19 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
         IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
+    }
+
+    @SuppressWarnings("rawtypes")
+    public List<ChainableDataTreeChangeListener> getChainableDataTreeChangeListeners() {
+        // NOTE: We are intentionally *NOT* registering the x4 Cache*Listener/s as ChainableDataTreeChangeListener
+        // here.  This is not because they do not implement the ChainableDataTreeChangeListener interface
+        // (which they could by extends ChainableClusteredDataTreeChangeListenerBase instead of
+        // implements ClusteredDataTreeChangeListener), but because there is no need for it:
+        // the x4 Cache*Listener/s are synchronous, not asynchronous, so no need for the
+        // test to ever wait on them processing change events via AsyncEventsWaiter.
+        // So we only list (*ALL*) the async listeners here:
+        return Lists.newArrayList(interfaceConfigListener, topologyStateListener, terminationPointStateListener,
+                hwVTEPTunnelsStateListener, interfaceInventoryStateListener, flowBasedServicesInterfaceStateListener,
+                flowBasedServicesConfigListener, vlanMemberConfigListener, hwVTEPConfigListener);
     }
 }
