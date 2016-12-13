@@ -11,18 +11,23 @@ import java.util.Collection;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 
 /**
- * DataTreeChangeListener useful for testing in asynchronous scenarios.
+ * DataTreeChangeListener which decorates a TestableDataTreeChangeListener
+ * but decrements instead of increments its consumed events.
  *
  * @author Michael Vorburger.ch
  */
 @SuppressWarnings("rawtypes")
-public class TestableDataTreeChangeListener
-        extends AbstractTestableListener
-        implements DataTreeChangeListener {
+public class DecrementingTestableDataTreeChangeDecoratorListener implements DataTreeChangeListener {
+
+    private final TestableDataTreeChangeListener delegate;
+
+    public DecrementingTestableDataTreeChangeDecoratorListener(TestableDataTreeChangeListener delegate) {
+        this.delegate = delegate;
+    }
 
     @Override
     public void onDataTreeChanged(Collection changes) {
-        consumedEvents(changes.size());
+        delegate.consumedEvents( - changes.size());
     }
 
 }
