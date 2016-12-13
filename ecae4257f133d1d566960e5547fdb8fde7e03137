@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_15de9911",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-13T07:12:34Z",
+      "side": 1,
+      "message": "Poovizhi, can you check some of the reviews from Stephen Kitt, on the same file? He has done a new way of handling new Actions, checl if you have followed the same format",
+      "revId": "ecae4257f133d1d566960e5547fdb8fde7e03137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
