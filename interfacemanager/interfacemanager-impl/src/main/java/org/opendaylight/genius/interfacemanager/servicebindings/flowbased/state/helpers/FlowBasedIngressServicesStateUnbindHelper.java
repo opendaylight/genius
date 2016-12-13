@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
@@ -19,7 +18,6 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
@@ -35,7 +33,7 @@ import java.util.List;
 public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateUnbindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
+    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateRemovable flowBasedIngressServicesStateRemovable;
 
     private FlowBasedIngressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -63,6 +61,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         flowBasedIngressServicesStateRemovable = null;
     }
 
+    @Override
     public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         if(ifaceState.getType() == null) {

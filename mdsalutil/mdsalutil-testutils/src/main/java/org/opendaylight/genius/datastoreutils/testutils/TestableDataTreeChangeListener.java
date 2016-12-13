@@ -22,7 +22,7 @@ public class TestableDataTreeChangeListener
 
     @Override
     public void onDataTreeChanged(Collection changes) {
-        consumedEvents();
+        consumedEvents(changes.size());
     }
 
 }
