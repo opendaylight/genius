@@ -11,11 +11,10 @@ package org.opendaylight.genius.datastoreutils;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -42,6 +41,8 @@ public class DataStoreJobCoordinator {
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final Condition waitCondition = reentrantLock.newCondition();
 
+    private AsyncEventsCounter asyncEventsCounter;
+
     private static DataStoreJobCoordinator instance;
 
     static {
@@ -61,6 +62,10 @@ public class DataStoreJobCoordinator {
         }
 
         new Thread(new JobQueueHandler()).start();
+    }
+
+    public void setAsyncEventsCounter(AsyncEventsCounter asyncEventsCounter) {
+        this.asyncEventsCounter = asyncEventsCounter;
     }
 
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker) {
@@ -103,6 +108,9 @@ public class DataStoreJobCoordinator {
             jobEntriesMap.put(key, jobQueue);
 
             DataStoreJobCoordinatorCounters.jobs_pending.inc();
+            if (asyncEventsCounter != null) {
+                asyncEventsCounter.consumedEvents(1);
+            }
         }
         reentrantLock.lock();
         try {
@@ -125,6 +133,12 @@ public class DataStoreJobCoordinator {
             if (jobQueue.getWaitingEntries().isEmpty()) {
                 LOG.trace("Clear jobkey {} from queue {}", jobEntry.getKey(), hashKey);
                 jobEntriesMap.remove(jobEntry.getKey());
+            }
+            // This should be together with the remove() above,
+            // but it doesn't make sense that's inside the if..
+            // when do these get cleaned out??  Leak suspect..
+            if (asyncEventsCounter != null) {
+                asyncEventsCounter.consumedEvents(-1);
             }
         }
         DataStoreJobCoordinatorCounters.jobs_cleared.inc();
@@ -178,7 +192,7 @@ public class DataStoreJobCoordinator {
 
             int retryCount = jobEntry.decrementRetryCountAndGet();
             if (retryCount > 0) {
-                long waitTime = (RETRY_WAIT_BASE_TIME * 10) / retryCount;
+                long waitTime = RETRY_WAIT_BASE_TIME * 10 / retryCount;
                 scheduledExecutorService.schedule(() -> {
                     MainTask worker = new MainTask(jobEntry);
                     fjPool.execute(worker);

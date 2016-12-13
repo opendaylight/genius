@@ -7,13 +7,33 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import org.awaitility.core.ConditionTimeoutException;
+
 /**
  * Allows tests to wait for asynchronous event processing to be done.
  *
- * @author Michael Vorburger
+ * @author Michael Vorburger.ch
  */
-public interface AsyncEventsWaiter {
+public interface AsyncEventsWaiter extends AutoCloseable {
 
-    void awaitEventsConsumption();
+    /**
+     * Wait by blocking calling thread until pending events have been processed
+     * by other threads in the background.  Implementations must have some
+     * sensible fixed timeout value.  This method is normally called from
+     * the JUnit Test main thread.
+     *
+     * @return true if if anything was pending to be processed and has been
+     *         processed, false if nothing needed to be
+     *
+     * @throws ConditionTimeoutException if timed out while waiting
+     */
+    boolean awaitEventsConsumption() throws ConditionTimeoutException;
+
+    @Override
+    default void close() throws IllegalStateException {
+        if (awaitEventsConsumption()) {
+            throw new IllegalStateException("Test forgot an awaitEventsConsumption()");
+        }
+    }
 
 }

@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.AsyncEventsCounter;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -30,13 +31,17 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ResourceBatchingManager implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(ResourceBatchingManager.class);
+
     private static final int INITIAL_DELAY = 3000;
     private static final TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
 
-    private DataBroker broker;
-    private ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>> resourceHandlerMapper = new ConcurrentHashMap();
-    private ConcurrentHashMap<String, ScheduledThreadPoolExecutor> resourceBatchingThreadMapper = new ConcurrentHashMap();
+    // package local instead of private for TestableResourceBatchingManager
+    final ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>> resourceHandlerMapper = new ConcurrentHashMap();
+    final ConcurrentHashMap<String, ScheduledThreadPoolExecutor> resourceBatchingThreadMapper = new ConcurrentHashMap();
+
+    private AsyncEventsCounter asyncEventsCounter;
 
     private static ResourceBatchingManager instance;
 
@@ -46,6 +51,16 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     public static ResourceBatchingManager getInstance() {
         return instance;
+    }
+
+    public void setAsyncEventsCounter(AsyncEventsCounter asyncEventsCounter) {
+        this.asyncEventsCounter = asyncEventsCounter;
+    }
+
+    private void updateAsyncEventsCounter(int howMany) {
+        if (asyncEventsCounter != null) {
+            asyncEventsCounter.consumedEvents(howMany);
+        }
     }
 
     @Override
@@ -64,8 +79,9 @@ public class ResourceBatchingManager implements AutoCloseable {
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
-        if (resDelegatorService.getPoolSize() == 0 )
+        if (resDelegatorService.getPoolSize() == 0 ) {
             resDelegatorService.scheduleWithFixedDelay(new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+        }
     }
 
     public void put(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
@@ -74,6 +90,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
+            updateAsyncEventsCounter(+1);
         }
     }
 
@@ -83,6 +100,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
+            updateAsyncEventsCounter(+1);
         }
     }
 
@@ -92,6 +110,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
+            updateAsyncEventsCounter(+1);
         }
     }
 
@@ -110,16 +129,18 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     private class Batcher implements Runnable
     {
-        private String resourceType;
+        private final String resourceType;
 
         Batcher(String resourceType) {
             this.resourceType = resourceType;
         }
 
+        @Override
         public void run()
         {
             List<ActionableResource> resList = new ArrayList<>();
 
+            int taken = 0;
             try
             {
                 Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
@@ -130,7 +151,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                 BlockingQueue<ActionableResource> resQueue = resMapper.getLeft();
                 ResourceHandler resHandler = resMapper.getRight();
                 resList.add(resQueue.take());
-                resQueue.drainTo(resList);
+                taken = resQueue.drainTo(resList) + 1; // +1 because take() above already took one
 
                 long start = System.currentTimeMillis();
                 int batchSize = resHandler.getBatchSize();
@@ -158,8 +179,9 @@ public class ResourceBatchingManager implements AutoCloseable {
             } catch (InterruptedException e)
             {
                 e.printStackTrace();
+            } finally {
+                updateAsyncEventsCounter(-taken);
             }
-
         }
     }
 
