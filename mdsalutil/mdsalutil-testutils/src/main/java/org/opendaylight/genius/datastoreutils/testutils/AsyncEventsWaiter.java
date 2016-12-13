@@ -12,8 +12,17 @@ package org.opendaylight.genius.datastoreutils.testutils;
  *
  * @author Michael Vorburger
  */
-public interface AsyncEventsWaiter {
+public interface AsyncEventsWaiter extends AutoCloseable {
 
-    void awaitEventsConsumption();
+    void awaitEventsConsumption(int howMany);
+
+    /**
+     * Deprecated single event await.
+     * @deprecated Use {@link #awaitEventsConsumption(1)} instead!
+     */
+    @Deprecated
+    default void awaitEventsConsumption() {
+        awaitEventsConsumption(1);
+    }
 
 }

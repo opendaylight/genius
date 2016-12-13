@@ -9,69 +9,79 @@ package org.opendaylight.genius.datastoreutils.testutils;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.awaitility.Awaitility;
+import org.awaitility.core.ConditionTimeoutException;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Event listener which offer testability in asynchronous usage scenarios.
  *
- * @author Michael Vorburger, with AtomicBoolean usage feedback from Vratko Polák
+ * @author Michael Vorburger
  */
 public abstract class AbstractTestableListener implements AsyncEventsWaiter {
 
+    // intentionally logging as interface type instead of implementation, clearer for developers
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncEventsWaiter.class);
+
     // see http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html
-    private final AtomicBoolean hasConsumedEvents = new AtomicBoolean();
+    private final AtomicInteger numberOfConsumedEvents = new AtomicInteger();
 
     /**
-     * Check if listener has consumed events.
-     *
-     * <p>Reading automatically resets the internal flag back to false if it was true when called.
-     *
-     * <p>This cannot distinguish between one or several events
-     * consumed, but this is fine and intentional; because in a typical use
-     * case by a test, this method is called immediately after the test did
-     * something which it knows causes a listener to react.
-     *
-     * <p>This is not suitable in a multi-threaded test where several emit events
-     * which cause listeners to be called.  This is fine and intentional; because
-     * in a typical use case only the main test thread emits the event which is
-     * then consumed asynchronously in another thread.  Multi-threaded component
-     * testing would use separate listener instances per test.
-     *
-     * @return true if one or several events have been processed since last called, false if not
-     */
-    public boolean hasConsumedEvents() {
-        // Using compareAndSet() here even though weakCompareAndSet()
-        // may be faster, because this is called from the "test" code,
-        // so the test reliability is more important than the business speed penalty.
-        return hasConsumedEvents.compareAndSet(true, false);
-    }
-
-    /**
-     * Wait by blocking calling thread until {@link #hasConsumedEvents()}, for
-     * max. 500ms.
+     * Wait by blocking calling thread until (at least) <code>howMany</code> events have been consumed, for
+     * max. 500ms (time out).  This is normally called from the JUnit Test main thread.
      */
     @Override
-    public void awaitEventsConsumption() {
-        awaitEventsConsumption(500, MILLISECONDS);
+    public void awaitEventsConsumption(int howMany) {
+        awaitEventsConsumption(howMany, Duration.ofSeconds(10));
+    }
+
+    public void awaitEventsConsumption(int howMany, Duration timeout) {
+        awaitEventsConsumption(howMany, timeout.toMillis(), MILLISECONDS);
+    }
+
+    protected void awaitEventsConsumption(int howMany, long timeout, TimeUnit unit) {
+        LOG.info("awaitEventsConsumption({}) starting...", howMany);
+        try {
+            Awaitility.await("TestableListener").atMost(timeout, unit)
+                .pollDelay(0, MILLISECONDS)
+                // TODO could be optimized to terminate if howMany OR MORE, but fail if more
+                .untilAtomic(numberOfConsumedEvents, Matchers.equalTo(howMany));
+            LOG.info("... awaitEventsConsumption({}) completed OK", howMany);
+        } catch (ConditionTimeoutException e) {
+            LOG.warn("... awaitEventsConsumption({}) completed NOK", howMany, e);
+            throw e;
+        } finally {
+            numberOfConsumedEvents.set(0);
+        }
     }
 
     /**
-     * Wait by blocking calling thread until {@link #hasConsumedEvents()}, for
-     * max. the time passed in the argument.
+     * Signal that a testable listener has consumed an event.
+     * This is normally called either from the JUnit Test main thread
+     * if the event listener is synchronous, or from a background
+     * thread if the event listener is asynchronous.
      */
-    public void awaitEventsConsumption(long timeout, TimeUnit unit) {
-        Awaitility.await("TestableListener").atMost(timeout, unit).until(() -> this.hasConsumedEvents());
+    protected void consumedEvents(int howMany) {
+        LOG.info("consumedEvents({})", numberOfConsumedEvents.addAndGet(howMany));
     }
 
-    protected void consumedEvents() {
-        // Using lazySet() here instead of compareAndSet(),
-        // because this is called from the "production" code,
-        // so the speed of the business logic is more important than the latency of the test information.
-        // Using compareAndSet(false, true), or weakCompareAndSet(), is not neccessary here,
-        // as there is nothing to return.
-        hasConsumedEvents.lazySet(true);
+    @Override
+    public void close() throws Exception {
+        try {
+            final int localNumberOfConsumedEvents = numberOfConsumedEvents.get();
+            if (localNumberOfConsumedEvents != 0) {
+                throw new IllegalStateException(
+                        "Test forgot an awaitEventsConsumption(" + localNumberOfConsumedEvents + ")");
+            }
+        } finally {
+            numberOfConsumedEvents.set(0);
+            LOG.info("close(0)");
+        }
     }
 
 }

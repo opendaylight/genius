@@ -8,12 +8,14 @@
 package org.opendaylight.genius.datastoreutils;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import org.awaitility.Awaitility;
+import org.opendaylight.genius.utils.batching.TestableResourceBatchingManager;
 
 /**
- * DataStoreJobCoordinator companion class with wait method.
+ * {@link DataStoreJobCoordinator} companion class with wait method, for tests.
+ *
+ * @see TestableResourceBatchingManager
  *
  * @author Michael Vorburger
  */
@@ -24,15 +26,15 @@ public class TestDataStoreJobCoordinator {
      *
      * <p>THIS METHOD IS ONLY INTENDED FOR TESTS, AND SHOULD NOT BE CALLED IN PRODUCTION CODE.
      */
-    public void waitForAllJobs(Duration duration) {
+    public void waitForAllJobs(Duration timeout) {
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
 
         dataStoreJobCoordinator.jobQueueMap.values().forEach(map -> map.values().forEach(jobQueue ->
             Awaitility.await(TestDataStoreJobCoordinator.class.getName())
-            .atMost(duration.get(ChronoUnit.SECONDS), TimeUnit.SECONDS).until(() ->
+            .atMost(timeout.toNanos(), TimeUnit.NANOSECONDS).until(() ->
                 jobQueue.getWaitingEntries().isEmpty())));
 
-        dataStoreJobCoordinator.fjPool.awaitQuiescence(duration.get(ChronoUnit.SECONDS), TimeUnit.SECONDS);
+        dataStoreJobCoordinator.fjPool.awaitQuiescence(timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
 
     public void waitForAllJobs() {

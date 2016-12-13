@@ -14,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorDataTreeChangeListenerModule;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -69,9 +71,12 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
  */
 public class InterfaceManagerConfigurationTest {
 
-    public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule());
+    public @Rule MethodRule guice = new GuiceRule(
+            InterfaceManagerTestModule.class,
+            TestableJobCoordinatorDataTreeChangeListenerModule.class);
 
     @Inject DataBroker dataBroker;
+    @Inject AsyncEventsWaiter asyncEventsWaiter;
 
     @Before
     public void start() {
@@ -87,14 +92,13 @@ public class InterfaceManagerConfigurationTest {
         // 2. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
         InterfaceManagerTestUtil.putInterfaceState(dataBroker, parentInterface, null);
-        Thread.sleep(1000);
+        asyncEventsWaiter.awaitEventsConsumption(2);
+
         // ii) Vlan interface written to config/ietf-interfaces DS and corresponding parent-interface is not present
         //     in operational/ietf-interface-state
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
         InterfaceManagerTestUtil.putInterfaceConfig(dataBroker, interfaceName, parentRefs, L2vlan.class);
-        // TODO Must think about proper solution for better synchronization here instead of silly wait()...
-        // TODO use TestDataStoreJobCoordinator.waitForAllJobs() when https://git.opendaylight.org/gerrit/#/c/48061/ is merged
-        Thread.sleep(1000);
+        asyncEventsWaiter.awaitEventsConsumption(4);
 
         // 3. Then
         // a) check expected interface-child entry mapping in odl-interface-meta/config/interface-child-info was created
@@ -136,7 +140,8 @@ public class InterfaceManagerConfigurationTest {
         //Delete test
         // iii) vlan interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, interfaceName);
-        Thread.sleep(1000);
+        asyncEventsWaiter.awaitEventsConsumption(7);
+
         // 3. Then
         // a) check expected interface-child entry mapping in odl-interface-meta/config/interface-child-info is deleted
 
@@ -160,18 +165,18 @@ public class InterfaceManagerConfigurationTest {
         // 2. When
         // i) dpn-id specified above configuration comes in operational/network-topology
         OvsdbSoutbboundTestUtil.createBridge(dataBroker);
-        Thread.sleep(2000);
+        asyncEventsWaiter.awaitEventsConsumption(1);
+
         // ii) Vlan interface written to config/ietf-interfaces DS and corresponding parent-interface is not present
         //     in operational/ietf-interface-state
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpnId).build();
         InterfaceManagerTestUtil.putInterfaceConfig(dataBroker, tunnelInterfaceName, parentRefs, Tunnel.class);
-        // TODO Must think about proper solution for better synchronization here instead of silly wait()...
-        // TODO use TestDataStoreJobCoordinator.waitForAllJobs() when https://git.opendaylight.org/gerrit/#/c/48061/ is merged
-        Thread.sleep(1000);
+        asyncEventsWaiter.awaitEventsConsumption(5);
 
         // iii) tunnel interface comes up in operational/ietf-interfaces-state
         InterfaceManagerTestUtil.putInterfaceState(dataBroker, tunnelInterfaceName, Tunnel.class);
-        Thread.sleep(1000);
+        asyncEventsWaiter.awaitEventsConsumption(2);
+
         // 3. Then
         // a) check expected bridge-interface mapping in odl-interface-meta/config/bridge-interface-info was created
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpnId);
@@ -196,7 +201,7 @@ public class InterfaceManagerConfigurationTest {
         //Delete test
         // iii) tunnel interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, tunnelInterfaceName);
-        Thread.sleep(2000);
+        asyncEventsWaiter.awaitEventsConsumption(5);
 
         // Then
         // a) check if tunnel is deleted from bridge-interface-info

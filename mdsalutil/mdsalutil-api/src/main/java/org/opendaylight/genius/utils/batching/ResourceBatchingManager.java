@@ -35,8 +35,10 @@ public class ResourceBatchingManager implements AutoCloseable {
     private static final TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
 
     private DataBroker broker;
-    private ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>> resourceHandlerMapper = new ConcurrentHashMap();
-    private ConcurrentHashMap<String, ScheduledThreadPoolExecutor> resourceBatchingThreadMapper = new ConcurrentHashMap();
+
+    // package local instead of private for TestableResourceBatchingManager
+    final ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>> resourceHandlerMapper = new ConcurrentHashMap();
+    final ConcurrentHashMap<String, ScheduledThreadPoolExecutor> resourceBatchingThreadMapper = new ConcurrentHashMap();
 
     private static ResourceBatchingManager instance;
 
@@ -64,8 +66,9 @@ public class ResourceBatchingManager implements AutoCloseable {
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
-        if (resDelegatorService.getPoolSize() == 0 )
+        if (resDelegatorService.getPoolSize() == 0 ) {
             resDelegatorService.scheduleWithFixedDelay(new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+        }
     }
 
     public void put(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
@@ -110,12 +113,13 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     private class Batcher implements Runnable
     {
-        private String resourceType;
+        private final String resourceType;
 
         Batcher(String resourceType) {
             this.resourceType = resourceType;
         }
 
+        @Override
         public void run()
         {
             List<ActionableResource> resList = new ArrayList<>();
