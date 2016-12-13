@@ -42,6 +42,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.O
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTest}.
@@ -58,6 +60,8 @@ import org.opendaylight.yangtools.yang.binding.RpcService;
  * @author Michael Vorburger
  */
 public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
+
+    private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerTestModule.class);
 
     @Override
     protected void configureBindings() throws Exception {
@@ -105,8 +109,13 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         }
 
         @PreDestroy
+        @SuppressWarnings("checkstyle:IllegalCatch")
         void close() throws Exception {
-            interfaceManager.close();
+            try {
+                interfaceManager.close();
+            } catch (Exception e) {
+                LOG.error("close() failed", e);
+            }
         }
     }
 

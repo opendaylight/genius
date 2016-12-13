@@ -235,7 +235,9 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     public void close() throws Exception {
         LOG.info("InterfacemgrProvider Closed");
         interfaceConfigListener.close();
-        rpcRegistration.close();
+        if (rpcRegistration != null) {
+            rpcRegistration.close();
+        }
         cacheInterfaceConfigListener.close();
         cacheInterfaceStateListener.close();
         cacheBridgeEntryConfigListener.close();
