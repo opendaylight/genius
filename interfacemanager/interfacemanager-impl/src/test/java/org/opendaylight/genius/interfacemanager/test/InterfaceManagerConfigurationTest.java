@@ -7,7 +7,19 @@
  */
 package org.opendaylight.genius.interfacemanager.test;
 
+import static com.google.common.truth.Truth.assertThat;
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.interfaceName;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.parentInterface;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.tunnelInterfaceName;
+import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
+import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
+
 import com.google.common.base.Optional;
+import java.math.BigInteger;
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,8 +32,12 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
-import org.opendaylight.genius.interfacemanager.test.xtend.*;
-import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedFlowEntries;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceChildEntry;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceState;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedServicesInfo;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedTerminationPoint;
+import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceMeta;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
@@ -55,21 +71,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-import javax.inject.Inject;
-import java.math.BigInteger;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.*;
-import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
-
 /**
  * Component tests for interface manager.
  *
  * @author Michael Vorburger
  * @author Faseela K
  */
+@SuppressWarnings("deprecation")
 public class InterfaceManagerConfigurationTest {
 
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule());
@@ -94,9 +102,6 @@ public class InterfaceManagerConfigurationTest {
     private void setupAndAssertBridgeDeletion() throws InterruptedException {
         OvsdbSouthboundTestUtil.deleteBridge(dataBroker);
         Thread.sleep(2000);
-        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
-        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
-                .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnId, dataBroker), null);
     }
 
@@ -136,32 +141,38 @@ public class InterfaceManagerConfigurationTest {
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the vlan interface
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState =
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .interfaces.state.Interface ifaceState =
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(interfaceName)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(), ifaceState);
 
         // b) check if lport-tag to interface mapping is created
-        InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(
-                IfIndexInterface.class, new IfIndexInterfaceKey(ifaceState.getIfIndex())).build();
+        InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(
+                IfIndexesInterfaceMap.class).child(
+                        IfIndexInterface.class, new IfIndexInterfaceKey(ifaceState.getIfIndex())).build();
         Assert.assertEquals(interfaceName, dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 ifIndexInterfaceInstanceIdentifier).checkedGet().get().getInterfaceName());
 
         // c) check expected flow entries were created in Interface Ingress Table
         BigInteger dpnId = BigInteger.valueOf(1);
-        String ingressFlowRef = FlowBasedServicesUtils.getFlowRef(NwConstants.VLAN_INTERFACE_INGRESS_TABLE, dpnId, interfaceName);
+        String ingressFlowRef = FlowBasedServicesUtils.getFlowRef(VLAN_INTERFACE_INGRESS_TABLE, dpnId, interfaceName);
         FlowKey ingressFlowKey = new FlowKey(new FlowId(ingressFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> ingressFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class,ingressFlowKey).build();
-        assertEqualBeans(ExpectedFlowEntries.newIngressFlow(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).checkedGet().get());
+                .child(Table.class, new TableKey(VLAN_INTERFACE_INGRESS_TABLE))
+                .child(Flow.class,ingressFlowKey).build();
+        assertEqualBeans(ExpectedFlowEntries.newIngressFlow(),
+                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).checkedGet().get());
 
         // d) check if default egress service is bound on the interface
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier =
+            InstanceIdentifier.builder(ServiceBindings.class)
                 .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, ServiceModeEgress.class))
-                .child(BoundServices.class, new BoundServicesKey(NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)).build();
-        assertEqualBeans(ExpectedServicesInfo.newboundService(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, boundServicesInstanceIdentifier).checkedGet().get());
+                .child(BoundServices.class, new BoundServicesKey(DEFAULT_EGRESS_SERVICE_INDEX)).build();
+        assertEqualBeans(ExpectedServicesInfo.newboundService(), dataBroker.newReadOnlyTransaction()
+                .read(CONFIGURATION, boundServicesInstanceIdentifier).checkedGet().get());
 
         //Delete test
         // iii) vlan interface is deleted from config/ietf-interfaces
@@ -192,6 +203,7 @@ public class InterfaceManagerConfigurationTest {
         //     in operational/ietf-interface-state
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpnId).build();
         InterfaceManagerTestUtil.putInterfaceConfig(dataBroker, tunnelInterfaceName, parentRefs, Tunnel.class);
+
         // TODO Must think about proper solution for better synchronization here instead of silly wait()...
         // TODO use TestDataStoreJobCoordinator.waitForAllJobs() when https://git.opendaylight.org/gerrit/#/c/48061/ is merged
         Thread.sleep(1000);
@@ -199,6 +211,7 @@ public class InterfaceManagerConfigurationTest {
         // iii) tunnel interface comes up in operational/ietf-interfaces-state
         InterfaceManagerTestUtil.putInterfaceState(dataBroker, tunnelInterfaceName, Tunnel.class);
         Thread.sleep(1000);
+
         // 3. Then
         // a) check expected bridge-interface mapping in odl-interface-meta/config/bridge-interface-info was created
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpnId);
@@ -211,14 +224,15 @@ public class InterfaceManagerConfigurationTest {
 
         // Then
         // a) check if termination end point is created in config/network-topology
-        final InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node> bridgeIid =
+        final InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
+            .network.topology.topology.Node> bridgeIid =
                 OvsdbSouthboundTestUtil.createInstanceIdentifier("192.168.56.101", 6640,  "s2");
         InstanceIdentifier<TerminationPoint> tpIid = InterfaceManagerTestUtil.getTerminationPointId(bridgeIid,
                 tunnelInterfaceName);
-        assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(),
+                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
 
-
-        //Delete test
+        // Delete test
         // iii) tunnel interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, tunnelInterfaceName);
         Thread.sleep(2000);
@@ -230,6 +244,5 @@ public class InterfaceManagerConfigurationTest {
 
         // b) check if termination end point is deleted in config/network-topology
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
-
     }
 }
