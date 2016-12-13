@@ -34,6 +34,24 @@
       "revId": "62560d80c6d2fd91689f2a0d31b469ea702c8cb7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_861d78c0",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-12-13T16:44:22Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_c6a650c1",
+      "revId": "62560d80c6d2fd91689f2a0d31b469ea702c8cb7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
