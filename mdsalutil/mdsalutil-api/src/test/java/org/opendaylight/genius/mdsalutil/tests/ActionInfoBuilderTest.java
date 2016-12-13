@@ -35,8 +35,8 @@ public class ActionInfoBuilderTest {
     public void noActionValues() {
         ActionInfo actionInfo = new ActionInfo(ActionType.drop_action, (String[]) null);
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionType = ActionType.drop_action\n"
+        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
+                + "    actionType = ActionType.drop_action" + System.lineSeparator()
                 + "]).build()", generator.getExpression(actionInfo));
     }
 
@@ -44,11 +44,11 @@ public class ActionInfoBuilderTest {
     public void groupActionWithSingleIntegerInStringValue() {
         ActionInfo actionInfo = new ActionInfo(ActionType.group, new String[] { "123" });
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionType = ActionType.group\n"
-                + "    actionValues = #[\n"
-                + "        \"123\"\n"
-                + "    ]\n"
+        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
+                + "    actionType = ActionType.group" + System.lineSeparator()
+                + "    actionValues = #[" + System.lineSeparator()
+                + "        \"123\"" + System.lineSeparator()
+                + "    ]" + System.lineSeparator()
                 + "]).build()", generator.getExpression(actionInfo));
     }
 
@@ -56,12 +56,12 @@ public class ActionInfoBuilderTest {
     public void groupActionWithSingleIntegerInStringValueWithActionKey() {
         ActionInfo actionInfo = new ActionInfo(ActionType.group, new String[] { "123" }, 69);
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionKey = 69\n"
-                + "    actionType = ActionType.group\n"
-                + "    actionValues = #[\n"
-                + "        \"123\"\n"
-                + "    ]\n"
+        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
+                + "    actionKey = 69" + System.lineSeparator()
+                + "    actionType = ActionType.group" + System.lineSeparator()
+                + "    actionValues = #[" + System.lineSeparator()
+                + "        \"123\"" + System.lineSeparator()
+                + "    ]" + System.lineSeparator()
                 + "]).build()", generator.getExpression(actionInfo));
     }
 
@@ -70,11 +70,11 @@ public class ActionInfoBuilderTest {
         ActionInfo actionInfo = new ActionInfo(ActionType.set_field_tunnel_id,
                 new BigInteger[] { BigInteger.valueOf(123) });
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionType = ActionType.set_field_tunnel_id\n"
-                + "    bigActionValues = #[\n"
-                + "        123bi\n"
-                + "    ]\n"
+        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
+                + "    actionType = ActionType.set_field_tunnel_id" + System.lineSeparator()
+                + "    bigActionValues = #[" + System.lineSeparator()
+                + "        123bi" + System.lineSeparator()
+                + "    ]" + System.lineSeparator()
                 + "]).build()", generator.getExpression(actionInfo));
     }
 
@@ -83,12 +83,12 @@ public class ActionInfoBuilderTest {
         ActionInfo actionInfo = new ActionInfo(ActionType.set_field_tunnel_id,
                 new BigInteger[] { BigInteger.valueOf(123) }, 69);
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionKey = 69\n"
-                + "    actionType = ActionType.set_field_tunnel_id\n"
-                + "    bigActionValues = #[\n"
-                + "        123bi\n"
-                + "    ]\n"
+        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
+                + "    actionKey = 69" + System.lineSeparator()
+                + "    actionType = ActionType.set_field_tunnel_id" + System.lineSeparator()
+                + "    bigActionValues = #[" + System.lineSeparator()
+                + "        123bi" + System.lineSeparator()
+                + "    ]" + System.lineSeparator()
                 + "]).build()", generator.getExpression(actionInfo));
     }
 
@@ -98,28 +98,28 @@ public class ActionInfoBuilderTest {
                 new String[] { "1", "2", "3", "4", "5", "6", "7", "8" },
                 new String[][] { { "2", "3" }, { "4", "5" } });
         actionInfo.buildAction();
-        assertEquals("(new ActionInfoBuilder => [\n"
-                + "    actionType = ActionType.learn\n"
-                + "    actionValues = #[\n"
-                + "        \"1\",\n"
-                + "        \"2\",\n"
-                + "        \"3\",\n"
-                + "        \"4\",\n"
-                + "        \"5\",\n"
-                + "        \"6\",\n"
-                + "        \"7\",\n"
-                + "        \"8\"\n"
-                + "    ]\n"
-                + "    actionValuesMatrix = #[\n"
-                + "        #[\n"
-                + "            \"2\",\n"
-                + "            \"3\"\n"
-                + "        ],\n"
-                + "        #[\n"
-                + "            \"4\",\n"
-                + "            \"5\"\n"
-                + "        ]\n"
-                + "    ]\n"
+        assertEquals("(new ActionInfoBuilder => [" + System.lineSeparator()
+                + "    actionType = ActionType.learn" + System.lineSeparator()
+                + "    actionValues = #[" + System.lineSeparator()
+                + "        \"1\"," + System.lineSeparator()
+                + "        \"2\"," + System.lineSeparator()
+                + "        \"3\"," + System.lineSeparator()
+                + "        \"4\"," + System.lineSeparator()
+                + "        \"5\"," + System.lineSeparator()
+                + "        \"6\"," + System.lineSeparator()
+                + "        \"7\"," + System.lineSeparator()
+                + "        \"8\"" + System.lineSeparator()
+                + "    ]" + System.lineSeparator()
+                + "    actionValuesMatrix = #[" + System.lineSeparator()
+                + "        #[" + System.lineSeparator()
+                + "            \"2\"," + System.lineSeparator()
+                + "            \"3\"" + System.lineSeparator()
+                + "        ]," + System.lineSeparator()
+                + "        #[" + System.lineSeparator()
+                + "            \"4\"," + System.lineSeparator()
+                + "            \"5\"" + System.lineSeparator()
+                + "        ]" + System.lineSeparator()
+                + "    ]" + System.lineSeparator()
                 + "]).build()", generator.getExpression(actionInfo));
     }
 

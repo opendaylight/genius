@@ -47,7 +47,7 @@ public class ActionRegLoadTest {
         actionRegLoad.buildAction();
         assertEquals(
                 "new ActionRegLoad(0, org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match" +
-                        ".rev140421.NxmNxReg1, 0, 2, 255L)\n",
+                        ".rev140421.NxmNxReg1, 0, 2, 255L)" + System.lineSeparator(),
                 generator.getExpression(actionRegLoad));
     }
 }

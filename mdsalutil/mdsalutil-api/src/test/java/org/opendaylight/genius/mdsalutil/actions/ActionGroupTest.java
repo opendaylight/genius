@@ -45,8 +45,8 @@ public class ActionGroupTest {
     public void generateActionGroup() {
         ActionInfo actionGroup = new ActionGroup(123);
         actionGroup.buildAction();
-        assertEquals("(new ActionGroupBuilder => [\n" +
-                "    groupId = 123L\n" +
-                "]).build()", generator.getExpression(actionGroup));
+        assertEquals("(new ActionGroupBuilder => [" + System.lineSeparator()
+            + "    groupId = 123L" + System.lineSeparator()
+            + "]).build()", generator.getExpression(actionGroup));
     }
 }
