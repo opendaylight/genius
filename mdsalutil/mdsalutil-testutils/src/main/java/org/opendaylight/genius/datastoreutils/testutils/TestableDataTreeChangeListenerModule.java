@@ -12,34 +12,54 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
+import org.opendaylight.genius.datastoreutils.testutils.infra.AutoCloseableModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Guice wiring module which binds a {@link TestableDataTreeChangeListener} as
  * an {@link AsyncEventsWaiter}, and automatically registers all bound
  * {@link ChainableDataTreeChangeListener} to it.
  *
- * @author Michael Vorburger
+ * @author Michael Vorburger.ch
  */
 public class TestableDataTreeChangeListenerModule extends AbstractModule {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TestableDataTreeChangeListenerModule.class);
+
     @Override
     protected void configure() {
+        install(new AutoCloseableModule());
     }
 
     @Provides
     @Singleton
+    protected final AsyncEventsWaiter getAsyncEventsWaiter(Injector injector) {
+        return getRealAsyncEventsWaiter(injector);
+    }
+
+    protected AsyncEventsWaiter getRealAsyncEventsWaiter(Injector injector) {
+        return getTestableDataTreeChangeListener(injector);
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    AsyncEventsWaiter getTestableDataTreeChangeListener(Injector injector) {
-        TestableDataTreeChangeListener testableDataTreeChangeListener = new TestableDataTreeChangeListener();
+    protected TestableDataTreeChangeListener getTestableDataTreeChangeListener(Injector injector) {
+        TestableDataTreeChangeListener beforeTestableDataTreeChangeListener = new TestableDataTreeChangeListener();
+        DataTreeChangeListener afterTestableDataTreeChangeListener =
+                new DecrementingTestableDataTreeChangeDecoratorListener(beforeTestableDataTreeChangeListener);
         for (Key<?> key : injector.getAllBindings().keySet()) {
             if (ChainableDataTreeChangeListener.class.isAssignableFrom(key.getTypeLiteral().getRawType())) {
                 ChainableDataTreeChangeListener chainableListener
                     = (ChainableDataTreeChangeListener) injector.getInstance(key);
-                chainableListener.addAfterListener(testableDataTreeChangeListener);
+                chainableListener.addBeforeListener(beforeTestableDataTreeChangeListener);
+                chainableListener.addAfterListener(afterTestableDataTreeChangeListener);
+                LOG.info("Including this ChainableDataTreeChangeListener for the AsyncEventsWaiter: {}",
+                        chainableListener);
             }
         }
-        return testableDataTreeChangeListener;
+        return beforeTestableDataTreeChangeListener;
     }
 
 }
