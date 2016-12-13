@@ -8,12 +8,12 @@
 
 package org.opendaylight.genius.interfacemanager.listeners;
 
-import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.ChainableClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -28,9 +28,11 @@ import java.util.Collection;
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
-public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeListener<Interface> {
+public class CacheInterfaceConfigListener extends ChainableClusteredDataTreeChangeListenerBase<Interface> {
+
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterfaceConfigListener.class);
-    private DataBroker db;
+
+    private final DataBroker db;
     private ListenerRegistration<CacheInterfaceConfigListener> registration;
 
     public CacheInterfaceConfigListener(DataBroker broker) {
@@ -59,7 +61,7 @@ public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeList
     }
 
     @Override
-    public void onDataTreeChanged(Collection<DataTreeModification<Interface>> changes) {
+    public void onDataTreeChanged2(Collection<DataTreeModification<Interface>> changes) {
         for (DataTreeModification<Interface> change : changes) {
         final InstanceIdentifier<Interface> key = change.getRootPath().getRootIdentifier();
         final DataObjectModification<Interface> mod = change.getRootNode();

@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -24,6 +25,7 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistr
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
+import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -94,6 +96,17 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
                 idManager);
         bind(IInterfaceManager.class).toInstance(interfaceManager);
         bind(Stopper.class).toInstance(new Stopper(interfaceManager));
+
+        bindChainableDataTreeChangeListeners(interfaceManager);
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void bindChainableDataTreeChangeListeners(InterfacemgrProvider interfaceManager) {
+        List<ChainableDataTreeChangeListener> chainableDataTreeChangeListeners =
+                interfaceManager.getChainableDataTreeChangeListeners();
+        for (ChainableDataTreeChangeListener chainableDataTreeChangeListener: chainableDataTreeChangeListeners) {
+            bind((Class) chainableDataTreeChangeListener.getClass()).toInstance(chainableDataTreeChangeListener);
+        }
     }
 
     @Singleton

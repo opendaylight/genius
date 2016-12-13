@@ -28,7 +28,7 @@ public class TestableDataChangeListener
 
     @Override
     public void onDataChanged(AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> change) {
-        consumedEvents();
+        consumedEvents(1);
     }
 
 }
