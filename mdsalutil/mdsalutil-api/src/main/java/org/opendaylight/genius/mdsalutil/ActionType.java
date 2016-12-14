@@ -31,9 +31,13 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldMplsLabel;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldPbbIsid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTcpDestinationPort;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTcpSourcePort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpDestinationPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpProtocol;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpSourcePort;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -311,74 +315,54 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_udp_destination_port {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            Integer portNumber = new Integer(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setLayer4Match(
-                                    new UdpMatchBuilder().setUdpDestinationPort(
-                                            new PortNumber(portNumber)).build())
-                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetUdpDestinationPort) {
+                return ((ActionSetUdpDestinationPort) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetUdpDestinationPort(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
+
+    @Deprecated
     set_udp_source_port {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            Integer portNumber = new Integer(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setLayer4Match(
-                                    new UdpMatchBuilder().setUdpSourcePort(
-                                            new PortNumber(portNumber)).build())
-                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetUdpSourcePort) {
+                return ((ActionSetUdpSourcePort) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetUdpSourcePort(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
+
+    @Deprecated
     set_tcp_destination_port {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            Integer portNumber = new Integer(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setLayer4Match(
-                                    new TcpMatchBuilder().setTcpDestinationPort(
-                                            new PortNumber(portNumber)).build())
-                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetTcpDestinationPort) {
+                return ((ActionSetTcpDestinationPort) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetTcpDestinationPort(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
+
+    @Deprecated
     set_tcp_source_port {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            Integer portNumber = new Integer(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setLayer4Match(
-                                    new TcpMatchBuilder().setTcpSourcePort(
-                                            new PortNumber(portNumber)).build())
-                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetTcpSourcePort) {
+                return ((ActionSetTcpSourcePort) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetTcpSourcePort(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
+
     set_source_ip {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
