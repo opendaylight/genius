@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_375bd588",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionSetFieldDscp.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-12-14T10:13:58Z",
+      "side": 1,
+      "message": "Since the DSCP tag is mandatory, this might as well be\n\n    private final short dscp;",
+      "revId": "e1184ae9fd2b620a106713ea8e63ae46e342bdec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_974bc9af",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionSetFieldDscp.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-12-14T10:13:58Z",
+      "side": 1,
+      "message": "The whole idea of the Action refactor is to avoid ever having to pass arrays of Strings around; this should be\n\n    public ActionSetFieldDscp(short dscp) {\n        super(ActionType.set_field_dscp, new String[] { Short.toString(dscp) });\n        this.dscp \u003d dscp;\n    }",
+      "revId": "e1184ae9fd2b620a106713ea8e63ae46e342bdec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
