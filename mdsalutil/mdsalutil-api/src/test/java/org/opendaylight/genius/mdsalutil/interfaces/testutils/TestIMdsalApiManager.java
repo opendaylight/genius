@@ -10,16 +10,14 @@ package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 import static org.junit.Assert.assertTrue;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -47,35 +45,41 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         return Mockito.mock(TestIMdsalApiManager.class, realOrException());
     }
 
-    private synchronized List<FlowEntity> initializeFlows() {
-        return Collections.synchronizedList(new ArrayList<>());
+    /**
+     * Get list of installed flows.
+     * Prefer the {@link #assertFlows(Iterable)} instead of using this and checking yourself.
+     * @return immutable copy of list of flows
+     */
+    public synchronized List<FlowEntity> getFlows() {
+        return ImmutableList.copyOf(getOrNewFlows());
     }
 
-    public List<FlowEntity> getFlows() {
+    private synchronized List<FlowEntity> getOrNewFlows() {
         if (flows == null) {
-            flows = initializeFlows();
+            flows = new ArrayList<>();
         }
         return flows;
     }
 
-    public void assertFlows(Iterable<FlowEntity> expectedFlows) {
-        List<FlowEntity> flows = this.getFlows();
+    public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
+        List<FlowEntity> nonNullFlows = getOrNewFlows();
         if (!Iterables.isEmpty(expectedFlows)) {
-            assertTrue("No Flows created (bean wiring may be broken?)", !flows.isEmpty());
+            assertTrue("No Flows created (bean wiring may be broken?)", !nonNullFlows.isEmpty());
         }
         // TODO Support Iterable <-> List directly within XtendBeanGenerator
         List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
-        AssertDataObjects.assertEqualBeans(expectedFlowsAsNewArrayList, flows);
+        AssertDataObjects.assertEqualBeans(expectedFlowsAsNewArrayList, nonNullFlows);
     }
 
     @Override
-    public void installFlow(FlowEntity flowEntity) {
-        getFlows().add(flowEntity);
+    public synchronized void installFlow(FlowEntity flowEntity) {
+        getOrNewFlows().add(flowEntity);
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId, FlowEntity flowEntity) {
-        getFlows().remove(flowEntity);
+    public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
+            FlowEntity flowEntity) {
+        getOrNewFlows().remove(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }
 
