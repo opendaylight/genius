@@ -13,6 +13,7 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
+import org.opendaylight.genius.datastoreutils.testutils.infra.AutoCloseableModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,7 @@ public class TestableDataTreeChangeListenerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        // TODO un-comment when AclServiceTestBase uses awaitEventsConsumption(...) instead of awaitEventsConsumption()
-        // install(new AutoCloseableModule());
+        install(new AutoCloseableModule());
     }
 
     @Provides
