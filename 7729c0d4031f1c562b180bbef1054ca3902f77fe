@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_5c74b6ce",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Should we not say OVS here ?",
+      "range": {
+        "startLine": 7,
+        "startChar": 212,
+        "endLine": 7,
+        "endChar": 215
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3c845ad3",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Mention this enables target / subscriber modules to respond to network link status changes e.g. ECMP-based load balancing",
+      "range": {
+        "startLine": 17,
+        "startChar": 6,
+        "endLine": 17,
+        "endChar": 51
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1c899eeb",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Mention here as a separate point that we allow tunnel intervals and multipliers to be configured separately for DCGW. Mention that this will overrule ITM mesh configuration if configured.",
+      "range": {
+        "startLine": 19,
+        "startChar": 3,
+        "endLine": 19,
+        "endChar": 12
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7c6d3232",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Both interval and multiplier will be configurable for external-TEPs",
+      "range": {
+        "startLine": 20,
+        "startChar": 20,
+        "endLine": 20,
+        "endChar": 29
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3c6e1a02",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Can you name this to something like \"bfd : bfd_multiplier\" ?",
+      "range": {
+        "startLine": 135,
+        "startChar": 2,
+        "endLine": 135,
+        "endChar": 17
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_fcbca26e",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Perhaps reword to indicate that since the tunnel-monitoring is offloaded to the datapath nodes, the SDN control plane does not need to intervene with the benefit that the solution is scalable and robust",
+      "range": {
+        "startLine": 151,
+        "startChar": 69,
+        "endLine": 151,
+        "endChar": 126
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_dcc1e6e5",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 6915
+      },
+      "writtenOn": "2016-12-14T08:36:52Z",
+      "side": 1,
+      "message": "Explain that the alternative was to use stateless tunnel monitoring approach using GRE-KA, which required the control plane to get involved in sending and receiving each keep-alive packet, thereby resulting in scalability bottlenecks. This is particularly impactful since DCGW outage could affect external connectivity from all vswitches.",
+      "range": {
+        "startLine": 159,
+        "startChar": 12,
+        "endLine": 159,
+        "endChar": 20
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
