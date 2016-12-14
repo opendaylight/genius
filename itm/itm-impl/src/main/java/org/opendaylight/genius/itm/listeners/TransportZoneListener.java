@@ -26,6 +26,7 @@ import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.validator.TransportZoneNameAllowed;
@@ -54,6 +55,8 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
@@ -66,16 +69,19 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final ITMManager itmManager;
+    private final ItmConfig itmConfig;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager) {
+                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager,
+                                 final ItmConfig itmConfig) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
         this.itmManager = itmManager;
         this.mdsalManager = iMdsalApiManager;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
