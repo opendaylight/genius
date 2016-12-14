@@ -32,6 +32,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpProtocol;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -272,18 +273,16 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_udp_protocol {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setIpMatch(
-                                    new IpMatchBuilder().setIpProtocol((short) 17).build()).
-                                    build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetUdpProtocol) {
+                return ((ActionSetUdpProtocol) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetUdpProtocol().buildAction(newActionKey);
+            }
         }
-
     },
 
     @Deprecated
