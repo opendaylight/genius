@@ -94,6 +94,40 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_b74b6558",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-12-14T09:23:28Z",
+      "side": 1,
+      "message": "JMX alarma are raised or cleared based on the interface\u0027s state. Interface\u0027s state will be more accurate usage than bfd state",
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_77af0de4",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-12-14T09:23:28Z",
+      "side": 1,
+      "message": "tunnel-monitor-multiplier is configured at bootup by ITMManager -- This is not clear ? Is the default values written on to the config during startup ?",
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3c6e1a02",
         "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
         "patchSetId": 5
@@ -157,6 +191,47 @@
         "endLine": 159,
         "endChar": 20
       },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f782fd50",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-12-14T09:23:28Z",
+      "side": 1,
+      "message": "This approach is similar to LLDP monitoring and not aliveness monitor.",
+      "parentUuid": "1a622d24_dcc1e6e5",
+      "range": {
+        "startLine": 159,
+        "startChar": 12,
+        "endLine": 159,
+        "endChar": 20
+      },
+      "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b7908596",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-12-14T09:23:28Z",
+      "side": 1,
+      "message": "We need to support a CLI to show the status of L3GRE tunnels. Till now the tunnel status was always UP, we didn\u0027t support a CLI. Now tunnel monitoring is being implemented, a CLI should be supported. This CLI can display the monitoring parameters and status of the tunnels.",
       "revId": "7729c0d4031f1c562b180bbef1054ca3902f77fe",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
