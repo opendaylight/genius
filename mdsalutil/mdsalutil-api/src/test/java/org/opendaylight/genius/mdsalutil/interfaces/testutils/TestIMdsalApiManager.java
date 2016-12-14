@@ -10,12 +10,12 @@ package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 import static org.junit.Assert.assertTrue;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.google.common.util.concurrent.CheckedFuture;
@@ -47,19 +47,17 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         return Mockito.mock(TestIMdsalApiManager.class, realOrException());
     }
 
-    private synchronized List<FlowEntity> initializeFlows() {
-        return Collections.synchronizedList(new ArrayList<>());
-    }
-
+    @Deprecated // This method is about to be made private, but can't yet,
+    // because of AclServiceTestBase.assertFlowsInAnyOrder(Iterable<FlowEntity>)
     public List<FlowEntity> getFlows() {
         if (flows == null) {
-            flows = initializeFlows();
+            flows = new ArrayList<>();
         }
         return flows;
     }
 
-    public void assertFlows(Iterable<FlowEntity> expectedFlows) {
-        List<FlowEntity> flows = this.getFlows();
+    public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
+        List<FlowEntity> flows = ImmutableList.copyOf(this.getFlows());
         if (!Iterables.isEmpty(expectedFlows)) {
             assertTrue("No Flows created (bean wiring may be broken?)", !flows.isEmpty());
         }
@@ -69,12 +67,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void installFlow(FlowEntity flowEntity) {
+    public synchronized void installFlow(FlowEntity flowEntity) {
         getFlows().add(flowEntity);
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId, FlowEntity flowEntity) {
+    public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
+            FlowEntity flowEntity) {
         getFlows().remove(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }
