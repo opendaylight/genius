@@ -8,12 +8,14 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import com.google.common.base.Optional;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -38,6 +40,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
@@ -69,21 +73,48 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 public class InterfaceManagerConfigurationTest {
 
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule());
+    static final BigInteger dpnId = BigInteger.valueOf(1);
 
     @Inject DataBroker dataBroker;
 
     @Before
-    public void start() {
+    public void start() throws InterruptedException {
         // TODO This is silly, because onSessionInitiated(), or later it's BP
         // equivalent, for clearer testability should just propagate the exception
         assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
+        //Create the bridge and make sure it is ready
+        setupAndAssertBridgeCreation();
+    }
+
+    @After
+    public void end() throws InterruptedException {
+        setupAndAssertBridgeDeletion();
+    }
+
+    private void setupAndAssertBridgeDeletion() throws InterruptedException {
+        OvsdbSouthboundTestUtil.deleteBridge(dataBroker);
+        Thread.sleep(2000);
+        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
+        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
+                .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
+        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnId, dataBroker), null);
+    }
+
+    private void setupAndAssertBridgeCreation() throws InterruptedException {
+        OvsdbSouthboundTestUtil.createBridge(dataBroker);
+        Thread.sleep(2000);
+        // a) Check bridgeRefEntry in cache and OperDS are same and use the right dpnId
+        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
+        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
+                .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
+        BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker).orNull();
+        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(dpnId), bridgeRefEntry);
+        assertEqualBeans(bridgeRefEntry.getDpid(), dpnId);
     }
 
     @Test
     public void vlanInterfaceTests() throws Exception {
-        // 1. Given
-
-        // 2. When
+        // 1. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
         InterfaceManagerTestUtil.putInterfaceState(dataBroker, parentInterface, null);
         Thread.sleep(1000);
@@ -155,11 +186,8 @@ public class InterfaceManagerConfigurationTest {
 
     @Test public void newTunnelInterface() throws Exception {
         // 1. Given
-        BigInteger dpnId = BigInteger.valueOf(1);
         // 2. When
         // i) dpn-id specified above configuration comes in operational/network-topology
-        OvsdbSoutbboundTestUtil.createBridge(dataBroker);
-        Thread.sleep(2000);
         // ii) Vlan interface written to config/ietf-interfaces DS and corresponding parent-interface is not present
         //     in operational/ietf-interface-state
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpnId).build();
@@ -184,7 +212,7 @@ public class InterfaceManagerConfigurationTest {
         // Then
         // a) check if termination end point is created in config/network-topology
         final InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node> bridgeIid =
-                OvsdbSoutbboundTestUtil.createInstanceIdentifier("192.168.56.101", 6640,  "s2");
+                OvsdbSouthboundTestUtil.createInstanceIdentifier("192.168.56.101", 6640,  "s2");
         InstanceIdentifier<TerminationPoint> tpIid = InterfaceManagerTestUtil.getTerminationPointId(bridgeIid,
                 tunnelInterfaceName);
         assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
