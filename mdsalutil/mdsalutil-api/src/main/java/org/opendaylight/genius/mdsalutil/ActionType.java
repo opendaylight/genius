@@ -24,6 +24,8 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldDscp;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldEthernetDestination;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldEthernetSource;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldMplsLabel;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldPbbIsid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
@@ -42,9 +44,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.OutputPortValues;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetDestinationBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.EthernetMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4MatchBuilder;
@@ -260,22 +259,17 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_field_eth_dest {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            MacAddress mac = new MacAddress(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setEthernetMatch(
-                                    new EthernetMatchBuilder().setEthernetDestination(
-                                                    new EthernetDestinationBuilder().setAddress(mac).build()).build())
-                                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetFieldEthernetDestination) {
+                return ((ActionSetFieldEthernetDestination) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionSetFieldEthernetDestination
+                return new ActionSetFieldEthernetDestination(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
 
     set_udp_protocol {
@@ -423,6 +417,7 @@ public enum ActionType {
         }
 
     },
+
     @Deprecated
     set_field_dscp {
         @Override
@@ -431,20 +426,16 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_field_eth_src {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            MacAddress mac = new MacAddress(actionValues[0]);
-
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setEthernetMatch(
-                                    new EthernetMatchBuilder().setEthernetSource(
-                                                    new EthernetSourceBuilder().setAddress(mac).build()).build())
-                                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetFieldEthernetSource) {
+                return ((ActionSetFieldEthernetSource) actionInfo).buildAction(newActionKey);
+            } else {
+                // TODO Migrate all users to ActionSetFieldEthernetSource
+                return new ActionSetFieldEthernetSource(actionInfo).buildAction(newActionKey);
+            }
         }
     },
 
