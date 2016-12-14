@@ -71,8 +71,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>idmanager-api</artifactId>
       <version>${genius.version}</version>
     </dependency>
-
-    <!-- Testing Dependencies (<scope>test) -->
+    <!-- Testing Dependencies -->
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>testutils</artifactId>
+      <version>${genius.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -83,14 +89,74 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>utils.southbound-utils</artifactId>
+      <version>${genius.ovsdb.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-impl</artifactId>
+      <version>${genius.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>lockmanager-impl</artifactId>
+      <version>${genius.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
+  <!--Build Dependencies-->
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/classes/initial/genius-itm-config.xml</file>
+                  <type>xml</type>
+                  <classifier>config</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.eclipse.xtend</groupId>
+        <artifactId>xtend-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
+
+  <!--
+     Maven Site Configuration
+
+     The following configuration is necessary for maven-site-plugin to
+     correctly identify the correct deployment path for OpenDaylight Maven
+     sites.
+ -->
+  <url>${odl.site.url}/${project.groupId}/${stream}/${project.artifactId}/</url>
+
+  <distributionManagement>
+    <site>
+      <id>opendaylight-site</id>
+      <url>${nexus.site.url}/${project.artifactId}/</url>
+    </site>
+  </distributionManagement>
 </project>
