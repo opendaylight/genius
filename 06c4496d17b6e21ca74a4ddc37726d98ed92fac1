@@ -52,6 +52,24 @@
       "revId": "06c4496d17b6e21ca74a4ddc37726d98ed92fac1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5b1cbb77",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-12-14T12:53:42Z",
+      "side": 1,
+      "message": "There is a requirement for backward compatibility, because ActionInfo needs a type (for now), and ActionInfo uses its type to build the Action. So it\u0027s not a requirement for *external* backward compatibility (as you say it\u0027s a new type), but a requirement for backward compatibility with the existing implementation of ActionInfo.",
+      "parentUuid": "1a622d24_3babbf1e",
+      "revId": "06c4496d17b6e21ca74a4ddc37726d98ed92fac1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
