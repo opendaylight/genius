@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 import static org.junit.Assert.assertTrue;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -59,7 +60,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     public void assertFlows(Iterable<FlowEntity> expectedFlows) {
-        List<FlowEntity> flows = this.getFlows();
+        List<FlowEntity> flows = ImmutableList.copyOf(this.getFlows());
         if (!Iterables.isEmpty(expectedFlows)) {
             assertTrue("No Flows created (bean wiring may be broken?)", !flows.isEmpty());
         }
