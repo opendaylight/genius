@@ -1268,4 +1268,23 @@ public class ItmUtils {
     public static IpPrefix getDummySubnet() {
         return DUMMY_IP_PREFIX;
     }
+
+    /**
+     * Deletes the transport zone from Configuration datastore.
+     *
+     * @param tzName transport zone name
+     * @param dataBroker data broker handle to perform operations on datastore
+     */
+    public static void deleteTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
+        // check whether transport-zone exists in config DS.
+        TransportZone tZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+        if (tZoneFromConfigDS != null) {
+            // it exists, delete default-TZ now
+            InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
+                .child(TransportZone.class,
+                    new TransportZoneKey(tzName)).build();
+            LOG.debug("Removing {} transport-zone from config DS.", tzName);
+            ItmUtils.asyncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        }
+    }
 }

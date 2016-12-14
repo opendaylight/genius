@@ -26,6 +26,7 @@ import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.validator.TransportZoneNameAllowed;
@@ -54,6 +55,8 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
@@ -66,16 +69,19 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final ITMManager itmManager;
+    private final ItmConfig itmConfig;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager) {
+                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager,
+                                 final ItmConfig itmConfig) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
         this.itmManager = itmManager;
         this.mdsalManager = iMdsalApiManager;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
@@ -140,6 +146,18 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void update(InstanceIdentifier<TransportZone> key, TransportZone tzOld, TransportZone tzNew) {
         LOG.debug("Received Transport Zone Update Event: Key - {}, Old - {}, Updated - {}", key, tzOld, tzNew);
+        // check if defTzEnabled flag is false in config file,
+        // then no operation has to be performed on default-TZ.
+        if (tzNew.getZoneName().equals(tzOld.getZoneName()) && tzNew.getZoneName().equals(
+            ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+            boolean defTzEnabled = itmConfig.isDefTzEnabled();
+            if (!defTzEnabled) {
+                LOG.error("No operation is allowed for ({}) when def-tz-enabled flag is false.",
+                    ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                return;
+            }
+        }
+
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(tzOld);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(tzNew);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -203,6 +221,19 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void add(InstanceIdentifier<TransportZone> key, TransportZone tzNew) {
         LOG.debug("Received Transport Zone Add Event: {}, {}", key, tzNew);
+
+        // check if defTzEnabled flag is false in config file,
+        // then no operation has to be performed on default-TZ.
+        if (!tzNew.getZoneName().isEmpty() && tzNew.getZoneName().equals(
+            ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+            boolean defTzEnabled = itmConfig.isDefTzEnabled();
+            if (!defTzEnabled) {
+                LOG.error("No operation is allowed for ({}) when def-tz-enabled flag is false.",
+                    ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                return;
+            }
+        }
+
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzNew);
         List<HwVtep> hwVtepList = createhWVteps(tzNew);
         LOG.trace("Add: Operational dpnTepInfo - Before invoking ItmManager {}", opDpnList);
