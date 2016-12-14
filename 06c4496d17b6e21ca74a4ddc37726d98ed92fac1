@@ -16,6 +16,24 @@
       "revId": "06c4496d17b6e21ca74a4ddc37726d98ed92fac1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5b2f9bf6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 572,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-12-14T12:17:46Z",
+      "side": 1,
+      "message": "New ActionType entries are introduced only for backwards-compatibility, so that ActionInfo can still be used. The new entries themselves aren\u0027t supposed to be used in practice, but they need to be implemented so that legacy ActionInfo types will still work.\n\nIt does end up seeming weird, but I think it\u0027s the only way we can support progressive migration to the new ActionInfo model. Once all the downstream code has been migrated to the new ActionInfo subclasses, we\u0027ll be able to drop ActionInfo entirely (which requires it to be deprecated).",
+      "parentUuid": "1a622d24_bbb18fe3",
+      "revId": "06c4496d17b6e21ca74a4ddc37726d98ed92fac1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
