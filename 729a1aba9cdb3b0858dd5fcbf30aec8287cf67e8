@@ -16,6 +16,24 @@
       "revId": "729a1aba9cdb3b0858dd5fcbf30aec8287cf67e8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9eaf6194",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 575,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-14T13:44:39Z",
+      "side": 1,
+      "message": "OK, I\u0027ve discussed it with Vishal on IRC.. he may directly himself amend this Gerrit",
+      "parentUuid": "1a622d24_17d7b9c2",
+      "revId": "729a1aba9cdb3b0858dd5fcbf30aec8287cf67e8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
