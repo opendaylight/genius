@@ -59,11 +59,14 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+
 @Singleton
 public class TepCommandHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
     private final DataBroker dataBroker;
+    private final ItmConfig itmConfig;
     static int check = 0;
     static short flag = 0;
     /*
@@ -80,13 +83,25 @@ public class TepCommandHelper {
     // ArrayList<>();
 
     @Inject
-    public TepCommandHelper(final DataBroker dataBroker) {
+    public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
     public void start() throws Exception {
-        configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
+        String tunnelType = itmConfig.getDefTzTunnelType();
+        // check if tunnel-type is not configured in config file or
+        // if incorrect tunnel-type is configured in config file, then
+        // take VXLAN as default tunnel-type
+        if (tunnelType == null || tunnelType.isEmpty()) {
+            tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        } else if ( !tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN) &&
+                    !tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) &&
+                    !tunnelType.equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
+            tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        }
+        configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
         LOG.info("TepCommandHelper Started");
     }
 
