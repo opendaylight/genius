@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_309bd673",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-15T14:29:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_d5b7f484",
+      "revId": "4a2a8306aae465322729bd6bd24f8b9efea224ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_b5ba386c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceConfigListener.java",
         "patchSetId": 5
@@ -54,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_90890a29",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceConfigListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-15T14:29:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_b5ba386c",
+      "revId": "4a2a8306aae465322729bd6bd24f8b9efea224ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_f5ab101c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceStateListener.java",
         "patchSetId": 5
@@ -65,6 +101,24 @@
       "writtenOn": "2016-12-15T12:56:33Z",
       "side": 1,
       "message": "As discussed in IRC, can you undo these changes for all the cache listeners?",
+      "revId": "4a2a8306aae465322729bd6bd24f8b9efea224ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_708c2e36",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-15T14:29:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_f5ab101c",
       "revId": "4a2a8306aae465322729bd6bd24f8b9efea224ea",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
