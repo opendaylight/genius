@@ -25,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class OvsVlanMemberConfigUpdateHelper {
             return futures;
         }
 
-        if (ifL2vlanOld.getVlanId() != ifL2vlanNew.getVlanId() ||
+        if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId()) ||
                 !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
             futures.addAll(OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefsOld, interfaceOld,
                     ifL2vlanOld, idManager));
@@ -94,5 +95,9 @@ public class OvsVlanMemberConfigUpdateHelper {
         }
 
         return futures;
+    }
+
+    public static boolean vlanIdModified(VlanId vlanIdOld, VlanId vlanIdNew){
+        return vlanIdOld != null && !vlanIdOld.equals(vlanIdNew));
     }
 }
