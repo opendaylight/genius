@@ -11,11 +11,10 @@ package org.opendaylight.genius.datastoreutils;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -168,8 +167,7 @@ public class DataStoreJobCoordinator {
          */
         @Override
         public void onFailure(Throwable throwable) {
-            LOG.warn("Job: {} failed with exception: {} {}", jobEntry, throwable.getClass().getSimpleName(),
-                    throwable.getStackTrace());
+            LOG.warn("Job: {} failed", jobEntry, throwable);
             if (jobEntry.getMainWorker() == null) {
                 LOG.error("Job: {} failed with Double-Fault. Bailing Out.", jobEntry);
                 clearJob(jobEntry);
@@ -178,7 +176,7 @@ public class DataStoreJobCoordinator {
 
             int retryCount = jobEntry.decrementRetryCountAndGet();
             if (retryCount > 0) {
-                long waitTime = (RETRY_WAIT_BASE_TIME * 10) / retryCount;
+                long waitTime = RETRY_WAIT_BASE_TIME * 10 / retryCount;
                 scheduledExecutorService.schedule(() -> {
                     MainTask worker = new MainTask(jobEntry);
                     fjPool.execute(worker);
@@ -209,7 +207,7 @@ public class DataStoreJobCoordinator {
         }
 
         @Override
-        @SuppressWarnings("checkstyle:illegalcatch")
+        @SuppressWarnings("checkstyle:IllegalCatch")
         public void run() {
             RollbackCallable callable = jobEntry.getRollbackWorker();
             callable.setFutures(jobEntry.getFutures());
@@ -324,9 +322,9 @@ public class DataStoreJobCoordinator {
                         reentrantLock.unlock();
                     }
                 } catch (Exception e) {
-                    LOG.error("Exception while executing the tasks {} ", e);
+                    LOG.error("Exception while executing the tasks", e);
                 } catch (Throwable e) {
-                    LOG.error("Error while executing the tasks {} ", e);
+                    LOG.error("Error while executing the tasks", e);
                 }
             }
         }
