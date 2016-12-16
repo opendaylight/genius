@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.actions.ActionLearn;
+import org.opendaylight.genius.mdsalutil.actions.ActionLoadMacToSha;
 import org.opendaylight.genius.mdsalutil.actions.ActionMoveSourceDestinationEth;
 import org.opendaylight.genius.mdsalutil.actions.ActionMoveSourceDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
@@ -528,25 +529,15 @@ public enum ActionType {
         }
     },
 
-    /**
-     * Load macAddress to SHA(Sender Hardware Address)
-     * <p>
-     * Media address of the sender. In an ARP request this field is used to
-     * indicate the address of the host sending the request. In an ARP reply
-     * this field is used to indicate the address of the host that the request
-     * was looking for.
-     *
-     */
+    @Deprecated
     load_mac_to_sha {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            final MacAddress mac = new MacAddress(
-                    actionInfo.getActionValues()[0]);
-            return new ActionBuilder().setKey(new ActionKey(newActionKey))
-                    .setAction(nxLoadRegAction(new DstNxArpShaCaseBuilder()
-                    .setNxArpSha(Boolean.TRUE).build(), BigInteger.valueOf(NWUtil.macToLong(mac)), 47, false))
-                    .build();
+            if (actionInfo instanceof ActionLoadMacToSha) {
+                return ((ActionLoadMacToSha) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionLoadMacToSha(actionInfo).buildAction(newActionKey);
+            }
         }
     },
 
