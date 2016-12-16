@@ -16,9 +16,10 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItmCache {
-    private ConcurrentHashMap<String, Interface> interfaces = null;
-    private ConcurrentHashMap<String, ExternalTunnel> externalTunnels = null;
-    private ConcurrentHashMap<String, InternalTunnel> internalTunnels = null;
+
+    private final ConcurrentHashMap<String, Interface> interfaces;
+    private final ConcurrentHashMap<String, ExternalTunnel> externalTunnels;
+    private final ConcurrentHashMap<String, InternalTunnel> internalTunnels;
 
     public ItmCache() {
         this.interfaces = new ConcurrentHashMap<>();
@@ -65,6 +66,7 @@ public class ItmCache {
     public InternalTunnel removeInternalTunnel(String name) {
         return this.internalTunnels.remove(name);
     }
+
     public Collection<ExternalTunnel> getAllExternalTunnel() {
         return this.externalTunnels.values();
     }
@@ -81,5 +83,10 @@ public class ItmCache {
         return this.externalTunnels.keySet();
     }
 
-
+    // non-public package local method for use only in ItmTestUtils
+    void clear() {
+        interfaces.clear();
+        externalTunnels.clear();
+        internalTunnels.clear();
+    }
 }
