@@ -7,13 +7,15 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import com.google.common.net.InetAddresses;
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.actions.ActionLearn;
+import org.opendaylight.genius.mdsalutil.actions.ActionLoadIpToSpa;
+import org.opendaylight.genius.mdsalutil.actions.ActionLoadMacToSha;
+import org.opendaylight.genius.mdsalutil.actions.ActionMoveShaToTha;
 import org.opendaylight.genius.mdsalutil.actions.ActionMoveSourceDestinationEth;
 import org.opendaylight.genius.mdsalutil.actions.ActionMoveSourceDestinationIp;
+import org.opendaylight.genius.mdsalutil.actions.ActionMoveSpaToTpa;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxLoadInPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
@@ -27,6 +29,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetArpOp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldDscp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldEthernetDestination;
@@ -44,34 +47,8 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpDestinationPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpProtocol;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpSourcePort;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.DstChoice;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpShaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpThaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpOpCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpSpaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpTpaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegMoveNodesNodeGroupBucketsBucketActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.NxRegMove;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.NxRegMoveBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.SrcChoice;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxArpShaCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfArpSpaCaseBuilder;
 
 
 public enum ActionType {
@@ -528,161 +505,65 @@ public enum ActionType {
         }
     },
 
-    /**
-     * Load macAddress to SHA(Sender Hardware Address)
-     * <p>
-     * Media address of the sender. In an ARP request this field is used to
-     * indicate the address of the host sending the request. In an ARP reply
-     * this field is used to indicate the address of the host that the request
-     * was looking for.
-     *
-     */
+    @Deprecated
     load_mac_to_sha {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            final MacAddress mac = new MacAddress(
-                    actionInfo.getActionValues()[0]);
-            return new ActionBuilder().setKey(new ActionKey(newActionKey))
-                    .setAction(nxLoadRegAction(new DstNxArpShaCaseBuilder()
-                    .setNxArpSha(Boolean.TRUE).build(), BigInteger.valueOf(NWUtil.macToLong(mac)), 47, false))
-                    .build();
+            if (actionInfo instanceof ActionLoadMacToSha) {
+                return ((ActionLoadMacToSha) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionLoadMacToSha(actionInfo).buildAction(newActionKey);
+            }
         }
     },
 
-    /**
-     * Load IP Address to SPA(Sender Protocol Address)
-     * <p>
-     * IP address of the sender. In an ARP request this field is used to
-     * indicate the address of the host sending the request. In an ARP reply
-     * this field is used to indicate the address of the host that the request
-     * was looking for
-     */
+    @Deprecated
     load_ip_to_spa {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-
-            final String ipAddress = actionInfo.getActionValues()[0];
-            final long ipl = InetAddresses
-                    .coerceToInteger(InetAddresses.forString(ipAddress)) & 0xffffffffL;
-            return new ActionBuilder().setKey(new ActionKey(newActionKey))
-                    .setAction(nxLoadRegAction(new DstOfArpSpaCaseBuilder()
-                            .setOfArpSpa(Boolean.TRUE).build(), BigInteger.valueOf(ipl))).build();
-
+            if (actionInfo instanceof ActionLoadIpToSpa) {
+                return ((ActionLoadIpToSpa) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionLoadIpToSpa(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
 
-    /**
-     * Move Source Hardware address to Destination address, to where the ARP
-     * response need to be addressed to.
-     *
-     */
+    @Deprecated
     move_sha_to_tha {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setKey(new ActionKey(newActionKey))
-                    .setAction(nxMoveRegAction(
-                            new SrcNxArpShaCaseBuilder()
-                                    .setNxArpSha(Boolean.TRUE).build(),
-                            new DstNxArpThaCaseBuilder()
-                                    .setNxArpTha(Boolean.TRUE).build(),
-                            47, false)) //Length of the SHA is 6Byte, hence the end offset bit is 47
-                    .build();
+            if (actionInfo instanceof ActionMoveShaToTha) {
+                return ((ActionMoveShaToTha) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionMoveShaToTha(actionInfo).buildAction(newActionKey);
+            }
         }
     },
 
-    /**
-     *
-     * Move Source IP address to Destination IP address, to where the ARP
-     * response need to be addressed to.
-     *
-     */
+    @Deprecated
     move_spa_to_tpa {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            return new ActionBuilder().setKey(new ActionKey(newActionKey))
-                    .setAction(nxMoveRegAction(
-                            new SrcOfArpSpaCaseBuilder()
-                                    .setOfArpSpa(Boolean.TRUE).build(),
-                            new DstOfArpTpaCaseBuilder()
-                                    .setOfArpTpa(Boolean.TRUE).build()))
-                    .build();
+            if (actionInfo instanceof ActionMoveSpaToTpa) {
+                return ((ActionMoveSpaToTpa) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionMoveSpaToTpa(actionInfo).buildAction(newActionKey);
+            }
         }
     },
 
-    /**
-     * Set ARP Operation Type that is Request or Replay.
-     */
+    @Deprecated
     set_arp_op {
-
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-
-            final int val = Integer.parseInt(actionInfo.getActionValues()[0]);
-            return new ActionBuilder().setKey(new ActionKey(newActionKey))
-                    .setAction(nxLoadRegAction(
-                            new DstOfArpOpCaseBuilder().setOfArpOp(Boolean.TRUE)
-                                    .build(),
-                            BigInteger.valueOf(val), 15, false)) // The length of ARP operation field is 2Byte, hence end offset bit is 15
-                    .build();
+            if (actionInfo instanceof ActionSetArpOp) {
+                return ((ActionSetArpOp) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetArpOp(actionInfo).buildAction(newActionKey);
+            }
         }
-
     };
 
-    private static final int RADIX_HEX = 16;
-
     public abstract Action buildAction(int newActionKey, ActionInfo actionInfo);
-
-    private static org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action nxLoadRegAction(
-            DstChoice dstChoice, BigInteger value) {
-        return nxLoadRegAction(dstChoice, value, 31, false);
-
-    }
-
-    private static org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action nxMoveRegAction(
-            final SrcChoice srcChoice, final DstChoice dstChoice,
-            final int endOffset, final boolean groupBucket) {
-        final NxRegMove reg = new NxRegMoveBuilder()
-                .setSrc(new SrcBuilder().setSrcChoice(srcChoice)
-                        .setStart(0)
-                        .setEnd(endOffset).build())
-                .setDst(new org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder()
-                        .setDstChoice(dstChoice).setStart(0)
-                        .setEnd(endOffset).build())
-                .build();
-        if (groupBucket) {
-            return new NxActionRegMoveNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                    .setNxRegMove(reg).build();
-        } else {
-            return new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder()
-                    .setNxRegMove(reg).build();
-        }
-    }
-
-    private static org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action nxMoveRegAction(
-            final SrcChoice srcChoice, final DstChoice dstChoice) {
-        return nxMoveRegAction(srcChoice, dstChoice, 31, false);
-    }
-
-    private static org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action nxLoadRegAction(
-            final DstChoice dstChoice, final BigInteger value,
-            final int endOffset, final boolean groupBucket) {
-        final NxRegLoad reg = new NxRegLoadBuilder()
-                .setDst(new DstBuilder().setDstChoice(dstChoice)
-                        .setStart(0)
-                        .setEnd(endOffset).build())
-                .setValue(value).build();
-        if (groupBucket) {
-            return new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                    .setNxRegLoad(reg).build();
-        } else {
-            return new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
-                    .setNxRegLoad(reg).build();
-        }
-    }
-
 }
