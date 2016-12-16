@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_b3640b23",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2016-12-16T17:19:41Z",
+      "side": 1,
+      "message": "This class provides you a framework through which other modules can subscribe their CRUD methods. The framework (or this class) will supply a single transaction to such CRUD methods of the subscribers, to which such subscribers write data to the provided transaction. Finally the framework attempts to reliably write this single transaction which represents a batch of an ordered list of entities, to get into a specific datastore.",
+      "revId": "5df7ee7e28861ce68ae4e8a8653e435f2b70111e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
