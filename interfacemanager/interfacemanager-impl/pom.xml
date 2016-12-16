@@ -48,12 +48,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
-      <!-- TODO This *.impl here as a not even <scope>test depenency seems wrong.. -->
-      <artifactId>idmanager-impl</artifactId>
-      <version>${genius.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.genius</groupId>
       <artifactId>alivenessmonitor-api</artifactId>
       <version>${genius.version}</version>
     </dependency>
@@ -61,11 +55,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>org.opendaylight.ovsdb</groupId>
       <artifactId>southbound-api</artifactId>
       <version>${genius.ovsdb.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <!-- TODO This *.impl here as a not even <scope>test depenency seems wrong.. -->
-      <artifactId>sal-binding-broker-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.ovsdb</groupId>
@@ -88,6 +77,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>lockmanager-impl</artifactId>
+      <version>${genius.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-impl</artifactId>
       <version>${genius.version}</version>
       <scope>test</scope>
     </dependency>
