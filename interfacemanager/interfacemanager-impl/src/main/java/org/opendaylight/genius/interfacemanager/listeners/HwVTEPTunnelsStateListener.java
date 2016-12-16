@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -26,16 +27,33 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@Singleton
 public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
-    public HwVTEPTunnelsStateListener(DataBroker dataBroker) {
+    @Inject
+    public HwVTEPTunnelsStateListener(final DataBroker dataBroker) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.dataBroker = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
+        LOG.info("HwVTEPTunnelsStateListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("HwVTEPTunnelsStateListener closed");
     }
 
     @Override
