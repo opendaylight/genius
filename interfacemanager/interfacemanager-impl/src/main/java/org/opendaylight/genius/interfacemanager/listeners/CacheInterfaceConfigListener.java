@@ -22,20 +22,38 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Collection;
 
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
+@Singleton
 public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeListener<Interface> {
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterfaceConfigListener.class);
-    private DataBroker db;
+    private final DataBroker db;
     private ListenerRegistration<CacheInterfaceConfigListener> registration;
 
-    public CacheInterfaceConfigListener(DataBroker broker) {
-        this.db = broker;
-        registerListener(db);
+    @Inject
+    public CacheInterfaceConfigListener(final DataBroker dataBroker) {
+        this.db = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.db);
+        LOG.info("CacheInterfaceConfigListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        if(registration != null) {
+            registration.close();
+        }
     }
 
     private void registerListener(DataBroker db) {
@@ -50,12 +68,6 @@ public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeList
     }
     protected InstanceIdentifier<Interface> getWildcardPath() {
         return InstanceIdentifier.create(Interfaces.class).child(Interface.class);
-    }
-
-    public void close() throws Exception {
-        if(registration != null) {
-            registration.close();
-        }
     }
 
     @Override
