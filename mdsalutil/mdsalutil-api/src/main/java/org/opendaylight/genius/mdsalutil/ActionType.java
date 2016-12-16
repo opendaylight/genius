@@ -15,6 +15,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionLearn;
 import org.opendaylight.genius.mdsalutil.actions.ActionMoveSourceDestinationEth;
 import org.opendaylight.genius.mdsalutil.actions.ActionMoveSourceDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
+import org.opendaylight.genius.mdsalutil.actions.ActionNxLoadInPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPopMpls;
@@ -515,20 +516,15 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     nx_load_in_port {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            BigInteger[] actionValues = actionInfo.getBigActionValues();
-            NxRegLoad rb = new NxRegLoadBuilder()
-                    .setDst(new DstBuilder()
-                            .setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
-                            .setStart(0).setEnd(15).build())
-                    .setValue(actionValues[0]).build();
-            ActionBuilder ab = new ActionBuilder();
-            ab.setKey(new ActionKey(newActionKey));
-            ab.setOrder(newActionKey);
-            ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(rb).build());
-            return ab.build();
+            if (actionInfo instanceof ActionNxLoadInPort) {
+                return ((ActionNxLoadInPort) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionNxLoadInPort(actionInfo).buildAction(newActionKey);
+            }
         }
     },
 
