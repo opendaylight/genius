@@ -11,7 +11,6 @@ package org.opendaylight.genius.datastoreutils;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -180,7 +179,7 @@ public class DataStoreJobCoordinator {
                 scheduledExecutorService.schedule(() -> {
                     MainTask worker = new MainTask(jobEntry);
                     fjPool.execute(worker);
-                    }, waitTime, TimeUnit.MILLISECONDS);
+                }, waitTime, TimeUnit.MILLISECONDS);
                 return;
             }
 
@@ -288,7 +287,7 @@ public class DataStoreJobCoordinator {
                             continue;
                         }
                         LOG.trace("JobQueueHandler handling queue {} with kesy size {}. Keys: {} ", i,
-                                jobEntriesMap.size(), Arrays.toString(jobEntriesMap.keySet().toArray()));
+                                jobEntriesMap.size(), jobEntriesMap.keySet());
 
                         synchronized (jobEntriesMap) {
                             Iterator<Map.Entry<String, JobQueue>> it = jobEntriesMap.entrySet().iterator();
