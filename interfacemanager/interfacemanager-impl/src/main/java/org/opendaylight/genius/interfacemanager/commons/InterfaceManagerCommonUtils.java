@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -124,6 +125,31 @@ public class InterfaceManagerCommonUtils {
             }
         }
         return vxlanList;
+    }
+
+    public static List<Interface> getAllTunnelInterfacesFromCache() {
+        List vxlanList = new ArrayList();
+        Iterator interfaceIterator = interfaceConfigMap.entrySet().iterator();
+        while(interfaceIterator.hasNext()){
+            Interface iface = (Interface) interfaceIterator.next();
+            if (IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
+                    && iface.getAugmentation(IfTunnel.class).isInternal()) {
+                vxlanList.add(iface);
+            }
+        }
+        return vxlanList;
+    }
+
+    public static List<Interface> getAllVlanInterfacesFromCache() {
+        List vlanList = new ArrayList();
+        Iterator interfaceIterator = interfaceConfigMap.entrySet().iterator();
+        while(interfaceIterator.hasNext()){
+            Interface iface = (Interface) interfaceIterator.next();
+            if (IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
+                vlanList.add(iface);
+            }
+        }
+        return vlanList;
     }
 
     /**
