@@ -34,6 +34,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldMplsLabel;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldPbbIsid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetIcmpType;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetSourceIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTcpDestinationPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTcpSourcePort;
@@ -502,20 +503,18 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_icmp_type {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-
-            ActionBuilder ab = new ActionBuilder();
-            Icmpv4MatchBuilder icmpb = new Icmpv4MatchBuilder().setIcmpv4Type(Short.parseShort(actionValues[0]));
-            ab.setAction(new SetFieldCaseBuilder()
-                    .setSetField(new SetFieldBuilder().setIcmpv4Match(icmpb.build()).build()).build());
-            ab.setKey(new ActionKey(newActionKey));
-            return ab.build();
+            if (actionInfo instanceof ActionSetIcmpType) {
+                return ((ActionSetIcmpType) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetIcmpType(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
+
     nx_load_in_port {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
