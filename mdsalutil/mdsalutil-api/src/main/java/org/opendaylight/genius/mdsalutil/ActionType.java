@@ -26,6 +26,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegMove;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldDscp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldEthernetDestination;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldEthernetSource;
@@ -33,6 +34,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldMplsLabel;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldPbbIsid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetSourceIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTcpDestinationPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTcpSourcePort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
@@ -40,7 +42,6 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpDestinationPort;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpProtocol;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetUdpSourcePort;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
@@ -48,7 +49,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.DstChoice;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpShaCaseBuilder;
@@ -353,41 +353,28 @@ public enum ActionType {
         }
     },
 
+    @Deprecated
     set_source_ip {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            String sourceIp = actionValues[0];
-            String sourceMask = (actionValues.length > 1) ? actionValues[1] : "32";
-            String source = sourceIp + "/" + sourceMask;
-            return new ActionBuilder().setAction(
-                                        new SetFieldCaseBuilder().setSetField(
-                                                new SetFieldBuilder().setLayer3Match(
-                                                        new Ipv4MatchBuilder().setIpv4Source(
-                                                                new Ipv4Prefix(source)).build()).
-                                                                build()).build()).setKey(new ActionKey(newActionKey)).build();
-
-
+            if (actionInfo instanceof ActionSetSourceIp) {
+                return ((ActionSetSourceIp) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetSourceIp(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
-    set_destination_ip {
 
+    @Deprecated
+    set_destination_ip {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            String[] actionValues = actionInfo.getActionValues();
-            String destIp = actionValues[0];
-            String destMask = (actionValues.length > 1) ? actionValues[1] : "32";
-            String destination = destIp + "/" + destMask;
-            return new ActionBuilder().setAction(
-                    new SetFieldCaseBuilder().setSetField(
-                            new SetFieldBuilder().setLayer3Match(
-                                    new Ipv4MatchBuilder().setIpv4Destination(
-                                            new Ipv4Prefix(destination)).build())
-                                            .build()).build()).setKey(new ActionKey(newActionKey)).build();
-
+            if (actionInfo instanceof ActionSetDestinationIp) {
+                return ((ActionSetDestinationIp) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionSetDestinationIp(actionInfo).buildAction(newActionKey);
+            }
         }
-
     },
 
     @Deprecated
