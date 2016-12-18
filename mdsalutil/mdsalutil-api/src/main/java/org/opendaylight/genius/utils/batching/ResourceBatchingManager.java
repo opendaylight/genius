@@ -9,6 +9,14 @@ package org.opendaylight.genius.utils.batching;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -20,23 +28,18 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 public class ResourceBatchingManager implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(ResourceBatchingManager.class);
+
     private static final int INITIAL_DELAY = 3000;
     private static final TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
 
-    private DataBroker broker;
-    private ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>> resourceHandlerMapper = new ConcurrentHashMap();
-    private ConcurrentHashMap<String, ScheduledThreadPoolExecutor> resourceBatchingThreadMapper = new ConcurrentHashMap();
+    private final ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>>
+        resourceHandlerMapper = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, ScheduledThreadPoolExecutor>
+        resourceBatchingThreadMapper = new ConcurrentHashMap<>();
 
     private static ResourceBatchingManager instance;
 
@@ -53,19 +56,22 @@ public class ResourceBatchingManager implements AutoCloseable {
         LOG.trace("ResourceBatchingManager Closed");
     }
 
-    public void registerBatchableResource(String resourceType, final BlockingQueue<ActionableResource> resQueue, final ResourceHandler resHandler) {
+    public void registerBatchableResource(
+            String resourceType, final BlockingQueue<ActionableResource> resQueue, final ResourceHandler resHandler) {
         Preconditions.checkNotNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
         Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
         if (resourceHandlerMapper.contains(resourceType)) {
             throw new RuntimeException("Resource type already registered");
         }
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
-        ScheduledThreadPoolExecutor resDelegatorService =(ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
+        ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
-        if (resDelegatorService.getPoolSize() == 0 )
-            resDelegatorService.scheduleWithFixedDelay(new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+        if (resDelegatorService.getPoolSize() == 0 ) {
+            resDelegatorService.scheduleWithFixedDelay(
+                    new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+        }
     }
 
     public void put(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
@@ -108,20 +114,18 @@ public class ResourceBatchingManager implements AutoCloseable {
         resourceBatchingThreadMapper.remove(resourceType);
     }
 
-    private class Batcher implements Runnable
-    {
-        private String resourceType;
+    private class Batcher implements Runnable {
+        private final String resourceType;
 
         Batcher(String resourceType) {
             this.resourceType = resourceType;
         }
 
-        public void run()
-        {
+        @Override
+        public void run() {
             List<ActionableResource> resList = new ArrayList<>();
 
-            try
-            {
+            try {
                 Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
                 if (resMapper == null) {
                     LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
@@ -135,12 +139,11 @@ public class ResourceBatchingManager implements AutoCloseable {
                 long start = System.currentTimeMillis();
                 int batchSize = resHandler.getBatchSize();
 
-                int batches = resList.size()/ batchSize;
-                if ( resList.size() > batchSize)
-                {
-                    LOG.info("Batched up resources of size {} into batches {} for resourcetype {}", resList.size(), batches, resourceType);
-                    for (int i = 0, j = 0; i < batches; j = j + batchSize,i++)
-                    {
+                int batches = resList.size() / batchSize;
+                if (resList.size() > batchSize) {
+                    LOG.info("Batched up resources of size {} into batches {} for resourcetype {}",
+                            resList.size(), batches, resourceType);
+                    for (int i = 0, j = 0; i < batches; j = j + batchSize,i++) {
                         new MdsalDsTask<>(resourceType, resList.subList(j, j + batchSize)).process();
                     }
                     // process remaining routes
@@ -153,23 +156,21 @@ public class ResourceBatchingManager implements AutoCloseable {
                 }
 
                 long timetaken = System.currentTimeMillis() - start;
-                LOG.info( "Total taken ##time = {}ms for resourceList of size {} for resourceType {}", timetaken, resList.size(), resourceType);
+                LOG.info("Total taken ##time = {}ms for resourceList of size {} for resourceType {}",
+                        timetaken, resList.size(), resourceType);
 
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
+            } catch (InterruptedException e) {
+                LOG.error("InterruptedException during run()", e);
             }
 
         }
     }
 
-    private class MdsalDsTask<T extends DataObject>
-    {
+    private class MdsalDsTask<T extends DataObject> {
         String resourceType;
         List<ActionableResource> actResourceList;
 
-        public MdsalDsTask(String resourceType, List<ActionableResource> actResourceList)
-        {
+        MdsalDsTask(String resourceType, List<ActionableResource> actResourceList) {
             this.resourceType = resourceType;
             this.actResourceList = actResourceList;
         }
@@ -189,8 +190,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                 LogicalDatastoreType dsType = resHandler.getDatastoreType();
                 WriteTransaction tx = broker.newWriteOnlyTransaction();
                 List<SubTransaction> transactionObjects = new ArrayList<>();
-                for (ActionableResource actResource : actResourceList)
-                {
+                for (ActionableResource actResource : actResourceList) {
                     switch (actResource.getAction()) {
                         case ActionableResource.CREATE:
                             identifier = actResource.getInstanceIdentifier();
@@ -209,24 +209,21 @@ public class ResourceBatchingManager implements AutoCloseable {
                             resHandler.delete(tx, dsType, identifier, instance,transactionObjects);
                             break;
                         default:
-                            LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}", resourceType,
-                                    actResource.getKey());
+                            LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
+                                    resourceType, actResource.getKey());
                     }
                 }
 
                 long start = System.currentTimeMillis();
                 CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
 
-                try
-                {
+                try {
                     futures.get();
                     long time = System.currentTimeMillis() - start;
+                    LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
 
-                    LOG.trace( " ##### Time taken for " + actResourceList.size() + " = " + time + "ms");
-
-                } catch (InterruptedException | ExecutionException e)
-                {
-                    LOG.error("Exception occurred while batch writing to datastore {} ", e);
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.error("Exception occurred while batch writing to datastore", e);
                     LOG.info("Trying to submit transaction operations one at a time for resType {}", resourceType);
                     for (SubTransaction object : transactionObjects) {
                         WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
@@ -247,15 +244,14 @@ public class ResourceBatchingManager implements AutoCloseable {
                         try {
                             futureOperation.get();
                         } catch (InterruptedException | ExecutionException exception) {
-                            LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(), object.getInstanceIdentifier(), object.getInstance());
-                            LOG.error(exception.getMessage());
+                            LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
+                                    object.getInstanceIdentifier(), object.getInstance(), exception);
                         }
                     }
                 }
 
-            } catch (final Exception e)
-            {
-                LOG.error("Transaction submission failed: ", e);
+            } catch (final Exception e) {
+                LOG.error("Transaction submission failed", e);
             }
         }
     }
