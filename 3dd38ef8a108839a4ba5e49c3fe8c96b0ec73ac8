@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_e1a50848",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 6365
+      },
+      "writtenOn": "2016-12-19T20:47:26Z",
+      "side": 1,
+      "message": "jobs_pending is a \"state\" counter and jobs_cleared is a \"regular counter\".\nState counter means that it will be printed only if between two print intervals, there is a change in the counter value. For example, X calls to inc() and X calls to dec() ,in a single print interval , will not be printed, therefore it\u0027s not a reliable way to measure queue size.\n\nThe regular counter, jobs_cleared behaves like it is expected from a \"counter\", it will display the number of changes. It is a reliable way to measure how much jobs have been finished (but is not the right way to measure queue size).\n\nThe two counters track different information.",
+      "parentUuid": "1a622d24_30ed8c26",
+      "revId": "3dd38ef8a108839a4ba5e49c3fe8c96b0ec73ac8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_7080a446",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
         "patchSetId": 1
