@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +80,10 @@ public class DataStoreJobCoordinator {
         enqueueJob(job.getJobQueueKey(), job);
     }
 
+    public long getIncompleteTaskCount() {
+        return DataStoreJobCoordinatorCounters.jobs_created.get();
+    }
+
     /**
      *    This is used by the external applications to enqueue a Job
      *    with an appropriate key. A JobEntry is created and queued
@@ -101,6 +106,7 @@ public class DataStoreJobCoordinator {
             jobEntriesMap.put(key, jobQueue);
 
             DataStoreJobCoordinatorCounters.jobs_pending.inc();
+            DataStoreJobCoordinatorCounters.jobs_created.inc();
         }
         reentrantLock.lock();
         try {
@@ -126,6 +132,7 @@ public class DataStoreJobCoordinator {
             }
         }
         DataStoreJobCoordinatorCounters.jobs_cleared.inc();
+        DataStoreJobCoordinatorCounters.jobs_created.dec();
     }
 
     /**
@@ -158,11 +165,11 @@ public class DataStoreJobCoordinator {
         }
 
         /**
-         *    This method is used to handle failure callbacks. If more
-         *    retry needed, the retrycount is decremented and mainworker
-         *    is executed again. After retries completed, rollbackworker
-         *    is executed. If rollbackworker fails, this is a
-         *    double-fault. Double fault is logged and ignored.
+         * This method is used to handle failure callbacks. If more
+         * retry needed, the retrycount is decremented and mainworker
+         * is executed again. After retries completed, rollbackworker
+         * is executed. If rollbackworker fails, this is a
+         * double-fault. Double fault is logged and ignored.
          */
         @Override
         public void onFailure(Throwable throwable) {
@@ -306,7 +313,6 @@ public class DataStoreJobCoordinator {
 
                                 } else {
                                     it.remove();
-                                    DataStoreJobCoordinatorCounters.jobs_remove_entry.inc();
                                 }
                             }
                         }

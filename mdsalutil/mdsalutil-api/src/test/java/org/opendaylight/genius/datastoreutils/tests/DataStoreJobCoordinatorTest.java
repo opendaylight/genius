@@ -7,11 +7,13 @@
  */
 package org.opendaylight.genius.datastoreutils.tests;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.awaitility.Awaitility;
 import org.junit.Test;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.TestDataStoreJobCoordinator;
@@ -34,12 +36,23 @@ public class DataStoreJobCoordinatorTest {
         }
     }
 
+    // public static @ClassRule RunUntilFailureRule repeater = new RunUntilFailureRule();
+
     @Test
-    public void testWait() {
+    public void testDataStoreJobCoordinatorUsingTestDataStoreJobCoordinator() {
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
         TestCallable testCallable = new TestCallable();
         dataStoreJobCoordinator.enqueueJob(getClass().getName().toString(), testCallable);
         new TestDataStoreJobCoordinator().waitForAllJobs();
+        assertTrue(testCallable.wasCalled);
+    }
+
+    @Test
+    public void testDataStoreJobCoordinatorUsingPendingTasksCounter() {
+        DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
+        TestCallable testCallable = new TestCallable();
+        dataStoreJobCoordinator.enqueueJob(getClass().getName().toString(), testCallable);
+        Awaitility.await().until(() -> dataStoreJobCoordinator.getIncompleteTaskCount(), is(0L));
         assertTrue(testCallable.wasCalled);
     }
 
