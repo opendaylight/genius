@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_50b768d8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-12-19T08:39:17Z",
+      "side": 1,
+      "message": "Try with parallel stream for collecting tunnel/vlan interfaces. This might give good performance (for larger number of interfaces) compared to sequential stream. But do required measurement before making this change.",
+      "revId": "1a95c4ec0df6b0a87548e2a11a074e4a3d8d24aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
