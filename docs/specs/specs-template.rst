@@ -1,6 +1,15 @@
 ..
- TODO:Copyright? We're using OpenStack one as reference, do we need to retain
- their copyright?
+ Key points to consider:
+  * Use RST format. For help with syntax refer http://sphinx-doc.org/rest.html
+  * Use http://rst.ninjs.org/ a web based WYSIWYG RST editor.
+  * For diagrams, you can use http://asciiflow.com to make ascii diagrams.
+  * MUST READ http://docs.opendaylight.org/en/latest/documentation.html and follow guidelines.
+  * Use same topic branch name for all patches related to this feature.
+  * All sections should be retained, but can be marked None or N.A.
+  * Set depth in ToC as per your doc requirements. Should be at least 2.
+
+.. contents:: Table of Contents
+      :depth: 3
 
 =====================
 Title of the feature
@@ -10,11 +19,6 @@ Title of the feature
 
 Brief introduction of the feature.
 
-Key points to consider:
- * Use RST format. For help with syntax refer http://sphinx-doc.org/rest.html
- * For diagrams, you can use http://asciiflow.com to make ascii diagrams.
- * Use same topic branch name for all patches related to this feature.
- * All sections should be retained, but can be marked None or N.A.
 
 Problem description
 ===================
@@ -110,7 +114,7 @@ Implementation
 Assignee(s)
 -----------
 Who is implementing this feature? In case of multiple authors, designate a
-primary assigne and other contributors.
+primary assignee and other contributors.
 
 Primary assignee:
   <developer-a>
@@ -168,5 +172,13 @@ Add any useful references. Some examples:
 * Links to patches in other projects
 * Links to external documentation
 
-* https://specs.openstack.org/openstack/nova-specs/specs/kilo/template.html
-* https://github.com/opendaylight/netvirt/blob/master/docs/specs/specs-template.rst
+[1] `OpenDaylight Documentation Guide <http://docs.opendaylight.org/en/latest/documentation.html>`__
+
+[2] https://specs.openstack.org/openstack/nova-specs/specs/kilo/template.html
+
+.. note::
+
+  This template was derived from [2], and has been modified to support our project.
+
+  This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+  http://creativecommons.org/licenses/by/3.0/legalcode
