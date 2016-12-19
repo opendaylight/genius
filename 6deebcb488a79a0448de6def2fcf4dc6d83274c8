@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_30162ca8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-19T09:02:22Z",
+      "side": 1,
+      "message": "do we have to comment out the bridgeentryconfiglistener as well?",
+      "revId": "6deebcb488a79a0448de6def2fcf4dc6d83274c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
