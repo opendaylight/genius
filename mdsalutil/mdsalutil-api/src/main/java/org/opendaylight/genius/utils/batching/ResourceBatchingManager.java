@@ -28,6 +28,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class lets other modules submit their CRUD methods to it. This class
+ * will then supply a single transaction to such CRUD methods of the
+ * subscribers, on which such subscribers write data to that transaction.
+ * Finally the framework attempts to reliably write this single transaction
+ * which represents a batch of an ordered list of entities owned by that subscriber, 
+ * to be written/updated/removed from a specific datastore as registered by the subscriber.
+ */
 public class ResourceBatchingManager implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ResourceBatchingManager.class);
