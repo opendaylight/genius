@@ -23,6 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +81,10 @@ public class DataStoreJobCoordinator {
         enqueueJob(job.getJobQueueKey(), job);
     }
 
+    public long getPendingTaskCount() {
+        return DataStoreJobCoordinatorCounters.jobs_pending.get();
+    }
+
     /**
      *    This is used by the external applications to enqueue a Job
      *    with an appropriate key. A JobEntry is created and queued
@@ -126,7 +131,7 @@ public class DataStoreJobCoordinator {
                 jobEntriesMap.remove(jobEntry.getKey());
             }
         }
-        DataStoreJobCoordinatorCounters.jobs_cleared.inc();
+        DataStoreJobCoordinatorCounters.jobs_pending.dec();
     }
 
     /**
@@ -159,11 +164,11 @@ public class DataStoreJobCoordinator {
         }
 
         /**
-         *    This method is used to handle failure callbacks. If more
-         *    retry needed, the retrycount is decremented and mainworker
-         *    is executed again. After retries completed, rollbackworker
-         *    is executed. If rollbackworker fails, this is a
-         *    double-fault. Double fault is logged and ignored.
+         * This method is used to handle failure callbacks. If more
+         * retry needed, the retrycount is decremented and mainworker
+         * is executed again. After retries completed, rollbackworker
+         * is executed. If rollbackworker fails, this is a
+         * double-fault. Double fault is logged and ignored.
          */
         @Override
         public void onFailure(Throwable throwable) {
@@ -180,7 +185,7 @@ public class DataStoreJobCoordinator {
                 scheduledExecutorService.schedule(() -> {
                     MainTask worker = new MainTask(jobEntry);
                     fjPool.execute(worker);
-                    }, waitTime, TimeUnit.MILLISECONDS);
+                }, waitTime, TimeUnit.MILLISECONDS);
                 return;
             }
 
@@ -303,11 +308,9 @@ public class DataStoreJobCoordinator {
                                     MainTask worker = new MainTask(jobEntry);
                                     LOG.trace("Executing job {} from queue {}", jobEntry.getKey(), i);
                                     fjPool.execute(worker);
-                                    DataStoreJobCoordinatorCounters.jobs_pending.dec();
 
                                 } else {
                                     it.remove();
-                                    DataStoreJobCoordinatorCounters.jobs_remove_entry.inc();
                                 }
                             }
                         }
