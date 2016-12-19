@@ -16,6 +16,24 @@
       "revId": "5df7ee7e28861ce68ae4e8a8653e435f2b70111e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f6a82c79",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-12-19T15:25:33Z",
+      "side": 1,
+      "message": "\u003d\u003d\u003e https://git.opendaylight.org/gerrit/#/c/49560/ ;-)",
+      "parentUuid": "1a622d24_b3640b23",
+      "revId": "5df7ee7e28861ce68ae4e8a8653e435f2b70111e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
