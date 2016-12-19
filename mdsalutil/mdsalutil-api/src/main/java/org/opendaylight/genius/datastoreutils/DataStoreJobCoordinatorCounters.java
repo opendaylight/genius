@@ -13,7 +13,8 @@ import org.opendaylight.infrautils.counters.api.OccurenceCounter;
 public enum DataStoreJobCoordinatorCounters {
     jobs_remove_entry,
     jobs_cleared,
-    jobs_pending(true);
+    jobs_pending(true),
+    jobs_incomplete(true);
 
     private OccurenceCounter counter;
 
@@ -31,5 +32,9 @@ public enum DataStoreJobCoordinatorCounters {
 
     public void dec() {
         counter.dec();
+    }
+
+    public long get() {
+        return counter.get();
     }
 }
