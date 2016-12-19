@@ -97,7 +97,10 @@ public class InterfaceManagerConfigurationTest {
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnId, dataBroker), null);
+        //assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnId, dataBroker), null);
+        BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                bridgeRefEntryIid, dataBroker).orNull();
+        assertEqualBeans(bridgeRefEntry, null);
     }
 
     private void setupAndAssertBridgeCreation() throws InterruptedException {
@@ -108,7 +111,7 @@ public class InterfaceManagerConfigurationTest {
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker).orNull();
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(dpnId), bridgeRefEntry);
+        //assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(dpnId), bridgeRefEntry);
         assertEqualBeans(bridgeRefEntry.getDpid(), dpnId);
     }
 
