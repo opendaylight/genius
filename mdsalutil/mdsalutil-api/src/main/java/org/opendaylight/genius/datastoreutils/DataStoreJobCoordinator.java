@@ -8,14 +8,10 @@
 
 package org.opendaylight.genius.datastoreutils;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -24,8 +20,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public class DataStoreJobCoordinator {
 
@@ -81,6 +82,10 @@ public class DataStoreJobCoordinator {
         enqueueJob(job.getJobQueueKey(), job);
     }
 
+    public long getPendingTaskCount() {
+        return DataStoreJobCoordinatorCounters.jobs_pending.get();
+    }
+
     /**
      *    This is used by the external applications to enqueue a Job
      *    with an appropriate key. A JobEntry is created and queued
@@ -127,7 +132,7 @@ public class DataStoreJobCoordinator {
                 jobEntriesMap.remove(jobEntry.getKey());
             }
         }
-        DataStoreJobCoordinatorCounters.jobs_cleared.inc();
+        DataStoreJobCoordinatorCounters.jobs_pending.dec();
     }
 
     /**
@@ -305,11 +310,9 @@ public class DataStoreJobCoordinator {
                                     MainTask worker = new MainTask(jobEntry);
                                     LOG.trace("Executing job {} from queue {}", jobEntry.getKey(), i);
                                     fjPool.execute(worker);
-                                    DataStoreJobCoordinatorCounters.jobs_pending.dec();
 
                                 } else {
                                     it.remove();
-                                    DataStoreJobCoordinatorCounters.jobs_remove_entry.inc();
                                 }
                             }
                         }
