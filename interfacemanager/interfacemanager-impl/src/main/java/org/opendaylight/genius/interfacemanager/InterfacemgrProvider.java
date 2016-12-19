@@ -32,7 +32,6 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceA
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.listeners.AlivenessMonitorListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
@@ -121,7 +120,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private CacheInterfaceConfigListener cacheInterfaceConfigListener;
     private CacheInterfaceStateListener cacheInterfaceStateListener;
     private CacheBridgeEntryConfigListener cacheBridgeEntryConfigListener;
-    private CacheBridgeRefEntryListener cacheBridgeRefEntryListener;
+    //private CacheBridgeRefEntryListener cacheBridgeRefEntryListener;
     private EntityOwnershipService entityOwnershipService;
 
     public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
@@ -204,7 +203,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
             cacheBridgeEntryConfigListener = new CacheBridgeEntryConfigListener(dataBroker);
 
-            cacheBridgeRefEntryListener = new CacheBridgeRefEntryListener(dataBroker);
+            //cacheBridgeRefEntryListener = new CacheBridgeRefEntryListener(dataBroker);
 
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
@@ -245,7 +244,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         cacheInterfaceConfigListener.close();
         cacheInterfaceStateListener.close();
         cacheBridgeEntryConfigListener.close();
-        cacheBridgeRefEntryListener.close();
+        //cacheBridgeRefEntryListener.close();
         topologyStateListener.close();
         interfaceInventoryStateListener.close();
         hwVTEPConfigListener.close();
