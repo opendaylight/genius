@@ -71,6 +71,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>inject</artifactId>
       <version>${genius.infrautils.version}</version>
   </dependency>
+
+  <!-- Dependencies with <scope>test -->
   <dependency>
     <groupId>org.opendaylight.yangtools</groupId>
     <artifactId>testutils</artifactId>
@@ -85,6 +87,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>mdsal-binding-test-utils</artifactId>
     <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.opendaylight.infrautils</groupId>
+    <artifactId>infrautils-testutils</artifactId>
+    <version>${genius.infrautils.version}</version>
   </dependency>
 </dependencies>
  <build>
