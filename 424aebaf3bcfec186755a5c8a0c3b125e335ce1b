@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_dc538f37",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-12-20T04:47:08Z",
+      "side": 0,
+      "message": "we shouldn\u0027t do jobs_pending.dec() here because at this point jobEntry is wrapped with MainTask and submitted into fjPool. \nThe correct place for jobs_pending.dec() would be clearJob() so that we can exactly know how many jobEntries are actually pending.",
+      "revId": "424aebaf3bcfec186755a5c8a0c3b125e335ce1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9c8477b2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-12-20T04:47:08Z",
+      "side": 0,
+      "message": "it.remove() is called to remove Map.Entry\u003cString, JobQueue\u003e once all of its JobEntries is submitted to fjPool. The usage of jobQueueMap is internal to DJC. \nSo It is not clear to me how jobs_remove_entry counter is useful for end users and moreover there is no references which use this counter.",
+      "revId": "424aebaf3bcfec186755a5c8a0c3b125e335ce1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

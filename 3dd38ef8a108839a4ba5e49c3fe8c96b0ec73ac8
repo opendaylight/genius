@@ -54,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_0763f4dc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-12-20T04:47:08Z",
+      "side": 1,
+      "message": "Not sure I have understood your comment.\n\nMy assumption of jobs_pending counter is: Increment the counter whenever a job is enqueued and decrement it after the job is completed. This exactly tells us how many jobs are actually pending with DJC. This would be useful for writing junits around DJC.\n\nDo we really need to have jobs_cleared counter ? \nYes, It actually holds count of finished jobs by DJC. But I don\u0027t see any references which uses this counter.",
+      "parentUuid": "1a622d24_e1a50848",
+      "revId": "3dd38ef8a108839a4ba5e49c3fe8c96b0ec73ac8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_7080a446",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
         "patchSetId": 1
