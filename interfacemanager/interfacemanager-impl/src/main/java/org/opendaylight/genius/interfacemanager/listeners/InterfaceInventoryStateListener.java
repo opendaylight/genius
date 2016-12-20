@@ -32,7 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -114,14 +113,10 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                     if (InterfaceManagerCommonUtils.isTunnelPort(portName)) {
-                        BigInteger oldDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
-                        BigInteger newDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-                        LOG.warn("DPNID changed for tunnel interface {}: old {} new {}", portName, oldDpnId, newDpnId);
-                        if(InterfaceMetaUtils.isPortConfiguredOnBridge(portName, oldDpnId, dataBroker) ||
-                                !InterfaceMetaUtils.isPortConfiguredOnBridge(portName, newDpnId, dataBroker)) {
-                            // Remove old interface only it wasn't configured through us and new one is.
-                            return;
-                        }
+                        LOG.warn("Unexpected DPNID change for tunnel interface {}: old {} new {}", portName,
+                                IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld),
+                                IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                        return;
                     }
                     LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
                     remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
