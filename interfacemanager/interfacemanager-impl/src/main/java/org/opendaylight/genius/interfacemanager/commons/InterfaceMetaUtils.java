@@ -320,6 +320,18 @@ public class InterfaceMetaUtils {
         }
     }
 
+    public static boolean isPortConfiguredOnBridge(String portName, BigInteger dpnId, DataBroker broker) {
+        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, broker);
+        if (bridgeEntry != null && bridgeEntry.getBridgeInterfaceEntry() != null) {
+            for (BridgeInterfaceEntry entry: bridgeEntry.getBridgeInterfaceEntry()) {
+                if (portName.equals(entry.getInterfaceName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Cache Util methods
 
     // Start: BridgeEntryCache
