@@ -13,6 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
+import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
@@ -44,7 +45,7 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
         List<Subnets> subnetList=new ArrayList<Subnets>();
-        IpPrefix subnetMaskObj = ItmListenerUtils.getDummySubnet();
+        IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
         IpAddress tepIpAddress = null;
         BigInteger dpnId = BigInteger.valueOf(0);
 
@@ -52,7 +53,7 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
 
         // Move TEP from TepsNotHosted list to NBI configured TZ.
         OvsdbTepAddConfigHelper.addVtepInITMConfigDS(subnetList, subnetMaskObj, vTepList, tepIpAddress, tzName, dpnId,
-                ITMConstants.DUMMY_PORT, wrTx);
+                ITMConstants.DUMMY_PORT, false,wrTx);
 
         futures.add(wrTx.submit());
         return futures;

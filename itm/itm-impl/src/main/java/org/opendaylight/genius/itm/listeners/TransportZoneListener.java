@@ -242,6 +242,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         Map<BigInteger, List<TunnelEndPoints>> mapNotHostedDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> notHostedDpnTepInfo = new ArrayList<>();
         String newZoneName=tzNew.getZoneName();
+        List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
         Class<? extends TunnelTypeBase> tunnelType=tzNew.getTunnelType();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
@@ -259,9 +260,10 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                 IpPrefix ipPrefix = new IpPrefix(ITMConstants.DUMMY_PREFIX.toCharArray());
                 IpAddress gatewayIP = new IpAddress(ITMConstants.DUMMY_GATEWAY_IP.toCharArray());
                 IpAddress ipAddress = vteps.getIpAddress();
-                TunnelEndPoints tunnelEndPoints =
-                        ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, vlanID, ipPrefix,
-                                gatewayIP, newZoneName, tunnelType);
+                boolean ofTunnel = ItmUtils.falseIfNull(vteps.isOfTunnel());
+                              TunnelEndPoints tunnelEndPoints =
+                        ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, ofTunnel,vlanID, ipPrefix,
+                                gatewayIP, zones, tunnelType);
                 List<TunnelEndPoints> tunnelEndPointsList = mapNotHostedDPNToTunnelEndpt.get(dpnID);
                 if (tunnelEndPointsList != null) {
                     tunnelEndPointsList.add(tunnelEndPoints);
@@ -270,7 +272,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                     tunnelEndPointsList.add(tunnelEndPoints);
                     mapNotHostedDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
                 }
-                Vteps newVtep=createVtepFromUnKnownVteps(dpnID,ipAddress,ITMConstants.DUMMY_PORT);
+                Vteps newVtep=createVtepFromUnKnownVteps(dpnID,ipAddress,ITMConstants.DUMMY_PORT,ofTunnel);
                 vtepsList.add(newVtep);
 
                 // Enqueue 'remove TEP from TepsNotHosted list' operation
@@ -298,10 +300,10 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
 
     }
 
-    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
+    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port, boolean ofTunnel) {
         VtepsKey vtepkey = new VtepsKey(dpnID, port);
         Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).setKey(vtepkey)
-                .setPortname(port).build();
+                .setPortname(port).setOptionOfTunnel(ofTunnel).build();
         return vtepObj;
     }
 
