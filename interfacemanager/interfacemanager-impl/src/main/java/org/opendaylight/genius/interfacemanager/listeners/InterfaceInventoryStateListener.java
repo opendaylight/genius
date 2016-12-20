@@ -109,8 +109,8 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             String portName = fcNodeConnectorNew.getName();
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
 
-            //VM Migration: Delete existing interface entry for older DPN
-            if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
+            if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
+                //VM Migration: Delete existing interface entry for older DPN
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                     LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
@@ -122,7 +122,9 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                         LOG.error("Error while waiting for the vm migration remove events to get processed");
                     }
                 }
-            } else {
+            } else if(!InterfaceManagerCommonUtils.isTunnelPort(portName)){
+                // If this is not a NOVA or TUNNEL port, the portName should be prefixed with the corresponding
+                // dpnId so that the portNames can be unique, and be further looked up for processing
                 portName = getDpnPrefixedPortName(nodeConnectorId, portName);
             }
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
