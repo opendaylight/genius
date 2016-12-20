@@ -81,6 +81,8 @@ public class InterfaceManagerCommonUtils {
 
     private static final String NOVA_OR_TUNNEL_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}";
     private static final Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+    private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
+    private static final Pattern tunnelPortPattern = Pattern.compile(TUNNEL_PORT_REGEX);
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
             DataBroker dataBroker) {
@@ -510,6 +512,11 @@ public class InterfaceManagerCommonUtils {
         return matcher.matches();
     }
 
+    public static boolean isTunnelPort(String portName) {
+
+        Matcher matcher = tunnelPortPattern.matcher(portName);
+        return matcher.matches();
+    }
 
     public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName, WriteTransaction transaction) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
