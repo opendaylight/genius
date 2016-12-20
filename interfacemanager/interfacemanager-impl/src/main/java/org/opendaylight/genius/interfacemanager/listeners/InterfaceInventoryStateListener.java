@@ -109,10 +109,15 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             String portName = fcNodeConnectorNew.getName();
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
 
-            //VM Migration: Delete existing interface entry for older DPN
             if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
+                //VM Migration: Delete existing interface entry for older DPN
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+                    // same tunnel name from multiple lower-layer-ifs is not supported by IFM
+                    if(InterfaceManagerCommonUtils.isTunnelPort(portName)){
+                        LOG.error("Same tunnel portname detected on muliple lowerlayerifs: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
+                        return;
+                    }
                     LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
                     remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
                     //Adding a delay of 10sec for VM migration, so applications can process remove and add events
@@ -123,6 +128,8 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                     }
                 }
             } else {
+                // If this is not a NOVA or TUNNEL port, the portName should be prefixed with the corresponding
+                // dpnId so that the portNames can be unique, and be further looked up for processing
                 portName = getDpnPrefixedPortName(nodeConnectorId, portName);
             }
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
