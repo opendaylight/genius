@@ -73,6 +73,11 @@ public class OvsInterfaceStateAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
+        if(InterfaceManagerCommonUtils.isTunnelPort(interfaceName) && iface == null){
+           LOG.warn("Received tunnel state add notification for a tunnel which is not configured {}", interfaceName);
+           return futures;
+        }
+
         Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, defaultOperationalShardTransaction, idManager,
                 physAddress, operStatus, adminStatus, nodeConnectorId);
 
