@@ -34,6 +34,24 @@
       "revId": "1a95c4ec0df6b0a87548e2a11a074e4a3d8d24aa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_071bf41b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-12-20T05:38:55Z",
+      "side": 1,
+      "message": "Yes, Because tasks here running in parallel just do a tiny task (filtering out tunnel or vlan). So it shouldn\u0027t spend more time in context switching. \nIf we test this change with scaled setup might give exact numbers.",
+      "parentUuid": "1a622d24_93ac6aa2",
+      "revId": "1a95c4ec0df6b0a87548e2a11a074e4a3d8d24aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
