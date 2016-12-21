@@ -674,8 +674,8 @@ public final class HwvtepUtils {
             // TODO: Query ARP cache to get IP address corresponding to
             // the MAC
             IpAddress ipAddress = null;
-            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId, mac.getValue(), ipAddress, logicalSwitchName,
-                    phyLocatorAug));
+            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId, mac.getValue().toLowerCase(),
+                    ipAddress, logicalSwitchName, phyLocatorAug));
         }
         return HwvtepUtils.addRemoteUcastMacs(broker, nodeId, macs);
     }
