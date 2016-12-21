@@ -13,8 +13,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 
 public class AvailableIdHolder implements IdHolder {
 
-    private long low = 0;
-    private long high = 0;
+    private final long low;
+    private final long high;
     private final AtomicLong cur = new AtomicLong();
 
     private final IdUtils idUtils;
