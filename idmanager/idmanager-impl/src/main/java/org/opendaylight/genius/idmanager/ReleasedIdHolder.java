@@ -22,7 +22,7 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     private static final int INITIAL_INDEX = 0;
     private AtomicLong availableIdCount = new AtomicLong();
 
-    private long timeDelaySec;
+    private final long timeDelaySec;
     private List<DelayedIdEntry> delayedEntries;
 
     public ReleasedIdHolder(long timeDelaySec) {
@@ -112,10 +112,6 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     public List<DelayedIdEntry> getDelayedEntries() {
         return delayedEntries;
-    }
-
-    public void setTimeDelaySec(long timeDelaySec) {
-        this.timeDelaySec = timeDelaySec;
     }
 
     public void setDelayedEntries(List<DelayedIdEntry> delayedEntries) {
