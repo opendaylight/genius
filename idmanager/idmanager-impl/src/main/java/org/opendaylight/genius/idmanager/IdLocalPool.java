@@ -10,8 +10,8 @@ package org.opendaylight.genius.idmanager;
 public class IdLocalPool {
 
     private String poolName;
-    private IdHolder availableIds; // List of available IDs
-    private IdHolder releasedIds; // List of released IDs
+    private volatile IdHolder availableIds; // List of available IDs
+    private volatile IdHolder releasedIds; // List of released IDs
 
     public IdLocalPool(IdUtils idUtils, String poolName, long low, long high) {
         this.poolName = poolName;
