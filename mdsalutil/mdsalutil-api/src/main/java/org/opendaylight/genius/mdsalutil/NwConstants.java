@@ -211,4 +211,8 @@ public final class NwConstants {
     public enum LearnFlowModsType {
         MATCH_FROM_FIELD, MATCH_FROM_VALUE, COPY_FROM_FIELD, COPY_FROM_VALUE, OUTPUT_TO_PORT
     }
+
+    public enum CtActionType {
+        NxNat
+    }
 }
