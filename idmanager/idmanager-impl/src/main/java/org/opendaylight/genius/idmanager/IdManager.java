@@ -391,6 +391,13 @@ public class IdManager implements IdManagerService, AutoCloseable {
         parentPoolName = parentPoolName.intern();
         IdUtils.lockPool(lockManager, parentPoolName);
         try {
+            // Check if the childpool already got id block.
+            long availableIdCount =
+                    localIdPool.getAvailableIds().getAvailableIdCount()
+                            + localIdPool.getReleasedIds().getAvailableIdCount();
+            if (availableIdCount > 0) {
+                return availableIdCount;
+            }
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             IdPool parentIdPool = getIdPool(idPoolInstanceIdentifier);
             long idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
