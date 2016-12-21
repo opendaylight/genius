@@ -21,7 +21,7 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     private final AtomicLong availableIdCount = new AtomicLong();
 
-    private long timeDelaySec;
+    private final long timeDelaySec;
     private List<DelayedIdEntry> delayedEntries;
 
     private final IdUtils idUtils;
