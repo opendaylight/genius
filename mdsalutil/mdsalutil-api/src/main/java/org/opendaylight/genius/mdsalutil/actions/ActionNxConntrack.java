@@ -60,4 +60,28 @@ public class ActionNxConntrack extends ActionInfo {
         ab.setKey(new ActionKey(newActionKey));
         return ab.build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionNxConntrack that = (ActionNxConntrack) o;
+
+        if (flags != that.flags) return false;
+        if (zoneSrc != that.zoneSrc) return false;
+        if (conntrackZone != that.conntrackZone) return false;
+        return recircTable == that.recircTable;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + flags;
+        result = 31 * result + (int) (zoneSrc ^ (zoneSrc >>> 32));
+        result = 31 * result + conntrackZone;
+        result = 31 * result + (int) recircTable;
+        return result;
+    }
 }

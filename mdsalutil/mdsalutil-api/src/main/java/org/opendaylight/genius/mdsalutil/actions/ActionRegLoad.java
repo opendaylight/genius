@@ -81,4 +81,28 @@ public class ActionRegLoad extends ActionInfo {
     public long getLoad() {
         return load;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionRegLoad that = (ActionRegLoad) o;
+
+        if (start != that.start) return false;
+        if (end != that.end) return false;
+        if (load != that.load) return false;
+        return register != null ? register.equals(that.register) : that.register == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (register != null ? register.hashCode() : 0);
+        result = 31 * result + start;
+        result = 31 * result + end;
+        result = 31 * result + (int) (load ^ (load >>> 32));
+        return result;
+    }
 }
