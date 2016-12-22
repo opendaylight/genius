@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_c5d72aec",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigUpdateHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-12-22T08:34:14Z",
+      "side": 1,
+      "message": "You could use Objects.equals to replace this entire method",
+      "revId": "8902af62cd8d8b83e7d35e3c7e3151babbaf492c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
