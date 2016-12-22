@@ -81,4 +81,24 @@ public class ActionSetTunnelSourceIp extends ActionInfo {
         ab.setKey(new ActionKey(newActionKey));
         return ab.build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetTunnelSourceIp that = (ActionSetTunnelSourceIp) o;
+
+        if (groupBucket != that.groupBucket) return false;
+        return sourceIp != null ? sourceIp.equals(that.sourceIp) : that.sourceIp == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (sourceIp != null ? sourceIp.hashCode() : 0);
+        result = 31 * result + (groupBucket ? 1 : 0);
+        return result;
+    }
 }

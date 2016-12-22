@@ -57,4 +57,22 @@ public class ActionSetTcpDestinationPort extends ActionInfo {
     public int getPort() {
         return port;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetTcpDestinationPort that = (ActionSetTcpDestinationPort) o;
+
+        return port == that.port;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + port;
+        return result;
+    }
 }

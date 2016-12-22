@@ -52,4 +52,22 @@ public class ActionNxResubmit extends ActionInfo {
         ab.setKey(new ActionKey(newActionKey));
         return ab.build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionNxResubmit that = (ActionNxResubmit) o;
+
+        return table == that.table;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) table;
+        return result;
+    }
 }

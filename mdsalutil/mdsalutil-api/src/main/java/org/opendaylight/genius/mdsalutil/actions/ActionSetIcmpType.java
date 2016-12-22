@@ -57,4 +57,22 @@ public class ActionSetIcmpType extends ActionInfo {
     public short getType() {
         return type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetIcmpType that = (ActionSetIcmpType) o;
+
+        return type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) type;
+        return result;
+    }
 }
