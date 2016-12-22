@@ -59,4 +59,22 @@ public class ActionSetFieldEthernetSource extends ActionInfo {
     public MacAddress getSource() {
         return source;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetFieldEthernetSource that = (ActionSetFieldEthernetSource) o;
+
+        return source != null ? source.equals(that.source) : that.source == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        return result;
+    }
 }
