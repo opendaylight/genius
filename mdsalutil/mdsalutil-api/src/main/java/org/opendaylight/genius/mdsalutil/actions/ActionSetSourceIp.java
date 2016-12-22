@@ -74,4 +74,22 @@ public class ActionSetSourceIp extends ActionInfo {
     public Ipv4Prefix getSource() {
         return source;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetSourceIp that = (ActionSetSourceIp) o;
+
+        return source != null ? source.equals(that.source) : that.source == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        return result;
+    }
 }

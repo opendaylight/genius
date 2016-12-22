@@ -183,6 +183,40 @@ public class ActionLearn extends ActionInfo {
         return flowMods;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionLearn that = (ActionLearn) o;
+
+        if (idleTimeout != that.idleTimeout) return false;
+        if (hardTimeout != that.hardTimeout) return false;
+        if (priority != that.priority) return false;
+        if (flags != that.flags) return false;
+        if (tableId != that.tableId) return false;
+        if (finIdleTimeout != that.finIdleTimeout) return false;
+        if (finHardTimeout != that.finHardTimeout) return false;
+        if (cookie != null ? !cookie.equals(that.cookie) : that.cookie != null) return false;
+        return flowMods.equals(that.flowMods);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + idleTimeout;
+        result = 31 * result + hardTimeout;
+        result = 31 * result + priority;
+        result = 31 * result + (cookie != null ? cookie.hashCode() : 0);
+        result = 31 * result + flags;
+        result = 31 * result + (int) tableId;
+        result = 31 * result + finIdleTimeout;
+        result = 31 * result + finHardTimeout;
+        result = 31 * result + flowMods.hashCode();
+        return result;
+    }
+
     public interface FlowMod {
         FlowMods buildFlowMod();
 
@@ -228,6 +262,26 @@ public class ActionLearn extends ActionInfo {
             flowModsBuilder.setFlowModSpec(caseBuilder.build());
             return flowModsBuilder.build();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            MatchFromField that = (MatchFromField) o;
+
+            if (sourceField != that.sourceField) return false;
+            if (destField != that.destField) return false;
+            return bits == that.bits;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (sourceField ^ (sourceField >>> 32));
+            result = 31 * result + (int) (destField ^ (destField >>> 32));
+            result = 31 * result + bits;
+            return result;
+        }
     }
 
     public static class MatchFromValue implements FlowMod {
@@ -266,6 +320,26 @@ public class ActionLearn extends ActionInfo {
             caseBuilder.setFlowModAddMatchFromValue(builder.build());
             flowModsBuilder.setFlowModSpec(caseBuilder.build());
             return flowModsBuilder.build();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            MatchFromValue that = (MatchFromValue) o;
+
+            if (value != that.value) return false;
+            if (sourceField != that.sourceField) return false;
+            return bits == that.bits;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = value;
+            result = 31 * result + (int) (sourceField ^ (sourceField >>> 32));
+            result = 31 * result + bits;
+            return result;
         }
     }
 
@@ -307,6 +381,26 @@ public class ActionLearn extends ActionInfo {
             flowModsBuilder.setFlowModSpec(caseBuilder.build());
             return flowModsBuilder.build();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CopyFromField that = (CopyFromField) o;
+
+            if (sourceField != that.sourceField) return false;
+            if (destField != that.destField) return false;
+            return bits == that.bits;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (sourceField ^ (sourceField >>> 32));
+            result = 31 * result + (int) (destField ^ (destField >>> 32));
+            result = 31 * result + bits;
+            return result;
+        }
     }
 
     public static class CopyFromValue implements FlowMod {
@@ -346,6 +440,26 @@ public class ActionLearn extends ActionInfo {
             flowModsBuilder.setFlowModSpec(caseBuilder.build());
             return flowModsBuilder.build();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CopyFromValue that = (CopyFromValue) o;
+
+            if (value != that.value) return false;
+            if (destField != that.destField) return false;
+            return bits == that.bits;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = value;
+            result = 31 * result + (int) (destField ^ (destField >>> 32));
+            result = 31 * result + bits;
+            return result;
+        }
     }
 
     public static class OutputToPort implements FlowMod {
@@ -380,6 +494,24 @@ public class ActionLearn extends ActionInfo {
             caseBuilder.setFlowModOutputToPort(builder.build());
             flowModsBuilder.setFlowModSpec(caseBuilder.build());
             return flowModsBuilder.build();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            OutputToPort that = (OutputToPort) o;
+
+            if (sourceField != that.sourceField) return false;
+            return bits == that.bits;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (sourceField ^ (sourceField >>> 32));
+            result = 31 * result + bits;
+            return result;
         }
     }
 }

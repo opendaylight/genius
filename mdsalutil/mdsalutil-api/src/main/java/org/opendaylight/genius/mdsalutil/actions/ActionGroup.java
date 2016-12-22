@@ -50,4 +50,22 @@ public class ActionGroup extends ActionInfo {
     public long getGroupId() {
         return groupId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionGroup that = (ActionGroup) o;
+
+        return groupId == that.groupId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) (groupId ^ (groupId >>> 32));
+        return result;
+    }
 }

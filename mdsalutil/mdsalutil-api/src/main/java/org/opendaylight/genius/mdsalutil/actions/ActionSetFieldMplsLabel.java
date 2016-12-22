@@ -54,4 +54,22 @@ public class ActionSetFieldMplsLabel extends ActionInfo {
             .setKey(new ActionKey(newActionKey))
             .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetFieldMplsLabel that = (ActionSetFieldMplsLabel) o;
+
+        return label == that.label;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) (label ^ (label >>> 32));
+        return result;
+    }
 }

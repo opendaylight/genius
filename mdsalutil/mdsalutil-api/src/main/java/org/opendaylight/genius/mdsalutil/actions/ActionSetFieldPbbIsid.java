@@ -57,4 +57,22 @@ public class ActionSetFieldPbbIsid extends ActionInfo {
             .setKey(new ActionKey(newActionKey))
             .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetFieldPbbIsid that = (ActionSetFieldPbbIsid) o;
+
+        return isid == that.isid;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) (isid ^ (isid >>> 32));
+        return result;
+    }
 }
