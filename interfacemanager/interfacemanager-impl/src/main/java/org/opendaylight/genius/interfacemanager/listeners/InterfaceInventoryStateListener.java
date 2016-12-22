@@ -32,7 +32,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -48,10 +48,10 @@ import java.util.concurrent.Callable;
 
 public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
-    private DataBroker dataBroker;
-    private IdManagerService idManager;
-    private IMdsalApiManager mdsalApiManager;
-    private AlivenessMonitorService alivenessMonitorService;
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final IMdsalApiManager mdsalApiManager;
+    private final AlivenessMonitorService alivenessMonitorService;
 
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManager,
                                            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
@@ -113,6 +113,16 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+                    if (InterfaceManagerCommonUtils.isTunnelPort(portName)) {
+                        BigInteger oldDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
+                        BigInteger newDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                        LOG.warn("DPNID changed for tunnel interface {}: old {} new {}", portName, oldDpnId, newDpnId);
+                        if(InterfaceMetaUtils.isPortConfiguredOnBridge(portName, oldDpnId, dataBroker) ||
+                                !InterfaceMetaUtils.isPortConfiguredOnBridge(portName, newDpnId, dataBroker)) {
+                            // Remove old interface only it wasn't configured through us and new one is.
+                            return;
+                        }
+                    }
                     LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
                     remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
                     //Adding a delay of 10sec for VM migration, so applications can process remove and add events
@@ -142,7 +152,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     }
 
     private String getDpnPrefixedPortName(NodeConnectorId nodeConnectorId, String portName) {
-        portName = (IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId)).toString() +
+        portName = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId).toString() +
                 IfmConstants.OF_URI_SEPARATOR +
                 portName;
         return portName;
@@ -188,10 +198,10 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     }
 
     private class InterfaceStateUpdateWorker implements Callable {
-        private InstanceIdentifier<FlowCapableNodeConnector> key;
+        private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
-        private String interfaceName;
+        private final String interfaceName;
 
 
         public InterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
