@@ -16,6 +16,24 @@
       "revId": "7fed49c3fdf4c20919aad838c750671788edb5d2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a2f94482",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-22T01:49:22Z",
+      "side": 1,
+      "message": "yeah, realized it after pushing the patch. will do it if any rework is needed, else will ask Faseela to add this to her patch.",
+      "parentUuid": "1a622d24_dfe6d7b3",
+      "revId": "7fed49c3fdf4c20919aad838c750671788edb5d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
