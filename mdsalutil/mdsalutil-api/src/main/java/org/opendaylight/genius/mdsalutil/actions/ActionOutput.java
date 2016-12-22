@@ -60,4 +60,25 @@ public class ActionOutput extends ActionInfo {
                                 .setOutputNodeConnector(outputNodeConnector).build()).build())
                 .setKey(new ActionKey(newActionKey)).build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionOutput that = (ActionOutput) o;
+
+        if (maxLength != that.maxLength) return false;
+        return outputNodeConnector != null ? outputNodeConnector.equals(
+                that.outputNodeConnector) : that.outputNodeConnector == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (outputNodeConnector != null ? outputNodeConnector.hashCode() : 0);
+        result = 31 * result + maxLength;
+        return result;
+    }
 }

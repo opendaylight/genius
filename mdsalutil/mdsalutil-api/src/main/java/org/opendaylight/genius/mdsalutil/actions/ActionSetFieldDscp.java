@@ -43,4 +43,22 @@ public class ActionSetFieldDscp extends ActionInfo {
                                         new Dscp(dscp)).build())
                                 .build()).build()).setKey(new ActionKey(newActionKey)).build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetFieldDscp that = (ActionSetFieldDscp) o;
+
+        return dscp == that.dscp;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (int) dscp;
+        return result;
+    }
 }

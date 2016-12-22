@@ -72,4 +72,24 @@ public class ActionSetFieldTunnelId extends ActionInfo {
             .setKey(new ActionKey(newActionKey))
             .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetFieldTunnelId that = (ActionSetFieldTunnelId) o;
+
+        if (tunnelId != null ? !tunnelId.equals(that.tunnelId) : that.tunnelId != null) return false;
+        return tunnelMask != null ? tunnelMask.equals(that.tunnelMask) : that.tunnelMask == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (tunnelId != null ? tunnelId.hashCode() : 0);
+        result = 31 * result + (tunnelMask != null ? tunnelMask.hashCode() : 0);
+        return result;
+    }
 }

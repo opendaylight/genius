@@ -62,4 +62,22 @@ public class ActionSetFieldVlanVid extends ActionInfo {
             .setKey(new ActionKey(newActionKey))
             .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ActionSetFieldVlanVid that = (ActionSetFieldVlanVid) o;
+
+        return vlanId == that.vlanId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + vlanId;
+        return result;
+    }
 }
