@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_f47812f4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 6177
+      },
+      "writtenOn": "2016-12-23T22:13:33Z",
+      "side": 1,
+      "message": "Peri, I think the intention was that jobs_pending counts the amount of jobs waiting in queue (and not currently handled) - Ideally, we want to see this counter\u003d0 (i.e. no jobs are waiting).\n\nRegarding jobs_cleared - I think what you\u0027re missing is how those counters work. When enabled, those counters changes  are repetitively printed to logs (if there was a change in the configurable period). In CSIT for example, we set that period to 1sec.\n\nIt\u0027s a wonderful tool to debug with - suggest you look at one of the CSIT logs, [1] for example.\n\nSample output:\n2016-12-23 11:47:50,406 | INFO  | CountersThread   | CountersDumperThread             | 276 - org.opendaylight.infrautils.counters-impl - 1.0.3.Boron-SR3 | dsjcc.jobs_cleared: +24, auc.arp_res_rcv_notification: +1, nsc.install_default_nat_flow: +1, auc.arp_res_rcv: +1, dsjcc.jobs_pending: 1  , auc.arp_req_rcv_notification: +4, auc.arp_req_rcv: +4",
+      "parentUuid": "1a622d24_0763f4dc",
+      "revId": "3dd38ef8a108839a4ba5e49c3fe8c96b0ec73ac8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_7080a446",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
         "patchSetId": 1
