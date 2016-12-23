@@ -11,8 +11,9 @@ package org.opendaylight.genius.idmanager.jobs;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -40,7 +41,6 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         idUtils.updateChildPool(tx, parentPoolName, localPoolName);
         if (newIdValues != null && !newIdValues.isEmpty()) {
@@ -49,7 +49,9 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         } else {
             tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
-        futures.add(tx.submit());
-        return futures;
+        tx.submit().checkedGet();
+        Optional.ofNullable(idUtils.releaseIdLatchMap.get(parentPoolName + idKey))
+            .ifPresent(latch -> latch.countDown());
+        return Collections.emptyList();
     }
 }
