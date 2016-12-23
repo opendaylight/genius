@@ -13,6 +13,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -49,7 +50,8 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         } else {
             tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
-        futures.add(tx.submit());
+        tx.submit().checkedGet();
+        Optional.ofNullable(idUtils.releaseIdLatchMap.get(parentPoolName+idKey)).ifPresent(latch -> latch.countDown());
         return futures;
     }
 }
