@@ -27,6 +27,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -68,8 +69,19 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
     @Override
     protected void update(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld,
                           BoundServices boundServiceNew) {
-        LOG.error("Service Binding entry update not allowed for: {}, Data: {}",
-                InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(), boundServiceNew);
+        String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
+        LOG.info("Service Binding entry updated for interface: {}, Data: {} -> {}", interfaceName, boundServiceOld,
+                boundServiceNew);
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
+                .keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
+                .getFlowBasedServicesRendererFactory(serviceMode).getFlowBasedServicesAddRenderer();
+        FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
+                .getFlowBasedServicesRendererFactory(serviceMode).getFlowBasedServicesRemoveRenderer();
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(flowBasedServicesAddable,
+                flowBasedServicesConfigRemovable, key, boundServiceOld, boundServiceNew);
+        coordinator.enqueueJob(interfaceName, configWorker);
     }
 
     @Override
@@ -108,6 +120,33 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         public List<ListenableFuture<Void>> call() throws Exception {
             return flowBasedServicesAddable.bindService(instanceIdentifier,
                     boundServicesNew);
+        }
+    }
+
+    private class RendererConfigUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+        FlowBasedServicesConfigAddable flowBasedServicesAddable;
+        FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable;
+        InstanceIdentifier<BoundServices> instanceIdentifier;
+        BoundServices boundServicesOld;
+        BoundServices boundServicesNew;
+
+        public RendererConfigUpdateWorker(FlowBasedServicesConfigAddable flowBasedServicesAddable,
+                                       FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable,
+                                       InstanceIdentifier<BoundServices> instanceIdentifier,
+                                       BoundServices boundServicesOld, BoundServices boundServicesNew) {
+            this.flowBasedServicesAddable = flowBasedServicesAddable;
+            this.flowBasedServicesConfigRemovable = flowBasedServicesConfigRemovable;
+            this.instanceIdentifier = instanceIdentifier;
+            this.boundServicesOld = boundServicesOld;
+            this.boundServicesNew = boundServicesNew;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            futures.addAll(flowBasedServicesConfigRemovable.unbindService(instanceIdentifier, boundServicesOld));
+            futures.addAll(flowBasedServicesAddable.bindService(instanceIdentifier, boundServicesNew));
+            return futures;
         }
     }
 
