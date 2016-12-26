@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_eb93104d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 6177
+      },
+      "writtenOn": "2016-12-26T10:15:12Z",
+      "side": 1,
+      "message": "Hmm I was just looking at some CSIT logs, and I think it\u0027d be nice to have jobs_created (or maybe job_enqueued?) counter here.\n\nIt will be symmetric with the job_cleared counter",
+      "revId": "b5a3d66cd6e599d3d3f58ab725a36fa9d160360d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
