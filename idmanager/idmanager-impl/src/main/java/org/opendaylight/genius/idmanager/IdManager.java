@@ -412,6 +412,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         parentPoolName = parentPoolName.intern();
         idUtils.lockPool(lockManager, parentPoolName);
         try {
+            // Check if the childpool already got id block.
+            long availableIdCount =
+                    localIdPool.getAvailableIds().getAvailableIdCount()
+                            + localIdPool.getReleasedIds().getAvailableIdCount();
+            if (availableIdCount > 0) {
+                return availableIdCount;
+            }
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, idPoolInstanceIdentifier);
             long idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
