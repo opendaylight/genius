@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_3e7ee46b",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/AvailableIdHolder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-26T18:04:16Z",
+      "side": 1,
+      "message": "this change is missing in master..is that okay?",
+      "revId": "ee165f6a023cb8d5123aba59471b4059c10861a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
