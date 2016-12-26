@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_4b7e846c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-12-26T05:56:45Z",
+      "side": 1,
+      "message": "Okay Koby, I didn\u0027t know jobs_pending and jobs_cleared counters getting used in CSIT. I have added it back and introduced jobs_incomplete counter for junit purpose.\n\nBut still you didn\u0027t explain me about the usage of jobs_remove_entry counter. If it is not required, we can remove it.",
+      "parentUuid": "1a622d24_f47812f4",
+      "revId": "3dd38ef8a108839a4ba5e49c3fe8c96b0ec73ac8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_7080a446",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
         "patchSetId": 1
