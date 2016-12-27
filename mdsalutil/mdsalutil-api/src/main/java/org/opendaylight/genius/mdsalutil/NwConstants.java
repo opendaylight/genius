@@ -20,8 +20,12 @@ public final class NwConstants {
     public static final int ETHTYPE_MPLS_UC           = 0X8847;
     public static final int ETHTYPE_PBB               = 0X88E7;
 
+    public static final String MACADDR_SEP = ":";
+
     public static final String IPV4PREFIX = "/32";
     public static final String IPV6PREFIX = "/128";
+    public static final String IPV4_SEP = ".";
+    public static final String IPV6_SEP = ":";
 
     //Protocol Type
     public static final int IP_PROT_ICMP = 1;
