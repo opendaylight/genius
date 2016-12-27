@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_e12fb1f4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-12-27T10:24:34Z",
+      "side": 1,
+      "message": "Please add more info to commit message - subject \"Add support for IPv6 VXLAN tunnels\", and possibly some info on what was changed in body..",
+      "revId": "60e21898b52769bd5c0b929c35a9aaca114247a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
