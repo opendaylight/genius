@@ -94,18 +94,16 @@ public class NWUtil {
     public static String toStringIpAddress(byte[] ipAddress)
     {
         if (ipAddress == null) {
-            return "";
+            return null;
         }
 
-        StringBuilder sb = new StringBuilder(18);
-
-        for (byte ipAddres : ipAddress) {
-            sb.append(UnsignedBytes.toString(ipAddres, 10));
-            sb.append(".");
+        try {
+            return InetAddress.getByAddress(ipAddress).getHostAddress();
+        } catch (UnknownHostException e) {
+            LOG.error("toStringIpAddress: Unable to translate byte[] ipAddress to String {}", e);
         }
 
-        sb.setLength(17);
-        return sb.toString();
+        return null;
     }
 
     /**
