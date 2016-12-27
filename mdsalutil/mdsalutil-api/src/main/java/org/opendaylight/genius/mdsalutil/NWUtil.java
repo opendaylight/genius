@@ -62,9 +62,10 @@ public class NWUtil {
     }
 
     public static byte[] parseIpAddress(String ipAddress) {
+        // TODO: Make IpV6 compatible
         byte cur;
 
-        String[] addressPart = ipAddress.split(".");
+        String[] addressPart = ipAddress.split(NwConstants.IPV4_SEP);
         int size = addressPart.length;
 
         byte[] part = new byte[size];
@@ -79,7 +80,7 @@ public class NWUtil {
     public static byte[] parseMacAddress(String macAddress) {
         byte cur;
 
-        String[] addressPart = macAddress.split(":");
+        String[] addressPart = macAddress.split(NwConstants.MACADDR_SEP);
         int size = addressPart.length;
 
         byte[] part = new byte[size];
@@ -97,15 +98,20 @@ public class NWUtil {
             return "";
         }
 
-        StringBuilder sb = new StringBuilder(18);
-
-        for (byte ipAddres : ipAddress) {
-            sb.append(UnsignedBytes.toString(ipAddres, 10));
-            sb.append(".");
+        try {
+            return InetAddress.getByAddress(ipAddress).getHostAddress();
+        } catch (UnknownHostException e) {
+            // educated guess on separator
+            String sep = ipAddress.length <= 4 ? NwConstants.IPV4_SEP : NwConstants.IPV6_SEP;
+            StringBuilder sb = new StringBuilder(ipAddress.length * 2);
+            for (byte b : ipAddress) {
+                sb.append(b).append(sep);
+            }
+            LOG.error("toStringIpAddress: Unable to translate byte[] ipAddress to String {}",
+                      sb.deleteCharAt(sb.lastIndexOf(sep)).toString(), e);
         }
 
-        sb.setLength(17);
-        return sb.toString();
+        return "";
     }
 
     /**
@@ -151,7 +157,7 @@ public class NWUtil {
                 sb.append("0");
             }
             sb.append(tmp);
-            sb.append(":");
+            sb.append(NwConstants.MACADDR_SEP);
         }
 
         sb.setLength(17);
