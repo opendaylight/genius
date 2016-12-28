@@ -11,12 +11,12 @@ package org.opendaylight.genius.interfacemanager.commons;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -130,6 +130,17 @@ public class InterfaceManagerCommonUtils {
             }
         }
         return vxlanList;
+    }
+
+    public static List<Interface> getAllTunnelInterfacesFromCache() {
+        return interfaceConfigMap.values().stream().filter(iface -> IfmUtil.getInterfaceType(iface) ==
+                InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE &&
+                iface.getAugmentation(IfTunnel.class).isInternal()).collect(Collectors.toList());
+    }
+
+    public static List<Interface> getAllVlanInterfacesFromCache() {
+        return interfaceConfigMap.values().stream().filter(iface -> IfmUtil.getInterfaceType(iface) ==
+                InterfaceInfo.InterfaceType.VLAN_INTERFACE).collect(Collectors.toList());
     }
 
     /**
