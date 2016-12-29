@@ -55,6 +55,25 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <!-- Testing Dependencies -->
     <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>testutils</artifactId>
+      <version>${genius.version}</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>lockmanager-impl</artifactId>
+      <version>${genius.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-impl</artifactId>
+      <version>${genius.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -72,7 +91,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.console</artifactId>
-      <version>${karaf.shell.console.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -88,6 +106,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.version}</version>
     </dependency>
   </dependencies>
+
   <!--Build Dependencies-->
   <build>
     <plugins>
@@ -116,6 +135,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.xtend</groupId>
+        <artifactId>xtend-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
