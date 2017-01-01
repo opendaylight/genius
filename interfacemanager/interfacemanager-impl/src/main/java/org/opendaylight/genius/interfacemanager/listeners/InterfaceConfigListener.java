@@ -73,6 +73,8 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
                 LOG.warn("parent refs not specified for {}", interfaceOld.getName());
                 return;
             }
+            // FIXME I would like to refactor this code to use the common logic, but this seems like dead code
+            // only tunnel interfaces have a dpId augmentation, but we update only for non-tunnel ports??
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
             parentRefs = updateParentInterface(isTunnelInterface, parentRefs);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
