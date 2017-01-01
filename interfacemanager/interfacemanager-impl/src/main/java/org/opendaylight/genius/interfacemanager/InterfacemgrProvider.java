@@ -8,19 +8,27 @@
 package org.opendaylight.genius.interfacemanager;
 
 
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -49,6 +57,8 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.ovsdb.utils.mdsal.utils.MdsalUtils;
+import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -82,7 +92,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
@@ -118,6 +131,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private CacheBridgeEntryConfigListener cacheBridgeEntryConfigListener;
     private CacheBridgeRefEntryListener cacheBridgeRefEntryListener;
     private EntityOwnershipService entityOwnershipService;
+    private MdsalUtils mdsalUtils;
+    private SouthboundUtils southboundUtils;
 
     public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
         this.rpcProviderRegistry = rpcProviderRegistry;
@@ -161,7 +176,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             rpcRegistration = getRpcProviderRegistry().addRpcImplementation(
                     OdlInterfaceRpcService.class, interfaceManagerRpcService);
 
-            interfaceConfigListener = new InterfaceConfigListener(dataBroker, idManager, alivenessManager, mdsalManager);
+            interfaceConfigListener = new InterfaceConfigListener(dataBroker, idManager, alivenessManager, mdsalManager, this);
             interfaceConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
             interfaceInventoryStateListener = new InterfaceInventoryStateListener(dataBroker, idManager, mdsalManager, alivenessManager);
@@ -173,7 +188,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             hwVTEPTunnelsStateListener = new HwVTEPTunnelsStateListener(dataBroker);
             hwVTEPTunnelsStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
-            terminationPointStateListener = new TerminationPointStateListener(dataBroker);
+            terminationPointStateListener = new TerminationPointStateListener(dataBroker, this);
             terminationPointStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
 
             flowBasedServicesConfigListener = new FlowBasedServicesConfigListener(this);
@@ -205,6 +220,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
                     session.getRpcService(OpendaylightPortStatisticsService.class), session.getRpcService(OpendaylightFlowTableStatisticsService.class));
 
+            this.mdsalUtils = new MdsalUtils(dataBroker);
+            this.southboundUtils = new SouthboundUtils(mdsalUtils);
 
             interfaceStatusMonitor.reportStatus("OPERATIONAL");
         } catch (Exception e) {
@@ -554,4 +571,95 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
     }
+
+    @Override
+    public String getPortNameForInterface(NodeConnectorId nodeConnectorId, String interfaceName) {
+        return InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, interfaceName);
+    }
+
+    @Override
+    public String getPortNameForInterface(String dpnId, String interfaceName) {
+        return InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, interfaceName);
+    }
+
+    @Override
+    public String getParentRefNameForInterface(String interfaceName) {
+        String parentRefName = null;
+
+        // FIXME Note this utility isn't very good for scale/performance as it traverses all nodes,
+        // probably need to use a cache instead of these (iface_name->dpnId+tpName).
+        Node node = southboundUtils.getNodeByTerminationPointExternalId(interfaceName);
+        if (node != null) {
+            String dpnId = southboundUtils.getDataPathIdStr(node);
+            if (dpnId == null) {
+                LOG.error("Got node {} when looking for TP with external ID {}, "
+                        + "but unexpectedly got NULL dpnId for this node", node, interfaceName);
+                return null;
+            }
+            TerminationPoint tp = SouthboundUtils.getTerminationPointByExternalId(node, interfaceName);
+            if (tp == null) {
+                LOG.error("Got node {} when looking for TP with external ID {}, "
+                        + "but unexpectedly got a NULL TP from this node", node, interfaceName);
+                return null;
+            }
+            OvsdbTerminationPointAugmentation ovsdbTp = tp.getAugmentation(OvsdbTerminationPointAugmentation.class);
+            parentRefName = getPortNameForInterface(dpnId, ovsdbTp.getName());
+            LOG.debug("Building parent ref for neutron port {}, using parentRefName {} acquired by external ID",
+                    interfaceName, parentRefName);
+        } else {
+            LOG.debug("Skipping parent ref for neutron port {}, as there is no termination point that references "
+                    + "this neutron port yet.", interfaceName);
+        }
+
+        return parentRefName;
+    }
+
+    @Override
+    public void updateInterfaceParentRef(String interfaceName, String parentInterface) {
+        // This should generally be called by EOS Owner for IFACE_ENTITY - runOnlyInLeaderNode()
+        updateInterfaceParentRef(interfaceName, parentInterface, true);
+    }
+
+    @Override
+    public void updateInterfaceParentRef(String interfaceName, String parentInterface, Boolean readInterfaceBeforeWrite) {
+        // This should generally be called by EOS Owner for IFACE_ENTITY - runOnlyInLeaderNode()
+        if (interfaceName == null) {
+            return;
+        }
+
+        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+        ParentRefUpdateWorker parentRefUpdateWorker =
+                new ParentRefUpdateWorker(interfaceName, parentInterface, readInterfaceBeforeWrite);
+        jobCoordinator.enqueueJob(interfaceName, parentRefUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
+    }
+
+    public class ParentRefUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+        String interfaceName;
+        String parentInterfaceName;
+        Boolean readInterfaceBeforeWrite;
+
+        public ParentRefUpdateWorker(String interfaceName, String parentInterfaceName, Boolean readInterfaceBeforeWrite) {
+            this.interfaceName = interfaceName;
+            this.parentInterfaceName = parentInterfaceName;
+            this.readInterfaceBeforeWrite = readInterfaceBeforeWrite;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            if (readInterfaceBeforeWrite) {
+                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+                if (iface == null) {
+                    LOG.debug("Interface doesn't exist in config DS - no need to update parentRef, skipping");
+                    return null;
+                }
+            }
+            WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+            IfmUtil.updateInterfaceParentRef(t, interfaceName, parentInterfaceName);
+            CheckedFuture<Void, TransactionCommitFailedException> submitFuture = t.submit();
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            futures.add(submitFuture);
+            return futures;
+        }
+    }
+
 }
