@@ -68,12 +68,12 @@ public class OvsInterfaceStateUpdateHelper {
                 && InterfaceManagerCommonUtils.checkIfBfdStateIsDown(iface.getName())) {
             operStatusNew = Interface.OperStatus.Down;
             opstateModified = operStatusNew.equals(operStatusOld);
+            if (!opstateModified) {
+                LOG.debug("If State entry for port: {} Not Modified.", interfaceName);
+                return futures;
+            }
         }
 
-        if (!opstateModified && !hardwareAddressModified) {
-            LOG.debug("If State entry for port: {} Not Modified.", interfaceName);
-            return futures;
-        }
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         if (hardwareAddressModified) {
             LOG.debug("Hw-Address Modified for Port: {}", interfaceName);
