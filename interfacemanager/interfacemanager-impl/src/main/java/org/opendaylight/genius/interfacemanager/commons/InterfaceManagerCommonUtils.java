@@ -559,4 +559,28 @@ public class InterfaceManagerCommonUtils {
         }
     }
 
+    public static String getPortNameForInterfaceState(NodeConnectorId nodeConnectorId, String portName) {
+        if (isNovaOrTunnelPort(portName)) {
+            return portName;
+        } else {
+            return getDpnPrefixedPortName(nodeConnectorId, portName);
+        }
+    }
+
+    public static String getPortNameForInterfaceState(String dpnId, String portName) {
+        if (isNovaOrTunnelPort(portName)) {
+            return portName;
+        } else {
+            return getDpnPrefixedPortName(dpnId, portName);
+        }
+    }
+
+    private static String getDpnPrefixedPortName(NodeConnectorId nodeConnectorId, String portName) {
+        return getDpnPrefixedPortName(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId).toString(),
+                IfmConstants.OF_URI_SEPARATOR + portName);
+    }
+
+    private static String getDpnPrefixedPortName(String dpnId, String portName) {
+        return dpnId + IfmConstants.OF_URI_SEPARATOR + portName;
+    }
 }
