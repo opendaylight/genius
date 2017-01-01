@@ -571,4 +571,19 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
     }
+
+    @Override
+    public String getPortNameForInterfaceDS(NodeConnectorId nodeConnectorId, String interfaceName) {
+        return InterfaceManagerCommonUtils.getPortNameForInterfaceState(nodeConnectorId, interfaceName);
+    }
+
+    @Override
+    public String getPortNameForInterfaceDS(String dpnId, String interfaceName) {
+        return InterfaceManagerCommonUtils.getPortNameForInterfaceState(dpnId, interfaceName);
+    }
+
+    @Override
+    private String getDpnPrefixedPortName(String dpnId, String interfaceName) {
+        return InterfaceManagerCommonUtils.getDpnPrefixedPortName(dpnId, interfaceName);
+    }
 }
