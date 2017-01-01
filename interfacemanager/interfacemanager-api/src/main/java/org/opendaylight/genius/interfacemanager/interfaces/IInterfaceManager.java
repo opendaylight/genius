@@ -17,6 +17,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 
 public interface IInterfaceManager {
@@ -58,5 +59,11 @@ public interface IInterfaceManager {
     List<Interface> getVxlanInterfaces();
 
     boolean isExternalInterface(String interfaceName);
+
+    String getPortNameForInterfaceState(NodeConnectorId nodeConnectorId, String portName);
+
+    String getPortNameForInterfaceState(String dpnId, String portName);
+
+    String getDpnPrefixedPortName(String dpnId, String portName);
 
 }
