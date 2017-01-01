@@ -16,6 +16,7 @@ import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListen
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
@@ -41,15 +42,18 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
     private IdManagerService idManager;
     private AlivenessMonitorService alivenessMonitorService;
     private IMdsalApiManager mdsalApiManager;
+    private final IInterfaceManager interfaceManager;
 
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
                                    final AlivenessMonitorService alivenessMonitorService,
-                                   final IMdsalApiManager mdsalApiManager) {
+                                   final IMdsalApiManager mdsalApiManager,
+                                   final IInterfaceManager interfaceManager) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.alivenessMonitorService = alivenessMonitorService;
         this.mdsalApiManager = mdsalApiManager;
+        this.interfaceManager = interfaceManager; // FIXME blueprint
     }
 
     @Override
@@ -87,11 +91,20 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
             String ifNameNew = interfaceNew.getName();
+
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceNew.getName());
-                return;
+                // parentRef is missing on interface - try to acquire it from Southbound
+                String parentRefName = interfaceManager.getParentRefNameForInterface(ifNameNew);
+                if (parentRefName == null) {
+                    LOG.debug("parent refs not specified for {}, failed acquiring it from southbound", ifNameNew);
+                    return;
+                }
+                interfaceManager.updateInterfaceParentRef(ifNameNew, parentRefName);
+                LOG.debug("parent ref was missing for interface {}, retrieved parent ref {} from southbound,"
+                        + "filling it in datastore", ifNameNew, parentRefName);
             }
+
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
             parentRefs = updateParentInterface(isTunnelInterface, parentRefs);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -109,8 +122,15 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
             String ifName = interfaceNew.getName();
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceNew.getName());
-                return;
+                // parentRef is missing on interface - try to acquire it from Southbound
+                String parentRefName = interfaceManager.getParentRefNameForInterface(ifName);
+                if (parentRefName == null) {
+                    LOG.debug("parent refs not specified for {}, failed acquiring it from southbound", ifName);
+                    return;
+                }
+                interfaceManager.updateInterfaceParentRef(ifName, parentRefName);
+                LOG.debug("parent ref was missing for interface {}, retrieved parent ref {} from southbound,"
+                        + "filling it in datastore", ifName, parentRefName);
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew);
             parentRefs = updateParentInterface(isTunnelInterface, parentRefs);
