@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 
 public interface IInterfaceManager {
     @Deprecated
@@ -62,4 +63,11 @@ public interface IInterfaceManager {
 
     boolean isExternalInterface(String interfaceName);
 
+    String getPortNameForInterface(NodeConnectorId nodeConnectorId, String interfaceName);
+
+    String getPortNameForInterface(String dpnId, String interfaceName);
+
+    String getParentRefNameForInterface(String interfaceName);
+
+    void updateInterfaceParentRef(String interfaceName, String parentInterface);
 }
