@@ -9,12 +9,15 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
@@ -41,15 +44,18 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
     private IdManagerService idManager;
     private AlivenessMonitorService alivenessMonitorService;
     private IMdsalApiManager mdsalApiManager;
+    private final InterfacemgrProvider interfaceMgrProvider;
 
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
                                    final AlivenessMonitorService alivenessMonitorService,
-                                   final IMdsalApiManager mdsalApiManager) {
+                                   final IMdsalApiManager mdsalApiManager,
+                                   final InterfacemgrProvider interfaceMgrProvider) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.alivenessMonitorService = alivenessMonitorService;
         this.mdsalApiManager = mdsalApiManager;
+        this.interfaceMgrProvider = interfaceMgrProvider;
     }
 
     @Override
@@ -62,20 +68,34 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
         return InterfaceConfigListener.this;
     }
 
+    private ParentRefs updateInterfaceParentRefs(Interface iface) {
+        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            String ifName = iface.getName();
+            // parentRef is missing on interface - try to acquire it from Southbound
+            String parentRefName = interfaceMgrProvider.getParentRefNameForInterface(ifName);
+            if (parentRefName == null) {
+                LOG.debug("parent refs not specified for {}, failed acquiring it from southbound", ifName);
+                return null;
+            }
+            interfaceMgrProvider.updateInterfaceParentRef(ifName, parentRefName);
+            parentRefs = new ParentRefsBuilder(parentRefs).setParentInterface(parentRefName).build();
+            LOG.debug("parent ref was missing for interface {}, retrieved parent ref {} from southbound,"
+                    + "filling it in datastore", ifName, parentRefName);
+        }
+        return parentRefs;
+    }
+
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
-            String ifName = interfaceOld.getName();
-            ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceOld.getName());
-                return;
-            }
+            ParentRefs parentRefs = updateInterfaceParentRefs(interfaceOld);
+
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
-            parentRefs = updateParentInterface(isTunnelInterface, parentRefs);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld, ifName, parentRefs);
+            RendererConfigRemoveWorker configWorker =
+                    new RendererConfigRemoveWorker(key, interfaceOld, interfaceOld.getName(), parentRefs);
             String synchronizationKey = isTunnelInterface ?
                     parentRefs.getDatapathNodeIdentifier().toString() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
@@ -86,19 +106,15 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
-            String ifNameNew = interfaceNew.getName();
-            ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceNew.getName());
-                return;
-            }
+            ParentRefs parentRefs = updateInterfaceParentRefs(interfaceNew);
+
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
-            parentRefs = updateParentInterface(isTunnelInterface, parentRefs);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigUpdateWorker worker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew, ifNameNew);
+            RendererConfigUpdateWorker configWorker =
+                    new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew, interfaceNew.getName());
             String synchronizationKey = isTunnelInterface ?
                     interfaceOld.getName() : parentRefs.getParentInterface();
-            coordinator.enqueueJob(synchronizationKey, worker, IfmConstants.JOB_MAX_RETRIES);
+            coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
         });
     }
 
@@ -106,29 +122,16 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
-            String ifName = interfaceNew.getName();
-            ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceNew.getName());
-                return;
-            }
+            ParentRefs parentRefs = updateInterfaceParentRefs(interfaceNew);
+
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew);
-            parentRefs = updateParentInterface(isTunnelInterface, parentRefs);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs, ifName);
+            RendererConfigAddWorker configWorker =
+                    new RendererConfigAddWorker(key, interfaceNew, parentRefs, interfaceNew.getName());
             String synchronizationKey = isTunnelInterface ?
                     interfaceNew.getName() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
         });
-    }
-
-    private static ParentRefs updateParentInterface(boolean isTunnelInterface, ParentRefs parentRefs) {
-        if (!isTunnelInterface && parentRefs.getDatapathNodeIdentifier() != null) {
-            String parentInterface = parentRefs.getDatapathNodeIdentifier().toString() + IfmConstants.OF_URI_SEPARATOR +
-                    parentRefs.getParentInterface();
-            parentRefs = new ParentRefsBuilder(parentRefs).setParentInterface(parentInterface).build();
-        }
-        return parentRefs;
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {

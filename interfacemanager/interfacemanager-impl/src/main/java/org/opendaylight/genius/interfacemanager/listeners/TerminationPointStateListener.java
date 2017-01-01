@@ -8,14 +8,20 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
+import org.opendaylight.ovsdb.utils.mdsal.utils.MdsalUtils;
+import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -27,11 +33,18 @@ import org.slf4j.LoggerFactory;
 
 public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
+    private final MdsalUtils mdsalUtils;
+    private final SouthboundUtils southboundUtils;
+    private final InterfacemgrProvider interfaceMgrProvider;
 
-    public TerminationPointStateListener(DataBroker dataBroker) {
+    public TerminationPointStateListener(DataBroker dataBroker,
+                                         final InterfacemgrProvider interfaceMgrProvider) {
         super(OvsdbTerminationPointAugmentation.class, TerminationPointStateListener.class);
         this.dataBroker = dataBroker;
+        this.mdsalUtils = new MdsalUtils(dataBroker);
+        this.southboundUtils = new SouthboundUtils(mdsalUtils);
+        this.interfaceMgrProvider = interfaceMgrProvider;
     }
 
     @Override
@@ -62,27 +75,37 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
                           OvsdbTerminationPointAugmentation tpOld,
                           OvsdbTerminationPointAugmentation tpNew) {
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
-        if (tpNew.getInterfaceBfdStatus() != null &&
-                !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus())) {
+        if (tpNew.getInterfaceBfdStatus() != null && (tpOld == null ||
+                !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
             LOG.trace("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.",
                     identifier, tpOld, tpNew);
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
+
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+            String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
+            if (newInterfaceName != null && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
+                InstanceIdentifier<Node> nodeInstanceId = identifier.firstIdentifierOf(Node.class);
+                String dpnId = southboundUtils.getDatapathIdFromNodeInstanceId(nodeInstanceId);
+                if (dpnId == null) {
+                    return;
+                }
+                String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
+                LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
+                        + "of that interface ID to this termination point's interface-state name {}",
+                        tpNew.getName(), newInterfaceName, parentRefName);
+                interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
+            }
+        });
     }
 
     @Override
     protected void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                        OvsdbTerminationPointAugmentation tpNew) {
-        LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());
-        if (tpNew.getInterfaceBfdStatus() != null) {
-            LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tpNew);
-            jobCoordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
-        }
-
+        update(identifier, null, tpNew);
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
