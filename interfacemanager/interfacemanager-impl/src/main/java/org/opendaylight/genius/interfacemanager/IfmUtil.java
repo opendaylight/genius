@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -59,6 +60,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan.L2vlanMode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
@@ -516,6 +518,17 @@ public class IfmUtil {
             southboundMacAddress = generateMacAddress(portNo);
         }
         return new PhysAddress(southboundMacAddress);
+    }
+
+    public static void updateInterfaceParentRef(WriteTransaction t, String interfaceName, String parentInterface) {
+        InstanceIdentifier<Interface> interfaceIdentifier = InstanceIdentifier.builder(Interfaces.class)
+                .child(Interface.class, new InterfaceKey(interfaceName)).build();
+        LOG.debug("Updating parentRefInterface for interfaceName {}. interfaceKey {}, with parentRef augmentation pointing to {}",
+                interfaceName, new InterfaceKey(interfaceName), parentInterface);
+        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
+        Interface iface = new InterfaceBuilder().setKey(new InterfaceKey(interfaceName)).
+                addAugmentation(ParentRefs.class, parentRefs).build();
+        t.merge(LogicalDatastoreType.CONFIGURATION, interfaceIdentifier, iface);
     }
 
     public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
