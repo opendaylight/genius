@@ -77,12 +77,9 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-            String portName = flowCapableNodeConnectorOld.getName();
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+            String portName = InterfaceManagerCommonUtils.getPortNameForInterfaceState(nodeConnectorId, flowCapableNodeConnectorOld.getName());
 
-            if (!InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
-                portName = getDpnPrefixedPortName(nodeConnectorId, portName);
-            }
             remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
         });
     }
@@ -92,7 +89,8 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                           FlowCapableNodeConnector fcNodeConnectorNew) {
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
-            String portName = fcNodeConnectorNew.getName();
+            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+            String portName = InterfaceManagerCommonUtils.getPortNameForInterfaceState(nodeConnectorId, fcNodeConnectorNew.getName());
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
             InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
@@ -105,11 +103,13 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-            String portName = fcNodeConnectorNew.getName();
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+            String nodeConnectorName = fcNodeConnectorNew.getName();
+            String portName;
 
             //VM Migration: Delete existing interface entry for older DPN
-            if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
+            if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(nodeConnectorName)) {
+                String portName = nodeConnectorName;
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                     if (InterfaceManagerCommonUtils.isTunnelPort(portName)) {
@@ -128,7 +128,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                     }
                 }
             } else {
-                portName = getDpnPrefixedPortName(nodeConnectorId, portName);
+                portName = InterfaceManagerCommonUtils.getPortNameForInterfaceState(nodeConnectorId, fcNodeConnectorNew.getName());
             }
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
@@ -146,12 +146,6 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private String getDpnPrefixedPortName(NodeConnectorId nodeConnectorId, String portName) {
-        portName = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId).toString() +
-                IfmConstants.OF_URI_SEPARATOR +
-                portName;
-        return portName;
-    }
     private class InterfaceStateAddWorker implements Callable {
         private final NodeConnectorId nodeConnectorId;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
