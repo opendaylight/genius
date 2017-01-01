@@ -7,17 +7,21 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
+import com.google.common.base.Strings;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.AsyncDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIds;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -25,6 +29,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -32,6 +37,9 @@ import java.util.concurrent.Callable;
 public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private DataBroker dataBroker;
+
+    // External ID key used for mapping between an OVSDB port and an interface name
+    private static final String EXTERNAL_ID_INTERFACE_KEY = "iface-id";
 
     public TerminationPointStateListener(DataBroker dataBroker) {
         super(OvsdbTerminationPointAugmentation.class, TerminationPointStateListener.class);
@@ -74,6 +82,8 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
+
+        updateExternalIdInterfaceParentRef(tpNew);
     }
 
     @Override
@@ -87,6 +97,24 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
         }
 
+        updateExternalIdInterfaceParentRef(tpNew);
+    }
+
+    private void updateExternalIdInterfaceParentRef(OvsdbTerminationPointAugmentation tpNew) {
+        List<InterfaceExternalIds> interfaceExternalIds = tpNew.getInterfaceExternalIds();
+        if (interfaceExternalIds == null || interfaceExternalIds.isEmpty()) {
+            return;
+        }
+        for (InterfaceExternalIds entry : interfaceExternalIds) {
+            if (entry.getExternalIdKey().equals(EXTERNAL_ID_INTERFACE_KEY)) {
+                LOG.debug("Detected new termination point {} with external ID {}, "
+                        + "updating parent ref of that interface ID to this termination point name.",
+                        tpNew.getName(), entry.getExternalIdValue());
+                String interfaceName = entry.getExternalIdValue();
+                WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                IfmUtil.updateInterfaceParentRef(t, interfaceName, tpNew.getName());
+            }
+        }
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
