@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.GroupActionCase;
 
@@ -26,15 +25,6 @@ public class ActionGroupTest {
     @Test
     public void actionInfoTestForGroupAction() {
         ActionInfo actionInfo = new ActionGroup(123);
-        Action action = actionInfo.buildAction();
-        assertTrue(action.getAction() instanceof GroupActionCase);
-        GroupActionCase actionCase = (GroupActionCase) action.getAction();
-        assertEquals(123L, (long) actionCase.getGroupAction().getGroupId());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        ActionInfo actionInfo = new ActionInfo(ActionType.group, new String[] {"123"});
         Action action = actionInfo.buildAction();
         assertTrue(action.getAction() instanceof GroupActionCase);
         GroupActionCase actionCase = (GroupActionCase) action.getAction();

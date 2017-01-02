@@ -34,8 +34,7 @@ public class ActionInfoList {
         int newActionKey = 0;
         List<Action> actions = new ArrayList<>(actionInfos.size());
         for (ActionInfo actionInfo: actionInfos) {
-            ActionType actionType = actionInfo.getActionType();
-            actions.add(actionType.buildAction(newActionKey++, actionInfo));
+            actions.add(actionInfo.buildAction(newActionKey++));
         }
         return actions;
     }
