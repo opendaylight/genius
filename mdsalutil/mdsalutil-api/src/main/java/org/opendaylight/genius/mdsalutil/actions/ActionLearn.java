@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -53,16 +51,7 @@ public class ActionLearn extends ActionInfo {
 
     public ActionLearn(int actionKey, int idleTimeout, int hardTimeout, int priority, BigInteger cookie, int flags,
         short tableId, int finIdleTimeout, int finHardTimeout, List<FlowMod> flowMods) {
-        super(ActionType.learn, new String[] {
-                Integer.toString(idleTimeout),
-                Integer.toString(hardTimeout),
-                Integer.toString(priority),
-                cookie.toString(),
-                Integer.toString(flags),
-                Short.toString(tableId),
-                Integer.toString(finIdleTimeout),
-                Integer.toString(finHardTimeout)
-            }, convertFlowModsToStrings(flowMods), actionKey);
+        super(actionKey);
         this.idleTimeout = idleTimeout;
         this.hardTimeout = hardTimeout;
         this.priority = priority;
@@ -72,53 +61,6 @@ public class ActionLearn extends ActionInfo {
         this.finIdleTimeout = finIdleTimeout;
         this.finHardTimeout = finHardTimeout;
         this.flowMods.addAll(flowMods);
-    }
-
-    @Deprecated
-    public ActionLearn(ActionInfo actionInfo) {
-        super(ActionType.learn, actionInfo.getActionValues(), actionInfo.getActionValuesMatrix(),
-            actionInfo.getActionKey());
-        String[] actionValues = actionInfo.getActionValues();
-        String[][] actionValuesMatrix = actionInfo.getActionValuesMatrix();
-        int i = 0;
-        this.idleTimeout = Integer.parseInt(actionValues[i++]);
-        this.hardTimeout = Integer.parseInt(actionValues[i++]);
-        this.priority = Integer.parseInt(actionValues[i++]);
-        this.cookie = new BigInteger(actionValues[i++]);
-        this.flags = Integer.parseInt(actionValues[i++]);
-        this.tableId = Short.parseShort(actionValues[i++]);
-        this.finIdleTimeout = Integer.parseInt(actionValues[i++]);
-        this.finHardTimeout = Integer.parseInt(actionValues[i++]);
-
-        for (String[] actionValueMatrix : actionValuesMatrix) {
-            i = 0;
-            switch (NwConstants.LearnFlowModsType.valueOf(actionValueMatrix[i++])) {
-                case MATCH_FROM_FIELD:
-                    this.flowMods.add(new MatchFromField(actionValueMatrix));
-                    break;
-                case MATCH_FROM_VALUE:
-                    this.flowMods.add(new MatchFromValue(actionValueMatrix));
-                    break;
-                case COPY_FROM_FIELD:
-                    this.flowMods.add(new CopyFromField(actionValueMatrix));
-                    break;
-                case COPY_FROM_VALUE:
-                    this.flowMods.add(new CopyFromValue(actionValueMatrix));
-                    break;
-                case OUTPUT_TO_PORT:
-                    this.flowMods.add(new OutputToPort(actionValueMatrix));
-                    break;
-            }
-        }
-    }
-
-    @Deprecated
-    private static String[][] convertFlowModsToStrings(List<FlowMod> flowMods) {
-        String[][] result = new String[flowMods.size()][];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = flowMods.get(i).toStrings();
-        }
-        return result;
     }
 
     @Override
@@ -219,9 +161,6 @@ public class ActionLearn extends ActionInfo {
 
     public interface FlowMod {
         FlowMods buildFlowMod();
-
-        @Deprecated
-        String[] toStrings();
     }
 
     public static class MatchFromField implements FlowMod {
@@ -233,18 +172,6 @@ public class ActionLearn extends ActionInfo {
             this.sourceField = sourceField;
             this.destField = destField;
             this.bits = bits;
-        }
-
-        @Deprecated
-        private MatchFromField(String[] actionValueMatrix) {
-            this(Long.parseLong(actionValueMatrix[1]), Long.parseLong(actionValueMatrix[2]),
-                Integer.parseInt(actionValueMatrix[3]));
-        }
-
-        @Override
-        public String[] toStrings() {
-            return new String[] {NwConstants.LearnFlowModsType.MATCH_FROM_FIELD.name(), Long.toString(
-                sourceField), Long.toString(destField), Integer.toString(bits)};
         }
 
         @Override
@@ -295,18 +222,6 @@ public class ActionLearn extends ActionInfo {
             this.bits = bits;
         }
 
-        @Deprecated
-        private MatchFromValue(String[] actionValueMatrix) {
-            this(Integer.parseInt(actionValueMatrix[1]), Long.parseLong(actionValueMatrix[2]),
-                Integer.parseInt(actionValueMatrix[3]));
-        }
-
-        @Override
-        public String[] toStrings() {
-            return new String[] {NwConstants.LearnFlowModsType.MATCH_FROM_VALUE.name(), Integer.toString(
-                value), Long.toString(sourceField), Integer.toString(bits)};
-        }
-
         @Override
         public FlowMods buildFlowMod() {
             FlowModAddMatchFromValueBuilder builder = new FlowModAddMatchFromValueBuilder();
@@ -352,18 +267,6 @@ public class ActionLearn extends ActionInfo {
             this.sourceField = sourceField;
             this.destField = destField;
             this.bits = bits;
-        }
-
-        @Deprecated
-        private CopyFromField(String[] actionValueMatrix) {
-            this(Long.parseLong(actionValueMatrix[1]), Long.parseLong(actionValueMatrix[2]),
-                Integer.parseInt(actionValueMatrix[3]));
-        }
-
-        @Override
-        public String[] toStrings() {
-            return new String[] {NwConstants.LearnFlowModsType.COPY_FROM_FIELD.name(), Long.toString(
-                sourceField), Long.toString(destField), Integer.toString(bits)};
         }
 
         @Override
@@ -414,18 +317,6 @@ public class ActionLearn extends ActionInfo {
             this.bits = bits;
         }
 
-        @Deprecated
-        private CopyFromValue(String[] actionValueMatrix) {
-            this(Integer.parseInt(actionValueMatrix[1]), Long.parseLong(actionValueMatrix[2]),
-                Integer.parseInt(actionValueMatrix[3]));
-        }
-
-        @Override
-        public String[] toStrings() {
-            return new String[] {NwConstants.LearnFlowModsType.COPY_FROM_VALUE.name(), Integer.toString(
-                value), Long.toString(destField), Integer.toString(bits)};
-        }
-
         @Override
         public FlowMods buildFlowMod() {
             FlowModCopyValueIntoFieldBuilder builder = new FlowModCopyValueIntoFieldBuilder();
@@ -469,17 +360,6 @@ public class ActionLearn extends ActionInfo {
         public OutputToPort(long sourceField, int bits) {
             this.sourceField = sourceField;
             this.bits = bits;
-        }
-
-        @Deprecated
-        private OutputToPort(String[] actionValueMatrix) {
-            this(Long.parseLong(actionValueMatrix[1]), Integer.parseInt(actionValueMatrix[2]));
-        }
-
-        @Override
-        public String[] toStrings() {
-            return new String[] {NwConstants.LearnFlowModsType.OUTPUT_TO_PORT.name(), Long.toString(
-                sourceField), Integer.toString(bits)};
         }
 
         @Override

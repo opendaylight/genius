@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopPbbActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.pop.pbb.action._case.PopPbbActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -24,7 +23,7 @@ public class ActionPopPbb extends ActionInfo {
     }
 
     public ActionPopPbb(int actionKey) {
-        super(ActionType.pop_pbb, new String[0], actionKey);
+        super(actionKey);
     }
 
     @Override

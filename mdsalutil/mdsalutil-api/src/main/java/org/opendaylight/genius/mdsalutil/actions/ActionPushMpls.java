@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PushMplsActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.push.mpls.action._case.PushMplsActionBuilder;
@@ -25,7 +24,7 @@ public class ActionPushMpls extends ActionInfo {
     }
 
     public ActionPushMpls(int actionKey) {
-        super(ActionType.push_mpls, new String[0], actionKey);
+        super(actionKey);
     }
 
     @Override

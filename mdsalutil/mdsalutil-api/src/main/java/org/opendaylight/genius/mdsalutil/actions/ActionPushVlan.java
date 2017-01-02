@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PushVlanActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.push.vlan.action._case.PushVlanActionBuilder;
@@ -21,11 +20,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  */
 public class ActionPushVlan extends ActionInfo {
     public ActionPushVlan() {
-        super(ActionType.push_vlan, new String[0]);
+        this(0);
     }
 
     public ActionPushVlan(int actionKey) {
-        super(ActionType.push_vlan, new String[0], actionKey);
+        super(actionKey);
     }
 
     @Override
