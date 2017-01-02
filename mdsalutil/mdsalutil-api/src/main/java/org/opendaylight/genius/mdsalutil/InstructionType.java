@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright © 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,100 +7,57 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
-import java.util.List;
-
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ApplyActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.GoToTableCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ClearActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ClearActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.apply.actions._case.ApplyActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.apply.actions._case.ApplyActionsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.go.to.table._case.GoToTableBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.actions._case.WriteActions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.actions._case.WriteActionsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadataBuilder;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionClearActions;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteActions;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
 
+@Deprecated
 public enum InstructionType {
+    @Deprecated
     apply_actions {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            List<Action> listAction = instructionInfo.buildActions();
-            ApplyActions applyActions = new ApplyActionsBuilder().setAction(listAction).build();
-            ApplyActionsCase applyActionsCase = new ApplyActionsCaseBuilder().setApplyActions(applyActions).build();
-            InstructionBuilder instructionBuilder = new InstructionBuilder();
-
-            instructionBuilder.setInstruction(applyActionsCase);
-            instructionBuilder.setKey(new InstructionKey(instructionKey));
-
-            return instructionBuilder.build();
+            return new InstructionApplyActions(instructionInfo.getActionInfos()).buildInstruction(instructionKey);
         }
     },
 
+    @Deprecated
     goto_table {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            short tableId = (short) instructionInfo.getInstructionValues()[0];
-
-            return new InstructionBuilder()
-                    .setInstruction(
-                            new GoToTableCaseBuilder().setGoToTable(
-                                    new GoToTableBuilder().setTableId(tableId).build()).build())
-                    .setKey(new InstructionKey(instructionKey)).build();
+            return new InstructionGotoTable((short) instructionInfo.getInstructionValues()[0]).buildInstruction(
+                    instructionKey);
         }
     },
 
+    @Deprecated
     write_actions {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            List<Action> listAction = instructionInfo.buildActions();
-            WriteActions writeActions = new WriteActionsBuilder().setAction(listAction).build();
-            WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
-            InstructionBuilder instructionBuilder = new InstructionBuilder();
-
-            instructionBuilder.setInstruction(writeActionsCase);
-            instructionBuilder.setKey(new InstructionKey(instructionKey));
-
-            return instructionBuilder.build();
+            return new InstructionWriteActions(instructionInfo.getActionInfos()).buildInstruction(instructionKey);
         }
     },
 
+    @Deprecated
     clear_actions {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            
-            ClearActionsCase clearActionsCase = new ClearActionsCaseBuilder().build();
-
-            InstructionBuilder instructionBuilder = new InstructionBuilder();
-            instructionBuilder.setInstruction(clearActionsCase);
-            instructionBuilder.setKey(new InstructionKey(instructionKey));
-
-            return instructionBuilder.build();
+            return new InstructionClearActions().buildInstruction(instructionKey);
         }
     },
 
+    @Deprecated
     write_metadata {
         @Override
         public Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey) {
-            BigInteger[] metadataValues = instructionInfo.getBigInstructionValues();
-            BigInteger metadata = metadataValues[0];
-            BigInteger mask = metadataValues[1];
-
-            return new InstructionBuilder()
-                    .setInstruction(
-                            new WriteMetadataCaseBuilder().setWriteMetadata(
-                                    new WriteMetadataBuilder().setMetadata(metadata).setMetadataMask(mask).build())
-                                    .build()).setKey(new InstructionKey(instructionKey)).build();
+            return new InstructionWriteMetadata(instructionInfo.getBigInstructionValues()[0],
+                    instructionInfo.getBigInstructionValues()[1]).buildInstruction(instructionKey);
         }
     };
 
+    @Deprecated
     public abstract Instruction buildInstruction(InstructionInfo instructionInfo, int instructionKey);
 }
