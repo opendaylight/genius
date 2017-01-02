@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.instructions;
 
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.GoToTableCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.go.to.table._case.GoToTableBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
@@ -18,11 +17,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 /**
  * Goto table instruction.
  */
-public class InstructionGotoTable extends InstructionInfo {
+public class InstructionGotoTable implements InstructionInfo {
     private final short tableId;
 
     public InstructionGotoTable(short tableId) {
-        super(InstructionType.goto_table, new long[] {tableId});
         this.tableId = tableId;
     }
 
