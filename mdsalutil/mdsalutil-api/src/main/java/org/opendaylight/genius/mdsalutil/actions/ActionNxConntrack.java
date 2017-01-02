@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -29,18 +28,11 @@ public class ActionNxConntrack extends ActionInfo {
     }
 
     public ActionNxConntrack(int actionKey, int flags, long zoneSrc, int conntrackZone, short recircTable) {
-        super(ActionType.nx_conntrack, new String[] {Integer.toString(flags), Long.toString(zoneSrc), Integer.toString(
-                conntrackZone), Short.toString(recircTable)}, actionKey);
+        super(actionKey);
         this.flags = flags;
         this.zoneSrc = zoneSrc;
         this.conntrackZone = conntrackZone;
         this.recircTable = recircTable;
-    }
-
-    @Deprecated
-    public ActionNxConntrack(String[] actionValues) {
-        this(Integer.parseInt(actionValues[0]), Long.parseLong(actionValues[1]), Integer.parseInt(actionValues[2]),
-                Short.parseShort(actionValues[3]));
     }
 
     @Override

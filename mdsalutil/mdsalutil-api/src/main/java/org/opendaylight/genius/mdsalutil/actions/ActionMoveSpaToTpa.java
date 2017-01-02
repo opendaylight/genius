@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -29,12 +28,7 @@ public class ActionMoveSpaToTpa extends ActionInfo {
     }
 
     public ActionMoveSpaToTpa(int actionKey) {
-        super(ActionType.move_spa_to_tpa, new String[0], actionKey);
-    }
-
-    @Deprecated
-    public ActionMoveSpaToTpa(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey());
+        super(actionKey);
     }
 
     @Override

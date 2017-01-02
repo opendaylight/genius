@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 
 import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -36,13 +35,8 @@ public class ActionLoadMacToSha extends ActionInfo {
     }
 
     public ActionLoadMacToSha(int actionKey, MacAddress address) {
-        super(ActionType.load_mac_to_sha, new String[] {address.getValue()}, actionKey);
+        super(actionKey);
         this.address = address;
-    }
-
-    @Deprecated
-    public ActionLoadMacToSha(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), new MacAddress(actionInfo.getActionValues()[0]));
     }
 
     @Override

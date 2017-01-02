@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 import java.math.BigInteger;
 import javax.annotation.Nullable;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -38,16 +37,9 @@ public class ActionSetFieldTunnelId extends ActionInfo {
     }
 
     public ActionSetFieldTunnelId(int actionKey, BigInteger tunnelId, BigInteger tunnelMask) {
-        super(ActionType.set_field_tunnel_id,
-            tunnelMask == null ? new BigInteger[] {tunnelId} : new BigInteger[] {tunnelId, tunnelMask}, actionKey);
+        super(actionKey);
         this.tunnelId = tunnelId;
         this.tunnelMask = tunnelMask;
-    }
-
-    @Deprecated
-    public ActionSetFieldTunnelId(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), actionInfo.getBigActionValues()[0],
-            (actionInfo.getBigActionValues().length > 1) ? actionInfo.getBigActionValues()[1] : null);
     }
 
     @Override
@@ -71,6 +63,15 @@ public class ActionSetFieldTunnelId extends ActionInfo {
                     .build())
             .setKey(new ActionKey(newActionKey))
             .build();
+    }
+
+    public BigInteger getTunnelId() {
+        return tunnelId;
+    }
+
+    @Nullable
+    public BigInteger getTunnelMask() {
+        return tunnelMask;
     }
 
     @Override

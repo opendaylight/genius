@@ -15,7 +15,6 @@ import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
@@ -34,11 +33,6 @@ public class ActionLoadMacToShaTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionLoadMacToSha(new MacAddress(MAC_ADDRESS)).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.load_mac_to_sha, new String[] {MAC_ADDRESS}).buildAction());
     }
 
     private void verifyAction(Action action) {
