@@ -16,6 +16,24 @@
       "revId": "ee165f6a023cb8d5123aba59471b4059c10861a4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_77cfda7f",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/AvailableIdHolder.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-01-02T07:19:56Z",
+      "side": 1,
+      "message": "These changes are fine. This private method is not required.",
+      "parentUuid": "1a622d24_3e7ee46b",
+      "revId": "ee165f6a023cb8d5123aba59471b4059c10861a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
