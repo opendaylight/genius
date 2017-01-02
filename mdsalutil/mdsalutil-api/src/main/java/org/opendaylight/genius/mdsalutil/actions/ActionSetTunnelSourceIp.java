@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 
 import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -38,21 +37,13 @@ public class ActionSetTunnelSourceIp extends ActionInfo {
     }
 
     public ActionSetTunnelSourceIp(int actionKey, BigInteger sourceIp) {
-        super(ActionType.set_tunnel_src_ip, new BigInteger[] {sourceIp}, actionKey);
+        super(actionKey);
         this.sourceIp = sourceIp;
         this.groupBucket = false;
     }
 
     public ActionSetTunnelSourceIp(int actionKey, IpAddress sourceIp) {
         this(actionKey, MDSALUtil.getBigIntIpFromIpAddress(sourceIp));
-    }
-
-    @Deprecated
-    public ActionSetTunnelSourceIp(ActionInfo actionInfo) {
-        super(ActionType.set_tunnel_src_ip, actionInfo.getBigActionValues(), actionInfo.getActionKey());
-        BigInteger[] bigActionValues = actionInfo.getBigActionValues();
-        this.sourceIp = bigActionValues[0];
-        this.groupBucket = bigActionValues.length > 1;
     }
 
     @Override

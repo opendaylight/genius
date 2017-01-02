@@ -15,7 +15,6 @@ import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
@@ -32,11 +31,6 @@ public class ActionNxLoadInPortTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionNxLoadInPort(VALUE).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.nx_load_in_port, new BigInteger[] {VALUE}).buildAction());
     }
 
     private void verifyAction(Action action) {

@@ -16,7 +16,6 @@ import com.google.common.net.InetAddresses;
 import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpSpaCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
@@ -33,11 +32,6 @@ public class ActionLoadIpToSpaTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionLoadIpToSpa(IP_ADDRESS).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.load_ip_to_spa, new String[] {IP_ADDRESS}).buildAction());
     }
 
     private void verifyAction(Action action) {

@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -35,7 +34,7 @@ public class ActionRegMove extends ActionInfo {
     }
 
     public ActionRegMove(int actionKey, Class<? extends NxmNxReg> register, int start, int end) {
-        super(ActionType.nx_load_reg, new String[0], actionKey);
+        super(actionKey);
         this.register = register;
         this.start = start;
         this.end = end;
