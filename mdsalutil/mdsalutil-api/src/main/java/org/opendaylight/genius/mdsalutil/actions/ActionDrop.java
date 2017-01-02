@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.DropActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropAction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.drop.action._case.DropActionBuilder;
@@ -25,12 +24,7 @@ public class ActionDrop extends ActionInfo {
     }
 
     public ActionDrop(int actionKey) {
-        super(ActionType.drop_action, new String[0], actionKey);
-    }
-
-    @Deprecated
-    public ActionDrop(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey());
+        super(actionKey);
     }
 
     @Override

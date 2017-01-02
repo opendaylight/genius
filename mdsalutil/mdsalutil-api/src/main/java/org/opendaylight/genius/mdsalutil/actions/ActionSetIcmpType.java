@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -27,13 +26,8 @@ public class ActionSetIcmpType extends ActionInfo {
     }
 
     public ActionSetIcmpType(int actionKey, short type) {
-        super(ActionType.set_icmp_type, new String[] {Short.toString(type)}, actionKey);
+        super(actionKey);
         this.type = type;
-    }
-
-    @Deprecated
-    public ActionSetIcmpType(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), Short.parseShort(actionInfo.getActionValues()[0]));
     }
 
     @Override

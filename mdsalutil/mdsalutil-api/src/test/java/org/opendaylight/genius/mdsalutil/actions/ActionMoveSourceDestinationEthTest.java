@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfEthDstCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCase;
@@ -29,11 +28,6 @@ public class ActionMoveSourceDestinationEthTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionMoveSourceDestinationEth().buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.move_src_dst_eth, new String[0]).buildAction());
     }
 
     private void verifyAction(Action action) {

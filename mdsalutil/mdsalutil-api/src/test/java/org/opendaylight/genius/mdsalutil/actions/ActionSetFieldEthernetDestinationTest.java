@@ -14,10 +14,8 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.GroupActionCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCase;
 
 /**
@@ -31,11 +29,6 @@ public class ActionSetFieldEthernetDestinationTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionSetFieldEthernetDestination(new MacAddress(MAC_ADDRESS)).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.set_field_eth_dest, new String[] {MAC_ADDRESS}).buildAction());
     }
 
     private void verifyAction(Action action) {

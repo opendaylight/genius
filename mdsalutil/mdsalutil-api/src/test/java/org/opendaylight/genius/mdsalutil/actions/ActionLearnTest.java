@@ -13,9 +13,6 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.junit.Test;
-import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromFieldCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.flow.mod.spec.flow.mod.spec.FlowModAddMatchFromValueCase;
@@ -43,34 +40,6 @@ public class ActionLearnTest {
     private static final short TABLE_ID = (short) 7;
     private static final int FIN_IDLE_TIMEOUT = 8;
     private static final int FIN_HARD_TIMEOUT = 9;
-
-    @Test
-    public void backwardsCompatibleActionProcessing() {
-        verifyAction(buildOldAction());
-    }
-
-    private Action buildOldAction() {
-        return ActionType.learn.buildAction(1,
-                new ActionInfo(
-                    ActionType.learn,
-                    new String[] {
-                        Integer.toString(IDLE_TIMEOUT),
-                        Integer.toString(HARD_TIMEOUT),
-                        Integer.toString(PRIORITY),
-                        COOKIE.toString(),
-                        Integer.toString(FLAGS),
-                        Short.toString(TABLE_ID),
-                        Integer.toString(FIN_IDLE_TIMEOUT),
-                        Integer.toString(FIN_HARD_TIMEOUT)
-                    },
-                    new String[][] {
-                        {NwConstants.LearnFlowModsType.MATCH_FROM_FIELD.name(), "1", "2", "3"},
-                        {NwConstants.LearnFlowModsType.MATCH_FROM_VALUE.name(), "4", "5", "6"},
-                        {NwConstants.LearnFlowModsType.COPY_FROM_FIELD.name(), "7", "8", "9"},
-                        {NwConstants.LearnFlowModsType.COPY_FROM_VALUE.name(), "10", "11", "12"},
-                        {NwConstants.LearnFlowModsType.OUTPUT_TO_PORT.name(), "13", "14"}
-                    }));
-    }
 
     private void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof NxActionLearnNodesNodeTableFlowApplyActionsCase);
@@ -146,11 +115,7 @@ public class ActionLearnTest {
 
     @Test
     public void actionInfoTestForLearnAction() {
-        verifyAction(buildNewAction());
-    }
-
-    private Action buildNewAction() {
-        return ActionType.learn.buildAction(1, buildActionLearn());
+        verifyAction(buildActionLearn().buildAction());
     }
 
     private ActionLearn buildActionLearn() {
@@ -163,12 +128,5 @@ public class ActionLearnTest {
                 new ActionLearn.CopyFromValue(10, 11, 12),
                 new ActionLearn.OutputToPort(13, 14)
                 ));
-    }
-
-    @Test
-    public void backwardsCompatibleActions() {
-        ActionInfo actionLearn = buildActionLearn();
-        verifyAction(new ActionInfo(actionLearn.getActionType(), actionLearn.getActionValues(),
-            actionLearn.getActionValuesMatrix()).buildAction());
     }
 }

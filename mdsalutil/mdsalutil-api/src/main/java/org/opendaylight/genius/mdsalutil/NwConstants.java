@@ -202,9 +202,4 @@ public final class NwConstants {
             return flowModHeaderLen;
         }
     }
-
-    @Deprecated
-    public enum LearnFlowModsType {
-        MATCH_FROM_FIELD, MATCH_FROM_VALUE, COPY_FROM_FIELD, COPY_FROM_VALUE, OUTPUT_TO_PORT
-    }
 }

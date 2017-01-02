@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.TcpMatch;
@@ -30,12 +29,6 @@ public class ActionSetTcpDestinationPortTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionSetTcpDestinationPort(PORT).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.set_tcp_destination_port,
-            new String[] {Integer.toString(PORT)}).buildAction());
     }
 
     private void verifyAction(Action action) {

@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.GroupActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.group.action._case.GroupActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -26,13 +25,8 @@ public class ActionGroup extends ActionInfo {
     }
 
     public ActionGroup(int actionKey, long groupId) {
-        super(ActionType.group, new String[] { Long.toString(groupId)}, actionKey);
+        super(actionKey);
         this.groupId = groupId;
-    }
-
-    @Deprecated
-    public ActionGroup(String[] actionValues) {
-        this(Long.parseLong(actionValues[0]));
     }
 
     @Override

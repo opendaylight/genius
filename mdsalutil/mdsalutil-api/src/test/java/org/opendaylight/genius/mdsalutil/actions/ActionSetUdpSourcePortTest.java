@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatch;
@@ -30,12 +29,6 @@ public class ActionSetUdpSourcePortTest {
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionSetUdpSourcePort(PORT).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.set_udp_source_port,
-            new String[] {Integer.toString(PORT)}).buildAction());
     }
 
     private void verifyAction(Action action) {
