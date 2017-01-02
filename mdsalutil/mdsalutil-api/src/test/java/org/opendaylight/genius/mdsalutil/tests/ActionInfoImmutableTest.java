@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
@@ -30,12 +29,15 @@ public class ActionInfoImmutableTest {
         List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(actionInfo);
         flowEntity.getInstructionInfoList().add(new InstructionApplyActions(actionInfos));
-        assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+        assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
+                0).getActionKey());
 
         flowEntity.getFlowBuilder();
-        assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+        assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
+                0).getActionKey());
         flowEntity.getFlowBuilder();
-        assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+        assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
+                0).getActionKey());
     }
 
 }

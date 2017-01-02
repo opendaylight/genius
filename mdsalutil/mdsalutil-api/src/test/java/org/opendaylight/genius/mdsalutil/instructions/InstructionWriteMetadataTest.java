@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
@@ -22,12 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionWriteMetadata}.
  */
 public class InstructionWriteMetadataTest {
-    @Test
-    public void backwardsCompatibleInstruction() {
-        verifyInstructionInfo(
-                new InstructionInfo(InstructionType.write_metadata, new BigInteger[] {BigInteger.ONE, BigInteger.TEN}));
-    }
-
     @Test
     public void newInstruction() {
         verifyInstructionInfo(new InstructionWriteMetadata(BigInteger.ONE, BigInteger.TEN));
