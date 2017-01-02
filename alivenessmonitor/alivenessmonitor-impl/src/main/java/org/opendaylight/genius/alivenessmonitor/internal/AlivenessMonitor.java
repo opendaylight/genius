@@ -410,8 +410,10 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
                             releaseLock(lock);
                             if (stateChanged) {
                                 //send notifications
-                                LOG.info("Sending notification for monitor Id : {} with Current State: {}",
-                                        currentState.getMonitorId(), LivenessState.Up);
+                                if (LOG.isTraceEnabled()) {
+                                    LOG.trace("Sending notification for monitor Id : {} with Current State: {}",
+                                            currentState.getMonitorId(), LivenessState.Up);
+                                }
                                 publishNotification(currentState.getMonitorId(), LivenessState.Up);
                             } else {
                                 if (LOG.isTraceEnabled()) {
@@ -430,7 +432,10 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
                         }
                     });
                 } else {
-                    LOG.warn("Monitoring State not available for key: {} to process the Packet received", monitorKey);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Monitoring State not available for key: {} to process the Packet received",
+                                monitorKey);
+                    }
                     //Complete the transaction
                     tx.submit();
                     releaseLock(lock);
