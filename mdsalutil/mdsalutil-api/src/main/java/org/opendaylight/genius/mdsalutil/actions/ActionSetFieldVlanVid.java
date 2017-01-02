@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -29,13 +28,8 @@ public class ActionSetFieldVlanVid extends ActionInfo {
     }
 
     public ActionSetFieldVlanVid(int actionKey, int vlanId) {
-        super(ActionType.set_field_pbb_isid, new String[] {Long.toString(vlanId)}, actionKey);
+        super(actionKey);
         this.vlanId = vlanId;
-    }
-
-    @Deprecated
-    public ActionSetFieldVlanVid(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), Integer.parseInt(actionInfo.getActionValues()[0]));
     }
 
     @Override

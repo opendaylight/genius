@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 
 import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -29,13 +28,8 @@ public class ActionSetArpOp extends ActionInfo {
     }
 
     public ActionSetArpOp(int actionKey, int value) {
-        super(ActionType.set_arp_op, new String[] {Integer.toString(value)}, actionKey);
+        super(actionKey);
         this.value = value;
-    }
-
-    @Deprecated
-    public ActionSetArpOp(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), Integer.parseInt(actionInfo.getActionValues()[0]));
     }
 
     @Override

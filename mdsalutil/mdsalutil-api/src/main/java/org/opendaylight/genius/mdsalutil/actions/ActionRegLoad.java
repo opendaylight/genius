@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 
 import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -34,17 +33,11 @@ public class ActionRegLoad extends ActionInfo {
     }
 
     public ActionRegLoad(int actionKey, Class<? extends NxmNxReg> register, int start, int end, long load) {
-        super(ActionType.nx_load_reg, new String[0], actionKey);
+        super(actionKey);
         this.register = register;
         this.start = start;
         this.end = end;
         this.load = load;
-    }
-
-    @Deprecated
-    public ActionRegLoad(Class<? extends NxmNxReg> register, String[] actionValues) {
-        this(register, Integer.parseInt(actionValues[0]), Integer.parseInt(actionValues[1]),
-                Long.parseLong(actionValues[2]));
     }
 
     @Override

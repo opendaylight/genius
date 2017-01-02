@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
@@ -28,13 +27,8 @@ public class ActionSetUdpDestinationPort extends ActionInfo {
     }
 
     public ActionSetUdpDestinationPort(int actionKey, int port) {
-        super(ActionType.set_udp_destination_port, new String[] {Integer.toString(port)}, actionKey);
+        super(actionKey);
         this.port = port;
-    }
-
-    @Deprecated
-    public ActionSetUdpDestinationPort(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), Integer.parseInt(actionInfo.getActionValues()[0]));
     }
 
     @Override
