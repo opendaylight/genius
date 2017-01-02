@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -29,12 +28,7 @@ public class ActionMoveShaToTha extends ActionInfo {
     }
 
     public ActionMoveShaToTha(int actionKey) {
-        super(ActionType.move_sha_to_tha, new String[0], actionKey);
-    }
-
-    @Deprecated
-    public ActionMoveShaToTha(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey());
+        super(actionKey);
     }
 
     @Override

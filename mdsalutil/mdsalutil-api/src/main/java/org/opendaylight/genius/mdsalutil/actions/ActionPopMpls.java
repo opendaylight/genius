@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopMplsActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.pop.mpls.action._case.PopMplsActionBuilder;
@@ -25,7 +24,7 @@ public class ActionPopMpls extends ActionInfo {
     }
 
     public ActionPopMpls(int actionKey) {
-        super(ActionType.pop_mpls, new String[0], actionKey);
+        super(actionKey);
     }
 
     @Override
