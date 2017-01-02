@@ -10,12 +10,10 @@ package org.opendaylight.genius.mdsalutil.actions;
 import com.google.common.net.InetAddresses;
 import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice
-    .grouping.dst.choice.DstOfArpSpaCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfArpSpaCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
@@ -37,13 +35,8 @@ public class ActionLoadIpToSpa extends ActionInfo {
     }
 
     public ActionLoadIpToSpa(int actionKey, String address) {
-        super(ActionType.load_ip_to_spa, new String[] {address}, actionKey);
+        super(actionKey);
         this.address = address;
-    }
-
-    @Deprecated
-    public ActionLoadIpToSpa(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), actionInfo.getActionValues()[0]);
     }
 
     @Override

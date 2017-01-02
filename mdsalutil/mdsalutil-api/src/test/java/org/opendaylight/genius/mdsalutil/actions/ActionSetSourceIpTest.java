@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCase;
@@ -34,14 +33,6 @@ public class ActionSetSourceIpTest {
         verifyAction(new ActionSetSourceIp(IP_ADDRESS).buildAction());
         verifyAction(new ActionSetSourceIp(IP_ADDRESS, IP_MASK).buildAction());
         verifyAction(new ActionSetSourceIp(new Ipv4Prefix(IP_ADDRESS + "/" + IP_MASK)).buildAction());
-    }
-
-    @Test
-    public void backwardsCompatibleAction() {
-        verifyAction(new ActionInfo(ActionType.set_source_ip,
-            new String[] {IP_ADDRESS}).buildAction());
-        verifyAction(new ActionInfo(ActionType.set_source_ip,
-            new String[] {IP_ADDRESS, IP_MASK}).buildAction());
     }
 
     private void verifyAction(Action action) {

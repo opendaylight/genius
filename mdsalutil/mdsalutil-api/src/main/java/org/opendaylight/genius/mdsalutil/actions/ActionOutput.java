@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.OutputActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.output.action._case.OutputActionBuilder;
@@ -32,20 +31,15 @@ public class ActionOutput extends ActionInfo {
     }
 
     public ActionOutput(int actionKey, Uri outputNodeConnector) {
-        super(ActionType.output, new String[] { outputNodeConnector.getValue() }, actionKey);
+        super(actionKey);
         this.outputNodeConnector = outputNodeConnector;
         this.maxLength = 0;
     }
 
     public ActionOutput(int actionKey, Uri outputNodeConnector, int maxLength) {
-        super(ActionType.output, new String[] {outputNodeConnector.getValue(), Integer.toString(maxLength)}, actionKey);
+        super(actionKey);
         this.outputNodeConnector = outputNodeConnector;
         this.maxLength = maxLength;
-    }
-
-    @Deprecated
-    public ActionOutput(String[] actionValues) {
-        this(new Uri(actionValues[0]), actionValues.length == 2 ? Integer.parseInt(actionValues[1]) : 0);
     }
 
     @Override

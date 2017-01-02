@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -28,13 +27,8 @@ public class ActionSetFieldPbbIsid extends ActionInfo {
     }
 
     public ActionSetFieldPbbIsid(int actionKey, long isid) {
-        super(ActionType.set_field_pbb_isid, new String[] {Long.toString(isid)}, actionKey);
+        super(actionKey);
         this.isid = isid;
-    }
-
-    @Deprecated
-    public ActionSetFieldPbbIsid(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), Long.parseLong(actionInfo.getActionValues()[0]));
     }
 
     @Override

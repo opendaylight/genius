@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -30,13 +29,8 @@ public class ActionNxResubmit extends ActionInfo {
     }
 
     public ActionNxResubmit(int actionKey, short table) {
-        super(ActionType.nx_resubmit, new String[] {Short.toString(table)}, actionKey);
+        super(actionKey);
         this.table = table;
-    }
-
-    @Deprecated
-    public ActionNxResubmit(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), Short.parseShort(actionInfo.getActionValues()[0]));
     }
 
     @Override
