@@ -9,8 +9,8 @@ package org.opendaylight.genius.mdsalutil.instructions;
 
 import java.util.List;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionInfoList;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.actions._case.WriteActionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
@@ -20,9 +20,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 /**
  * Write actions instruction.
  */
-public class InstructionWriteActions extends InstructionInfo {
+public class InstructionWriteActions implements InstructionInfo {
+    private final ActionInfoList actions;
+
     public InstructionWriteActions(List<ActionInfo> actionInfos) {
-        super(InstructionType.write_actions, actionInfos);
+        this.actions = new ActionInfoList(actionInfos);
     }
 
     @Override
@@ -30,7 +32,7 @@ public class InstructionWriteActions extends InstructionInfo {
         return new InstructionBuilder()
                 .setInstruction(new WriteActionsCaseBuilder()
                         .setWriteActions(new WriteActionsBuilder()
-                                .setAction(buildActions())
+                                .setAction(actions.buildActions())
                                 .build()
                         )
                         .build()

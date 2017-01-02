@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.GroupActionCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -25,12 +24,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionApplyActions}.
  */
 public class InstructionApplyActionsTest {
-    @Test
-    public void backwardsCompatibleInstruction() {
-        verifyInstructionInfo(
-                new InstructionInfo(InstructionType.apply_actions, Collections.singletonList(new ActionGroup(1L))));
-    }
-
     @Test
     public void newInstruction() {
         verifyInstructionInfo(new InstructionApplyActions(Collections.singletonList(new ActionGroup(1L))));

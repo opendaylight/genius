@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
-public class BucketInfo extends AbstractActionInfoList implements Serializable {
+public class BucketInfo extends ActionInfoList implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
