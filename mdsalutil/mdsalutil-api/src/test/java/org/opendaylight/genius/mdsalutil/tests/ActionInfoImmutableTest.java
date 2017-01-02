@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Red Hat and others.  All rights reserved.
+ * Copyright © 2016, 2017 Red Hat and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -16,9 +16,8 @@ import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
-import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 
 public class ActionInfoImmutableTest {
 
@@ -30,7 +29,7 @@ public class ActionInfoImmutableTest {
         ActionInfo actionInfo = new ActionNxConntrack(27, 1, 0, 0, (short) 255);
         List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(actionInfo);
-        flowEntity.getInstructionInfoList().add(new InstructionInfo(InstructionType.apply_actions, actionInfos));
+        flowEntity.getInstructionInfoList().add(new InstructionApplyActions(actionInfos));
         assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
 
         flowEntity.getFlowBuilder();
