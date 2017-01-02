@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright © 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -25,6 +25,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
     private final BigInteger[] m_alBigInstructionValues;
 
     // This constructor should be used incase of clearAction
+    @Deprecated
     public InstructionInfo(InstructionType instructionType) {
         super(null);
         m_instructionType = instructionType;
@@ -32,6 +33,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
         m_alBigInstructionValues = null;
     }
 
+    @Deprecated
     public InstructionInfo(InstructionType instructionType, long[] instructionValues) {
         super(null);
         m_instructionType = instructionType;
@@ -39,6 +41,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
         m_alBigInstructionValues = null;
     }
 
+    @Deprecated
     public InstructionInfo(InstructionType instructionType, BigInteger[] instructionValues) {
         super(null);
         m_instructionType = instructionType;
@@ -46,6 +49,7 @@ public class InstructionInfo extends AbstractActionInfoList implements Serializa
         m_alBigInstructionValues = instructionValues;
     }
 
+    @Deprecated
     public InstructionInfo(InstructionType instructionType, List<ActionInfo> actionInfos) {
         super(actionInfos);
         m_instructionType = instructionType;
