@@ -12,7 +12,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ClearActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
@@ -20,11 +19,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionClearActions}.
  */
 public class InstructionClearActionsTest {
-    @Test
-    public void backwardsCompatibleInstruction() {
-        verifyInstructionInfo(new InstructionInfo(InstructionType.clear_actions));
-    }
-
     @Test
     public void newInstruction() {
         verifyInstructionInfo(new InstructionClearActions());

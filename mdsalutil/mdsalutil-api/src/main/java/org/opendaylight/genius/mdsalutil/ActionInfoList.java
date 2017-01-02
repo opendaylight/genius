@@ -17,12 +17,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  *
  * @author Michael Vorburger
  */
-public abstract class AbstractActionInfoList {
-
+public class ActionInfoList {
     private final List<ActionInfo> actionInfos = new ArrayList<>();
 
-    protected AbstractActionInfoList(List<ActionInfo> actionInfos) {
-        super();
+    public ActionInfoList(List<ActionInfo> actionInfos) {
         if (actionInfos != null) {
             this.actionInfos.addAll(actionInfos);
         }

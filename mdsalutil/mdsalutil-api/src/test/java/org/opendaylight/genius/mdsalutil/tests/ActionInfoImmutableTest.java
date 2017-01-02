@@ -29,12 +29,15 @@ public class ActionInfoImmutableTest {
         List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(actionInfo);
         flowEntity.getInstructionInfoList().add(new InstructionApplyActions(actionInfos));
-        assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+        assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
+                0).getActionKey());
 
         flowEntity.getFlowBuilder();
-        assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+        assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
+                0).getActionKey());
         flowEntity.getFlowBuilder();
-        assertEquals(27, flowEntity.getInstructionInfoList().get(0).getActionInfos().get(0).getActionKey());
+        assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
+                0).getActionKey());
     }
 
 }

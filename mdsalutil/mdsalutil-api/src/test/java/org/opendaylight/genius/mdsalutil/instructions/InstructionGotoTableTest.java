@@ -12,7 +12,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.GoToTableCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
@@ -20,11 +19,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionGotoTable}.
  */
 public class InstructionGotoTableTest {
-    @Test
-    public void backwardsCompatibleInstruction() {
-        verifyInstructionInfo(new InstructionInfo(InstructionType.goto_table, new long[] {1L}));
-    }
-
     @Test
     public void newInstruction() {
         verifyInstructionInfo(new InstructionGotoTable((short) 1));
