@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright © 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -28,7 +28,6 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingU
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.InstructionType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
@@ -37,6 +36,8 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.genius.mdsalutil.NxMatchInfo;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
+import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -212,13 +213,13 @@ public class InterfaceManagerCommonUtils {
                         new String[] { tunnel.getTunnelSource().getIpv4Address().getValue() }));
             }
 
-            mkInstructions.add(new InstructionInfo(InstructionType.write_metadata,
-                    new BigInteger[] { MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
-                        MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG }));
+            mkInstructions.add(
+                    new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
+                            MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
             short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
                     ? NwConstants.L3_LFIB_TABLE
                     : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
-            mkInstructions.add(new InstructionInfo(InstructionType.goto_table, new long[] { tableId }));
+            mkInstructions.add(new InstructionGotoTable(tableId));
         }
 
         FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,

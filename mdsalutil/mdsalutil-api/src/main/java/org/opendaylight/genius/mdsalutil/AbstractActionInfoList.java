@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Red Hat and others.  All rights reserved.
+ * Copyright © 2016, 2017 Red Hat and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,20 +19,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  */
 public abstract class AbstractActionInfoList {
 
-    private final List<ActionInfo> actionInfos;
+    private final List<ActionInfo> actionInfos = new ArrayList<>();
 
     protected AbstractActionInfoList(List<ActionInfo> actionInfos) {
         super();
-        this.actionInfos = actionInfos;
+        if (actionInfos != null) {
+            this.actionInfos.addAll(actionInfos);
+        }
     }
 
     public List<ActionInfo> getActionInfos() {
-        return actionInfos;
+        return Collections.unmodifiableList(actionInfos);
     }
 
     public List<Action> buildActions() {
-        if (actionInfos == null)
-            return Collections.emptyList();
         int newActionKey = 0;
         List<Action> actions = new ArrayList<>(actionInfos.size());
         for (ActionInfo actionInfo: actionInfos) {
