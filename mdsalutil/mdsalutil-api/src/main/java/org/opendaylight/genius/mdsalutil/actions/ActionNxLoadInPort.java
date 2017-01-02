@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 
 import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
@@ -29,13 +28,8 @@ public class ActionNxLoadInPort extends ActionInfo {
     }
 
     public ActionNxLoadInPort(int actionKey, BigInteger value) {
-        super(ActionType.nx_load_in_port, new BigInteger[] {value}, actionKey);
+        super(actionKey);
         this.value = value;
-    }
-
-    @Deprecated
-    public ActionNxLoadInPort(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), actionInfo.getBigActionValues()[0]);
     }
 
     @Override

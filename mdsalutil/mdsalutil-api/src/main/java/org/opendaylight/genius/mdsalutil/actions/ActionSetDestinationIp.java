@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
@@ -44,14 +43,8 @@ public class ActionSetDestinationIp extends ActionInfo {
     }
 
     public ActionSetDestinationIp(int actionKey, Ipv4Prefix destination) {
-        super(ActionType.set_destination_ip, destination.toString().split("/"), actionKey);
+        super(actionKey);
         this.destination = destination;
-    }
-
-    @Deprecated
-    public ActionSetDestinationIp(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), actionInfo.getActionValues()[0],
-            actionInfo.getActionValues().length > 1 ? actionInfo.getActionValues()[1] : null);
     }
 
     @Override

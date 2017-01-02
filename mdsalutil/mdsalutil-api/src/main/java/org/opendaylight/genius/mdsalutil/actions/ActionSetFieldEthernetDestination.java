@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.set.field._case.SetFieldBuilder;
@@ -29,13 +28,8 @@ public class ActionSetFieldEthernetDestination extends ActionInfo {
     }
 
     public ActionSetFieldEthernetDestination(int actionKey, MacAddress destination) {
-        super(ActionType.set_field_eth_dest, new String[] {destination.getValue()}, actionKey);
+        super(actionKey);
         this.destination = destination;
-    }
-
-    @Deprecated
-    public ActionSetFieldEthernetDestination(ActionInfo actionInfo) {
-        this(actionInfo.getActionKey(), new MacAddress(actionInfo.getActionValues()[0]));
     }
 
     @Override
