@@ -44,6 +44,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
@@ -198,6 +200,12 @@ public class FlowBasedServicesUtils {
                 // Skip meta data write as that is handled already
                 if (info.getInstruction() instanceof WriteMetadataCase) {
                     continue;
+                } else if (info.getInstruction() instanceof WriteActionsCase) {
+                    info = MDSALUtil.buildWriteActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((WriteActionsCase)info.getInstruction()).getWriteActions().getAction()));
+                } else if (info.getInstruction() instanceof ApplyActionsCase) {
+                    info = MDSALUtil.buildApplyActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((ApplyActionsCase)info.getInstruction()).getApplyActions().getAction()));
                 }
                 instructionSet.add(info);
             }
@@ -263,6 +271,12 @@ public class FlowBasedServicesUtils {
                 // Skip meta data write as that is handled already
                 if (info.getInstruction() instanceof WriteMetadataCase) {
                     continue;
+                } else if (info.getInstruction() instanceof WriteActionsCase) {
+                    info = MDSALUtil.buildWriteActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((WriteActionsCase)info.getInstruction()).getWriteActions().getAction()));
+                } else if (info.getInstruction() instanceof ApplyActionsCase) {
+                    info = MDSALUtil.buildApplyActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((ApplyActionsCase)info.getInstruction()).getApplyActions().getAction()));
                 }
                 instructions.add(info);
             }
@@ -313,6 +327,12 @@ public class FlowBasedServicesUtils {
                 // Skip meta data write as that is handled already
                 if (info.getInstruction() instanceof WriteMetadataCase) {
                     continue;
+                } else if (info.getInstruction() instanceof WriteActionsCase) {
+                    info = MDSALUtil.buildWriteActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((WriteActionsCase)info.getInstruction()).getWriteActions().getAction()));
+                } else if (info.getInstruction() instanceof ApplyActionsCase) {
+                    info = MDSALUtil.buildApplyActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((ApplyActionsCase)info.getInstruction()).getApplyActions().getAction()));
                 }
                 instructions.add(info);
             }
