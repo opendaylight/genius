@@ -3,6 +3,10 @@ module interface-service-bindings {
     prefix ifservicebindings;
 
     import opendaylight-flow-types {prefix offlow;revision-date "2013-10-26";}
+    import openflowplugin-extension-nicira-action {
+        prefix ofplugin;
+        revision-date "2014-07-14";
+    }
 
     import yang-ext {
         prefix ext;
@@ -95,5 +99,113 @@ module interface-service-bindings {
         ext:augment-identifier "stype-openflow";
         when "service-type = 'service-type-flow-based'";
         uses service-openflow-info;
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-reg-load-apply-actions-case" {
+            uses ofplugin:nx-action-reg-load-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-reg-load-write-actions-case" {
+            uses ofplugin:nx-action-reg-load-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-reg-move-apply-actions-case" {
+            uses ofplugin:nx-action-reg-move-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-reg-move-write-actions-case" {
+            uses ofplugin:nx-action-reg-move-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-output-reg-apply-actions-case" {
+            uses ofplugin:nx-action-output-reg-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-output-reg-write-actions-case" {
+            uses ofplugin:nx-action-output-reg-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-resubmit-apply-actions-case" {
+            uses ofplugin:nx-action-resubmit-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-resubmit-write-actions-case" {
+            uses ofplugin:nx-action-resubmit-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-multipath-apply-actions-case" {
+            uses ofplugin:nx-action-multipath-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-multipath-write-actions-case" {
+            uses ofplugin:nx-action-multipath-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-push-nsh-apply-actions-case" {
+            uses ofplugin:nx-action-push-nsh-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-push-nsh-write-actions-case" {
+            uses ofplugin:nx-action-push-nsh-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-pop-nsh-apply-actions-case" {
+            uses ofplugin:nx-action-pop-nsh-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-pop-nsh-write-actions-case" {
+            uses ofplugin:nx-action-pop-nsh-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-conntrack-apply-actions-case" {
+            uses ofplugin:nx-action-conntrack-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-conntrack-write-actions-case" {
+            uses ofplugin:nx-action-conntrack-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-learn-apply-actions-case" {
+            uses ofplugin:nx-action-learn-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-learn-write-actions-case" {
+            uses ofplugin:nx-action-learn-grouping;
+        }
     }
 }
