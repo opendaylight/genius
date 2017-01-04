@@ -22,7 +22,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -355,12 +357,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     size--;
                 }
             } else {
-                return null;
+                throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
             }
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
         }
+        idUtils.releaseIdLatchMap.put(parentPoolName + idKey, new CountDownLatch(1));
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
                 idUtils);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
@@ -566,6 +569,16 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
             throws ReadFailedException, IdManagerException {
+        String idLatchKey = parentPoolName + idKey;
+        java.util.Optional.ofNullable(idUtils.releaseIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
+            try {
+                latch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
+                LOG.warn("Thread interrupted while releasing id {} from id pool {}", idKey, parentPoolName);
+            } finally {
+                idUtils.releaseIdLatchMap.remove(idLatchKey);
+            }
+        } );
         localPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
