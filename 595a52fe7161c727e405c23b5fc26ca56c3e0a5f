@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_7016bbf2",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-04T13:56:30Z",
+      "side": 1,
+      "message": "Names are bit confusing and not aligned with the rest of this API\nFirst I think you need to replace portName with interfaceName in all 3 method names\nThe second thing - you conceptually limit the usage only for InterfaceState by adding \u0027ForInterfaceState\u0027 to the method name while it can be perfectly be used to create dpn-prefixed names in the config DS. ElanBridgeManager.getProviderInterfaceName() is a candidate to start using this method for generating dpn-prefixed interface names in the config DS",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_70ffdbaa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-04T13:56:30Z",
+      "side": 1,
+      "message": "call getDpnPrefixedPortName()",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8eba5821",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-04T13:56:30Z",
+      "side": 1,
+      "message": "Suppose is this is a valid UC... Now we have two neutron ports pointing to the same tap port. Are we supposed to dissociate  the old one from the tap?",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4e6960bd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-04T13:56:30Z",
+      "side": 1,
+      "message": "dpnId could be null",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ae863463",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-04T13:56:30Z",
+      "side": 1,
+      "message": "To avoid concurrency issues in ietf-interface updates you need to schedule DjC job and use the parentRef as the DjC key. See InterfaceConfigListener for usage examples",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8ee89811",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-04T13:56:30Z",
+      "side": 1,
+      "message": "I think it would be better to validate that such interface exists in the config DS before updating its parentRef since this is a neutron specific logic while genius should be a generic infrastructure",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
