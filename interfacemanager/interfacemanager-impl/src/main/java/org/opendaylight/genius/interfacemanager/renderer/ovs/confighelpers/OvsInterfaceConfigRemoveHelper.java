@@ -141,7 +141,7 @@ public class OvsInterfaceConfigRemoveHelper {
                 SouthboundUtils.generateOfTunnelName(dpId, ifTunnel) : interfaceName;
         boolean deleteTunnel = canDeleteTunnelPort(bridgeInterfaceEntries, dpId, ifTunnel);
         if (ovsdbBridgeRef != null && deleteTunnel) {
-            SouthboundUtils.removeTerminationEndPoint(futures, dataBroker, ovsdbBridgeRef.getValue(), tunnelName);
+            SouthboundUtils.removeTerminationEndPoint(dataBroker, ovsdbBridgeRef.getValue(), tunnelName);
         }
         if(SouthboundUtils.isOfTunnel(ifTunnel)) {
             if(deleteTunnel) {

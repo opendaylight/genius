@@ -159,10 +159,11 @@ public class SouthboundUtils {
     /*
      * delete all tunnels ports corresponding to the bridge to the topology config
      * DS
+     *
+     * FIXME: This is not being called from anywhere.
      */
     public static void removeAllPortsFromBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
-            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
-            List<ListenableFuture<Void>> futures) {
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew) {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("removing all ports from bridge: {}", bridgeName);
@@ -175,7 +176,7 @@ public class SouthboundUtils {
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        removeTerminationEndPoint(futures, dataBroker, bridgeIid, iface.getName());
+                        removeTerminationEndPoint(dataBroker, bridgeIid, iface.getName());
                     }
                     if(SouthboundUtils.isOfTunnel(ifTunnel)) {
                         LOG.debug("Using OFTunnel. Only one tunnel port to be removed");
@@ -186,7 +187,6 @@ public class SouthboundUtils {
                 }
             }
         }
-        futures.add(writeTransaction.submit());
     }
 
     private static void addVlanPortToBridge(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan, IfTunnel ifTunnel,
@@ -347,14 +347,13 @@ public class SouthboundUtils {
         return terminationPointPath;
     }
 
-    public static void removeTerminationEndPoint(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
+    public static void removeTerminationEndPoint(DataBroker dataBroker,
             InstanceIdentifier<?> bridgeIid, String interfaceName) {
         LOG.debug("removing termination point for {}", interfaceName);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
-        transaction.delete(LogicalDatastoreType.CONFIGURATION, tpIid);
-        futures.add(transaction.submit());
+        BatchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
