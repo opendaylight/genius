@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_29c05e7b",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-04T16:27:30Z",
+      "side": 1,
+      "message": "Good idea. I started using it in ElanBridgeManager and renamed to getPortNameForInterfaceDS - any idea for a better name?\nI was initially under the impression only interface-state names use this convention, but it seems the provider ports you added also use it as a unique name",
+      "parentUuid": "1a622d24_7016bbf2",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_70ffdbaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-04T13:56:30Z",
       "side": 1,
       "message": "call getDpnPrefixedPortName()",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_89bff2fa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-04T16:27:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_70ffdbaa",
       "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_2947be1e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-04T16:27:30Z",
+      "side": 1,
+      "message": "I\u0027m not sure.. I don\u0027t think this is a valid UC, but in any case would there be a problem with two neutron ports with the same tap port i.e. two interfaces with the same interfaces-state?",
+      "parentUuid": "1a622d24_8eba5821",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_4e6960bd",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 5
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_c938caa2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-04T16:27:30Z",
+      "side": 1,
+      "message": "fixed forgot to push",
+      "parentUuid": "1a622d24_4e6960bd",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_ae863463",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 5
@@ -81,6 +153,24 @@
       "writtenOn": "2017-01-04T13:56:30Z",
       "side": 1,
       "message": "To avoid concurrency issues in ietf-interface updates you need to schedule DjC job and use the parentRef as the DjC key. See InterfaceConfigListener for usage examples",
+      "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_c95f2ae4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-04T16:27:30Z",
+      "side": 1,
+      "message": "Thanks, have to run but fixed everything except these two comments (read before write and use DjC) -- will do tomorrow",
+      "parentUuid": "1a622d24_ae863463",
       "revId": "595a52fe7161c727e405c23b5fc26ca56c3e0a5f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
