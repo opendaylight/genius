@@ -312,11 +312,11 @@ public class InterfaceMetaUtils {
                         bridgeInterfaceEntryKey);
 
         if (bridgeInterfaceEntries.size() <= 1) {
-            transaction.delete(LogicalDatastoreType.CONFIGURATION, bridgeEntryIid);
+            BatchingUtils.delete(bridgeEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
         } else {
             // No point deleting interface individually if bridge entry is being deleted
             // Note: Will this cause issue in listener code? Does it expect separate notifications for two?
-            transaction.delete(LogicalDatastoreType.CONFIGURATION, bridgeInterfaceEntryIid);
+            BatchingUtils.delete(bridgeInterfaceEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
         }
     }
 
