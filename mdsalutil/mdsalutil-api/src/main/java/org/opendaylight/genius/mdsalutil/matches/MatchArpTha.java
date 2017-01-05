@@ -1,0 +1,59 @@
+/*
+ * Copyright © 2017 Red Hat, Inc. and others.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.opendaylight.genius.mdsalutil.matches;
+
+import org.opendaylight.genius.mdsalutil.MatchFieldType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpTargetHardwareAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatch;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatchBuilder;
+
+/**
+ * ARP target hardware address match.
+ */
+public class MatchArpTha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+    private final MacAddress address;
+
+    public MatchArpTha(MacAddress address) {
+        super(MatchFieldType.arp_tha, new String[] {address.getValue()});
+        this.address = address;
+    }
+
+    @Override
+    protected void applyValue(MatchBuilder matchBuilder, ArpMatch value) {
+        matchBuilder.setLayer3Match(value);
+    }
+
+    @Override
+    protected void populateBuilder(ArpMatchBuilder builder) {
+        builder.setArpTargetHardwareAddress(new ArpTargetHardwareAddressBuilder().setAddress(address).build());
+    }
+
+    public MacAddress getAddress() {
+        return address;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        MatchArpTha that = (MatchArpTha) o;
+
+        return address != null ? address.equals(that.address) : that.address == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        return result;
+    }
+}

@@ -87,6 +87,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
+import org.opendaylight.yangtools.concepts.Builder;
+import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -302,12 +304,12 @@ public class MDSALUtil {
             MatchBuilder matchBuilder = new MatchBuilder();
             Map<Class<?>, Object> mapMatchBuilder = new HashMap<>();
 
-            for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
-                MatchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
+            for (MatchInfoBase matchInfoBase : listMatchInfoBase) {
+                matchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
             }
 
-            for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
-                MatchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
+            for (MatchInfoBase matchInfoBase : listMatchInfoBase) {
+                matchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
             }
 
             return matchBuilder.build();

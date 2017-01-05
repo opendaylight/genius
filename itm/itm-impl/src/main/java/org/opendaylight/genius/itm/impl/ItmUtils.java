@@ -43,6 +43,7 @@ import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -445,8 +446,7 @@ public class ItmUtils {
         try {
             List<MatchInfo> mkMatches = new ArrayList<>();
 
-            mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] {
-                    BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID) }));
+            mkMatches.add(new MatchTunnelId(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)));
 
             List<InstructionInfo> mkInstructions = new ArrayList<>();
             mkInstructions.add(new InstructionInfo(InstructionType.apply_actions,
