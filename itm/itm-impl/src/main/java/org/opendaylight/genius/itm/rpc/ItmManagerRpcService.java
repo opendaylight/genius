@@ -28,10 +28,10 @@ import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -351,8 +351,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         vxLANHeader[6] = (byte) (serviceId >> 0);
 
         // Matching metadata
-        mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[]{
-                BigInteger.valueOf(serviceId)}));
+        mkMatches.add(new MatchTunnelId(BigInteger.valueOf(serviceId)));
 
         return mkMatches;
     }
