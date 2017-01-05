@@ -30,8 +30,6 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -40,6 +38,7 @@ import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -204,7 +203,7 @@ public class InterfaceManagerCommonUtils {
         List<MatchInfoBase> matches = new ArrayList<>();
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] { dpnId, BigInteger.valueOf(portNo) }));
+            matches.add(new MatchInPort(dpnId, portNo));
             if (BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
                 matches.add(new NxMatchInfo(NxMatchFieldType.tun_src_ip,
                         new String[] { tunnel.getTunnelDestination().getIpv4Address().getValue() }));
