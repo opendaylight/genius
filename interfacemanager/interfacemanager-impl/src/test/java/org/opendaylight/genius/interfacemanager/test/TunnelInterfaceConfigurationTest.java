@@ -37,6 +37,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsIn
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils.EntityType;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -249,8 +250,10 @@ public class TunnelInterfaceConfigurationTest {
                 mdsalApiManager, parentRefs);
 
         //Add some verifications
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION, bridgeEntryIid);
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION, terminationPointInstanceIdentifier);
+        PowerMockito.verifyStatic(Mockito.times(1));
+        BatchingUtils.delete(bridgeEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG );
+        PowerMockito.verifyStatic(Mockito.times(1));
+        BatchingUtils.delete(terminationPointInstanceIdentifier, EntityType.TOPOLOGY_CONFIG);
     }
 
 
