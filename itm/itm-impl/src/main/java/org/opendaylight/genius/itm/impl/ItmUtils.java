@@ -37,12 +37,12 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -444,8 +444,7 @@ public class ItmUtils {
         try {
             List<MatchInfo> mkMatches = new ArrayList<>();
 
-            mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] {
-                    BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID) }));
+            mkMatches.add(new MatchTunnelId(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)));
 
             List<InstructionInfo> mkInstructions = new ArrayList<>();
             mkInstructions.add(new InstructionApplyActions(listActionInfo));
