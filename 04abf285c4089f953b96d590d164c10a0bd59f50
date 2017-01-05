@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_23b19a47",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-05T11:24:24Z",
+      "side": 1,
+      "message": "This bracket should be inline with the method.",
+      "revId": "04abf285c4089f953b96d590d164c10a0bd59f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a3bc8add",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-05T11:24:24Z",
+      "side": 1,
+      "message": "Not very important, but string concatenation is equally performant to append in latest Java versions and it makes code more readable.",
+      "revId": "04abf285c4089f953b96d590d164c10a0bd59f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
