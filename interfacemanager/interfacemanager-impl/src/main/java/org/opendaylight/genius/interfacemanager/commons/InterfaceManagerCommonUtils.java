@@ -26,6 +26,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -235,14 +236,14 @@ public class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
-    public static void createInterfaceChildEntry(WriteTransaction t, String parentInterface, String childInterface) {
+    public static void createInterfaceChildEntry(String parentInterface, String childInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
         InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+        BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus updateStateEntry(
@@ -437,11 +438,11 @@ public class InterfaceManagerCommonUtils {
         return true;
     }
 
-    public static boolean deleteParentInterfaceEntry(WriteTransaction t, String parentInterface) {
+    public static boolean deleteParentInterfaceEntry(String parentInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        t.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
+        BatchingUtils.delete(interfaceParentEntryIdentifier, BatchingUtils.EntityType.DEFAULT_CONFIG);
         return true;
     }
 
