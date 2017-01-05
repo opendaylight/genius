@@ -19,18 +19,20 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
-import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
+import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.mdsalutil.matches.MatchMetadata;
+import org.opendaylight.genius.mdsalutil.matches.MatchVlanVid;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -121,30 +123,30 @@ public class FlowBasedServicesUtils {
 
     public static List<MatchInfo> getMatchInfoForVlanPortAtIngressTable(BigInteger dpId, long portNo, Interface iface) {
         List<MatchInfo> matches = new ArrayList<>();
-        matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] {dpId, BigInteger.valueOf(portNo)}));
+        matches.add(new MatchInPort(dpId, portNo));
         int vlanId = 0;
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
         if(l2vlan != null && l2vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Transparent){
             vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
         }
         if (vlanId > 0) {
-            matches.add(new MatchInfo(MatchFieldType.vlan_vid, new long[]{vlanId}));
+            matches.add(new MatchVlanVid(vlanId));
         }
         return matches;
     }
 
     public static List<MatchInfo> getMatchInfoForTunnelPortAtIngressTable(BigInteger dpId, long portNo) {
         List<MatchInfo> matches = new ArrayList<>();
-        matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[]{dpId, BigInteger.valueOf(portNo)}));
+        matches.add(new MatchInPort(dpId, portNo));
         return matches;
     }
 
     public static List<MatchInfo> getMatchInfoForDispatcherTable(BigInteger dpId,
                                                                  int interfaceTag, short servicePriority) {
         List<MatchInfo> matches = new ArrayList<>();
-        matches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
+        matches.add(new MatchMetadata(
                 MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, servicePriority),
-                MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
+                MetaDataUtil.getMetaDataMaskForLPortDispatcher()));
         return matches;
     }
 
@@ -350,7 +352,7 @@ public class FlowBasedServicesUtils {
         BigInteger shFlagSet = BigInteger.ONE; // BigInteger.ONE is used for checking the Split-Horizon flag
         StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
         List<MatchInfoBase> shMatches = FlowBasedServicesUtils.getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex);
-        shMatches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] { shFlagSet, MetaDataUtil.METADATA_MASK_SH_FLAG }));
+        shMatches.add(new MatchMetadata(shFlagSet, MetaDataUtil.METADATA_MASK_SH_FLAG));
         List<InstructionInfo> shInstructions = new ArrayList<>();
         List<ActionInfo> actionsInfos = new ArrayList<>();
         actionsInfos.add(new ActionDrop());

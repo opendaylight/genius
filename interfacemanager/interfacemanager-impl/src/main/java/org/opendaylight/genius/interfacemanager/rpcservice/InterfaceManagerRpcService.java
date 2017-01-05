@@ -29,10 +29,12 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.matches.MatchEthernetType;
+import org.opendaylight.genius.mdsalutil.matches.MatchMplsLabel;
+import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -507,7 +509,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private ListenableFuture<Void> makeTerminatingServiceFlow(IfTunnel tunnelInfo, BigInteger dpnId,
             BigInteger tunnelKey, List<Instruction> instruction, int addOrRemove) {
         List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] { tunnelKey }));
+        mkMatches.add(new MatchTunnelId(tunnelKey));
         short tableId = tunnelInfo.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.EXTERNAL_TUNNEL_TABLE;
         final String flowRef = getFlowRef(dpnId, tableId, tunnelKey);
         Flow terminatingSerFlow = MDSALUtil.buildFlowNew(tableId, flowRef, 5, "TST Flow Entry", 0, 0,
@@ -522,8 +524,8 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private ListenableFuture<Void> makeLFIBFlow(BigInteger dpnId, BigInteger tunnelKey, List<Instruction> instruction,
             int addOrRemove) {
         List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(new MatchInfo(MatchFieldType.eth_type, new long[] { 0x8847L }));
-        mkMatches.add(new MatchInfo(MatchFieldType.mpls_label, new String[] { Long.toString(tunnelKey.longValue()) }));
+        mkMatches.add(MatchEthernetType.MPLS_UNICAST);
+        mkMatches.add(new MatchMplsLabel(tunnelKey.longValue()));
         // Install the flow entry in L3_LFIB_TABLE
         String flowRef = getFlowRef(dpnId, NwConstants.L3_LFIB_TABLE, tunnelKey);
 
