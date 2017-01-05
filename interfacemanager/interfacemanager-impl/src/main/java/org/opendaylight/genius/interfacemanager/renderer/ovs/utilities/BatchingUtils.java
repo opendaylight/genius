@@ -82,7 +82,7 @@ public class BatchingUtils {
        return null;
     }
 
-    static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
+    public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.DELETE);
         actResource.setInstanceIdentifier(path);
