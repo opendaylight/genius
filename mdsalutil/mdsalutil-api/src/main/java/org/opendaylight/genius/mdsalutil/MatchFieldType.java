@@ -7,41 +7,38 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
 import java.util.Map;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
+import org.opendaylight.genius.mdsalutil.matches.MatchArpOp;
+import org.opendaylight.genius.mdsalutil.matches.MatchArpSha;
+import org.opendaylight.genius.mdsalutil.matches.MatchArpSpa;
+import org.opendaylight.genius.mdsalutil.matches.MatchArpTha;
+import org.opendaylight.genius.mdsalutil.matches.MatchArpTpa;
+import org.opendaylight.genius.mdsalutil.matches.MatchEthernetDestination;
+import org.opendaylight.genius.mdsalutil.matches.MatchEthernetSource;
+import org.opendaylight.genius.mdsalutil.matches.MatchEthernetType;
+import org.opendaylight.genius.mdsalutil.matches.MatchIcmpv4;
+import org.opendaylight.genius.mdsalutil.matches.MatchIcmpv6;
+import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpProtocol;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpv4Destination;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpv4Source;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpv6Destination;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpv6NdTarget;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpv6Source;
+import org.opendaylight.genius.mdsalutil.matches.MatchMetadata;
+import org.opendaylight.genius.mdsalutil.matches.MatchMplsLabel;
+import org.opendaylight.genius.mdsalutil.matches.MatchPbbIsid;
+import org.opendaylight.genius.mdsalutil.matches.MatchTcpDestinationPort;
+import org.opendaylight.genius.mdsalutil.matches.MatchTcpFlags;
+import org.opendaylight.genius.mdsalutil.matches.MatchTcpSourcePort;
+import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
+import org.opendaylight.genius.mdsalutil.matches.MatchUdpDestinationPort;
+import org.opendaylight.genius.mdsalutil.matches.MatchUdpSourcePort;
+import org.opendaylight.genius.mdsalutil.matches.MatchVlanVid;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.EtherType;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpSourceHardwareAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpTargetHardwareAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetDestinationBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetTypeBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.EthernetMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv6MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TcpFlagsMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv6MatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.TcpMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatchBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.protocol.match.fields.PbbBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.vlan.match.fields.VlanIdBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.reg.grouping.NxmNxRegBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpOp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSha;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.ArpSpa;
@@ -71,9 +68,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpDs
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.UdpSrc;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.table.types.rev131026.VlanVid;
 
-import static org.opendaylight.openflowplugin.openflow.md.core.sal.convertor.common.OrderComparator.build;
-
 public enum MatchFieldType {
+    @Deprecated
     eth_src {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -82,36 +78,27 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
-                    .get(EthernetMatchBuilder.class);
-
-            if (ethernetMatchBuilder == null) {
-                ethernetMatchBuilder = new EthernetMatchBuilder();
-                mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
-            }
-
-            EthernetSourceBuilder ethernetSourceBuilder = new EthernetSourceBuilder();
-
-            if (matchInfo.getStringMatchValues().length > 1)
-            {
-                ethernetSourceBuilder.setMask(new MacAddress(matchInfo.getStringMatchValues()[1])).build();
-            }
-
-            ethernetMatchBuilder.setEthernetSource(ethernetSourceBuilder.setAddress(
-                    new MacAddress(matchInfo.getStringMatchValues()[0])).build());
+            getMatchEthernetSource(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
-                    .remove(EthernetMatchBuilder.class);
+            getMatchEthernetSource(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ethernetMatchBuilder != null) {
-                matchBuilderInOut.setEthernetMatch(ethernetMatchBuilder.build());
+        private MatchEthernetSource getMatchEthernetSource(MatchInfo matchInfo) {
+            if (matchInfo instanceof MatchEthernetSource) {
+                return (MatchEthernetSource) matchInfo;
             }
+            if (matchInfo.getStringMatchValues().length > 1) {
+                return new MatchEthernetSource(new MacAddress(matchInfo.getStringMatchValues()[0]),
+                        new MacAddress(matchInfo.getStringMatchValues()[1]));
+            }
+            return new MatchEthernetSource(new MacAddress(matchInfo.getStringMatchValues()[0]));
         }
     },
 
+    @Deprecated
     eth_dst {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -120,36 +107,27 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
-                    .get(EthernetMatchBuilder.class);
-
-            if (ethernetMatchBuilder == null) {
-                ethernetMatchBuilder = new EthernetMatchBuilder();
-                mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
-            }
-
-            EthernetDestinationBuilder ethernetDestinationBuilder = new EthernetDestinationBuilder();
-
-            if (matchInfo.getStringMatchValues().length > 1)
-            {
-                ethernetDestinationBuilder.setMask(new MacAddress(matchInfo.getStringMatchValues()[1])).build();
-            }
-
-            ethernetMatchBuilder.setEthernetDestination(ethernetDestinationBuilder.setAddress(
-                    new MacAddress(matchInfo.getStringMatchValues()[0])).build());
+            getMatchEthernetDestination(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
-                    .remove(EthernetMatchBuilder.class);
+            getMatchEthernetDestination(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ethernetMatchBuilder != null) {
-                matchBuilderInOut.setEthernetMatch(ethernetMatchBuilder.build());
+        private MatchEthernetDestination getMatchEthernetDestination(MatchInfo matchInfo) {
+            if (matchInfo instanceof MatchEthernetDestination) {
+                return (MatchEthernetDestination) matchInfo;
             }
+            if (matchInfo.getStringMatchValues().length > 1) {
+                return new MatchEthernetDestination(new MacAddress(matchInfo.getStringMatchValues()[0]),
+                        new MacAddress(matchInfo.getStringMatchValues()[1]));
+            }
+            return new MatchEthernetDestination(new MacAddress(matchInfo.getStringMatchValues()[0]));
         }
     },
 
+    @Deprecated
     eth_type {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -158,29 +136,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
-                    .get(EthernetMatchBuilder.class);
-
-            if (ethernetMatchBuilder == null) {
-                ethernetMatchBuilder = new EthernetMatchBuilder();
-                mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
-            }
-
-            ethernetMatchBuilder.setEthernetType(new EthernetTypeBuilder().setType(
-                    new EtherType(matchInfo.getMatchValues()[0])).build());
+            getMatchEthernetType(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
-                    .remove(EthernetMatchBuilder.class);
+            getMatchEthernetType(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ethernetMatchBuilder != null) {
-                matchBuilderInOut.setEthernetMatch(ethernetMatchBuilder.build());
-            }
+        private MatchEthernetType getMatchEthernetType(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchEthernetType ? (MatchEthernetType) matchInfo : new MatchEthernetType(
+                    matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     in_port {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -189,18 +159,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            getMatchInPort(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
+            getMatchInPort(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-
-            String nodeConnectorId = "openflow:" + matchInfo.getBigMatchValues()[0] +
-                    ':' + matchInfo.getBigMatchValues()[1];
-            matchBuilderInOut.setInPort(new NodeConnectorId(nodeConnectorId));
+        private MatchInPort getMatchInPort(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchInPort ? (MatchInPort) matchInfo : new MatchInPort(
+                    matchInfo.getBigMatchValues()[0], matchInfo.getBigMatchValues()[1].longValue());
         }
     },
 
+    @Deprecated
     ip_proto {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -209,26 +182,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            IpMatchBuilder ipMatchBuilder = (IpMatchBuilder) mapMatchBuilder.get(IpMatchBuilder.class);
-
-            if (ipMatchBuilder == null) {
-                ipMatchBuilder = new IpMatchBuilder();
-                mapMatchBuilder.put(IpMatchBuilder.class, ipMatchBuilder);
-            }
-
-            ipMatchBuilder.setIpProtocol((short) matchInfo.getMatchValues()[0]).build();
+            getMatchIpProtocol(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            IpMatchBuilder ipMatchBuilder = (IpMatchBuilder) mapMatchBuilder.remove(IpMatchBuilder.class);
+            getMatchIpProtocol(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipMatchBuilder != null) {
-                matchBuilderInOut.setIpMatch(ipMatchBuilder.build());
-            }
+        private MatchIpProtocol getMatchIpProtocol(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpProtocol ? (MatchIpProtocol) matchInfo : new MatchIpProtocol(
+                    (short) matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     ipv4_dst {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -237,27 +205,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.get(Ipv4MatchBuilder.class);
-
-            if (ipv4MatchBuilder == null) {
-                ipv4MatchBuilder = new Ipv4MatchBuilder();
-                mapMatchBuilder.put(Ipv4MatchBuilder.class, ipv4MatchBuilder);
-            }
-
-            long[] prefix = matchInfo.getMatchValues();
-            ipv4MatchBuilder.setIpv4Destination(new Ipv4Prefix(MDSALUtil.longToIp(prefix[0], prefix[1]))).build();
+            getMatchIpv4Destination(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.remove(Ipv4MatchBuilder.class);
+            getMatchIpv4Destination(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv4MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv4MatchBuilder.build());
-            }
+        private MatchIpv4Destination getMatchIpv4Destination(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv4Destination ? (MatchIpv4Destination) matchInfo : new
+                    MatchIpv4Destination(matchInfo.getMatchValues()[0], matchInfo.getMatchValues()[1]);
         }
     },
 
+    @Deprecated
     ipv4_src {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -266,27 +228,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.get(Ipv4MatchBuilder.class);
-
-            if (ipv4MatchBuilder == null) {
-                ipv4MatchBuilder = new Ipv4MatchBuilder();
-                mapMatchBuilder.put(Ipv4MatchBuilder.class, ipv4MatchBuilder);
-            }
-
-            long[] prefix = matchInfo.getMatchValues();
-            ipv4MatchBuilder.setIpv4Source(new Ipv4Prefix(MDSALUtil.longToIp(prefix[0], prefix[1]))).build();
+            getMatchIpv4Source(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.remove(Ipv4MatchBuilder.class);
+            getMatchIpv4Source(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv4MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv4MatchBuilder.build());
-            }
+        private MatchIpv4Source getMatchIpv4Source(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv4Source ? (MatchIpv4Source) matchInfo : new MatchIpv4Source(
+                    matchInfo.getMatchValues()[0], matchInfo.getMatchValues()[1]);
         }
     },
 
+    @Deprecated
     ipv4_destination {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -295,27 +251,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.get(Ipv4MatchBuilder.class);
-
-            if (ipv4MatchBuilder == null) {
-                ipv4MatchBuilder = new Ipv4MatchBuilder();
-                mapMatchBuilder.put(Ipv4MatchBuilder.class, ipv4MatchBuilder);
-            }
-
-            String[] prefix = matchInfo.getStringMatchValues();
-            ipv4MatchBuilder.setIpv4Destination(new Ipv4Prefix(prefix[0] + "/" + prefix[1])).build();
+            getMatchIpv4Destination(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.remove(Ipv4MatchBuilder.class);
+            getMatchIpv4Destination(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv4MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv4MatchBuilder.build());
-            }
+        private MatchIpv4Destination getMatchIpv4Destination(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv4Destination ? (MatchIpv4Destination) matchInfo : new
+                    MatchIpv4Destination(matchInfo.getStringMatchValues()[0], matchInfo.getStringMatchValues()[1]);
         }
     },
 
+    @Deprecated
     ipv4_source {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -324,27 +274,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.get(Ipv4MatchBuilder.class);
-
-            if (ipv4MatchBuilder == null) {
-                ipv4MatchBuilder = new Ipv4MatchBuilder();
-                mapMatchBuilder.put(Ipv4MatchBuilder.class, ipv4MatchBuilder);
-            }
-
-            String[] prefix = matchInfo.getStringMatchValues();
-            ipv4MatchBuilder.setIpv4Source(new Ipv4Prefix(prefix[0] + "/" + prefix[1])).build();
+            getMatchIpv4Source(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv4MatchBuilder ipv4MatchBuilder = (Ipv4MatchBuilder) mapMatchBuilder.remove(Ipv4MatchBuilder.class);
+            getMatchIpv4Source(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv4MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv4MatchBuilder.build());
-            }
+        private MatchIpv4Source getMatchIpv4Source(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv4Source ? (MatchIpv4Source) matchInfo : new MatchIpv4Source(
+                    matchInfo.getStringMatchValues()[0], matchInfo.getStringMatchValues()[1]);
         }
     },
 
+    @Deprecated
     ipv6_destination {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -353,25 +297,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.get(Ipv6MatchBuilder.class);
-
-            if (ipv6MatchBuilder == null) {
-                ipv6MatchBuilder = new Ipv6MatchBuilder();
-                mapMatchBuilder.put(Ipv6MatchBuilder.class, ipv6MatchBuilder);
-            }
-            ipv6MatchBuilder.setIpv6Destination(new Ipv6Prefix(matchInfo.getStringMatchValues()[0])).build();
+            getMatchIpv6Destination(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.remove(Ipv6MatchBuilder.class);
+            getMatchIpv6Destination(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv6MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv6MatchBuilder.build());
-            }
+        private MatchIpv6Destination getMatchIpv6Destination(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv6Destination ? (MatchIpv6Destination) matchInfo : new
+                    MatchIpv6Destination(matchInfo.getStringMatchValues()[0]);
         }
     },
 
+    @Deprecated
     ipv6_source {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -380,27 +320,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.get(Ipv6MatchBuilder.class);
-
-            if (ipv6MatchBuilder == null) {
-                ipv6MatchBuilder = new Ipv6MatchBuilder();
-                mapMatchBuilder.put(Ipv6MatchBuilder.class, ipv6MatchBuilder);
-            }
-
-            ipv6MatchBuilder.setIpv6Source(new Ipv6Prefix(matchInfo.getStringMatchValues()[0])).build();
+            getMatchIpv6Source(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.remove(Ipv6MatchBuilder.class);
+            getMatchIpv6Source(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv6MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv6MatchBuilder.build());
-            }
+        private MatchIpv6Source getMatchIpv6Source(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv6Source ? (MatchIpv6Source) matchInfo : new MatchIpv6Source(
+                    new Ipv6Prefix(matchInfo.getStringMatchValues()[0]));
         }
     },
 
-
+    @Deprecated
     arp_op {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -409,26 +343,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
-
-            if (arpMatchBuilder == null) {
-                arpMatchBuilder = new ArpMatchBuilder();
-                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
-            }
-
-            arpMatchBuilder.setArpOp((int) matchInfo.getMatchValues()[0]);
+            getMatchArpOp(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+            getMatchArpOp(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (arpMatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
-            }
+        private MatchArpOp getMatchArpOp(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchArpOp ? (MatchArpOp) matchInfo : new MatchArpOp(
+                    (int) matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     arp_tpa {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -437,32 +366,26 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
-
-            if (arpMatchBuilder == null) {
-                arpMatchBuilder = new ArpMatchBuilder();
-                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
-            }
-            String arpTpa;
-            if (matchInfo.getStringMatchValues() != null) {
-                arpTpa = matchInfo.getStringMatchValues()[0] + "/" + matchInfo.getStringMatchValues()[1];
-            }else{
-                long[] prefix = matchInfo.getMatchValues();
-                arpTpa = NWUtil.longToIpv4(prefix[0], prefix[1]);
-            }
-            arpMatchBuilder.setArpTargetTransportAddress(new Ipv4Prefix(arpTpa));
+            getMatchArpTpa(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+            getMatchArpTpa(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (arpMatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
+        private MatchArpTpa getMatchArpTpa(MatchInfo matchInfo) {
+            if (matchInfo instanceof MatchArpTpa) {
+                return (MatchArpTpa) matchInfo;
             }
+            if (matchInfo.getStringMatchValues() != null) {
+                return new MatchArpTpa(matchInfo.getStringMatchValues()[0], matchInfo.getStringMatchValues()[1]);
+            }
+            return new MatchArpTpa(matchInfo.getMatchValues()[0], matchInfo.getMatchValues()[1]);
         }
     },
 
+    @Deprecated
     arp_spa {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -471,27 +394,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
-
-            if (arpMatchBuilder == null) {
-                arpMatchBuilder = new ArpMatchBuilder();
-                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
-            }
-
-            long[] prefix = matchInfo.getMatchValues();
-            arpMatchBuilder.setArpSourceTransportAddress(new Ipv4Prefix(MDSALUtil.longToIp(prefix[0], prefix[1])));
+            getMatchArpSpa(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+            getMatchArpSpa(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (arpMatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
-            }
+        private MatchArpSpa getMatchArpSpa(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchArpSpa ? (MatchArpSpa) matchInfo : new MatchArpSpa(
+                    matchInfo.getMatchValues()[0], matchInfo.getMatchValues()[1]);
         }
     },
 
+    @Deprecated
     arp_tha {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -500,28 +417,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
-
-            if (arpMatchBuilder == null) {
-                arpMatchBuilder = new ArpMatchBuilder();
-                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
-            }
-
-            ArpTargetHardwareAddressBuilder arpSrc = new ArpTargetHardwareAddressBuilder();
-            arpSrc.setAddress(new MacAddress(matchInfo.getStringMatchValues()[0]));
-            arpMatchBuilder.setArpTargetHardwareAddress(arpSrc.build());
+            getMatchArpTha(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+            getMatchArpTha(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (arpMatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
-            }
+        private MatchArpTha getMatchArpTha(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchArpTha ? (MatchArpTha) matchInfo : new MatchArpTha(
+                    new MacAddress(matchInfo.getStringMatchValues()[0]));
         }
     },
 
+    @Deprecated
     arp_sha {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -530,28 +440,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.get(ArpMatchBuilder.class);
-
-            if (arpMatchBuilder == null) {
-                arpMatchBuilder = new ArpMatchBuilder();
-                mapMatchBuilder.put(ArpMatchBuilder.class, arpMatchBuilder);
-            }
-
-            ArpSourceHardwareAddressBuilder arpSrc = new ArpSourceHardwareAddressBuilder();
-            arpSrc.setAddress(new MacAddress(matchInfo.getStringMatchValues()[0]));
-            arpMatchBuilder.setArpSourceHardwareAddress(arpSrc.build());
+            getMatchArpSha(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ArpMatchBuilder arpMatchBuilder = (ArpMatchBuilder) mapMatchBuilder.remove(ArpMatchBuilder.class);
+            getMatchArpSha(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (arpMatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(arpMatchBuilder.build());
-            }
+        private MatchArpSha getMatchArpSha(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchArpSha ? (MatchArpSha) matchInfo : new MatchArpSha(
+                    new MacAddress(matchInfo.getStringMatchValues()[0]));
         }
     },
 
+    @Deprecated
     metadata {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -560,27 +463,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            MetadataBuilder metadataBuilder = (MetadataBuilder) mapMatchBuilder.get(MetadataBuilder.class);
-
-            if (metadataBuilder == null) {
-                metadataBuilder = new MetadataBuilder();
-                mapMatchBuilder.put(MetadataBuilder.class, metadataBuilder);
-            }
-
-            BigInteger[] metadataValues = matchInfo.getBigMatchValues();
-            metadataBuilder.setMetadata(metadataValues[0]).setMetadataMask(metadataValues[1]).build();
+            getMatchMetadata(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            MetadataBuilder metadataBuilder = (MetadataBuilder) mapMatchBuilder.remove(MetadataBuilder.class);
+            getMatchMetadata(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (metadataBuilder != null) {
-                matchBuilderInOut.setMetadata(metadataBuilder.build());
-            }
+        private MatchMetadata getMatchMetadata(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchMetadata ? (MatchMetadata) matchInfo : new MatchMetadata(
+                    matchInfo.getBigMatchValues()[0], matchInfo.getBigMatchValues()[1]);
         }
     },
 
+    @Deprecated
     mpls_label {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -589,28 +486,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ProtocolMatchFieldsBuilder protocolMatchFieldsBuilder = (ProtocolMatchFieldsBuilder) mapMatchBuilder
-                    .get(ProtocolMatchFieldsBuilder.class);
-
-            if (protocolMatchFieldsBuilder == null) {
-                protocolMatchFieldsBuilder = new ProtocolMatchFieldsBuilder();
-                mapMatchBuilder.put(ProtocolMatchFieldsBuilder.class, protocolMatchFieldsBuilder);
-            }
-
-            protocolMatchFieldsBuilder.setMplsLabel(Long.valueOf(matchInfo.getStringMatchValues()[0])).build();
+            getMatchMplsLabel(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ProtocolMatchFieldsBuilder protocolMatchFieldsBuilder = (ProtocolMatchFieldsBuilder) mapMatchBuilder
-                    .remove(ProtocolMatchFieldsBuilder.class);
+            getMatchMplsLabel(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (protocolMatchFieldsBuilder != null) {
-                matchBuilderInOut.setProtocolMatchFields(protocolMatchFieldsBuilder.build());
-            }
+        private MatchMplsLabel getMatchMplsLabel(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchMplsLabel ? (MatchMplsLabel) matchInfo : new MatchMplsLabel(
+                    Long.parseLong(matchInfo.getStringMatchValues()[0]));
         }
     },
 
+    @Deprecated
     pbb_isid {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -619,29 +509,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ProtocolMatchFieldsBuilder protocolMatchFieldsBuilder = (ProtocolMatchFieldsBuilder) mapMatchBuilder
-                    .get(ProtocolMatchFieldsBuilder.class);
-
-            if (protocolMatchFieldsBuilder == null) {
-                protocolMatchFieldsBuilder = new ProtocolMatchFieldsBuilder();
-                mapMatchBuilder.put(ProtocolMatchFieldsBuilder.class, protocolMatchFieldsBuilder);
-            }
-
-            protocolMatchFieldsBuilder.setPbb(new PbbBuilder().setPbbIsid(matchInfo.getMatchValues()[0])
-                    .build());
+            getMatchPbbIsid(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            ProtocolMatchFieldsBuilder protocolMatchFieldsBuilder = (ProtocolMatchFieldsBuilder) mapMatchBuilder
-                    .remove(ProtocolMatchFieldsBuilder.class);
+            getMatchPbbIsid(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (protocolMatchFieldsBuilder != null) {
-                matchBuilderInOut.setProtocolMatchFields(protocolMatchFieldsBuilder.build());
-            }
+        private MatchPbbIsid getMatchPbbIsid(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchPbbIsid ? (MatchPbbIsid) matchInfo : new MatchPbbIsid(
+                    matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     tcp_dst {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -650,26 +532,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TcpMatchBuilder tcpMatchBuilder = (TcpMatchBuilder) mapMatchBuilder.get(TcpMatchBuilder.class);
-
-            if (tcpMatchBuilder == null) {
-                tcpMatchBuilder = new TcpMatchBuilder();
-                mapMatchBuilder.put(TcpMatchBuilder.class, tcpMatchBuilder);
-            }
-
-            tcpMatchBuilder.setTcpDestinationPort(new PortNumber((int) matchInfo.getMatchValues()[0]));
+            getMatchTcpDestinationPort(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TcpMatchBuilder tcpMatchBuilder = (TcpMatchBuilder) mapMatchBuilder.remove(TcpMatchBuilder.class);
+            getMatchTcpDestinationPort(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (tcpMatchBuilder != null) {
-                matchBuilderInOut.setLayer4Match(tcpMatchBuilder.build());
-            }
+        private MatchTcpDestinationPort getMatchTcpDestinationPort(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchTcpDestinationPort ? (MatchTcpDestinationPort) matchInfo : new MatchTcpDestinationPort(
+                    (int) matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     tcp_src {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -678,26 +555,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TcpMatchBuilder tcpMatchBuilder = (TcpMatchBuilder) mapMatchBuilder.get(TcpMatchBuilder.class);
-
-            if (tcpMatchBuilder == null) {
-                tcpMatchBuilder = new TcpMatchBuilder();
-                mapMatchBuilder.put(TcpMatchBuilder.class, tcpMatchBuilder);
-            }
-
-            tcpMatchBuilder.setTcpSourcePort(new PortNumber((int) matchInfo.getMatchValues()[0]));
+            getMatchTcpSourcePort(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TcpMatchBuilder tcpMatchBuilder = (TcpMatchBuilder) mapMatchBuilder.remove(TcpMatchBuilder.class);
+            getMatchTcpSourcePort(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (tcpMatchBuilder != null) {
-                matchBuilderInOut.setLayer4Match(tcpMatchBuilder.build());
-            }
+        private MatchTcpSourcePort getMatchTcpSourcePort(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchTcpSourcePort ? (MatchTcpSourcePort) matchInfo : new MatchTcpSourcePort(
+                    (int) matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     tcp_flags {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -706,30 +578,22 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TcpFlagsMatchBuilder TcpFlagsMatchBuilder = (TcpFlagsMatchBuilder) mapMatchBuilder
-                    .get(TcpFlagsMatchBuilder.class);
-            if (matchInfo == null || matchInfo.getMatchValues() == null || matchInfo.getMatchValues().length == 0) {
-                return;
-            }
-
-            if (TcpFlagsMatchBuilder == null) {
-                TcpFlagsMatchBuilder = new TcpFlagsMatchBuilder();
-                mapMatchBuilder.put(TcpFlagsMatchBuilder.class, TcpFlagsMatchBuilder);
-            }
-            TcpFlagsMatchBuilder.setTcpFlags((int) matchInfo.getMatchValues()[0]);
+            getMatchTcpFlags(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>,
                 Object> mapMatchBuilder) {
-            TcpFlagsMatchBuilder TcpFlagsMatchBuilder = (TcpFlagsMatchBuilder) mapMatchBuilder
-                    .remove(TcpFlagsMatchBuilder.class);
+            getMatchTcpFlags(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (TcpFlagsMatchBuilder != null) {
-                matchBuilderInOut.setTcpFlagsMatch(TcpFlagsMatchBuilder.build());
-            }
+        private MatchTcpFlags getMatchTcpFlags(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchTcpFlags ? (MatchTcpFlags) matchInfo : new MatchTcpFlags(
+                    (int) matchInfo.getMatchValues()[0]);
         }
     },
+
+    @Deprecated
     udp_dst {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -738,26 +602,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            UdpMatchBuilder udpMatchBuilder = (UdpMatchBuilder) mapMatchBuilder.get(UdpMatchBuilder.class);
-
-            if (udpMatchBuilder == null) {
-                udpMatchBuilder = new UdpMatchBuilder();
-                mapMatchBuilder.put(UdpMatchBuilder.class, udpMatchBuilder);
-            }
-
-            udpMatchBuilder.setUdpDestinationPort(new PortNumber((int) matchInfo.getMatchValues()[0]));
+            getMatchUdpDestinationPort(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            UdpMatchBuilder udpMatchBuilder = (UdpMatchBuilder) mapMatchBuilder.remove(UdpMatchBuilder.class);
+            getMatchUdpDestinationPort(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (udpMatchBuilder != null) {
-                matchBuilderInOut.setLayer4Match(udpMatchBuilder.build());
-            }
+        private MatchUdpDestinationPort getMatchUdpDestinationPort(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchUdpDestinationPort ? (MatchUdpDestinationPort) matchInfo : new
+                    MatchUdpDestinationPort((int) matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     udp_src {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -766,50 +625,30 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            UdpMatchBuilder udpMatchBuilder = (UdpMatchBuilder) mapMatchBuilder.get(UdpMatchBuilder.class);
-
-            if (udpMatchBuilder == null) {
-                udpMatchBuilder = new UdpMatchBuilder();
-                mapMatchBuilder.put(UdpMatchBuilder.class, udpMatchBuilder);
-            }
-
-            udpMatchBuilder.setUdpSourcePort(new PortNumber((int) matchInfo.getMatchValues()[0]));
+            getMatchUdpSourcePort(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            UdpMatchBuilder udpMatchBuilder = (UdpMatchBuilder) mapMatchBuilder.remove(UdpMatchBuilder.class);
+            getMatchUdpSourcePort(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (udpMatchBuilder != null) {
-                matchBuilderInOut.setLayer4Match(udpMatchBuilder.build());
-            }
+        private MatchUdpSourcePort getMatchUdpSourcePort(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchUdpSourcePort ? (MatchUdpSourcePort) matchInfo : new MatchUdpSourcePort(
+                    (int) matchInfo.getMatchValues()[0]);
         }
     },
+
+    @Deprecated
     tunnel_id {
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TunnelBuilder tunnelBuilder = (TunnelBuilder) mapMatchBuilder.get(TunnelBuilder.class);
-
-            if (tunnelBuilder == null) {
-                tunnelBuilder = new TunnelBuilder();
-                mapMatchBuilder.put(TunnelBuilder.class, tunnelBuilder);
-            }
-
-            BigInteger[] tunnelIdValues = matchInfo.getBigMatchValues();
-            tunnelBuilder.setTunnelId(tunnelIdValues[0]);
-            if(tunnelIdValues.length > 1){
-                tunnelBuilder.setTunnelMask(tunnelIdValues[1]);
-            }
-            tunnelBuilder.build();
+            getMatchTunnelId(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            TunnelBuilder tunnelBuilder = (TunnelBuilder) mapMatchBuilder.remove(TunnelBuilder.class);
-
-            if (tunnelBuilder != null) {
-                matchBuilderInOut.setTunnel(tunnelBuilder.build());
-            }
+            getMatchTunnelId(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
         }
 
         @Override
@@ -817,8 +656,18 @@ public enum MatchFieldType {
             return TunnelId.class;
         }
 
+        private MatchTunnelId getMatchTunnelId(MatchInfo matchInfo) {
+            if (matchInfo instanceof MatchTunnelId) {
+                return (MatchTunnelId) matchInfo;
+            }
+            if (matchInfo.getBigMatchValues().length > 1) {
+                return new MatchTunnelId(matchInfo.getBigMatchValues()[0], matchInfo.getBigMatchValues()[1]);
+            }
+            return new MatchTunnelId(matchInfo.getBigMatchValues()[0]);
+        }
     },
 
+    @Deprecated
     vlan_vid {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -827,29 +676,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            VlanMatchBuilder vlanMatchBuilder = (VlanMatchBuilder) mapMatchBuilder.get(VlanMatchBuilder.class);
-
-            if (vlanMatchBuilder == null) {
-                vlanMatchBuilder = new VlanMatchBuilder();
-                mapMatchBuilder.put(VlanMatchBuilder.class, vlanMatchBuilder);
-            }
-
-            vlanMatchBuilder.setVlanId(new VlanIdBuilder()
-            .setVlanId(new VlanId((int) matchInfo.getMatchValues()[0]))
-            .setVlanIdPresent(((int) matchInfo.getMatchValues()[0] == 0) ? Boolean.FALSE : Boolean.TRUE)
-            .build());
+            getMatchVlanVid(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            VlanMatchBuilder vlanMatchBuilder = (VlanMatchBuilder) mapMatchBuilder.remove(VlanMatchBuilder.class);
+            getMatchVlanVid(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (vlanMatchBuilder != null) {
-                matchBuilderInOut.setVlanMatch(vlanMatchBuilder.build());
-            }
+        private MatchVlanVid getMatchVlanVid(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchVlanVid ? (MatchVlanVid) matchInfo : new MatchVlanVid(
+                    (int) matchInfo.getMatchValues()[0]);
         }
     },
 
+    @Deprecated
     icmp_v4 {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -858,27 +699,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Icmpv4MatchBuilder icmpv4MatchBuilder = (Icmpv4MatchBuilder) mapMatchBuilder.get(Icmpv4MatchBuilder.class);
-
-            if (icmpv4MatchBuilder == null) {
-                icmpv4MatchBuilder = new Icmpv4MatchBuilder();
-                mapMatchBuilder.put(Icmpv4MatchBuilder.class, icmpv4MatchBuilder);
-            }
-
-            icmpv4MatchBuilder.setIcmpv4Type((short) matchInfo.getMatchValues()[0]);
-            icmpv4MatchBuilder.setIcmpv4Code((short) matchInfo.getMatchValues()[1]);
+            getMatchIcmpv4(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Icmpv4MatchBuilder icmpv4MatchBuilder = (Icmpv4MatchBuilder) mapMatchBuilder.remove(Icmpv4MatchBuilder.class);
+            getMatchIcmpv4(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (icmpv4MatchBuilder != null) {
-                matchBuilderInOut.setIcmpv4Match(icmpv4MatchBuilder.build());
-            }
+        private MatchIcmpv4 getMatchIcmpv4(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIcmpv4 ? (MatchIcmpv4) matchInfo : new MatchIcmpv4(
+                    (short) matchInfo.getMatchValues()[0], (short) matchInfo.getMatchValues()[1]);
         }
     },
 
+    @Deprecated
     icmp_v6 {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -887,27 +722,21 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Icmpv6MatchBuilder icmpv6MatchBuilder = (Icmpv6MatchBuilder) mapMatchBuilder.get(Icmpv6MatchBuilder.class);
-
-            if (icmpv6MatchBuilder == null) {
-                icmpv6MatchBuilder = new Icmpv6MatchBuilder();
-                mapMatchBuilder.put(Icmpv6MatchBuilder.class, icmpv6MatchBuilder);
-            }
-
-            icmpv6MatchBuilder.setIcmpv6Type((short) matchInfo.getMatchValues()[0]);
-            icmpv6MatchBuilder.setIcmpv6Code((short) matchInfo.getMatchValues()[1]);
+            getMatchIcmpv6(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Icmpv6MatchBuilder icmpv6MatchBuilder = (Icmpv6MatchBuilder) mapMatchBuilder.remove(Icmpv6MatchBuilder.class);
+            getMatchIcmpv6(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (icmpv6MatchBuilder != null) {
-                matchBuilderInOut.setIcmpv6Match(icmpv6MatchBuilder.build());
-            }
+        private MatchIcmpv6 getMatchIcmpv6(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIcmpv6 ? (MatchIcmpv6) matchInfo : new MatchIcmpv6(
+                    (short) matchInfo.getMatchValues()[0], (short) matchInfo.getMatchValues()[1]);
         }
     },
 
+    @Deprecated
     ipv6_nd_target {
         @Override
         protected Class<? extends MatchField> getMatchType() {
@@ -916,22 +745,17 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.get(Ipv6MatchBuilder.class);
-
-            if (ipv6MatchBuilder == null) {
-                ipv6MatchBuilder = new Ipv6MatchBuilder();
-                mapMatchBuilder.put(Ipv6MatchBuilder.class, ipv6MatchBuilder);
-            }
-            ipv6MatchBuilder.setIpv6NdTarget(new Ipv6Address(matchInfo.getStringMatchValues()[0])).build();
+            getMatchIpv6NdTarget(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
         }
 
         @Override
         public void setMatch(MatchBuilder matchBuilderInOut, MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            Ipv6MatchBuilder ipv6MatchBuilder = (Ipv6MatchBuilder) mapMatchBuilder.remove(Ipv6MatchBuilder.class);
+            getMatchIpv6NdTarget(matchInfo).setMatch(matchBuilderInOut, mapMatchBuilder);
+        }
 
-            if (ipv6MatchBuilder != null) {
-                matchBuilderInOut.setLayer3Match(ipv6MatchBuilder.build());
-            }
+        private MatchIpv6NdTarget getMatchIpv6NdTarget(MatchInfo matchInfo) {
+            return matchInfo instanceof MatchIpv6NdTarget ? (MatchIpv6NdTarget) matchInfo : new MatchIpv6NdTarget(
+                    new Ipv6Address(matchInfo.getStringMatchValues()[0]));
         }
     };
 
