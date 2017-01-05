@@ -23,6 +23,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteActions;
+import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,7 +37,6 @@ import org.opendaylight.genius.mdsalutil.GroupEntity;
 import org.opendaylight.genius.mdsalutil.BucketInfo;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.internal.MDSALManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -174,8 +174,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
 
                 short s_tableId = Short.parseShort(tableId) ;
 
-                mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] {
-                        new BigInteger("0000000000000000", 16) }));
+                mkMatches.add(new MatchTunnelId(new BigInteger("0000000000000000", 16)));
 
                 List<InstructionInfo> mkInstructions = new ArrayList<>();
                 mkInstructions.add(new InstructionWriteActions(listActionInfo));
