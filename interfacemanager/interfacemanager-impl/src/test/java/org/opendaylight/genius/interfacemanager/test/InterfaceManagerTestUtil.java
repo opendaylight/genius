@@ -7,8 +7,11 @@
  */
 package org.opendaylight.genius.interfacemanager.test;
 
+import com.google.common.util.concurrent.CheckedFuture;
+import com.sun.xml.internal.ws.api.model.CheckedException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -112,16 +115,16 @@ public class InterfaceManagerTestUtil {
         return tpIid;
     }
 
-    public static void deleteInterfaceConfig(DataBroker dataBroker, String ifaceName){
+    public static CheckedFuture<Void,TransactionCommitFailedException> deleteInterfaceConfig(DataBroker dataBroker, String ifaceName){
         InstanceIdentifier<Interface> vlanInterfaceEnabledInterfaceInstanceIdentifier = IfmUtil.buildId(
                 ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.delete(CONFIGURATION, vlanInterfaceEnabledInterfaceInstanceIdentifier);
-        tx.submit();
+        return tx.submit();
     }
 
-    public static void putInterfaceConfig(DataBroker dataBroker, String ifaceName, ParentRefs parentRefs,
-                                          Class<? extends InterfaceType> ifType){
+    public static CheckedFuture<Void,TransactionCommitFailedException> putInterfaceConfig(DataBroker dataBroker, String ifaceName, ParentRefs parentRefs,
+                                                                                          Class<? extends InterfaceType> ifType){
         Interface interfaceInfo;
         if(!Tunnel.class.equals(ifType)) {
             interfaceInfo = InterfaceManagerTestUtil.buildInterface(
@@ -134,14 +137,14 @@ public class InterfaceManagerTestUtil {
                 ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
-        tx.submit();
+        return tx.submit();
     }
 
-    public static void putInterfaceState(DataBroker dataBroker, String interfaceName, Class<? extends InterfaceType> ifType){
+    public static CheckedFuture<Void,TransactionCommitFailedException> putInterfaceState(DataBroker dataBroker, String interfaceName, Class<? extends InterfaceType> ifType){
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState =
                 InterfaceManagerTestUtil.buildStateInterface(interfaceName, "1", "2", "AA:AA:AA:AA:AA:AA", ifType);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(OPERATIONAL, IfmUtil.buildStateInterfaceId(interfaceName), ifaceState, true);
-        tx.submit();
+        return tx.submit();
     }
 }

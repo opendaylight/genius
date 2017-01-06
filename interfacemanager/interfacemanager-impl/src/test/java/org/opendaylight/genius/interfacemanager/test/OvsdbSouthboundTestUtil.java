@@ -9,9 +9,11 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
@@ -96,7 +98,7 @@ public class OvsdbSouthboundTestUtil {
         return new NodeId(uri);
     }
 
-    public static void createBridge(DataBroker dataBroker){
+    public static CheckedFuture<Void,TransactionCommitFailedException> createBridge(DataBroker dataBroker){
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid =
                 createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
@@ -113,11 +115,11 @@ public class OvsdbSouthboundTestUtil {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid,
                 bridgeCreateAugmentationBuilder.build(), true);
-        tx.submit();
+        return tx.submit();
 
     }
 
-    public static void deleteBridge(DataBroker dataBroker){
+    public static CheckedFuture<Void,TransactionCommitFailedException> deleteBridge(DataBroker dataBroker){
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid =
                 createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
@@ -126,7 +128,7 @@ public class OvsdbSouthboundTestUtil {
         LOG.debug("Built with the intent to delete bridge data {}", bridgeIid.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid);
-        tx.submit();
+        return tx.submit();
 
     }
 
