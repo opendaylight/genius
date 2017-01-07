@@ -19,6 +19,10 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -133,6 +137,17 @@ public class InterfaceManagerCommonUtils {
             }
         }
         return vxlanList;
+    }
+
+    public static List<Interface> getAllTunnelInterfacesFromCache() {
+        return interfaceConfigMap.values().stream().filter(iface -> IfmUtil.getInterfaceType(iface) ==
+                InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE &&
+                iface.getAugmentation(IfTunnel.class).isInternal()).collect(Collectors.toList());
+    }
+
+    public static List<Interface> getAllVlanInterfacesFromCache() {
+        return interfaceConfigMap.values().stream().filter(iface -> IfmUtil.getInterfaceType(iface) ==
+                InterfaceInfo.InterfaceType.VLAN_INTERFACE).collect(Collectors.toList());
     }
 
     /**

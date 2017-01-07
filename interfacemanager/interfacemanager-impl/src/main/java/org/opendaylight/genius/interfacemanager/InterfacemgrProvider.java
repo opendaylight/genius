@@ -524,26 +524,12 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
     @Override
     public List<Interface> getVlanInterfaces() {
-        List<Interface> vlanList = new ArrayList<>();
-        InstanceIdentifier<Interfaces> interfacesInstanceIdentifier = InstanceIdentifier.builder(Interfaces.class).build();
-        Optional<Interfaces> interfacesOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfacesInstanceIdentifier, dataBroker);
-        if (!interfacesOptional.isPresent()) {
-            return vlanList;
-        }
-        Interfaces interfaces = interfacesOptional.get();
-        List<Interface> interfacesList = interfaces.getInterface();
-        for (Interface iface : interfacesList) {
-            if (IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
-                vlanList.add(iface);
-            }
-        }
-        return vlanList;
+        return InterfaceManagerCommonUtils.getAllVlanInterfacesFromCache();
     }
 
     @Override
     public List<Interface> getVxlanInterfaces() {
-        return InterfaceManagerCommonUtils.getAllTunnelInterfaces(dataBroker,
-                InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE);
+        return InterfaceManagerCommonUtils.getAllTunnelInterfacesFromCache();
     }
 
     @Override
