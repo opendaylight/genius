@@ -118,7 +118,7 @@ public class OvsInterfaceConfigAddHelper {
         InstanceIdentifier<BridgeRefEntry> dpnBridgeEntryIid =
                 InterfaceMetaUtils.getBridgeRefEntryIdentifier(BridgeRefEntryKey);
         BridgeRefEntry bridgeRefEntry =
-                InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnBridgeEntryIid, dataBroker);
+                InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
         if(bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
             LOG.debug("creating bridge interface on dpn {}", dpId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =

@@ -30,6 +30,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -452,11 +453,11 @@ public class InterfaceManagerCommonUtils {
         return true;
     }
 
-    public static boolean deleteParentInterfaceEntry(WriteTransaction t, String parentInterface) {
+    public static boolean deleteParentInterfaceEntry(String parentInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        t.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIdentifier);
+        BatchingUtils.delete(interfaceParentEntryIdentifier, BatchingUtils.EntityType.DEFAULT_CONFIG);
         return true;
     }
 

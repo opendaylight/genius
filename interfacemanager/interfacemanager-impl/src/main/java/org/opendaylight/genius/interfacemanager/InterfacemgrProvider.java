@@ -31,6 +31,8 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.listeners.AlivenessMonitorListener;
+import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
+import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
@@ -118,6 +120,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private NodeConnectorStatsImpl nodeConnectorStatsManager;
     private CacheInterfaceConfigListener cacheInterfaceConfigListener;
     private CacheInterfaceStateListener cacheInterfaceStateListener;
+    private CacheBridgeEntryConfigListener cacheBridgeEntryConfigListener;
+    private CacheBridgeRefEntryListener cacheBridgeRefEntryListener;
     private EntityOwnershipService entityOwnershipService;
 
     public void setRpcProviderRegistry(RpcProviderRegistry rpcProviderRegistry) {
@@ -198,6 +202,10 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
             cacheInterfaceStateListener = new CacheInterfaceStateListener(dataBroker);
 
+            cacheBridgeEntryConfigListener = new CacheBridgeEntryConfigListener(dataBroker);
+
+            cacheBridgeRefEntryListener = new CacheBridgeRefEntryListener(dataBroker);
+
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
                     session.getRpcService(OpendaylightPortStatisticsService.class), session.getRpcService(OpendaylightFlowTableStatisticsService.class));
@@ -234,6 +242,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         rpcRegistration.close();
         cacheInterfaceConfigListener.close();
         cacheInterfaceStateListener.close();
+        cacheBridgeEntryConfigListener.close();
+        cacheBridgeRefEntryListener.close();
         topologyStateListener.close();
         interfaceInventoryStateListener.close();
         hwVTEPConfigListener.close();

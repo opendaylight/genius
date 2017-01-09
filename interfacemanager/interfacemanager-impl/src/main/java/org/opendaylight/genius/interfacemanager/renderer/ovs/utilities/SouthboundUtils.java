@@ -167,7 +167,7 @@ public class SouthboundUtils {
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        removeTerminationEndPoint(futures, dataBroker, bridgeIid, iface.getName());
+                        removeTerminationEndPoint(dataBroker, bridgeIid, iface.getName());
                     }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
@@ -313,14 +313,13 @@ public class SouthboundUtils {
         return terminationPointPath;
     }
 
-    public static void removeTerminationEndPoint(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
+    public static void removeTerminationEndPoint(DataBroker dataBroker,
             InstanceIdentifier<?> bridgeIid, String interfaceName) {
         LOG.debug("removing termination point for {}", interfaceName);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
-        transaction.delete(LogicalDatastoreType.CONFIGURATION, tpIid);
-        futures.add(transaction.submit());
+        BatchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
