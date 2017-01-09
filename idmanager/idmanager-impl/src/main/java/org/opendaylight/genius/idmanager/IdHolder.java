@@ -14,7 +14,9 @@ import com.google.common.base.Optional;
 public interface IdHolder {
     Optional<Long> allocateId();
     void addId(long id);
-    boolean isIdAvailable();
+
+    boolean isIdAvailable(long curTimeSec);
+
     long getAvailableIdCount();
     void refreshDataStore(IdPoolBuilder idPoolBuilder);
 }

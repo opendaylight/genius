@@ -296,14 +296,20 @@ public class IdManager implements IdManagerService, AutoCloseable {
             }
             return newIdValuesList;
         }
+        //This get will not help in concurrent reads. Hence the same read needs to be done again.
         IdLocalPool localIdPool = localPool.get(parentPoolName);
         if (localIdPool == null) {
             IdUtils.lockPool(lockManager, parentPoolName);
             try {
-                WriteTransaction tx = broker.newWriteOnlyTransaction();
-                IdPool parentIdPool = getIdPool(parentIdPoolInstanceIdentifier);
-                localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
-                submitTransaction(tx);
+                //Check if a previous thread that got the cluster-wide lock first, has created the localPool
+                if (localPool.get(parentPoolName) == null) {
+                    WriteTransaction tx = broker.newWriteOnlyTransaction();
+                    IdPool parentIdPool = getIdPool(parentIdPoolInstanceIdentifier);
+                    localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
+                    submitTransaction(tx);
+                } else {
+                    localIdPool = localPool.get(parentPoolName);
+                }
             } finally {
                 IdUtils.unlockPool(lockManager, parentPoolName);
             }
@@ -379,8 +385,6 @@ public class IdManager implements IdManagerService, AutoCloseable {
     /**
      * Changes made to availableIds and releasedIds will not be persisted to the datastore
      * @param parentPoolName
-     * @param availableIdsBuilder
-     * @param releasedIdsBuilder
      * @return
      */
     private long getIdBlockFromParentPool(String parentPoolName, IdLocalPool localIdPool) {
@@ -390,6 +394,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
         InstanceIdentifier<IdPool> idPoolInstanceIdentifier = IdUtils.getIdPoolInstance(parentPoolName);
         parentPoolName = parentPoolName.intern();
         IdUtils.lockPool(lockManager, parentPoolName);
+        long idCount = 0;
         try {
             // Check if the childpool already got id block.
             long availableIdCount =
@@ -400,13 +405,14 @@ public class IdManager implements IdManagerService, AutoCloseable {
             }
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             IdPool parentIdPool = getIdPool(idPoolInstanceIdentifier);
-            long idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
+            idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
             submitTransaction(tx);
-            return idCount;
-        }
-        finally {
+        } catch (RuntimeException e) {
+            LOG.error("Error getting id block from parent pool. {}", e.getMessage());
+        } finally {
             IdUtils.unlockPool(lockManager, parentPoolName);
         }
+        return idCount;
     }
 
     private long allocateIdBlockFromParentPool(IdLocalPool localPoolCache, IdPool parentIdPool, WriteTransaction tx) {
