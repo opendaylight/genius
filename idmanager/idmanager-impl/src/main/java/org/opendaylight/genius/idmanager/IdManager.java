@@ -315,14 +315,20 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             return newIdValuesList;
         }
+        //This get will not help in concurrent reads. Hence the same read needs to be done again.
         IdLocalPool localIdPool = localPool.get(parentPoolName);
         if (localIdPool == null) {
             idUtils.lockPool(lockManager, parentPoolName);
             try {
-                WriteTransaction tx = broker.newWriteOnlyTransaction();
-                IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
-                localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
-                tx.submit().checkedGet();
+                //Check if a previous thread that got the cluster-wide lock first, has created the localPool
+                if (localPool.get(parentPoolName) == null) {
+                    WriteTransaction tx = broker.newWriteOnlyTransaction();
+                    IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
+                    localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
+                    tx.submit().checkedGet();
+                } else {
+                    localIdPool = localPool.get(parentPoolName);
+                }
             } finally {
                 idUtils.unlockPool(lockManager, parentPoolName);
             }
@@ -414,6 +420,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         InstanceIdentifier<IdPool> idPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         parentPoolName = parentPoolName.intern();
         idUtils.lockPool(lockManager, parentPoolName);
+        long idCount = 0;
         try {
             // Check if the childpool already got id block.
             long availableIdCount =
@@ -424,12 +431,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, idPoolInstanceIdentifier);
-            long idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
+            idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
             tx.submit().checkedGet();
-            return idCount;
+        } catch (IdManagerException | NullPointerException e) {
+            LOG.error("Error getting id block from parent pool. {}", e.getMessage());
         } finally {
             idUtils.unlockPool(lockManager, parentPoolName);
         }
+        return idCount;
     }
 
     private long allocateIdBlockFromParentPool(IdLocalPool localPoolCache, IdPool parentIdPool, WriteTransaction tx)
