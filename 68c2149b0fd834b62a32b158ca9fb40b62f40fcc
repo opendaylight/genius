@@ -16,6 +16,24 @@
       "revId": "68c2149b0fd834b62a32b158ca9fb40b62f40fcc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8574e936",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-09T12:14:41Z",
+      "side": 1,
+      "message": "Instead of a review comment, would you be willing to directly amend this Gerrit with the final wording you think is best?",
+      "parentUuid": "1a622d24_a1aaf0cf",
+      "revId": "68c2149b0fd834b62a32b158ca9fb40b62f40fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
