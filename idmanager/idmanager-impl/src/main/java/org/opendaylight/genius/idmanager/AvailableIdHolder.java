@@ -28,10 +28,14 @@ public class AvailableIdHolder implements IdHolder {
 
     @Override
     public Optional<Long> allocateId() {
-        if (!isIdAvailable()) {
-            return Optional.absent();
+        Optional<Long> allocatedId = Optional.absent();
+        if (isIdAvailable(0L /*currentTime*/)) { //currentTime parameter not used for fetching Ids from AvailableIds
+            allocatedId = Optional.of(cur.incrementAndGet());
+            if (allocatedId.get() > high) {
+                allocatedId = Optional.absent();
+            }
         }
-        return Optional.of(cur.incrementAndGet());
+        return allocatedId;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class AvailableIdHolder implements IdHolder {
     }
 
     @Override
-    public boolean isIdAvailable() {
+    public boolean isIdAvailable(long curTimeSec) {
         return high > cur.get();
     }
 
