@@ -8,6 +8,7 @@
 package org.opendaylight.genius.idmanager;
 
 import com.google.common.base.Optional;
+
 import java.util.concurrent.atomic.AtomicLong;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 
@@ -31,7 +32,14 @@ public class AvailableIdHolder implements IdHolder {
         if (!isIdAvailable()) {
             return Optional.absent();
         }
-        return Optional.of(cur.incrementAndGet());
+
+        Long id = cur.incrementAndGet();
+        if (id > high) {
+            return Optional.absent();
+        }
+        else {
+            return Optional.of(id);
+        }
     }
 
     @Override
