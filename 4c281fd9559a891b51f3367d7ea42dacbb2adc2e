@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_e22313a5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-09T10:25:26Z",
+      "side": 1,
+      "message": "i thought you changed this method name in master to remove configDS from method name",
+      "revId": "4c281fd9559a891b51f3367d7ea42dacbb2adc2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
