@@ -65,9 +65,17 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
             return Optional.absent();
         }
         availableIdCount.decrementAndGet();
-        Optional<Long> id = Optional.of(delayedEntries.get(INITIAL_INDEX).id);
-        delayedEntries.remove(INITIAL_INDEX);
-        return id;
+        if (availableIdCount.get() < 0L) {
+            return Optional.absent();
+        }
+        long curTimeSec = System.currentTimeMillis() / 1000;
+        DelayedIdEntry idEntry = delayedEntries.remove(INITIAL_INDEX);
+        if (idEntry.getReadyTimeSec() > curTimeSec) {
+            delayedEntries.add(INITIAL_INDEX, idEntry);
+            return Optional.absent();
+        } else {
+            return Optional.of(idEntry.getId());
+        }
     }
 
     @Override
@@ -83,7 +91,7 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     @Override
     public boolean isIdAvailable() {
-        if (availableIdCount.get() == 0) {
+        if (availableIdCount.get() <= 0) {
             return false;
         }
         boolean isIdExists = false;

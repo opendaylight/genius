@@ -31,7 +31,13 @@ public class AvailableIdHolder implements IdHolder {
         if (!isIdAvailable()) {
             return Optional.absent();
         }
-        return Optional.of(cur.incrementAndGet());
+        Long id = cur.incrementAndGet();
+        if (id > high) {
+            return Optional.absent();
+        }
+        else {
+            return Optional.of(id);
+        }
     }
 
     @Override
