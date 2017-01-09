@@ -24,7 +24,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -71,6 +76,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
@@ -415,6 +421,104 @@ public class IdManagerTest {
         assertEquals(dataObject, null);
     }
 
+    @Test
+    public void testMultithreadedIdAllocationFromAvailableIds() throws Exception {
+        List<IdPool> listOfIdPool = new ArrayList<>();
+        IdPool localIdPool = buildLocalIdPool(blockSize, idStart, idStart + blockSize - 1, idStart - 1, localPoolName,
+                poolName).build();
+        listOfIdPool.add(localIdPool);
+        int poolSize = 10;
+        IdPool globalIdPool = buildGlobalIdPool(poolName, idStart, poolSize, blockSize,
+                buildChildPool(localPoolName)).build();
+        listOfIdPool.add(globalIdPool);
+        setupMocks(listOfIdPool);
+        doReturn(Futures.immediateCheckedFuture(Optional.of(globalIdPool))).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
+        ExecutorService executor = Executors.newCachedThreadPool();
+        CountDownLatch latch = new CountDownLatch(3);
+        for (int i = 0; i < 3; i++) {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(buildAllocateId(poolName,
+                            Thread.currentThread().getName()));
+                    Long idValue = null;
+                    try {
+                        if (result.get().isSuccessful()) {
+                            idValue = result.get().getResult().getIdValue();
+                            assertTrue(idValue <= idStart + blockSize - 1);
+                        } else {
+                            RpcError error = result.get().getErrors().iterator().next();
+                            assertTrue(error.getCause().getMessage().contains("Ids exhausted for pool : " + poolName));
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException e) {
+                        Thread.currentThread().interrupt();
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+        }
+        latch.await();
+        DataObject dataObject = configDataStore.get(localPoolIdentifier);
+        if (dataObject instanceof IdPool) {
+            IdPool pool = (IdPool) dataObject;
+            assertTrue(idStart + blockSize - 1 == pool.getAvailableIdsHolder().getCursor());
+        }
+    }
+
+    @Test
+    public void testMultithreadedIdAllocationFromReleasedIds() throws Exception {
+        List<DelayedIdEntries> delayedIdEntries = buildDelayedIdEntries(new long[] {150, 151});
+        ReleasedIdsHolder expectedReleasedIds = createReleasedIdsHolder(2, delayedIdEntries , 0);
+        List<IdPool> listOfIdPool = new ArrayList<>();
+        IdPool localIdPool = buildLocalIdPool(blockSize, idStart, idStart + blockSize - 1,
+                idStart + blockSize - 1, localPoolName, poolName).build();
+        listOfIdPool.add(localIdPool);
+        int poolSize = 10;
+        IdPool globalIdPool = buildGlobalIdPool(poolName, idStart, poolSize, blockSize,
+                buildChildPool(localPoolName)).setReleasedIdsHolder(expectedReleasedIds).build();
+        listOfIdPool.add(globalIdPool);
+        setupMocks(listOfIdPool);
+        doReturn(Futures.immediateCheckedFuture(Optional.of(globalIdPool))).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
+        ExecutorService executor = Executors.newCachedThreadPool();
+        CountDownLatch latch = new CountDownLatch(3);
+        for (int i = 0; i < 3; i++) {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(buildAllocateId(poolName,
+                            Thread.currentThread().getName()));
+                    Long idValue = null;
+                    try {
+                        if (result.get().isSuccessful()) {
+                            idValue = result.get().getResult().getIdValue();
+                            assertTrue(idValue <= idStart + blockSize - 1);
+                        } else {
+                            RpcError error = result.get().getErrors().iterator().next();
+                            assertTrue(error.getCause().getMessage().contains("Ids exhausted for pool : " + poolName));
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (ExecutionException e) {
+                        Thread.currentThread().interrupt();
+                    } finally {
+                        latch.countDown();
+                    }
+                }
+            });
+        }
+        latch.await();
+        DataObject dataObject = configDataStore.get(localPoolIdentifier);
+        if (dataObject instanceof IdPool) {
+            IdPool pool = (IdPool) dataObject;
+            assertTrue(pool.getReleasedIdsHolder().getAvailableIdCount() == 0);
+        }
+    }
+
     private InstanceIdentifier<ReleasedIdsHolder> buildReleaseIdsIdentifier(
             String poolName) {
         InstanceIdentifier<ReleasedIdsHolder> releasedIds = InstanceIdentifier
@@ -519,7 +623,8 @@ public class IdManagerTest {
     }
 
     private List<ChildPools> buildChildPool(String childPoolName) {
-        ChildPools childPools = new ChildPoolsBuilder().setChildPoolName(childPoolName).build();
+        ChildPools childPools = new ChildPoolsBuilder().setChildPoolName(childPoolName)
+                .setLastAccessTime(System.currentTimeMillis() / 1000).build();
         List<ChildPools> childPoolsList = new ArrayList<>();
         childPoolsList.add(childPools);
         return childPoolsList;
