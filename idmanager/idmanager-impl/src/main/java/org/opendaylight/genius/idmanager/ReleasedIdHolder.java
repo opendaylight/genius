@@ -61,13 +61,22 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
 
     @Override
     public Optional<Long> allocateId() {
-        if (!isIdAvailable()) {
-            return Optional.absent();
+        long curTimeSec = System.currentTimeMillis() / 1000;
+        Optional<Long> allocatedId = Optional.absent();
+        if (isIdAvailable(curTimeSec)) {
+            availableIdCount.decrementAndGet();
+            if (availableIdCount.get() < 0L) {
+                return allocatedId;
+            }
+            DelayedIdEntry idEntry = delayedEntries.remove(INITIAL_INDEX);
+            if (idEntry.getReadyTimeSec() <= curTimeSec) {
+                allocatedId = Optional.of(idEntry.getId());
+            } else {
+                delayedEntries.add(INITIAL_INDEX, idEntry);
+                availableIdCount.incrementAndGet();
+            }
         }
-        availableIdCount.decrementAndGet();
-        Optional<Long> id = Optional.of(delayedEntries.get(INITIAL_INDEX).id);
-        delayedEntries.remove(INITIAL_INDEX);
-        return id;
+        return allocatedId;
     }
 
     @Override
@@ -82,12 +91,11 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     }
 
     @Override
-    public boolean isIdAvailable() {
-        if (availableIdCount.get() == 0) {
+    public boolean isIdAvailable(long curTimeSec) {
+        if (availableIdCount.get() <= 0) {
             return false;
         }
         boolean isIdExists = false;
-        long curTimeSec = System.currentTimeMillis() / 1000;
         if (!delayedEntries.isEmpty() && delayedEntries.get(INITIAL_INDEX).readyTimeSec <= curTimeSec) {
             isIdExists = true;
         }
