@@ -315,18 +315,25 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             return newIdValuesList;
         }
+        //This get will not help in concurrent reads. Hence the same read needs to be done again
         IdLocalPool localIdPool = localPool.get(parentPoolName);
         if (localIdPool == null) {
             idUtils.lockPool(lockManager, parentPoolName);
             try {
-                WriteTransaction tx = broker.newWriteOnlyTransaction();
-                IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
-                localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
-                tx.submit().checkedGet();
+                //Check if a previous thread that got the cluster-wide lock first, has created the localPool
+                if (localPool.get(parentPoolName) == null) {
+                    WriteTransaction tx = broker.newWriteOnlyTransaction();
+                    IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
+                    localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
+                    tx.submit().checkedGet();
+                } else {
+                    localIdPool = localPool.get(parentPoolName);
+                }
             } finally {
                 idUtils.unlockPool(lockManager, parentPoolName);
             }
         }
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("Got pool {}", localIdPool);
         }
