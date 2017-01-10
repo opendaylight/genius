@@ -19,13 +19,13 @@ import org.slf4j.LoggerFactory;
 
 public class ITMStatusMonitor implements ITMStatusMonitorMBean {
 
-
     private String serviceStatus;
+
     private static ITMStatusMonitor itmStatusMonitor = new ITMStatusMonitor();
     private static final String JMX_ITM_OBJ_NAME = "com.ericsson.sdncp.services.status:type=SvcItmService";
-    private static final Logger log = LoggerFactory.getLogger(ITMStatusMonitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ITMStatusMonitor.class);
 
-    private ITMStatusMonitor () {
+    private ITMStatusMonitor() {
     }
 
     public void registerMbean() {
@@ -33,15 +33,15 @@ public class ITMStatusMonitor implements ITMStatusMonitorMBean {
         try {
             ObjectName objName = new ObjectName(JMX_ITM_OBJ_NAME);
             mbs.registerMBean(itmStatusMonitor, objName);
-            log.info("itm MXBean registration SUCCESSFUL!!! {}", JMX_ITM_OBJ_NAME);
+            LOG.info("itm MXBean registration SUCCESSFUL!!! {}", JMX_ITM_OBJ_NAME);
         } catch (InstanceAlreadyExistsException iaeEx) {
-            log.error("itm MXBean registration FAILED with InstanceAlreadyExistsException", iaeEx);
+            LOG.error("itm MXBean registration FAILED with InstanceAlreadyExistsException", iaeEx);
         } catch (MBeanRegistrationException mbrEx) {
-            log.error("itm MXBean registration FAILED with MBeanRegistrationException", mbrEx);
+            LOG.error("itm MXBean registration FAILED with MBeanRegistrationException", mbrEx);
         } catch (NotCompliantMBeanException ncmbEx) {
-            log.error("itm MXBean registration FAILED with NotCompliantMBeanException", ncmbEx);
+            LOG.error("itm MXBean registration FAILED with NotCompliantMBeanException", ncmbEx);
         } catch (MalformedObjectNameException monEx) {
-            log.error("itm MXBean registration failed with MalformedObjectNameException", monEx);
+            LOG.error("itm MXBean registration failed with MalformedObjectNameException", monEx);
         }
     }
 
@@ -54,9 +54,8 @@ public class ITMStatusMonitor implements ITMStatusMonitorMBean {
         return serviceStatus;
     }
 
-    public void reportStatus (String serviceStatus) {
+    public void reportStatus(String serviceStatus) {
         this.serviceStatus = serviceStatus;
     }
-
 
 }

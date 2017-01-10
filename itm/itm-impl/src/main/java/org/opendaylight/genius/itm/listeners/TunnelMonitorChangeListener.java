@@ -8,6 +8,10 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
@@ -22,11 +26,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 @Singleton
 public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorParams, TunnelMonitorChangeListener>
@@ -59,7 +58,8 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
              throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
          }
      }
- */    @Override
+ */
+    @Override
     @PreDestroy
     public void close() throws Exception {
        /* if (monitorEnabledListenerRegistration != null) {
@@ -93,8 +93,9 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
-        if(monitorProtocol==null)
+        if (monitorProtocol == null) {
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
+        }
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {
@@ -117,13 +118,15 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if(monitorProtocol_after!=null )
+        if(monitorProtocol_after!=null ) {
             monitorProtocol = dataObjectModificationAfter.getMonitorProtocol();
+        }
         if(monitorProtocol_before!=null && monitorProtocol_after!=null)
         {
             LOG.debug("TunnelMonitorChangeListener Update : Existing_MonitorProtocol {}, New_MonitorProtocol {} ",monitorProtocol_before.getName(), monitorProtocol_after.getName());
-            if(!monitorProtocol_after.getName().equalsIgnoreCase(monitorProtocol_before.getName()))
+            if(!monitorProtocol_after.getName().equalsIgnoreCase(monitorProtocol_before.getName())) {
                 LOG.error("Updation of monitor protocol not allowed");
+            }
 
         }
         if (tZonesOptional.isPresent()) {
@@ -144,8 +147,9 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if(monitorProtocol==null)
+        if(monitorProtocol==null) {
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
+        }
         if (tZonesOptional.isPresent()) {
             TransportZones tZones = tZonesOptional.get();
             for (TransportZone tzone : tZones.getTransportZone()) {

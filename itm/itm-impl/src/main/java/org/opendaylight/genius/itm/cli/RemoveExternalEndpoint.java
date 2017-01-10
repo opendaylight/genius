@@ -7,10 +7,6 @@
  */
 package org.opendaylight.genius.itm.cli;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.math.BigInteger;
-
 import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
