@@ -45,13 +45,13 @@ public class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
     public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
-                                                        IMdsalApiManager mdsalApiManager,AlivenessMonitorService alivenessMonitorService,
-                                                        NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
+            NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
         //Retrieve Port No from nodeConnectorId
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
-        if(portNo == IfmConstants.INVALID_PORT_NO){
-            LOG.trace("Cannot derive port number, not proceeding with Interface State " +
-                    "addition for interface: {}", interfaceName);
+        if (portNo == IfmConstants.INVALID_PORT_NO) {
+            LOG.trace("Cannot derive port number, not proceeding with Interface State "
+                    + "addition for interface: {}", interfaceName);
             return null;
         }
 
@@ -69,14 +69,14 @@ public class OvsInterfaceStateAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
-        if(InterfaceManagerCommonUtils.isTunnelPort(interfaceName)){
-           if(!validateTunnelPortAttributes(nodeConnectorId, iface)){
-               return futures;
-           }
+        if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)) {
+            if (!validateTunnelPortAttributes(nodeConnectorId, iface)) {
+                return futures;
+            }
         }
 
-        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, defaultOperationalShardTransaction, idManager,
-                physAddress, operStatus, adminStatus, nodeConnectorId);
+        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
+                defaultOperationalShardTransaction, idManager, physAddress, operStatus, adminStatus, nodeConnectorId);
 
         // If this interface is a tunnel interface, create the tunnel ingress flow,and start tunnel monitoring
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
@@ -87,11 +87,13 @@ public class OvsInterfaceStateAddHelper {
         }
 
         // install ingress flow if this is an l2vlan interface
-        if(InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() &&
-                ifState.getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
+        if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
+                .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker, ifState.getIfIndex());
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo), interfaceName, ifState.getIfIndex());
+            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker,
+                    ifState.getIfIndex());
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo),
+                    interfaceName, ifState.getIfIndex());
         }
 
         futures.add(defaultOperationalShardTransaction.submit());
@@ -99,26 +101,29 @@ public class OvsInterfaceStateAddHelper {
     }
 
     public static void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
-                                                      IMdsalApiManager mdsalApiManager,AlivenessMonitorService alivenessMonitorService,
-                                                      NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifindex,
-                                                      IfTunnel ifTunnel, String interfaceName, long portNo){
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
+            NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifindex, IfTunnel ifTunnel,
+            String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName,
-                ifindex, NwConstants.ADD_FLOW);
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
+                interfaceName, ifindex, NwConstants.ADD_FLOW);
         futures.add(transaction.submit());
         AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }
 
-    public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface){
+    public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface) {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        if(iface != null){
+        if (iface != null) {
             ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-            if(!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier())){
-                LOG.warn("Received tunnel state add notification for tunnel {} from dpn {} where as " +
-                        "the northbound configured dpn is {}", iface.getName(), currentDpnId, parentRefs.getDatapathNodeIdentifier());
+            if (!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier())) {
+                LOG.warn(
+                        "Received tunnel state add notification for tunnel {} from dpn {} where as "
+                                + "the northbound configured dpn is {}",
+                        iface.getName(), currentDpnId, parentRefs.getDatapathNodeIdentifier());
                 return false;
             }
-        }else {
+        } else {
             LOG.warn("Received tunnel state add notification for a tunnel which is not configured {}", iface.getName());
             return false;
         }

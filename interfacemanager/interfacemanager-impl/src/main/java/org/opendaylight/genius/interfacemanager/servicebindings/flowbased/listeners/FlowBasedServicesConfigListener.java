@@ -30,9 +30,11 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
+public class FlowBasedServicesConfigListener
+        extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
+
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
-    private InterfacemgrProvider interfacemgrProvider;
+    private final InterfacemgrProvider interfacemgrProvider;
 
     public FlowBasedServicesConfigListener(InterfacemgrProvider interfacemgrProvider) {
         super(BoundServices.class, FlowBasedServicesConfigListener.class);
@@ -41,11 +43,15 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
     }
 
     private void initializeFlowBasedServiceHelpers(InterfacemgrProvider interfaceMgrProvider) {
-        FlowBasedIngressServicesConfigBindHelper.intitializeFlowBasedIngressServicesConfigAddHelper(interfaceMgrProvider);
-        FlowBasedIngressServicesConfigUnbindHelper.intitializeFlowBasedIngressServicesConfigRemoveHelper(interfaceMgrProvider);
+        FlowBasedIngressServicesConfigBindHelper
+                .intitializeFlowBasedIngressServicesConfigAddHelper(interfaceMgrProvider);
+        FlowBasedIngressServicesConfigUnbindHelper
+                .intitializeFlowBasedIngressServicesConfigRemoveHelper(interfaceMgrProvider);
         FlowBasedEgressServicesConfigBindHelper.intitializeFlowBasedEgressServicesConfigAddHelper(interfaceMgrProvider);
-        FlowBasedEgressServicesConfigUnbindHelper.intitializeFlowBasedEgressServicesConfigRemoveHelper(interfaceMgrProvider);
+        FlowBasedEgressServicesConfigUnbindHelper
+                .intitializeFlowBasedEgressServicesConfigRemoveHelper(interfaceMgrProvider);
     }
+
     @Override
     protected InstanceIdentifier<BoundServices> getWildCardPath() {
         return InstanceIdentifier.create(ServiceBindings.class).child(ServicesInfo.class)
@@ -57,11 +63,13 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         LOG.info("Service Binding Entry removed for Interface: {}, Data: {}",
                 interfaceName, boundServiceOld);
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-        FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory.getFlowBasedServicesRendererFactory(serviceMode).
-                getFlowBasedServicesRemoveRenderer();
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
+                .keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
+                .getFlowBasedServicesRendererFactory(serviceMode).                getFlowBasedServicesRemoveRenderer();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable, key, boundServiceOld);
+        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable, key,
+                boundServiceOld);
         coordinator.enqueueJob(interfaceName, configWorker);
     }
 
@@ -69,7 +77,8 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
     protected void update(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld,
                           BoundServices boundServiceNew) {
         LOG.error("Service Binding entry update not allowed for: {}, Data: {}",
-                InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(), boundServiceNew);
+                InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
+                boundServiceNew);
     }
 
     @Override
@@ -77,12 +86,14 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         LOG.info("Service Binding Entry created for Interface: {}, Data: {}",
                 interfaceName, boundServicesNew);
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
+                .keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
-        FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory.
-                getFlowBasedServicesRendererFactory(serviceMode).getFlowBasedServicesAddRenderer();
+        FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
+                .getFlowBasedServicesRendererFactory(serviceMode).getFlowBasedServicesAddRenderer();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(flowBasedServicesAddable, key, boundServicesNew);
+        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(flowBasedServicesAddable, key,
+                boundServicesNew);
         coordinator.enqueueJob(interfaceName, configWorker);
     }
 
@@ -96,9 +107,8 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         InstanceIdentifier<BoundServices> instanceIdentifier;
         BoundServices boundServicesNew;
 
-        public RendererConfigAddWorker(FlowBasedServicesConfigAddable flowBasedServicesAddable,
-                                       InstanceIdentifier<BoundServices> instanceIdentifier,
-                                       BoundServices boundServicesNew) {
+        RendererConfigAddWorker(FlowBasedServicesConfigAddable flowBasedServicesAddable,
+                InstanceIdentifier<BoundServices> instanceIdentifier, BoundServices boundServicesNew) {
             this.flowBasedServicesAddable = flowBasedServicesAddable;
             this.instanceIdentifier = instanceIdentifier;
             this.boundServicesNew = boundServicesNew;
@@ -116,7 +126,7 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
         InstanceIdentifier<BoundServices> instanceIdentifier;
         BoundServices boundServicesNew;
 
-        public RendererConfigRemoveWorker(FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable,
+        RendererConfigRemoveWorker(FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable,
                                           InstanceIdentifier<BoundServices> instanceIdentifier,
                                           BoundServices boundServicesNew) {
             this.flowBasedServicesConfigRemovable = flowBasedServicesConfigRemovable;

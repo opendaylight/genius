@@ -83,9 +83,9 @@ public class InterfaceManagerCommonUtils {
     private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
     private static final String NOVA_OR_TUNNEL_PORT_REGEX = NOVA_PORT_REGEX + "|" + TUNNEL_PORT_REGEX;
 
-    private static final Pattern novaOrTunnelPortPattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
-    private static final Pattern tunnelPortPattern = Pattern.compile(TUNNEL_PORT_REGEX);
-    private static final Pattern novaPortPattern = Pattern.compile(NOVA_PORT_REGEX);
+    private static final Pattern NOVA_OR_TUNNEL_PORT_PATTERN = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+    private static final Pattern TUNNEL_PORT_PATTERN = Pattern.compile(TUNNEL_PORT_REGEX);
+    private static final Pattern NOVA_PORT_PATTERN = Pattern.compile(NOVA_PORT_REGEX);
 
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
@@ -133,24 +133,25 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static List<Interface> getAllTunnelInterfacesFromCache() {
-        return interfaceConfigMap.values().stream().filter(iface -> IfmUtil.getInterfaceType(iface) ==
-                InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE &&
-                iface.getAugmentation(IfTunnel.class).isInternal()).collect(Collectors.toList());
+        return interfaceConfigMap.values().stream()
+                .filter(iface -> IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
+                        && iface.getAugmentation(IfTunnel.class).isInternal())
+                .collect(Collectors.toList());
     }
 
     public static List<Interface> getAllVlanInterfacesFromCache() {
-        return interfaceConfigMap.values().stream().filter(iface -> IfmUtil.getInterfaceType(iface) ==
-                InterfaceInfo.InterfaceType.VLAN_INTERFACE).collect(Collectors.toList());
+        return interfaceConfigMap.values().stream()
+                .filter(iface -> IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VLAN_INTERFACE)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Searches for an interface by its name
+     * Searches for an interface by its name.
      * @param interfaceName name of the interface to search for
      * @param dataBroker data tree store to start searching for the interface
      * @return the Interface object
-     *
      */
-    public static Interface getInterfaceFromConfigDS (String interfaceName, DataBroker dataBroker) {
+    public static Interface getInterfaceFromConfigDS(String interfaceName, DataBroker dataBroker) {
         Interface iface = interfaceConfigMap.get(interfaceName);
         if (iface != null) {
             return iface;
@@ -166,7 +167,7 @@ public class InterfaceManagerCommonUtils {
     }
 
     @Deprecated
-    public static Interface getInterfaceFromConfigDS (InterfaceKey interfaceKey, DataBroker dataBroker) {
+    public static Interface getInterfaceFromConfigDS(InterfaceKey interfaceKey, DataBroker dataBroker) {
         return getInterfaceFromConfigDS(interfaceKey.getName(), dataBroker);
     }
 
@@ -202,18 +203,18 @@ public class InterfaceManagerCommonUtils {
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
             matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] { dpnId, BigInteger.valueOf(portNo) }));
-            if(BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
+            if (BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
                 matches.add(new NxMatchInfo(NxMatchFieldType.tun_src_ip,
                         new String[] { tunnel.getTunnelDestination().getIpv4Address().getValue() }));
             }
-            if(BooleanUtils.isTrue(tunnel.isTunnelSourceIpFlow())) {
+            if (BooleanUtils.isTrue(tunnel.isTunnelSourceIpFlow())) {
                 matches.add(new NxMatchInfo(NxMatchFieldType.tun_dst_ip,
                         new String[] { tunnel.getTunnelSource().getIpv4Address().getValue() }));
             }
 
             mkInstructions.add(new InstructionInfo(InstructionType.write_metadata,
                     new BigInteger[] { MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
-                            MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG }));
+                        MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG }));
             short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
                     ? NwConstants.L3_LFIB_TABLE
                     : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
@@ -369,9 +370,9 @@ public class InterfaceManagerCommonUtils {
         createOrUpdateDpnToInterface(dpId, interfaceName,interfaceOperShardTransaction);
     }
 
-    public static boolean checkIfBfdStateIsDown(String interfaceName){
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus =
-                InterfaceManagerCommonUtils.getBfdStateFromCache(interfaceName);
+    public static boolean checkIfBfdStateIsDown(String interfaceName) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = InterfaceManagerCommonUtils
+                .getBfdStateFromCache(interfaceName);
         return operStatus == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
     }
 
@@ -382,8 +383,9 @@ public class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         Integer ifIndex;
         if (interfaceInfo != null) {
-            if(!interfaceInfo.isEnabled() || InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo) &&
-                    checkIfBfdStateIsDown(interfaceInfo.getName())){
+            if (!interfaceInfo.isEnabled()
+                    || InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)
+                    && checkIfBfdStateIsDown(interfaceInfo.getName())) {
                 operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
             }
 
@@ -429,7 +431,7 @@ public class InterfaceManagerCommonUtils {
     // For trunk interfaces, binding to a parent interface which is already
     // bound to another trunk interface should not
     // be allowed
-    public static boolean createInterfaceChildEntryIfNotPresent(DataBroker dataBroker, WriteTransaction t,
+    public static boolean createInterfaceChildEntryIfNotPresent(DataBroker dataBroker, WriteTransaction tx,
             String parentInterface, String childInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
@@ -439,7 +441,8 @@ public class InterfaceManagerCommonUtils {
 
         if (interfaceParentEntry != null) {
             if (!Objects.equals(parentInterface, interfaceParentEntry.getParentInterface())) {
-                LOG.error("Trying to bind the same parent interface {} to multiple trunk interfaces. ", parentInterface);
+                LOG.error("Trying to bind the same parent interface {} to multiple trunk interfaces",
+                        parentInterface);
             } else {
                 LOG.trace("Child entry for interface {} already exists", childInterface);
             }
@@ -452,12 +455,12 @@ public class InterfaceManagerCommonUtils {
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        t.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+        tx.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
         return true;
     }
 
     public static boolean deleteParentInterfaceEntry(String parentInterface) {
-        if(parentInterface == null) {
+        if (parentInterface == null) {
             return false;
         }
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
@@ -513,26 +516,27 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void addBfdStateToCache(String interfaceName,
-                                          org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
         bfdStateMap.put(interfaceName, operStatus);
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(String interfaceName){
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(
+            String interfaceName) {
         return bfdStateMap.remove(interfaceName);
     }
 
     public static boolean isNovaOrTunnelPort(String portName) {
-        Matcher matcher = novaOrTunnelPortPattern.matcher(portName);
+        Matcher matcher = NOVA_OR_TUNNEL_PORT_PATTERN.matcher(portName);
         return matcher.matches();
     }
 
-    public static boolean isNovaPort(String portName){
-        Matcher matcher = novaPortPattern.matcher(portName);
+    public static boolean isNovaPort(String portName) {
+        Matcher matcher = NOVA_PORT_PATTERN.matcher(portName);
         return matcher.matches();
     }
 
-    public static boolean isTunnelPort(String portName){
-        Matcher matcher = tunnelPortPattern.matcher(portName);
+    public static boolean isTunnelPort(String portName) {
+        Matcher matcher = TUNNEL_PORT_PATTERN.matcher(portName);
         return matcher.matches();
     }
 
@@ -565,7 +569,7 @@ public class InterfaceManagerCommonUtils {
                 .build();
         transaction.delete(LogicalDatastoreType.OPERATIONAL, intfid);
 
-        if (interfaceNameEntries.size() <=1) {
+        if (interfaceNameEntries.size() <= 1) {
             transaction.delete(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId);
         }
     }

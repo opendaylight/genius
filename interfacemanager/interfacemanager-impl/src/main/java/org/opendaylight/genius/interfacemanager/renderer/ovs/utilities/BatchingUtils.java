@@ -74,12 +74,15 @@ public class BatchingUtils {
         getQueue(entityType).add(actResource);
     }
 
-    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType){
-       switch (entityType){
-           case DEFAULT_CONFIG: return defaultConfigShardBufferQ;
-           case TOPOLOGY_CONFIG:return topologyConfigShardBufferQ;
-       }
-       return null;
+    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
+        switch (entityType) {
+            case DEFAULT_CONFIG:
+                return defaultConfigShardBufferQ;
+            case TOPOLOGY_CONFIG:
+                return topologyConfigShardBufferQ;
+            default:
+                return null;
+        }
     }
 
     public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {

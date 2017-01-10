@@ -44,23 +44,23 @@ public class VlanTrunkSouthboundUtils {
 
     public static void addVlanPortToBridge(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan,
                                            OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName,
-                                           String parentInterface, DataBroker dataBroker, WriteTransaction t) {
+                                           String parentInterface, DataBroker dataBroker, WriteTransaction tx) {
         LOG.info("Vlan Interface creation not supported yet. please visit later.");
         int vlanId = ifL2vlan.getVlanId().getValue();
-        addTrunkTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, parentInterface, vlanId, dataBroker, t);
+        addTrunkTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, parentInterface, vlanId, dataBroker, tx);
     }
 
     public static void updateVlanMemberInTrunk(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan,
                                                OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName,
-                                               String parentInterface, DataBroker dataBroker, WriteTransaction t) {
+                                               String parentInterface, DataBroker dataBroker, WriteTransaction tx) {
         LOG.info("Vlan Interface creation not supported yet. please visit later.");
         int vlanId = ifL2vlan.getVlanId().getValue();
-        updateTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, parentInterface, vlanId, dataBroker, t);
+        updateTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, parentInterface, vlanId, dataBroker, tx);
     }
 
     private static void addTrunkTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
                                                  String bridgeName, String parentInterface, int vlanId,
-                                                 DataBroker dataBroker, WriteTransaction t) {
+                                                 DataBroker dataBroker, WriteTransaction tx) {
         if (vlanId == 0) {
             LOG.error("Found vlanid 0 for bridge: {}, interface: {}", bridgeName, parentInterface);
             return;
@@ -96,11 +96,11 @@ public class VlanTrunkSouthboundUtils {
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-        t.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
+        tx.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
     }
 
     public static void addTerminationPointWithTrunks(InstanceIdentifier<?> bridgeIid, List<Trunks> trunks,
-                                                     String parentInterface, WriteTransaction t) {
+                                                     String parentInterface, WriteTransaction tx) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), parentInterface);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
@@ -112,12 +112,12 @@ public class VlanTrunkSouthboundUtils {
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-        t.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
+        tx.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
     }
 
     private static void updateTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
                                                String bridgeName, String parentInterface, int vlanId,
-                                               DataBroker dataBroker, WriteTransaction t) {
+                                               DataBroker dataBroker, WriteTransaction tx) {
         if (vlanId == 0) {
             LOG.error("Found vlanid 0 for bridge: {}, interface: {}", bridgeName, parentInterface);
             return;
@@ -145,13 +145,13 @@ public class VlanTrunkSouthboundUtils {
                 tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
                 tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-                t.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
+                tx.put(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
             }
         }
     }
 
     private static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodekey,
-                                                                                                 String portName){
+                                                                                                 String portName) {
         InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier
                 .create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(OVSDB_TOPOLOGY_ID))

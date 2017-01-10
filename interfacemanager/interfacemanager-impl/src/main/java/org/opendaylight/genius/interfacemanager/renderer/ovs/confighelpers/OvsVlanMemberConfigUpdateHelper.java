@@ -35,10 +35,11 @@ import java.util.List;
 
 public class OvsVlanMemberConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigUpdateHelper.class);
-    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService, ParentRefs parentRefsNew,
-                                                                   Interface interfaceOld, IfL2vlan ifL2vlanNew,
-                                                                   Interface interfaceNew, IdManagerService idManager,
-                                                                   IMdsalApiManager mdsalApiManager) {
+
+    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
+            AlivenessMonitorService alivenessMonitorService, ParentRefs parentRefsNew, Interface interfaceOld,
+            IfL2vlan ifL2vlanNew, Interface interfaceNew, IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         ParentRefs parentRefsOld = interfaceOld.getAugmentation(ParentRefs.class);
 
@@ -56,14 +57,14 @@ public class OvsVlanMemberConfigUpdateHelper {
         }
 
         IfL2vlan ifL2vlanOld = interfaceOld.getAugmentation(IfL2vlan.class);
-        if (ifL2vlanOld == null || (ifL2vlanNew.getL2vlanMode() != ifL2vlanOld.getL2vlanMode())) {
-            LOG.error("Configuration Error. Vlan Mode Change of Vlan Trunk Member {} as new trunk member: {} is " +
-                    "not allowed.", interfaceOld, interfaceNew);
+        if (ifL2vlanOld == null || ifL2vlanNew.getL2vlanMode() != ifL2vlanOld.getL2vlanMode()) {
+            LOG.error("Configuration Error. Vlan Mode Change of Vlan Trunk Member {} as new trunk member: {} is "
+                    + "not allowed.", interfaceOld, interfaceNew);
             return futures;
         }
 
-        if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId()) ||
-                !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
+        if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId())
+                 || !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
             futures.addAll(OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefsOld, interfaceOld,
                     ifL2vlanOld, idManager));
             futures.addAll(OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefsNew, interfaceNew,
@@ -83,23 +84,23 @@ public class OvsVlanMemberConfigUpdateHelper {
                 operStatus = pifState.getOperStatus();
             }
 
-            WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+            WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
             InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
                     IfmUtil.buildStateInterfaceId(interfaceNew.getName());
             InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
             ifaceBuilder.setOperStatus(operStatus);
             ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
 
-            t.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
-            futures.add(t.submit());
+            tx.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+            futures.add(tx.submit());
         }
 
         return futures;
     }
 
-    public static boolean vlanIdModified(VlanId vlanIdOld, VlanId vlanIdNew){
-        if ((vlanIdOld != null && vlanIdNew == null) ||
-                (vlanIdOld == null && vlanIdOld != null)) {
+    public static boolean vlanIdModified(VlanId vlanIdOld, VlanId vlanIdNew) {
+        if (vlanIdOld != null && vlanIdNew == null
+                || vlanIdOld == null && vlanIdOld != null) {
             return true;
         }
 

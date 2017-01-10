@@ -10,8 +10,10 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
 
-public class FlowBasedIngressServicesRendererFactory extends FlowBasedServicesRendererFactory{
-    private static FlowBasedServicesRendererFactory flowBasedServicesRendererFactory = new FlowBasedIngressServicesRendererFactory();
+public class FlowBasedIngressServicesRendererFactory extends FlowBasedServicesRendererFactory {
+
+    private static final FlowBasedServicesRendererFactory FLOW_BASED_SERVICE_RENDERER_FACTORY
+        = new FlowBasedIngressServicesRendererFactory();
 
     @Override
     public FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer() {
@@ -24,6 +26,6 @@ public class FlowBasedIngressServicesRendererFactory extends FlowBasedServicesRe
     }
 
     public static FlowBasedServicesRendererFactory getFlowBasedServicesRendererFactory() {
-        return flowBasedServicesRendererFactory;
+        return FLOW_BASED_SERVICE_RENDERER_FACTORY;
     }
 }
