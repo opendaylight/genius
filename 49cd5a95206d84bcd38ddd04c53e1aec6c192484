@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_4a713175",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-10T22:04:02Z",
+      "side": 1,
+      "message": "Actually, on thinking this through further, I doubt we really want or need to transform() here at all.. IMHO a simple checkedGet() of the returned CheckedFuture would suffice for what we\u0027re after - which is to wait for the background processing to be done.  But I\u0027ve tried that out, and with that the test actually fails - and I think that\u0027s normal (it\u0027s green for you because you\u0027re \"cheating\" by not ever calling get - the failed assertions are never invoked; as stated above).  However, I actually still think this is a good idea - but you have to leave in the Thread.sleep(), for now. We\u0027ll replace them later with that stuff I\u0027m trying to do, to wait for the DataStoreJobCoordinator and the ResourceBatchingManager.  But this is still a good idea, in fact it is needed, because with what I was doing, there could still be a concurrency problem. We\u0027ll need to combine your (this) and my approach, because: When we do any action on the DataStore, we need to wait for that action to have been processed (which you\u0027re doing here; and I forgot about, focusing only on the DataStoreJobCoordinator and the ResourceBatchingManager, but that needs to kick in AFTER having been sure it got written/deleted/whatever), and THEN (after) we need to wait for the DataStoreJobCoordinator and the ResourceBatchingManager async processing.  So for now we have to keep the Thread.sleep() - but if you can change this to use CheckedFuture.checkedGet() instead of Futures.transform(), and keep Thread.sleep(), I support it with +1 because it will still have value eventually.",
+      "parentUuid": "1a622d24_69287fe2",
+      "revId": "49cd5a95206d84bcd38ddd04c53e1aec6c192484",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_49014337",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 4
