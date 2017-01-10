@@ -87,9 +87,6 @@ public class InterfaceManagerConfigurationTest {
 
     @Before
     public void start() throws InterruptedException {
-        // TODO This is silly, because onSessionInitiated(), or later it's BP
-        // equivalent, for clearer testability should just propagate the exception
-        assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
         //Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
     }

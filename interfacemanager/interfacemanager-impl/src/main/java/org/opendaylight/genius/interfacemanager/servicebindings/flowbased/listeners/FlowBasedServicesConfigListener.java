@@ -9,6 +9,7 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -23,21 +24,41 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@Singleton
 public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
-    private InterfacemgrProvider interfacemgrProvider;
+    private final InterfacemgrProvider interfacemgrProvider;
+    private final DataBroker dataBroker;
 
-    public FlowBasedServicesConfigListener(InterfacemgrProvider interfacemgrProvider) {
+    @Inject
+    public FlowBasedServicesConfigListener(final DataBroker dataBroker, final InterfacemgrProvider interfacemgrProvider) {
         super(BoundServices.class, FlowBasedServicesConfigListener.class);
+        this.dataBroker  = dataBroker;
         this.interfacemgrProvider = interfacemgrProvider;
         initializeFlowBasedServiceHelpers(interfacemgrProvider);
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
+        LOG.info("FlowBasedServicesConfigListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        LOG.info("FlowBasedServicesConfigListener closed");
     }
 
     private void initializeFlowBasedServiceHelpers(InterfacemgrProvider interfaceMgrProvider) {
