@@ -20,7 +20,6 @@ import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
@@ -592,28 +591,27 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getInterfaceMonitorMapId(interfaceName));
-        ListenableFuture<Void> updateFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<InterfaceMonitorEntry>, Void>) optEntry -> {
-                if (optEntry.isPresent()) {
-                    InterfaceMonitorEntry entry = optEntry.get();
-                    List<Long> monitorIds1 = entry.getMonitorIds();
-                    monitorIds1.add(monitorId);
-                    InterfaceMonitorEntry newEntry1 = new InterfaceMonitorEntryBuilder()
-                             .setKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds1).build();
-                    tx.merge(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry1);
-                } else {
-                        // Create new monitor entry
-                    LOG.debug("Adding new interface-monitor association for interface {} with id {}", interfaceName,
-                                monitorId);
-                    List<Long> monitorIds2 = new ArrayList<>();
-                    monitorIds2.add(monitorId);
-                    InterfaceMonitorEntry newEntry2 = new InterfaceMonitorEntryBuilder()
-                                .setInterfaceName(interfaceName).setMonitorIds(monitorIds2).build();
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry2,
-                                CREATE_MISSING_PARENT);
-                }
-                return tx.submit();
-            });
+        ListenableFuture<Void> updateFuture = Futures.transformAsync(readFuture, optEntry -> {
+            if (optEntry.isPresent()) {
+                InterfaceMonitorEntry entry = optEntry.get();
+                List<Long> monitorIds1 = entry.getMonitorIds();
+                monitorIds1.add(monitorId);
+                InterfaceMonitorEntry newEntry1 = new InterfaceMonitorEntryBuilder()
+                         .setKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds1).build();
+                tx.merge(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry1);
+            } else {
+                    // Create new monitor entry
+                LOG.debug("Adding new interface-monitor association for interface {} with id {}", interfaceName,
+                            monitorId);
+                List<Long> monitorIds2 = new ArrayList<>();
+                monitorIds2.add(monitorId);
+                InterfaceMonitorEntry newEntry2 = new InterfaceMonitorEntryBuilder()
+                            .setInterfaceName(interfaceName).setMonitorIds(monitorIds2).build();
+                tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry2,
+                            CREATE_MISSING_PARENT);
+            }
+            return tx.submit();
+        });
 
         Futures.addCallback(updateFuture, new FutureCallbackImpl(
                 String.format("Association of monitorId %d with Interface %s", monitorId, interfaceName)));
@@ -817,54 +815,53 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitoringState>> readResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorStateId(monitorKey));
-        ListenableFuture<Void> writeResult = Futures.transform(readResult,
-                (AsyncFunction<Optional<MonitoringState>, Void>) optState -> {
-                if (optState.isPresent()) {
-                    MonitoringState state = optState.get();
+        ListenableFuture<Void> writeResult = Futures.transformAsync(readResult, optState -> {
+            if (optState.isPresent()) {
+                MonitoringState state = optState.get();
 
-                    // Increase the request count
-                    Long requestCount = state.getRequestCount() + 1;
+                // Increase the request count
+                Long requestCount = state.getRequestCount() + 1;
 
-                    // Check with the monitor window
-                    LivenessState currentLivenessState = state.getState();
+                // Check with the monitor window
+                LivenessState currentLivenessState = state.getState();
 
-                    // Increase the pending response count
-                    long responsePendingCount = state.getResponsePendingCount();
-                    if (responsePendingCount < profile.getMonitorWindow()) {
-                        responsePendingCount = responsePendingCount + 1;
-                    }
-
-                    // Check with the failure threshold
-                    if (responsePendingCount >= profile.getFailureThreshold()) {
-                        // Change the state to down and notify
-                        if (currentLivenessState != LivenessState.Down) {
-                            LOG.debug("Response pending Count: {}, Failure threshold: {} for monitorId {}",
-                                    responsePendingCount, profile.getFailureThreshold(), state.getMonitorId());
-                            LOG.info("Sending notification for monitor Id : {} with State: {}",
-                                    state.getMonitorId(), LivenessState.Down);
-                            publishNotification(monitorId, LivenessState.Down);
-                            currentLivenessState = LivenessState.Down;
-                            // Reset requestCount when state changes
-                            // from UP to DOWN
-                            requestCount = INITIAL_COUNT;
-                        }
-                    }
-
-                    // Update the ODS with state
-                    MonitoringState updatedState = new MonitoringStateBuilder(/* state */)
-                                .setMonitorKey(state.getMonitorKey()).setRequestCount(requestCount)
-                                .setResponsePendingCount(responsePendingCount).setState(currentLivenessState).build();
-                    tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(state.getMonitorKey()),
-                                updatedState);
-                    return tx.submit();
-                } else {
-                    // Close the transaction
-                    tx.submit();
-                    String errorMsg = String.format(
-                            "Monitoring State associated with id %d is not present to send packet out.", monitorId);
-                    return Futures.immediateFailedFuture(new RuntimeException(errorMsg));
+                // Increase the pending response count
+                long responsePendingCount = state.getResponsePendingCount();
+                if (responsePendingCount < profile.getMonitorWindow()) {
+                    responsePendingCount = responsePendingCount + 1;
                 }
-            });
+
+                // Check with the failure threshold
+                if (responsePendingCount >= profile.getFailureThreshold()) {
+                    // Change the state to down and notify
+                    if (currentLivenessState != LivenessState.Down) {
+                        LOG.debug("Response pending Count: {}, Failure threshold: {} for monitorId {}",
+                                responsePendingCount, profile.getFailureThreshold(), state.getMonitorId());
+                        LOG.info("Sending notification for monitor Id : {} with State: {}",
+                                state.getMonitorId(), LivenessState.Down);
+                        publishNotification(monitorId, LivenessState.Down);
+                        currentLivenessState = LivenessState.Down;
+                        // Reset requestCount when state changes
+                        // from UP to DOWN
+                        requestCount = INITIAL_COUNT;
+                    }
+                }
+
+                // Update the ODS with state
+                MonitoringState updatedState = new MonitoringStateBuilder(/* state */)
+                            .setMonitorKey(state.getMonitorKey()).setRequestCount(requestCount)
+                            .setResponsePendingCount(responsePendingCount).setState(currentLivenessState).build();
+                tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(state.getMonitorKey()),
+                            updatedState);
+                return tx.submit();
+            } else {
+                // Close the transaction
+                tx.submit();
+                String errorMsg = String.format(
+                        "Monitoring State associated with id %d is not present to send packet out.", monitorId);
+                return Futures.immediateFailedFuture(new RuntimeException(errorMsg));
+            }
+        });
 
         Futures.addCallback(writeResult, new FutureCallback<Void>() {
             @Override
@@ -920,8 +917,8 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(profileId));
-        ListenableFuture<RpcResult<MonitorProfileCreateOutput>> resultFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<MonitorProfile>, RpcResult<MonitorProfileCreateOutput>>) optProfile -> {
+        ListenableFuture<RpcResult<MonitorProfileCreateOutput>> resultFuture = Futures.transformAsync(readFuture,
+            optProfile -> {
                 if (optProfile.isPresent()) {
                     tx.cancel();
                     MonitorProfileCreateOutput output = new MonitorProfileCreateOutputBuilder()
@@ -1016,38 +1013,37 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(profileId));
-        ListenableFuture<RpcResult<Void>> writeFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<MonitorProfile>, RpcResult<Void>>) optProfile -> {
-                if (optProfile.isPresent()) {
-                    tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
-                    Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
-                            @Override
-                            public void onFailure(Throwable error) {
-                                String msg = String.format("Error when removing monitor profile %d from datastore",
-                                        profileId);
-                                LOG.error(msg, error);
-                                result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error)
-                                        .build());
-                            }
+        ListenableFuture<RpcResult<Void>> writeFuture = Futures.transformAsync(readFuture, optProfile -> {
+            if (optProfile.isPresent()) {
+                tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
+                Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
+                        @Override
+                        public void onFailure(Throwable error) {
+                            String msg = String.format("Error when removing monitor profile %d from datastore",
+                                    profileId);
+                            LOG.error(msg, error);
+                            result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error)
+                                    .build());
+                        }
 
-                            @Override
-                            public void onSuccess(Void noarg) {
-                                MonitorProfile profile = optProfile.get();
-                                String id = getUniqueProfileKey(profile.getFailureThreshold(),
-                                        profile.getMonitorInterval(), profile.getMonitorWindow(),
-                                        profile.getProtocolType());
-                                releaseId(id);
-                                result.set(RpcResultBuilder.<Void>success().build());
-                            }
-                        });
-                } else {
-                    String msg = String.format("Monitor profile with Id: %d does not exist", profileId);
-                    LOG.info(msg);
-                    result.set(RpcResultBuilder.<Void>success()
-                                .withWarning(ErrorType.PROTOCOL, "invalid-value", msg).build());
-                }
-                return result;
-            }, callbackExecutorService);
+                        @Override
+                        public void onSuccess(Void noarg) {
+                            MonitorProfile profile = optProfile.get();
+                            String id = getUniqueProfileKey(profile.getFailureThreshold(),
+                                    profile.getMonitorInterval(), profile.getMonitorWindow(),
+                                    profile.getProtocolType());
+                            releaseId(id);
+                            result.set(RpcResultBuilder.<Void>success().build());
+                        }
+                    });
+            } else {
+                String msg = String.format("Monitor profile with Id: %d does not exist", profileId);
+                LOG.info(msg);
+                result.set(RpcResultBuilder.<Void>success()
+                            .withWarning(ErrorType.PROTOCOL, "invalid-value", msg).build());
+            }
+            return result;
+        }, callbackExecutorService);
 
         Futures.addCallback(writeFuture, new FutureCallback<RpcResult<Void>>() {
 
@@ -1115,23 +1111,22 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getInterfaceMonitorMapId(interfaceName));
-        ListenableFuture<Void> updateFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<InterfaceMonitorEntry>, Void>) optEntry -> {
-                if (optEntry.isPresent()) {
-                    InterfaceMonitorEntry entry = optEntry.get();
-                    List<Long> monitorIds = entry.getMonitorIds();
-                    monitorIds.remove(monitorId);
-                    InterfaceMonitorEntry newEntry = new InterfaceMonitorEntryBuilder(entry)
-                              .setKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry,
-                                CREATE_MISSING_PARENT);
-                    return tx.submit();
-                } else {
-                    LOG.warn("No Interface map entry found {} to remove monitorId {}", interfaceName, monitorId);
-                    tx.cancel();
-                    return Futures.immediateFuture(null);
-                }
-            });
+        ListenableFuture<Void> updateFuture = Futures.transformAsync(readFuture, optEntry -> {
+            if (optEntry.isPresent()) {
+                InterfaceMonitorEntry entry = optEntry.get();
+                List<Long> monitorIds = entry.getMonitorIds();
+                monitorIds.remove(monitorId);
+                InterfaceMonitorEntry newEntry = new InterfaceMonitorEntryBuilder(entry)
+                          .setKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
+                tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry,
+                            CREATE_MISSING_PARENT);
+                return tx.submit();
+            } else {
+                LOG.warn("No Interface map entry found {} to remove monitorId {}", interfaceName, monitorId);
+                tx.cancel();
+                return Futures.immediateFuture(null);
+            }
+        });
 
         Futures.addCallback(updateFuture, new FutureCallbackImpl(
                 String.format("Dis-association of monitorId %d with Interface %s", monitorId, interfaceName)));
@@ -1184,24 +1179,23 @@ public class AlivenessMonitor
         ListenableFuture<Optional<MonitoringState>> readResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorStateId(monitorKey));
 
-        ListenableFuture<Void> writeResult = Futures.transform(readResult,
-                (AsyncFunction<Optional<MonitoringState>, Void>) optState -> {
-                if (optState.isPresent()) {
-                    MonitoringState state = optState.get();
-                    if (isValidStatus.apply(state.getStatus())) {
-                        MonitoringState updatedState = new MonitoringStateBuilder().setMonitorKey(monitorKey)
-                                    .setStatus(newStatus).build();
-                        tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), updatedState);
-                    } else {
-                        LOG.warn("Invalid Monitoring status {}, cannot be updated to {} for monitorId {}",
-                                    state.getStatus(), newStatus, monitorId);
-                    }
+        ListenableFuture<Void> writeResult = Futures.transformAsync(readResult, optState -> {
+            if (optState.isPresent()) {
+                MonitoringState state = optState.get();
+                if (isValidStatus.apply(state.getStatus())) {
+                    MonitoringState updatedState = new MonitoringStateBuilder().setMonitorKey(monitorKey)
+                                .setStatus(newStatus).build();
+                    tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), updatedState);
                 } else {
-                    LOG.warn("No associated monitoring state data available to update the status to {} for {}",
-                               newStatus, monitorId);
+                    LOG.warn("Invalid Monitoring status {}, cannot be updated to {} for monitorId {}",
+                                state.getStatus(), newStatus, monitorId);
                 }
-                return tx.submit();
-            });
+            } else {
+                LOG.warn("No associated monitoring state data available to update the status to {} for {}",
+                           newStatus, monitorId);
+            }
+            return tx.submit();
+        });
 
         Futures.addCallback(writeResult, new FutureCallbackImpl(
                 String.format("Monitor status update for %d to %s", monitorId, newStatus.toString())));
