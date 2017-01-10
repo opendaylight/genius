@@ -8,6 +8,9 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -18,10 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gat
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger logger = LoggerFactory.getLogger(ItmTepRemoveWorker.class ) ;
