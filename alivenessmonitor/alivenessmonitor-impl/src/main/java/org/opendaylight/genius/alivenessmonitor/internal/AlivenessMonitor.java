@@ -617,7 +617,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         ListenableFuture<Optional<InterfaceMonitorEntry>> readFuture =
                 tx.read(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName));
         ListenableFuture<Void> updateFuture =
-                Futures.transform(readFuture, new AsyncFunction<Optional<InterfaceMonitorEntry>, Void>() {
+                Futures.transformAsync(readFuture, new AsyncFunction<Optional<InterfaceMonitorEntry>, Void>() {
 
                     @Override
                     public ListenableFuture<Void> apply(Optional<InterfaceMonitorEntry> optEntry) throws Exception {
@@ -845,7 +845,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         ListenableFuture<Optional<MonitoringState>> readResult =
                                   tx.read(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey));
         ListenableFuture<Void> writeResult =
-                Futures.transform(readResult, new AsyncFunction<Optional<MonitoringState>, Void>() {
+                Futures.transformAsync(readResult, new AsyncFunction<Optional<MonitoringState>, Void>() {
 
             @Override
             public ListenableFuture<Void> apply(Optional<MonitoringState> optState)
@@ -954,7 +954,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         ListenableFuture<Optional<MonitorProfile>> readFuture =
                                    tx.read(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
         ListenableFuture<RpcResult<MonitorProfileCreateOutput>> resultFuture =
-                Futures.transform(readFuture,
+                Futures.transformAsync(readFuture,
                         new AsyncFunction<Optional<MonitorProfile>, RpcResult<MonitorProfileCreateOutput>>() {
 
                     @Override
@@ -1063,7 +1063,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         ListenableFuture<Optional<MonitorProfile>> readFuture =
                 tx.read(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
         ListenableFuture<RpcResult<Void>> writeFuture =
-                Futures.transform(readFuture, new AsyncFunction<Optional<MonitorProfile>, RpcResult<Void>>() {
+                Futures.transformAsync(readFuture, new AsyncFunction<Optional<MonitorProfile>, RpcResult<Void>>() {
                     @Override
                     public ListenableFuture<RpcResult<Void>> apply(final Optional<MonitorProfile> optProfile) throws Exception {
                         if (optProfile.isPresent()) {
@@ -1159,7 +1159,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         ListenableFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getInterfaceMonitorMapId(interfaceName));
         ListenableFuture<Void> updateFuture =
-                Futures.transform(readFuture, new AsyncFunction<Optional<InterfaceMonitorEntry>, Void>() {
+                Futures.transformAsync(readFuture, new AsyncFunction<Optional<InterfaceMonitorEntry>, Void>() {
 
             @Override
             public ListenableFuture<Void> apply(Optional<InterfaceMonitorEntry> optEntry) throws Exception {
@@ -1227,7 +1227,7 @@ public class AlivenessMonitor implements AlivenessMonitorService, PacketProcessi
         ListenableFuture<Optional<MonitoringState>> readResult =
                             tx.read(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey));
 
-        ListenableFuture<Void> writeResult = Futures.transform(readResult,
+        ListenableFuture<Void> writeResult = Futures.transformAsync(readResult,
                 new AsyncFunction<Optional<MonitoringState>, Void>() {
             @Override
             public ListenableFuture<Void> apply(Optional<MonitoringState> optState) throws Exception {
