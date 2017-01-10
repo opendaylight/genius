@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_be9dab68",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-10T13:13:20Z",
+      "side": 1,
+      "message": "Vishal, I think this is the spot I would like to cache a pointer from \"interfaceName-\u003eparentRefName\"\n\nThis would be used by NeutronPortChangeListener here (line 690) [1].. how do you recommend to do this?\n\n[1] https://git.opendaylight.org/gerrit/#/c/49908/13/vpnservice/neutronvpn/neutronvpn-impl/src/main/java/org/opendaylight/netvirt/neutronvpn/NeutronPortChangeListener.java",
+      "revId": "7a33e1282447a99295878af6730a54e2fb05a05a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
