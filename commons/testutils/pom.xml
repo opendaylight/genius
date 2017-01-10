@@ -52,6 +52,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>infrautils-testutils</artifactId>
+      <version>${genius.infrautils.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
       <artifactId>mdsal-binding-test-utils</artifactId>
       <scope>compile</scope>
