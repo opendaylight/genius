@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_35d09ec8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 6177
+      },
+      "writtenOn": "2017-01-10T07:56:14Z",
+      "side": 1,
+      "message": "I can see you changed the name from incomplete to created.\nBut since this is defined as an absolute counter, this counter shows the current number of jobs currently in the DjC - so this name is problematic.\n\nI think the previous name was better.\n\nIf you want a \"created\" counter, then should remove this dec() and make the counter non-absolute in DataStoreJobCoordinatorCounters.java",
+      "revId": "2de63e4c75b7e3f6a50296b8fae158cbbca41810",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
