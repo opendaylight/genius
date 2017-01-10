@@ -7,14 +7,13 @@
  */
 package org.opendaylight.genius.itm.cli;
 
+import java.math.BigInteger;
 import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
 
 @Command(scope = "tep", name = "delete", description = "deleting a tunnel end point")
 public class TepDelete extends OsgiCommandSupport {

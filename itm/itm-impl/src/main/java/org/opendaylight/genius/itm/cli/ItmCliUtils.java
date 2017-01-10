@@ -9,11 +9,10 @@
 package org.opendaylight.genius.itm.cli;
 
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang3.StringUtils;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Utility class for ITM CLI.

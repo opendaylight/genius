@@ -7,22 +7,6 @@
  */
 package org.opendaylight.genius.itm.cli;
 
-/**
- * Created by echiapt on 7/5/2016.
- */
-/*
-{"input" :
-    {
-"dpn-id" : ["1", "2"],
-"destination-ip" : "192.168.56.105",
-"tunnel-type" : "odl-interface:tunnel-type-vxlan"
-    }
-}
- */
-import java.math.BigInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;

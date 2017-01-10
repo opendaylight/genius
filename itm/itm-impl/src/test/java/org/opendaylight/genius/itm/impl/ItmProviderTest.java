@@ -10,10 +10,12 @@ package org.opendaylight.genius.itm.impl;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
-import org.opendaylight.genius.itm.impl.ItmProvider;
-import org.opendaylight.genius.itm.listeners.*;
+import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
+import org.opendaylight.genius.itm.listeners.TransportZoneListener;
+import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
+import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
+import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
@@ -21,8 +23,6 @@ import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-
-import static org.mockito.Mockito.mock;
 
 public class ItmProviderTest {
 
