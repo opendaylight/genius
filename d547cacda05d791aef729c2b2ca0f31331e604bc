@@ -16,6 +16,24 @@
       "revId": "d547cacda05d791aef729c2b2ca0f31331e604bc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_fe28c387",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/ReleasedIdHolder.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-01-10T12:24:42Z",
+      "side": 1,
+      "message": "Hi Peri, I think setting allocatedId with Optional.absent() is not required here as allocatedId is already initialised to Optional.absent() at line 65, and this will be carried forward here as well. Please correct me if I am wrong:)",
+      "parentUuid": "1a622d24_3bf24d06",
+      "revId": "d547cacda05d791aef729c2b2ca0f31331e604bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
