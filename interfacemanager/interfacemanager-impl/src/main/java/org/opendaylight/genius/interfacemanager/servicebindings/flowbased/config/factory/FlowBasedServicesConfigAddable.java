@@ -8,11 +8,9 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import java.util.List;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
-import java.util.List;
 
 public interface FlowBasedServicesConfigAddable {
     List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
