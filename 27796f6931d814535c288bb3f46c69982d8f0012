@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_15ec828e",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/AvailableIdHolder.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-10T08:24:17Z",
+      "side": 1,
+      "message": "Fix the check-style violations",
+      "revId": "27796f6931d814535c288bb3f46c69982d8f0012",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_95f7f258",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/AvailableIdHolder.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-10T08:24:17Z",
+      "side": 1,
+      "message": "instead of having too many returns, have a local variable idToReturn and return at the end.",
+      "revId": "27796f6931d814535c288bb3f46c69982d8f0012",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_75b21695",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/ReleasedIdHolder.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-10T08:24:17Z",
+      "side": 1,
+      "message": "Have curTimeSec here and get it passed to isIdAvailable()",
+      "revId": "27796f6931d814535c288bb3f46c69982d8f0012",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d56a0aed",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/ReleasedIdHolder.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-10T08:24:17Z",
+      "side": 1,
+      "message": "Also do availableIdCount.incrementAndGet();",
+      "revId": "27796f6931d814535c288bb3f46c69982d8f0012",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
