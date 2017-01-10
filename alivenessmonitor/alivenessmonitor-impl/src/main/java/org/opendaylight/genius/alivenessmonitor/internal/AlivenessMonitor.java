@@ -20,7 +20,6 @@ import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
@@ -592,8 +591,7 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getInterfaceMonitorMapId(interfaceName));
-        ListenableFuture<Void> updateFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<InterfaceMonitorEntry>, Void>) optEntry -> {
+        ListenableFuture<Void> updateFuture = Futures.transformAsync(readFuture, optEntry -> {
                 if (optEntry.isPresent()) {
                     InterfaceMonitorEntry entry = optEntry.get();
                     List<Long> monitorIds1 = entry.getMonitorIds();
@@ -817,8 +815,7 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitoringState>> readResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorStateId(monitorKey));
-        ListenableFuture<Void> writeResult = Futures.transform(readResult,
-                (AsyncFunction<Optional<MonitoringState>, Void>) optState -> {
+        ListenableFuture<Void> writeResult = Futures.transformAsync(readResult, optState -> {
                 if (optState.isPresent()) {
                     MonitoringState state = optState.get();
 
@@ -920,8 +917,8 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(profileId));
-        ListenableFuture<RpcResult<MonitorProfileCreateOutput>> resultFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<MonitorProfile>, RpcResult<MonitorProfileCreateOutput>>) optProfile -> {
+        ListenableFuture<RpcResult<MonitorProfileCreateOutput>> resultFuture = Futures.transformAsync(readFuture,
+                optProfile -> {
                 if (optProfile.isPresent()) {
                     tx.cancel();
                     MonitorProfileCreateOutput output = new MonitorProfileCreateOutputBuilder()
@@ -1016,8 +1013,7 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(profileId));
-        ListenableFuture<RpcResult<Void>> writeFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<MonitorProfile>, RpcResult<Void>>) optProfile -> {
+        ListenableFuture<RpcResult<Void>> writeFuture = Futures.transformAsync(readFuture, optProfile -> {
                 if (optProfile.isPresent()) {
                     tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
                     Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
@@ -1115,8 +1111,7 @@ public class AlivenessMonitor
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getInterfaceMonitorMapId(interfaceName));
-        ListenableFuture<Void> updateFuture = Futures.transform(readFuture,
-                (AsyncFunction<Optional<InterfaceMonitorEntry>, Void>) optEntry -> {
+        ListenableFuture<Void> updateFuture = Futures.transformAsync(readFuture, optEntry -> {
                 if (optEntry.isPresent()) {
                     InterfaceMonitorEntry entry = optEntry.get();
                     List<Long> monitorIds = entry.getMonitorIds();
@@ -1184,8 +1179,7 @@ public class AlivenessMonitor
         ListenableFuture<Optional<MonitoringState>> readResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorStateId(monitorKey));
 
-        ListenableFuture<Void> writeResult = Futures.transform(readResult,
-                (AsyncFunction<Optional<MonitoringState>, Void>) optState -> {
+        ListenableFuture<Void> writeResult = Futures.transformAsync(readResult, optState -> {
                 if (optState.isPresent()) {
                     MonitoringState state = optState.get();
                     if (isValidStatus.apply(state.getStatus())) {
