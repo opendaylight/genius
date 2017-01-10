@@ -145,7 +145,7 @@ public class SouthboundUtils {
                     if (ifTunnel != null) {
                         addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
                     }
-                    if(SouthboundUtils.isOfTunnel(ifTunnel)) {
+                    if (SouthboundUtils.isOfTunnel(ifTunnel)) {
                         LOG.debug("Using OFTunnel. Only one tunnel port will be added");
                         return;
                     }
@@ -178,7 +178,7 @@ public class SouthboundUtils {
                     if (ifTunnel != null) {
                         removeTerminationEndPoint(dataBroker, bridgeIid, iface.getName());
                     }
-                    if(SouthboundUtils.isOfTunnel(ifTunnel)) {
+                    if (SouthboundUtils.isOfTunnel(ifTunnel)) {
                         LOG.debug("Using OFTunnel. Only one tunnel port to be removed");
                         return;
                     }
@@ -191,7 +191,7 @@ public class SouthboundUtils {
 
     private static void addVlanPortToBridge(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan, IfTunnel ifTunnel,
             OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String portName, DataBroker dataBroker,
-            WriteTransaction t) {
+            WriteTransaction tx) {
         if (ifL2vlan.getVlanId() != null) {
             addTerminationPoint(bridgeIid, portName, ifL2vlan.getVlanId().getValue(),
                     null, null, ifTunnel);
@@ -218,13 +218,13 @@ public class SouthboundUtils {
         Map<String, String> options = Maps.newHashMap();
 
         // Options common to any kind of tunnel
-        if(BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
+        if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
             options.put(TUNNEL_OPTIONS_LOCAL_IP, TUNNEL_OPTIONS_VALUE_FLOW);
         } else {
             IpAddress localIp = ifTunnel.getTunnelSource();
             options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
         }
-        if(BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
+        if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
             options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
         } else {
             IpAddress remoteIp = ifTunnel.getTunnelDestination();
@@ -247,8 +247,8 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_DESTINATION_PORT, TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT);
         }
 
-        if(ifTunnel.getTunnelOptions() != null) {
-            for(TunnelOptions tunOpt : ifTunnel.getTunnelOptions()) {
+        if (ifTunnel.getTunnelOptions() != null) {
+            for (TunnelOptions tunOpt : ifTunnel.getTunnelOptions()) {
                 options.putIfAbsent(tunOpt.getTunnelOption(), tunOpt.getValue());
             }
         }
@@ -261,7 +261,7 @@ public class SouthboundUtils {
             String portName, WriteTransaction transaction) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
-        if(isOfTunnel(ifTunnel)) {
+        if (isOfTunnel(ifTunnel)) {
             LOG.warn("BFD monitoring not supported for OFTunnels. Skipping BFD parameters for {}", portName);
             return;
         }
@@ -307,7 +307,7 @@ public class SouthboundUtils {
         }
 
         if (bfdMonitoringEnabled(ifTunnel)) {
-            if(isOfTunnel(ifTunnel)) {
+            if (isOfTunnel(ifTunnel)) {
                 LOG.warn("BFD Monitoring not supported for OFTunnels");
             } else {
                 List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
@@ -325,9 +325,10 @@ public class SouthboundUtils {
 
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
         List<InterfaceBfd> bfdParams = new ArrayList<>();
-        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() :"false"));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null ?
-                ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(
+                getIfBfdObj(BFD_PARAM_ENABLE, ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() : "false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
+                ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
         return bfdParams;
     }
 
@@ -368,20 +369,20 @@ public class SouthboundUtils {
     public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
         String sourceKey = ifTunnel.getTunnelSource().getIpv4Address().getValue();
         String remoteKey = ifTunnel.getTunnelDestination().getIpv4Address().getValue();
-        if( ifTunnel.isTunnelSourceIpFlow() != null) {
+        if (ifTunnel.isTunnelSourceIpFlow() != null) {
             sourceKey = "flow";
         }
-        if( ifTunnel.isTunnelRemoteIpFlow() != null) {
+        if (ifTunnel.isTunnelRemoteIpFlow() != null) {
             remoteKey = "flow";
         }
-        String tunnelNameKey = dpId.toString()+sourceKey+remoteKey;
+        String tunnelNameKey = dpId.toString() + sourceKey + remoteKey;
         String uuidStr = UUID.nameUUIDFromBytes(tunnelNameKey.getBytes()).toString().substring(0, 12).replace("-", "");
         return String.format("%s%s", "tun", uuidStr);
     }
 
     public static boolean isOfTunnel(IfTunnel ifTunnel) {
-        if( BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow()) ||
-                BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow()) ) {
+        if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())
+                || BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
             return true;
         }
         return false;

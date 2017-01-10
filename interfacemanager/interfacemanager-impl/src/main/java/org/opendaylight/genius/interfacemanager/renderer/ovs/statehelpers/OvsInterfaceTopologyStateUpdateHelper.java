@@ -69,7 +69,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         final Interface interfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
         final Interface.OperStatus interfaceOperStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         InterfaceManagerCommonUtils.addBfdStateToCache(terminationPointNew.getName(), interfaceOperStatus);
-        if(interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown) {
+        if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown) {
             IfmClusterUtils.runOnlyInLeaderNode(() -> {
                 DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
                 jobCoordinator.enqueueJob(terminationPointNew.getName(), () -> {
@@ -86,10 +86,9 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         return null;
     }
 
-    private static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus
-    getTunnelOpState(List<InterfaceBfdStatus> tunnelBfdStatus) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus
-                livenessState = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
+    private static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus getTunnelOpState(
+            List<InterfaceBfdStatus> tunnelBfdStatus) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus livenessState = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
             for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
                 if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {

@@ -32,38 +32,37 @@ import java.util.List;
 public class OvsInterfaceStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeInterfaceStateConfiguration(IdManagerService idManager, IMdsalApiManager mdsalApiManager,
-                                                                                 AlivenessMonitorService alivenessMonitorService,
-                                                                                 NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
-                                                                                 DataBroker dataBroker, String interfaceName,
-                                                                                 FlowCapableNodeConnector fcNodeConnectorOld,
-                                                                                 boolean isNodePresent,
-                                                                                 String parentInterface) {
+    public static List<ListenableFuture<Void>> removeInterfaceStateConfiguration(IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
+            NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld, DataBroker dataBroker,
+            String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld, boolean isNodePresent,
+            String parentInterface) {
         LOG.debug("Removing interface-state information for interface: {} {}", interfaceName, isNodePresent);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         //VM Migration: Use old nodeConnectorId to delete the interface entry
-        NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ?
-                nodeConnectorIdOld : nodeConnectorIdNew;
+        NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)
+                ? nodeConnectorIdOld : nodeConnectorIdNew;
         // delete the port entry from interface operational DS
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
         //VM Migration: Update the interface state to unknown only if remove event received for same switch
-        if(!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)){
+        if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
-            OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, dataBroker,
-                    alivenessMonitorService, defaultOperationalShardTransaction);
-        }else{
+            OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
+                    dataBroker, alivenessMonitorService, defaultOperationalShardTransaction);
+        } else {
             InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
-                    InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                .Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
 
-            if(iface != null) {
+            if (iface != null) {
                 // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
                 if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                    InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);
+                    InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction,
+                            interfaceName);
                     handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId,
                             iface.getName(), iface.getAugmentation(IfTunnel.class), defaultOperationalShardTransaction,
                             nodeConnectorId, futures);
@@ -72,24 +71,25 @@ public class OvsInterfaceStateRemoveHelper {
             }
             // remove ingress flow only for northbound configured interfaces
             // skip this check for non-unique ports(Ex: br-int,br-ex)
-            if(iface != null || (iface == null && !interfaceName.contains(fcNodeConnectorOld.getName()))) {
+            if (iface != null || iface == null && !interfaceName.contains(fcNodeConnectorOld.getName())) {
                 FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
             }
 
             // Delete the Vpn Interface from DpnToInterface Op DS.
-            InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName, defaultOperationalShardTransaction);
+            InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName,
+                    defaultOperationalShardTransaction);
         }
         futures.add(defaultOperationalShardTransaction.submit());
         return futures;
     }
 
-    public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService, IMdsalApiManager mdsalApiManager,
-                                                     DataBroker dataBroker, BigInteger dpId, String interfaceName,
-                                                     IfTunnel ifTunnel, WriteTransaction transaction,
-                                                     NodeConnectorId nodeConnectorId, List<ListenableFuture<Void>> futures){
+    public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService,
+            IMdsalApiManager mdsalApiManager, DataBroker dataBroker, BigInteger dpId, String interfaceName,
+            IfTunnel ifTunnel, WriteTransaction transaction, NodeConnectorId nodeConnectorId,
+            List<ListenableFuture<Void>> futures) {
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo, interfaceName, -1,
-                NwConstants.DEL_FLOW);
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
+                interfaceName, -1, NwConstants.DEL_FLOW);
         futures.add(transaction.submit());
         AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }

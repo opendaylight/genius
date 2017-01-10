@@ -23,11 +23,13 @@ public class IfmClusterUtils {
     public static final String IFACE_ENTITY = "iface";
 
     private  static InterfacemgrProvider ifaceServiceProvider = null;
+
     public static void setIfaceServiceProvider(InterfacemgrProvider provider) {
         ifaceServiceProvider = provider;
     }
 
-    public static void registerEntityForOwnership(InterfacemgrProvider provider, EntityOwnershipService entityOwnershipService) {
+    public static void registerEntityForOwnership(InterfacemgrProvider provider,
+            EntityOwnershipService entityOwnershipService) {
         setIfaceServiceProvider(provider);
         try {
             EntityOwnerUtils.registerEntityCandidateForOwnerShip(entityOwnershipService,

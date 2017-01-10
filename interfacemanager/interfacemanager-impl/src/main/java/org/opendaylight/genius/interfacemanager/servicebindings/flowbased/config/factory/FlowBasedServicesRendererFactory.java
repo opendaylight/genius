@@ -11,14 +11,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 
 public abstract class FlowBasedServicesRendererFactory {
-        public abstract FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer();
-        public abstract FlowBasedServicesConfigRemovable getFlowBasedServicesRemoveRenderer();
+    public abstract FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer();
 
-        public static FlowBasedServicesRendererFactory getFlowBasedServicesRendererFactory(Class<? extends ServiceModeBase> serviceMode) {
-            if (ServiceModeIngress.class.equals(serviceMode)) {
-                return FlowBasedIngressServicesRendererFactory.getFlowBasedServicesRendererFactory();
-            }
-            return FlowBasedEgressServicesRendererFactory.getFlowBasedServicesRendererFactory();
+    public abstract FlowBasedServicesConfigRemovable getFlowBasedServicesRemoveRenderer();
+
+    public static FlowBasedServicesRendererFactory getFlowBasedServicesRendererFactory(
+            Class<? extends ServiceModeBase> serviceMode) {
+        if (ServiceModeIngress.class.equals(serviceMode)) {
+            return FlowBasedIngressServicesRendererFactory.getFlowBasedServicesRendererFactory();
         }
+        return FlowBasedEgressServicesRendererFactory.getFlowBasedServicesRendererFactory();
+    }
 
 }

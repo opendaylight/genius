@@ -22,8 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +65,8 @@ public class OvsInterfaceStateUpdateHelper {
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
 
         // For tunnels, derive the final opstate based on the bfd tunnel monitoring status
-        if(modifyTunnel(iface, opstateModified) && InterfaceManagerCommonUtils.checkIfBfdStateIsDown(iface.getName())){
+        if (modifyTunnel(iface, opstateModified)
+                && InterfaceManagerCommonUtils.checkIfBfdStateIsDown(iface.getName())) {
             operStatusNew = Interface.OperStatus.Down;
             opstateModified = operStatusNew.equals(operStatusOld);
         }
@@ -83,11 +82,11 @@ public class OvsInterfaceStateUpdateHelper {
             ifaceBuilder.setPhysAddress(physAddress);
         }
         // modify the attributes in interface operational DS
-        handleInterfaceStateUpdates(iface, transaction, dataBroker,
-                        ifaceBuilder, opstateModified, interfaceName, flowCapableNodeConnectorNew.getName(), operStatusNew);
+        handleInterfaceStateUpdates(iface, transaction, dataBroker, ifaceBuilder, opstateModified, interfaceName,
+                flowCapableNodeConnectorNew.getName(), operStatusNew);
 
         // start/stop monitoring based on opState
-        if(modifyTunnel(iface, opstateModified)){
+        if (modifyTunnel(iface, opstateModified)) {
             handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
                     iface.getName(), operStatusNew);
         }
@@ -96,9 +95,9 @@ public class OvsInterfaceStateUpdateHelper {
         return futures;
     }
 
-    public static void updateInterfaceStateOnNodeRemove(String interfaceName, FlowCapableNodeConnector flowCapableNodeConnector,
-                                                        DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
-                                                        WriteTransaction transaction){
+    public static void updateInterfaceStateOnNodeRemove(String interfaceName,
+            FlowCapableNodeConnector flowCapableNodeConnector, DataBroker dataBroker,
+            AlivenessMonitorService alivenessMonitorService, WriteTransaction transaction) {
         LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
 
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
@@ -107,26 +106,26 @@ public class OvsInterfaceStateUpdateHelper {
         handleInterfaceStateUpdates(iface,transaction, dataBroker,
                         ifaceBuilder, true, interfaceName, flowCapableNodeConnector.getName(),
                         Interface.OperStatus.Unknown);
-        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)){
+        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
             handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
                     interfaceName, Interface.OperStatus.Unknown);
         }
     }
 
-    public static Interface.OperStatus getOpState(FlowCapableNodeConnector flowCapableNodeConnector){
-        Interface.OperStatus operStatus =
-                (flowCapableNodeConnector.getState().isLive() &&
-                        !flowCapableNodeConnector.getConfiguration().isPORTDOWN())
-                        ? Interface.OperStatus.Up: Interface.OperStatus.Down;
+    public static Interface.OperStatus getOpState(FlowCapableNodeConnector flowCapableNodeConnector) {
+        Interface.OperStatus operStatus = flowCapableNodeConnector.getState().isLive()
+                && !flowCapableNodeConnector.getConfiguration().isPORTDOWN()
+                 ? Interface.OperStatus.Up : Interface.OperStatus.Down;
         return operStatus;
     }
 
-    public static void handleInterfaceStateUpdates(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
-                                                   WriteTransaction transaction, DataBroker dataBroker, InterfaceBuilder ifaceBuilder, boolean opStateModified,
-                                                   String interfaceName, String portName, Interface.OperStatus opState){
+    public static void handleInterfaceStateUpdates(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
+            WriteTransaction transaction, DataBroker dataBroker, InterfaceBuilder ifaceBuilder, boolean opStateModified,
+            String interfaceName, String portName, Interface.OperStatus opState) {
         // if interface config DS is null, do the update only for the lower-layer-interfaces
         // which have no corresponding config entries
-        if(iface == null && !interfaceName.equals(portName)) {
+        if (iface == null && !interfaceName.equals(portName)) {
             return;
         }
         LOG.debug("updating interface state entry for {}", interfaceName);
@@ -139,24 +138,25 @@ public class OvsInterfaceStateUpdateHelper {
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
     }
 
-    public static void handleTunnelMonitoringUpdates(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                                     IfTunnel ifTunnel, String interfaceName,
-                                                     Interface.OperStatus operStatus){
-
+    public static void handleTunnelMonitoringUpdates(AlivenessMonitorService alivenessMonitorService,
+            DataBroker dataBroker, IfTunnel ifTunnel, String interfaceName, Interface.OperStatus operStatus) {
         LOG.debug("handling tunnel monitoring updates for {} due to opstate modification", interfaceName);
-        if (operStatus == Interface.OperStatus.Down || operStatus == Interface.OperStatus.Unknown)
+        if (operStatus == Interface.OperStatus.Down || operStatus == Interface.OperStatus.Unknown) {
             AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
-        else
+        } else {
             AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+        }
     }
 
-    public static boolean modifyOpState(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
-                                        boolean opStateModified){
-        return (opStateModified && (iface == null || iface != null && iface.isEnabled()));
+    public static boolean modifyOpState(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
+            boolean opStateModified) {
+        return opStateModified && (iface == null || iface != null && iface.isEnabled());
     }
 
-    public static boolean modifyTunnel(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
-                                       boolean opStateModified){
+    public static boolean modifyTunnel(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
+            boolean opStateModified) {
         return modifyOpState(iface, opStateModified) && iface != null && iface.getAugmentation(IfTunnel.class) != null;
     }
 }

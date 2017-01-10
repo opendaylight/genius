@@ -25,8 +25,9 @@ import java.util.List;
 
 public class OvsInterfaceTopologyStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateAddHelper.class);
+
     public static List<ListenableFuture<Void>> addPortToBridge(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                                               OvsdbBridgeAugmentation bridgeNew, DataBroker dataBroker) {
+            OvsdbBridgeAugmentation bridgeNew, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
