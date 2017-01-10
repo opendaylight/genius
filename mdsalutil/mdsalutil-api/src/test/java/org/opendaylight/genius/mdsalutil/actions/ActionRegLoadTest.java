@@ -24,14 +24,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Test class for {@link ActionRegLoad}.
  */
 public class ActionRegLoadTest {
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTestForRegLoadAction() {
         ActionInfo actionInfo = new ActionRegLoad(1, NxmNxReg6.class, 0, 31, 100);
         Action action = actionInfo.buildAction();
         assertTrue(action.getAction() instanceof NxActionRegLoadNodesNodeTableFlowApplyActionsCase);
-        NxActionRegLoadNodesNodeTableFlowApplyActionsCase actionsCase = (NxActionRegLoadNodesNodeTableFlowApplyActionsCase) action.getAction();
+        NxActionRegLoadNodesNodeTableFlowApplyActionsCase actionsCase
+            = (NxActionRegLoadNodesNodeTableFlowApplyActionsCase) action.getAction();
         NxRegLoad nxRegLoad = actionsCase.getNxRegLoad();
         assertTrue(nxRegLoad.getDst().getDstChoice() instanceof DstNxRegCase);
         DstNxRegCase dstNxRegCase = (DstNxRegCase) nxRegLoad.getDst().getDstChoice();
@@ -45,9 +46,7 @@ public class ActionRegLoadTest {
     public void generateActionRegLoad() {
         ActionInfo actionRegLoad = new ActionRegLoad(NxmNxReg1.class, 0, 2, 255);
         actionRegLoad.buildAction();
-        assertEquals(
-                "new ActionRegLoad(0, org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match" +
-                        ".rev140421.NxmNxReg1, 0, 2, 255L)" + System.lineSeparator(),
-                generator.getExpression(actionRegLoad));
+        assertEquals("new ActionRegLoad(0, org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match"
+                + ".rev140421.NxmNxReg1, 0, 2, 255L)", generator.getExpression(actionRegLoad));
     }
 }
