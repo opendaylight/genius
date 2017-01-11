@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0">
+
+    <bean id="counter-listener"
+          class=" org.opendaylight.genius.fcapsmanager.countermanager.PMRegistrationListener"
+          init-method="start">
+    </bean>
+
+    <bean id="poller"
+          class=" org.opendaylight.genius.fcapsmanager.countermanager.Poller">
+        <property name="pmService" ref="pmService" />
+    </bean>
+    <reference id="pmService" interface="org.opendaylight.genius.fcapsmanager.PMService" />
+</blueprint>

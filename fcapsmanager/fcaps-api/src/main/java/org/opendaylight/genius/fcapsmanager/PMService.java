@@ -9,6 +9,6 @@ package org.opendaylight.genius.fcapsmanager;
 
 import java.util.Map;
 
-public interface PMServiceFacade {
-    void connectToPMFactory(Map map);
+public interface PMService {
+    void connectToPMFactory(Map<String,String> counterMap);
 }

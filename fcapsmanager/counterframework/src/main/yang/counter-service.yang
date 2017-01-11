@@ -1,0 +1,77 @@
+module pm-counter-service {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:pm:counter:config";
+    prefix "pm-counter-service";
+
+    description
+        "Bulk counter api";
+
+    revision "2016-10-19" {
+        description
+            "Initial revision";
+    }
+
+    container performance-counters {
+        config true;
+        list controllers {
+            key hostNodeName;
+            leaf hostNodeName { type string; }
+            leaf no-of-OF-switch { type uint64; }
+        }
+        container switch-counters {
+            uses switch-info;
+        }
+
+        container bgp-counters {
+            uses bgp-info;
+        }
+    }
+
+    grouping bgp-info {
+        leaf bgp-total-prefixes { type uint64; }
+        list bgp-neighbor-counters {
+             key as-id;
+             leaf as-id { type uint64; }
+             leaf neighbor-ip { type string; }
+             leaf bgp-neighbor-packets-received { type uint64; }
+             leaf bgp-neighbor-packets-sent { type uint64; }
+        }
+
+        list bgp-rd-route-counters {
+             key rd;
+             leaf rd { type uint64; }
+             leaf bgp-rd-route-count { type uint64; }
+        }
+    }
+
+    grouping switch-info {
+        list switch {
+            key switch-id;
+            leaf switch-id { type uint64; }
+            leaf no-of-OF-ports  { type uint64; }
+            leaf injected-OF-messages-sent { type uint64; }
+            leaf injected-OF-messages-receive { type uint64; }
+
+            list switch-ports-counters {
+                key port-id;
+                leaf port-id { type uint64; }
+
+                leaf packets-per-OF-port-receive-drop { type uint64; }
+                leaf packets-per-OF-port-receive-error { type uint64; }
+                leaf OF-port-duration { type uint64; }
+                leaf packets-per-OF-port-sent { type uint64; }
+                leaf packets-per-OF-port-receive { type uint64; }
+                leaf bytes-per-OF-port-sent { type uint64; }
+                leaf bytes-per-OF-port-receive { type uint64; }
+                leaf packets-per-internal-port-receive { type uint64; }
+                leaf packets-per-internal-port-sent { type uint64; }
+            }
+
+            list table-counters {
+                key table-id;
+                leaf table-id { type uint64; }
+                leaf entries-per-OF-table { type uint64; }
+            }
+        }
+    }
+}
