@@ -54,6 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelListBuilder;
@@ -165,6 +166,7 @@ public class TepCommandHelperTest {
             .Interface> interfaceIdentifierNew = ItmUtils.buildId(tunnelInterfaceName);
 
     @Mock DataBroker dataBroker;
+    @Mock ItmConfig itmConfig;
     @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
@@ -219,7 +221,7 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,interfaceIdentifierNew);
 
-        tepCommandHelper = new TepCommandHelper(dataBroker);
+        tepCommandHelper = new TepCommandHelper(dataBroker, itmConfig);
 
     }
 
