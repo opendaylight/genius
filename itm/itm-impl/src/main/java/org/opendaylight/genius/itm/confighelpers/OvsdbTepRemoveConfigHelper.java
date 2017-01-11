@@ -93,7 +93,7 @@ public class OvsdbTepRemoveConfigHelper {
         if (subnetList == null || subnetList.isEmpty()) {
             LOG.trace("No subnet list in transport-zone. Nothing to do.");
         } else {
-            String portName = "";
+            String portName = ITMConstants.DUMMY_PORT;
             IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
 
             List<Vteps> vtepList = null;
