@@ -5,13 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.itm.listeners;
+package org.opendaylight.genius.itm.commons;
 
 import org.opendaylight.genius.itm.globals.ITMConstants;
 
-public class OvsdbOtherConfigInfo {
-    private String tepIp = "";
-    private String tzName = "";
+public class OvsdbExternalIdsInfo {
+    private String tepIp = null;
+    private String tzName = null;
     private String dpnBrName = ITMConstants.DEFAULT_BRIDGE_NAME;
 
     // get methods
@@ -40,8 +40,8 @@ public class OvsdbOtherConfigInfo {
 
     @Override
     public String toString() {
-        return "OvsdbOtherConfigInfo  { " +
-            "Ovsdb node Other config list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName +
-            "  DPN bridge name : " + dpnBrName + " }" ;
+        return "OvsdbExternalIdsInfo  { " +
+            "Ovsdb node External Ids Info list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName +
+            "  DPN bridge name: " + dpnBrName + " }" ;
     }
 }
