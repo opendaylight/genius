@@ -63,7 +63,7 @@ public class OvsdbTepAddConfigHelper {
         TransportZone tZone = null;
 
         // Case: TZ name is not given with CSS TEP.
-        if (tzName.isEmpty()) {
+        if (tzName == null) {
             tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
             // add TEP into default-TZ
             tZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
