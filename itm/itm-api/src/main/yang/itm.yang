@@ -100,6 +100,11 @@ module itm {
                  leaf ip-address {
                      type inet:ip-address;
                  }
+                 leaf of-tunnel {
+                     description "Use flow based tunnels for remote-ip";
+                     type boolean;
+                     default false;
+                 }
              }
           }
 
