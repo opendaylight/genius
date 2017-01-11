@@ -1127,4 +1127,55 @@ public class ItmUtils {
         return zones;
     }
 
+    /**
+     * Returns the transport zone from Configuration datastore.
+     *
+     * @param tzName transport zone name
+     * @param dataBroker data broker handle to perform operations on datastore
+     */
+    public static TransportZone getTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
+        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
+            .child(TransportZone.class, new TransportZoneKey(tzName)).build();
+        Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
+            dataBroker);
+        if (tZoneOptional.isPresent()) {
+            return tZoneOptional.get();
+        }
+        return null;
+    }
+
+    /**
+     * Deletes the transport zone from Configuration datastore.
+     *
+     * @param tzName transport zone name
+     * @param dataBroker data broker handle to perform operations on datastore
+     */
+    public static void deleteTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
+        // check whether transport-zone exists in config DS.
+        TransportZone tZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+        if (tZoneFromConfigDS != null) {
+            // it exists, delete default-TZ now
+            InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
+                .child(TransportZone.class,
+                    new TransportZoneKey(tzName)).build();
+            LOG.debug("Removing {} transport-zone from config DS.", tzName);
+            ItmUtils.asyncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        }
+    }
+
+    public static Class<? extends TunnelTypeBase> getTunnelType(String tunnelType) {
+        String tunType = null;
+
+        if (tunnelType == null || tunnelType.isEmpty()) {
+            tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        } else if (!tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN) &&
+            !tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE)) {
+            tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        }
+
+        if( tunType.equals(ITMConstants.TUNNEL_TYPE_GRE))
+            return TunnelTypeGre.class;
+        else
+            return TunnelTypeVxlan.class;
+    }
 }
