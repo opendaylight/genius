@@ -45,6 +45,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -67,17 +68,22 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
 
     /** The data broker. */
     private final DataBroker dataBroker;
+    /** Blueprint XML config file handle */
+    private final ItmConfig itmConfig;
 
     /**
      * Instantiates a new vtep config schema listener.
      *
      * @param dataBroker
      *            the db
+     * @param itmConfig
+     *            ITM config file handle
      */
     @Inject
-    public VtepConfigSchemaListener(final DataBroker dataBroker) {
+    public VtepConfigSchemaListener(final DataBroker dataBroker, final ItmConfig itmConfig) {
         super(VtepConfigSchema.class);
         this.dataBroker = dataBroker;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
@@ -340,7 +346,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
                     schema);
             return;
         }
-        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker);
+        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig);
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
@@ -408,7 +414,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      *            the dpn ids list to be deleted
      */
     private void deleteVteps(VtepConfigSchema schema, List<BigInteger> lstDpnIdsToBeDeleted) {
-        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker);
+        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig);
         List<IpAddress> freeIps = new ArrayList<>();
 
         String subnetCidr = ItmUtils.getSubnetCidrAsString(schema.getSubnet());

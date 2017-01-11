@@ -30,6 +30,8 @@ import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import static org.mockito.Mockito.mock;
 
 /**
  * Dependency Injection Wiring for {@link ItmTest}.
@@ -43,6 +45,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         // Bindings for services from this project
         bind(ItmRpcService.class).to(ItmManagerRpcService.class);
         bind(ITMManager.class);
+        bind(ItmConfig.class).toInstance(mock(ItmConfig.class));
         bind(ItmProvider.class);
 
         bind(ItmMonitoringIntervalListener.class);
