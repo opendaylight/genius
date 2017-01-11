@@ -126,4 +126,17 @@ module itm-config {
           }
        }
     }
+
+    /* conf parameters for default-transport-zone */
+    container itm-config {
+       config true;
+       leaf def-tz-enabled {
+          type boolean;
+          default false;
+       }
+       leaf def-tz-tunnel-type {
+          type string;
+          default "vxlan";
+       }
+    }
 }
