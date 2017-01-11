@@ -1273,6 +1273,7 @@ public class ItmUtils {
      */
     public static IpPrefix getDummySubnet() {
         return DUMMY_IP_PREFIX;
+    }
 
     /**
      * Deletes the transport zone from Configuration datastore.
