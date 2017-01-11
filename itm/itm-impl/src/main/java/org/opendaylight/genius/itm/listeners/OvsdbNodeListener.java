@@ -11,11 +11,14 @@ package org.opendaylight.genius.itm.listeners;
 import java.util.List;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
@@ -26,23 +29,49 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * This class listens for OvsdbNode creation/removal/update in Network Topology Operational DS.
  * This is used to handle add/update/remove of TEPs of switches into/from ITM.
  */
+@Singleton
 public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, OvsdbNodeListener>
     implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbNodeListener.class);
     private DataBroker dataBroker;
+    private ItmConfig itmConfig;
 
-    public OvsdbNodeListener(final DataBroker dataBroker) {
+    @Inject
+    public OvsdbNodeListener(final DataBroker dataBroker, final ItmConfig itmConfig) {
         super(Node.class, OvsdbNodeListener.class);
         this.dataBroker = dataBroker;
+        this.itmConfig = itmConfig;
         LOG.trace("OvsdbNodeListener Created");
     }
 
-    @Override public void close() throws Exception {
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.dataBroker);
+        LOG.info("OvsdbNodeListener Started");
+    }
+
+    @Override
+    @PreDestroy
+    public void close() throws Exception {
         LOG.trace("OvsdbNodeListener Closed");
+    }
+
+    private void registerListener(final DataBroker db) {
+        try {
+            registerListener(LogicalDatastoreType.OPERATIONAL, db);
+        } catch (final Exception e) {
+            LOG.error("Network Topology Node listener registration failed.", e);
+            throw new IllegalStateException("Network Topology Node listener registration failed.", e);
+        }
     }
 
     @Override protected InstanceIdentifier<Node> getWildCardPath() {
@@ -61,6 +90,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
     @Override protected void add(InstanceIdentifier<Node> identifier, Node ovsdbNodeNew) {
         String newTepIp = "", tzName = "", dpnBridgeName = "", bridgeName = "";
         String strDpnId = "";
+        boolean ofTunnel = false;
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Add.",
@@ -101,6 +131,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             newTepIp = ovsdbExternalIdsInfo.getTepIp();
             tzName = ovsdbExternalIdsInfo.getTzName();
             dpnBridgeName = ovsdbExternalIdsInfo.getDpnBrName();
+            ofTunnel = ovsdbExternalIdsInfo.getOfTunnel();
 
             // if bridge received is the one configured for TEPs from OVS side or
             // if it is br-int, then add TEP into Config DS
@@ -115,14 +146,25 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                     return;
                 }
 
-                LOG.trace("TEP-IP: {}, TZ name: {}, DPN Bridge Name: {}, Bridge DPID: {}", newTepIp,
-                    tzName, dpnBridgeName, strDpnId);
+                // check if defTzEnabled flag is false in config file,
+                // if flag is OFF, then no need to add TEP into ITM config DS.
+                if (tzName.isEmpty() || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+                    boolean defTzEnabled = itmConfig.isDefTzEnabled();
+                    if (!defTzEnabled) {
+                        LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.",
+                            newTepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                        return;
+                    }
+                }
+
+                LOG.trace("TEP-IP: {}, TZ name: {}, DPN Bridge Name: {}, Bridge DPID: {},"
+                    + "of-tunnel flag: {}", newTepIp, tzName, dpnBridgeName, strDpnId, ofTunnel);
 
                 // Enqueue 'add TEP received from southbound OVSDB into ITM config DS' operation
                 // into DataStoreJobCoordinator
                 DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                 OvsdbTepAddWorker addWorker =
-                    new OvsdbTepAddWorker(newTepIp, strDpnId, tzName, dataBroker);
+                    new OvsdbTepAddWorker(newTepIp, strDpnId, tzName, ofTunnel, dataBroker);
                 coordinator.enqueueJob(newTepIp, addWorker);
             }
         }
@@ -132,6 +174,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         Node ovsdbNodeNew) {
         String newTepIp = "", oldTepIp = "";
         String tzName = "", oldTzName = "";
+        boolean newOfTunnel = false;
         String oldDpnBridgeName = "", newDpnBridgeName = "";
         boolean isExternalIdsUpdated = false, isExternalIdsDeleted = false;
         boolean isTepIpAdded = false, isTepIpRemoved = false;
@@ -164,6 +207,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             newTepIp = newExternalIdsInfoObj.getTepIp();
             tzName = newExternalIdsInfoObj.getTzName();
             newDpnBridgeName = newExternalIdsInfoObj.getDpnBrName();
+            newOfTunnel = newExternalIdsInfoObj.getOfTunnel();
 
             // All map params have been read, now clear it up.
             newExternalIdsInfoObj = null;
@@ -209,6 +253,17 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         String strOldDpnId = "", strNewDpnId = "";
         // handle TEP-add in add case, TZ change case, Bridge change case
         if (isTepIpAdded || isTzChanged || isDpnBrChanged) {
+            // check if defTzEnabled flag is false in config file,
+            // if flag is OFF, then no need to add TEP into ITM config DS.
+            if (tzName.isEmpty() || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+                boolean defTzEnabled = itmConfig.isDefTzEnabled();
+                if (!defTzEnabled) {
+                    LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.",
+                        newTepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                    return;
+                }
+            }
+
             // get Datapath ID for bridge
             strNewDpnId = ItmUtils.getBridgeDpid(ovsdbNodeNew, newDpnBridgeName,
                 dataBroker);
@@ -225,12 +280,22 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             OvsdbTepAddWorker
-                addWorker = new OvsdbTepAddWorker(newTepIp, strNewDpnId, tzName, dataBroker);
+                addWorker = new OvsdbTepAddWorker(newTepIp, strNewDpnId, tzName, newOfTunnel, dataBroker);
             coordinator.enqueueJob(newTepIp, addWorker);
         }
 
         // handle TEP-remove in remove case, TZ change case, Bridge change case
         if (isExternalIdsDeleted || isTepIpRemoved || isTzChanged || isDpnBrChanged) {
+            // check if defTzEnabled flag is false in config file,
+            // if flag is OFF, then no need to add TEP into ITM config DS.
+            if (oldTzName.isEmpty() || oldTzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+                boolean defTzEnabled = itmConfig.isDefTzEnabled();
+                if (!defTzEnabled) {
+                    LOG.info("TEP ({}) cannot be removed from {} when def-tz-enabled flag is false.",
+                        oldTepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                    return;
+                }
+            }
             strOldDpnId = ItmUtils.getBridgeDpid(ovsdbNodeNew, oldDpnBridgeName,
                 dataBroker);
             if (strOldDpnId == null || strOldDpnId.isEmpty()) {
@@ -268,6 +333,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
     public OvsdbExternalIdsInfo getOvsdbNodeExternalIds(OvsdbNodeAugmentation ovsdbNodeAugmentation) {
         String tepIp = "", tzName = "", dpnBridgeName = "";
+        boolean ofTunnel = false;
 
         if (ovsdbNodeAugmentation == null) {
             return null;
@@ -298,7 +364,10 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                 } else if (externalId.getExternalIdKey().equals("dpn-br-name")) {
                     dpnBridgeName = externalId.getExternalIdValue();
                     externalIdsInfoObj.setDpnBrName(dpnBridgeName);
-                } else {
+                } else if (externalId.getExternalIdKey().equals("of-tunnel")) {
+                    ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
+                    externalIdsInfoObj.setOfTunnel(ofTunnel);
+                }else {
                     LOG.trace("external_ids {}:{}", externalId.getExternalIdKey(),
                         externalId.getExternalIdValue());
                 }
