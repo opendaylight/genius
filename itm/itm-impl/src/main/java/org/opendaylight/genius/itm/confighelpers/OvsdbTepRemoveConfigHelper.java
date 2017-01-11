@@ -62,7 +62,7 @@ public class OvsdbTepRemoveConfigHelper {
         TransportZone tZone = null;
 
         // Case: TZ name is not given from OVS's other_config parameters.
-        if (tzName.isEmpty()) {
+        if (tzName == null) {
             tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
             // add TEP into default-TZ
             tZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
