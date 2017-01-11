@@ -47,11 +47,12 @@ public class OvsdbTepAddConfigHelper {
      * @param tepIp TEP-IP address in string
      * @param strDpnId DPN datapath ID in string
      * @param tzName transport zone name in string
+     * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
      * @param dataBroker data broker handle to perform operations on config datastore
      * @param wrTx WriteTransaction object
      */
     public static void addTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
-        DataBroker dataBroker, WriteTransaction wrTx) {
+        boolean ofTunnel, DataBroker dataBroker, WriteTransaction wrTx) {
         BigInteger dpnId = BigInteger.valueOf(0);
 
         if (strDpnId != null && !strDpnId.isEmpty()) {
@@ -78,7 +79,8 @@ public class OvsdbTepAddConfigHelper {
             if (tZone == null) {
                 // Case: TZ is not configured from Northbound, then add TEP into "teps-not-hosted-in-transport-zone"
                 LOG.trace("Adding TEP with unknown TZ into teps-not-hosted-in-transport-zone.");
-                addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, wrTx);
+                addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, dpnId, ofTunnel,
+                    dataBroker, wrTx);
                 return;
             } else {
                 LOG.trace("Add TEP into transport-zone already configured by Northbound.");
@@ -98,7 +100,7 @@ public class OvsdbTepAddConfigHelper {
             List<Vteps> vtepList = new ArrayList<Vteps>();
             LOG.trace("Add TEP in transport-zone when no subnet-list.");
             addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepList, tepIpAddress, tzName, dpnId,
-                portName, wrTx);
+                portName, ofTunnel, wrTx);
         } else {
             List<Vteps> vtepList = null;
 
@@ -119,7 +121,7 @@ public class OvsdbTepAddConfigHelper {
                 }
                 LOG.trace("Add TEP in transport-zone when no vtep-list for specific subnet.");
                 addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepList, tepIpAddress, tzName,
-                    dpnId, portName, wrTx);
+                    dpnId, portName, ofTunnel, wrTx);
             } else {
                 //  case: vtep list has elements
                 boolean vtepFound = false;
@@ -136,12 +138,12 @@ public class OvsdbTepAddConfigHelper {
                 }
                 if (!vtepFound) {
                     addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepList, tepIpAddress, tzName,
-                        dpnId, portName, wrTx);
+                        dpnId, portName, ofTunnel, wrTx);
                 } else {
                     // vtep is found, update it with tep-ip
                     vtepList.remove(oldVtep);
                     addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepList, tepIpAddress, tzName,
-                        dpnId, portName, wrTx);
+                        dpnId, portName, ofTunnel, wrTx);
                 }
             }
         }
@@ -158,11 +160,12 @@ public class OvsdbTepAddConfigHelper {
      * @param tzName transport zone name in string
      * @param dpnId DPN datapath ID in BigInteger
      * @param portName port name as a part of VtepsKey
+     * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
      * @param wrTx WriteTransaction object
      */
     public static void addVtepInITMConfigDS(List<Subnets> subnetList, IpPrefix subnetMaskObj,
         List<Vteps> updatedVtepList, IpAddress tepIpAddress, String tzName, BigInteger dpnId,
-        String portName, WriteTransaction wrTx) {
+        String portName, boolean ofTunnel, WriteTransaction wrTx) {
         //Create TZ node path
         InstanceIdentifier<TransportZone> tZonepath =
             InstanceIdentifier.builder(TransportZones.class)
@@ -174,10 +177,23 @@ public class OvsdbTepAddConfigHelper {
             // create vtep
             VtepsKey vtepkey = new VtepsKey(dpnId, portName);
             Vteps vtepObj =
-                new VtepsBuilder().setDpnId(dpnId).setIpAddress(tepIpAddress).setKey(vtepkey).setPortname(portName).build();
+                new VtepsBuilder().setDpnId(dpnId).setIpAddress(tepIpAddress).setKey(vtepkey).
+                    setPortname(portName).setOptionOfTunnel(ofTunnel).build();
 
             // Add vtep obtained from DPN into list
             updatedVtepList.add(vtepObj);
+
+            LOG.trace("Adding TEP (TZ: {} Subnet: {} TEP IP: {} DPN-ID: {}, of-tunnel: {})"
+                    + "in ITM Config DS.", tzName, subnetMaskObj.getValue().toString(), tepIpAddress,
+                dpnId, ofTunnel);
+        } else {
+            // this is case when this function is called while TEPs movement from tepsNotHosted list when
+            // corresponding TZ is configured from northbound.
+            for (Vteps vtep: updatedVtepList) {
+                LOG.trace("Moving TEP (TEP IP: {} DPN-ID: {}, of-tunnel: {})"
+                        + "from tepNotHosted list into transport-zone {} in  ITM Config DS.",
+                    vtep.getIpAddress().getValue().toString(), vtep.getDpnId(), ofTunnel, tzName);
+            }
         }
 
         // Create subnet object
@@ -198,8 +214,6 @@ public class OvsdbTepAddConfigHelper {
             new TransportZoneBuilder().setKey(new TransportZoneKey(tzName)).setSubnets(subnetList)
                 .setZoneName(tzName).build();
 
-        LOG.trace("Adding TEP (TZ: {} Subnet: {} TEP IP: {} DPN-ID: {}) in ITM Config DS.", tzName,
-            subnetMaskObj.getValue().toString(), tepIpAddress, dpnId);
         // Update TZ in Config DS to add vtep in TZ
         wrTx.merge(LogicalDatastoreType.CONFIGURATION, tZonepath, updatedTzone, true);
     }
@@ -211,11 +225,12 @@ public class OvsdbTepAddConfigHelper {
      * @param tzName transport zone name in string
      * @param tepIpAddress TEP IP address in IpAddress object
      * @param dpnId DPN datapath ID in BigInteger
+     * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
      * @param dataBroker data broker handle to perform operations on config datastore
      * @param wrTx WriteTransaction object
      */
     protected static void addUnknownTzTepIntoTepsNotHosted(String tzName, IpAddress tepIpAddress,
-        BigInteger dpnId, DataBroker dataBroker, WriteTransaction wrTx) {
+        BigInteger dpnId, boolean ofTunnel, DataBroker dataBroker, WriteTransaction wrTx) {
         List<UnknownVteps> vtepList = null;
 
         TepsNotHostedInTransportZone unknownTz =
@@ -223,7 +238,7 @@ public class OvsdbTepAddConfigHelper {
         if (unknownTz == null) {
             LOG.trace("Unhosted TransportZone does not exist.");
             vtepList = new ArrayList<UnknownVteps>();
-            addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpnId, wrTx);
+            addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpnId, ofTunnel, wrTx);
         } else {
             vtepList = unknownTz.getUnknownVteps();
             if (vtepList == null || vtepList.isEmpty()) {
@@ -232,7 +247,7 @@ public class OvsdbTepAddConfigHelper {
                     vtepList = new ArrayList<UnknownVteps>();
                 }
                 LOG.trace("Add TEP in unhosted TZ ({}) when no vtep-list in the TZ.", tzName);
-                addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpnId, wrTx);
+                addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpnId, ofTunnel, wrTx);
             } else {
                 //  case: vtep list has elements
                 boolean vtepFound = false;
@@ -247,12 +262,12 @@ public class OvsdbTepAddConfigHelper {
                 }
                 if (!vtepFound) {
                     addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpnId,
-                        wrTx);
+                        ofTunnel, wrTx);
                 } else {
                     // vtep is found, update it with tep-ip
                     vtepList.remove(oldVtep);
                     addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpnId,
-                        wrTx);
+                        ofTunnel, wrTx);
                 }
             }
         }
@@ -267,10 +282,12 @@ public class OvsdbTepAddConfigHelper {
      * @param tepIpAddress TEP IP address in IpAddress object
      * @param tzName transport zone name in string
      * @param dpnId DPN datapath ID in BigInteger
+     * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
      * @param wrTx WriteTransaction object
      */
     protected static void addVtepIntoTepsNotHosted(List<UnknownVteps> updatedVtepList,
-        IpAddress tepIpAddress, String tzName, BigInteger dpnId, WriteTransaction wrTx) {
+        IpAddress tepIpAddress, String tzName, BigInteger dpnId, boolean ofTunnel,
+        WriteTransaction wrTx) {
         //Create TZ node path
         InstanceIdentifier<TepsNotHostedInTransportZone> tZonepath =
             InstanceIdentifier.builder(TransportZones.class)
@@ -281,7 +298,7 @@ public class OvsdbTepAddConfigHelper {
         UnknownVtepsKey vtepkey = new UnknownVtepsKey(dpnId);
         UnknownVteps vtepObj =
             new UnknownVtepsBuilder().setDpnId(dpnId).setIpAddress(tepIpAddress).setKey(vtepkey)
-                .build();
+                .setOfTunnel(ofTunnel).build();
 
         // Add vtep obtained into unknown TZ tep list
         updatedVtepList.add(vtepObj);
@@ -291,8 +308,8 @@ public class OvsdbTepAddConfigHelper {
             .setKey(new TepsNotHostedInTransportZoneKey(tzName)).setZoneName(tzName)
             .setUnknownVteps(updatedVtepList).build();
 
-        LOG.trace("Adding TEP into unhosted (TZ: {}, DPID: {}, TEP IP: {}) in ITM Config DS.",
-            tzName, dpnId, tepIpAddress);
+        LOG.trace("Adding TEP into unhosted (TZ: {}, DPID: {}, TEP IP: {}, of-tunnel: {})"
+                + "in ITM Config DS.", tzName, dpnId, tepIpAddress, ofTunnel);
 
         // Update TZ in Config DS.
         wrTx.merge(LogicalDatastoreType.CONFIGURATION, tZonepath, updatedTzone, true);
