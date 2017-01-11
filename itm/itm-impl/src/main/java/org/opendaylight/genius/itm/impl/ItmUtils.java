@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -58,17 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
@@ -112,7 +103,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -131,6 +121,14 @@ public class ItmUtils {
     public static ItmCache itmCache = new ItmCache();
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
+
+    public static final ImmutableMap<String, Class<? extends TunnelTypeBase>>
+        TUNNEL_TYPE_MAP =
+        new ImmutableMap.Builder<String, Class<? extends TunnelTypeBase>>()
+            .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class)
+            .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE, TunnelTypeMplsOverGre.class)
+            .put(ITMConstants.TUNNEL_TYPE_VXLAN, TunnelTypeVxlan.class)
+            .build();
 
     public static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
         @Override
@@ -1125,4 +1123,55 @@ public class ItmUtils {
         return zones;
     }
 
+    /**
+     * Returns the transport zone from Configuration datastore.
+     *
+     * @param tzName transport zone name
+     * @param dataBroker data broker handle to perform operations on datastore
+     */
+    public static TransportZone getTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
+        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
+            .child(TransportZone.class, new TransportZoneKey(tzName)).build();
+        Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
+            dataBroker);
+        if (tZoneOptional.isPresent()) {
+            return tZoneOptional.get();
+        }
+        return null;
+    }
+
+    /**
+     * Deletes the transport zone from Configuration datastore.
+     *
+     * @param tzName transport zone name
+     * @param dataBroker data broker handle to perform operations on datastore
+     */
+    public static void deleteTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
+        // check whether transport-zone exists in config DS.
+        TransportZone tZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+        if (tZoneFromConfigDS != null) {
+            // it exists, delete default-TZ now
+            InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
+                .child(TransportZone.class,
+                    new TransportZoneKey(tzName)).build();
+            LOG.debug("Removing {} transport-zone from config DS.", tzName);
+            ItmUtils.asyncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        }
+    }
+
+    public static Class<? extends TunnelTypeBase> getTunnelType(String tunnelType) {
+        // validate tunnelType string, in case it is NULL or empty, then
+        // take VXLAN tunnel type by default
+        if (tunnelType == null || tunnelType.isEmpty()) {
+            return TUNNEL_TYPE_MAP.get(ITMConstants.TUNNEL_TYPE_VXLAN);
+        } else if (!tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN) &&
+            !tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE)) {
+            // if tunnel type is some incorrect value, then
+            // take VXLAN tunnel type by default
+            return TUNNEL_TYPE_MAP.get(ITMConstants.TUNNEL_TYPE_VXLAN);
+        }
+
+        // return TunnelTypeBase object corresponding to tunnel-type
+        return TUNNEL_TYPE_MAP.get(tunnelType);
+    }
 }
