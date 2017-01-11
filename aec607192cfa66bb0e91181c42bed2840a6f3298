@@ -34,6 +34,24 @@
       "revId": "aec607192cfa66bb0e91181c42bed2840a6f3298",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4a62c73e",
+        "filename": "it/impl/src/test/java/org/opendaylight/genius/it/GeniusIT.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-11T22:04:36Z",
+      "side": 1,
+      "message": "not just the fail - you can remove the entire try { } catch and LOG and fail - just do super.setup(); if it fails by throwing an exception, it will propagate.",
+      "parentUuid": "1a622d24_2a54abfd",
+      "revId": "aec607192cfa66bb0e91181c42bed2840a6f3298",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
