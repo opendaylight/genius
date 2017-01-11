@@ -59,11 +59,14 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+
 @Singleton
 public class TepCommandHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
     private final DataBroker dataBroker;
+    private final ItmConfig itmConfig;
     static int check = 0;
     static short flag = 0;
     /*
@@ -80,13 +83,34 @@ public class TepCommandHelper {
     // ArrayList<>();
 
     @Inject
-    public TepCommandHelper(final DataBroker dataBroker) {
+    public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
     public void start() throws Exception {
-        configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
+        boolean defTzEnabled = itmConfig.isDefTzEnabled();
+        if (defTzEnabled) {
+            String tunnelType = itmConfig.getDefTzTunnelType();
+            // check if tunnel-type is not configured in config file or
+            // if incorrect tunnel-type is configured in config file, then
+            // take VXLAN as default tunnel-type
+            if (tunnelType == null || tunnelType.isEmpty()) {
+                tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+            } else if (!tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN) && !tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) && !tunnelType
+                .equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
+                tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+            }
+            configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
+            LOG.info("{} is created with {} tunnel-type.", ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
+        } else {
+            LOG.debug("Removing {} on start-up, def-tz-enabled is false.", ITMConstants.DEFAULT_TRANSPORT_ZONE);
+            // check if default-TZ already exists, then delete it because flag is OFF now.
+            ItmUtils.deleteTransportZoneFromConfigDS(ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
+
+            LOG.info("{} is not created.", ITMConstants.DEFAULT_TRANSPORT_ZONE);
+        }
         LOG.info("TepCommandHelper Started");
     }
 
@@ -723,22 +747,32 @@ public void showCache(String cacheName) {
         LOG.debug("configureTunnelType {} for transportZone {}", tunnelType, tZoneName);
 
         TransportZone tZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(tZoneName, dataBroker);
-        validateTunnelType(tZoneName, tunnelType,tZoneFromConfigDS);
-
-        if (tZoneFromConfigDS != null) {
-            LOG.debug("Transport zone {} with tunnel type {} already exists. No action required.", tZoneName,
-                    tunnelType);
-            return;
-        }
-        TransportZones transportZones = null;
-        List<TransportZone> tZoneList = null;
-        InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> tZones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+        // get tunnel-type
         Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
         if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN))
             tunType = TunnelTypeVxlan.class ;
         else if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) )
             tunType = TunnelTypeGre.class ;
+
+        if (tZoneFromConfigDS != null) {
+            validateTunnelType(tZoneName, tunnelType, tZoneFromConfigDS);
+            if (!tZoneName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+                LOG.debug(
+                    "Transport zone {} with tunnel type {} already exists. No action required.",
+                    tZoneName, tunnelType);
+                return;
+            } else {
+                if(tZoneFromConfigDS.getTunnelType().equals(tunType)) {
+                    // default-TZ already exists and tunnel-type is not changed during
+                    // controller restart, then nothing to do now. Jusy return.
+                    return;
+                }
+            }
+        }
+        TransportZones transportZones = null;
+        List<TransportZone> tZoneList = null;
+        InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
+        Optional<TransportZones> tZones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
         TransportZone tZone = new TransportZoneBuilder().setKey(new TransportZoneKey(tZoneName))
                 .setTunnelType(tunType).build();
@@ -790,11 +824,19 @@ public void showCache(String cacheName) {
         // if (tZone != null) {
         if (tZoneFromConfigDS != null) {
             if( (!tZoneFromConfigDS.getTunnelType().equals(tunType))  && ItmUtils.isNotEmpty(tZoneFromConfigDS.getSubnets())) {
-                String errorMsg = "Changing the tunnel type from " + tZoneFromConfigDS.getTunnelType() +
-                        " to " + strTunnelType +
-                        " is not allowed for already configured transport zone [" + tZoneName +
-                        "].";
-                Preconditions.checkArgument(false, errorMsg);
+                // for default-TZ, such error message is not needed to be thrown.
+                // it needs to be handled in different way, by deleting default-TZ
+                // with old tunnel-type and then add default-TZ with new tunnel-type
+                if (!tZoneName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+                    String errorMsg = "Changing the tunnel type from " + tZoneFromConfigDS.getTunnelType()
+                        + " to " + strTunnelType
+                        + " is not allowed for already configured transport zone [" + tZoneName
+                        + "].";
+                    Preconditions.checkArgument(false, errorMsg);
+                } else {
+                    // delete already existing default TZ
+                    ItmUtils.deleteTransportZoneFromConfigDS(ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
+                }
             }
         }
     }
