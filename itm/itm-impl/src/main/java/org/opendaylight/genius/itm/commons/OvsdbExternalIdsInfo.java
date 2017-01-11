@@ -13,6 +13,7 @@ public class OvsdbExternalIdsInfo {
     private String tepIp = null;
     private String tzName = null;
     private String dpnBrName = ITMConstants.DEFAULT_BRIDGE_NAME;
+    private boolean ofTunnel = false;
 
     // get methods
     public String getTepIp() {
@@ -24,6 +25,8 @@ public class OvsdbExternalIdsInfo {
     }
 
     public String getDpnBrName() { return dpnBrName; }
+
+    public boolean getOfTunnel() { return ofTunnel; }
 
     // set methods
     public void setTepIp(String tepIp) {
@@ -38,10 +41,14 @@ public class OvsdbExternalIdsInfo {
         this.dpnBrName = dpnBrName;
     }
 
+    public void setOfTunnel(boolean ofTunnel) {
+        this.ofTunnel = ofTunnel;
+    }
+
     @Override
     public String toString() {
         return "OvsdbExternalIdsInfo  { " +
             "Ovsdb node External Ids Info list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName +
-            "  DPN bridge name: " + dpnBrName + " }" ;
+            "  DPN bridge name: " + dpnBrName +  " of-tunnel flag: " + ofTunnel + " }" ;
     }
 }
