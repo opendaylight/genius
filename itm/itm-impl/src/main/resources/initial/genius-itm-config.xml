@@ -1,0 +1,4 @@
+<itm-config xmlns="urn:opendaylight:genius:itm:config">
+    <def-tz-enabled>false</def-tz-enabled>
+    <def-tz-tunnel-type>vxlan</def-tz-tunnel-type>
+</itm-config>
