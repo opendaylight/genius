@@ -1299,12 +1299,12 @@ public class ItmUtils {
 
         if (tunnelType == null || tunnelType.isEmpty()) {
             tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
-        } else if (!tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN) &&
-            !tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE)) {
+        } else if (!tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN) &&
+            !tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE)) {
             tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
 
-        if( tunType.equals(ITMConstants.TUNNEL_TYPE_GRE))
+        if( tunType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE))
             return TunnelTypeGre.class;
         else
             return TunnelTypeVxlan.class;

@@ -98,8 +98,8 @@ public class TepCommandHelper {
             // take VXLAN as default tunnel-type
             if (tunnelType == null || tunnelType.isEmpty()) {
                 tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
-            } else if (!tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN) && !tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) && !tunnelType
-                .equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
+            } else if (!tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN) && !tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE) && !tunnelType
+                .equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
                 tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
             }
             configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
@@ -749,9 +749,9 @@ public void showCache(String cacheName) {
         TransportZone tZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(tZoneName, dataBroker);
         // get tunnel-type
         Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-        if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN))
+        if( tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN))
             tunType = TunnelTypeVxlan.class ;
-        else if( tunnelType.equals(ITMConstants.TUNNEL_TYPE_GRE) )
+        else if( tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE) )
             tunType = TunnelTypeGre.class ;
 
         if (tZoneFromConfigDS != null) {
@@ -834,6 +834,8 @@ public void showCache(String cacheName) {
                         + "].";
                     Preconditions.checkArgument(false, errorMsg);
                 } else {
+                    LOG.debug("Removing existing {} due to change in tunnel-type.",
+                        ITMConstants.DEFAULT_TRANSPORT_ZONE);
                     // delete already existing default TZ
                     ItmUtils.deleteTransportZoneFromConfigDS(ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
                 }
