@@ -59,7 +59,7 @@ public class IdUtils {
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
 
-    public final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<String, CountDownLatch> updateIdLatchMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
 
     private final int bladeId;

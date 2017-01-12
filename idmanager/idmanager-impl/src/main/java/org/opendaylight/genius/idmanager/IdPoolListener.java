@@ -7,9 +7,12 @@
  */
 package org.opendaylight.genius.idmanager;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -33,6 +36,12 @@ public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdP
         this.broker = broker;
         this.idManager = idManager;
         this.idUtils = idUtils;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
+        LOG.info("IdPoolListener listener Started");
     }
 
     @Override
