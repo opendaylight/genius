@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_edc2cd51",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-12T05:11:34Z",
+      "side": 1,
+      "message": "Also have HashSet\u003cLong\u003e and add idValue from each task, and do assertTrue(set.add())",
+      "range": {
+        "startLine": 498,
+        "startChar": 28,
+        "endLine": 498,
+        "endChar": 35
+      },
+      "revId": "93180ea1db5b871bd3bda50010bfb423466e2e9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_4dd2e15c",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
         "patchSetId": 10
