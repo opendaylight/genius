@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.itm.tests;
 
+import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.idmanager.IdManager;
@@ -17,6 +20,7 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
+import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
@@ -35,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
  * Dependency Injection Wiring for {@link ItmTest}.
  *
  * @author Michael Vorburger
+ * @author Tarun Thakur
  */
 public class ItmTestModule extends AbstractGuiceJsr250Module {
 
@@ -44,14 +49,16 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(ItmRpcService.class).to(ItmManagerRpcService.class);
         bind(ITMManager.class);
         bind(ItmProvider.class);
-
+        ItmConfig itmConfigObj = new ItmConfigBuilder().
+            setDefTzEnabled(true).setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
+        bind(ItmConfig.class).toInstance(itmConfigObj);
         bind(ItmMonitoringIntervalListener.class);
         bind(DpnTepsInfoListener.class);
         bind(StateTunnelListListener.class);
         bind(ItmMonitoringListener.class);
-
         bind(TunnelMonitorIntervalListener.class);
         bind(TransportZoneListener.class);
+        bind(OvsdbNodeListener.class);
         bind(InterfaceStateListener.class);
         bind(VtepConfigSchemaListener.class);
         bind(TunnelMonitorChangeListener.class);
