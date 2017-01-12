@@ -761,6 +761,19 @@ public class ItmUtils {
         }
     }
 
+    public static <T extends DataObject> void syncDelete(LogicalDatastoreType datastoreType,
+        InstanceIdentifier<T> path, DataBroker broker) {
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        tx.delete(datastoreType, path);
+        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+        try {
+            futures.get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("ITMUtils:SyncDelete , Error deleting from datastore (path) : ({})", path);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public static List<BigInteger> getDpnIdList( List<DpnIds> dpnIds ) {
         List<BigInteger> dpnList = new ArrayList<>() ;
         for( DpnIds dpn : dpnIds) {
@@ -1296,7 +1309,7 @@ public class ItmUtils {
                 .child(TransportZone.class,
                     new TransportZoneKey(tzName)).build();
             LOG.debug("Removing {} transport-zone from config DS.", tzName);
-            ItmUtils.asyncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+            ItmUtils.syncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         }
     }
 
