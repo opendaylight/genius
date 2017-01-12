@@ -10,16 +10,20 @@ package org.opendaylight.genius.idmanager;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
@@ -59,6 +63,7 @@ public class IdUtils {
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
 
+    public final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
 
@@ -68,7 +73,7 @@ public class IdUtils {
         bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
     }
 
-    protected InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
+    public InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdEntries> idEntriesBuilder = poolName
                 .builder().child(IdEntries.class, new IdEntriesKey(idKey));
         InstanceIdentifier<IdEntries> idEntry = idEntriesBuilder.build();
@@ -314,5 +319,9 @@ public class IdUtils {
 
     public void removeFromPoolUpdatedMap(String localPoolName) {
         poolUpdatedMap.remove(localPoolName);
+    }
+
+    public String getUniqueKey(String parentPoolName, String idKey) {
+        return parentPoolName + idKey;
     }
 }
