@@ -302,6 +302,16 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
                     idKey);
         }
+        String idLatchKey = parentPoolName + idKey;
+        java.util.Optional.ofNullable(idUtils.updateIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
+            try {
+                latch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
+                LOG.warn("Thread interrupted while releasing id {} from id pool {}", idKey, parentPoolName);
+            } finally {
+                idUtils.updateIdLatchMap.remove(idLatchKey);
+            }
+        } );
         long newIdValue = -1;
         List<Long> newIdValuesList = new ArrayList<>();
         localPoolName = localPoolName.intern();
@@ -363,7 +373,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (LOG.isDebugEnabled()) {
             LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
         }
-        idUtils.releaseIdLatchMap.put(parentPoolName + idKey, new CountDownLatch(1));
+        idUtils.updateIdLatchMap.put(parentPoolName + idKey, new CountDownLatch(1));
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
                 idUtils);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
@@ -570,13 +580,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
             throws ReadFailedException, IdManagerException {
         String idLatchKey = parentPoolName + idKey;
-        java.util.Optional.ofNullable(idUtils.releaseIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
+        java.util.Optional.ofNullable(idUtils.updateIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
             try {
                 latch.await(5, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
                 LOG.warn("Thread interrupted while releasing id {} from id pool {}", idKey, parentPoolName);
             } finally {
-                idUtils.releaseIdLatchMap.remove(idLatchKey);
+                idUtils.updateIdLatchMap.remove(idLatchKey);
             }
         } );
         localPoolName = localPoolName.intern();

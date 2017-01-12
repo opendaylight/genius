@@ -50,7 +50,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
         tx.submit().checkedGet();
-        Optional.ofNullable(idUtils.releaseIdLatchMap.get(parentPoolName + idKey))
+        Optional.ofNullable(idUtils.updateIdLatchMap.get(parentPoolName + idKey))
             .ifPresent(latch -> latch.countDown());
         return Collections.emptyList();
     }
