@@ -19,6 +19,7 @@ import org.mockito.Mock;
 
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -29,7 +30,6 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.binding.test.AbstractDataBrokerTest;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.ActionType;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
 import org.opendaylight.genius.mdsalutil.BucketInfo;
@@ -169,8 +169,7 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
             FlowEntity terminatingServiceTableFlowEntity = null;
 
             List<ActionInfo> listActionInfo = new ArrayList<>();
-            listActionInfo.add(new ActionInfo(ActionType.punt_to_controller,
-                    new String[] {}));
+            listActionInfo.add(new ActionPuntToController());
 
             try {
                 dpId = new BigInteger(dpnId.split(":")[1]);

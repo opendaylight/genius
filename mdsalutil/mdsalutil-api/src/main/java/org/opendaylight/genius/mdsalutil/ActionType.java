@@ -18,6 +18,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPopMpls;
 import org.opendaylight.genius.mdsalutil.actions.ActionPopPbb;
 import org.opendaylight.genius.mdsalutil.actions.ActionPopVlan;
+import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushMpls;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushPbb;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
@@ -285,19 +286,17 @@ public enum ActionType {
         }
 
     },
+
+    @Deprecated
     punt_to_controller {
         @Override
         public Action buildAction(int newActionKey, ActionInfo actionInfo) {
-            ActionBuilder ab = new ActionBuilder();
-            OutputActionBuilder output = new OutputActionBuilder();
-            output.setMaxLength(0xffff);
-            Uri value = new Uri(OutputPortValues.CONTROLLER.toString());
-            output.setOutputNodeConnector(value);
-            ab.setAction(new OutputActionCaseBuilder().setOutputAction(output.build()).build());
-            ab.setKey(new ActionKey(newActionKey));
-            return ab.build();
+            if (actionInfo instanceof ActionPuntToController) {
+                return ((ActionPuntToController) actionInfo).buildAction(newActionKey);
+            } else {
+                return new ActionPuntToController().buildAction(newActionKey);
+            }
         }
-
     },
 
     @Deprecated
