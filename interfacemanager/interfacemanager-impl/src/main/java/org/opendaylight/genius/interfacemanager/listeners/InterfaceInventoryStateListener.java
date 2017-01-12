@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.math.BigInteger;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -124,6 +125,12 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                 if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
                     NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                     if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+                        if (InterfaceManagerCommonUtils.isTunnelPort(portName)) {
+                            LOG.warn("Unexpected DPNID change for tunnel interface {}: old {} new {}", portName,
+                                IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld),
+                                IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+                            return;
+                        }
                         LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
                         remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
                         //Adding a delay of 10sec for VM migration, so applications can process remove and add events

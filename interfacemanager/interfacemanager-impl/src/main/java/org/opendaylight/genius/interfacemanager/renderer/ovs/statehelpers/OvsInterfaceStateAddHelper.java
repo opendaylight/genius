@@ -23,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -73,6 +74,12 @@ public class OvsInterfaceStateAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
+        if(InterfaceManagerCommonUtils.isTunnelPort(interfaceName)){
+            if(!validateTunnelPortAttributes(nodeConnectorId, iface)){
+                return futures;
+            }
+        }
+
         Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, defaultOperationalShardTransaction, idManager,
                 physAddress, operStatus, adminStatus, nodeConnectorId);
 
@@ -106,4 +113,22 @@ public class OvsInterfaceStateAddHelper {
         futures.add(transaction.submit());
         AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }
+
+    public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface){
+        BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        if(iface != null){
+            ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+            if(!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier())){
+                LOG.warn("Received tunnel state add notification for tunnel {} from dpn {} where as " +
+                    "the northbound configured dpn is {}", iface.getName(), currentDpnId, parentRefs.getDatapathNodeIdentifier());
+                return false;
+            }
+        }else {
+            LOG.warn("Received tunnel state add notification for a tunnel which is not configured {}", iface.getName());
+            return false;
+        }
+        return true;
+    }
+}
+
 }
