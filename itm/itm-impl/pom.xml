@@ -71,8 +71,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>idmanager-api</artifactId>
       <version>${genius.version}</version>
     </dependency>
-
-    <!-- Testing Dependencies (<scope>test) -->
+    <!-- Testing Dependencies -->
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>testutils</artifactId>
@@ -102,8 +101,25 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-binding-test-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.vorburger</groupId>
+      <artifactId>xtendbeans</artifactId>
+      <version>1.2.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>utils.southbound-utils</artifactId>
+      <version>${genius.ovsdb.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
+  <!--Build Dependencies-->
   <build>
     <plugins>
       <plugin>
@@ -131,6 +147,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.xtend</groupId>
+        <artifactId>xtend-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
