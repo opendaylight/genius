@@ -22,7 +22,11 @@ public class ActionGroup extends ActionInfo {
     private final long groupId;
 
     public ActionGroup(long groupId) {
-        super(ActionType.group, new String[] { Long.toString(groupId) });
+        this(0, groupId);
+    }
+
+    public ActionGroup(int actionKey, long groupId) {
+        super(ActionType.group, new String[] { Long.toString(groupId)}, actionKey);
         this.groupId = groupId;
     }
 
