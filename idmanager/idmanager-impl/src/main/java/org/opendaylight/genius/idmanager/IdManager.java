@@ -12,6 +12,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,16 +21,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -210,12 +215,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         long newIdValue = -1;
         AllocateIdOutputBuilder output = new AllocateIdOutputBuilder();
         Future<RpcResult<AllocateIdOutput>> futureResult;
+        CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
         try {
             //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
-            newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
+            newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1, futureIdValues).get(0);
             output.setIdValue(newIdValue);
             futureResult = RpcResultBuilder.<AllocateIdOutput>success().withResult(output.build()).buildFuture();
         } catch (OperationFailedException | IdManagerException e) {
+            futureIdValues.completeExceptionally(e);
             futureResult = buildFailedRpcResultFuture("allocateId failed: " + input.toString(), e);
         }
         return futureResult;
@@ -233,12 +240,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<Long> newIdValuesList = new ArrayList<>();
         AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
         Future<RpcResult<AllocateIdRangeOutput>> futureResult;
+        CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
         try {
-            newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
+            newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size, futureIdValues);
             Collections.sort(newIdValuesList);
             output.setIdValues(newIdValuesList);
             futureResult = RpcResultBuilder.<AllocateIdRangeOutput>success().withResult(output.build()).buildFuture();
         } catch (OperationFailedException | IdManagerException e) {
+            futureIdValues.completeExceptionally(e);
             futureResult = buildFailedRpcResultFuture("allocateIdRange failed: " + input.toString(), e);
         }
         return futureResult;
@@ -296,14 +305,26 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return failedRpcResultBuilder.buildFuture();
     }
 
-    private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName, String idKey, long size)
+    private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
+            String idKey, long size, CompletableFuture<List<Long>> futureIdValues)
             throws OperationFailedException, IdManagerException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
                     idKey);
         }
-        long newIdValue = -1;
         List<Long> newIdValuesList = new ArrayList<>();
+        String uniqueIdKey = parentPoolName + idKey;
+        CompletableFuture<List<Long>> existingFutureIdValue = idUtils.allocatedIdMap.putIfAbsent(uniqueIdKey.intern(), futureIdValues);
+        if (existingFutureIdValue != null) {
+            try {
+                newIdValuesList = existingFutureIdValue.get();
+                return newIdValuesList;
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.warn("Could not obtain id from existing futureIdValue for idKey {} and pool {}.", idKey, parentPoolName);
+                throw new IdManagerException(e.getMessage(), e);
+            }
+        }
+        long newIdValue = -1;
         localPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
@@ -312,6 +333,12 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             newIdValuesList = existingIdEntry.get().getIdValue();
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
+            }
+            // Inform other waiting threads about this new value.
+            futureIdValues.complete(newIdValuesList);
+            if (existingFutureIdValue == null) {
+                // If updated by current thread, removing the cache entry.
+                idUtils.allocatedIdMap.remove(uniqueIdKey);
             }
             return newIdValuesList;
         }
@@ -373,6 +400,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
                 idUtils);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
+        futureIdValues.complete(newIdValuesList);
         return newIdValuesList;
     }
 
