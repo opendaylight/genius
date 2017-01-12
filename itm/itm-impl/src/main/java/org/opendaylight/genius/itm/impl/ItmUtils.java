@@ -31,6 +31,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
@@ -1236,6 +1237,7 @@ public class ItmUtils {
      *
      * @param tzName transport zone name
      * @param dataBroker data broker handle to perform operations on datastore
+     * @return the TransportZone object in Config DS
      */
     // FIXME: Better is to implement cache to avoid datastore read.
     public static TransportZone getTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
@@ -1379,7 +1381,11 @@ public class ItmUtils {
                     .child(TransportZone.class,
                     new TransportZoneKey(tzName)).build();
             LOG.debug("Removing {} transport-zone from config DS.", tzName);
-            ItmUtils.asyncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+            try {
+                SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, path);
+            } catch (TransactionCommitFailedException e) {
+                LOG.error("deleteTransportZoneFromConfigDS failed. {} could not be deleted.", tzName, e);
+            }
         }
     }
 
