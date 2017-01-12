@@ -16,6 +16,7 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
+import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
