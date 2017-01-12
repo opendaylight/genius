@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_10e59e37",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 611,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-12T08:46:36Z",
+      "side": 1,
+      "message": "For InterruptedException, remove assert and it is better to restore the interrupt by Thread.currentThread().interrupt() for the higher ups in the call stack to see it. but anyway this is not used here since there is no cancellation of tasks.\nOtherwise do InterruptedException | ExecutionException in single catch.",
+      "revId": "30dd232ca8ed68f1068a5a7ea5d3b1eae9759686",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
