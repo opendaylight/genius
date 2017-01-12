@@ -12,7 +12,9 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -70,7 +72,10 @@ public class IdUtils {
         }
     }
 
-    protected static InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
+    public static final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
+
+    public static InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdEntries> idEntriesBuilder = poolName
                 .builder().child(IdEntries.class, new IdEntriesKey(idKey));
         InstanceIdentifier<IdEntries> idEntry = idEntriesBuilder.build();
@@ -318,5 +323,9 @@ public class IdUtils {
 
     public static void removeFromPoolUpdatedMap(String localPoolName) {
         poolUpdatedMap.remove(localPoolName);
+    }
+
+    public static String getUniqueKey(String parentPoolName, String idKey) {
+        return parentPoolName + idKey;
     }
 }
