@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_5c2e0d44",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-12T17:06:34Z",
+      "side": 1,
+      "message": "may i know which interface do applications try to retrieve without an lport tag?",
+      "revId": "5a321a612a4bf932dea4e5858e809ce0cb93447c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
