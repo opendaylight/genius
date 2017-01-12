@@ -9,7 +9,9 @@
 package org.opendaylight.genius.idmanager.jobs;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -46,11 +48,15 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         if (newIdValues != null && !newIdValues.isEmpty()) {
             IdEntries newIdEntry = IdUtils.createIdEntries(idKey, newIdValues);
             tx.merge(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
-            futures.add(tx.submit());
-            return futures;
+        } else {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
-        tx.delete(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
-        futures.add(tx.submit());
-        return futures;
+        tx.submit().checkedGet();
+        String uniqueIdKey = IdUtils.getUniqueKey(parentPoolName, idKey);
+        Optional.ofNullable(IdUtils.releaseIdLatchMap.get(uniqueIdKey))
+            .ifPresent(latch -> latch.countDown());
+        // Once the id is written to DS, removing the id value from map.
+        IdUtils.allocatedIdMap.remove(uniqueIdKey);
+        return Collections.emptyList();
     }
 }
