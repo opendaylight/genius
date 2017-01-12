@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_bcf761d2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-12T17:05:27Z",
+      "side": 1,
+      "message": "is this method used anywhere? I remember after my patch was merged, you removed some previous implementation from your patch..is it so?",
+      "revId": "77f35c0230033315d4015a37551e3b7bd21ea49c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
