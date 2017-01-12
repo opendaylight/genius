@@ -18,19 +18,20 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -85,7 +86,7 @@ import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 @RunWith(MockitoJUnitRunner.class)
 public class IdManagerTest {
 
-    Map<InstanceIdentifier<?>, DataObject> configDataStore = new HashMap<>();
+    ConcurrentHashMap<InstanceIdentifier<?>, DataObject> configDataStore = new ConcurrentHashMap<>();
     @Mock DataBroker dataBroker;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
@@ -128,20 +129,19 @@ public class IdManagerTest {
             configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class),
                     invocation.getArgumentAt(2, IdPool.class));
             return null;
-        }).when(mockWriteTx).put(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), any(IdPool.class), eq(true));
+        }).when(mockWriteTx).put(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), Matchers.any(), eq(true));
         doAnswer(invocation -> {
             configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class),
                     invocation.getArgumentAt(2, IdPool.class));
             return null;
-        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), any(ChildPools.class),
-                eq(true));
+        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), Matchers.any(), eq(true));
         doAnswer(invocation -> {
             configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class),
                     invocation.getArgumentAt(2, IdPool.class));
             return null;
-        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), any(IdPool.class), eq(true));
+        }).when(mockWriteTx).merge(eq(LogicalDatastoreType.CONFIGURATION), Matchers.any(), Matchers.any());
         doAnswer(invocation -> {
-            configDataStore.put(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class), null);
+            configDataStore.remove(invocation.getArgumentAt(1, KeyedInstanceIdentifier.class));
             return null;
         }).when(mockWriteTx).delete(eq(LogicalDatastoreType.CONFIGURATION), Matchers.<InstanceIdentifier<IdPool>>any());
 
@@ -165,7 +165,7 @@ public class IdManagerTest {
         IdPool pool;
         assertTrue(result.get().isSuccessful());
         // Just to ensure the local pool is also written. Even if it is not triggered Test case will pass.
-        Thread.sleep(100);
+        waitUntilJobIsDone();
         assertTrue(configDataStore.size() > 0);
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
@@ -213,7 +213,7 @@ public class IdManagerTest {
         AllocateIdInput allocateIdInput = buildAllocateId(poolName, idKey);
         Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(allocateIdInput);
         assertTrue(result.get().isSuccessful());
-        Thread.sleep(100);
+        waitUntilJobIsDone();
         assertTrue(configDataStore.size() > 0);
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
@@ -260,7 +260,8 @@ public class IdManagerTest {
         ReleaseIdInput releaseIdInput = createReleaseIdInput(poolName, idKey);
         Future<RpcResult<Void>> result = idManager.releaseId(releaseIdInput);
         assertTrue(result.get().isSuccessful());
-        Thread.sleep(100);
+        waitUntilJobIsDone();
+
         assertTrue(configDataStore.size() > 0);
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
@@ -372,7 +373,8 @@ public class IdManagerTest {
         AllocateIdInput allocateIdInput = buildAllocateId(poolName, idKey);
         Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(allocateIdInput);
         assertTrue(result.get().isSuccessful());
-        Thread.sleep(3);
+        waitUntilJobIsDone();
+
         assertTrue(configDataStore.size() > 0);
         InstanceIdentifier<IdPool> localPoolIdentifier = buildInstanceIdentifier(localPoolName);
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
@@ -408,15 +410,18 @@ public class IdManagerTest {
         List<IdPool> listOfIdPool = new ArrayList<>();
         listOfIdPool.add(localPool);
         listOfIdPool.add(globalIdPool);
+        // Pre-loading the map so that we can remove it when it is removed from DS.
+        configDataStore.put(parentPoolIdentifier, globalIdPool);
+        configDataStore.put(localPoolIdentifier, localPool);
         setupMocks(listOfIdPool);
         Optional<IdPool> expected = Optional.of(globalIdPool);
         doReturn(Futures.immediateCheckedFuture(expected)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
         DeleteIdPoolInput deleteIdPoolInput = createDeleteIdPoolInput(poolName);
         Future<RpcResult<Void>> result = idManager.deleteIdPool(deleteIdPoolInput);
-        Thread.sleep(3);
+        waitUntilJobIsDone();
         assertTrue(result.get().isSuccessful());
-        assertTrue(configDataStore.size() > 0);
+        assertTrue(configDataStore.size() == 0);
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         assertEquals(dataObject, null);
         dataObject = configDataStore.get(parentPoolIdentifier);
@@ -425,24 +430,13 @@ public class IdManagerTest {
 
     @Test
     public void testMultithreadedIdAllocationFromAvailableIds() throws Exception {
-        List<IdPool> listOfIdPool = new ArrayList<>();
-        IdPool localIdPool = buildLocalIdPool(blockSize, idStart, idStart + blockSize - 1, idStart - 1, localPoolName,
-                poolName).build();
-        listOfIdPool.add(localIdPool);
-        int poolSize = 10;
-        IdPool globalIdPool = buildGlobalIdPool(poolName, idStart, poolSize, blockSize,
-                buildChildPool(localPoolName)).build();
-        listOfIdPool.add(globalIdPool);
-        setupMocks(listOfIdPool);
-        doReturn(Futures.immediateCheckedFuture(Optional.of(globalIdPool))).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
-        ExecutorService executor = Executors.newCachedThreadPool();
+        setupMockForMultiThreads(false);
         int numberOfTasks = 3;
         CountDownLatch latch = new CountDownLatch(numberOfTasks);
         Set<Long> idSet = new CopyOnWriteArraySet<>();
-        requestIdsConcurrently(latch, numberOfTasks, idSet);
+        requestIdsConcurrently(latch, numberOfTasks, idSet, false);
         latch.await();
-        Thread.sleep(500);
+        waitUntilJobIsDone();
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
             IdPool pool = (IdPool) dataObject;
@@ -450,33 +444,90 @@ public class IdManagerTest {
         }
     }
 
-    @Ignore
+    @Test
     public void testMultithreadedIdAllocationFromReleasedIds() throws Exception {
-        List<DelayedIdEntries> delayedIdEntries = buildDelayedIdEntries(new long[] {100, 101});
-        ReleasedIdsHolder expectedReleasedIds = createReleasedIdsHolder(2, delayedIdEntries , 0);
-        List<IdPool> listOfIdPool = new ArrayList<>();
-        IdPool localIdPool = buildLocalIdPool(blockSize, idStart, idStart + blockSize - 1,
-                idStart + blockSize - 1, localPoolName, poolName).build();
-        listOfIdPool.add(localIdPool);
-        int poolSize = 10;
-        IdPool globalIdPool = buildGlobalIdPool(poolName, idStart, poolSize, blockSize,
-                buildChildPool(localPoolName)).setReleasedIdsHolder(expectedReleasedIds).build();
-        listOfIdPool.add(globalIdPool);
-        setupMocks(listOfIdPool);
-        doReturn(Futures.immediateCheckedFuture(Optional.of(globalIdPool))).when(mockReadTx).read(
-                LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
-        ExecutorService executor = Executors.newCachedThreadPool();
+        setupMockForMultiThreads(true);
         int numberOfTasks = 3;
         CountDownLatch latch = new CountDownLatch(numberOfTasks);
         Set<Long> idSet = new CopyOnWriteArraySet<>();
-        requestIdsConcurrently(latch, numberOfTasks, idSet);
+        requestIdsConcurrently(latch, numberOfTasks, idSet, false);
         latch.await();
-        Thread.sleep(2000);
+        waitUntilJobIsDone();
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
             IdPool pool = (IdPool) dataObject;
             assertTrue(pool.getReleasedIdsHolder().getAvailableIdCount() == 0);
         }
+    }
+
+    @Test
+    public void testMultithreadedIdAllocationForSameKeyFromAvailableIds() throws Exception {
+        setupMockForMultiThreads(false);
+        int numberOfTasks = 3;
+        CountDownLatch latch = new CountDownLatch(numberOfTasks);
+        Set<Long> idSet = new CopyOnWriteArraySet<>();
+        requestIdsConcurrently(latch, numberOfTasks, idSet, true);
+        latch.await();
+        assertTrue(idSet.size() == 1);
+        waitUntilJobIsDone();
+        DataObject dataObject = configDataStore.get(localPoolIdentifier);
+        if (dataObject instanceof IdPool) {
+            IdPool pool = (IdPool) dataObject;
+            assertTrue(idStart == pool.getAvailableIdsHolder().getCursor());
+        }
+    }
+
+    @Test
+    public void testMultithreadedIdAllocationForSameKeyFromReleasedIds() throws Exception {
+        setupMockForMultiThreads(true);
+        int numberOfTasks = 3;
+        CountDownLatch latch = new CountDownLatch(numberOfTasks);
+        Set<Long> idSet = new CopyOnWriteArraySet<>();
+        requestIdsConcurrently(latch, numberOfTasks, idSet, true);
+        latch.await();
+        assertTrue(idSet.size() == 1);
+        waitUntilJobIsDone();
+        DataObject dataObject = configDataStore.get(localPoolIdentifier);
+        if (dataObject instanceof IdPool) {
+            IdPool pool = (IdPool) dataObject;
+            assertTrue(pool.getReleasedIdsHolder().getAvailableIdCount() == 2);
+        }
+    }
+
+    private void setupMockForMultiThreads(boolean isRelease) throws ReadFailedException, UnknownHostException {
+        List<IdPool> listOfIdPool = new ArrayList<>();
+        IdPoolBuilder localIdPool =
+                buildLocalIdPool(blockSize, idStart, idStart + blockSize, idStart - 1,
+                        localPoolName, poolName);
+        int poolSize = 10;
+        IdPool globalIdPool = buildGlobalIdPool(poolName, idStart, poolSize, blockSize,
+                buildChildPool(localPoolName)).build();
+        listOfIdPool.add(globalIdPool);
+        setupMocks(listOfIdPool);
+        doReturn(Futures.immediateCheckedFuture(Optional.of(globalIdPool))).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
+
+        List<DelayedIdEntries> delayedIdEntries = buildDelayedIdEntries(new long[] {100, 101, 102});
+        ReleasedIdsHolder expectedReleasedIds = createReleasedIdsHolder(3, delayedIdEntries , 0);
+        if (isRelease) {
+            localIdPool.setReleasedIdsHolder(expectedReleasedIds);
+        }
+        listOfIdPool.add(localIdPool.build());
+        listOfIdPool.add(globalIdPool);
+        setupMocks(listOfIdPool);
+        doAnswer(invocation -> {
+            DataObject result = configDataStore.get(idUtils.getIdEntry(parentPoolIdentifier, idKey));
+            if (result == null) {
+                return Futures.immediateCheckedFuture(Optional.absent());
+            }
+            if (result instanceof IdEntries) {
+                return Futures.immediateCheckedFuture(Optional.of((IdEntries) result));
+            }
+            return Futures.immediateCheckedFuture(Optional.absent());
+        }).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, idUtils.getIdEntry(parentPoolIdentifier, idKey));
+
+        doReturn(Futures.immediateCheckedFuture(Optional.of(globalIdPool))).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION, parentPoolIdentifier);
     }
 
     private InstanceIdentifier<ReleasedIdsHolder> buildReleaseIdsIdentifier(
@@ -576,7 +627,7 @@ public class IdManagerTest {
         List<DelayedIdEntries> delayedIdEntriesList = new ArrayList<>();
         for (long idValue : idValues) {
             DelayedIdEntries delayedIdEntries = new DelayedIdEntriesBuilder().setId(idValue)
-                    .setReadyTimeSec(System.currentTimeMillis() / 1000).build();
+                    .setReadyTimeSec(0L).build();
             delayedIdEntriesList.add(delayedIdEntries);
         }
         return delayedIdEntriesList;
@@ -590,20 +641,29 @@ public class IdManagerTest {
         return childPoolsList;
     }
 
-    private void requestIdsConcurrently(CountDownLatch latch, int numberOfTasks, Set<Long> idSet) {
+    private void requestIdsConcurrently(CountDownLatch latch, int numberOfTasks, Set<Long> idSet, boolean isSameKey) {
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < numberOfTasks; i++) {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(buildAllocateId(poolName,
-                            Thread.currentThread().getName()));
-                    Long idValue = null;
+                    Future<RpcResult<AllocateIdOutput>> result;
+                    if (!isSameKey) {
+                        result = idManager.allocateId(buildAllocateId(poolName,
+                                Thread.currentThread().getName()));
+                    } else {
+                        result = idManager.allocateId(buildAllocateId(poolName,
+                                idKey));
+                    }
                     try {
                         if (result.get().isSuccessful()) {
-                            idValue = result.get().getResult().getIdValue();
-                            assertTrue(idValue <= idStart + blockSize - 1);
-                            assertTrue(idSet.add(idValue));
+                            Long idValue = result.get().getResult().getIdValue();
+                            assertTrue(idValue <= idStart + blockSize);
+                            if (isSameKey) {
+                                idSet.add(idValue);
+                            } else {
+                                assertTrue(idSet.add(idValue));
+                            }
                         } else {
                             RpcError error = result.get().getErrors().iterator().next();
                             assertTrue(error.getCause().getMessage().contains("Ids exhausted for pool : " + poolName));
@@ -616,5 +676,9 @@ public class IdManagerTest {
                 }
             });
         }
+    }
+
+    private void waitUntilJobIsDone() throws InterruptedException {
+        TimeUnit.SECONDS.sleep(1);
     }
 }
