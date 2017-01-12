@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_adf6158d",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 487,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-01-12T07:18:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_4d6021a5",
+      "revId": "93180ea1db5b871bd3bda50010bfb423466e2e9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_edc2cd51",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
         "patchSetId": 10
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_2d32055f",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 498,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-01-12T07:18:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_edc2cd51",
+      "range": {
+        "startLine": 498,
+        "startChar": 28,
+        "endLine": 498,
+        "endChar": 35
+      },
+      "revId": "93180ea1db5b871bd3bda50010bfb423466e2e9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_4dd2e15c",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
         "patchSetId": 10
@@ -53,6 +95,24 @@
       "writtenOn": "2017-01-12T03:11:40Z",
       "side": 1,
       "message": "Let us not do thread interrupt here. It is thrown due to some exception while executing allocateId rpc as a FutureTask. Just do assertTrue(e.getCause().getMessage(), false).",
+      "revId": "93180ea1db5b871bd3bda50010bfb423466e2e9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0df0e98f",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-01-12T07:18:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_4dd2e15c",
       "revId": "93180ea1db5b871bd3bda50010bfb423466e2e9c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
