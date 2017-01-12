@@ -429,7 +429,9 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         }
         interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
-        interfaceInfo.setInterfaceTag(lportTag);
+        if (lportTag != null){
+            interfaceInfo.setInterfaceTag(lportTag);
+        }
         interfaceInfo.setOpState(opState);
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
