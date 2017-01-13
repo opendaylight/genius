@@ -2,6 +2,183 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_f3e2a79e",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: line going beyond permissible limit",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_33f09f66",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: too long a line",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_73e697b1",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "Does OVS support L3GRE already or any known release in which it will be available? At very least, interface type for l3gre needs to be preset in OVS schema.",
+      "range": {
+        "startLine": 47,
+        "startChar": 150,
+        "endLine": 47,
+        "endChar": 156
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_13f5a356",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: line too long",
+      "range": {
+        "startLine": 47,
+        "startChar": 150,
+        "endLine": 47,
+        "endChar": 156
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d3a4cb4c",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "what is CSS?",
+      "range": {
+        "startLine": 50,
+        "startChar": 33,
+        "endLine": 50,
+        "endChar": 36
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_53a27b4b",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "Why is this not a sub parameter in monitor params? Would prefer a better and more clear term than tunnel-monitor-multiplier, some term that clarifies what this actually does. monitoring-detection-multiplier sounds better as ovs documentation calls it detection multipler. Will this apply if BFD is disable? If this is BFD only, should probably call it bfd-detection-multiplier.",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 10
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b3030f41",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: line too long",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f3f9074f",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: line too long",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b38aefbc",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_d3484bb5",
         "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
         "patchSetId": 7
@@ -19,6 +196,120 @@
         "endLine": 77,
         "endChar": 112
       },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9387f3b4",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: line too long",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_733977f1",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "bfd:detection-multiplier is better term, though it will again depend on what comes in OVS.",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_932373bc",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpicks: line too long, grammar",
+      "range": {
+        "startLine": 148,
+        "startChar": 67,
+        "endLine": 148,
+        "endChar": 78
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f32c67ae",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: line too long",
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_331a5f7d",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "nitpick: whitespace",
+      "range": {
+        "startLine": 177,
+        "startChar": 0,
+        "endLine": 177,
+        "endChar": 2
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_86117354",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:48:02Z",
+      "side": 1,
+      "message": "formatting. use a block like codeblock etc. for this.",
       "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
