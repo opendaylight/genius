@@ -54,20 +54,6 @@ public class AlivenessMonitorUtil {
                 .child(InterfaceMonitorEntry.class, new InterfaceMonitorEntryKey(interfaceName)).build();
     }
 
-    public static String toStringIpAddress(byte[] ipAddress)
-    {
-        String ip = "";
-        if (ipAddress == null) {
-            return ip;
-        }
-
-        try {
-            ip = InetAddress.getByAddress(ipAddress).getHostAddress();
-        } catch(UnknownHostException e) {  }
-
-        return ip;
-    }
-
     public static String toStringMacAddress(byte[] macAddress)
     {
         if (macAddress == null) {
