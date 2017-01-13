@@ -16,7 +16,7 @@ public interface IdHolder {
 
     void addId(long id);
 
-    boolean isIdAvailable();
+    boolean isIdAvailable(long curTimeSec);
 
     long getAvailableIdCount();
 
