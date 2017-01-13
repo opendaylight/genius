@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_53aefb98",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2017-01-13T09:49:25Z",
+      "side": 1,
+      "message": "will take care of it",
+      "parentUuid": "1a622d24_c919d3d8",
+      "revId": "49cd5a95206d84bcd38ddd04c53e1aec6c192484",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_69287fe2",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 4
@@ -88,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_73a9778f",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2017-01-13T09:49:25Z",
+      "side": 1,
+      "message": "I got your concern of not catching checked exception which is provided checkedFutures.\nhow about using   Futures.addCallback() on the success we can assert on the expected result and catch the exception thrown.When an exception is caught we can fail the test case.\nshare the code review link where you have done \nDataStoreCoordinator changes.I will have a look into it.\nMy opinion is we can remove Thread.sleep permanently using futures.If required we can have a wrapper class around CheckedFuture which suits our need.It would be an interesting problem to solve",
+      "parentUuid": "1a622d24_4a713175",
+      "revId": "49cd5a95206d84bcd38ddd04c53e1aec6c192484",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_49014337",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 4
@@ -99,6 +135,24 @@
       "writtenOn": "2017-01-10T16:37:26Z",
       "side": 1,
       "message": "Also another thought, just for code readability, how about \"inlining\" the AsyncFunction directly into the transform, do you know what I mean? It would probably look much shorter and be clearer to read? Like this:\n\n        Futures.transform(future, (AsyncFunction\u003cString, Void\u003e) input -\u003e {\n            Assert.fail(\"duh #1\");\n            return null;\n        }).get();",
+      "revId": "49cd5a95206d84bcd38ddd04c53e1aec6c192484",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9393735a",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2017-01-13T09:49:25Z",
+      "side": 1,
+      "message": "yes .. wil convert into one liner",
+      "parentUuid": "1a622d24_49014337",
       "revId": "49cd5a95206d84bcd38ddd04c53e1aec6c192484",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
