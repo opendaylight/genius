@@ -8,7 +8,6 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorConstants.SEPERATOR;
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.toStringIpAddress;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -27,6 +26,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
+import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -108,8 +108,8 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
                     LOG.warn("Error retrieving interface Name for tag {}", portTag, e);
                 }
                 if(!Strings.isNullOrEmpty(interfaceName)) {
-                    String sourceIp = toStringIpAddress(packet.getSenderProtocolAddress());
-                    String targetIp = toStringIpAddress(packet.getTargetProtocolAddress());
+                    String sourceIp = NWUtil.toStringIpAddress(packet.getSenderProtocolAddress());
+                    String targetIp = NWUtil.toStringIpAddress(packet.getTargetProtocolAddress());
                     return getMonitoringKey(interfaceName, targetIp, sourceIp);
                 } else {
                     LOG.debug("No interface associated with tag {} to interpret the received ARP Reply", portTag);
