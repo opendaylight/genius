@@ -16,6 +16,24 @@
       "revId": "77f35c0230033315d4015a37551e3b7bd21ea49c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5029d135",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T03:13:57Z",
+      "side": 1,
+      "message": "Nope. I just brought the changes in, doing the cleanup now.",
+      "parentUuid": "1a622d24_bcf761d2",
+      "revId": "77f35c0230033315d4015a37551e3b7bd21ea49c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
