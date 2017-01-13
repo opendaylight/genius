@@ -117,26 +117,27 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
-                rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, "missing Interface in Config DataStore");
+                rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName,
+                        "missing Interface in Config DataStore");
                 return Futures.immediateFuture(rpcResultBuilder.build());
             }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
                 dpId = parentRefs.getDatapathNodeIdentifier();
             } else {
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                        InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface ifState
+                        = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
                 if (ifState != null) {
                     String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
                     dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 } else {
-                     rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, "missing Interface-state");
-                     return Futures.immediateFuture(rpcResultBuilder.build());
+                    rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, "missing Interface-state");
+                    return Futures.immediateFuture(rpcResultBuilder.build());
                 }
             }
-            GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(
-                    dpId);
+            GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(dpId);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
@@ -145,48 +146,60 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
-    private RpcResultBuilder<GetDpidFromInterfaceOutput> getRpcErrorResultForGetDpnIdRpc(String interfaceName, String errMsg) {
+    private RpcResultBuilder<GetDpidFromInterfaceOutput> getRpcErrorResultForGetDpnIdRpc(String interfaceName,
+            String errMsg) {
         errMsg = String.format("Retrieval of datapath id for the key {%s} failed due to %s", interfaceName, errMsg);
         LOG.error(errMsg);
-        RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder.<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+        RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder
+                .<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
         return rpcResultBuilder;
     }
 
     @Override
     public Future<RpcResult<Void>> createTerminatingServiceActions(final CreateTerminatingServiceActionsInput input) {
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        try{
-            LOG.info("create terminatingServiceAction on DpnId = {} for tunnel-key {}", input.getDpid() , input.getTunnelKey());
-            Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()),dataBroker);
+        try {
+            LOG.info("create terminatingServiceAction on DpnId = {} for tunnel-key {}", input.getDpid(),
+                    input.getTunnelKey());
+            Interface interfaceInfo = InterfaceManagerCommonUtils
+                    .getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()), dataBroker);
             IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
-            if(tunnelInfo != null) {
-                ListenableFuture<Void> installFlowResult =tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)?
-                        makeLFIBFlow(input.getDpid(),input.getTunnelKey(), input.getInstruction(), NwConstants.ADD_FLOW) :
-                        makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(), input.getInstruction(), NwConstants.ADD_FLOW);
-                Futures.addCallback(installFlowResult, new FutureCallback<Void>(){
+            if (tunnelInfo != null) {
+                ListenableFuture<Void> installFlowResult = tunnelInfo.getTunnelInterfaceType()
+                        .isAssignableFrom(TunnelTypeMplsOverGre.class)
+                                ? makeLFIBFlow(input.getDpid(), input.getTunnelKey(), input.getInstruction(),
+                                        NwConstants.ADD_FLOW)
+                                : makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(),
+                                        input.getInstruction(), NwConstants.ADD_FLOW);
+                Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
 
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onSuccess(Void theVoid) {
                         result.set(RpcResultBuilder.<Void>success().build());
                     }
 
                     @Override
                     public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to install terminating service flow for %s", input.getInterfaceName());
+                        String msg = String.format("Unable to install terminating service flow for %s",
+                                input.getInterfaceName());
                         LOG.error("create terminating service actions failed. {}. {}", msg, error);
-                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
+                                .build());
                     }
                 });
                 result.set(RpcResultBuilder.<Void>success().build());
             } else {
-                String msg = String.format("Terminating Service Actions cannot be created for a non-tunnel interface %s",input.getInterfaceName());
+                String msg = String.format(
+                        "Terminating Service Actions cannot be created for a non-tunnel interface %s",
+                        input.getInterfaceName());
                 LOG.error(msg);
                 result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg).build());
             }
-        }catch(Exception e){
-            String msg = String.format("create Terminating Service Actions for %s failed",input.getInterfaceName());
-            LOG.error("create Terminating Service Actions for {} failed due to {}" ,input.getDpid(), e);
-            result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, e.getMessage()).build());
+        } catch (Exception e) {
+            String msg = String.format("create Terminating Service Actions for %s failed", input.getInterfaceName());
+            LOG.error("create Terminating Service Actions for {} failed due to {}", input.getDpid(), e);
+            result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, e.getMessage())
+                    .build());
         }
         return result;
     }
@@ -194,41 +207,49 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     @Override
     public Future<RpcResult<Void>> removeTerminatingServiceActions(final RemoveTerminatingServiceActionsInput input) {
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        try{
+        try {
             dataBroker.newWriteOnlyTransaction();
-            LOG.info("remove terminatingServiceAction on DpnId = {} for tunnel-key {}", input.getDpid() , input.getTunnelKey());
+            LOG.info("remove terminatingServiceAction on DpnId = {} for tunnel-key {}", input.getDpid(),
+                    input.getTunnelKey());
 
-            Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()),dataBroker);
+            Interface interfaceInfo = InterfaceManagerCommonUtils
+                    .getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()), dataBroker);
             IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
-            if(tunnelInfo != null) {
-                ListenableFuture<Void> removeFlowResult = tunnelInfo.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)?
-                        makeLFIBFlow(input.getDpid(),input.getTunnelKey(), null, NwConstants.DEL_FLOW) :
-                        makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(), null, NwConstants.DEL_FLOW);
-                Futures.addCallback(removeFlowResult, new FutureCallback<Void>(){
+            if (tunnelInfo != null) {
+                ListenableFuture<Void> removeFlowResult = tunnelInfo.getTunnelInterfaceType()
+                        .isAssignableFrom(TunnelTypeMplsOverGre.class)
+                                ? makeLFIBFlow(input.getDpid(), input.getTunnelKey(), null, NwConstants.DEL_FLOW)
+                                : makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(), null,
+                                        NwConstants.DEL_FLOW);
+                Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
 
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onSuccess(Void theVoid) {
                         result.set(RpcResultBuilder.<Void>success().build());
                     }
 
                     @Override
                     public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to install terminating service flow %s", input.getInterfaceName());
+                        String msg = String.format("Unable to install terminating service flow %s",
+                                input.getInterfaceName());
                         LOG.error("create terminating service actions failed. {}. {}", msg, error);
-                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
+                                .build());
                     }
                 });
                 result.set(RpcResultBuilder.<Void>success().build());
             } else {
-                String msg = String.format("Terminating Service Actions cannot be removed for a non-tunnel interface %s",
+                String msg = String.format(
+                        "Terminating Service Actions cannot be removed for a non-tunnel interface %s",
                         input.getInterfaceName());
                 LOG.error(msg);
                 result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg).build());
             }
-        }catch(Exception e){
-            LOG.error("Remove Terminating Service Actions for {} failed due to {}" ,input.getDpid(), e);
+        } catch (Exception e) {
+            LOG.error("Remove Terminating Service Actions for {} failed due to {}", input.getDpid(), e);
             String msg = String.format("Remove Terminating Service Actions for %d failed.", input.getDpid());
-            result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, e.getMessage()).build());
+            result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, e.getMessage())
+                    .build());
         }
         return result;
     }
@@ -238,40 +259,41 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         RpcResultBuilder<GetEndpointIpForDpnOutput> rpcResultBuilder;
         try {
             BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(input.getDpid());
-            InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier =
-                    InterfaceMetaUtils.getBridgeEntryIdentifier(bridgeEntryKey);
-            BridgeEntry bridgeEntry =
-                    InterfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryInstanceIdentifier,
-                            dataBroker);
-            // local ip of any of the bridge interface entry will be the dpn end point ip
+            InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = InterfaceMetaUtils
+                    .getBridgeEntryIdentifier(bridgeEntryKey);
+            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryInstanceIdentifier,
+                    dataBroker);
+            // local ip of any of the bridge interface entry will be the dpn end
+            // point ip
             BridgeInterfaceEntry bridgeInterfaceEntry = bridgeEntry.getBridgeInterfaceEntry().get(0);
             InterfaceKey interfaceKey = new InterfaceKey(bridgeInterfaceEntry.getInterfaceName());
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             IfTunnel tunnel = interfaceInfo.getAugmentation(IfTunnel.class);
-            GetEndpointIpForDpnOutputBuilder endpointIpForDpnOutput =
-                    new GetEndpointIpForDpnOutputBuilder().setLocalIps(
-                            Collections.singletonList(tunnel.getTunnelSource()));
+            GetEndpointIpForDpnOutputBuilder endpointIpForDpnOutput = new GetEndpointIpForDpnOutputBuilder()
+                    .setLocalIps(Collections.singletonList(tunnel.getTunnelSource()));
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(endpointIpForDpnOutput.build());
-        }catch(Exception e){
-            LOG.error("Retrieval of endpoint of for dpn {} failed due to {}" ,input.getDpid(), e);
+        } catch (Exception e) {
+            LOG.error("Retrieval of endpoint of for dpn {} failed due to {}", input.getDpid(), e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
-    public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(GetEgressInstructionsForInterfaceInput input) {
+    public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(
+            GetEgressInstructionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder;
         try {
-            List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(), input.getTunnelKey(), dataBroker, false);
-            GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder().
-                    setInstruction(instructions);
+            List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
+                    input.getTunnelKey(), dataBroker, false);
+            GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder()
+                    .setInstruction(instructions);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
-        }catch(Exception e){
-            LOG.error("Retrieval of egress instructions for the key {} failed due to {}",
-                input.getIntfName(), e.getMessage());
+        } catch (Exception e) {
+            LOG.error("Retrieval of egress instructions for the key {} failed due to {}", input.getIntfName(),
+                    e.getMessage());
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -285,12 +307,15 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
-                String errMsg = String.format("Retrieval of Interface Type for the key {%s} failed due to missing Interface in Config DataStore", interfaceName);
+                String errMsg = String.format("Retrieval of Interface Type for the key {%s} failed due to "
+                        + "missing Interface in Config DataStore", interfaceName);
                 LOG.error(errMsg);
-                rpcResultBuilder = RpcResultBuilder.<GetInterfaceTypeOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+                rpcResultBuilder = RpcResultBuilder.<GetInterfaceTypeOutput>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, errMsg);
                 return Futures.immediateFuture(rpcResultBuilder.build());
             }
-            GetInterfaceTypeOutputBuilder output = new GetInterfaceTypeOutputBuilder().setInterfaceType(interfaceInfo.getType());
+            GetInterfaceTypeOutputBuilder output = new GetInterfaceTypeOutputBuilder()
+                    .setInterfaceType(interfaceInfo.getType());
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
@@ -308,15 +333,18 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
-                String errMsg = String.format("Retrieval of Tunnel Type for the key {%s} failed due to missing Interface in Config DataStore", interfaceName);
+                String errMsg = String.format(
+                        "Retrieval of Tunnel Type for the key {%s} failed due to missing Interface in Config DataStore",
+                        interfaceName);
                 LOG.error(errMsg);
-                rpcResultBuilder = RpcResultBuilder.<GetTunnelTypeOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+                rpcResultBuilder = RpcResultBuilder.<GetTunnelTypeOutput>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, errMsg);
                 return Futures.immediateFuture(rpcResultBuilder.build());
             }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 IfTunnel tnl = interfaceInfo.getAugmentation(IfTunnel.class);
-                Class <? extends TunnelTypeBase> tun_type = tnl.getTunnelInterfaceType();
-                GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder().setTunnelType(tun_type);
+                Class<? extends TunnelTypeBase> tunType = tnl.getTunnelInterfaceType();
+                GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder().setTunnelType(tunType);
                 rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
             } else {
@@ -331,24 +359,24 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
-    public Future<RpcResult<GetEgressActionsForInterfaceOutput>> getEgressActionsForInterface(GetEgressActionsForInterfaceInput input) {
+    public Future<RpcResult<GetEgressActionsForInterfaceOutput>> getEgressActionsForInterface(
+            GetEgressActionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressActionsForInterfaceOutput> rpcResultBuilder;
         try {
             LOG.debug("Get Egress Action for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
-            List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
-                    input.getTunnelKey(), input.getActionKey(),
-                    dataBroker, false);
-            GetEgressActionsForInterfaceOutputBuilder output = new GetEgressActionsForInterfaceOutputBuilder().
-                    setAction(actionsList);
+            List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(), input.getTunnelKey(),
+                    input.getActionKey(), dataBroker, false);
+            GetEgressActionsForInterfaceOutputBuilder output = new GetEgressActionsForInterfaceOutputBuilder()
+                    .setAction(actionsList);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
-        }catch(Exception e){
-            LOG.error("Retrieval of egress actions for the key {} failed due to {}" ,input.getIntfName(), e.getMessage());
+        } catch (Exception e) {
+            LOG.error("Retrieval of egress actions for the key {} failed due to {}", input.getIntfName(),
+                    e.getMessage());
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
-
 
     @Override
     public Future<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
@@ -357,8 +385,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             BigInteger dpId = null;
             long portNo = 0;
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                    InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName,
+                            dataBroker);
             if (ifState != null) {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -366,37 +395,41 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
                 String phyAddress = ifState.getPhysAddress().getValue();
                 // FIXME Assuming portName and interfaceName are same
-                GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId).
-                        setPortname(interfaceName).setPortno(portNo).setPhyAddress(phyAddress);
+                GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId)
+                        .setPortname(interfaceName).setPortno(portNo).setPhyAddress(phyAddress);
                 rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
             } else {
                 rpcResultBuilder = getRpcErrorResultForGetPortRpc(interfaceName, "missing Interface state");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             rpcResultBuilder = getRpcErrorResultForGetPortRpc(interfaceName, e.getMessage());
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
-    private RpcResultBuilder<GetPortFromInterfaceOutput> getRpcErrorResultForGetPortRpc(String interfaceName, String errMsg) {
+    private RpcResultBuilder<GetPortFromInterfaceOutput> getRpcErrorResultForGetPortRpc(String interfaceName,
+            String errMsg) {
         errMsg = String.format("Retrieval of Port for the key {%s} failed due to %s", interfaceName, errMsg);
         LOG.error(errMsg);
-        RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder.<GetPortFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+        RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder
+                .<GetPortFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
         return rpcResultBuilder;
     }
 
     @Override
-    public Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> getNodeconnectorIdFromInterface(GetNodeconnectorIdFromInterfaceInput input) {
+    public Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> getNodeconnectorIdFromInterface(
+            GetNodeconnectorIdFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetNodeconnectorIdFromInterfaceOutput> rpcResultBuilder;
         try {
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                    InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
             String lowerLayerIf = ifState.getLowerLayerIf().get(0);
             NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
 
-            GetNodeconnectorIdFromInterfaceOutputBuilder output = new GetNodeconnectorIdFromInterfaceOutputBuilder().setNodeconnectorId(nodeConnectorId);
+            GetNodeconnectorIdFromInterfaceOutputBuilder output = new GetNodeconnectorIdFromInterfaceOutputBuilder()
+                    .setNodeconnectorId(nodeConnectorId);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
@@ -407,15 +440,19 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
-    public Future<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(GetInterfaceFromIfIndexInput input) {
+    public Future<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(
+            GetInterfaceFromIfIndexInput input) {
         Integer ifIndex = input.getIfIndex();
         RpcResultBuilder<GetInterfaceFromIfIndexOutput> rpcResultBuilder = null;
         try {
-            InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
-            Optional<IfIndexInterface> ifIndexesInterface = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
-            if(ifIndexesInterface.isPresent()) {
+            InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
+                    .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
+            Optional<IfIndexInterface> ifIndexesInterface = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id,
+                    dataBroker);
+            if (ifIndexesInterface.isPresent()) {
                 String interfaceName = ifIndexesInterface.get().getInterfaceName();
-                GetInterfaceFromIfIndexOutputBuilder output = new GetInterfaceFromIfIndexOutputBuilder().setInterfaceName(interfaceName);
+                GetInterfaceFromIfIndexOutputBuilder output = new GetInterfaceFromIfIndexOutputBuilder()
+                        .setInterfaceName(interfaceName);
                 rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
             }
@@ -431,14 +468,16 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         BigInteger dpnid = input.getDpid();
         RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = null;
         try {
-            InstanceIdentifier<DpnToInterface> id =
-                    InstanceIdentifier.builder(DpnToInterfaceList.class).child(DpnToInterface.class , new DpnToInterfaceKey(dpnid)).build();
+            InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
+                    .child(DpnToInterface.class, new DpnToInterfaceKey(dpnid)).build();
             Optional<DpnToInterface> entry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
             if (entry.isPresent()) {
                 List<InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
                 if (interfaceNameEntries != null && !interfaceNameEntries.isEmpty()) {
-                    List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName).collect(Collectors.toList());
-                    GetDpnInterfaceListOutputBuilder output = new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList);
+                    List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName)
+                            .collect(Collectors.toList());
+                    GetDpnInterfaceListOutputBuilder output = new GetDpnInterfaceListOutputBuilder()
+                            .setInterfacesList(interfaceList);
                     rpcResultBuilder = RpcResultBuilder.success();
                     rpcResultBuilder.withResult(output.build());
                 }
@@ -465,14 +504,13 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return null;
     }
 
-    private ListenableFuture<Void> makeTerminatingServiceFlow(IfTunnel tunnelInfo, BigInteger dpnId, BigInteger tunnelKey, List<Instruction> instruction, int addOrRemove) {
+    private ListenableFuture<Void> makeTerminatingServiceFlow(IfTunnel tunnelInfo, BigInteger dpnId,
+            BigInteger tunnelKey, List<Instruction> instruction, int addOrRemove) {
         List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] {tunnelKey}));
-        short tableId = tunnelInfo.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE :
-                NwConstants.EXTERNAL_TUNNEL_TABLE;
-        final String flowRef = getFlowRef(dpnId,tableId, tunnelKey);
-        Flow terminatingSerFlow = MDSALUtil.buildFlowNew(tableId, flowRef,
-                5, "TST Flow Entry", 0, 0,
+        mkMatches.add(new MatchInfo(MatchFieldType.tunnel_id, new BigInteger[] { tunnelKey }));
+        short tableId = tunnelInfo.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.EXTERNAL_TUNNEL_TABLE;
+        final String flowRef = getFlowRef(dpnId, tableId, tunnelKey);
+        Flow terminatingSerFlow = MDSALUtil.buildFlowNew(tableId, flowRef, 5, "TST Flow Entry", 0, 0,
                 IfmConstants.TUNNEL_TABLE_COOKIE.add(tunnelKey), mkMatches, instruction);
         if (addOrRemove == NwConstants.ADD_FLOW) {
             return mdsalMgr.installFlow(dpnId, terminatingSerFlow);
@@ -481,17 +519,16 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return mdsalMgr.removeFlow(dpnId, terminatingSerFlow);
     }
 
-    private ListenableFuture<Void> makeLFIBFlow(BigInteger dpnId, BigInteger tunnelKey, List<Instruction> instruction, int addOrRemove) {
+    private ListenableFuture<Void> makeLFIBFlow(BigInteger dpnId, BigInteger tunnelKey, List<Instruction> instruction,
+            int addOrRemove) {
         List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(new MatchInfo(MatchFieldType.eth_type,
-                new long[]{0x8847L}));
-        mkMatches.add(new MatchInfo(MatchFieldType.mpls_label, new String[]{Long.toString(tunnelKey.longValue())}));
+        mkMatches.add(new MatchInfo(MatchFieldType.eth_type, new long[] { 0x8847L }));
+        mkMatches.add(new MatchInfo(MatchFieldType.mpls_label, new String[] { Long.toString(tunnelKey.longValue()) }));
         // Install the flow entry in L3_LFIB_TABLE
         String flowRef = getFlowRef(dpnId, NwConstants.L3_LFIB_TABLE, tunnelKey);
 
-        Flow lfibFlow = MDSALUtil.buildFlowNew(NwConstants.L3_LFIB_TABLE, flowRef,
-                IfmConstants.DEFAULT_FLOW_PRIORITY, "LFIB Entry", 0, 0,
-                IfmConstants.COOKIE_VM_LFIB_TABLE, mkMatches, instruction);
+        Flow lfibFlow = MDSALUtil.buildFlowNew(NwConstants.L3_LFIB_TABLE, flowRef, IfmConstants.DEFAULT_FLOW_PRIORITY,
+                "LFIB Entry", 0, 0, IfmConstants.COOKIE_VM_LFIB_TABLE, mkMatches, instruction);
         if (addOrRemove == NwConstants.ADD_FLOW) {
             return mdsalMgr.installFlow(dpnId, lfibFlow);
         }
@@ -499,7 +536,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     private String getFlowRef(BigInteger dpnId, short tableId, BigInteger tunnelKey) {
-        return IfmConstants.TUNNEL_TABLE_FLOWID_PREFIX + dpnId + NwConstants.FLOWID_SEPARATOR +
-                tableId + NwConstants.FLOWID_SEPARATOR + tunnelKey;
+        return IfmConstants.TUNNEL_TABLE_FLOWID_PREFIX + dpnId + NwConstants.FLOWID_SEPARATOR + tableId
+                + NwConstants.FLOWID_SEPARATOR + tunnelKey;
     }
 }

@@ -62,7 +62,7 @@ public class OvsInterfaceConfigUpdateHelper{
         }
 
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        if(TunnelMonitoringAttributesModified(interfaceOld, interfaceNew)){
+        if(tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)){
             handleTunnelMonitorUpdates(futures, transaction, alivenessMonitorService, interfaceNew,
                     interfaceOld, dataBroker);
             return futures;
@@ -94,8 +94,8 @@ public class OvsInterfaceConfigUpdateHelper{
         if (checkAugmentations(ifTunnelOld,ifTunnelNew)) {
             if(!ifTunnelNew.getTunnelDestination().equals(ifTunnelOld.getTunnelDestination()) ||
                     !ifTunnelNew.getTunnelSource().equals(ifTunnelOld.getTunnelSource()) ||
-                    ( ifTunnelNew.getTunnelGateway() !=null && ifTunnelOld.getTunnelGateway() !=null &&
-                            !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway()))) {
+                    ifTunnelNew.getTunnelGateway() !=null && ifTunnelOld.getTunnelGateway() !=null &&
+                            !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway())) {
                 return true;
             }
         }
@@ -103,7 +103,7 @@ public class OvsInterfaceConfigUpdateHelper{
         return false;
     }
 
-    private static boolean TunnelMonitoringAttributesModified(Interface interfaceOld, Interface interfaceNew) {
+    private static boolean tunnelMonitoringAttributesModified(Interface interfaceOld, Interface interfaceNew) {
         IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
         IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
         return checkAugmentations(ifTunnelOld, ifTunnelNew);
@@ -114,8 +114,8 @@ public class OvsInterfaceConfigUpdateHelper{
      * As of now internal vxlan tunnels use LLDP monitoring and external tunnels use BFD monitoring.
      */
     private static void handleTunnelMonitorUpdates(List<ListenableFuture<Void>> futures, WriteTransaction transaction,
-                                                   AlivenessMonitorService alivenessMonitorService,
-                                                   Interface interfaceNew, Interface interfaceOld, DataBroker dataBroker){
+            AlivenessMonitorService alivenessMonitorService, Interface interfaceNew, Interface interfaceOld,
+            DataBroker dataBroker) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
         // update termination point on switch, if switch is connected
         BridgeRefEntry bridgeRefEntry =
@@ -138,7 +138,7 @@ public class OvsInterfaceConfigUpdateHelper{
         OperStatus operStatus = InterfaceManagerCommonUtils.updateStateEntry(interfaceNew, dataBroker, transaction, ifState);
 
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
-        if (ifL2vlan == null || (IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode())) {
+        if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
 
@@ -155,9 +155,9 @@ public class OvsInterfaceConfigUpdateHelper{
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private static<T> boolean checkAugmentations(T oldAug, T newAug) {
-        if ((oldAug != null && newAug == null) ||
-                (oldAug == null && newAug != null)) {
+    private static <T> boolean checkAugmentations(T oldAug, T newAug) {
+        if (oldAug != null && newAug == null
+                || oldAug == null && newAug != null) {
             return true;
         }
 
@@ -166,11 +166,11 @@ public class OvsInterfaceConfigUpdateHelper{
 
     private static class VlanMemberStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
 
-        private DataBroker dataBroker;
-        private OperStatus operStatus;
-        private List<InterfaceChildEntry> interfaceChildEntries;
+        private final DataBroker dataBroker;
+        private final OperStatus operStatus;
+        private final List<InterfaceChildEntry> interfaceChildEntries;
 
-        public VlanMemberStateUpdateWorker(DataBroker dataBroker, OperStatus operStatus,
+        VlanMemberStateUpdateWorker(DataBroker dataBroker, OperStatus operStatus,
                 List<InterfaceChildEntry> interfaceChildEntries) {
             this.dataBroker = dataBroker;
             this.operStatus = operStatus;

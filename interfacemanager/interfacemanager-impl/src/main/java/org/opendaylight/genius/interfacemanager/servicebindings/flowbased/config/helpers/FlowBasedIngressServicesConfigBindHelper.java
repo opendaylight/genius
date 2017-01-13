@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -39,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServicesConfigAddable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigBindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
+    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigAddable flowBasedIngressServicesAddable;
 
     private FlowBasedIngressServicesConfigBindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -50,7 +49,8 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         if (flowBasedIngressServicesAddable == null) {
             synchronized (FlowBasedIngressServicesConfigBindHelper.class) {
                 if (flowBasedIngressServicesAddable == null) {
-                    flowBasedIngressServicesAddable = new FlowBasedIngressServicesConfigBindHelper(interfaceMgrProvider);
+                    flowBasedIngressServicesAddable = new FlowBasedIngressServicesConfigBindHelper(
+                            interfaceMgrProvider);
                 }
             }
         }
@@ -67,16 +67,18 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         return flowBasedIngressServicesAddable;
     }
 
+    @Override
     public List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
                                                            BoundServices boundServiceNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         String interfaceName =
                 InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
+                .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
             LOG.warn("Interface not up, not Binding Service for Interface: {}", interfaceName);
             return futures;
@@ -84,7 +86,8 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
 
         // Get the Parent ServiceInfo
 
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode, dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
+                dataBroker);
         if (servicesInfo == null) {
             LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
             return futures;
@@ -95,7 +98,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
             LOG.error("Reached Impossible part 2 in the code during bind service for: {}", boundServiceNew);
             return futures;
         }
-        if(ifState.getType() == null) {
+        if (ifState.getType() == null) {
             return futures;
         }
         // Split based on type of interface...
@@ -107,8 +110,10 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnTunnel(BoundServices boundServiceNew, List<BoundServices> allServices,
-                                                                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState, DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> bindServiceOnTunnel(BoundServices boundServiceNew,
+            List<BoundServices> allServices,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
@@ -118,7 +123,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         if (allServices.size() == 1) {
             // If only one service present, install instructions in table 0.
             List<MatchInfo> matches = null;
-            matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable (dpId, portNo);
+            matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
             FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, boundServiceNew,
                     transaction, matches, ifState.getIfIndex(), NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
             if (transaction != null) {
@@ -145,18 +150,20 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
 
         if (!isCurrentServiceHighestPriority) {
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction,
-                    ifState.getIfIndex(), boundServiceNew.getServicePriority(), (short) (boundServiceNew.getServicePriority()+1));
+                    ifState.getIfIndex(), boundServiceNew.getServicePriority(),
+                    (short) (boundServiceNew.getServicePriority() + 1));
         } else {
             BoundServices serviceToReplace = tmpServicesMap.get(highestPriority);
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, serviceToReplace, ifState.getName(), transaction,
-                    ifState.getIfIndex(), serviceToReplace.getServicePriority(), (short) (serviceToReplace.getServicePriority()+1));
+                    ifState.getIfIndex(), serviceToReplace.getServicePriority(),
+                    (short) (serviceToReplace.getServicePriority() + 1));
             List<MatchInfo> matches = null;
-            matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable (dpId, portNo);
+            matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
 
             if (matches != null) {
-
                 WriteTransaction removeFlowTransaction = dataBroker.newWriteOnlyTransaction();
-                FlowBasedServicesUtils.removeIngressFlow(iface.getName(), serviceToReplace, dpId, removeFlowTransaction);
+                FlowBasedServicesUtils.removeIngressFlow(iface.getName(), serviceToReplace, dpId,
+                        removeFlowTransaction);
                 futures.add(removeFlowTransaction.submit());
 
                 WriteTransaction installFlowTransaction = dataBroker.newWriteOnlyTransaction();
@@ -172,23 +179,29 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnVlan(BoundServices boundServiceNew, List<BoundServices> allServices,
-                                                                  org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState, DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> bindServiceOnVlan(BoundServices boundServiceNew,
+            List<BoundServices> allServices,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifState);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("binding service for vlan port: {}", ifState.getName());
         if (allServices.size() == 1) {
-            //calling LportDispatcherTableForService with current service index as 0 and next service index as some value since this is the only service bound.
-            FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(),
-                    transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX,(short) (boundServiceNew.getServicePriority() + 1));
+            // calling LportDispatcherTableForService with current service index
+            // as 0 and next service index as some value since this is the only
+            // service bound.
+            FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction,
+                    ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX,
+                    (short) (boundServiceNew.getServicePriority() + 1));
             if (transaction != null) {
                 futures.add(transaction.submit());
             }
             return futures;
         }
         allServices.remove(boundServiceNew);
-        BoundServices[] highLowPriorityService = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, boundServiceNew);
+        BoundServices[] highLowPriorityService = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices,
+                boundServiceNew);
         BoundServices low = highLowPriorityService[0];
         BoundServices high = highLowPriorityService[1];
         BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(allServices);
@@ -199,9 +212,13 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
             if (low.equals(highest)) {
                 //In this case the match criteria of existing service should be changed.
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, low)[0];
-                short lowerServiceIndex = (short) ((lower!=null) ? lower.getServicePriority() : low.getServicePriority() + 1);
-                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", low, low.getServicePriority(), lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId,low, ifState.getName(), transaction, ifState.getIfIndex(),low.getServicePriority(), lowerServiceIndex);
+                short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
+                        : low.getServicePriority() + 1);
+                LOG.trace("Installing table 17 entry for existing service {} service match on "
+                        + "service index {} update with service index {}",
+                        low, low.getServicePriority(), lowerServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifState.getName(), transaction,
+                        ifState.getIfIndex(), low.getServicePriority(), lowerServiceIndex);
             } else {
                 currentServiceIndex = boundServiceNew.getServicePriority();
             }
@@ -209,15 +226,23 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         if (high != null) {
             currentServiceIndex = boundServiceNew.getServicePriority();
             if (high.equals(highest)) {
-                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
+                LOG.trace("Installing table 17 entry for existing service {} service match on "
+                        + "service index {} update with service index {}",
+                        high, NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction,
+                        ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
             } else {
-                LOG.trace("Installing table 17 entry for existing service {} service match on service index {} update with service index {}", high, high.getServicePriority(), currentServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction, ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex);
+                LOG.trace("Installing table 17 entry for existing service {} service match on "
+                        + "service index {} update with service index {}",
+                        high, high.getServicePriority(), currentServiceIndex);
+                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction,
+                        ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex);
             }
         }
-        LOG.trace("Installing table 17 entry for new service match on service index {} update with service index {}", currentServiceIndex, nextServiceIndex);
-        FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction, ifState.getIfIndex(), currentServiceIndex, nextServiceIndex);
+        LOG.trace("Installing table 17 entry for new service match on service index {} update with service index {}",
+                currentServiceIndex, nextServiceIndex);
+        FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction,
+                ifState.getIfIndex(), currentServiceIndex, nextServiceIndex);
         futures.add(transaction.submit());
         return futures;
     }

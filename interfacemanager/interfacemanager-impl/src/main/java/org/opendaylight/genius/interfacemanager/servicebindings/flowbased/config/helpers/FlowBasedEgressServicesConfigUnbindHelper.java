@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
@@ -34,7 +33,7 @@ import java.util.List;
 public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigUnbindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
+    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigRemovable flowBasedEgressServicesRemovable;
 
     private FlowBasedEgressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -45,7 +44,8 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         if (flowBasedEgressServicesRemovable == null) {
             synchronized (FlowBasedEgressServicesConfigUnbindHelper.class) {
                 if (flowBasedEgressServicesRemovable == null) {
-                    flowBasedEgressServicesRemovable = new FlowBasedEgressServicesConfigUnbindHelper(interfaceMgrProvider);
+                    flowBasedEgressServicesRemovable = new FlowBasedEgressServicesConfigUnbindHelper(
+                            interfaceMgrProvider);
                 }
             }
         }
@@ -58,23 +58,26 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         return flowBasedEgressServicesRemovable;
     }
 
+    @Override
     public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                                             BoundServices boundServiceOld) {
+            BoundServices boundServiceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         String interfaceName =
                 InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
+                .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
         // Get the Parent ServiceInfo
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode, dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
+                dataBroker);
         if (servicesInfo == null) {
             LOG.error("Reached Impossible part in the code for bound service: {}", boundServiceOld);
             return futures;
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
             LOG.info("Not unbinding Service since operstatus is DOWN for Interface: {}", interfaceName);
             return futures;
@@ -90,20 +93,21 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(
-            BoundServices boundServiceOld,
-            List<BoundServices> boundServices, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState,
-            DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
+            List<BoundServices> boundServices,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifaceState, DataBroker dataBroker) {
 
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifaceState.getName(), dataBroker);
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifaceState);
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
-            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, t, NwConstants.DEFAULT_SERVICE_INDEX);
-            if (t != null) {
-                futures.add(t.submit());
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, tx,
+                    NwConstants.DEFAULT_SERVICE_INDEX);
+            if (tx != null) {
+                futures.add(tx.submit());
             }
             return futures;
         }
@@ -112,32 +116,40 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         BoundServices high = highLow[1];
         // This means the one removed was the highest priority service
         if (high == null) {
-            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, t, NwConstants.DEFAULT_SERVICE_INDEX);
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, tx,
+                    NwConstants.DEFAULT_SERVICE_INDEX);
             if (low != null) {
                 //delete the lower services flow entry.
-                FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), low, t, low.getServicePriority());
+                FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), low, tx,
+                        low.getServicePriority());
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
-                short lowerServiceIndex = (short) ((lower!=null) ? lower.getServicePriority() : low.getServicePriority() + 1);
-                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, ifaceState.getName(), t, ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
+                short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
+                        : low.getServicePriority() + 1);
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, ifaceState.getName(), tx,
+                        ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
             }
         } else {
-            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, t, boundServiceOld.getServicePriority());
-            short lowerServiceIndex = (short) ((low!=null) ? low.getServicePriority() : boundServiceOld.getServicePriority() + 1);
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, tx,
+                    boundServiceOld.getServicePriority());
+            short lowerServiceIndex = (short) (low != null ? low.getServicePriority()
+                    : boundServiceOld.getServicePriority() + 1);
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
             if (high.equals(highest)) {
-                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifaceState.getName(), tx,
+                        ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
             } else {
-                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifaceState.getName(),t, ifaceState.getIfIndex(), high.getServicePriority(), lowerServiceIndex, iface);
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifaceState.getName(), tx,
+                        ifaceState.getIfIndex(), high.getServicePriority(), lowerServiceIndex, iface);
             }
         }
-        futures.add(t.submit());
+        futures.add(tx.submit());
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(
-            BoundServices boundServiceOld,
-            List<BoundServices> boundServices, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState,
-            DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
+            List<BoundServices> boundServices,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         // FIXME : not yet supported

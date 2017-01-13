@@ -11,7 +11,9 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateUnbindHelper;
 
 public class FlowBasedIngressServicesStateRendererFactory extends FlowBasedServicesStateRendererFactory {
-    private static FlowBasedServicesStateRendererFactory ingressServicesStateRendererFactory = new FlowBasedIngressServicesStateRendererFactory();
+
+    private static FlowBasedServicesStateRendererFactory ingressServicesStateRendererFactory
+        = new FlowBasedIngressServicesStateRendererFactory();
 
     @Override
     public FlowBasedServicesStateAddable getFlowBasedServicesStateAddRenderer() {
