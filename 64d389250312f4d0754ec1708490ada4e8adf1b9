@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_d3484bb5",
+        "filename": "docs/specs/gre-tunnel-monitor-using-bfd.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-13T10:28:05Z",
+      "side": 1,
+      "message": "This is not possible in OVSDB till OVS already supports it. We don\u0027t add parameters to OVSDB till they are already available in openvswitch schema.",
+      "range": {
+        "startLine": 77,
+        "startChar": 87,
+        "endLine": 77,
+        "endChar": 112
+      },
+      "revId": "64d389250312f4d0754ec1708490ada4e8adf1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
