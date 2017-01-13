@@ -13,6 +13,8 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Guice wiring module which binds a {@link TestableDataTreeChangeListener} as
@@ -22,6 +24,8 @@ import org.opendaylight.genius.datastoreutils.ChainableDataTreeChangeListener;
  * @author Michael Vorburger
  */
 public class TestableDataTreeChangeListenerModule extends AbstractModule {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestableDataTreeChangeListenerModule.class);
 
     @Override
     protected void configure() {
@@ -37,6 +41,7 @@ public class TestableDataTreeChangeListenerModule extends AbstractModule {
                 ChainableDataTreeChangeListener chainableListener
                     = (ChainableDataTreeChangeListener) injector.getInstance(key);
                 chainableListener.addAfterListener(testableDataTreeChangeListener);
+                LOG.info("AsyncEventsWaiter: {}", chainableListener);
             }
         }
         return testableDataTreeChangeListener;
