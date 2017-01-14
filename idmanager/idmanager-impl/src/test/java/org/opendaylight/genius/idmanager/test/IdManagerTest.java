@@ -471,6 +471,7 @@ public class IdManagerTest {
         Set<Long> idSet = new CopyOnWriteArraySet<>();
         requestIdsConcurrently(latch, numberOfTasks, idSet);
         latch.await();
+        Thread.sleep(2000);
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
             IdPool pool = (IdPool) dataObject;
