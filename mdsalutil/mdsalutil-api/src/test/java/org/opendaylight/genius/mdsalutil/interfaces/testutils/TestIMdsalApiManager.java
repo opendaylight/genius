@@ -7,7 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
 import com.google.common.collect.ImmutableList;
@@ -62,13 +64,52 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
+        checkNonEmptyFlows(expectedFlows);
         List<FlowEntity> nonNullFlows = getOrNewFlows();
         if (!Iterables.isEmpty(expectedFlows)) {
             assertTrue("No Flows created (bean wiring may be broken?)", !nonNullFlows.isEmpty());
         }
         // TODO Support Iterable <-> List directly within XtendBeanGenerator
         List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
-        AssertDataObjects.assertEqualBeans(expectedFlowsAsNewArrayList, nonNullFlows);
+        assertEqualBeans(expectedFlowsAsNewArrayList, nonNullFlows);
+    }
+
+
+    private synchronized void checkNonEmptyFlows(Iterable<FlowEntity> expectedFlows) {
+        if (!Iterables.isEmpty(expectedFlows)) {
+            assertTrue("No Flows created (bean wiring may be broken?)", !getOrNewFlows().isEmpty());
+        }
+    }
+
+    public synchronized void assertFlowsInAnyOrder(Iterable<FlowEntity> expectedFlows) {
+        checkNonEmptyFlows(expectedFlows);
+        // TODO Support Iterable <-> List directly within XtendBeanGenerator
+        List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
+
+        // FYI: This containsExactlyElementsIn() assumes that FlowEntity, and everything in it,
+        // has correctly working equals() implementations.  assertEqualBeans() does not assume
+        // that, and would work even without equals, because it only uses property reflection.
+        // Normally this will lead to the same result, but if one day it doesn't (because of
+        // a bug in an equals() implementation somewhere), then it's worth to keep this diff
+        // in mind.
+
+        // FTR: This use of G Truth and then catch AssertionError and using assertEqualBeans iff NOK
+        // (thus discarding the message from G Truth) is a bit of a hack, but it works well...
+        // If you're tempted to improve this, please remember that correctly re-implementing
+        // containsExactlyElementsIn (or Hamcrest's similar containsInAnyOrder) isn't a 1 line
+        // trivia... e.g. a.containsAll(b) && b.containsAll(a) isn't sufficient, because it
+        // won't work for duplicates (which we frequently have here); and ordering before is
+        // not viable because FlowEntity is not Comparable, and Comparator based on hashCode
+        // is not a good idea (different instances can have same hashCode), and e.g. on
+        // System#identityHashCode even less so.
+        try {
+            assertThat(flows).containsExactlyElementsIn(expectedFlowsAsNewArrayList);
+        } catch (AssertionError e) {
+            // The point of this is basically just that our assertEqualBeans output,
+            // in case of a comparison failure, is *A LOT* more clearly readable
+            // than what G Truth (or Hamcrest) can do based on toString.
+            assertEqualBeans(expectedFlowsAsNewArrayList, flows);
+        }
     }
 
     @Override
