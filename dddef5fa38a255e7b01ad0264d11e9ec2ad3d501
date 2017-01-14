@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_bf962e4a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-14T02:44:57Z",
+      "side": 1,
+      "message": "mix up; clarified; done",
+      "parentUuid": "1a622d24_842714b6",
+      "revId": "dddef5fa38a255e7b01ad0264d11e9ec2ad3d501",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_e43528dc",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-12-14T16:47:14Z",
       "side": 1,
       "message": "If this is really an issue the fix is still racy since the flows may change *while* ImmutableList is copying them. If the list of flows is being changed in parallel, the only sure fix is to use appropriate concurrency features (synchronized or data structures with well-defined concurrency semantics).\n\nThe issue being fixed here isn\u0027t clear though (which suggests the commit message needs to be improved ;-).",
+      "revId": "dddef5fa38a255e7b01ad0264d11e9ec2ad3d501",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9f93725a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-14T02:44:57Z",
+      "side": 1,
+      "message": "Better now? For code review, assume that getFlows() is, about to become, private.",
+      "parentUuid": "1a622d24_e43528dc",
       "revId": "dddef5fa38a255e7b01ad0264d11e9ec2ad3d501",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
