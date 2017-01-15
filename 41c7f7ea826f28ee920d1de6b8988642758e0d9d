@@ -16,6 +16,24 @@
       "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f51a876d",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-15T16:38:58Z",
+      "side": 1,
+      "message": "Tali, ingress service binding support is already there. Though we are trying to enhance the pipeline by making everything dispatch from Table 17. With the current code, if you bind a service on tunnel with goto table 36, it will work...but if there are multiple services bound on the same tunnel, you should make sure that the application table miss should be to Table 17..",
+      "parentUuid": "1a622d24_3a918c47",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
