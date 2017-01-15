@@ -33,6 +33,24 @@
       "revId": "7a33e1282447a99295878af6730a54e2fb05a05a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9a5c204d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-15T15:58:45Z",
+      "side": 1,
+      "message": "mm why is that? shouldn\u0027t we lock on what we\u0027re writing to, which is the interface itself? the parent is just the value..",
+      "parentUuid": "1a622d24_3a622c3e",
+      "revId": "7a33e1282447a99295878af6730a54e2fb05a05a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
