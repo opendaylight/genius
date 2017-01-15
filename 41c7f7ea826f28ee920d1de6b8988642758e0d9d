@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_3a918c47",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-15T10:36:34Z",
+      "side": 1,
+      "message": "Could you detail the status of ingress service binding for tunnels? it seems like the code is already there but it\u0027s simply not used\nIf this is the case, would it make sense to create a default ingress service for tunnel interfaces to simply direct the ingress traffic from the tunnel to the ingress tunnel table (36)? it would not make much of a difference for current applications but would allow binding additional higher-priority services such as tap on tunnel interfaces",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
