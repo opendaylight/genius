@@ -34,6 +34,24 @@
       "revId": "6b1fb47daf43275b1b33da4ac9b8b9b8b11dc71d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d99d050c",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-16T10:55:08Z",
+      "side": 1,
+      "message": "I was thinking more of the null-check. You\u0027re right, exposing the internal list is bad, but we can check for abuses of that — it\u0027s harder to check for synchronisation abuses.",
+      "parentUuid": "1a622d24_798f912a",
+      "revId": "6b1fb47daf43275b1b33da4ac9b8b9b8b11dc71d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
