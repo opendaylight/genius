@@ -30,7 +30,7 @@ public class ActionNxResubmit extends ActionInfo {
     }
 
     public ActionNxResubmit(int actionKey, short table) {
-        super(ActionType.nx_resubmit, new String[0], actionKey);
+        super(ActionType.nx_resubmit, new String[] {Short.toString(table)}, actionKey);
         this.table = table;
     }
 
