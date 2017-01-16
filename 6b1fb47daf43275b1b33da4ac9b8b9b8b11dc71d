@@ -16,6 +16,24 @@
       "revId": "6b1fb47daf43275b1b33da4ac9b8b9b8b11dc71d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_798f912a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-16T10:05:26Z",
+      "side": 1,
+      "message": "OK, done, because you insist.. ;-) BUT based on my (limited; eager to learn more) understanding of concurrency, as-is was broken either way, with or without synchronized, because we can\u0027t/shouldn\u0027t expose the internal List (simple ArrayList) like this.. agreed, or am I getting this wrong?  Instead of about to make getFlows() \u0027private\u0027 anyway, we can keep it, but then return ImmutableList.copyOf() - see current version, OK for you like this?",
+      "parentUuid": "1a622d24_955cf34c",
+      "revId": "6b1fb47daf43275b1b33da4ac9b8b9b8b11dc71d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
