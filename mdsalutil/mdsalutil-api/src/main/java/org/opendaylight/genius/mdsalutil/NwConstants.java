@@ -108,7 +108,8 @@ public final class NwConstants {
     public static final short L3_GW_MAC_TABLE = 19;
     public static final short L3_LFIB_TABLE = 20;
     public static final short L3_FIB_TABLE = 21;
-    public static final short L3_SUBNET_ROUTE_TABLE=22;
+    public static final short L3_SUBNET_ROUTE_TABLE = 22;
+    public static final short L3VNI_EXTERNAL_TUNNEL_DEMUX_TABLE = 23;
     public static final short PDNAT_TABLE = 25;
     public static final short PSNAT_TABLE = 26;
     public static final short DNAT_TABLE = 27;
