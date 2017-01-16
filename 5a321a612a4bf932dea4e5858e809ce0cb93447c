@@ -16,6 +16,24 @@
       "revId": "5a321a612a4bf932dea4e5858e809ce0cb93447c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7c32df5f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 6365
+      },
+      "writtenOn": "2017-01-16T13:29:39Z",
+      "side": 1,
+      "message": "Hi Faseela, please take a look at the following review. We have a NPE because that review iterate over all interfaces, and some of them don\u0027t have a lport defined.\nhttps://git.opendaylight.org/gerrit/#/c/49093/11/vpnservice/elanmanager/elanmanager-impl/src/main/java/org/opendaylight/netvirt/elan/internal/InterfaceStateToTransportZoneListener.java@66",
+      "parentUuid": "1a622d24_5c2e0d44",
+      "revId": "5a321a612a4bf932dea4e5858e809ce0cb93447c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
