@@ -16,6 +16,24 @@
       "revId": "ad0e18bba3533d11c638f77028b2d9366658add0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_19601d00",
+        "filename": "fcapsmanager/alarmmanager/src/main/java/org/opendaylight/genius/fcapsmanager/alarmmanager/AlarmNotificationListeners.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-16T11:12:48Z",
+      "side": 1,
+      "message": "personally I would not.. if they are used only once, it makes the code harder to read IMHO.  I usually only start using constants for strings when used more than once.",
+      "parentUuid": "1a622d24_397cf9b4",
+      "revId": "ad0e18bba3533d11c638f77028b2d9366658add0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
