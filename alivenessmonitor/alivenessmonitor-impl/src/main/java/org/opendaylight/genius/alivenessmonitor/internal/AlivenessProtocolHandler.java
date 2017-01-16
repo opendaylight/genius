@@ -8,8 +8,8 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import org.opendaylight.controller.liblldp.Packet;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 
 /**
  * Protocol specific Handler interface defined by the Aliveness monitor service

@@ -8,8 +8,6 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.primitives.UnsignedBytes;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.InterfaceMonitorMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorConfigs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfiles;
