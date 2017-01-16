@@ -43,4 +43,22 @@ public class InstructionWriteMetadata extends InstructionInfo {
                 .setKey(new InstructionKey(instructionKey))
                 .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        InstructionWriteMetadata that = (InstructionWriteMetadata) o;
+
+        if (metadata != null ? !metadata.equals(that.metadata) : that.metadata != null) return false;
+        return mask != null ? mask.equals(that.mask) : that.mask == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = metadata != null ? metadata.hashCode() : 0;
+        result = 31 * result + (mask != null ? mask.hashCode() : 0);
+        return result;
+    }
 }
