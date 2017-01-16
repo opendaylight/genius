@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_0239c6d6",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/datastoreutils/testutils/tests/AbstractTestableListenerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-16T16:57:44Z",
+      "side": 1,
+      "message": "Shouldn\u0027t there be assertions here? E.g. at the end of each try block, to assert a failure if we don\u0027t get an exception?",
+      "revId": "faf558325258cfa06e7355e9ff8f703cfa285ad7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
