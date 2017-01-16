@@ -41,4 +41,19 @@ public abstract class AbstractActionInfoList {
         }
         return actions;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractActionInfoList that = (AbstractActionInfoList) o;
+
+        return actionInfos != null ? actionInfos.equals(that.actionInfos) : that.actionInfos == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return actionInfos != null ? actionInfos.hashCode() : 0;
+    }
 }

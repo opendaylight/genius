@@ -39,4 +39,19 @@ public class InstructionGotoTable extends InstructionInfo {
                 .setKey(new InstructionKey(instructionKey))
                 .build();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        InstructionGotoTable that = (InstructionGotoTable) o;
+
+        return tableId == that.tableId;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) tableId;
+    }
 }
