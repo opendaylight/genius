@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_7c065f1e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-16T14:27:01Z",
+      "side": 1,
+      "message": "Anyone?",
+      "revId": "88fac1eadf51dce4f6b5cdb94e91f073a669b495",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
