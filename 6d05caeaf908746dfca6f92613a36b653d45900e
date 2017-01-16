@@ -16,6 +16,24 @@
       "revId": "6d05caeaf908746dfca6f92613a36b653d45900e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_196f7d2c",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/datastoreutils/TestDataStoreJobCoordinator.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-16T10:26:30Z",
+      "side": 1,
+      "message": "\u003e when a job is currently under execution, the job cannot be found in the queue. What we need is a mechanism to wait till the job finishes execution. \n\nhttps://git.opendaylight.org/gerrit/#/c/49529/ is better (please reply on email list; I\u0027ll not get notified / not read comments on closed gerrits)\n\n\u003e in such a scenario, how different is this from the normal Thread.sleep() what we have put in individual tests?\n\nwell anything we do which is \"smarter\" to wait just helps to get tests to run faster (which is important) than a dumb \"lets wait long enough to be sure\" kind of approach.  The Thread.sleep() \"works\", of course - but you never know just how long to sleep, and if it\u0027s too much you slow down test execution, and if it\u0027s too little it\u0027s flaky.  That\u0027s why I\u0027m working on getting a better general solution.",
+      "parentUuid": "3a65312a_174cc46f",
+      "revId": "6d05caeaf908746dfca6f92613a36b653d45900e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
