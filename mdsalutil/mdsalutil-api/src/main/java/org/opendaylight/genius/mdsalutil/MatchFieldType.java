@@ -90,7 +90,14 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
             }
 
-            ethernetMatchBuilder.setEthernetSource(new EthernetSourceBuilder().setAddress(
+            EthernetSourceBuilder ethernetSourceBuilder = new EthernetSourceBuilder();
+
+            if (matchInfo.getStringMatchValues().length > 1)
+            {
+                ethernetSourceBuilder.setMask(new MacAddress(matchInfo.getStringMatchValues()[1])).build();
+            }
+
+            ethernetMatchBuilder.setEthernetSource(ethernetSourceBuilder.setAddress(
                     new MacAddress(matchInfo.getStringMatchValues()[0])).build());
         }
 
@@ -121,7 +128,14 @@ public enum MatchFieldType {
                 mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
             }
 
-            ethernetMatchBuilder.setEthernetDestination(new EthernetDestinationBuilder().setAddress(
+            EthernetDestinationBuilder ethernetDestinationBuilder = new EthernetDestinationBuilder();
+
+            if (matchInfo.getStringMatchValues().length > 1)
+            {
+                ethernetDestinationBuilder.setMask(new MacAddress(matchInfo.getStringMatchValues()[1])).build();
+            }
+
+            ethernetMatchBuilder.setEthernetDestination(ethernetDestinationBuilder.setAddress(
                     new MacAddress(matchInfo.getStringMatchValues()[0])).build());
         }
 
