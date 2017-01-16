@@ -34,6 +34,24 @@
       "revId": "ad0e18bba3533d11c638f77028b2d9366658add0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_59045517",
+        "filename": "fcapsmanager/alarmmanager/src/main/java/org/opendaylight/genius/fcapsmanager/alarmmanager/AlarmNotificationListeners.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-16T11:24:25Z",
+      "side": 1,
+      "message": "That\u0027s the rule I usually follow. Anyway, there are some other improvements that can be applied on this class, even some refactoring, but I can do it in a separate patch.",
+      "parentUuid": "1a622d24_19601d00",
+      "revId": "ad0e18bba3533d11c638f77028b2d9366658add0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
