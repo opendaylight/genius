@@ -51,6 +51,24 @@
       "revId": "7a33e1282447a99295878af6730a54e2fb05a05a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d91ea55e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-16T09:18:51Z",
+      "side": 1,
+      "message": "This is the convention used for updates to oper DS. Not sure it makes much of a difference in the genius context since there should be no other genius code updating the config DS of non-tunnel interfaces\nI suppose it might create an issue with the DjC key from NeutronPortChangeListener which is \"PORT\" + interfaceName\nBut synchronizing these jobs is extremely hard in the context of cluster since there is no guarantee that the owner of the neutron model shard is the same as EOS owner of the \"iface\" entity",
+      "parentUuid": "1a622d24_9a5c204d",
+      "revId": "7a33e1282447a99295878af6730a54e2fb05a05a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
