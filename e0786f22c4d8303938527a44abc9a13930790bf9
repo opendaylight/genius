@@ -16,6 +16,24 @@
       "revId": "e0786f22c4d8303938527a44abc9a13930790bf9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7ff5b155",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-16T16:20:39Z",
+      "side": 1,
+      "message": "Shouldn\u0027t happen because we already found node using the OVSDB models - now we\u0027re just looking for its TP - but added",
+      "parentUuid": "1a622d24_7fe491e0",
+      "revId": "e0786f22c4d8303938527a44abc9a13930790bf9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
