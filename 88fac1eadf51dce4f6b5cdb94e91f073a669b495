@@ -34,6 +34,24 @@
       "revId": "88fac1eadf51dce4f6b5cdb94e91f073a669b495",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_53ef0ee9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-17T11:18:01Z",
+      "side": 1,
+      "message": "I meant the logic inside the listener - things are odd here - the usage of isTunnelInterface and updateParentInterface is unclear - we add the dpnId as a prefix for all non-tunnel interfaces? But I thought only tunnels have a dpnId augmentation, so any non-tunnel would exit in the if?\n\nIn any case I\u0027m leaving this untouched unless you want to explain the logic :)",
+      "parentUuid": "1a622d24_0d6f372c",
+      "revId": "88fac1eadf51dce4f6b5cdb94e91f073a669b495",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
