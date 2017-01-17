@@ -16,6 +16,24 @@
       "revId": "faf558325258cfa06e7355e9ff8f703cfa285ad7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_48abdd74",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/datastoreutils/testutils/tests/AbstractTestableListenerTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-17T09:29:44Z",
+      "side": 1,
+      "message": "OK, you\u0027re right of course; I\u0027m too used to @Test(expected) and forgot how to correctly do this pattern we used to used back in the day before \u0027expected\u0027... ;-) Thanks for noticing - fixed now.",
+      "parentUuid": "1a622d24_0239c6d6",
+      "revId": "faf558325258cfa06e7355e9ff8f703cfa285ad7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
