@@ -52,8 +52,7 @@ public class AlivenessMonitorUtil {
                 .child(InterfaceMonitorEntry.class, new InterfaceMonitorEntryKey(interfaceName)).build();
     }
 
-    public static String toStringMacAddress(byte[] macAddress)
-    {
+    public static String toStringMacAddress(byte[] macAddress) {
         if (macAddress == null) {
             return "";
         }
