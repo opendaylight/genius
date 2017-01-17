@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_58d7264b",
+        "filename": "docs/specs/listener-dependency-helper.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-17T20:47:44Z",
+      "side": 1,
+      "message": "Which one is going to be implemented?",
+      "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d8adf6ea",
+        "filename": "docs/specs/listener-dependency-helper.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-17T20:47:44Z",
+      "side": 1,
+      "message": "Would that be clustered listener?",
+      "range": {
+        "startLine": 55,
+        "startChar": 70,
+        "endLine": 55,
+        "endChar": 120
+      },
+      "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b87aba74",
+        "filename": "docs/specs/listener-dependency-helper.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-17T20:47:44Z",
+      "side": 1,
+      "message": "Would there be a clustered version of LDH for AsyncClusteredDataTreeChangeListenerBase?",
+      "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
