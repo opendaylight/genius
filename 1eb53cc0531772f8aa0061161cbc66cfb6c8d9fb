@@ -16,6 +16,24 @@
       "revId": "1eb53cc0531772f8aa0061161cbc66cfb6c8d9fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_134116a9",
+        "filename": "commons/testutils/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-17T12:06:50Z",
+      "side": 1,
+      "message": "No, not at all - why are you asking? I\u0027m not moving anything, just find having this testutils in genius makes it easier to depend on commonly used test utilities.",
+      "parentUuid": "1a622d24_6df06bfe",
+      "revId": "1eb53cc0531772f8aa0061161cbc66cfb6c8d9fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
