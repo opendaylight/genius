@@ -93,6 +93,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <artifactId>infrautils-testutils</artifactId>
     <version>${genius.infrautils.version}</version>
   </dependency>
+    <dependency>
+        <groupId>com.typesafe.akka</groupId>
+        <artifactId>akka-actor_2.11</artifactId>
+        <version>2.4.11</version>
+    </dependency>
 </dependencies>
  <build>
     <plugins>

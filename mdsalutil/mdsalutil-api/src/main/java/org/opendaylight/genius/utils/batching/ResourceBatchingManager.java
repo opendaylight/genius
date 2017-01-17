@@ -7,16 +7,9 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import akka.pattern.AskTimeoutException;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -27,6 +20,10 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class ResourceBatchingManager implements AutoCloseable {
 
@@ -224,34 +221,70 @@ public class ResourceBatchingManager implements AutoCloseable {
 
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Exception occurred while batch writing to datastore", e);
-                    LOG.info("Trying to submit transaction operations one at a time for resType {}", resourceType);
-                    for (SubTransaction object : transactionObjects) {
-                        WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
-                        switch (object.getAction()) {
-                            case SubTransaction.CREATE :
-                                writeTransaction.put(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
-                                break;
-                            case SubTransaction.DELETE :
-                                writeTransaction.delete(dsType, object.getInstanceIdentifier());
-                                break;
-                            case SubTransaction.UPDATE :
-                                writeTransaction.merge(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
-                                break;
-                            default:
-                                LOG.error("Unable to determine Action for transaction object with id {}", object.getInstanceIdentifier());
-                        }
-                        CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction.submit();
+                    if(e.getCause() instanceof AskTimeoutException) {
                         try {
-                            futureOperation.get();
-                        } catch (InterruptedException | ExecutionException exception) {
-                            LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
-                                    object.getInstanceIdentifier(), object.getInstance(), exception);
+                            batchRequest(true, broker, dsType, transactionObjects);
+                        }
+                        catch (InterruptedException|ExecutionException exception){
+                            LOG.info("Resending Batached transaction failed, Trying to submit transaction operations" +
+                                    " one at a time for resType {}", resourceType);
+                            batchRequest(false, broker, dsType, transactionObjects);
                         }
                     }
                 }
-
             } catch (final Exception e) {
                 LOG.error("Transaction submission failed", e);
+            }
+        }
+
+        //creates a batched request or sends requests as sub-transactions based on the flag: batched
+        private void batchRequest(boolean batched, DataBroker broker,
+                                  LogicalDatastoreType dsType,
+                                  List<SubTransaction> transactionObjects )throws ExecutionException,InterruptedException {
+            WriteTransaction writeTransaction = null;
+            CheckedFuture<Void, TransactionCommitFailedException> futureOperation;
+            if(batched)
+                writeTransaction = broker.newWriteOnlyTransaction();
+
+            for (SubTransaction object : transactionObjects) {
+                if(!batched) {
+                    writeTransaction = broker.newWriteOnlyTransaction();
+                }
+                execTransaction(dsType, object, writeTransaction);
+                if(!batched){
+                    futureOperation = writeTransaction.submit();
+                    try {
+                        futureOperation.get();
+                    } catch (InterruptedException | ExecutionException exception) {
+                        LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
+                                object.getInstanceIdentifier(), object.getInstance(), exception);
+                    }
+                }
+            }
+            if(batched) {
+                futureOperation = writeTransaction.submit();
+                try {
+                    futureOperation.get();
+                } catch (ExecutionException e) {
+                    throw e;
+                }
+            }
+        }
+
+        //Switch-case block to send transactions
+        private void execTransaction(LogicalDatastoreType dsType, SubTransaction object, WriteTransaction writeTransaction){
+            switch (object.getAction()) {
+                case SubTransaction.CREATE :
+                    writeTransaction.put(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
+                    break;
+                case SubTransaction.DELETE :
+                    writeTransaction.delete(dsType, object.getInstanceIdentifier());
+                    break;
+                case SubTransaction.UPDATE :
+                    writeTransaction.merge(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
+                    break;
+                default:
+                    LOG.error("Unable to determine Action for transaction object with id {}", object.getInstanceIdentifier());
             }
         }
     }
