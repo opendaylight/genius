@@ -16,6 +16,24 @@
       "revId": "88fac1eadf51dce4f6b5cdb94e91f073a669b495",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0d6f372c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-17T06:27:21Z",
+      "side": 1,
+      "message": "do you mean making add, update and remove to use common function since code is almost the same..? Please let me know if you want me to pick it up..or if u r planning to do it urself, pls go ahead..",
+      "parentUuid": "1a622d24_7c065f1e",
+      "revId": "88fac1eadf51dce4f6b5cdb94e91f073a669b495",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
