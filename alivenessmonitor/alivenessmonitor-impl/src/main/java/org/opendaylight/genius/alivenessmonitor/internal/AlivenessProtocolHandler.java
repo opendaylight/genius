@@ -13,8 +13,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 
 /**
  * Protocol specific Handler interface defined by the Aliveness monitor service
- * Handler will be registered with Alivnessmonitor service along with the protocol type
- * it supports.
+ * Handler will be registered with Alivnessmonitor service along with the
+ * protocol type it supports.
  *
  */
 public interface AlivenessProtocolHandler {
