@@ -8,9 +8,7 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 interface InterfaceStateListener {
-
     void onInterfaceStateUp(String interfaceName);
 
     void onInterfaceStateDown(String interfaceName);
-
 }

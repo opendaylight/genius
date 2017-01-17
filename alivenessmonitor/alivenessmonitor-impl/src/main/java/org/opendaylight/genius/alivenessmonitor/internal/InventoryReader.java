@@ -8,6 +8,7 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.base.Optional;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -20,30 +21,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class InventoryReader {
-    private Logger LOG = LoggerFactory.getLogger(InventoryReader.class);
-    private DataBroker dataService;
+    private final DataBroker dataService;
+    private static final Logger LOG = LoggerFactory.getLogger(InventoryReader.class);
 
-    public InventoryReader(DataBroker dataService) {
+    InventoryReader(DataBroker dataService) {
         this.dataService = dataService;
     }
 
-    public String getMacAddress(InstanceIdentifier<NodeConnector> nodeConnectorId)  {
-        //TODO: Use mdsal apis to read
+    public String getMacAddress(InstanceIdentifier<NodeConnector> nodeConnectorId) {
+        // TODO: Use mdsal apis to read
         Optional<NodeConnector> optNc = read(LogicalDatastoreType.OPERATIONAL, nodeConnectorId);
-        if(optNc.isPresent()) {
-            NodeConnector nc = optNc.get();
-            FlowCapableNodeConnector fcnc = nc.getAugmentation(FlowCapableNodeConnector.class);
+        if (optNc.isPresent()) {
+            NodeConnector nodeConnector = optNc.get();
+            FlowCapableNodeConnector fcnc = nodeConnector.getAugmentation(FlowCapableNodeConnector.class);
             MacAddress macAddress = fcnc.getHardwareAddress();
             return macAddress.getValue();
         }
         return null;
     }
 
-    private <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
-                                                    InstanceIdentifier<T> path) {
-        try (ReadOnlyTransaction tx = dataService.newReadOnlyTransaction()) {
+    private <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
+        ReadOnlyTransaction tx = dataService.newReadOnlyTransaction();
+        try {
             return tx.read(datastoreType, path).get();
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Cannot read from datastore: ", e);
             throw new RuntimeException(e);
         }
     }
