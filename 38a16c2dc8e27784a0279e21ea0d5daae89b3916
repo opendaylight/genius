@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_cdb25f05",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-17T04:44:29Z",
+      "side": 1,
+      "message": "also do Thread.currentThread().interrupt().",
+      "revId": "38a16c2dc8e27784a0279e21ea0d5daae89b3916",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6dc18b53",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-17T04:44:29Z",
+      "side": 1,
+      "message": "This code block is common in both allocateIdFromLocalPool and releaseIdFromLocalPool. So move it to a method.\nIs it okay to use only one latch map for both allocateId and releaseId ? What if the caller invokes allocatedId and releaseId at the same time ? The 2nd invocation will loose the latch.",
+      "revId": "38a16c2dc8e27784a0279e21ea0d5daae89b3916",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
