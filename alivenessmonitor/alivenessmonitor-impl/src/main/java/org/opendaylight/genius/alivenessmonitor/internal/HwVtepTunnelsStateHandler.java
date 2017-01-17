@@ -18,17 +18,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
@@ -61,13 +57,12 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListener<Tunnels,HwVtepTunnelsStateHandler>
+public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVtepTunnelsStateHandler>
         implements AlivenessProtocolHandler, AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(HwVtepTunnelsStateHandler.class);
@@ -76,7 +71,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
 
     @Inject
     public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor) {
-        super(Tunnels.class,HwVtepTunnelsStateHandler.class);
+        super(Tunnels.class, HwVtepTunnelsStateHandler.class);
         this.dataBroker = dataBroker;
         this.alivenessMonitor = alivenessMonitor;
     }
@@ -85,7 +80,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     public void start() {
         LOG.info("{} start", getClass().getSimpleName());
         alivenessMonitor.registerHandler(EtherTypes.Bfd, this);
-        registerListener(LogicalDatastoreType.CONFIGURATION,this.dataBroker);
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
     }
 
     @Override
@@ -93,6 +88,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         return InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
                 .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class);
     }
+
     @Override
     protected HwVtepTunnelsStateHandler getDataTreeChangeListener() {
         return HwVtepTunnelsStateHandler.this;
@@ -101,7 +97,6 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     @Override
     protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -116,7 +111,8 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         }
         updatedTunnelInfo.getTunnelUuid();
         String interfaceName = "<TODO>";
-        //TODO: find out the corresponding interface using tunnelIdentifier or any attributes of tunneInfo object
+        // TODO: find out the corresponding interface using tunnelIdentifier or
+        // any attributes of tunneInfo object
         final String monitorKey = getBfdMonitorKey(interfaceName);
         LOG.debug("Processing monitorKey: {} for received Tunnels update DCN", monitorKey);
 
@@ -126,49 +122,52 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
 
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
 
-        ListenableFuture<Optional<MonitoringState>> stateResult = tx.read(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey));
+        ListenableFuture<Optional<MonitoringState>> stateResult = tx.read(LogicalDatastoreType.OPERATIONAL,
+                getMonitorStateId(monitorKey));
         Futures.addCallback(stateResult, new FutureCallback<Optional<MonitoringState>>() {
 
             @Override
             public void onSuccess(Optional<MonitoringState> optState) {
-                if(optState.isPresent()) {
+                if (optState.isPresent()) {
                     final MonitoringState currentState = optState.get();
                     if (currentState.getState() == newTunnelOpState) {
                         return;
                     }
                     final boolean stateChanged = true;
-                    final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey).setState(newTunnelOpState).build();
+                    final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey)
+                            .setState(newTunnelOpState).build();
                     tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), state);
                     ListenableFuture<Void> writeResult = tx.submit();
-                    //WRITE Callback
+                    // WRITE Callback
                     Futures.addCallback(writeResult, new FutureCallback<Void>() {
 
                         @Override
                         public void onSuccess(Void arg0) {
                             alivenessMonitor.releaseLock(lock);
-                            if(stateChanged) {
-                                //send notifications
+                            if (stateChanged) {
+                                // send notifications
                                 LOG.info("Sending notification for monitor Id : {} with Current State: {}",
                                         currentState.getMonitorId(), newTunnelOpState);
                                 alivenessMonitor.publishNotification(currentState.getMonitorId(), newTunnelOpState);
                             } else {
-                                if(LOG.isTraceEnabled()) {
+                                if (LOG.isTraceEnabled()) {
                                     LOG.trace("Successful in writing monitoring state {} to ODS", state);
                                 }
                             }
                         }
+
                         @Override
                         public void onFailure(Throwable error) {
                             alivenessMonitor.releaseLock(lock);
                             LOG.warn("Error in writing monitoring state : {} to Datastore", monitorKey, error);
-                            if(LOG.isTraceEnabled()) {
+                            if (LOG.isTraceEnabled()) {
                                 LOG.trace("Error in writing monitoring state: {} to Datastore", state);
                             }
                         }
                     });
                 } else {
                     LOG.warn("Monitoring State not available for key: {} to process the Packet received", monitorKey);
-                    //Complete the transaction
+                    // Complete the transaction
                     tx.submit();
                     alivenessMonitor.releaseLock(lock);
                 }
@@ -176,8 +175,9 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
 
             @Override
             public void onFailure(Throwable error) {
-                LOG.error("Error when reading Monitoring State for key: {} to process the Packet received", monitorKey, error);
-                //FIXME: Not sure if the transaction status is valid to cancel
+                LOG.error("Error when reading Monitoring State for key: {} to process the Packet received", monitorKey,
+                        error);
+                // FIXME: Not sure if the transaction status is valid to cancel
                 tx.cancel();
                 alivenessMonitor.releaseLock(lock);
             }
@@ -189,7 +189,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         if (tunnelBfdStatus == null || tunnelBfdStatus.isEmpty()) {
             return livenessState;
         }
-        for (BfdStatus bfdState: tunnelBfdStatus) {
+        for (BfdStatus bfdState : tunnelBfdStatus) {
             if (bfdState.getBfdStatusKey().equalsIgnoreCase(AlivenessMonitorConstants.BFD_OP_STATE)) {
                 String bfdOpState = bfdState.getBfdStatusValue();
                 if (bfdOpState.equalsIgnoreCase(AlivenessMonitorConstants.BFD_STATE_UP)) {
@@ -205,7 +205,8 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
 
     @Override
     protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
-        // TODO: need to add the code to enable BFD if tunnels are created dynamically by TOR switch
+        // TODO: need to add the code to enable BFD if tunnels are created
+        // dynamically by TOR switch
     }
 
     @Override
@@ -219,7 +220,8 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     }
 
     void resetMonitoringTask(MonitoringInfo monitorInfo, boolean isEnable) {
-        // TODO: get the corresponding hwvtep tunnel from the sourceInterface once InterfaceMgr
+        // TODO: get the corresponding hwvtep tunnel from the sourceInterface
+        // once InterfaceMgr
         // implments renderer for hwvtep vxlan tunnels
         TunnelsKey tunnelKey = null;
         String nodeId = null;
@@ -245,14 +247,15 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         }
         setBfdParamForEnable(tunnelBfdParams, isEnable);
         Tunnels tunnelWithBfdReset = new TunnelsBuilder().setKey(tunnelKey).setBfdParams(tunnelBfdParams).build();
-        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION, getTunnelIdentifier(topologyId, nodeId, tunnelKey), tunnelWithBfdReset);
+        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                getTunnelIdentifier(topologyId, nodeId, tunnelKey), tunnelWithBfdReset);
     }
 
     @Override
     public void startMonitoringTask(MonitoringInfo monitorInfo) {
         EndpointType source = monitorInfo.getSource().getEndpointType();
-        if( source instanceof Interface) {
-            Interface intf = (Interface)source;
+        if (source instanceof Interface) {
+            Interface intf = (Interface) source;
             intf.getInterfaceName();
         } else {
             LOG.warn("Invalid source endpoint. Could not retrieve source interface to configure BFD");
@@ -261,16 +264,16 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         MonitorProfile profile;
         long profileId = monitorInfo.getProfileId();
         Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
-        if(optProfile.isPresent()) {
+        if (optProfile.isPresent()) {
             profile = optProfile.get();
         } else {
-            LOG.warn("No monitor profile associated with id {}. "
-                    + "Could not send Monitor packet for monitor-id {}", profileId, monitorInfo);
+            LOG.warn("No monitor profile associated with id {}. " + "Could not send Monitor packet for monitor-id {}",
+                    profileId, monitorInfo);
             return;
         }
-        // TODO: get the corresponding hwvtep tunnel from the sourceInterface once InterfaceMgr
-        // implments renderer for hwvtep vxlan tunnels
-        TunnelsKey tunnelKey = null;
+        // TODO: get the corresponding hwvtep tunnel from the sourceInterface
+        // once InterfaceMgr
+        // Implements renderer for hwvtep vxlan tunnels
         String tunnelLocalMacAddress = "<TODO>";
         String tunnelLocalIpAddress = "<TODO>";
         String tunnelRemoteMacAddress = "<TODO>";
@@ -281,22 +284,28 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         fillBfdLocalConfigs(bfdLocalConfigs, tunnelLocalMacAddress, tunnelLocalIpAddress);
         List<BfdRemoteConfigs> bfdRemoteConfigs = new ArrayList<>();
         fillBfdRemoteConfigs(bfdRemoteConfigs, tunnelRemoteMacAddress, tunnelRemoteIpAddress);
+        TunnelsKey tunnelKey = null;
         Tunnels tunnelWithBfd = new TunnelsBuilder().setKey(tunnelKey).setBfdParams(bfdParams)
                 .setBfdLocalConfigs(bfdLocalConfigs).setBfdRemoteConfigs(bfdRemoteConfigs).build();
-        // TODO: get the following parameters from the interface and use it to update hwvtep datastore
-        // and not sure sure tunnels are creating immediately once interface mgr writes termination point
-        // into hwvtep datastore. if tunnels are not created during that time, then start monitoring has to
+        // TODO: get the following parameters from the interface and use it to
+        // update hwvtep datastore
+        // and not sure sure tunnels are creating immediately once interface mgr
+        // writes termination point
+        // into hwvtep datastore. if tunnels are not created during that time,
+        // then start monitoring has to
         // be done as part of tunnel add DCN handling.
         HwvtepPhysicalLocatorRef remoteRef = null;
         HwvtepPhysicalLocatorRef localRef = null;
         String topologyId = "";
         String nodeId = "";
-        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION, getTunnelIdentifier(topologyId, nodeId, new TunnelsKey(localRef, remoteRef)), tunnelWithBfd);
+        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                getTunnelIdentifier(topologyId, nodeId, new TunnelsKey(localRef, remoteRef)), tunnelWithBfd);
     }
 
     private void fillBfdRemoteConfigs(List<BfdRemoteConfigs> bfdRemoteConfigs, String tunnelRemoteMacAddress,
-                                      String tunnelRemoteIpAddress) {
-        bfdRemoteConfigs.add(getBfdRemoteConfig(AlivenessMonitorConstants.BFD_CONFIG_BFD_DST_MAC, tunnelRemoteMacAddress));
+            String tunnelRemoteIpAddress) {
+        bfdRemoteConfigs
+                .add(getBfdRemoteConfig(AlivenessMonitorConstants.BFD_CONFIG_BFD_DST_MAC, tunnelRemoteMacAddress));
     }
 
     private BfdRemoteConfigs getBfdRemoteConfig(String key, String value) {
@@ -305,7 +314,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     }
 
     private void fillBfdLocalConfigs(List<BfdLocalConfigs> bfdLocalConfigs, String tunnelLocalMacAddress,
-                                     String tunnelLocalIpAddress) {
+            String tunnelLocalIpAddress) {
         bfdLocalConfigs.add(getBfdLocalConfig(AlivenessMonitorConstants.BFD_CONFIG_BFD_DST_MAC, tunnelLocalMacAddress));
         bfdLocalConfigs.add(getBfdLocalConfig(AlivenessMonitorConstants.BFD_CONFIG_BFD_DST_IP, tunnelLocalIpAddress));
     }
@@ -319,7 +328,8 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         setBfdParamForEnable(bfdParams, true);
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_RX, Long.toString(profile.getMinRx())));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_TX, Long.toString(profile.getMinTx())));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_DECAY_MIN_RX, Long.toString(profile.getDecayMinRx())));
+        bfdParams.add(
+                getBfdParams(AlivenessMonitorConstants.BFD_PARAM_DECAY_MIN_RX, Long.toString(profile.getDecayMinRx())));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_FORWARDING_IF_RX, profile.getForwardingIfRx()));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CPATH_DOWN, profile.getCpathDown()));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CHECK_TNL_KEY, profile.getCheckTnlKey()));
@@ -330,8 +340,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     }
 
     private BfdParams getBfdParams(String key, String value) {
-        return new BfdParamsBuilder().setBfdParamKey(key).setKey(new BfdParamsKey(key))
-                .setBfdParamValue(value).build();
+        return new BfdParamsBuilder().setBfdParamKey(key).setKey(new BfdParamsKey(key)).setBfdParamValue(value).build();
     }
 
     @Override
@@ -346,14 +355,16 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
 
     private String getInterfaceName(EndpointType endpoint) {
         String interfaceName = null;
-        if(endpoint instanceof Interface) {
-            interfaceName = ((Interface)endpoint).getInterfaceName();
+        if (endpoint instanceof Interface) {
+            interfaceName = ((Interface) endpoint).getInterfaceName();
         }
         return interfaceName;
     }
 
-    public static InstanceIdentifier<Tunnels> getTunnelIdentifier(String topologyId, String nodeId, TunnelsKey tunnelsKey) {
-        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class, new TopologyKey(new TopologyId(topologyId)))
+    public static InstanceIdentifier<Tunnels> getTunnelIdentifier(String topologyId, String nodeId,
+            TunnelsKey tunnelsKey) {
+        return InstanceIdentifier.builder(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(new TopologyId(topologyId)))
                 .child(Node.class, new NodeKey(new NodeId(nodeId))).augmentation(PhysicalSwitchAugmentation.class)
                 .child(Tunnels.class, tunnelsKey).build();
     }

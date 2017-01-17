@@ -7,7 +7,8 @@
  */
 package org.opendaylight.genius.alivenessmonitor.internal;
 
-/**
+/*
+ *
  * Exception indicating the config provided is not supported currently
  *
  *
@@ -15,7 +16,7 @@ package org.opendaylight.genius.alivenessmonitor.internal;
 public class UnsupportedConfigException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public UnsupportedConfigException(String message){
+    public UnsupportedConfigException(String message) {
         super(message);
     }
 }
