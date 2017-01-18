@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_44d5931a",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-01-18T18:35:48Z",
+      "side": 1,
+      "message": "remove this paragraph",
+      "range": {
+        "startLine": 182,
+        "startChar": 0,
+        "endLine": 182,
+        "endChar": 2
+      },
+      "revId": "d761362496933b778430fd48e9330b96d12fba69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4b00ed33",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-01-18T18:35:48Z",
+      "side": 1,
+      "message": "remove this paragraph, add work items",
+      "revId": "d761362496933b778430fd48e9330b96d12fba69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_cb9b5d16",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-01-18T18:35:48Z",
+      "side": 1,
+      "message": "add link to patch",
+      "range": {
+        "startLine": 242,
+        "startChar": 49,
+        "endLine": 242,
+        "endChar": 60
+      },
+      "revId": "d761362496933b778430fd48e9330b96d12fba69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_abfb8145",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-01-18T18:35:48Z",
+      "side": 1,
+      "message": "remove this",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 247,
+        "endChar": 25
+      },
+      "revId": "d761362496933b778430fd48e9330b96d12fba69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8bf6855b",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-01-18T18:35:48Z",
+      "side": 1,
+      "message": "why a reference to nova specs? add useful references.",
+      "revId": "d761362496933b778430fd48e9330b96d12fba69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
