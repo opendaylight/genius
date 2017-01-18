@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetTypeBuilder;
@@ -29,17 +27,7 @@ public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMa
     private final long type;
 
     public MatchEthernetType(long type) {
-        super(MatchFieldType.eth_type, new long[] {type});
         this.type = type;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchEthernetType(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues, long type) {
-        this(type);
     }
 
     @Override

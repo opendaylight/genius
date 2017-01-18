@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpTargetHardwareAddressBuilder;
@@ -22,17 +20,7 @@ public class MatchArpTha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
     private final MacAddress address;
 
     public MatchArpTha(MacAddress address) {
-        super(MatchFieldType.arp_tha, new String[] {address.getValue()});
         this.address = address;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchArpTha(MacAddress address, BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues) {
-        this(address);
     }
 
     @Override

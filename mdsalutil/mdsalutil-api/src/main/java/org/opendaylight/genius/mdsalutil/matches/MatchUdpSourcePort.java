@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.UdpMatch;
@@ -21,17 +19,7 @@ public class MatchUdpSourcePort extends MatchInfoHelper<UdpMatch, UdpMatchBuilde
     private final int port;
 
     public MatchUdpSourcePort(int port) {
-        super(MatchFieldType.udp_src, new long[] {port});
         this.port = port;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchUdpSourcePort(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues, int port,
-            String[] stringMatchValues) {
-        this(port);
     }
 
     @Override

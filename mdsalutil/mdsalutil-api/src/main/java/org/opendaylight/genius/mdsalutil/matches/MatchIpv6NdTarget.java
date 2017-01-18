@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv6Match;
@@ -20,7 +19,6 @@ public class MatchIpv6NdTarget extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuild
     private final Ipv6Address address;
 
     public MatchIpv6NdTarget(Ipv6Address address) {
-        super(MatchFieldType.ipv6_nd_target, new String[] {address.getValue()});
         this.address = address;
     }
 
