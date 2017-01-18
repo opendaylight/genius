@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_bbe634ae",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-01-18T04:46:49Z",
+      "side": 1,
+      "message": "ITM does not use ID Manager anymore. This needs some code cleanup, which has to be taken separately. The UT can ignore ID manager as well.",
+      "parentUuid": "1a622d24_5b33a0aa",
+      "revId": "43c114af1ae3892ae1212f48b843421a426d86dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3b1b4474",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestModule.java",
         "patchSetId": 5
