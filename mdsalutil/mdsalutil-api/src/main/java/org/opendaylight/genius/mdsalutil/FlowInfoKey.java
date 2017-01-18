@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.Match;
 
 public final class FlowInfoKey {

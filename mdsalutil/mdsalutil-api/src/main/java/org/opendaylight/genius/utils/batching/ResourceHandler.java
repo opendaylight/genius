@@ -7,12 +7,11 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
-import java.util.List;
 
 public interface ResourceHandler {
     void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifer, Object vrfEntry,List<SubTransaction> transactionObjects);
