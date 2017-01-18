@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_3bfa2443",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-18T05:07:11Z",
+      "side": 1,
+      "message": "Nit: can\u0027t we make it as CopyOnWriteArrayList if we just want to make flows as atomic ? if we do do this, we can avoid method level synchronization in the below three methods.",
+      "revId": "3c2ddb6bfccd679438a997b987f4cc3e3cc9049d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1b8e48d0",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-18T05:07:11Z",
+      "side": 1,
+      "message": "if we decide to incorporate above comment, we may have to take a copy of nonNullFlows, otherwise it might get changed by other thread while this thread executing line no 71.",
+      "range": {
+        "startLine": 65,
+        "startChar": 25,
+        "endLine": 65,
+        "endChar": 26
+      },
+      "revId": "3c2ddb6bfccd679438a997b987f4cc3e3cc9049d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
