@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.liste
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
@@ -74,10 +75,12 @@ public class FlowBasedServicesConfigListener
 
     @Override
     protected void update(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld,
-                          BoundServices boundServiceNew) {
-        LOG.error("Service Binding entry update not allowed for: {}, Data: {}",
-                InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
-                boundServiceNew);
+            BoundServices boundServiceNew) {
+        if (!Objects.equals(boundServiceOld,boundServiceNew)) {
+            LOG.error("Service Binding entry update not allowed for: {}, Data: {}",
+                    InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
+                    boundServiceNew);
+        }
     }
 
     @Override
