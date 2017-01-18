@@ -12,12 +12,9 @@ import java.math.BigInteger;
 
 public class InterfaceInfo implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
-    public enum InterfaceType  {
+    public enum InterfaceType {
         VLAN_INTERFACE,
         VXLAN_TRUNK_INTERFACE,
         GRE_TRUNK_INTERFACE,
@@ -29,14 +26,11 @@ public class InterfaceInfo implements Serializable {
     }
 
     public enum InterfaceAdminState {
-        ENABLED,
-        DISABLED
+        ENABLED, DISABLED
     }
 
     public enum InterfaceOpState {
-        UP,
-        DOWN,
-        UNKNOWN
+        UP, DOWN, UNKNOWN
     }
 
     protected InterfaceType interfaceType;
@@ -52,14 +46,6 @@ public class InterfaceInfo implements Serializable {
     protected boolean isUntaggedVlan;
     protected String macAddress;
 
-    public String getInterfaceName() {
-        return interfaceName;
-    }
-
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
-    }
-
     public InterfaceInfo(BigInteger dpId, String portName) {
         this.dpId = dpId;
         this.portName = portName;
@@ -69,6 +55,14 @@ public class InterfaceInfo implements Serializable {
         this.portName = portName;
     }
 
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
+
     public boolean isOperational() {
         return adminState == InterfaceAdminState.ENABLED && opState == InterfaceOpState.UP;
     }
@@ -76,48 +70,63 @@ public class InterfaceInfo implements Serializable {
     public InterfaceType getInterfaceType() {
         return interfaceType;
     }
+
     public void setInterfaceType(InterfaceType lportType) {
         this.interfaceType = lportType;
     }
+
     public int getInterfaceTag() {
         return interfaceTag;
     }
+
     public void setInterfaceTag(int interfaceTag) {
         this.interfaceTag = interfaceTag;
     }
+
     public void setUntaggedVlan(boolean isUntaggedVlan) {
         this.isUntaggedVlan = isUntaggedVlan;
     }
+
     public boolean isUntaggedVlan() {
-        return  isUntaggedVlan;
+        return isUntaggedVlan;
     }
+
     public BigInteger getDpId() {
         return dpId;
     }
+
     public void setDpId(BigInteger dpId) {
         this.dpId = dpId;
     }
+
     public InterfaceAdminState getAdminState() {
         return adminState;
     }
+
     public void setAdminState(InterfaceAdminState adminState) {
         this.adminState = adminState;
     }
+
     public InterfaceOpState getOpState() {
         return opState;
     }
+
     public void setOpState(InterfaceOpState opState) {
         this.opState = opState;
     }
+
     public long getGroupId() {
         return groupId;
     }
+
     public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
+
     public long getL2domainGroupId() {
         return l2domainGroupId;
     }
+
     public void setL2domainGroupId(long l2domainGroupId) {
         this.l2domainGroupId = l2domainGroupId;
     }
@@ -133,7 +142,8 @@ public class InterfaceInfo implements Serializable {
     public void setPortName(String portName) {
         this.portName = portName;
     }
-    public String getPortName(){
+
+    public String getPortName() {
         return this.portName;
     }
 

@@ -11,15 +11,11 @@ import java.math.BigInteger;
 
 public class VlanInterfaceInfo extends InterfaceInfo {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
     private short vlanId;
     private boolean isVlanTransparent;
 
-    public VlanInterfaceInfo(BigInteger dpId,
-            String portName, short vlanId) {
+    public VlanInterfaceInfo(BigInteger dpId, String portName, short vlanId) {
         super(dpId, portName);
         this.vlanId = vlanId;
     }
