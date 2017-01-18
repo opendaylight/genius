@@ -28,37 +28,36 @@ import java.util.List;
 
 public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager, AutoCloseable {
 
-    private static final Logger s_logger = LoggerFactory.getLogger(MDSALUtilProvider.class);
-    private MDSALManager mdSalMgr;
+    private static final Logger LOG = LoggerFactory.getLogger(MDSALUtilProvider.class);
+
     private static final long FIXED_DELAY_IN_MILLISECONDS = 5000;
+
+    private MDSALManager mdSalMgr;
 
     @Override
     public void onSessionInitialized(ConsumerContext session) {
-
-        s_logger.info( " Session Initiated for MD SAL Util Provider") ;
+        LOG.info( " Session Initiated for MD SAL Util Provider") ;
 
         try {
             final DataBroker dataBroker;
             final PacketProcessingService packetProcessingService;
             dataBroker = session.getSALService(DataBroker.class);
             packetProcessingService = session.getRpcService(PacketProcessingService.class);
-             mdSalMgr = new MDSALManager( dataBroker, packetProcessingService) ;
-        }catch( Exception e) {
-            s_logger.error( "Error initializing MD SAL Util Services " + e );
+            mdSalMgr = new MDSALManager( dataBroker, packetProcessingService) ;
+        } catch (Exception e) {
+            LOG.error( "Error initializing MD SAL Util Services " + e );
         }
     }
-
 
     @Override
     public void close() throws Exception {
         mdSalMgr.close();
-        s_logger.info("MDSAL Manager Closed");
+        LOG.info("MDSAL Manager Closed");
     }
-
 
     @Override
     public void installFlow(FlowEntity flowEntity) {
-          mdSalMgr.installFlow(flowEntity);
+        mdSalMgr.installFlow(flowEntity);
     }
 
     @Override
@@ -117,8 +116,8 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
 
     @Override
     public void sendARPPacketOutWithActions(BigInteger dpnId, byte[] payload,
-                                            List<ActionInfo> action_info) {
-        mdSalMgr.sendARPPacketOutWithActions(dpnId, payload, action_info);
+                                            List<ActionInfo> actionInfo) {
+        mdSalMgr.sendARPPacketOutWithActions(dpnId, payload, actionInfo);
     }
 
     @Override

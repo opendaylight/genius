@@ -16,27 +16,33 @@ public class SubTransactionImpl implements SubTransaction {
 
     public SubTransactionImpl() { }
 
+    @Override
     public void setInstance(Object instance) {
         this.instance = instance;
     }
 
+    @Override
     public Object getInstance() {
         return this.instance;
     }
 
+    @Override
     public void setInstanceIdentifier(InstanceIdentifier identifier) {
         this.identifier = identifier;
     }
 
+    @Override
     public InstanceIdentifier getInstanceIdentifier() {
         return this.identifier;
     }
 
+    @Override
     public void setAction(short action) {
         this.action = action;
     }
 
-    public short getAction(){
+    @Override
+    public short getAction() {
         return action;
     }
 }
