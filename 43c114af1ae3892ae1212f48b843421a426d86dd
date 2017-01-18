@@ -54,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_31e365a5",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-18T11:14:37Z",
+      "side": 1,
+      "message": "NOK; this dep. is req. because ItmTestModule binds LockManagerService to LockManager (impl).",
+      "parentUuid": "1a622d24_bbe634ae",
+      "revId": "43c114af1ae3892ae1212f48b843421a426d86dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3b1b4474",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestModule.java",
         "patchSetId": 5
@@ -65,6 +83,24 @@
       "writtenOn": "2017-01-18T00:34:06Z",
       "side": 1,
       "message": "Is LockManagerService required? \nITM does not use LockManagerService.",
+      "revId": "43c114af1ae3892ae1212f48b843421a426d86dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f1dc4de6",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestModule.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-18T11:14:37Z",
+      "side": 1,
+      "message": "NOK ItmProvider currently has @Inject IdManagerService, and IdManager has @Inject LockManagerService - so BOTH of these ARE needed. If future work removes this dependency, that\u0027s wonderful.  But given that as-is it is required, I don\u0027t think such future plans should hold back this change, and I don\u0027t understand the -1 ...",
+      "parentUuid": "1a622d24_3b1b4474",
       "revId": "43c114af1ae3892ae1212f48b843421a426d86dd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
