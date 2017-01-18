@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_b133f560",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/globals/InterfaceInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-18T11:07:06Z",
+      "side": 1,
+      "message": "just FYI not FYI: personally I don\u0027t touch this kind of thing, because I find multi line is more readable, if there are a lot of enum values with long names .. Checkstyle shouldn\u0027t complain about this, or does it? But very minor, just FYI - let\u0027s move forward and get this merged as is.",
+      "revId": "e4917f3a18add784cd5105844c02697377aebbc0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
