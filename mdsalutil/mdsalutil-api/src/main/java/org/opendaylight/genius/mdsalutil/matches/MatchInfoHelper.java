@@ -9,9 +9,7 @@ package org.opendaylight.genius.mdsalutil.matches;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 import java.util.Map;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yangtools.concepts.Builder;
@@ -24,20 +22,7 @@ public abstract class MatchInfoHelper<T extends DataObject, B extends Builder<T>
     private final Class<T> typeClass;
     private final Class<B> builderClass;
 
-    MatchInfoHelper(MatchFieldType matchFieldType, BigInteger[] matchValues) {
-        super(matchFieldType, matchValues);
-        typeClass = getTypeParameter(0);
-        builderClass = getTypeParameter(1);
-    }
-
-    MatchInfoHelper(MatchFieldType matchFieldType, String[] matchValues) {
-        super(matchFieldType, matchValues);
-        typeClass = getTypeParameter(0);
-        builderClass = getTypeParameter(1);
-    }
-
-    MatchInfoHelper(MatchFieldType matchFieldType, long[] matchValues) {
-        super(matchFieldType, matchValues);
+    MatchInfoHelper() {
         typeClass = getTypeParameter(0);
         builderClass = getTypeParameter(1);
     }

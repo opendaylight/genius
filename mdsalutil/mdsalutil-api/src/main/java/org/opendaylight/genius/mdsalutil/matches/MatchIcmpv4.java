@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv4MatchBuilder;
@@ -21,18 +19,8 @@ public class MatchIcmpv4 extends MatchInfoHelper<Icmpv4Match, Icmpv4MatchBuilder
     private final short code;
 
     public MatchIcmpv4(short type, short code) {
-        super(MatchFieldType.icmp_v4, new long[] {type, code});
         this.type = type;
         this.code = code;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchIcmpv4(BigInteger[] bigMatchValues, short code, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues, short type) {
-        this(type, code);
     }
 
     @Override

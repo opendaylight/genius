@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFields;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
@@ -20,17 +18,7 @@ public class MatchMplsLabel extends MatchInfoHelper<ProtocolMatchFields, Protoco
     private final long label;
 
     public MatchMplsLabel(long label) {
-        super(MatchFieldType.mpls_label, new String[] {Long.toString(label)});
         this.label = label;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchMplsLabel(BigInteger[] bigMatchValues, long label, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues) {
-        this(label);
     }
 
     @Override

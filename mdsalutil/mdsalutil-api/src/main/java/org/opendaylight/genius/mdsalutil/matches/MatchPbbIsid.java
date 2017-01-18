@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFields;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
@@ -20,7 +19,6 @@ public class MatchPbbIsid extends MatchInfoHelper<ProtocolMatchFields, ProtocolM
     private final long isid;
 
     public MatchPbbIsid(long isid) {
-        super(MatchFieldType.pbb_isid, new long[] {isid});
         this.isid = isid;
     }
 

@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.matches;
 
 import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Metadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
@@ -21,18 +20,8 @@ public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
     private final BigInteger mask;
 
     public MatchMetadata(BigInteger metadata, BigInteger mask) {
-        super(MatchFieldType.metadata, new BigInteger[] {metadata, mask});
         this.metadata = metadata;
         this.mask = mask;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchMetadata(BigInteger[] bigMatchValues, BigInteger mask, MatchFieldType matchField, long[] matchValues,
-            BigInteger metadata, String[] stringMatchValues) {
-        this(metadata, mask);
     }
 
     @Override

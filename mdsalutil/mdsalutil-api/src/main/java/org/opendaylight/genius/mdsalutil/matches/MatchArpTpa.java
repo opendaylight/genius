@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
@@ -22,7 +20,6 @@ public class MatchArpTpa extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
     private final Ipv4Prefix address;
 
     public MatchArpTpa(Ipv4Prefix address) {
-        super(MatchFieldType.arp_tpa, address.getValue().split("/"));
         this.address = address;
     }
 
@@ -32,15 +29,6 @@ public class MatchArpTpa extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
 
     public MatchArpTpa(String ip, String mask) {
         this(new Ipv4Prefix(ip + "/" + mask));
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchArpTpa(Ipv4Prefix address, BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues) {
-        this(address);
     }
 
     @Override
