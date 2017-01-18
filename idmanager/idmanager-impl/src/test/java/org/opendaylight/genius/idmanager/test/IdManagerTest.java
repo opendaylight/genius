@@ -450,7 +450,7 @@ public class IdManagerTest {
         }
     }
 
-    @Test
+    @Ignore
     public void testMultithreadedIdAllocationFromReleasedIds() throws Exception {
         List<DelayedIdEntries> delayedIdEntries = buildDelayedIdEntries(new long[] {100, 101});
         ReleasedIdsHolder expectedReleasedIds = createReleasedIdsHolder(2, delayedIdEntries , 0);
