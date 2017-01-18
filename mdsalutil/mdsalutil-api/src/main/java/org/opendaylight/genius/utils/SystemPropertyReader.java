@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.utils;
 
-import org.opendaylight.yangtools.util.PropertyUtils;
-
 public class SystemPropertyReader {
     public static class Cluster {
         // Sleep time to be used between successive EntityOwnershipState calls
