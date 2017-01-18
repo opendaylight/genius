@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_cc525866",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-18T12:56:02Z",
+      "side": 1,
+      "message": "will update even get triggered if both objects are equal? i have seen throwing this error because previous unbind was not successful, and next create comes as update..hope u r not hitting that issue",
+      "revId": "d71fad90464466149a0af21405db2e3e9e2ee1f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
