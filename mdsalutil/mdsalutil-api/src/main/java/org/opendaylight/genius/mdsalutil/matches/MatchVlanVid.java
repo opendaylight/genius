@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatch;
@@ -22,17 +20,7 @@ public class MatchVlanVid extends MatchInfoHelper<VlanMatch, VlanMatchBuilder> {
     private final int vlanId;
 
     public MatchVlanVid(int vlanId) {
-        super(MatchFieldType.vlan_vid, new long[] {vlanId});
         this.vlanId = vlanId;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchVlanVid(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues, int vlanVid) {
-        this(vlanVid);
     }
 
     @Override

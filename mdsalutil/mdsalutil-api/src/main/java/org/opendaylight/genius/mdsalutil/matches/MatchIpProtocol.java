@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.packet.IPProtocols;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatch;
@@ -26,17 +24,7 @@ public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
     private final short protocol;
 
     public MatchIpProtocol(short protocol) {
-        super(MatchFieldType.ip_proto, new long[] {protocol});
         this.protocol = protocol;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchIpProtocol(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues, short protocol,
-            String[] stringMatchValues) {
-        this(protocol);
     }
 
     @Override
