@@ -19,10 +19,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * enqueued to the book-keeping data structure.
  */
 public class JobEntry {
-    final private String key;
+
+    private final String key;
     private Callable<List<ListenableFuture<Void>>> mainWorker;
-    final private RollbackCallable rollbackWorker;
-    private AtomicInteger retryCount;
+    private final RollbackCallable rollbackWorker;
+    private final AtomicInteger retryCount;
     private List<ListenableFuture<Void>> futures;
 
     public JobEntry(String key,
@@ -36,10 +37,7 @@ public class JobEntry {
     }
 
     /**
-     *
-     * @return
-     *
-     * The key provided by the application that segregates the
+     * Get the key provided by the application that segregates the
      * callables that can be run parallely.
      * NOTE: Currently, this is a string. Can be converted to Object where
      * Object implementation should provide the hashcode and equals methods.
@@ -78,12 +76,12 @@ public class JobEntry {
 
     @Override
     public String toString() {
-        return "JobEntry{" +
-                "key='" + key + '\'' +
-                ", mainWorker=" + mainWorker +
-                ", rollbackWorker=" + rollbackWorker +
-                ", retryCount=" + retryCount +
-                ", futures=" + futures +
-                '}';
+        return "JobEntry{"
+                + "key='" + key + '\''
+                + ", mainWorker=" + mainWorker
+                + ", rollbackWorker=" + rollbackWorker
+                + ", retryCount=" + retryCount
+                + ", futures=" + futures
+                + '}';
     }
 }

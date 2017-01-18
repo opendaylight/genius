@@ -20,6 +20,8 @@ public class TaskRetryLooper {
     private final int maxRetries;
 
     /**
+     * Constructor.
+     *
      * @param tick       sleep between steps in miliseconds
      * @param maxRetries retries limit
      */

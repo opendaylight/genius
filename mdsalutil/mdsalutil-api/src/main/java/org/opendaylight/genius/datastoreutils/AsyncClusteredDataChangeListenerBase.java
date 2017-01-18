@@ -53,6 +53,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     private final Class<K> eventClazz;
 
     /**
+     * Constructor.
      * @param clazz - for which the data change event is received
      */
     public AsyncClusteredDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {

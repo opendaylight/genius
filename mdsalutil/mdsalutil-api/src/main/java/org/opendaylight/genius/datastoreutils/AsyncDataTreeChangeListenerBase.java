@@ -81,7 +81,8 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         final DataTreeIdentifier<T> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
         try {
             TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
+            listenerRegistration = looper
+                    .loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
             log.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
             log.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
@@ -118,9 +119,14 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     }
 
     protected abstract InstanceIdentifier<T> getWildCardPath();
+
     protected abstract void remove(InstanceIdentifier<T> key, T dataObjectModification);
-    protected abstract void update(InstanceIdentifier<T> key, T dataObjectModificationBefore, T dataObjectModificationAfter);
+
+    protected abstract void update(InstanceIdentifier<T> key,
+            T dataObjectModificationBefore, T dataObjectModificationAfter);
+
     protected abstract void add(InstanceIdentifier<T> key, T dataObjectModification);
+
     protected abstract K getDataTreeChangeListener();
 
     public class DataTreeChangeHandler implements Runnable {
