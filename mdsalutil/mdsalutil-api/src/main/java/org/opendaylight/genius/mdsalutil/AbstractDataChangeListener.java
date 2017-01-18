@@ -8,15 +8,13 @@
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Preconditions;
-
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * AbstractDataChangeListener implemented basic {@link DataChangeListener} processing for

@@ -9,7 +9,6 @@
 package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
