@@ -7,19 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.test;
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.interfaceName;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.parentInterface;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.tunnelInterfaceName;
-import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
-import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
-import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
-
 import com.google.common.base.Optional;
-import java.math.BigInteger;
-import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +19,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedFlowEntries;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceChildEntry;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceState;
@@ -72,6 +59,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+import javax.inject.Inject;
+import java.math.BigInteger;
+
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.*;
+import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
+import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
+
 /**
  * Component tests for interface manager.
  *
@@ -93,9 +90,6 @@ public class InterfaceManagerConfigurationTest {
 
     @Before
     public void start() throws InterruptedException {
-        // TODO This is silly, because onSessionInitiated(), or later it's BP
-        // equivalent, for clearer testability should just propagate the exception
-        assertThat(InterfaceStatusMonitor.getInstance().acquireServiceStatus()).isEqualTo("OPERATIONAL");
         //Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
     }
