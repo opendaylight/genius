@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.matches;
 
 import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
@@ -21,24 +20,13 @@ public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
     private final BigInteger tunnelMask;
 
     public MatchTunnelId(BigInteger tunnelId) {
-        super(MatchFieldType.tunnel_id, new BigInteger[] {tunnelId});
         this.tunnelId = tunnelId;
         this.tunnelMask = null;
     }
 
     public MatchTunnelId(BigInteger tunnelId, BigInteger tunnelMask) {
-        super(MatchFieldType.tunnel_id, new BigInteger[] {tunnelId, tunnelMask});
         this.tunnelId = tunnelId;
         this.tunnelMask = tunnelMask;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchTunnelId(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues, BigInteger tunnelId, BigInteger tunnelMask) {
-        this(tunnelId, tunnelMask);
     }
 
     @Override

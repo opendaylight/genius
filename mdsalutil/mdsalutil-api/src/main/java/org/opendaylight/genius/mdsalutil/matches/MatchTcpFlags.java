@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TcpFlagsMatch;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TcpFlagsMatchBuilder;
@@ -24,17 +22,7 @@ public class MatchTcpFlags extends MatchInfoHelper<TcpFlagsMatch, TcpFlagsMatchB
     private final int flags;
 
     public MatchTcpFlags(int flags) {
-        super(MatchFieldType.tcp_flags, new long[] {flags});
         this.flags = flags;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchTcpFlags(BigInteger[] bigMatchValues, int flags, MatchFieldType matchField, long[] matchValues,
-            String[] stringMatchValues) {
-        this(flags);
     }
 
     @Override

@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.matches;
 
 import java.math.BigInteger;
 import java.util.Map;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -22,18 +21,9 @@ public class MatchInPort extends MatchInfo {
     private final long portNumber;
 
     public MatchInPort(BigInteger dpId, long portNumber) {
-        super(MatchFieldType.in_port, new BigInteger[] {dpId, BigInteger.valueOf(portNumber)});
+        super();
         this.dpId = dpId;
         this.portNumber = portNumber;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchInPort(BigInteger[] bigMatchValues, BigInteger dpId, MatchFieldType matchField, long[] matchValues,
-            long portNumber, String[] stringMatchValues) {
-        this(dpId, portNumber);
     }
 
     @Override

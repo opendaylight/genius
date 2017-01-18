@@ -7,9 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4Match;
@@ -22,27 +20,15 @@ public class MatchIpv4Destination extends MatchInfoHelper<Ipv4Match, Ipv4MatchBu
     private final Ipv4Prefix prefix;
 
     public MatchIpv4Destination(Ipv4Prefix prefix) {
-        super(MatchFieldType.ipv4_destination, prefix.getValue().split("/"));
         this.prefix = prefix;
     }
 
     public MatchIpv4Destination(long ip, long mask) {
-        super(MatchFieldType.ipv4_dst, new long[] {ip, mask});
         this.prefix = new Ipv4Prefix(MDSALUtil.longToIp(ip, mask));
     }
 
     public MatchIpv4Destination(String ip, String mask) {
-        super(MatchFieldType.ipv4_destination, new String[] {ip, mask});
         this.prefix = new Ipv4Prefix(ip + "/" + mask);
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchIpv4Destination(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            Ipv4Prefix prefix, String[] stringMatchValues) {
-        this(prefix);
     }
 
     @Override
