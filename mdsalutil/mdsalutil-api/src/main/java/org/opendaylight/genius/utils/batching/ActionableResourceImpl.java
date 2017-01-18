@@ -16,11 +16,12 @@ public class ActionableResourceImpl implements ActionableResource {
     private InstanceIdentifier identifier;
     private short action;
 
-    public ActionableResourceImpl(String key){
+    public ActionableResourceImpl(String key) {
         this.key = key;
     }
 
-    public ActionableResourceImpl(String key, InstanceIdentifier identifier, short action,Object updatedData, Object oldData) {
+    public ActionableResourceImpl(String key, InstanceIdentifier identifier, short action, Object updatedData,
+            Object oldData) {
         this.instance = updatedData;
         this.oldInstance = oldData;
         this.key = key;
@@ -28,42 +29,52 @@ public class ActionableResourceImpl implements ActionableResource {
         this.action = action;
     }
 
+    @Override
     public void setInstance(Object instance) {
         this.instance = instance;
     }
 
+    @Override
     public Object getInstance() {
         return this.instance;
     }
 
+    @Override
     public void setOldInstance(Object oldInstance) {
         this.oldInstance = oldInstance;
     }
 
+    @Override
     public Object getOldInstance() {
         return this.oldInstance;
     }
 
+    @Override
     public void setInstanceIdentifier(InstanceIdentifier identifier) {
         this.identifier = identifier;
     }
 
+    @Override
     public InstanceIdentifier getInstanceIdentifier() {
         return this.identifier;
     }
 
+    @Override
     public void setAction(short action) {
         this.action = action;
     }
 
-    public short getAction(){
+    @Override
+    public short getAction() {
         return action;
     }
 
+    @Override
     public void setKey(String key) {
         this.key = key;
     }
 
+    @Override
     public String getKey() {
         return this.key;
     }

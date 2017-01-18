@@ -52,6 +52,7 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
     private final Class<K> eventClazz;
 
     /**
+     * Constructor.
      * @param clazz - for which the data change event is received
      */
     public AsyncDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {

@@ -13,8 +13,9 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 
-public abstract class HwvtepClusteredDataTreeChangeListener<T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
-        extends AsyncClusteredDataTreeChangeListenerBase<T , K> {
+public abstract class HwvtepClusteredDataTreeChangeListener<
+    T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
+        extends AsyncClusteredDataTreeChangeListenerBase<T, K> {
 
     public HwvtepClusteredDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz) {
         super(clazz, eventClazz);
