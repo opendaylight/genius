@@ -37,7 +37,7 @@ public abstract class AbstractDataStoreJob extends Observable implements Callabl
 
     /**
      * Returns the key that DataStoreJobCoordinator uses for classifying jobs
-     * that must be executed in sequence
+     * that must be executed in sequence.
      *
      * @return the key for this job
      */
@@ -45,7 +45,7 @@ public abstract class AbstractDataStoreJob extends Observable implements Callabl
 
 
     /**
-     * Checks if the Job is apt for execution
+     * Checks if the Job is apt for execution.
      *
      * @throws InvalidJobException if the Job does not fulfill all conditions
      *         that must be met for execution

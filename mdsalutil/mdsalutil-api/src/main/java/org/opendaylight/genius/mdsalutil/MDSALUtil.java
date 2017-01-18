@@ -103,15 +103,15 @@ public class MDSALUtil {
     public static final long WATCH_PORT = 0xffffffffL;
     public static final long WATCH_GROUP = 0xffffffffL;
     public static final String SEPARATOR = ":";
-    private static final Buckets EMPTY_Buckets = new BucketsBuilder().build();
-    private static final Instructions EMPTY_Instructions = new InstructionsBuilder().setInstruction(
+    private static final Buckets EMPTY_BUCKETS = new BucketsBuilder().build();
+    private static final Instructions EMPTY_INSTRUCTIONS = new InstructionsBuilder().setInstruction(
             new ArrayList<>()).build();
-    private static final Match EMPTY_Matches = new MatchBuilder().build();
-    private static final Logger logger = LoggerFactory.getLogger(MDSALUtil.class);
+    private static final Match EMPTY_MATCHES = new MatchBuilder().build();
+    private static final Logger LOGGER = LoggerFactory.getLogger(MDSALUtil.class);
 
-    public static FlowEntity buildFlowEntity(BigInteger dpnId, short tableId, String flowId, int priority, String flowName,
-            int idleTimeOut, int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
-            List<InstructionInfo> listInstructionInfo) {
+    public static FlowEntity buildFlowEntity(BigInteger dpnId, short tableId, String flowId, int priority,
+            String flowName, int idleTimeOut, int hardTimeOut, BigInteger cookie,
+            List<? extends MatchInfoBase> listMatchInfoBase, List<InstructionInfo> listInstructionInfo) {
 
         FlowEntity flowEntity = new FlowEntity(dpnId);
 
@@ -130,7 +130,8 @@ public class MDSALUtil {
 
     // TODO: CHECK IF THIS IS USED
     public static Flow buildFlow(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase> listMatchInfoBase, List<InstructionInfo> listInstructionInfo) {
+            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase> listMatchInfoBase,
+            List<InstructionInfo> listInstructionInfo) {
         return MDSALUtil.buildFlow(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
                 listMatchInfoBase, listInstructionInfo, true);
     }
@@ -151,7 +152,8 @@ public class MDSALUtil {
     }
 
     public static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-                                 int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase, List<Instruction> listInstructionInfo) {
+            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase> listMatchInfoBase,
+            List<Instruction> listInstructionInfo) {
         return MDSALUtil.buildFlowNew(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
                 listMatchInfoBase, listInstructionInfo, true);
     }
@@ -161,7 +163,8 @@ public class MDSALUtil {
                                   List<Instruction> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
         return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
-                .setPriority(priority).setInstructions(new InstructionsBuilder().setInstruction(listInstructionInfo).build())
+                .setPriority(priority)
+                .setInstructions(new InstructionsBuilder().setInstruction(listInstructionInfo).build())
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
                 .setFlowName(flowName).setTableId(tableId).setStrict(isStrict)
                 .setCookie(new FlowCookie(cookie)).build();
@@ -182,11 +185,12 @@ public class MDSALUtil {
 
     public static Group buildGroup(long groupId, String groupName, GroupTypes groupType, Buckets buckets) {
         GroupId groupIdentifier = new GroupId(groupId);
-        return new GroupBuilder().setGroupId(groupIdentifier).setKey(new GroupKey(groupIdentifier)).setGroupName(groupName)
-                .setGroupType(groupType).setBuckets(buckets).build();
+        return new GroupBuilder().setGroupId(groupIdentifier).setKey(new GroupKey(groupIdentifier))
+                .setGroupName(groupName).setGroupType(groupType).setBuckets(buckets).build();
     }
 
-    public static TransmitPacketInput getPacketOutDefault(List<ActionInfo> actionInfos, byte[] payload, BigInteger dpnId) {
+    public static TransmitPacketInput getPacketOutDefault(List<ActionInfo> actionInfos, byte[] payload,
+            BigInteger dpnId) {
         return new TransmitPacketInputBuilder()
                 .setAction(buildActions(actionInfos))
                 .setPayload(payload)
@@ -234,11 +238,11 @@ public class MDSALUtil {
     }
 
     public static String longToIp(long ip, long mask) {
-        return ((ip & 0xFF000000) >> 3 * 8) + "." +
-               ((ip & 0x00FF0000) >> 2 * 8) + "." +
-               ((ip & 0x0000FF00) >>     8) + "." +
-                (ip & 0x000000FF) +
-                (mask == 0 ? "" : "/" + mask);
+        return ((ip & 0xFF000000) >> 3 * 8) + "."
+               + ((ip & 0x00FF0000) >> 2 * 8) + "."
+               + ((ip & 0x0000FF00) >>     8) + "."
+               + (ip & 0x000000FF)
+               + (mask == 0 ? "" : "/" + mask);
     }
 
     public static BigInteger getBigIntIpFromIpAddress(IpAddress ipAddr) {
@@ -248,10 +252,11 @@ public class MDSALUtil {
     }
 
 
-    public static Bucket buildBucket(List<Action> actionsList, int weight, int bucketId, long watchPort, long watchGroup) {
-        return  new BucketBuilder().setAction(actionsList).setWeight(weight)
-                .setWatchGroup(watchGroup).setWatchPort(watchPort).setBucketId(new BucketId(Long.valueOf(bucketId))).setKey(new BucketKey(new BucketId(Long.valueOf(bucketId)))).build();
-
+    public static Bucket buildBucket(List<Action> actionsList, int weight, int bucketId, long watchPort,
+            long watchGroup) {
+        return new BucketBuilder().setAction(actionsList).setWeight(weight).setWatchGroup(watchGroup)
+                .setWatchPort(watchPort).setBucketId(new BucketId(Long.valueOf(bucketId)))
+                .setKey(new BucketKey(new BucketId(Long.valueOf(bucketId)))).build();
     }
 
     public static Buckets buildBucketLists(List<Bucket> bucketList) {
@@ -259,7 +264,7 @@ public class MDSALUtil {
     }
 
     protected static Buckets buildBuckets(List<BucketInfo> listBucketInfo) {
-        long i = 0;
+        long index = 0;
         if (listBucketInfo != null) {
             BucketsBuilder bucketsBuilder = new BucketsBuilder();
             List<Bucket> bucketList = new ArrayList<>();
@@ -268,7 +273,7 @@ public class MDSALUtil {
                 BucketBuilder bucketBuilder = new BucketBuilder();
                 bucketBuilder.setAction(bucketInfo.buildActions());
                 bucketBuilder.setWeight(bucketInfo.getWeight());
-                bucketBuilder.setBucketId(new BucketId(i++));
+                bucketBuilder.setBucketId(new BucketId(index++));
                 bucketBuilder.setWeight(bucketInfo.getWeight()).setWatchPort(bucketInfo.getWatchPort())
                         .setWatchGroup(bucketInfo.getWatchGroup());
                 bucketList.add(bucketBuilder.build());
@@ -278,7 +283,7 @@ public class MDSALUtil {
             return bucketsBuilder.build();
         }
 
-        return EMPTY_Buckets;
+        return EMPTY_BUCKETS;
     }
 
     public static Instructions buildInstructions(List<InstructionInfo> listInstructionInfo) {
@@ -294,7 +299,7 @@ public class MDSALUtil {
             return new InstructionsBuilder().setInstruction(instructions).build();
         }
 
-        return EMPTY_Instructions;
+        return EMPTY_INSTRUCTIONS;
     }
 
     public static Match buildMatches(List<? extends MatchInfoBase> listMatchInfoBase) {
@@ -302,27 +307,27 @@ public class MDSALUtil {
             MatchBuilder matchBuilder = new MatchBuilder();
             Map<Class<?>, Object> mapMatchBuilder = new HashMap<>();
 
-            for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
-                MatchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
+            for (MatchInfoBase matchInfoBase : listMatchInfoBase) {
+                matchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
             }
 
-            for (MatchInfoBase MatchInfoBase : listMatchInfoBase) {
-                MatchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
+            for (MatchInfoBase matchInfoBase : listMatchInfoBase) {
+                matchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
             }
 
             return matchBuilder.build();
         }
 
-        return EMPTY_Matches;
+        return EMPTY_MATCHES;
     }
 
     // TODO: Check the port const
-    public static NodeConnectorRef getDefaultNodeConnRef(BigInteger nDpId) {
-        return getNodeConnRef(NODE_PREFIX + SEPARATOR + nDpId, "0xfffffffd");
+    public static NodeConnectorRef getDefaultNodeConnRef(BigInteger dpId) {
+        return getNodeConnRef(NODE_PREFIX + SEPARATOR + dpId, "0xfffffffd");
     }
 
-    public static NodeConnectorRef getNodeConnRef(BigInteger nDpId, String port) {
-        return getNodeConnRef(NODE_PREFIX + SEPARATOR + nDpId, port);
+    public static NodeConnectorRef getNodeConnRef(BigInteger dpId, String port) {
+        return getNodeConnRef(NODE_PREFIX + SEPARATOR + dpId, port);
     }
 
     public static NodeConnectorRef getNodeConnRef(String sNodeId, String port) {
@@ -364,9 +369,9 @@ public class MDSALUtil {
         return getDpnIdFromNodeName(nodeId.getValue());
     }
 
-    public static BigInteger getDpnIdFromNodeName(String sMdsalNodeName) {
-        String sDpId = sMdsalNodeName.substring(sMdsalNodeName.lastIndexOf(":") + 1);
-        return new BigInteger(sDpId);
+    public static BigInteger getDpnIdFromNodeName(String mdsalNodeName) {
+        String dpId = mdsalNodeName.substring(mdsalNodeName.lastIndexOf(":") + 1);
+        return new BigInteger(dpId);
     }
 
     public static long getOfPortNumberFromPortName(NodeConnectorId nodeConnectorId) {
@@ -376,17 +381,17 @@ public class MDSALUtil {
     public static long getDpnIdFromPortName(NodeConnectorId nodeConnectorId) {
         try {
             String ofPortName = nodeConnectorId.getValue();
-            return Long.parseLong(ofPortName.substring(ofPortName.indexOf(":")+1,
+            return Long.parseLong(ofPortName.substring(ofPortName.indexOf(":") + 1,
                     ofPortName.lastIndexOf(":")));
         } catch (Exception e) {
-            logger.error("NodeConnectorId not of expected format openflow:dpnid:portnum");
+            LOGGER.error("NodeConnectorId not of expected format openflow:dpnid:portnum");
             return -1;
         }
     }
 
     public static long getOfPortNumberFromPortName(String sMdsalPortName) {
-        String sPortNumber = sMdsalPortName.substring(sMdsalPortName.lastIndexOf(":") + 1);
-        return Long.parseLong(sPortNumber);
+        String portNumber = sMdsalPortName.substring(sMdsalPortName.lastIndexOf(":") + 1);
+        return Long.parseLong(portNumber);
     }
 
     public static TransmitPacketInput getPacketOut(List<ActionInfo> actionInfos, byte[] payload, BigInteger dpnId,
@@ -399,7 +404,7 @@ public class MDSALUtil {
         Action popVlanAction = new ActionBuilder().setAction(
                 new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
                 .setKey(new ActionKey(actionKey)).build();
-        List<Action> listAction = new ArrayList<> ();
+        List<Action> listAction = new ArrayList<>();
         listAction.add(popVlanAction);
         return buildApplyActionsInstruction(listAction, instructionKey);
     }
@@ -415,9 +420,10 @@ public class MDSALUtil {
         nxRegLoadBuilder.setDst(dst);
         nxRegLoadBuilder.setValue(new BigInteger(Long.toString(value)));
         ActionBuilder ab = new ActionBuilder();
-        ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(nxRegLoadBuilder.build()).build());
+        ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
+                .setNxRegLoad(nxRegLoadBuilder.build()).build());
         ab.setKey(new ActionKey(actionKey));
-        List<Action> listAction = new ArrayList<> ();
+        List<Action> listAction = new ArrayList<>();
         listAction.add(ab.build());
         return buildApplyActionsInstruction(listAction, instructionKey);
     }
@@ -532,7 +538,7 @@ public class MDSALUtil {
         try {
             SingleTransactionDataBroker.syncWrite(broker, datastoreType, path, data);
         } catch (TransactionCommitFailedException e) {
-            logger.error("Error writing to datastore (path, data) : ({}, {})", path, data);
+            LOGGER.error("Error writing to datastore (path, data) : ({}, {})", path, data);
             throw new RuntimeException(e);
         }
     }
@@ -550,7 +556,7 @@ public class MDSALUtil {
         try {
             SingleTransactionDataBroker.syncUpdate(broker, datastoreType, path, data);
         } catch (TransactionCommitFailedException e) {
-            logger.error("Error writing to datastore (path, data) : ({}, {})", path, data);
+            LOGGER.error("Error writing to datastore (path, data) : ({}, {})", path, data);
             throw new RuntimeException(e);
         }
     }
@@ -567,7 +573,7 @@ public class MDSALUtil {
         try {
             SingleTransactionDataBroker.syncDelete(broker, datastoreType, path);
         } catch (TransactionCommitFailedException e) {
-            logger.error("Error deleting from datastore (path) : ({})", path, e);
+            LOGGER.error("Error deleting from datastore (path) : ({})", path, e);
             throw new RuntimeException(e);
         }
     }
@@ -576,7 +582,7 @@ public class MDSALUtil {
             InstanceIdentifier<NodeConnector> nodeConnectorId)  {
         Optional<NodeConnector> optNc = MDSALDataStoreUtils.read(broker,
                 LogicalDatastoreType.OPERATIONAL, nodeConnectorId);
-        if(optNc.isPresent()) {
+        if (optNc.isPresent()) {
             NodeConnector nc = optNc.get();
             FlowCapableNodeConnector fcnc = nc.getAugmentation(FlowCapableNodeConnector.class);
             MacAddress macAddress = fcnc.getHardwareAddress();
@@ -599,7 +605,7 @@ public class MDSALUtil {
                 .child(NodeConnector.class,
                         new NodeConnectorKey(nodeConnectorId)).build();
         return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).transform(
-                nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
+            nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
     }
 
     public static NodeConnectorId getNodeConnectorId(DataBroker dataBroker,
@@ -620,13 +626,14 @@ public class MDSALUtil {
     }
 
     public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {
-
-        NxRegLoad r = new NxRegLoadBuilder().setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
-                .setStart(0).setEnd(15).build()).setValue(BigInteger.valueOf(inPortVal)).build();
+        NxRegLoad regLoad = new NxRegLoadBuilder()
+                .setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
+                        .setStart(0).setEnd(15).build())
+                .setValue(BigInteger.valueOf(inPortVal)).build();
         ActionBuilder abExt = new ActionBuilder();
         abExt.setKey(new ActionKey(actionKey));
         abExt.setOrder(actionKey);
-        abExt.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(r).build());
+        abExt.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(regLoad).build());
         return abExt.build();
     }
 

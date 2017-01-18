@@ -87,6 +87,7 @@ public class HwvtepSouthboundUtils {
                                                                                 TerminationPointKey tpKey) {
         return createInstanceIdentifier(nodeId).child(TerminationPoint.class, tpKey);
     }
+
     /**
      * Creates the logical switches instance identifier.
      *
@@ -215,7 +216,7 @@ public class HwvtepSouthboundUtils {
      * @return the instance identifier
      */
     public static InstanceIdentifier<VlanBindings> createVlanBindingInstanceIdentifier(NodeId physicalSwitchNodeId,
-                                                                                       String phyPortName, Integer vlanId) {
+            String phyPortName, Integer vlanId) {
         return createPhysicalPortInstanceIdentifier(physicalSwitchNodeId, phyPortName).child(VlanBindings.class,
                 new VlanBindingsKey(new VlanId(vlanId)));
     }
@@ -382,16 +383,16 @@ public class HwvtepSouthboundUtils {
     public static TerminationPointKey getTerminationPointKey(String ipAddress) {
         TerminationPointKey tpKey = null;
         String tpKeyStr = getTerminationPointKeyString(ipAddress);
-        if(tpKeyStr != null) {
+        if (tpKeyStr != null) {
             tpKey = new TerminationPointKey(new TpId(tpKeyStr));
         }
         return tpKey;
     }
+
     public static String getTerminationPointKeyString(String ipAddress) {
         String tpKeyStr = null;
-        if(ipAddress != null) {
-            tpKeyStr = HwvtepSouthboundConstants.TEP_PREFIX +
-                    ipAddress;
+        if (ipAddress != null) {
+            tpKeyStr = HwvtepSouthboundConstants.TEP_PREFIX + ipAddress;
         }
         return tpKeyStr;
     }
