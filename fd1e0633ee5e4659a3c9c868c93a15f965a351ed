@@ -16,6 +16,24 @@
       "revId": "fd1e0633ee5e4659a3c9c868c93a15f965a351ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_51bd41b6",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-18T10:56:42Z",
+      "side": 1,
+      "message": "OK - yup, you\u0027re right (well spotted!), done.  Although very strictly speaking this is NOT a review comment applicable to this change - because that dependency isn\u0027t been added here, it\u0027s already on master... ;-) Just sayin\u0027 - because if we start picking on existing un-touched NOK things as part of arbitrary other proposed changes, we\u0027d never finish anything... ;-)",
+      "parentUuid": "1a622d24_56e417e0",
+      "revId": "fd1e0633ee5e4659a3c9c868c93a15f965a351ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
