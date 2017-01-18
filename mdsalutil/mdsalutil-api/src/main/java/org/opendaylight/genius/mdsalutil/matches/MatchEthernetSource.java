@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
@@ -22,17 +20,7 @@ public class MatchEthernetSource extends MatchInfoHelper<EthernetMatch, Ethernet
     private final MacAddress address;
 
     public MatchEthernetSource(MacAddress address) {
-        super(MatchFieldType.eth_src, new String[] {address.getValue()});
         this.address = address;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchEthernetSource(MacAddress address, BigInteger[] bigMatchValues, MatchFieldType matchField,
-            long[] matchValues, String[] stringMatchValues) {
-        this(address);
     }
 
     @Override

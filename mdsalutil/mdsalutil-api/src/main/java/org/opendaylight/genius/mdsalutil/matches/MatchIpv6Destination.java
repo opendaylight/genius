@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv6Match;
@@ -21,22 +19,11 @@ public class MatchIpv6Destination extends MatchInfoHelper<Ipv6Match, Ipv6MatchBu
     private final Ipv6Prefix prefix;
 
     public MatchIpv6Destination(String address) {
-        super(MatchFieldType.ipv6_destination, new String[] {address});
         this.prefix = new Ipv6Prefix(address);
     }
 
     public MatchIpv6Destination(Ipv6Prefix prefix) {
-        super(MatchFieldType.ipv6_destination, new String[] {prefix.getValue()});
         this.prefix = prefix;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchIpv6Destination(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues,
-            Ipv6Prefix prefix, String[] stringMatchValues) {
-        this(prefix);
     }
 
     @Override

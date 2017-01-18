@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatch;
@@ -24,17 +22,7 @@ public class MatchArpOp extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
     private final int op;
 
     public MatchArpOp(int op) {
-        super(MatchFieldType.arp_op, new long[] {op});
         this.op = op;
-    }
-
-    /**
-     * Create an instance; this constructor is only present for XtendBeanGenerator and must not be used.
-     */
-    @Deprecated
-    public MatchArpOp(BigInteger[] bigMatchValues, MatchFieldType matchField, long[] matchValues, int op,
-            String[] stringMatchValues) {
-        this(op);
     }
 
     @Override
