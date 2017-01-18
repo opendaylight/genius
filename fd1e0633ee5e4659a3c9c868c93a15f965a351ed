@@ -34,6 +34,24 @@
       "revId": "fd1e0633ee5e4659a3c9c868c93a15f965a351ed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_317525fa",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-18T11:10:03Z",
+      "side": 1,
+      "message": "Oh right, sorry, I saw it in the diff between the two patch-sets but it came from a rebase.",
+      "parentUuid": "1a622d24_51bd41b6",
+      "revId": "fd1e0633ee5e4659a3c9c868c93a15f965a351ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
