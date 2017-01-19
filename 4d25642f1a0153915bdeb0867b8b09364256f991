@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_d47ada86",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T08:52:12Z",
+      "side": 1,
+      "message": "remove this line and just pass new CompletableFuture\u003c\u003e() for allocateIdFromLocalPool.",
+      "revId": "4d25642f1a0153915bdeb0867b8b09364256f991",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_145a9229",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T08:52:12Z",
+      "side": 1,
+      "message": "Get futureIdValues from allocatedIdMap and then do this.",
+      "revId": "4d25642f1a0153915bdeb0867b8b09364256f991",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1471f2a7",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T08:52:12Z",
+      "side": 1,
+      "message": "same here.",
+      "revId": "4d25642f1a0153915bdeb0867b8b09364256f991",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
