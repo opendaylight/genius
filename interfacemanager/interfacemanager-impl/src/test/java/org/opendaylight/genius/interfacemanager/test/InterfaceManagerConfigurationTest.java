@@ -39,6 +39,7 @@ import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedServicesInfo;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedTerminationPoint;
 import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceMeta;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -80,7 +81,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @SuppressWarnings("deprecation")
 public class InterfaceManagerConfigurationTest {
 
+    // Uncomment this, temporarily (never commit!), to see concurrency issues:
+    // public static @ClassRule RunUntilFailureRule repeater = new RunUntilFailureRule();
+
+    public @Rule LogRule logRule = new LogRule();
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule());
+
     static final BigInteger dpnId = BigInteger.valueOf(1);
 
     @Inject DataBroker dataBroker;
