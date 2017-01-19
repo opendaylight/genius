@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_bfc3b736",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-19T12:22:02Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be LOG instead of LOGGER?",
+      "range": {
+        "startLine": 110,
+        "startChar": 32,
+        "endLine": 110,
+        "endChar": 38
+      },
+      "revId": "824ed803d33ee12374c14a007e2f84582ef62778",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_dfe313d7",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALUtilProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-19T12:22:02Z",
+      "side": 1,
+      "message": "Shouldn\u0027t be LOG?",
+      "range": {
+        "startLine": 31,
+        "startChar": 32,
+        "endLine": 31,
+        "endChar": 38
+      },
+      "revId": "824ed803d33ee12374c14a007e2f84582ef62778",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
