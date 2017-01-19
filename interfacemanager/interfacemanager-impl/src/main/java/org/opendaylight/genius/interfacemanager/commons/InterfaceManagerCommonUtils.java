@@ -83,8 +83,13 @@ public class InterfaceManagerCommonUtils {
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
             new ConcurrentHashMap<>();
 
-    private static final String NOVA_OR_TUNNEL_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}|tun[0-9a-f]{11}";
-    private static final Pattern pattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+    private static final String NOVA_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}";
+    private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
+    private static final String NOVA_OR_TUNNEL_PORT_REGEX = NOVA_PORT_REGEX + "|" + TUNNEL_PORT_REGEX;
+
+    private static final Pattern novaOrTunnelPortPattern = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
+    private static final Pattern tunnelPortPattern = Pattern.compile(TUNNEL_PORT_REGEX);
+    private static final Pattern novaPortPattern = Pattern.compile(NOVA_PORT_REGEX);
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
             DataBroker dataBroker) {
@@ -522,11 +527,19 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static boolean isNovaOrTunnelPort(String portName) {
-
-        Matcher matcher = pattern.matcher(portName);
+        Matcher matcher = novaOrTunnelPortPattern.matcher(portName);
         return matcher.matches();
     }
 
+    public static boolean isNovaPort(String portName){
+        Matcher matcher = novaPortPattern.matcher(portName);
+        return matcher.matches();
+    }
+
+    public static boolean isTunnelPort(String portName){
+        Matcher matcher = tunnelPortPattern.matcher(portName);
+        return matcher.matches();
+    }
 
     public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName, WriteTransaction transaction) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
