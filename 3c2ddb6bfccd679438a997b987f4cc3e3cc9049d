@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_9f8a3b62",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T11:09:16Z",
+      "side": 1,
+      "message": "Yes Michael, I agree since it\u0027s just for component tests.",
+      "parentUuid": "1a622d24_1fa8ebd9",
+      "revId": "3c2ddb6bfccd679438a997b987f4cc3e3cc9049d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_1b8e48d0",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
         "patchSetId": 4
