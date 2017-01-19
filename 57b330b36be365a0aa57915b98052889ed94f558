@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_717f9815",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-01-19T07:42:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_1112a408",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_9166b4b9",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-19T04:48:31Z",
       "side": 1,
       "message": "you don\u0027t need intern() for storing uniqueIdKey as map key. simply pass string literal parentPoolName + idKey.",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_517a5c24",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-01-19T07:42:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_9166b4b9",
       "revId": "57b330b36be365a0aa57915b98052889ed94f558",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_b11f70b6",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-01-19T07:42:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_d10b0cd4",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_91fd14b4",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
         "patchSetId": 4
@@ -81,6 +135,24 @@
       "writtenOn": "2017-01-19T04:48:31Z",
       "side": 1,
       "message": "why it is changed to DataObject ?",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9171940e",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-01-19T07:42:31Z",
+      "side": 1,
+      "message": "Missed out to revert back. :)",
+      "parentUuid": "1a622d24_91fd14b4",
       "revId": "57b330b36be365a0aa57915b98052889ed94f558",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
