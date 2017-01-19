@@ -42,6 +42,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <version>${liblldp.version}</version>
   </dependency>
   <dependency>
+    <groupId>org.opendaylight.controller</groupId>
+    <artifactId>sal-binding-api</artifactId>
+  </dependency>
+  <dependency>
     <groupId>org.opendaylight.openflowplugin</groupId>
     <artifactId>openflowplugin-extension-nicira</artifactId>
     <version>${openflowplugin.version}</version>
@@ -92,6 +96,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <groupId>org.opendaylight.infrautils</groupId>
     <artifactId>infrautils-testutils</artifactId>
     <version>${genius.infrautils.version}</version>
+    <scope>test</scope>
   </dependency>
 </dependencies>
  <build>
