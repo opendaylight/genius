@@ -7,19 +7,21 @@
  */
 package org.opendaylight.genius.fcapsmanager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
-    static Logger s_logger = LoggerFactory.getLogger(Activator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+
+    @Override
     public void start(BundleContext context) {
-        s_logger.info("Starting fcapsSPI bundle");
+        LOG.info("Starting fcapsSPI bundle");
     }
 
+    @Override
     public void stop(BundleContext context) {
-        s_logger.info("Stopping fcapsSPI bundle");
+        LOG.info("Stopping fcapsSPI bundle");
     }
-
 }
