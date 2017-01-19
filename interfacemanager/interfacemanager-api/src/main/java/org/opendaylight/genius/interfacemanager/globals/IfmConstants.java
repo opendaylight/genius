@@ -19,19 +19,19 @@ public class IfmConstants {
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
     public static final int INVALID_PORT_NO = -1;
     public static final BigInteger INVALID_DPID = new BigInteger("-1");
-    //Id pool
+    // Id pool
     public static final String IFM_IDPOOL_NAME = "interfaces";
     public static final long IFM_ID_POOL_START = 1L;
     public static final long IFM_ID_POOL_END = 65535;
-    //Group Prefix
+    // Group Prefix
     public static final long VLAN_GROUP_START = 1000;
     public static final long TRUNK_GROUP_START = 20000;
     public static final long LOGICAL_GROUP_START = 100000;
-    //Table
+    // Table
     public static final long DELAY_TIME_IN_MILLISECOND = 10000;
-    //Cookies
+    // Cookies
     public static final BigInteger COOKIE_L3_BASE = new BigInteger("8000000", 16);
     public static final BigInteger COOKIE_EGRESS_DISPATCHER_TABLE = new BigInteger("1300000", 16);
-    //Tunnel Monitoring
+    // Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
 }

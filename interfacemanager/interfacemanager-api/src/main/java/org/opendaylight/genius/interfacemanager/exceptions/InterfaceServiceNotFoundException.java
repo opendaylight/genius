@@ -9,9 +9,6 @@ package org.opendaylight.genius.interfacemanager.exceptions;
 
 public class InterfaceServiceNotFoundException extends Exception {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     public InterfaceServiceNotFoundException() {

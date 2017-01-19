@@ -8,12 +8,12 @@
 
 package org.opendaylight.genius.interfacemanager.globals;
 
+import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
@@ -26,49 +26,52 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflowBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
-
-import com.google.common.base.Optional;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class InterfaceServiceUtil {
 
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie, List<Instruction> instructions) {
-        List<BoundServices>  boundService = new ArrayList<>();
-        boundService.add(new BoundServicesBuilder().setServicePriority((short)servicePriority).setServiceName(serviceName).build());
-        return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
-    }
-
-    public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
-                                                 BigInteger cookie, List<Instruction> instructions) {
-        StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority).setInstruction(instructions);
-        return new BoundServicesBuilder().setKey(new BoundServicesKey(servicePriority))
-                .setServiceName(serviceName).setServicePriority(servicePriority)
-                .setServiceType(ServiceTypeFlowBased.class).addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
+        List<BoundServices> boundService = new ArrayList<>();
+        boundService.add(new BoundServicesBuilder().setServicePriority((short) servicePriority)
+                .setServiceName(serviceName).build());
+        return new ServicesInfoBuilder().setBoundServices(boundService)
+                .setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie) {
-        List<BoundServices>  boundService = new ArrayList<>();
-        boundService.add(new BoundServicesBuilder().setServicePriority((short)servicePriority).setServiceName(serviceName).build());
-        return new ServicesInfoBuilder().setBoundServices(boundService).setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
+        List<BoundServices> boundService = new ArrayList<>();
+        boundService.add(new BoundServicesBuilder().setServicePriority((short) servicePriority)
+                .setServiceName(serviceName).build());
+        return new ServicesInfoBuilder().setBoundServices(boundService)
+                .setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
-    public static List<MatchInfo> getMatchInfoForVlanLPort(BigInteger dpId, long portNo, long vlanId, boolean isVlanTransparent) {
+    public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
+            BigInteger cookie, List<Instruction> instructions) {
+        StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority)
+                .setInstruction(instructions);
+        return new BoundServicesBuilder().setKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
+                .setServicePriority(servicePriority).setServiceType(ServiceTypeFlowBased.class)
+                .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
+    }
+
+    public static List<MatchInfo> getMatchInfoForVlanLPort(BigInteger dpId, long portNo, long vlanId,
+            boolean isVlanTransparent) {
         List<MatchInfo> matches = new ArrayList<>();
-        matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] {dpId, BigInteger.valueOf(portNo)}));
+        matches.add(new MatchInfo(MatchFieldType.in_port, new BigInteger[] { dpId, BigInteger.valueOf(portNo) }));
         if (vlanId != 0 && !isVlanTransparent) {
             matches.add(new MatchInfo(MatchFieldType.vlan_vid, new long[] { vlanId }));
         }
@@ -80,14 +83,14 @@ public class InterfaceServiceUtil {
                 .child(Interface.class, new InterfaceKey(interfaceName)).build();
         Optional<Interface> ifInstance = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, id, broker);
         if (ifInstance.isPresent()) {
-            IfL2vlan vlanIface =ifInstance.get().getAugmentation(IfL2vlan.class);
-            short vlanId = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().shortValue();
-            return vlanId;
+            IfL2vlan vlanIface = ifInstance.get().getAugmentation(IfL2vlan.class);
+            return vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().shortValue();
         }
         return -1;
     }
 
-    public static Set<Object> getStatRequestKeys(BigInteger dpId, short tableId, List<MatchInfo> matches, String flowId, long groupId) {
+    public static Set<Object> getStatRequestKeys(BigInteger dpId, short tableId, List<MatchInfo> matches, String flowId,
+            long groupId) {
         Set<Object> statRequestKeys = new HashSet<>();
         statRequestKeys.add(getFlowStatisticsKey(dpId, tableId, matches, flowId));
         statRequestKeys.add(getGroupStatisticsKey(dpId, groupId));
@@ -98,16 +101,16 @@ public class InterfaceServiceUtil {
         return new GroupInfoKey(dpId, groupId);
     }
 
-    public static FlowInfoKey getFlowStatisticsKey(BigInteger dpId, short tableId, List<MatchInfo> matches, String flowId) {
+    public static FlowInfoKey getFlowStatisticsKey(BigInteger dpId, short tableId, List<MatchInfo> matches,
+            String flowId) {
         return new FlowInfoKey(dpId, tableId, MDSALUtil.buildMatches(matches), flowId);
     }
 
     public static List<MatchInfo> getLPortDispatcherMatches(short serviceIndex, int interfaceTag) {
         List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
-                 MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, serviceIndex),
-                 MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
+        mkMatches.add(new MatchInfo(MatchFieldType.metadata,
+                new BigInteger[] { MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, serviceIndex),
+                        MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
         return mkMatches;
     }
-
 }

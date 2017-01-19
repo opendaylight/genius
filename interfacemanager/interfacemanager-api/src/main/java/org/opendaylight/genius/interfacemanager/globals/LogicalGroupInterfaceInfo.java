@@ -9,22 +9,16 @@ package org.opendaylight.genius.interfacemanager.globals;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.ArrayList;
 
 public class LogicalGroupInterfaceInfo extends InterfaceInfo {
+    private static final long serialVersionUID = 1L;
+    // List of VXLAN/GRE physical tunnel interfaces makes a logical tunnel
+    // interface between a pair of DPNs
+    private final List<String> parentInterfaceNames;
 
-    /*
-         List of vxlan/GRE physical tunnel interfaces makes a logical tunnel interface
-         between a pair of DPNs
-
-     */
-
-    private List<String> parentInterfaceNames;
-
-    public LogicalGroupInterfaceInfo(String portName, BigInteger srcDpId,List<String> pInterfaces) {
-        super(srcDpId,portName);
-
-        parentInterfaceNames = new ArrayList(pInterfaces);
+    public LogicalGroupInterfaceInfo(String portName, BigInteger srcDpId, List<String> parentInterfaces) {
+        super(srcDpId, portName);
+        this.parentInterfaceNames = parentInterfaces;
     }
 
     public List<String> getParentInterfaceNames() {
@@ -42,6 +36,4 @@ public class LogicalGroupInterfaceInfo extends InterfaceInfo {
     public void deleteParentInterfaceName(String parentIfname) {
         parentInterfaceNames.remove(parentIfname);
     }
-
 }
-
