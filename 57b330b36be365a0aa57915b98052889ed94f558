@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_1112a408",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T04:48:31Z",
+      "side": 1,
+      "message": "guard it with if (!futureIdValues.isDone()). This is required to avoid thread which invokes allocateId for a idKey on which IdManagerException is already thrown and future is completed exceptionally.",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9166b4b9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T04:48:31Z",
+      "side": 1,
+      "message": "you don\u0027t need intern() for storing uniqueIdKey as map key. simply pass string literal parentPoolName + idKey.",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f108c8db",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T04:48:31Z",
+      "side": 1,
+      "message": "In case of ExecutionException, just throw e.getCause(). Because IdManagerException is already wrapped under it.",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d10b0cd4",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T04:48:31Z",
+      "side": 1,
+      "message": "add more comment on why removal of uniqueIdKey from map here.",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_91fd14b4",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-19T04:48:31Z",
+      "side": 1,
+      "message": "why it is changed to DataObject ?",
+      "revId": "57b330b36be365a0aa57915b98052889ed94f558",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
