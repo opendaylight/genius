@@ -8,29 +8,27 @@
 package org.opendaylight.genius.fcapsmanager;
 
 public interface AlarmServiceFacade {
-    /**
+    /*
      * Raises the given alarm in platform environment
      *
-     * @param alarmName
-     *            Alarm to be raised
-     * @param additionalText
-     *            Additional details describing about the alarm
-     * @param source
-     *            Source of the alarm ex: dpnId=openflow:1
-     *            the source node that caused this alarm
+     * @param alarmName Alarm to be raised
+     *
+     * @param additionalText Additional details describing about the alarm
+     *
+     * @param source Source of the alarm ex: dpnId=openflow:1 the source node
+     * that caused this alarm
      */
     void raiseAlarm(String alarmName, String additionalText, String source);
 
-    /**
+    /*
      * Clears the given alarm in platform environment
      *
-     * @param alarmName
-     *            Alarm to be cleared
-     * @param additionalText
-     *            Additional details describing about the alarm
-     * @param source
-     *            Source of the alarm ex:  dpnId=openflow:1
-     *            the source node that caused this alarm
+     * @param alarmName Alarm to be cleared
+     *
+     * @param additionalText Additional details describing about the alarm
+     *
+     * @param source Source of the alarm ex: dpnId=openflow:1 the source node
+     * that caused this alarm
      */
     void clearAlarm(String alarmName, String additionalText, String source);
 }
