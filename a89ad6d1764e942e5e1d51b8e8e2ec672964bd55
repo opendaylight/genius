@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_4520d69a",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-19T17:02:19Z",
+      "side": 1,
+      "message": "not sure why you went for multi-line here? It should fit on 1 line.. but that\u0027s minor, not a reason to -1 it.  In general, I don\u0027t think we have a rule to format class/implements like this.",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_25231aa8",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-19T17:02:19Z",
+      "side": 1,
+      "message": "not sure why you went for multi-line here? It should fit on 1 line.. but that\u0027s minor, not a reason to -1 it.",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_25a83ada",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-19T17:02:19Z",
+      "side": 1,
+      "message": "It\u0027s hard to review moved methods, so I try to avoid it mixed in wither other reviews. I know Checkstyle forces us to keep overloaded methods with the same name together (which is good), but in this case that probably wasn\u0027t the reason? So not sure why you moved this - but still not a reason to -1 this; just a thought for future gerrits.",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_c5bd0604",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/test/java/org/opendaylight/controller/alivenessmonitor/test/AlivenessMonitorTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-19T17:02:19Z",
+      "side": 1,
+      "message": "just FYI, in @Test it\u0027s actually OK with Checkstyle if you put \"throws Exception\" (just not throws Throwable)",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
