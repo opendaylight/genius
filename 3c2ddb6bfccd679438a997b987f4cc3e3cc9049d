@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_1fa8ebd9",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-19T11:03:36Z",
+      "side": 1,
+      "message": "Peri I think that would indeed be an alternative, yes.. but as this is \"just\" a component test utility, and because I\u0027ve already tested it like this and it works, how about we get it in as-is, unless you have strong objections against this as-is?",
+      "parentUuid": "1a622d24_3bfa2443",
+      "revId": "3c2ddb6bfccd679438a997b987f4cc3e3cc9049d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_1b8e48d0",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
         "patchSetId": 4
