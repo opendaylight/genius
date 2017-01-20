@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_347069db",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-20T11:40:46Z",
+      "side": 1,
+      "message": "You are right, I was playing with Eclipse formatting settings and it shouldn\u0027t was like that. Done.",
+      "parentUuid": "1a622d24_4520d69a",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_25231aa8",
         "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-19T17:02:19Z",
       "side": 1,
       "message": "not sure why you went for multi-line here? It should fit on 1 line.. but that\u0027s minor, not a reason to -1 it.",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7475c1c9",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-20T11:40:46Z",
+      "side": 1,
+      "message": "The same here. Done.",
+      "parentUuid": "1a622d24_25231aa8",
       "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_b47bd9bc",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AbstractAlivenessProtocolHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-20T11:40:46Z",
+      "side": 1,
+      "message": "The checkstyle complains about not having overloaded method together, so I had to move them.",
+      "parentUuid": "1a622d24_25a83ada",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_c5bd0604",
         "filename": "alivenessmonitor/alivenessmonitor-impl/src/test/java/org/opendaylight/controller/alivenessmonitor/test/AlivenessMonitorTest.java",
         "patchSetId": 3
@@ -64,6 +118,24 @@
       "writtenOn": "2017-01-19T17:02:19Z",
       "side": 1,
       "message": "just FYI, in @Test it\u0027s actually OK with Checkstyle if you put \"throws Exception\" (just not throws Throwable)",
+      "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b7e11b2c",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/test/java/org/opendaylight/controller/alivenessmonitor/test/AlivenessMonitorTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-20T11:40:46Z",
+      "side": 1,
+      "message": "Ok.",
+      "parentUuid": "1a622d24_c5bd0604",
       "revId": "a89ad6d1764e942e5e1d51b8e8e2ec672964bd55",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false

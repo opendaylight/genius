@@ -16,6 +16,24 @@
       "revId": "83cabb9e8ca8aa773b45708ae19cdceb46f604cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d4577524",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessProtocolHandlerLLDP.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-20T11:40:46Z",
+      "side": 0,
+      "message": "The removed code was not used, but you are right, I am going to leave it as it is and if someone can comment on this I can remove it in a different commit.",
+      "parentUuid": "1a622d24_e5d6424e",
+      "revId": "83cabb9e8ca8aa773b45708ae19cdceb46f604cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
