@@ -34,6 +34,24 @@
       "revId": "83cabb9e8ca8aa773b45708ae19cdceb46f604cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b71abbc3",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessProtocolHandlerLLDP.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T13:17:57Z",
+      "side": 0,
+      "message": "I\u0027ve created https://trello.com/c/xzWmWAye/91-alivenessprotocolhandlerlldp-tons-of-dead-code so not to forget (or is Bugzilla better for this?)",
+      "parentUuid": "1a622d24_d4577524",
+      "revId": "83cabb9e8ca8aa773b45708ae19cdceb46f604cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
