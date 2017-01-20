@@ -5,6 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.base.Optional;
@@ -33,97 +34,132 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHandler {
-
     private final DataBroker dataBroker;
     private final OdlInterfaceRpcService interfaceManager;
-    private InventoryReader inventoryReader;
+    private final InventoryReader inventoryReader;
 
-    public AbstractAlivenessProtocolHandler(final DataBroker dataBroker,
-                                            final OdlInterfaceRpcService interfaceManager,
-                                            final AlivenessMonitor alivenessMonitor,
-                                            final EtherTypes etherType) {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractAlivenessProtocolHandler.class);
+
+    AbstractAlivenessProtocolHandler(final DataBroker dataBroker,
+            final OdlInterfaceRpcService interfaceManager,
+            final AlivenessMonitor alivenessMonitor,
+            final EtherTypes etherType) {
         this.dataBroker = dataBroker;
         this.interfaceManager = interfaceManager;
         alivenessMonitor.registerHandler(etherType, this);
         inventoryReader = new InventoryReader(dataBroker);
     }
 
-    private InstanceIdentifier<NodeConnector> getNodeConnectorId(String interfaceName) {
-        InstanceIdentifier<Interface> id =  InstanceIdentifier.builder(Interfaces.class)
-                .child(Interface.class, new InterfaceKey(interfaceName)).build();
+    private <T extends DataObject> Optional<T> read(
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
+        try {
+            ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
 
-        if (read(LogicalDatastoreType.CONFIGURATION, id).isPresent()) {
-            NodeConnectorId ncId = getNodeConnectorIdFromInterface(interfaceName);
-            NodeId nodeId = getNodeIdFromNodeConnectorId(ncId);
+            return tx.read(datastoreType, path).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Cannot read object {} from datastore: ", path, e);
 
-            InstanceIdentifier<NodeConnector> ncIdentifier =
-                    InstanceIdentifier.builder(Nodes.class)
-                            .child(Node.class, new NodeKey(nodeId))
-                            .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
-            return ncIdentifier;
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected Interface getInterfaceFromConfigDS(String interfaceName) {
+        InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
+        InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(
+                interfaceKey);
+
+        return read(LogicalDatastoreType.CONFIGURATION, interfaceId).orNull();
+    }
+
+    // @formatter:off
+    protected org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+        .state.Interface getInterfaceFromOperDS(String interfaceName) {
+        InstanceIdentifier.InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .interfaces.rev140508.interfaces.state.Interface> idBuilder = InstanceIdentifier
+                .builder(InterfacesState.class)
+                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                        .state.Interface.class,
+                            new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                            .interfaces.state.InterfaceKey(interfaceName));
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+            .state.Interface> id = idBuilder.build();
+
+        return read(LogicalDatastoreType.OPERATIONAL, id).orNull();
+    }
+    // @formatter:on
+
+    private InstanceIdentifier<Interface> getInterfaceIdentifier(
+            InterfaceKey interfaceKey) {
+        InstanceIdentifier.InstanceIdentifierBuilder<Interface> interfaceInstanceIdentifierBuilder = InstanceIdentifier
+                .builder(Interfaces.class).child(Interface.class, interfaceKey);
+
+        return interfaceInstanceIdentifierBuilder.build();
+    }
+
+    protected byte[] getMacAddress(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                .interfaces.rev140508.interfaces.state.Interface interfaceState, String interfaceName) {
+        String macAddress = interfaceState.getPhysAddress().getValue();
+
+        if (!Strings.isNullOrEmpty(macAddress)) {
+            return AlivenessMonitorUtil.parseMacAddress(macAddress);
         }
         return null;
     }
 
-    private NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName) {
-        GetNodeconnectorIdFromInterfaceInput input = new GetNodeconnectorIdFromInterfaceInputBuilder().setIntfName(interfaceName).build();
-        Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> output =
-                interfaceManager.getNodeconnectorIdFromInterface(input);
+    private InstanceIdentifier<NodeConnector> getNodeConnectorId(
+            String interfaceName) {
+        InstanceIdentifier<Interface> id = InstanceIdentifier
+                .builder(Interfaces.class)
+                .child(Interface.class, new InterfaceKey(interfaceName))
+                .build();
+
+        if (read(LogicalDatastoreType.CONFIGURATION, id).isPresent()) {
+            NodeConnectorId ncId = getNodeConnectorIdFromInterface(
+                    interfaceName);
+            NodeId nodeId = getNodeIdFromNodeConnectorId(ncId);
+
+            return InstanceIdentifier.builder(Nodes.class)
+                    .child(Node.class, new NodeKey(nodeId))
+                    .child(NodeConnector.class, new NodeConnectorKey(ncId))
+                    .build();
+        }
+
+        return null;
+    }
+
+    private NodeConnectorId getNodeConnectorIdFromInterface(
+            String interfaceName) {
+        GetNodeconnectorIdFromInterfaceInput input = new GetNodeconnectorIdFromInterfaceInputBuilder()
+                .setIntfName(interfaceName).build();
+        Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> output = interfaceManager
+                .getNodeconnectorIdFromInterface(input);
         RpcResult<GetNodeconnectorIdFromInterfaceOutput> result = null;
+
         try {
             result = output.get();
-            if(result.isSuccessful()) {
-                GetNodeconnectorIdFromInterfaceOutput ncIdOutput = result.getResult();
+
+            if (result.isSuccessful()) {
+                GetNodeconnectorIdFromInterfaceOutput ncIdOutput = result
+                        .getResult();
+
                 return ncIdOutput.getNodeconnectorId();
             }
-        } catch(ExecutionException | InterruptedException e) {
-            //TODO: Handle exception
+        } catch (ExecutionException | InterruptedException e) {
+
+            // TODO: Handle exception
+            LOG.error("Cannot get node connector: ", e);
         }
 
         return null;
     }
 
     private NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
-        return new NodeId(ncId.getValue().substring(0,ncId.getValue().lastIndexOf(":")));
-    }
-
-    protected org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceFromOperDS(String interfaceName){
-        InstanceIdentifier.InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> idBuilder =
-                InstanceIdentifier.builder(InterfacesState.class).child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
-                        new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(interfaceName));
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder.build();
-        return read(LogicalDatastoreType.OPERATIONAL, id).orNull();
-    }
-
-    protected byte[] getMacAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface interfaceState, String interfaceName) {
-        String macAddress = interfaceState.getPhysAddress().getValue();
-        if(!Strings.isNullOrEmpty(macAddress)) {
-            return AlivenessMonitorUtil.parseMacAddress(macAddress);
-        }
-        return null;
-    }
-
-    private InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
-        InstanceIdentifier.InstanceIdentifierBuilder<Interface> interfaceInstanceIdentifierBuilder =
-                InstanceIdentifier.builder(Interfaces.class).child(Interface.class, interfaceKey);
-        return interfaceInstanceIdentifierBuilder.build();
-    }
-
-    protected Interface getInterfaceFromConfigDS(String interfaceName) {
-        InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-        InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(interfaceKey);
-        return read(LogicalDatastoreType.CONFIGURATION, interfaceId).orNull();
-    }
-
-    private <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
-                                                    InstanceIdentifier<T> path) {
-
-        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
-            return tx.read(datastoreType, path).get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return new NodeId(
+                ncId.getValue().substring(0, ncId.getValue().lastIndexOf(":")));
     }
 }
