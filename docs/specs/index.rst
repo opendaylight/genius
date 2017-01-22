@@ -13,3 +13,4 @@ Contents:
    Design Specification Template <specs-template>
    of-tunnels
    itm-tunnel-auto-config
+   Load balancing and high availability of multiple VxLAN tunnels <multiple-vxlan-tunnels>
