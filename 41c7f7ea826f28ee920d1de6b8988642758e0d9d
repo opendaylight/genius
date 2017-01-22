@@ -2,6 +2,69 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_324df073",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "indent it correctly. Refer other docs and look at generated doc to see why this is an issue.",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_12526c13",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "This should not go beyond text",
+      "range": {
+        "startLine": 5,
+        "startChar": 33,
+        "endLine": 5,
+        "endChar": 34
+      },
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_72577803",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 7,
+        "startChar": 33,
+        "endLine": 7,
+        "endChar": 34
+      },
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3a918c47",
         "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
         "patchSetId": 8
@@ -31,6 +94,217 @@
       "side": 1,
       "message": "Tali, ingress service binding support is already there. Though we are trying to enhance the pipeline by making everything dispatch from Table 17. With the current code, if you bind a service on tunnel with goto table 36, it will work...but if there are multiple services bound on the same tunnel, you should make sure that the application table miss should be to Table 17..",
       "parentUuid": "1a622d24_3a918c47",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b240c036",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "indentation is causing issues with generated doc.",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_923dbcbe",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "Should be bold, italics or both.",
+      "range": {
+        "startLine": 48,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 36
+      },
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f24a4854",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "1. This should be in References and linked to there. Refer QoS doc on how to setup references in doc.\n2. Since this is in genius itself, don\u0027t need to give complete URL. When this doc moves to stable/carbon this link will become misleading. You can use ../pipeline.rst as this is within same tree.",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d247444a",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "All references to Tables should include table number to. Refer some other spec docs, esp in Netvirt.",
+      "range": {
+        "startLine": 66,
+        "startChar": 24,
+        "endLine": 66,
+        "endChar": 47
+      },
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3274d09b",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "This would be helped by a text diagram of the register. Let me know if need help with it.",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1279cc93",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "RPC is defined as yang, right? Capture the change in yang file for this RPC",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_726e58cb",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "Line too long should be 80-100 characters.",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_527354b1",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "Fill in content and remove original text",
+      "range": {
+        "startLine": 161,
+        "startChar": 0,
+        "endLine": 168,
+        "endChar": 59
+      },
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b26720ea",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "Same as above. Avoid using hard links to internal docs.",
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_92649ce6",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "nitpick: whitespace",
+      "range": {
+        "startLine": 223,
+        "startChar": 0,
+        "endLine": 223,
+        "endChar": 2
+      },
+      "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f261a8d4",
+        "filename": "docs/specs/egress-service-binding-for-tunnels.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-22T05:59:58Z",
+      "side": 1,
+      "message": "nitpick (grammar): First alphabet of each sentence capital",
       "revId": "41c7f7ea826f28ee920d1de6b8988642758e0d9d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
