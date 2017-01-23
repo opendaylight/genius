@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7cf8e6e5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-01-23T22:55:08Z",
+      "side": 1,
+      "message": "This worker is called from both update and delete of a Transport zone. In update, there is logic to call this worker only when a member has been removed",
+      "parentUuid": "1a622d24_98d607f0",
+      "revId": "f4104cf87ee517594e7dadf18b46d019fb835879",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_38aff37e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-10T10:04:49Z",
       "side": 1,
       "message": "nit: formatting \"if (tepDeleteFlag) {\"\n\nthere are a lot of these, please go over formatting in the new code",
+      "revId": "f4104cf87ee517594e7dadf18b46d019fb835879",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dcdc7277",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-01-23T22:55:08Z",
+      "side": 1,
+      "message": "Done. Took care of this in other places too",
+      "parentUuid": "1a622d24_38aff37e",
       "revId": "f4104cf87ee517594e7dadf18b46d019fb835879",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_bcd9ae85",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-01-23T22:55:08Z",
+      "side": 1,
+      "message": "removed the commented lines",
+      "parentUuid": "1a622d24_58c90f58",
+      "range": {
+        "startLine": 132,
+        "startChar": 0,
+        "endLine": 134,
+        "endChar": 119
+      },
+      "revId": "f4104cf87ee517594e7dadf18b46d019fb835879",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_d8bd1fb9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 2
@@ -70,6 +130,30 @@
       "writtenOn": "2017-01-10T10:04:49Z",
       "side": 1,
       "message": "?",
+      "range": {
+        "startLine": 154,
+        "startChar": 28,
+        "endLine": 154,
+        "endChar": 31
+      },
+      "revId": "f4104cf87ee517594e7dadf18b46d019fb835879",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fce33631",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-01-23T22:55:08Z",
+      "side": 1,
+      "message": "removed the commented lines",
+      "parentUuid": "1a622d24_d8bd1fb9",
       "range": {
         "startLine": 154,
         "startChar": 28,
