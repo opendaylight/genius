@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e1727048",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "I think that \"different paths for different types of traffic\" is not covered by this spec. Will only be part of the policy-based spec",
+      "parentUuid": "fafc7978_e6ba8609",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_463712b1",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-23T13:13:54Z",
       "side": 1,
       "message": "Link failures are irrelevant IMHO - they are handled by bonding the two interfaces and adding the bond port as the VXLAN port.",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c1948c46",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_463712b1",
       "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a1e34804",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_263c8e93",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_665df6e9",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 7
@@ -64,6 +118,24 @@
       "writtenOn": "2017-01-23T13:13:54Z",
       "side": 1,
       "message": "Why this limitation of weight 0-100, and summing to 100?\nIIRC the OpenFlow standard allows any integer for weight - then the formula for each port relative weight is \"port_weight/(sum of all port_weights)\"",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_218d9832",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_665df6e9",
       "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_c1e64c16",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Yes. I will rephrase this",
+      "parentUuid": "fafc7978_c6714279",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_86261a67",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 7
@@ -98,6 +188,24 @@
       "writtenOn": "2017-01-23T13:13:54Z",
       "side": 1,
       "message": "So basically all of the above entails a single change as far as I understand:\n\nInstead of outputting to the tunnel port directly, we will output to a tunnel SELECT group.\n\nAlso how does this connect with the tunnel service binding? I assume we can do this first part irrespectively, and simply output to group fro all the places we currently output to vxlan port.\nIf it comes after the egress tunnel service, we can do the same from the service. Did I get that right?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_81dd6445",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Yes. basically you are right, we could output to the select group directly from anywhere in the pipeline but this would\n1. make the pipeline asymmetric for multi-uplink cases\n2. would not allow binding of higher priority service such as policy-based routing on top of tunnel interfaces",
+      "parentUuid": "fafc7978_86261a67",
       "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a1f508cd",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Currently this will be the lport tag of the actual tunnel.\nI assume we can bind some ingress service to replace the tunnel member lport-tag with the logical one, just to be symmetric with the egress side.\nAs I\u0027m not sure how will this fit into the rest of the ingress tunnel binding pipeline planning and what benefit will come out of this, I prefer to leave it as-is for now.",
+      "parentUuid": "fafc7978_460552c1",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_a6c07e7d",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 7
@@ -132,6 +258,24 @@
       "writtenOn": "2017-01-23T13:13:54Z",
       "side": 1,
       "message": "Is this the existing parent-interface for interfaces?\nWouldn\u0027t this complicate non-tunnel interfaces?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e62ba692",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "The code using this augmentation will have to either \n1. extract the first element in the list\n2. apply the operation on all the list elements\ndepending on the use case",
+      "parentUuid": "fafc7978_a6c07e7d",
       "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_26364e04",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_06906a94",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_26a00ef4",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 7
@@ -172,6 +334,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a6ca3e6c",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "Currently this RPC identify the destination only by dst-ip that could be either ip of ToR/external switch or the underlay ip of the compute/control node.\n\nAfter we break the 1:1 relationship between destination-ip and destination-dp-id, the dp-id should be passed if there are multiple uplinks and not limit the next-hop to specific destination ip\nThere should be also a change in the L3VPN to support this",
+      "parentUuid": "fafc7978_26a00ef4",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_665cd626",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 7
@@ -183,6 +363,24 @@
       "writtenOn": "2017-01-23T13:13:54Z",
       "side": 1,
       "message": "I think option-of-tunnel is irrelevant here?\nThis would probably work the same both for of-tunnels and non of-tunnels, right?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c65dc24a",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-01-23T16:12:44Z",
+      "side": 1,
+      "message": "You are right. I removed this limitation",
+      "parentUuid": "fafc7978_665cd626",
       "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
