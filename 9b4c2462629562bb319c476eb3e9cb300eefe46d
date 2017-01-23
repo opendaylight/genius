@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fbe6a343",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T11:16:23Z",
+      "side": 1,
+      "message": "DataStore - would you like me to rename to something clearer? Suggestions?",
+      "parentUuid": "fafc7978_f54d12c6",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_b5da6ae7",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 20
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-23T08:03:04Z",
       "side": 1,
       "message": "Alon, we cannot compromise on scale in interface-manager, since we have a lot of scale testing going downstream, and this will have major impacts..let us have caching also in the same patch",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bbdc1b76",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T11:16:23Z",
+      "side": 1,
+      "message": "I discussed this extensively with Vishal, he proposed going forward with this patch and he will add the cache mechanism, since we are missing a cache mechanism in Genius.\n\nI don\u0027t mind adding one if there is a good infrastructure for it already, but since it is missing Vishal proposed doing this. If it will be done in the near future it\u0027s less of a problem IMO, Carbon is relatively in the beginning of the dev cycle.",
+      "parentUuid": "fafc7978_b5da6ae7",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_db8c7f82",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T11:16:23Z",
+      "side": 1,
+      "message": "Why not?\n\nIf I get a neutron port added for a port named \"xxx\", and then I get a termination point named \"yyy\" added with iface-id\u003d\"xxx\" - I will call the parentRefUpdateWorker with interfaceName\u003d\"xxx\" and parentInterfaceName\u003d\"yyy\"",
+      "parentUuid": "fafc7978_d58f2ecb",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_55a4de56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7bf3d30a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T11:16:23Z",
+      "side": 1,
+      "message": "Could you explain what you mean?",
+      "parentUuid": "fafc7978_55a4de56",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3595dae4",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
         "patchSetId": 20
@@ -98,6 +170,24 @@
       "writtenOn": "2017-01-23T08:03:04Z",
       "side": 1,
       "message": "why is opstate modified check going inside the tunnel check?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7b7c7373",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T11:16:23Z",
+      "side": 1,
+      "message": "Because the same was already checked before modifyTunnel, so it can be false here only if it was changed inside the tunnel check.\n\nI could move it back out but it makes more sense here, there\u0027s no point checking it again if we didn\u0027t enter the if",
+      "parentUuid": "fafc7978_3595dae4",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
