@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
@@ -20,12 +21,15 @@ import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -41,6 +45,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     public static final String SEPARATOR = ":";
     private static final PMAgent pmAgent = new PMAgent();
+    private final SingleTransactionDataBroker singleTxDB;
 
     private static final InstanceIdentifier<FlowCapableNodeConnector> II_TO_FLOW_CAPABLE_NODE_CONNECTOR
             = InstanceIdentifier.builder(Nodes.class)
@@ -56,6 +61,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,final EntityOwnershipService eos) {
         super( FlowCapableNodeConnector.class);
         Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+        this.singleTxDB = new SingleTransactionDataBroker(dataBroker);
 
         entityOwnershipService = eos;
         final DataTreeIdentifier<FlowCapableNodeConnector> treeId =
@@ -98,10 +104,12 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
             String sNodeConnectorIdentifier = getNodeConnectorId(String.valueOf(nodeConnIdent.firstKeyOf(NodeConnector.class).getId()));
             long nDpId = getDpIdFromPortName(sNodeConnectorIdentifier);
             if (dpnToPortMultiMap.containsKey(nDpId)) {
-                LOG.debug("Node Connector {} removed", sNodeConnectorIdentifier);
-                dpnToPortMultiMap.remove(nDpId, sNodeConnectorIdentifier);
-                sendNodeConnectorUpdation(nDpId);
-                PortNameMapping.updatePortMap("openflow:" + nDpId + ":" + del.getName(), sNodeConnectorIdentifier, "DELETE");
+                if (getSwitchStatus(nDpId)) {
+                    dpnToPortMultiMap.remove(nDpId, sNodeConnectorIdentifier);
+                    LOG.debug("Node Connector {} removed", sNodeConnectorIdentifier);
+                    sendNodeConnectorUpdation(nDpId);
+                    PortNameMapping.updatePortMap("openflow:" + nDpId + ":" + del.getName(), sNodeConnectorIdentifier, "DELETE");
+                }
             }
         }
     }
@@ -141,7 +149,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                     sendNodeConnectorUpdation(nDpId);
                     PortNameMapping.updatePortMap("openflow:" + nDpId + ":" + add.getName(), sNodeConnectorIdentifier, "ADD");
                 } else {
-                    LOG.error("Duplicate Event.Node Connector already added");
+                    LOG.debug("Node Connector {} already added for dpn {}", sNodeConnectorIdentifier, nDpId);
                 }
             }
         }
@@ -190,5 +198,24 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         }
         LOG.debug("NumberOfOFPorts:" + nodeListPortsCountStr + " portlistsize " + portname.size());
         pmAgent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
+    }
+
+    public boolean getSwitchStatus(long switchId) {
+        NodeId nodeId = new NodeId("openflow:" + switchId);
+        LOG.debug("Querying switch with dpnId {} is up/down", nodeId);
+        InstanceIdentifier<Node> nodeInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, new NodeKey(nodeId)).build();
+
+        try {
+            Optional<Node> nodeOptional = singleTxDB.syncReadOptional(LogicalDatastoreType.OPERATIONAL, nodeInstanceId);
+            if (nodeOptional.isPresent()) {
+                LOG.debug("Switch {} is up", nodeId);
+                return true;
+            }
+        } catch (Exception e) {
+            LOG.error("ReadFailedException", e.getMessage());
+        }
+        LOG.debug("Switch {} is down", nodeId);
+        return false;
     }
 }
