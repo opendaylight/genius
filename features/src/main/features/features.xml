@@ -79,6 +79,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <feature name='odl-genius-fcaps-application' version='${project.version}' description='OpenDaylight :: genius :: fcapsapp'>
     <feature version="${openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+    <feature version='${mdsal.version}'>odl-mdsal-broker</feature>
+    <feature version='${ovsdb.version}'>odl-ovsdb-hwvtepsouthbound-api</feature>
+    <feature version="${openflowplugin.version}">odl-openflowplugin-nxm-extensions</feature>
+    <feature version='${infrautils.version}'>odl-infrautils-counters</feature>
+    <bundle>mvn:org.opendaylight.controller/liblldp/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/mdsalutil-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/fcapsapplication-jmxapi/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}</bundle>
     <configfile finalname="etc/opendaylight/karaf/73-fcaps-app.xml">mvn:org.opendaylight.genius/fcapsapplication-impl/{{VERSION}}/xml/config
