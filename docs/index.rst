@@ -15,3 +15,4 @@ Contents:
 
    pipeline
    specs/index
+   Counter Framework <counter-framework>
