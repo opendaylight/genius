@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f54d12c6",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T08:03:04Z",
+      "side": 1,
+      "message": "what is DS here?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b5da6ae7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T08:03:04Z",
+      "side": 1,
+      "message": "Alon, we cannot compromise on scale in interface-manager, since we have a lot of scale testing going downstream, and this will have major impacts..let us have caching also in the same patch",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d5e1ee9b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T08:03:04Z",
+      "side": 1,
+      "message": "Interface-Manager already has a termination-point listener..can we add the caching there? and then have a utility method to fetch from cache first?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d58f2ecb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T08:03:04Z",
+      "side": 1,
+      "message": "there will be no interface corresponding to the southbound port name in interface config DS. this will return null. what you need is a mechanism to fetch all interfaces configured on top of this interface and then update their parent-refs.",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_55a4de56",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T08:03:04Z",
+      "side": 1,
+      "message": "update of parent-refs is going to be a delete and add for interface, if u see interfaceConfigListener",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3595dae4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T08:03:04Z",
+      "side": 1,
+      "message": "why is opstate modified check going inside the tunnel check?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
