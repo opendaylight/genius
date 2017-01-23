@@ -89,6 +89,40 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8cf3db09",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T16:35:27Z",
+      "side": 1,
+      "message": "why do we need EOS here?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6cf837e6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T16:35:27Z",
+      "side": 1,
+      "message": "RendererStateUpdateWorker had a bfd-state cache population, if we run this logic only in leader, cache will be impacted. Or have you taken care of the same somewhere else?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d58f2ecb",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -124,6 +158,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_4cd0d353",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T16:35:27Z",
+      "side": 1,
+      "message": "could you please explain this logic? Please point to the code where you get the northbound configured interface-name from the termination-point name",
+      "parentUuid": "fafc7978_db8c7f82",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_55a4de56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -152,6 +204,24 @@
       "writtenOn": "2017-01-23T11:16:23Z",
       "side": 1,
       "message": "Could you explain what you mean?",
+      "parentUuid": "fafc7978_55a4de56",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ccc32389",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-23T16:35:27Z",
+      "side": 1,
+      "message": "pls check InterfaceConfigListener update()..if somebody updates parent-interface, the code treats it as delete of previous configuration and then add of the new one.. so you should make sure that the northbound create interface job and this southbound job are synchronized on the same key..else things will go for a toss..",
       "parentUuid": "fafc7978_55a4de56",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
