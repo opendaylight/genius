@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7ccf46b1",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-23T22:59:38Z",
+      "side": 1,
+      "message": "just a general comment FYI, not a particular review comment: Personally I actually find these kind of methods, which we have everywhere, a little pointless... there is no need to LOG.info() that start(), which is essentially just after the constructor, of every single internal class.. this only pollutes the logs, and adds little real value info.",
+      "revId": "5ce32eeabedb3306a496177869dd636db7a2d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1cbefaff",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-23T22:59:38Z",
+      "side": 1,
+      "message": "as we\u0027re touching this code anyway, you could change it to have a single return at the very end - that\u0027s more readable code, and generally considere best practice.  Checkstyle has a rule for it, which I didn\u0027t enable, because we have way too many violations... ;-)",
+      "revId": "5ce32eeabedb3306a496177869dd636db7a2d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
