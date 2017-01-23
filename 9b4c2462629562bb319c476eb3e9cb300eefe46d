@@ -106,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_4c18d384",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T18:03:47Z",
+      "side": 1,
+      "message": "I don\u0027t really need this as part of the commit - don\u0027t we update the datastore from all ODLs though if we don\u0027t use EOS?",
+      "parentUuid": "fafc7978_8cf3db09",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6cf837e6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -117,6 +135,24 @@
       "writtenOn": "2017-01-23T16:35:27Z",
       "side": 1,
       "message": "RendererStateUpdateWorker had a bfd-state cache population, if we run this logic only in leader, cache will be impacted. Or have you taken care of the same somewhere else?",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2c1d8f74",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T18:03:47Z",
+      "side": 1,
+      "message": "Pending previous comment, I missed this one - ideally we should only do the caching in all ODLs? Or should I just leave this alone?",
+      "parentUuid": "fafc7978_6cf837e6",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -176,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_87573402",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T18:03:47Z",
+      "side": 1,
+      "message": "Line 91 - the interfaceName parameter here is determined by the TP iface-id value, provided by SouthboundUtils.getExternalInterfaceIdValue(tpNew), and the parentRef is this termination point\u0027s interface-state name",
+      "parentUuid": "fafc7978_4cd0d353",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_55a4de56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -223,6 +277,24 @@
       "side": 1,
       "message": "pls check InterfaceConfigListener update()..if somebody updates parent-interface, the code treats it as delete of previous configuration and then add of the new one.. so you should make sure that the northbound create interface job and this southbound job are synchronized on the same key..else things will go for a toss..",
       "parentUuid": "fafc7978_55a4de56",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a73d18be",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T18:03:47Z",
+      "side": 1,
+      "message": "this is a good point - the northbound create should probably use a DJC with a shared key - I\u0027ll look into it tomorrow.\n\nthe netvirt commit with the neutron-nb code is here by the way, if you want to take a look at the other direction\n\nhttps://git.opendaylight.org/gerrit/#/c/49908/",
+      "parentUuid": "fafc7978_ccc32389",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
