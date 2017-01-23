@@ -22,6 +22,30 @@
       "revId": "f1e9cb3b9c01a78cc5ae5dc6d863f9bb5d7df743",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_79b918e9",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-23T20:44:25Z",
+      "side": 1,
+      "message": "OK, I\u0027m happy to remove it - it\u0027s not critical, indeed probably not very useful anyway; as it would just be a huge String.. the real value is the diff from the AssertDataObjects in the other method.",
+      "parentUuid": "fafc7978_329b30cb",
+      "range": {
+        "startLine": 110,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 41
+      },
+      "revId": "f1e9cb3b9c01a78cc5ae5dc6d863f9bb5d7df743",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
