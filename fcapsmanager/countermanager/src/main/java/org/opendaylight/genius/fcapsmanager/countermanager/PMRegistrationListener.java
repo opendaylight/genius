@@ -99,8 +99,8 @@ public class PMRegistrationListener implements Runnable {
         waitforNotification();
     }
 
-    /**
-     * Prepovising case to handle all counter mbeans which are registered before
+    /*
+     * Pre-provisioning case to handle all counter mbeans which are registered before
      * the installation of framework bundle Queries the platform Mbeanserver to
      * retrieve registered counter mbean and add it to the map
      */

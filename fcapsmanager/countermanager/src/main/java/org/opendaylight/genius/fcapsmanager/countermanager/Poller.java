@@ -13,8 +13,11 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import org.opendaylight.genius.fcapsmanager.PMServiceFacade;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -22,8 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Poller {
-    private static final Logger LOG = LoggerFactory.getLogger(Poller.class);
     private static BundleContext context;
+    private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+    private static final Logger LOG = LoggerFactory.getLogger(Poller.class);
 
     public Poller() {
     }
@@ -32,58 +36,50 @@ public class Poller {
         context = bundleContext;
     }
 
-    // This method do the Polling every 5 second and retrieves the the counter
-    // details
-    // @Override
+    /*
+     * This method do the Polling every 5 second and retrieves the the counter
+     * details
+     */
     public void polling() {
         LOG.debug("Poller Polling Mbean List and the content is " + PMRegistrationListener.beanNames);
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(new Pollerthread(), 0, 5, TimeUnit.SECONDS);
     }
 
-    /**
+    /*
      * Platform dependent bundle injects its handle and it is retrieved in the
      * method
      */
     protected PMServiceFacade getPMServiceSPI() {
         PMServiceFacade service = null;
         if (context != null) {
-            try {
-                ServiceReference<?> serviceReference = context.getServiceReference(PMServiceFacade.class.getName());
-                service = (PMServiceFacade) context.getService(serviceReference);
-            } catch (NullPointerException ex) {
-                service = null;
-            } catch (Exception e) {
-                LOG.error("Exception {} occurred in getting PMServiceSPI", e);
-            }
+            ServiceReference<?> serviceReference = context.getServiceReference(PMServiceFacade.class.getName());
+            service = (PMServiceFacade) context.getService(serviceReference);
         }
         return service;
     }
-}
 
-class Pollerthread implements Runnable {
-    private static final Logger LOG = LoggerFactory.getLogger(Pollerthread.class);
-    private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-    Map<String, String> getCounter = new HashMap<>();
-    Poller poller = new Poller();
+    class Pollerthread implements Runnable {
+        private Map<String, String> counters = new HashMap<>();
+        private final Poller poller = new Poller();
 
-    /**
-     * Retrieve countermap from each counter mbean and send to platform
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public void run() {
-        try {
+        /*
+         * Retrieve counters map from each counter mbean and send to platform
+         */
+        @Override
+        public void run() {
             for (ObjectName objectName : PMRegistrationListener.beanNames) {
-                getCounter = (Map<String, String>) mbs.invoke(objectName, "retrieveCounterMap", null, null);
-                if (poller.getPMServiceSPI() != null) {
-                    poller.getPMServiceSPI().connectToPMFactory(getCounter);
-                } else {
-                    LOG.debug("PM service not available");
+                try {
+                    counters = (Map<String, String>) mbs.invoke(objectName, "retrieveCounterMap", null, null);
+                    if (poller.getPMServiceSPI() != null) {
+                        poller.getPMServiceSPI().connectToPMFactory(counters);
+                    } else {
+                        LOG.debug("PM service not available");
+                    }
+                } catch (InstanceNotFoundException | ReflectionException | MBeanException e) {
+                    LOG.error("Exception caught: ", e);
                 }
             }
-        } catch (Exception e) {
-            LOG.error("Exception caught {} ", e);
         }
     }
 }
