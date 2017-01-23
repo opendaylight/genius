@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e6ba8609",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "This isn\u0027t only for utilizing network resources, but using multiple paths - sometimes we will have a different path for different types of traffic.",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_463712b1",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "Link failures are irrelevant IMHO - they are handled by bonding the two interfaces and adding the bond port as the VXLAN port.",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_263c8e93",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "typo: trasport-zone",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_665df6e9",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "Why this limitation of weight 0-100, and summing to 100?\nIIRC the OpenFlow standard allows any integer for weight - then the formula for each port relative weight is \"port_weight/(sum of all port_weights)\"",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c6714279",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "Isn\u0027t this a general limitation of BFD monitoring, not relevant for multi-uplinks? Meaning we have the same problem with both multi and single uplink? (We can only detect link failures)",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_86261a67",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "So basically all of the above entails a single change as far as I understand:\n\nInstead of outputting to the tunnel port directly, we will output to a tunnel SELECT group.\n\nAlso how does this connect with the tunnel service binding? I assume we can do this first part irrespectively, and simply output to group fro all the places we currently output to vxlan port.\nIf it comes after the egress tunnel service, we can do the same from the service. Did I get that right?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_460552c1",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "What would we set the in_port to - the lport of the logical tunnel group or the lport of the actual tunnel in the group? I imagine we could use both for information in classification down the line, though this might only be relevant for the next spec.",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a6c07e7d",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "Is this the existing parent-interface for interfaces?\nWouldn\u0027t this complicate non-tunnel interfaces?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_06906a94",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "typo: uint",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_26a00ef4",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "Not that I mind this, but what is the difference between before and after? Why could we live without a destination-dpid previously even though we had multiple destinations for a single source?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_665cd626",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-23T13:13:54Z",
+      "side": 1,
+      "message": "I think option-of-tunnel is irrelevant here?\nThis would probably work the same both for of-tunnels and non of-tunnels, right?",
+      "revId": "194ce9c98d552e4ebfe786e0b95328fb0bb747e9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
