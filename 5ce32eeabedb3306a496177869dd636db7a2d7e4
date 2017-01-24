@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_6f5dc6e9",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-24T09:37:47Z",
+      "side": 1,
+      "message": "I understand your point, we have a lot of those logs, but in the case of services starting and closing (not just any single internal class) it may make sense, although we might lower the severity to DEBUG to not pollute the log.",
+      "parentUuid": "fafc7978_7ccf46b1",
+      "revId": "5ce32eeabedb3306a496177869dd636db7a2d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1cbefaff",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-23T22:59:38Z",
       "side": 1,
       "message": "as we\u0027re touching this code anyway, you could change it to have a single return at the very end - that\u0027s more readable code, and generally considere best practice.  Checkstyle has a rule for it, which I didn\u0027t enable, because we have way too many violations... ;-)",
+      "revId": "5ce32eeabedb3306a496177869dd636db7a2d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0ffcfa3d",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-24T09:37:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_1cbefaff",
       "revId": "5ce32eeabedb3306a496177869dd636db7a2d7e4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
