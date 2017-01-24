@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_1c81da8f",
+        "filename": "docs/index.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-24T06:36:57Z",
+      "side": 1,
+      "message": "This should be in specs/index.rst, not at root. Please check the generated doc locally before pushing docs.",
+      "range": {
+        "startLine": 18,
+        "startChar": 3,
+        "endLine": 18,
+        "endChar": 40
+      },
+      "revId": "f963c1d617160c694928b2648bd97ec7d372473b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
