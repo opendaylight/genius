@@ -124,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e3c9cd5b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-24T16:53:47Z",
+      "side": 1,
+      "message": "there is a cache being updated in the update helper, EOS is not used here for that particular reason",
+      "parentUuid": "fafc7978_4c18d384",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6cf837e6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -230,6 +248,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_63dddd14",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-24T16:53:47Z",
+      "side": 1,
+      "message": "probably i am missing something on the ovsdb part..how will OVSDB get to know the port UUID? so that u can fetch the northbound configured interface from southbound?",
+      "parentUuid": "fafc7978_87573402",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_55a4de56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -295,6 +331,24 @@
       "side": 1,
       "message": "this is a good point - the northbound create should probably use a DJC with a shared key - I\u0027ll look into it tomorrow.\n\nthe netvirt commit with the neutron-nb code is here by the way, if you want to take a look at the other direction\n\nhttps://git.opendaylight.org/gerrit/#/c/49908/",
       "parentUuid": "fafc7978_ccc32389",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e3d0adf9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-24T16:53:47Z",
+      "side": 1,
+      "message": "u cannot change the northbound key, as it is dependant on too many other things...better to change the southbound key u r currently adding! Also I have a doubt here, will there be a case where the southbound event ends up hitting before the northbound interface create happens?\n\nAlso, I think neutron-vpn was using batching to populate config/ietf-interfaces..can we use the same for update?",
+      "parentUuid": "fafc7978_a73d18be",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
