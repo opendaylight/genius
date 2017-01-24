@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_fe8cc681",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfoList.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-24T18:00:09Z",
+      "side": 1,
+      "message": "we really should have a toString() here, now that it\u0027s no longer abstract?",
+      "revId": "3497cb9c0fd77c0c2a5b0cbcc8c7830ea349d073",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
