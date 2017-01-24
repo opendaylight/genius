@@ -21,18 +21,6 @@ public interface ChainableDataTreeChangeListener<T extends DataObject> extends E
     /**
      * Adds a "chained" DataTreeChangeListener, to which
      * {@link DataTreeChangeListener#onDataTreeChanged(java.util.Collection)}
-     * calls are forwarded BEFORE having been processed by this DataTreeChangeListener.
-     *
-     * <p>If an asychronous DataTreeChangeListener supports chaining, it must forward
-     * the onDataTreeChanged() call BEFORE event are submitted to its async executor for processing.
-     *
-     * @param listener the chained DataTreeChangeListener to invoke after this one
-     */
-    void addBeforeListener(DataTreeChangeListener<T> listener);
-
-    /**
-     * Adds a "chained" DataTreeChangeListener, to which
-     * {@link DataTreeChangeListener#onDataTreeChanged(java.util.Collection)}
      * calls are forwarded AFTER having been processed by this DataTreeChangeListener.
      *
      * <p>If an asychronous DataTreeChangeListener supports chaining, it must forward

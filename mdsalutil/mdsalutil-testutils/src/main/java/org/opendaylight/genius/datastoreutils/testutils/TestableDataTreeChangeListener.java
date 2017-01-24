@@ -13,7 +13,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 /**
  * DataTreeChangeListener useful for testing in asynchronous scenarios.
  *
- * @author Michael Vorburger.ch
+ * @author Michael Vorburger
  */
 @SuppressWarnings("rawtypes")
 public class TestableDataTreeChangeListener
@@ -22,7 +22,7 @@ public class TestableDataTreeChangeListener
 
     @Override
     public void onDataTreeChanged(Collection changes) {
-        consumedEvents(changes.size());
+        consumedEvents();
     }
 
 }

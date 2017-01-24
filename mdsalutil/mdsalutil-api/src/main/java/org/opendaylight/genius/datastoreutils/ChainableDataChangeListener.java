@@ -24,11 +24,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 public interface ChainableDataChangeListener extends EventListener {
 
     /**
-     * See {@link ChainableDataTreeChangeListener#addBeforeListener(DataTreeChangeListener)}.
-     */
-    void addBeforeListener(DataChangeListener listener);
-
-    /**
      * See {@link ChainableDataTreeChangeListener#addAfterListener(DataTreeChangeListener)}.
      */
     void addAfterListener(DataChangeListener listener);
