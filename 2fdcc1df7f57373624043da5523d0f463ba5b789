@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c3692927",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-24T17:02:30Z",
+      "side": 1,
+      "message": "i would suggest to use the same key as is used by neutronvpn for creating interfaces...this model has a disadvantage that this is getting invoked on terminationpoint event, which is on operational/topology shard, and neutronvpn operates on default shard..and hence even if you synchronize using DJC, these events can be triggered on two different nodes in a clustered setup where DJC synchronization will not work..",
+      "revId": "2fdcc1df7f57373624043da5523d0f463ba5b789",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a3350548",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-24T17:02:30Z",
+      "side": 1,
+      "message": "should we call our own API?",
+      "revId": "2fdcc1df7f57373624043da5523d0f463ba5b789",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
