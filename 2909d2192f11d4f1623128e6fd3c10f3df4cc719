@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_b23d55be",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-24T10:12:35Z",
+      "side": 1,
+      "message": "A very detailed explanation. needed some time to understand it :)\nI think we should use Map\u003cBigInteger, Set\u003cFlowEntity\u003e\u003e to avoid duplicates. Because there is no chance that we can have flow duplicates on a particular node. m_dpnId in AbstractSwitchEntity is used to identify a node.\nEven if installFlow happens on existing flow, it should update the Set for the given dpId.",
+      "revId": "2909d2192f11d4f1623128e6fd3c10f3df4cc719",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_124b815a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-24T10:12:35Z",
+      "side": 1,
+      "message": "Good use of flexible google true assert framework.",
+      "revId": "2909d2192f11d4f1623128e6fd3c10f3df4cc719",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
