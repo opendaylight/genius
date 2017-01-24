@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_03e2119f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-24T17:15:17Z",
+      "side": 1,
+      "message": "hashCode() without equals() - intentional? I see this is an abstract, but still - typically NOK.",
+      "revId": "9868c345edde7dee4b80f736ed0c516ea2d46178",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
