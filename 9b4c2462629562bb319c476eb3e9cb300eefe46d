@@ -266,6 +266,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_43ad3688",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-25T11:49:30Z",
+      "side": 1,
+      "message": "magic ;)\n\nthere is a convention that all OVSDB ports have this added information. for example nova gets the UUID in the event that asks it to create the VM ports, and adds the port to OVSDB with this information.\nwe discussed this in the weekly netvirt meeting, and came to the conclusion that this is the standard for any port we have previously seen (same for octavia ports, trunk ports etc.)",
+      "parentUuid": "fafc7978_63dddd14",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_55a4de56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 20
@@ -349,6 +367,24 @@
       "side": 1,
       "message": "u cannot change the northbound key, as it is dependant on too many other things...better to change the southbound key u r currently adding! Also I have a doubt here, will there be a case where the southbound event ends up hitting before the northbound interface create happens?\n\nAlso, I think neutron-vpn was using batching to populate config/ietf-interfaces..can we use the same for update?",
       "parentUuid": "fafc7978_a73d18be",
+      "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_23c1122f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-25T11:49:30Z",
+      "side": 1,
+      "message": "What kind of batching do you propose?\nWe wanted to keep the parentRef update in a separate DJC than the RendererConfig worker - are you proposing to merge them together and use a single submit?",
+      "parentUuid": "fafc7978_e3d0adf9",
       "revId": "9b4c2462629562bb319c476eb3e9cb300eefe46d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
