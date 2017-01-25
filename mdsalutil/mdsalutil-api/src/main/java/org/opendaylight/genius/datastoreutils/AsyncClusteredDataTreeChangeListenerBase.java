@@ -31,8 +31,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     <T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
         implements ClusteredDataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
-    // Using non-static Logger so that logs easily identifies actual listener class
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataTreeChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
@@ -85,8 +84,8 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             listenerRegistration = looper
                     .loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
-            log.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            log.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
+            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
+            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
             throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
         }
     }
@@ -98,7 +97,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             try {
                 listenerRegistration.close();
             } catch (final Exception e) {
-                log.error("Error when cleaning up DataTreeChangeListener.", e);
+                LOG.error("Error when cleaning up DataTreeChangeListener.", e);
             }
             listenerRegistration = null;
         }
