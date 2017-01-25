@@ -33,34 +33,16 @@ public final class ChainableDataChangeListenerImpl implements ChainableDataChang
 
     private static final Logger LOG = LoggerFactory.getLogger(ChainableDataChangeListenerImpl.class);
 
-    private final List<DataChangeListener> beforeListeners = new CopyOnWriteArrayList<>();
-    private final List<DataChangeListener> afterListeners = new CopyOnWriteArrayList<>();
-
-    @Override
-    public void addBeforeListener(DataChangeListener listener) {
-        beforeListeners.add(listener);
-    }
+    private final List<DataChangeListener> listeners = new CopyOnWriteArrayList<>();
 
     @Override
     public void addAfterListener(DataChangeListener listener) {
-        afterListeners.add(listener);
-    }
-
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    public void notifyBeforeOnDataChanged(AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> change) {
-        for (DataChangeListener listener : beforeListeners) {
-            try {
-                listener.onDataChanged(change);
-            } catch (Exception e) {
-                LOG.error("Caught Exception from a before listener's onDataChanged(); "
-                        + "nevertheless proceeding with others, if any", e);
-            }
-        }
+        listeners.add(listener);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void notifyAfterOnDataChanged(AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> change) {
-        for (DataChangeListener listener : afterListeners) {
+        for (DataChangeListener listener : listeners) {
             try {
                 listener.onDataChanged(change);
             } catch (Exception e) {

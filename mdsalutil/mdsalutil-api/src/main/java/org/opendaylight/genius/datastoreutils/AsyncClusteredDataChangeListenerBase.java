@@ -62,11 +62,6 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     }
 
     @Override
-    public void addBeforeListener(DataChangeListener listener) {
-        chainingDelegate.addBeforeListener(listener);
-    }
-
-    @Override
     public void addAfterListener(DataChangeListener listener) {
         chainingDelegate.addAfterListener(listener);
     }
@@ -167,7 +162,6 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
         private final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent;
 
         public DataChangeHandler(final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent) {
-            chainingDelegate.notifyBeforeOnDataChanged(changeEvent);
             this.changeEvent = changeEvent;
         }
 

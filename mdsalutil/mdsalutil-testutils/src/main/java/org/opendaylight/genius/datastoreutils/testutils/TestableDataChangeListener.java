@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @deprecated Migrate your listeners from {@link DataChangeListener} to
  *             {@link DataTreeChangeListener}, and use the {@link TestableDataTreeChangeListener}.
  *
- * @author Michael Vorburger.ch
+ * @author Michael Vorburger
  */
 @Deprecated
 public class TestableDataChangeListener
@@ -28,7 +28,7 @@ public class TestableDataChangeListener
 
     @Override
     public void onDataChanged(AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> change) {
-        consumedEvents(1);
+        consumedEvents();
     }
 
 }

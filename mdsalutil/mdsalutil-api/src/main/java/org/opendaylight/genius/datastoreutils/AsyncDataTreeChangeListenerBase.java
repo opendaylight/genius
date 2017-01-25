@@ -30,8 +30,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener<T>>
         implements DataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
-    // Using non-static Logger so that logs easily identifies actual listener class
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncDataTreeChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
@@ -58,11 +57,6 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     }
 
     @Override
-    public void addBeforeListener(DataTreeChangeListener<T> listener) {
-        chainingDelegate.addBeforeListener(listener);
-    }
-
-    @Override
     public void addAfterListener(DataTreeChangeListener<T> listener) {
         chainingDelegate.addAfterListener(listener);
     }
@@ -84,8 +78,8 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
             listenerRegistration = looper
                     .loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
-            log.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            log.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
+            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
+            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
             throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
         }
     }
@@ -112,7 +106,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
             try {
                 listenerRegistration.close();
             } catch (final Exception e) {
-                log.error("Error when cleaning up DataTreeChangeListener.", e);
+                LOG.error("Error when cleaning up DataTreeChangeListener.", e);
             }
             listenerRegistration = null;
         }
@@ -133,11 +127,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         private final Collection<DataTreeModification<T>> changes;
 
         public DataTreeChangeHandler(Collection<DataTreeModification<T>> changes) {
-            chainingDelegate.notifyBeforeOnDataTreeChanged(changes);
             this.changes = changes;
-            for (DataTreeModification<T> change : changes) {
-                log.debug("sync run() {}", change);
-            }
         }
 
         @Override
@@ -164,7 +154,6 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
                         // FIXME: May be not a good idea to throw.
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
-                log.debug("async run() {}", change);
             }
             chainingDelegate.notifyAfterOnDataTreeChanged(changes);
         }
