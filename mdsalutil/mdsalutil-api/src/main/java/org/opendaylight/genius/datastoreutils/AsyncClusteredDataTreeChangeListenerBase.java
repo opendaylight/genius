@@ -121,9 +121,6 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
         public DataTreeChangeHandler(Collection<DataTreeModification<T>> changes) {
             chainingDelegate.notifyBeforeOnDataTreeChanged(changes);
             this.changes = changes;
-            for (DataTreeModification<T> change : changes) {
-                log.debug("sync run() {}", change);
-            }
         }
 
         @Override
@@ -150,7 +147,6 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
                         // FIXME: May be not a good idea to throw.
                         throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
                 }
-                log.debug("async run() {}", change);
             }
             chainingDelegate.notifyAfterOnDataTreeChanged(changes);
         }
