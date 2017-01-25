@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_832b9eea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 625,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-25T11:49:30Z",
+      "side": 1,
+      "message": "I fixed the key to be the same just in case, but I don\u0027t think this matters.\nThere will be two possible flows:\n\n1. Neutron port comes in first, NPCL will fill in the ietf-interface. Then ICL wakes up, looks for the an OVSDB TP, doesn\u0027t find one and exits. Then when the TP is added, TPSL will fill in the interface parentRef. The important part is that TPSL and ICL use the same DJC key (here).\n\n2. OVSDB TP comes in first - it looks for an interface, doesn\u0027t find one and exits. Then neutron port arrives, NPCL fills in ietf-interface, then ICL wakes up and fills in parentRef.\n\nI still need to test this in any case, but hope it makes sense.",
+      "parentUuid": "fafc7978_c3692927",
+      "revId": "2fdcc1df7f57373624043da5523d0f463ba5b789",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_a3350548",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 22
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-24T17:02:30Z",
       "side": 1,
       "message": "should we call our own API?",
+      "revId": "2fdcc1df7f57373624043da5523d0f463ba5b789",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_03d16efb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-25T11:49:30Z",
+      "side": 1,
+      "message": "not sure. do you prefer passing the impl itself as a convention, i.e. InterfacemgrProvider interfaceMgrProvider?\n\nChanged to pass that now..",
+      "parentUuid": "fafc7978_a3350548",
       "revId": "2fdcc1df7f57373624043da5523d0f463ba5b789",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
