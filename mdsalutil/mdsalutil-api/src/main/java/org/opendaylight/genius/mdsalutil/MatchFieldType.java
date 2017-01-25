@@ -78,7 +78,16 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            getMatchEthernetSource(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
+            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
+                    .get(EthernetMatchBuilder.class);
+
+            if (ethernetMatchBuilder == null) {
+                ethernetMatchBuilder = new EthernetMatchBuilder();
+                mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
+            }
+
+            ethernetMatchBuilder.setEthernetSource(new EthernetSourceBuilder().setAddress(
+                    new MacAddress(matchInfo.getStringMatchValues()[0])).build());
         }
 
         @Override
@@ -107,7 +116,16 @@ public enum MatchFieldType {
 
         @Override
         public void createInnerMatchBuilder(MatchInfo matchInfo, Map<Class<?>, Object> mapMatchBuilder) {
-            getMatchEthernetDestination(matchInfo).createInnerMatchBuilder(mapMatchBuilder);
+            EthernetMatchBuilder ethernetMatchBuilder = (EthernetMatchBuilder) mapMatchBuilder
+                    .get(EthernetMatchBuilder.class);
+
+            if (ethernetMatchBuilder == null) {
+                ethernetMatchBuilder = new EthernetMatchBuilder();
+                mapMatchBuilder.put(EthernetMatchBuilder.class, ethernetMatchBuilder);
+            }
+
+            ethernetMatchBuilder.setEthernetDestination(new EthernetDestinationBuilder().setAddress(
+                    new MacAddress(matchInfo.getStringMatchValues()[0])).build());
         }
 
         @Override
