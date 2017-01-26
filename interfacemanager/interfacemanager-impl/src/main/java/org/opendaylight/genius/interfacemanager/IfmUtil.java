@@ -528,13 +528,20 @@ public class IfmUtil {
         LOG.debug("Updating parentRefInterface for interfaceName {}. interfaceKey {}, with parentRef augmentation pointing to {}",
                 interfaceName, new InterfaceKey(interfaceName), parentInterface);
     }
+	
+    public static InstanceIdentifier<BoundServices> buildBoundServicesIId(short servicePriority, String interfaceName,
+                                                                          Class<? extends ServiceModeBase> serviceMode) {
+        return InstanceIdentifier.builder(ServiceBindings.class)
+                                 .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
+                                 .child(BoundServices.class, new BoundServicesKey(servicePriority))
+                                 .build();
+    }
 
     public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
-                                   Class<? extends ServiceModeBase> serviceMode){
+                                   Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier.builder(ServiceBindings.class)
-                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
-                .child(BoundServices.class, new BoundServicesKey(serviceInfo.getServicePriority())).build();
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier =
+            buildBoundServicesIId(serviceInfo.getServicePriority(), interfaceName, serviceMode);
         t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
     }
 
