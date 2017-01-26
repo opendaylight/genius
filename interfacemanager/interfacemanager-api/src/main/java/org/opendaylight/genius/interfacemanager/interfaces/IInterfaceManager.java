@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.interfaces;
 
 import java.math.BigInteger;
 import java.util.List;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -55,6 +56,8 @@ public interface IInterfaceManager {
             IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
     void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
+    void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo,
+                     WriteTransaction tx);
 
     void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
 

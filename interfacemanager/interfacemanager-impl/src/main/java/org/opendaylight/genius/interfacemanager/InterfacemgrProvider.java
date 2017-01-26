@@ -520,10 +520,19 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     }
 
     @Override
-    public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo) {
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+    public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
+                            BoundServices serviceInfo) {
+        bindService(interfaceName, serviceMode, serviceInfo, /*WriteTransaction*/ null);
+    }
+
+    @Override
+    public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
+                            BoundServices serviceInfo, WriteTransaction tx) {
+        WriteTransaction t = (tx != null) ? tx : dataBroker.newWriteOnlyTransaction();
         IfmUtil.bindService(t, interfaceName, serviceInfo, serviceMode);
-        t.submit();
+        if (tx == null) {
+            t.submit();
+        }
     }
 
     @Override
