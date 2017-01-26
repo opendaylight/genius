@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9d8f7623",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-26T17:42:44Z",
+      "side": 1,
+      "message": "Sorry I\u0027m slightly confused, because you didn\u0027t +1 or -1 it.. are you saying +1 that you like it as is (because of your comment below) and that we COULD have used a Map\u003cBigInteger, Set\u003cFlowEntity\u003e\u003e here as an alternative, but that\u0027s fine as is for you as well, or -1 that you think this cannot go in like this?  I\u0027m sure it could be implemented differently, but it works as it is... ;-) Could you let me know if you insist in this being reworked with a -1 (no personal offense taken at all; it\u0027s just a choice of priority, having to continue work on this VS doing other work), or +1 if you think it would be OK with you if this was merged as is? Thanks!",
+      "parentUuid": "fafc7978_b23d55be",
+      "revId": "2909d2192f11d4f1623128e6fd3c10f3df4cc719",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_124b815a",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-24T10:12:35Z",
       "side": 1,
       "message": "Good use of flexible google true assert framework.",
+      "revId": "2909d2192f11d4f1623128e6fd3c10f3df4cc719",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1d7c2620",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-26T17:42:44Z",
+      "side": 1,
+      "message": "Thanks!",
+      "parentUuid": "fafc7978_124b815a",
       "revId": "2909d2192f11d4f1623128e6fd3c10f3df4cc719",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
