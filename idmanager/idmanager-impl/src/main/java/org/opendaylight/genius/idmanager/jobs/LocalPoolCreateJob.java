@@ -43,7 +43,7 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<ListenableFuture<Void>> call() {
         String localPoolName = idLocalPool.getPoolName();
         if (LOG.isDebugEnabled()) {
             LOG.debug("Started localPoolCreateJob for {}", localPoolName);

@@ -43,7 +43,7 @@ public class ItmProviderTest {
     @Mock VtepConfigSchemaListener vtepConfigSchemaListener;
 
     @Test
-    public void testClose() throws Exception {
+    public void testClose() {
         ItmProvider provider = new ItmProvider(dataBroker, dpnTepsInfoListener, idManagerService, interfaceStateListener,
                 itmManager, itmManagerRpcService, itmMonitoringListener, itmMonitoringIntervalListener, itmTunnelEventListener,
                 stateTunnelListListener, tepCommandHelper, tunnelMonitorChangeListener, tunnelMonitorIntervalListener,

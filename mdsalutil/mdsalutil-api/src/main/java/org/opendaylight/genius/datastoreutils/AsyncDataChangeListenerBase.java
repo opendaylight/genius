@@ -123,7 +123,7 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();

@@ -82,7 +82,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();

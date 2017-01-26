@@ -40,7 +40,7 @@ public class TepDelete extends OsgiCommandSupport {
         this.itmProvider = itmProvider;
     }
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
 
         if (dpnId == null || portName == null || vlanId == null || ipAddress == null || subnetMask == null
                         || transportZone == null) {

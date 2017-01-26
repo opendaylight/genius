@@ -44,13 +44,13 @@ public class ITMManager implements AutoCloseable {
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         LOG.info("ITMManager Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("ITMManager Closed");
     }
 

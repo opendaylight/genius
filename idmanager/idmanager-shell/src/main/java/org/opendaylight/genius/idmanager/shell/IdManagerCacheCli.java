@@ -29,7 +29,7 @@ public class IdManagerCacheCli extends OsgiCommandSupport {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
         if (idManagerMonitor == null) {
             session.getConsole().println("No IdManagerMonitor service available");
             return null;

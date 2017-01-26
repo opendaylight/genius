@@ -45,13 +45,13 @@ public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListene
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         LOG.info("Tunnel Interface State Listener Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("Tunnel Interface State Listener Closed");
     }
 

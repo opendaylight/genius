@@ -50,7 +50,7 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         mdSalMgr.close();
         LOG.info("MDSAL Manager Closed");
     }

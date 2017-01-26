@@ -52,14 +52,14 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         registerListener(this.broker);
         LOG.info("Interface state listener Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("Interface state listener Closed");
     }
 

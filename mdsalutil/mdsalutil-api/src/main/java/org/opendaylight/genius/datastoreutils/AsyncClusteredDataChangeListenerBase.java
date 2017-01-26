@@ -125,7 +125,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();

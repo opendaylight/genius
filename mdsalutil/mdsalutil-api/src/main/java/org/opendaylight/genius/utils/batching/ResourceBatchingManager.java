@@ -52,7 +52,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         LOG.trace("ResourceBatchingManager Closed");
     }
 

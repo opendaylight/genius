@@ -16,7 +16,7 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 
        @Override
 
-       protected Object doExecute() throws Exception {
+       protected Object doExecute() {
 
               session.getConsole().println("Executing show TEP states command");
 

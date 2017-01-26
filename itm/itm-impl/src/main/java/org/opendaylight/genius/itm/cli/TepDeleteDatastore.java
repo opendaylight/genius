@@ -39,7 +39,7 @@ public class TepDeleteDatastore <T extends DataObject>  extends OsgiCommandSuppo
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
             DataBroker dataBroker =  itmProvider.getDataBroker();
             InstanceIdentifier< TransportZones > itmConfigPath = InstanceIdentifier.builder(TransportZones.class).build();
            // InstanceIdentifier<Tunnels> tunnelsConfigPath = InstanceIdentifier.builder(Tunnels.class).build();

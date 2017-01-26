@@ -39,7 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class ItmTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws Exception {
+    protected void configureBindings() {
         // Bindings for services from this project
         bind(ItmRpcService.class).to(ItmManagerRpcService.class);
         bind(ITMManager.class);
