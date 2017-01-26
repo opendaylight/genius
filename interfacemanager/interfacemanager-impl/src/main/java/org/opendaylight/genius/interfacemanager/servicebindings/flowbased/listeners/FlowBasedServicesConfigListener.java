@@ -117,7 +117,7 @@ public class FlowBasedServicesConfigListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return flowBasedServicesAddable.bindService(instanceIdentifier,
                     boundServicesNew);
         }
@@ -137,7 +137,7 @@ public class FlowBasedServicesConfigListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return flowBasedServicesConfigRemovable.unbindService(instanceIdentifier,
                     boundServicesNew);
         }

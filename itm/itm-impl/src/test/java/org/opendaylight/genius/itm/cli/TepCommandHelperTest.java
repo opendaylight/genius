@@ -182,7 +182,7 @@ public class TepCommandHelperTest {
     TepCommandHelper tepCommandHelper ;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),

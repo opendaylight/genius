@@ -44,7 +44,7 @@ public class ItmTest {
     }
 
     @Test
-    public void testWiring() throws Exception {
+    public void testWiring() {
         // do nothing; still valuable to check that ItmTestModule works and everything comes up
     }
 }

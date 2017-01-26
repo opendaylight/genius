@@ -97,7 +97,7 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker,
@@ -114,7 +114,7 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             LOG.debug("Removing bfd state from cache, if any, for {}", terminationPointOld.getName());
             InterfaceManagerCommonUtils.removeBfdStateFromCache(terminationPointOld.getName());
             return null;

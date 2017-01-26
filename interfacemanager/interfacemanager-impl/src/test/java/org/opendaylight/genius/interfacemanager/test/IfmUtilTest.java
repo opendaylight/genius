@@ -24,7 +24,7 @@ public class IfmUtilTest {
     @Mock NodeConnectorId ncId;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 

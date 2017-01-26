@@ -123,6 +123,6 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
     }
 }

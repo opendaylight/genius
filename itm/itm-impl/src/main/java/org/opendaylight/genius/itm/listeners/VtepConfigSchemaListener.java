@@ -81,7 +81,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         registerListener(this.dataBroker);
         LOG.info("VtepConfigSchemaListener Started");
     }
@@ -93,7 +93,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      */
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (this.listenerRegistration != null) {
             try {
                 this.listenerRegistration.close();

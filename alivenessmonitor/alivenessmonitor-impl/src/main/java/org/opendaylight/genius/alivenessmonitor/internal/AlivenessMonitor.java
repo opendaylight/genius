@@ -200,7 +200,7 @@ public class AlivenessMonitor
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         monitorIdKeyCache.cleanUp();
         monitorService.shutdown();
         callbackExecutorService.shutdown();
@@ -231,7 +231,7 @@ public class AlivenessMonitor
     private void initializeCache() {
         monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
             @Override
-            public String load(Long monitorId) throws Exception {
+            public String load(Long monitorId) {
                 return read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId))
                         .transform(MonitoridKeyEntry::getMonitorKey).orNull();
             }

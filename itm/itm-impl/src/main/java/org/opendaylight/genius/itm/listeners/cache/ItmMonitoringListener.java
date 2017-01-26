@@ -44,12 +44,12 @@ public class ItmMonitoringListener  extends AsyncClusteredDataTreeChangeListener
   }
 
   @PostConstruct
-  public void start() throws Exception {
+  public void start() {
     logger.info("ItmMonitoring Started");
   }
 
   @PreDestroy
-  public void close() throws Exception {
+  public void close() {
     logger.info("ItmMonitoring Closed");
   }
 

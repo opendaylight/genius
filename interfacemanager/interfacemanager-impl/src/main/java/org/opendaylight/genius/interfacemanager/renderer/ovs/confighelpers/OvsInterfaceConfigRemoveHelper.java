@@ -220,7 +220,7 @@ public class OvsInterfaceConfigRemoveHelper {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
             // FIXME: If the no. of child entries exceeds 100, perform txn

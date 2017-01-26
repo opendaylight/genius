@@ -23,7 +23,7 @@ public class TepShow extends OsgiCommandSupport {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
         logger.debug("Executing show TEP command");
             itmProvider.showTeps(session);
         return null;

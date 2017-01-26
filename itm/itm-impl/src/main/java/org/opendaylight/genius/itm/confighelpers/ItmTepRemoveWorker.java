@@ -45,7 +45,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         futures.addAll( ItmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService, mdsalManager, delDpnList, meshedDpnList));

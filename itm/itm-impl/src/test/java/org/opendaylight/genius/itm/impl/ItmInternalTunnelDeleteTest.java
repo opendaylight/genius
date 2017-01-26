@@ -108,7 +108,7 @@ public class ItmInternalTunnelDeleteTest {
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),

@@ -86,7 +86,7 @@ public class MDSALManager implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         s_logger.info("MDSAL Manager Closed");
     }
 

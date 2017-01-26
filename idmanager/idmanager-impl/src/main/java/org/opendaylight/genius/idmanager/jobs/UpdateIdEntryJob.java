@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 
@@ -40,7 +41,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<ListenableFuture<Void>> call() throws TransactionCommitFailedException {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         idUtils.updateChildPool(tx, parentPoolName, localPoolName);
         if (newIdValues != null && !newIdValues.isEmpty()) {

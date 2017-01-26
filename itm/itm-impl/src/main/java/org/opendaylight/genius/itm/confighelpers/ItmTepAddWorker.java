@@ -40,7 +40,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         logger.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",cfgdDpnList, meshedDpnList );

@@ -26,7 +26,7 @@ public class TepCommit extends OsgiCommandSupport {
   }
 
   @Override
-  protected Object doExecute() throws Exception {
+  protected Object doExecute() {
 
     try {
       itmProvider.commitTeps();

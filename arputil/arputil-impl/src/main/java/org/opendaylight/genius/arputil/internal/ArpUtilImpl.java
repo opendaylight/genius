@@ -140,7 +140,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         LOG.info("{} stop", getClass().getSimpleName());
 
         if (listenerRegistration != null) {

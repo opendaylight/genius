@@ -109,7 +109,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("{} close", getClass().getSimpleName());
     }
 
