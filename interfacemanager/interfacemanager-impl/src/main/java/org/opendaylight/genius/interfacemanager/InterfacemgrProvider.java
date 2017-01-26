@@ -23,12 +23,14 @@ import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderContext;
 import org.opendaylight.controller.sal.binding.api.BindingAwareProvider;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -55,6 +57,7 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils.ServiceMode;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -91,6 +94,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
@@ -517,6 +522,30 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         t.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(), true);
         t.submit();
+    }
+
+    private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
+                                              Class<? extends ServiceModeBase> serviceMode) {
+        InstanceIdentifier<BoundServices> boundServicesIId =
+            IfmUtil.buildBoundServicesIId(servicePriority, interfaceName, serviceMode);
+        try {
+            return SingleTransactionDataBroker.syncReadOptional(dataBroker,
+                                                                LogicalDatastoreType.CONFIGURATION, boundServicesIId)
+                                              .isPresent();
+        } catch (ReadFailedException e) {
+            LOG.warn("Error while reading [{}]", boundServicesIId, e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isServiceBoundOnInterfaceForIngress(short servicePriority, String interfaceName) {
+        return isServiceBoundOnInterface(servicePriority, interfaceName, ServiceModeIngress.class);
+    }
+
+    @Override
+    public boolean isServiceBoundOnInterfaceForEgress(short servicePriority, String interfaceName) {
+        return isServiceBoundOnInterface(servicePriority, interfaceName, ServiceModeEgress.class);
     }
 
     @Override
