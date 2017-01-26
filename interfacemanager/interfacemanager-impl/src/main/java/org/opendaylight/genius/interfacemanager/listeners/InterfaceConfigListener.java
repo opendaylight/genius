@@ -146,7 +146,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew,
@@ -181,7 +181,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService, idManager,
@@ -217,7 +217,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService,

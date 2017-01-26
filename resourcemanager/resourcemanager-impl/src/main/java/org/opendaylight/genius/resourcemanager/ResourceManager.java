@@ -334,7 +334,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("{} close", getClass().getSimpleName());
     }
 }

@@ -44,7 +44,7 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         logger.debug("TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
     }
 
-    @Override public List<ListenableFuture<Void>> call() throws Exception {
+    @Override public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         logger.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled );
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();

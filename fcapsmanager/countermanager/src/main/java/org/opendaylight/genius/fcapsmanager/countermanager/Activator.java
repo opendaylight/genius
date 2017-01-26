@@ -19,7 +19,7 @@ public class Activator implements BundleActivator {
     private Thread listenerThread;
 
     @Override
-    public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) {
         LOG.info("Starting alarmmanager bundle");
         notificationListeners = new PMRegistrationListener(context);
         listenerThread = new Thread(notificationListeners);

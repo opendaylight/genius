@@ -51,7 +51,7 @@ public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeList
         return InstanceIdentifier.create(Interfaces.class).child(Interface.class);
     }
 
-    public void close() throws Exception {
+    public void close() {
         if(registration != null) {
             registration.close();
         }

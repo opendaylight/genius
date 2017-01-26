@@ -34,7 +34,7 @@ public class ShowVxlan extends OsgiCommandSupport {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
         logger.debug("Executing show Vxlan command");
         List<Interface> vxlanList = interfaceManager.getVxlanInterfaces();
         if (!vxlanList.isEmpty()) {

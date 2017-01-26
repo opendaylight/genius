@@ -41,14 +41,14 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
         LOG.info("TunnelMonitorIntervalListener Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("TunnelMonitorIntervalListener Closed");
     }
 

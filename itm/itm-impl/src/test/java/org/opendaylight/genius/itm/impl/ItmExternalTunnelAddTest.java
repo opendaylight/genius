@@ -166,7 +166,7 @@ public class ItmExternalTunnelAddTest {
     ItmExternalTunnelAddWorker externalTunnelAddWorker = new ItmExternalTunnelAddWorker();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),

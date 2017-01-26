@@ -34,7 +34,7 @@ public class AbstractTestableListenerTest {
     private final VisibleAbstractTestableListener abstractTestableListener = new VisibleAbstractTestableListener();
 
     @After
-    public void afterCloseAsyncEventsWaiter() throws Exception {
+    public void afterCloseAsyncEventsWaiter() {
         abstractTestableListener.close();
     }
 
@@ -102,12 +102,12 @@ public class AbstractTestableListenerTest {
     }
 
     @Test
-    public void passingAwaitEventsConsumptionClose0() throws Exception {
+    public void passingAwaitEventsConsumptionClose0() {
         abstractTestableListener.close();
     }
 
     @Test
-    public void passingAwaitEventsConsumptionClose1() throws Exception {
+    public void passingAwaitEventsConsumptionClose1() {
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
         abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
@@ -115,13 +115,13 @@ public class AbstractTestableListenerTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void failingAwaitEventsConsumptionClose1() throws Exception {
+    public void failingAwaitEventsConsumptionClose1() {
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.close();
     }
 
     @Test
-    public void passingAwaitEventsConsumptionClose1andAnother() throws Exception {
+    public void passingAwaitEventsConsumptionClose1andAnother() {
         abstractTestableListener.consumedEvents(1);
         try {
             abstractTestableListener.close();

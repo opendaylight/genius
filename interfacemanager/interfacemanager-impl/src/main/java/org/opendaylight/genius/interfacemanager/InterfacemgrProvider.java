@@ -231,7 +231,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         LOG.info("InterfacemgrProvider Closed");
         interfaceConfigListener.close();
         if (rpcRegistration != null) {

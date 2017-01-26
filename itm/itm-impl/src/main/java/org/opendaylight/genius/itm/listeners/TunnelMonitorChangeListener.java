@@ -61,7 +61,7 @@ public class TunnelMonitorChangeListener  extends AsyncDataTreeChangeListenerBas
  */
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
        /* if (monitorEnabledListenerRegistration != null) {
             try {
                 monitorEnabledListenerRegistration.close();

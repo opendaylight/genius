@@ -29,7 +29,7 @@ public class ShowVlan extends OsgiCommandSupport {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
         logger.debug("Executing show VLAN command");
         List<Interface> vlanList = interfaceManager.getVlanInterfaces();
         if (!vlanList.isEmpty()) {

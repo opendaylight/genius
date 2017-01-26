@@ -85,7 +85,7 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(dataBroker,
@@ -104,7 +104,7 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return HwVTEPInterfaceStateUpdateHelper.startBfdMonitoring(dataBroker, instanceIdentifier, tunnelsNew);
@@ -122,7 +122,7 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return HwVTEPInterfaceStateRemoveHelper.removeExternalTunnel(dataBroker, instanceIdentifier);

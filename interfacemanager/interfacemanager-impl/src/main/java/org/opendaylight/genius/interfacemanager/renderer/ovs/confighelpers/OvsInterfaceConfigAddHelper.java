@@ -164,7 +164,7 @@ public class OvsInterfaceConfigAddHelper {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
             InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
                     .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);

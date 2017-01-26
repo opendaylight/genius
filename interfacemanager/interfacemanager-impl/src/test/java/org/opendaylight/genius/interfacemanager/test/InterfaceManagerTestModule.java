@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.net.UnknownHostException;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -64,7 +65,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerTestModule.class);
 
     @Override
-    protected void configureBindings() throws Exception {
+    protected void configureBindings() throws UnknownHostException {
         // TODO Ordering as below.. hard to do currently, because of interdeps. due to CSS
         // Bindings for services from this project
         // Bindings for external services to "real" implementations
@@ -76,7 +77,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         LockManagerService lockManager = new LockManager(dataBroker);
         bind(LockManagerService.class).toInstance(lockManager);
 
-        IdUtils idUtils = new IdUtils();
+        IdUtils idUtils = new IdUtItmils();
         IdManagerService idManager;
         try {
             idManager = new IdManager(dataBroker, lockManager, idUtils);
@@ -110,7 +111,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
         @PreDestroy
         @SuppressWarnings("checkstyle:IllegalCatch")
-        void close() throws Exception {
+        void close() {
             try {
                 interfaceManager.close();
             } catch (Exception e) {

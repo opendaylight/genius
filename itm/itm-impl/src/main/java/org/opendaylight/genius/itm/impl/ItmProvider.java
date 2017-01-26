@@ -115,14 +115,14 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         createIdPool();
         LOG.info("ItmProvider Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (itmManager != null) {
             itmManager.close();
         }

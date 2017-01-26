@@ -42,12 +42,12 @@ public class ItmMonitoringIntervalListener extends AsyncClusteredDataTreeChangeL
   }
 
   @PostConstruct
-  public void start() throws Exception {
+  public void start() {
     logger.info("ItmMonitoringIntervalListener Started");
   }
 
   @PreDestroy
-  public void close() throws Exception {
+  public void close() {
     logger.info("ItmMonitoringIntervalListener Closed");
   }
 

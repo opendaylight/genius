@@ -177,7 +177,7 @@ public class OvsInterfaceConfigUpdateHelper{
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {

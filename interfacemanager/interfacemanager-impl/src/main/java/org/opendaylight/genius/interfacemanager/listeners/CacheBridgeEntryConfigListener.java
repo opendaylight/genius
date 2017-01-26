@@ -54,7 +54,7 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
         return InstanceIdentifier.create(BridgeInterfaceInfo.class).child(BridgeEntry.class);
     }
 
-    public void close() throws Exception {
+    public void close() {
         if(registration != null) {
             registration.close();
         }

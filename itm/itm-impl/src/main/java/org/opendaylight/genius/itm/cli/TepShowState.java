@@ -27,7 +27,7 @@ public class TepShowState extends OsgiCommandSupport {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
         List<StateTunnelList> tunnels = null ;
         List<Object> values = null ;
         values = DataStoreCache.getValues(ITMConstants.TUNNEL_STATE_CACHE_NAME);

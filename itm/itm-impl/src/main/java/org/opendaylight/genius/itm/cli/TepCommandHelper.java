@@ -84,13 +84,13 @@ public class TepCommandHelper {
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
         LOG.info("TepCommandHelper Started");
     }
 
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("TepCommandHelper Closed");
     }
 

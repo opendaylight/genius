@@ -102,7 +102,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return flowBasedServicesStateAddable.bindServicesOnInterface(iface);
         }
     }
@@ -118,7 +118,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return flowBasedServicesStateRemovable.unbindServicesFromInterface(iface);
         }
     }

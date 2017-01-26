@@ -107,12 +107,12 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         LOG.info("ItmManagerRpcService Started");
     }
 
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("ItmManagerRpcService Closed");
     }
 

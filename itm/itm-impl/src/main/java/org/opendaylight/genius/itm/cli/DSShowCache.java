@@ -26,7 +26,7 @@ public class DSShowCache extends OsgiCommandSupport {
     }
 
     @Override
-    protected Object doExecute() throws Exception {
+    protected Object doExecute() {
         logger.debug("Executing show Cache command");
         itmProvider.showCache(cacheName);
         return null;
