@@ -168,7 +168,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
         }
 
         @Override
-        public Object call() throws Exception {
+        public Object call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId,
@@ -210,7 +210,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
         }
 
         @Override
-        public Object call() throws Exception {
+        public Object call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(key, alivenessMonitorService, dataBroker, interfaceName,
@@ -266,7 +266,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
         }
 
         @Override
-        public Object call() throws Exception {
+        public Object call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
 

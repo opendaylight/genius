@@ -36,7 +36,7 @@ public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<ListenableFuture<Void>> call() {
         ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
         InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
         WriteTransaction tx = broker.newWriteOnlyTransaction();

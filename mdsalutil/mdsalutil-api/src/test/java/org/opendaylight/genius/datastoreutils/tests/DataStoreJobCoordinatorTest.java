@@ -30,7 +30,7 @@ public class DataStoreJobCoordinatorTest {
         boolean wasCalled = false;
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             wasCalled = true;
             return null;
         }

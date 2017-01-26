@@ -94,7 +94,7 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier,
@@ -114,7 +114,7 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceTopologyStateRemoveHelper.removePortFromBridge(instanceIdentifier,
@@ -135,7 +135,7 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return OvsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier,

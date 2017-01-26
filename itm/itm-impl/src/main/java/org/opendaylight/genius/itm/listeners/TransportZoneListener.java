@@ -78,14 +78,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
         LOG.info("tzChangeListener Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("tzChangeListener Closed");
     }
 

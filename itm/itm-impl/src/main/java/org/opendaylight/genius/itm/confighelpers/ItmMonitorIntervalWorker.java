@@ -40,7 +40,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval );
     }
 
-    @Override public List<ListenableFuture<Void>> call() throws Exception {
+    @Override public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         logger.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval );
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();

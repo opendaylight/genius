@@ -125,7 +125,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return HwVTEPInterfaceConfigAddHelper.addConfiguration(dataBroker,
                     physicalSwitchNodeId, globalNodeId, interfaceNew, ifTunnel);
         }
@@ -148,7 +148,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return HwVTEPInterfaceConfigUpdateHelper.updateConfiguration(dataBroker,
                     physicalSwitchNodeId, globalNodeId, interfaceNew, ifTunnel);
         }
@@ -169,7 +169,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             return HwVTEPConfigRemoveHelper.removeConfiguration(dataBroker,
                     interfaceOld, globalNodeId, physicalSwitchNodeId);
         }

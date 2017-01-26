@@ -50,6 +50,6 @@ public abstract  class NodeConnectorEventListener <T extends DataObject> impleme
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
     }
 }

@@ -79,7 +79,7 @@ public class ClusteringUtils {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             while (retries > 0) {
                 retries = retries - 1;
                 Optional<EntityOwnershipState> entityState = entityOwnershipService.getOwnershipState(entity);
@@ -92,7 +92,11 @@ public class ClusteringUtils {
                 }
                 LOG.trace("EntityOwnershipState for entity type {} is not yet available. {} retries left",
                         entity.getType(), retries);
-                Thread.sleep(sleepBetweenRetries);
+                try {
+                    Thread.sleep(sleepBetweenRetries);
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
             checkNodeEntityfuture.setException(new EntityOwnerNotPresentException("Entity Owner Not Present"));
             return getResultFuture();

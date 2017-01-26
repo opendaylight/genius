@@ -49,7 +49,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() throws JMException {
         registerListener(this.broker);
         if (alarmAgent != null) {
             alarmAgent.registerMbean();
@@ -59,7 +59,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (listenerRegistration != null) {
             try {
                 if (alarmAgent != null) {

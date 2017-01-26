@@ -42,14 +42,14 @@ public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBas
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
         LOG.info("dpnTepsInfo Listener Started");
     }
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.info("dpnTepsInfo Listener Closed");
     }
 
