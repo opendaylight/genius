@@ -43,13 +43,19 @@ public class InstructionWriteMetadata implements InstructionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
 
-        InstructionWriteMetadata that = (InstructionWriteMetadata) o;
+        InstructionWriteMetadata that = (InstructionWriteMetadata) other;
 
-        if (metadata != null ? !metadata.equals(that.metadata) : that.metadata != null) return false;
+        if (metadata != null ? !metadata.equals(that.metadata) : that.metadata != null) {
+            return false;
+        }
         return mask != null ? mask.equals(that.mask) : that.mask == null;
     }
 

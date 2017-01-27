@@ -14,12 +14,21 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface ResourceHandler {
-    void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifer, Object vrfEntry,List<SubTransaction> transactionObjects);
-    void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifer, Object vrfEntry,List<SubTransaction> transactionObjects);
+
+    void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifer, Object vrfEntry,
+            List<SubTransaction> transactionObjects);
+
+    void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifer, Object vrfEntry,
+            List<SubTransaction> transactionObjects);
+
     void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original,
-                Object update,List<SubTransaction> transactionObjects);
+            Object update, List<SubTransaction> transactionObjects);
+
     LogicalDatastoreType getDatastoreType();
+
     int getBatchSize();
+
     int getBatchInterval();
+
     DataBroker getResourceBroker();
 }

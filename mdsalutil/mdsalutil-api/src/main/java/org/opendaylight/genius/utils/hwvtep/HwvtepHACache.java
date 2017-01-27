@@ -28,11 +28,17 @@ public class HwvtepHACache {
 
     private static HwvtepHACache instance = new HwvtepHACache();
 
-    private ConcurrentHashMap<InstanceIdentifier<Node>, Set<InstanceIdentifier<Node>>> parentToChildMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<InstanceIdentifier<Node>, InstanceIdentifier<Node>> childToParentMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, Boolean> childNodeIds = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, Boolean> connectedNodes = new ConcurrentHashMap<>();
-    private LinkedBlockingQueue<DebugEvent> debugEvents = new LinkedBlockingQueue<>(MAX_EVENT_BUFFER_SIZE);
+    private final ConcurrentHashMap<InstanceIdentifier<Node>, Set<InstanceIdentifier<Node>>>
+        parentToChildMap = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<InstanceIdentifier<Node>, InstanceIdentifier<Node>>
+        childToParentMap = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, Boolean> childNodeIds = new ConcurrentHashMap<>();
+
+    private final ConcurrentHashMap<String, Boolean> connectedNodes = new ConcurrentHashMap<>();
+
+    private final LinkedBlockingQueue<DebugEvent> debugEvents = new LinkedBlockingQueue<>(MAX_EVENT_BUFFER_SIZE);
 
     public static HwvtepHACache getInstance() {
         return instance;

@@ -10,18 +10,28 @@ package org.opendaylight.genius.utils.batching;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface ActionableResource {
+
     short CREATE = 1;
     short UPDATE = 2;
     short DELETE = 3;
 
     InstanceIdentifier getInstanceIdentifier();
+
     void setInstanceIdentifier(InstanceIdentifier identifier);
+
     Object getInstance();
+
     void setInstance(Object instance);
+
     Object getOldInstance();
+
     void setOldInstance(Object oldInstance);
+
     short getAction();
+
     void setAction(short action);
+
     String getKey();
+
     void setKey(String key);
 }

@@ -39,17 +39,21 @@ public class InstructionGotoTable implements InstructionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
 
-        InstructionGotoTable that = (InstructionGotoTable) o;
+        InstructionGotoTable that = (InstructionGotoTable) other;
 
         return tableId == that.tableId;
     }
 
     @Override
     public int hashCode() {
-        return (int) tableId;
+        return tableId;
     }
 }
