@@ -50,11 +50,14 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             new LinkedBlockingQueue<>());
 
     protected final Class<T> clazz;
-    private final Class<K> eventClazz;
 
+    public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz) {
+        this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+    }
+
+    @Deprecated
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
-        this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
     @Override
@@ -84,9 +87,9 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             listenerRegistration = looper
                     .loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
-            throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
+            LOG.warn("{}: Data Tree Change listener registration failed", clazz);
+            LOG.debug("{}: Data Tree Change listener registration failed", clazz, e);
+            throw new IllegalStateException(clazz + ": startup failed. System needs restart.", e);
         }
     }
 

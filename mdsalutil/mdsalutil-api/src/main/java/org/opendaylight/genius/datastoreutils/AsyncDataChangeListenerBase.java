@@ -49,15 +49,22 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
-    private final Class<K> eventClazz;
 
     /**
      * Constructor.
      * @param clazz - for which the data change event is received
      */
+    public AsyncDataChangeListenerBase(Class<T> clazz) {
+        this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+    }
+
+    /**
+     * Constructor.
+     * @param clazz - for which the data change event is received
+     */
+    @Deprecated
     public AsyncDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
-        this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
     @Override
@@ -78,9 +85,9 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
                     (Callable<ListenerRegistration<K>>) () -> (ListenerRegistration) db.registerDataChangeListener(
                             dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope()));
         } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
-            throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
+            LOG.warn("{}: Data Tree Change listener registration failed.", clazz);
+            LOG.debug("{}: Data Tree Change listener registration failed: {}", clazz, e);
+            throw new IllegalStateException(clazz.getName() + ": startup failed. System needs restart.", e);
         }
     }
 
