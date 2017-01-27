@@ -45,6 +45,7 @@ public class ActionRegMove extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         Src src = new SrcBuilder()
                 .setSrcChoice(new SrcNxRegCaseBuilder().setNxReg(register).build())
@@ -79,15 +80,25 @@ public class ActionRegMove extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionRegMove that = (ActionRegMove) o;
+        ActionRegMove that = (ActionRegMove) other;
 
-        if (start != that.start) return false;
-        if (end != that.end) return false;
+        if (start != that.start) {
+            return false;
+        }
+        if (end != that.end) {
+            return false;
+        }
         return register != null ? register.equals(that.register) : that.register == null;
     }
 

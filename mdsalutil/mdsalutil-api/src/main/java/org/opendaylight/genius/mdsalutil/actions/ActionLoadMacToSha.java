@@ -21,8 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 
 /**
  * Load MAC address to SHA (Sender Hardware Address).
- * <p>
- * Media address of the sender. In an ARP request this field is used to
+ *
+ * <p>Media address of the sender. In an ARP request this field is used to
  * indicate the address of the host sending the request. In an ARP reply
  * this field is used to indicate the address of the host that the request
  * was looking for.
@@ -44,6 +44,7 @@ public class ActionLoadMacToSha extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder()
             .setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
@@ -65,12 +66,18 @@ public class ActionLoadMacToSha extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionLoadMacToSha that = (ActionLoadMacToSha) o;
+        ActionLoadMacToSha that = (ActionLoadMacToSha) other;
 
         return address != null ? address.equals(that.address) : that.address == null;
     }

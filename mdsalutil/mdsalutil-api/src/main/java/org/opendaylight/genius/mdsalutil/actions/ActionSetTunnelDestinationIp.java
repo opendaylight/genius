@@ -51,6 +51,7 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
         Dst dst = new DstBuilder()
@@ -74,14 +75,22 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionSetTunnelDestinationIp that = (ActionSetTunnelDestinationIp) o;
+        ActionSetTunnelDestinationIp that = (ActionSetTunnelDestinationIp) other;
 
-        if (groupBucket != that.groupBucket) return false;
+        if (groupBucket != that.groupBucket) {
+            return false;
+        }
         return destIp != null ? destIp.equals(that.destIp) : that.destIp == null;
     }
 

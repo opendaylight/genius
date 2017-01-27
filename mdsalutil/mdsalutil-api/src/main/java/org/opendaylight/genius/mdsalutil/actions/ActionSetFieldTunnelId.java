@@ -47,6 +47,7 @@ public class ActionSetFieldTunnelId extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         TunnelBuilder tunnelBuilder = new TunnelBuilder()
             .setTunnelId(tunnelId);
@@ -75,14 +76,22 @@ public class ActionSetFieldTunnelId extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionSetFieldTunnelId that = (ActionSetFieldTunnelId) o;
+        ActionSetFieldTunnelId that = (ActionSetFieldTunnelId) other;
 
-        if (tunnelId != null ? !tunnelId.equals(that.tunnelId) : that.tunnelId != null) return false;
+        if (tunnelId != null ? !tunnelId.equals(that.tunnelId) : that.tunnelId != null) {
+            return false;
+        }
         return tunnelMask != null ? tunnelMask.equals(that.tunnelMask) : that.tunnelMask == null;
     }
 

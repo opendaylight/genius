@@ -29,6 +29,7 @@ public class TaskRetryLooper {
         this.maxRetries = maxRetries;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch") // OK here, because Callable throws Exception
     public <T> T loopUntilNoException(Callable<T> task) throws Exception {
         T output = null;
 

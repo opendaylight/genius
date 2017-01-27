@@ -45,6 +45,7 @@ public class ActionRegLoad extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         Dst dst = new DstBuilder().setDstChoice(new DstNxRegCaseBuilder().setNxReg(register).build())
                 .setStart(start)
@@ -76,16 +77,28 @@ public class ActionRegLoad extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionRegLoad that = (ActionRegLoad) o;
+        ActionRegLoad that = (ActionRegLoad) other;
 
-        if (start != that.start) return false;
-        if (end != that.end) return false;
-        if (load != that.load) return false;
+        if (start != that.start) {
+            return false;
+        }
+        if (end != that.end) {
+            return false;
+        }
+        if (load != that.load) {
+            return false;
+        }
         return register != null ? register.equals(that.register) : that.register == null;
     }
 
@@ -95,7 +108,7 @@ public class ActionRegLoad extends ActionInfo {
         result = 31 * result + (register != null ? register.hashCode() : 0);
         result = 31 * result + start;
         result = 31 * result + end;
-        result = 31 * result + (int) (load ^ (load >>> 32));
+        result = 31 * result + (int) (load ^ load >>> 32);
         return result;
     }
 }
