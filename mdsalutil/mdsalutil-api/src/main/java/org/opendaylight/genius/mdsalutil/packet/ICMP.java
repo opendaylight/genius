@@ -20,9 +20,8 @@ import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.liblldp.PacketException;
 
 /**
- * Class that represents the ICMP packet objects
+ * Class that represents the ICMP packet objects.
  */
-
 public class ICMP extends Packet {
     private static final String TYPE = "Type";
     private static final String CODE = "Code";
@@ -30,19 +29,18 @@ public class ICMP extends Packet {
     private static final String IDENTIFIER = "Identifier";
     private static final String SEQNUMBER = "SequenceNumber";
 
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(TYPE, new ImmutablePair<>(0, 8));
-            put(CODE, new ImmutablePair<>(8, 8));
-            put(CHECKSUM, new ImmutablePair<>(16, 16));
-            put(IDENTIFIER, new ImmutablePair<>(32, 16));
-            put(SEQNUMBER, new ImmutablePair<>(48, 16));
-        }
-    };
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(TYPE, new ImmutablePair<>(0, 8));
+                put(CODE, new ImmutablePair<>(8, 8));
+                put(CHECKSUM, new ImmutablePair<>(16, 16));
+                put(IDENTIFIER, new ImmutablePair<>(32, 16));
+                put(SEQNUMBER, new ImmutablePair<>(48, 16));
+            }
+        };
 
     /**
-     * Default constructor that creates and sets the hash map values
+     * Default constructor that creates and sets the hash map values.
      */
     public ICMP() {
         super();
@@ -52,7 +50,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Constructor that sets the access level for the packet
+     * Constructor that sets the access level for the packet.
      * @param writeAccess - boolean
      */
     public ICMP(boolean writeAccess) {
@@ -70,7 +68,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Sets the type for the current ICMP message
+     * Sets the type for the current ICMP message.
      *
      * @param type
      *            The ICMP message type
@@ -83,7 +81,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Returns the type field of the current ICMP packet
+     * Returns the type field of the current ICMP packet.
      *
      * @return The type code of the current ICMP packet
      */
@@ -92,7 +90,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Sets the ICMP code (type subtype) for the current ICMP object instance
+     * Sets the ICMP code (type subtype) for the current ICMP object instance.
      *
      * @param code
      *            The ICMP message type subtype
@@ -105,7 +103,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Gets the ICMP code (type subtype) for the current ICMP object instance
+     * Gets the ICMP code (type subtype) for the current ICMP object instance.
      *
      * @return The ICMP message type subtype
      */
@@ -114,7 +112,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Sets the ICMP checksum  for the current ICMP object instance
+     * Sets the ICMP checksum  for the current ICMP object instance.
      * @param checksum - short
      * @return ICMP
      */
@@ -125,7 +123,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Sets the ICMP identifier for the current ICMP object instance
+     * Sets the ICMP identifier for the current ICMP object instance.
      * @param identifier - short
      * @return ICMP
      */
@@ -136,17 +134,16 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Gets the ICMP identifier of the current ICMP object instance
+     * Gets the ICMP identifier of the current ICMP object instance.
      *
      * @return short - identifier
      */
-
     public short getIdentifier() {
         return BitBufferHelper.getShort(fieldValues.get(IDENTIFIER));
     }
 
     /**
-     * Sets the ICMP sequence number for the current ICMP object instance
+     * Sets the ICMP sequence number for the current ICMP object instance.
      * @param seqNumber-short
      * @return ICMP
      */
@@ -157,17 +154,16 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Gets the ICMP sequence number of the current ICMP object instance
+     * Gets the ICMP sequence number of the current ICMP object instance.
      *
      * @return short - seqNumber
      */
-
     public short getSequenceNumber() {
         return BitBufferHelper.getShort(fieldValues.get(SEQNUMBER));
     }
 
     /**
-     * Gets the header size in bits
+     * Gets the header size in bits.
      * @return The ICMP header size in bits
      */
     @Override
@@ -176,7 +172,7 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Computes the ICMP checksum on the serialized ICMP message
+     * Computes the ICMP checksum on the serialized ICMP message..
      *
      * @param data
      *            The serialized data stream
@@ -186,7 +182,7 @@ public class ICMP extends Packet {
      * @return The checksum
      */
     short computeChecksum(byte[] data, int start) {
-        int sum = 0, carry = 0, finalSum = 0;
+        int sum = 0;
         int wordData;
         int end = start + this.getHeaderSize() / NetUtils.NumBitsInAByte;
         if (rawPayload != null) {
@@ -200,17 +196,17 @@ public class ICMP extends Packet {
             if (i == checksumStartByte) {
                 continue;
             }
-            wordData = ((data[i] << 8) & 0xFF00) + (data[i + 1] & 0xFF);
+            wordData = (data[i] << 8 & 0xFF00) + (data[i + 1] & 0xFF);
             sum = sum + wordData;
         }
         if (even < end) {
             // Add the last octet with zero padding.
-            wordData = (data[even] << 8) & 0xFF00;
+            wordData = data[even] << 8 & 0xFF00;
             sum = sum + wordData;
         }
 
-        carry = sum >>> 16;
-        finalSum = (sum & 0xFFFF) + carry;
+        int carry = sum >>> 16;
+        int finalSum = (sum & 0xFFFF) + carry;
         return (short) ~((short) finalSum & 0xFFFF);
     }
 
@@ -238,10 +234,10 @@ public class ICMP extends Packet {
     }
 
     /**
-     * Gets the checksum value stored
+     * Gets the checksum value stored.
      * @return the checksum
      */
     public short getChecksum() {
-        return (BitBufferHelper.getShort(fieldValues.get(CHECKSUM)));
+        return BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
     }
 }

@@ -18,9 +18,8 @@ import org.opendaylight.controller.liblldp.BitBufferHelper;
 import org.opendaylight.controller.liblldp.Packet;
 
 /**
- * Class that represents the UDP datagram objects
+ * Class that represents the UDP datagram objects.
  */
-
 public class UDP extends Packet {
 
     private static final String SRCPORT = "SourcePort";
@@ -28,15 +27,14 @@ public class UDP extends Packet {
     private static final String LENGTH = "Length";
     private static final String CHECKSUM = "Checksum";
 
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(SRCPORT, new ImmutablePair<>(0, 16));
-            put(DESTPORT, new ImmutablePair<>(16, 16));
-            put(LENGTH, new ImmutablePair<>(32, 16));
-            put(CHECKSUM, new ImmutablePair<>(48, 16));
-        }
-    };
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(SRCPORT, new ImmutablePair<>(0, 16));
+                put(DESTPORT, new ImmutablePair<>(16, 16));
+                put(LENGTH, new ImmutablePair<>(32, 16));
+                put(CHECKSUM, new ImmutablePair<>(48, 16));
+            }
+        };
 
     public UDP() {
         super();
@@ -73,48 +71,49 @@ public class UDP extends Packet {
           UDP.decodeMap.put((short)67, DHCP.class);
           UDP.decodeMap.put((short)68, DHCP.class);
       }*/
+
     /**
-     * Get the stored source port
+     * Get the stored source port.
      * @return int - the sourcePort
      */
     public int getSourcePort() {
-        return (BitBufferHelper.getInt(fieldValues.get(SRCPORT)));
+        return BitBufferHelper.getInt(fieldValues.get(SRCPORT));
     }
 
     /**
-     * Get the stored destination port
+     * Get the stored destination port.
      * @return int - the destinationPort
      */
     public int getDestinationPort() {
-        return (BitBufferHelper.getInt(fieldValues.get(DESTPORT)));
+        return BitBufferHelper.getInt(fieldValues.get(DESTPORT));
     }
 
     /**
-     * Gets the stored length of UDP header
+     * Gets the stored length of UDP header.
      * @return short - the length
      */
     public short getLength() {
-        return (BitBufferHelper.getShort(fieldValues.get(LENGTH)));
+        return BitBufferHelper.getShort(fieldValues.get(LENGTH));
     }
 
     /**
-     * Get the stored checksum value of the UDP header
+     * Get the stored checksum value of the UDP header.
      * @return short - the checksum
      */
     public short getChecksum() {
-        return (BitBufferHelper.getShort(fieldValues.get(CHECKSUM)));
+        return BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
     }
 
-    @Override
     /**
-     * Store the value read from data stream in hdrFieldMap
+     * Store the value read from data stream in hdrFieldMap.
      */
+    @Override
     public void setHeaderField(String headerField, byte[] readValue) {
         hdrFieldsMap.put(headerField, readValue);
     }
 
     /**
-     * Sets the sourcePort value for the current UDP object instance
+     * Sets the sourcePort value for the current UDP object instance.
      * @param udpSourcePort int source port to set
      * @return UDP
      */
@@ -127,7 +126,7 @@ public class UDP extends Packet {
     }
 
     /**
-     * Sets the destinationPort value for the current UDP object instance
+     * Sets the destinationPort value for the current UDP object instance.
      * @param udpDestinationPort int destination port to set
      * @return UDP
      */
@@ -140,7 +139,7 @@ public class UDP extends Packet {
     }
 
     /**
-     * Set the UDP header length value for the current UDP object instance
+     * Set the UDP header length value for the current UDP object instance.
      * @param udpLength - short - the length to set
      * @return UDP
      */
@@ -151,7 +150,7 @@ public class UDP extends Packet {
     }
 
     /**
-     * Set the checksum for the current UDP object instance
+     * Set the checksum for the current UDP object instance.
      * @param udpChecksum - short - the checksum to set
      * @return UDP
      */

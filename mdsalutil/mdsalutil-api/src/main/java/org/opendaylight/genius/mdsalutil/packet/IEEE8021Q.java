@@ -20,19 +20,18 @@ public class IEEE8021Q extends Ethernet {
     private static final String VLAN_ID = "VlanId";
     private static final String ETHT = "EtherType";
 
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(PRIORITY, new ImmutablePair<>(0, 3));
-            put(CFI, new ImmutablePair<>(3, 1));
-            put(VLAN_ID, new ImmutablePair<>(4, 12));
-            put(ETHT, new ImmutablePair<>(16, 16));
-        }
-    };
-    private Map<String, byte[]> fieldValues;
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(PRIORITY, new ImmutablePair<>(0, 3));
+                put(CFI, new ImmutablePair<>(3, 1));
+                put(VLAN_ID, new ImmutablePair<>(4, 12));
+                put(ETHT, new ImmutablePair<>(16, 16));
+            }
+        };
+    private final Map<String, byte[]> fieldValues;
 
     /**
-     * Default constructor that creates and sets the HashMap
+     * Default constructor that creates and sets the HashMap.
      */
     public IEEE8021Q() {
         super();
@@ -49,15 +48,15 @@ public class IEEE8021Q extends Ethernet {
     }
 
     public short getPriority() {
-        return (BitBufferHelper.getShort(fieldValues.get(PRIORITY)));
+        return BitBufferHelper.getShort(fieldValues.get(PRIORITY));
     }
 
     public short getCfi() {
-        return (BitBufferHelper.getShort(fieldValues.get(CFI)));
+        return BitBufferHelper.getShort(fieldValues.get(CFI));
     }
 
     public short getVlanId() {
-        return (BitBufferHelper.getShort(fieldValues.get(VLAN_ID)));
+        return BitBufferHelper.getShort(fieldValues.get(VLAN_ID));
     }
 
     @Override
@@ -97,7 +96,7 @@ public class IEEE8021Q extends Ethernet {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-                + ((fieldValues == null) ? 0 : fieldValues.hashCode());
+                + (fieldValues == null ? 0 : fieldValues.hashCode());
         return result;
     }
 
