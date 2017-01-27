@@ -79,10 +79,6 @@ public class DataStoreJobCoordinator {
         enqueueJob(job.getJobQueueKey(), job);
     }
 
-    public long getIncompleteTaskCount() {
-        return DataStoreJobCoordinatorCounters.jobs_incomplete.get();
-    }
-
     /**
      *    This is used by the external applications to enqueue a Job
      *    with an appropriate key. A JobEntry is created and queued
@@ -114,6 +110,10 @@ public class DataStoreJobCoordinator {
         } finally {
             reentrantLock.unlock();
         }
+    }
+
+    public long getIncompleteTaskCount() {
+        return DataStoreJobCoordinatorCounters.jobs_incomplete.get();
     }
 
     /**
