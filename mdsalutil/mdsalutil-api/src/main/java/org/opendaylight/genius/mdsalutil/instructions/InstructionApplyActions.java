@@ -8,8 +8,8 @@
 package org.opendaylight.genius.mdsalutil.instructions;
 
 import java.util.List;
-import org.opendaylight.genius.mdsalutil.ActionInfoList;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.ActionInfoList;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.apply.actions._case.ApplyActionsBuilder;

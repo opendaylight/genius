@@ -96,7 +96,7 @@ public class HwvtepSouthboundUtils {
      * @return the instance identifier
      */
     public static InstanceIdentifier<LogicalSwitches> createLogicalSwitchesInstanceIdentifier(NodeId nodeId,
-                                                                                              HwvtepNodeName hwvtepNodeName) {
+            HwvtepNodeName hwvtepNodeName) {
         return createInstanceIdentifier(nodeId).augmentation(HwvtepGlobalAugmentation.class)
                 .child(LogicalSwitches.class, new LogicalSwitchesKey(hwvtepNodeName));
     }
@@ -149,7 +149,7 @@ public class HwvtepSouthboundUtils {
      * @return the instance identifier
      */
     public static InstanceIdentifier<RemoteMcastMacs> createRemoteMcastMacsInstanceIdentifier(NodeId nodeId,
-                                                                                              String logicalSwitchName, MacAddress mac) {
+            String logicalSwitchName, MacAddress mac) {
         InstanceIdentifier<LogicalSwitches> logicalSwitch = createLogicalSwitchesInstanceIdentifier(nodeId,
                 new HwvtepNodeName(logicalSwitchName));
         return createInstanceIdentifier(nodeId).augmentation(HwvtepGlobalAugmentation.class)
@@ -166,7 +166,7 @@ public class HwvtepSouthboundUtils {
      * @return the instance identifier
      */
     public static InstanceIdentifier<RemoteMcastMacs> createRemoteMcastMacsInstanceIdentifier(NodeId nodeId,
-                                                                                              RemoteMcastMacsKey remoteMcastMacsKey) {
+            RemoteMcastMacsKey remoteMcastMacsKey) {
         return createInstanceIdentifier(nodeId).augmentation(HwvtepGlobalAugmentation.class)
                 .child(RemoteMcastMacs.class, remoteMcastMacsKey);
     }
@@ -181,7 +181,7 @@ public class HwvtepSouthboundUtils {
      * @return the instance identifier
      */
     public static InstanceIdentifier<TerminationPoint> createPhysicalLocatorInstanceIdentifier(NodeId nodeId,
-                                                                                               HwvtepPhysicalLocatorAugmentation physicalLocatorAug) {
+            HwvtepPhysicalLocatorAugmentation physicalLocatorAug) {
         return createInstanceIdentifier(nodeId).child(TerminationPoint.class,
                 getTerminationPointKey(physicalLocatorAug));
     }
@@ -231,6 +231,15 @@ public class HwvtepSouthboundUtils {
         if (phyLocator.getEncapsulationType() != null && phyLocator.getDstIp() != null) {
             String encapType = HwvtepSouthboundConstants.ENCAPS_TYPE_MAP.get(phyLocator.getEncapsulationType());
             String tpKeyStr = encapType + ":" + String.valueOf(phyLocator.getDstIp().getValue());
+            tpKey = new TerminationPointKey(new TpId(tpKeyStr));
+        }
+        return tpKey;
+    }
+
+    public static TerminationPointKey getTerminationPointKey(String ipAddress) {
+        TerminationPointKey tpKey = null;
+        String tpKeyStr = getTerminationPointKeyString(ipAddress);
+        if (tpKeyStr != null) {
             tpKey = new TerminationPointKey(new TpId(tpKeyStr));
         }
         return tpKey;
@@ -289,8 +298,8 @@ public class HwvtepSouthboundUtils {
         if (type.isEmpty()) {
             return EncapsulationTypeVxlanOverIpv4.class;
         } else {
-            ImmutableBiMap<String, Class<? extends EncapsulationTypeBase>> mapper = HwvtepSouthboundConstants.ENCAPS_TYPE_MAP
-                    .inverse();
+            ImmutableBiMap<String, Class<? extends EncapsulationTypeBase>> mapper
+                = HwvtepSouthboundConstants.ENCAPS_TYPE_MAP.inverse();
             return mapper.get(type);
         }
     }
@@ -311,7 +320,7 @@ public class HwvtepSouthboundUtils {
      * @return the remote ucast macs
      */
     public static RemoteUcastMacs createRemoteUcastMac(NodeId nodeId, String mac, IpAddress ipAddress,
-                                                       String logicalSwitchName, HwvtepPhysicalLocatorAugmentation physicalLocatorAug) {
+            String logicalSwitchName, HwvtepPhysicalLocatorAugmentation physicalLocatorAug) {
         HwvtepLogicalSwitchRef lsRef = new HwvtepLogicalSwitchRef(
                 createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName)));
         HwvtepPhysicalLocatorRef phyLocRef = new HwvtepPhysicalLocatorRef(
@@ -338,7 +347,7 @@ public class HwvtepSouthboundUtils {
      * @return the remote mcast macs
      */
     public static RemoteMcastMacs createRemoteMcastMac(NodeId nodeId, String mac, IpAddress ipAddress,
-                                                       String logicalSwitchName, List<HwvtepPhysicalLocatorAugmentation> lstPhysicalLocatorAug) {
+            String logicalSwitchName, List<HwvtepPhysicalLocatorAugmentation> lstPhysicalLocatorAug) {
         HwvtepLogicalSwitchRef lsRef = new HwvtepLogicalSwitchRef(
                 createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName)));
 
@@ -376,15 +385,6 @@ public class HwvtepSouthboundUtils {
         HwvtepLogicalSwitchRef lsRef = new HwvtepLogicalSwitchRef(lSwitchIid);
         vbBuilder.setLogicalSwitchRef(lsRef);
         return vbBuilder.build();
-    }
-
-    public static TerminationPointKey getTerminationPointKey(String ipAddress) {
-        TerminationPointKey tpKey = null;
-        String tpKeyStr = getTerminationPointKeyString(ipAddress);
-        if (tpKeyStr != null) {
-            tpKey = new TerminationPointKey(new TpId(tpKeyStr));
-        }
-        return tpKey;
     }
 
     public static String getTerminationPointKeyString(String ipAddress) {

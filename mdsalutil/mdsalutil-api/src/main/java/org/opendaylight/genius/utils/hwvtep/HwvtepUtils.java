@@ -76,6 +76,7 @@ public final class HwvtepUtils {
         putLogicalSwitch(transaction,logicalDatastoreType, nodeId, logicalSwitch);
         return transaction.submit();
     }
+
     /**
      * Put the logical switches in the transaction.
      *
@@ -163,7 +164,7 @@ public final class HwvtepUtils {
     }
 
     /**
-     * Gets physical port termination point
+     * Gets physical port termination point.
      *
      * @param broker
      *          the broker
@@ -255,7 +256,7 @@ public final class HwvtepUtils {
      * @return the physical locator
      */
     public static HwvtepPhysicalLocatorAugmentation getPhysicalLocator(DataBroker broker,
-                                                                       LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
+            LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
                 .createHwvtepPhysicalLocatorAugmentation(String.valueOf(phyLocatorIp.getValue()));
         InstanceIdentifier<HwvtepPhysicalLocatorAugmentation> iid = HwvtepSouthboundUtils
@@ -338,6 +339,22 @@ public final class HwvtepUtils {
     }
 
     /**
+     * Delete remote ucast mac from the transaction.
+     *
+     * @param transaction
+     *            the transaction
+     * @param nodeId
+     *            the node id
+     * @param mac
+     *            the mac
+     */
+    public static void deleteRemoteUcastMac(final WriteTransaction transaction, final NodeId nodeId,
+                                            String logialSwitchName, final MacAddress mac) {
+        transaction.delete(LogicalDatastoreType.CONFIGURATION,
+                HwvtepSouthboundUtils.createRemoteUcastMacsInstanceIdentifier(nodeId, logialSwitchName, mac));
+    }
+
+    /**
      * Delete remote ucast macs from the config DS.
      *
      * @param broker
@@ -372,22 +389,6 @@ public final class HwvtepUtils {
                 deleteRemoteUcastMac(transaction, nodeId, logicalSwitchName, mac);
             }
         }
-    }
-
-    /**
-     * Delete remote ucast mac from the transaction.
-     *
-     * @param transaction
-     *            the transaction
-     * @param nodeId
-     *            the node id
-     * @param mac
-     *            the mac
-     */
-    public static void deleteRemoteUcastMac(final WriteTransaction transaction, final NodeId nodeId,
-                                            String logialSwitchName, final MacAddress mac) {
-        transaction.delete(LogicalDatastoreType.CONFIGURATION,
-                HwvtepSouthboundUtils.createRemoteUcastMacsInstanceIdentifier(nodeId, logialSwitchName, mac));
     }
 
     /**
@@ -451,6 +452,7 @@ public final class HwvtepUtils {
                 remoteMcastMac.getKey());
         transaction.put(logicalDatastoreType, iid, remoteMcastMac, true);
     }
+
     /**
      * Gets the remote mcast mac.
      *
@@ -487,6 +489,22 @@ public final class HwvtepUtils {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMac(transaction, nodeId, remoteMcastMacsKey);
         return transaction.submit();
+    }
+
+    /**
+     * Delete remote mcast mac from the transaction.
+     *
+     * @param transaction
+     *            the transaction
+     * @param nodeId
+     *            the node id
+     * @param remoteMcastMacsKey
+     *            the remote mcast macs key
+     */
+    public static void deleteRemoteMcastMac(final WriteTransaction transaction, final NodeId nodeId,
+                                            final RemoteMcastMacsKey remoteMcastMacsKey) {
+        transaction.delete(LogicalDatastoreType.CONFIGURATION,
+                HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey));
     }
 
     /**
@@ -527,22 +545,6 @@ public final class HwvtepUtils {
     }
 
     /**
-     * Delete remote mcast mac from the transaction.
-     *
-     * @param transaction
-     *            the transaction
-     * @param nodeId
-     *            the node id
-     * @param remoteMcastMacsKey
-     *            the remote mcast macs key
-     */
-    public static void deleteRemoteMcastMac(final WriteTransaction transaction, final NodeId nodeId,
-                                            final RemoteMcastMacsKey remoteMcastMacsKey) {
-        transaction.delete(LogicalDatastoreType.CONFIGURATION,
-                HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey));
-    }
-
-    /**
      * Merge vlan bindings in the transaction.
      *
      * @param transaction
@@ -557,7 +559,7 @@ public final class HwvtepUtils {
      *            the vlan bindings
      */
     public static void mergeVlanBindings(final WriteTransaction transaction, final NodeId nodeId,
-                                         final String phySwitchName, final String phyPortName, final List<VlanBindings> vlanBindings) {
+            final String phySwitchName, final String phyPortName, final List<VlanBindings> vlanBindings) {
         NodeId physicalSwitchNodeId = HwvtepSouthboundUtils.createManagedNodeId(nodeId, phySwitchName);
         mergeVlanBindings(transaction, physicalSwitchNodeId, phyPortName, vlanBindings);
     }
