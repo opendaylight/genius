@@ -16,6 +16,24 @@
       "revId": "bd3b08c4e53c2d233a0726f966d85ee77e7b683b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3165cee1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-27T18:22:22Z",
+      "side": 1,
+      "message": "and how do you like it NOW? ;)",
+      "parentUuid": "fafc7978_ae9afb11",
+      "revId": "bd3b08c4e53c2d233a0726f966d85ee77e7b683b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
