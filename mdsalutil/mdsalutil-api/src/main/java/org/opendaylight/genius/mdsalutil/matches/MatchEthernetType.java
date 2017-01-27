@@ -45,12 +45,18 @@ public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMa
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        MatchEthernetType that = (MatchEthernetType) o;
+        MatchEthernetType that = (MatchEthernetType) other;
 
         return type == that.type;
     }
@@ -58,7 +64,7 @@ public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMa
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) (type ^ (type >>> 32));
+        result = 31 * result + (int) (type ^ type >>> 32);
         return result;
     }
 }

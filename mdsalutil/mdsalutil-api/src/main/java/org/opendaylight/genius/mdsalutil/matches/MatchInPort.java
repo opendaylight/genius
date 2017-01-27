@@ -46,14 +46,22 @@ public class MatchInPort extends MatchInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        MatchInPort that = (MatchInPort) o;
+        MatchInPort that = (MatchInPort) other;
 
-        if (portNumber != that.portNumber) return false;
+        if (portNumber != that.portNumber) {
+            return false;
+        }
         return dpId != null ? dpId.equals(that.dpId) : that.dpId == null;
     }
 
@@ -61,7 +69,7 @@ public class MatchInPort extends MatchInfo {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (dpId != null ? dpId.hashCode() : 0);
-        result = 31 * result + (int) (portNumber ^ (portNumber >>> 32));
+        result = 31 * result + (int) (portNumber ^ portNumber >>> 32);
         return result;
     }
 }

@@ -46,12 +46,18 @@ public class MatchIpv4Destination extends MatchInfoHelper<Ipv4Match, Ipv4MatchBu
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        MatchIpv4Destination that = (MatchIpv4Destination) o;
+        MatchIpv4Destination that = (MatchIpv4Destination) other;
 
         return prefix != null ? prefix.equals(that.prefix) : that.prefix == null;
     }
