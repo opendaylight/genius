@@ -18,10 +18,8 @@ import org.opendaylight.controller.liblldp.Packet;
 
 /**
  * Class that represents the ARP packet objects
- * taken from opendaylight(helium) adsal bundle
- *
+ * taken from opendaylight(helium) adsal bundle.
  */
-
 public class ARP extends Packet {
     private static final String HWTYPE = "HardwareType";
     private static final String PTYPE = "ProtocolType";
@@ -39,25 +37,24 @@ public class ARP extends Packet {
 
     public static short PROTO_TYPE_IP = 0x800;
 
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(HWTYPE, new ImmutablePair<>(0, 16));
-            put(PTYPE, new ImmutablePair<>(16, 16));
-            put(HWADDRLENGTH, new ImmutablePair<>(32, 8));
-            put(PADDRLENGTH, new ImmutablePair<>(40, 8));
-            put(OPCODE, new ImmutablePair<>(48, 16));
-            put(SENDERHWADDR, new ImmutablePair<>(64, 48));
-            put(SENDERPADDR, new ImmutablePair<>(112, 32));
-            put(TARGETHWADDR, new ImmutablePair<>(144, 48));
-            put(TARGETPADDR, new ImmutablePair<>(192, 32));
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(HWTYPE, new ImmutablePair<>(0, 16));
+                put(PTYPE, new ImmutablePair<>(16, 16));
+                put(HWADDRLENGTH, new ImmutablePair<>(32, 8));
+                put(PADDRLENGTH, new ImmutablePair<>(40, 8));
+                put(OPCODE, new ImmutablePair<>(48, 16));
+                put(SENDERHWADDR, new ImmutablePair<>(64, 48));
+                put(SENDERPADDR, new ImmutablePair<>(112, 32));
+                put(TARGETHWADDR, new ImmutablePair<>(144, 48));
+                put(TARGETPADDR, new ImmutablePair<>(192, 32));
+            }
+        };
 
-        }
-    };
-    private Map<String, byte[]> fieldValues;
+    private final Map<String, byte[]> fieldValues;
 
     /**
-     * Default constructor that creates and sets the HashMap
+     * Default constructor that creates and sets the HashMap.
      */
     public ARP() {
         super();
@@ -74,36 +71,36 @@ public class ARP extends Packet {
     }
 
     public short getHardwareType() {
-        return (BitBufferHelper.getShort(fieldValues.get(HWTYPE)));
+        return BitBufferHelper.getShort(fieldValues.get(HWTYPE));
 
     }
 
     public short getProtocolType() {
-        return (BitBufferHelper.getShort(fieldValues.get(PTYPE)));
+        return BitBufferHelper.getShort(fieldValues.get(PTYPE));
     }
 
     public byte getHardwareAddressLength() {
-        return (BitBufferHelper.getByte(fieldValues.get(HWADDRLENGTH)));
+        return BitBufferHelper.getByte(fieldValues.get(HWADDRLENGTH));
     }
 
     public byte getProtocolAddressLength() {
-        return (BitBufferHelper.getByte(fieldValues.get(PADDRLENGTH)));
+        return BitBufferHelper.getByte(fieldValues.get(PADDRLENGTH));
     }
 
     public short getOpCode() {
-        return (BitBufferHelper.getShort(fieldValues.get(OPCODE)));
+        return BitBufferHelper.getShort(fieldValues.get(OPCODE));
     }
 
     public byte[] getSenderHardwareAddress() {
-        return (fieldValues.get(SENDERHWADDR));
+        return fieldValues.get(SENDERHWADDR);
     }
 
     public byte[] getSenderProtocolAddress() {
-        return (fieldValues.get(SENDERPADDR));
+        return fieldValues.get(SENDERPADDR);
     }
 
     public byte[] getTargetHardwareAddress() {
-        return (fieldValues.get(TARGETHWADDR));
+        return fieldValues.get(TARGETHWADDR);
     }
 
     public ARP setHardwareType(short hardwareType) {
@@ -167,7 +164,7 @@ public class ARP extends Packet {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-                + ((fieldValues == null) ? 0 : fieldValues.hashCode());
+                + (fieldValues == null ? 0 : fieldValues.hashCode());
         return result;
     }
 

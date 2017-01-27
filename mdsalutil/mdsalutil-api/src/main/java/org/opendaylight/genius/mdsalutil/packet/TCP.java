@@ -17,7 +17,7 @@ import org.opendaylight.controller.liblldp.BitBufferHelper;
 import org.opendaylight.controller.liblldp.Packet;
 
 /**
- * Class that represents the TCP segment objects
+ * Class that represents the TCP segment objects.
  */
 public class TCP extends Packet {
 
@@ -32,26 +32,25 @@ public class TCP extends Packet {
     public static final String CHECKSUM = "Checksum";
     public static final String URGENTPOINTER = "UrgentPointer";
 
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(SRCPORT, new ImmutablePair<>(0, 16));
-            put(DESTPORT, new ImmutablePair<>(16, 16));
-            put(SEQNUMBER, new ImmutablePair<>(32, 32));
-            put(ACKNUMBER, new ImmutablePair<>(64, 32));
-            put(DATAOFFSET, new ImmutablePair<>(96, 4));
-            put(RESERVED, new ImmutablePair<>(100, 3));
-            put(HEADERLENFLAGS, new ImmutablePair<>(103, 9));
-            put(WINDOWSIZE, new ImmutablePair<>(112, 16));
-            put(CHECKSUM, new ImmutablePair<>(128, 16));
-            put(URGENTPOINTER, new ImmutablePair<>(144, 16));
-        }
-    };
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(SRCPORT, new ImmutablePair<>(0, 16));
+                put(DESTPORT, new ImmutablePair<>(16, 16));
+                put(SEQNUMBER, new ImmutablePair<>(32, 32));
+                put(ACKNUMBER, new ImmutablePair<>(64, 32));
+                put(DATAOFFSET, new ImmutablePair<>(96, 4));
+                put(RESERVED, new ImmutablePair<>(100, 3));
+                put(HEADERLENFLAGS, new ImmutablePair<>(103, 9));
+                put(WINDOWSIZE, new ImmutablePair<>(112, 16));
+                put(CHECKSUM, new ImmutablePair<>(128, 16));
+                put(URGENTPOINTER, new ImmutablePair<>(144, 16));
+            }
+        };
 
     private final Map<String, byte[]> fieldValues;
 
     /**
-     * Default constructor that sets all the header fields to zero
+     * Default constructor that sets all the header fields to zero.
      */
     public TCP() {
         super();
@@ -107,7 +106,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP source port for the current TCP object instance
+     * Sets the TCP source port for the current TCP object instance.
      * @param tcpSourcePort short
      * @return TCP
      */
@@ -118,7 +117,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP destination port for the current TCP object instance
+     * Sets the TCP destination port for the current TCP object instance.
      * @param tcpDestinationPort short
      * @return TCP
      */
@@ -130,7 +129,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP sequence number for the current TCP object instance
+     * Sets the TCP sequence number for the current TCP object instance.
      * @param tcpSequenceNumber - int
      * @return TCP
      */
@@ -141,7 +140,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP data offset for the current TCP object instance
+     * Sets the TCP data offset for the current TCP object instance.
      * @param tcpDataOffset - byte
      * @return TCP
      */
@@ -152,7 +151,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP reserved bits for the current TCP object instance
+     * Sets the TCP reserved bits for the current TCP object instance.
      * @param tcpReserved byte
      * @return TCP
      */
@@ -163,7 +162,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP Ack number for the current TCP object instance
+     * Sets the TCP Ack number for the current TCP object instance.
      * @param tcpAckNumber int
      * @return TCP
      */
@@ -174,7 +173,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP flags for the current TCP object instance
+     * Sets the TCP flags for the current TCP object instance.
      * @param tcpFlags short
      * @return TCP
      */
@@ -185,7 +184,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP window size for the current TCP object instance
+     * Sets the TCP window size for the current TCP object instance.
      * @param tcpWsize short
      * @return TCP
      */
@@ -196,7 +195,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP checksum for the current TCP object instance
+     * Sets the TCP checksum for the current TCP object instance.
      * @param tcpChecksum short
      * @return TCP
      */
@@ -207,7 +206,7 @@ public class TCP extends Packet {
     }
 
     /**
-     * Sets the TCP Urgent Pointer for the current TCP object instance
+     * Sets the TCP Urgent Pointer for the current TCP object instance.
      * @param tcpUrgentPointer short
      * @return TCP
      */
@@ -218,27 +217,27 @@ public class TCP extends Packet {
     }
 
     /**
-     * Gets the stored source port value of TCP header
+     * Gets the stored source port value of TCP header.
      * @return the sourcePort
      */
     public short getSourcePort() {
-        return (BitBufferHelper.getShort(fieldValues.get(SRCPORT)));
+        return BitBufferHelper.getShort(fieldValues.get(SRCPORT));
     }
 
     /**
-     * Gets the stored destination port value of TCP header
+     * Gets the stored destination port value of TCP header.
      * @return the destinationPort
      */
     public short getDestinationPort() {
-        return (BitBufferHelper.getShort(fieldValues.get(DESTPORT)));
+        return BitBufferHelper.getShort(fieldValues.get(DESTPORT));
     }
 
     /**
-     * Get the stored checksum value of the TCP header
+     * Get the stored checksum value of the TCP header.
      * @return short - the checksum
      */
     public short getChecksum() {
-        return (BitBufferHelper.getShort(fieldValues.get(CHECKSUM)));
+        return BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
     }
 
 }
