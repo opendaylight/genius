@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_2e51eb62",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T17:15:53Z",
+      "side": 1,
+      "message": "Since listenerRegistration.close() doesn\u0027t declare any exceptions, there isn\u0027t much point in declaring an exception here. It might be worth rebasing this on top of https://git.opendaylight.org/gerrit/51073",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aeccbb36",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T17:15:53Z",
+      "side": 1,
+      "message": "The Autocloseable recommendation is to do the following:\n\n    ListenerRegistration\u003c?\u003e oldRegistration \u003d listenerRegistration;\n    listenerRegistration \u003d null;\n    if (oldRegistration !\u003d null) {\n        oldRegistration.close();\n    }",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6e4bf3b0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T17:15:53Z",
+      "side": 1,
+      "message": "Same here...",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0ed227d2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T17:15:53Z",
+      "side": 1,
+      "message": "... and again ...",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4edb8fed",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T17:15:53Z",
+      "side": 1,
+      "message": "... and again.",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
