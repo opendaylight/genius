@@ -34,6 +34,7 @@ public class ActionSetFieldDscp extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
                 new SetFieldCaseBuilder().setSetField(
@@ -44,12 +45,18 @@ public class ActionSetFieldDscp extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionSetFieldDscp that = (ActionSetFieldDscp) o;
+        ActionSetFieldDscp that = (ActionSetFieldDscp) other;
 
         return dscp == that.dscp;
     }
@@ -57,7 +64,7 @@ public class ActionSetFieldDscp extends ActionInfo {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) dscp;
+        result = 31 * result + dscp;
         return result;
     }
 }

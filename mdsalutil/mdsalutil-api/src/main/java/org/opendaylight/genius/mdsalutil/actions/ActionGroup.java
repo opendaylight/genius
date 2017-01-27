@@ -34,6 +34,7 @@ public class ActionGroup extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
                 new GroupActionCaseBuilder().setGroupAction(
@@ -46,12 +47,18 @@ public class ActionGroup extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionGroup that = (ActionGroup) o;
+        ActionGroup that = (ActionGroup) other;
 
         return groupId == that.groupId;
     }
@@ -59,7 +66,7 @@ public class ActionGroup extends ActionInfo {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) (groupId ^ (groupId >>> 32));
+        result = 31 * result + (int) (groupId ^ groupId >>> 32);
         return result;
     }
 }

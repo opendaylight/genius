@@ -52,6 +52,7 @@ public class ActionSetDestinationIp extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder()
             .setAction(new SetFieldCaseBuilder()
@@ -69,12 +70,18 @@ public class ActionSetDestinationIp extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionSetDestinationIp that = (ActionSetDestinationIp) o;
+        ActionSetDestinationIp that = (ActionSetDestinationIp) other;
 
         return destination != null ? destination.equals(that.destination) : that.destination == null;
     }

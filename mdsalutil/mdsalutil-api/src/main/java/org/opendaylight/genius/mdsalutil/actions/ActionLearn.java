@@ -34,6 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Learn action.
  */
 public class ActionLearn extends ActionInfo {
+
     private final int idleTimeout;
     private final int hardTimeout;
     private final int priority;
@@ -68,6 +69,7 @@ public class ActionLearn extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         NxLearnBuilder learnBuilder = new NxLearnBuilder();
         learnBuilder
@@ -126,21 +128,43 @@ public class ActionLearn extends ActionInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        ActionLearn that = (ActionLearn) o;
+        ActionLearn that = (ActionLearn) other;
 
-        if (idleTimeout != that.idleTimeout) return false;
-        if (hardTimeout != that.hardTimeout) return false;
-        if (priority != that.priority) return false;
-        if (flags != that.flags) return false;
-        if (tableId != that.tableId) return false;
-        if (finIdleTimeout != that.finIdleTimeout) return false;
-        if (finHardTimeout != that.finHardTimeout) return false;
-        if (cookie != null ? !cookie.equals(that.cookie) : that.cookie != null) return false;
+        if (idleTimeout != that.idleTimeout) {
+            return false;
+        }
+        if (hardTimeout != that.hardTimeout) {
+            return false;
+        }
+        if (priority != that.priority) {
+            return false;
+        }
+        if (flags != that.flags) {
+            return false;
+        }
+        if (tableId != that.tableId) {
+            return false;
+        }
+        if (finIdleTimeout != that.finIdleTimeout) {
+            return false;
+        }
+        if (finHardTimeout != that.finHardTimeout) {
+            return false;
+        }
+        if (cookie != null ? !cookie.equals(that.cookie) : that.cookie != null) {
+            return false;
+        }
         return flowMods.equals(that.flowMods);
     }
 
@@ -152,7 +176,7 @@ public class ActionLearn extends ActionInfo {
         result = 31 * result + priority;
         result = 31 * result + (cookie != null ? cookie.hashCode() : 0);
         result = 31 * result + flags;
-        result = 31 * result + (int) tableId;
+        result = 31 * result + tableId;
         result = 31 * result + finIdleTimeout;
         result = 31 * result + finHardTimeout;
         result = 31 * result + flowMods.hashCode();
@@ -191,21 +215,29 @@ public class ActionLearn extends ActionInfo {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
 
-            MatchFromField that = (MatchFromField) o;
+            MatchFromField that = (MatchFromField) other;
 
-            if (sourceField != that.sourceField) return false;
-            if (destField != that.destField) return false;
+            if (sourceField != that.sourceField) {
+                return false;
+            }
+            if (destField != that.destField) {
+                return false;
+            }
             return bits == that.bits;
         }
 
         @Override
         public int hashCode() {
-            int result = (int) (sourceField ^ (sourceField >>> 32));
-            result = 31 * result + (int) (destField ^ (destField >>> 32));
+            int result = (int) (sourceField ^ sourceField >>> 32);
+            result = 31 * result + (int) (destField ^ destField >>> 32);
             result = 31 * result + bits;
             return result;
         }
@@ -238,21 +270,29 @@ public class ActionLearn extends ActionInfo {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
 
-            MatchFromValue that = (MatchFromValue) o;
+            MatchFromValue that = (MatchFromValue) other;
 
-            if (value != that.value) return false;
-            if (sourceField != that.sourceField) return false;
+            if (value != that.value) {
+                return false;
+            }
+            if (sourceField != that.sourceField) {
+                return false;
+            }
             return bits == that.bits;
         }
 
         @Override
         public int hashCode() {
             int result = value;
-            result = 31 * result + (int) (sourceField ^ (sourceField >>> 32));
+            result = 31 * result + (int) (sourceField ^ sourceField >>> 32);
             result = 31 * result + bits;
             return result;
         }
@@ -286,21 +326,29 @@ public class ActionLearn extends ActionInfo {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
 
-            CopyFromField that = (CopyFromField) o;
+            CopyFromField that = (CopyFromField) other;
 
-            if (sourceField != that.sourceField) return false;
-            if (destField != that.destField) return false;
+            if (sourceField != that.sourceField) {
+                return false;
+            }
+            if (destField != that.destField) {
+                return false;
+            }
             return bits == that.bits;
         }
 
         @Override
         public int hashCode() {
-            int result = (int) (sourceField ^ (sourceField >>> 32));
-            result = 31 * result + (int) (destField ^ (destField >>> 32));
+            int result = (int) (sourceField ^ sourceField >>> 32);
+            result = 31 * result + (int) (destField ^ destField >>> 32);
             result = 31 * result + bits;
             return result;
         }
@@ -333,21 +381,29 @@ public class ActionLearn extends ActionInfo {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
 
-            CopyFromValue that = (CopyFromValue) o;
+            CopyFromValue that = (CopyFromValue) other;
 
-            if (value != that.value) return false;
-            if (destField != that.destField) return false;
+            if (value != that.value) {
+                return false;
+            }
+            if (destField != that.destField) {
+                return false;
+            }
             return bits == that.bits;
         }
 
         @Override
         public int hashCode() {
             int result = value;
-            result = 31 * result + (int) (destField ^ (destField >>> 32));
+            result = 31 * result + (int) (destField ^ destField >>> 32);
             result = 31 * result + bits;
             return result;
         }
@@ -377,19 +433,25 @@ public class ActionLearn extends ActionInfo {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
 
-            OutputToPort that = (OutputToPort) o;
+            OutputToPort that = (OutputToPort) other;
 
-            if (sourceField != that.sourceField) return false;
+            if (sourceField != that.sourceField) {
+                return false;
+            }
             return bits == that.bits;
         }
 
         @Override
         public int hashCode() {
-            int result = (int) (sourceField ^ (sourceField >>> 32));
+            int result = (int) (sourceField ^ sourceField >>> 32);
             result = 31 * result + bits;
             return result;
         }
