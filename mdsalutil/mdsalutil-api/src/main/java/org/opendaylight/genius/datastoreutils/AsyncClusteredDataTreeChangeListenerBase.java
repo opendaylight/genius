@@ -24,20 +24,14 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AsyncClusteredDataTreeChangeListenerBase
     <T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
         implements ClusteredDataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncClusteredDataTreeChangeListenerBase.class);
-
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS = 300;
-    private static final int STARTUP_LOOP_TICK = 500;
-    private static final int STARTUP_LOOP_MAX_RETRIES = 8;
 
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
@@ -50,11 +44,9 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             new LinkedBlockingQueue<>());
 
     protected final Class<T> clazz;
-    private final Class<K> eventClazz;
 
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
-        this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
     @Override
@@ -79,15 +71,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
     public void registerListener(LogicalDatastoreType dsType, final DataBroker db) {
         final DataTreeIdentifier<T> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
-        try {
-            TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper
-                    .loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
-        } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
-            throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
-        }
+        listenerRegistration = db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener());
     }
 
     @Override
@@ -96,10 +80,9 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();
-            } catch (final Exception e) {
-                LOG.error("Error when cleaning up DataTreeChangeListener.", e);
+            } finally {
+                listenerRegistration = null;
             }
-            listenerRegistration = null;
         }
     }
 

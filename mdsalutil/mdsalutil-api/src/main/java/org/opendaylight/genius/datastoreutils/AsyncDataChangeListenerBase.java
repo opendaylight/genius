@@ -11,7 +11,6 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -24,20 +23,14 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Deprecated
 public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extends DataChangeListener>
         implements DataChangeListener, ChainableDataChangeListener, AutoCloseable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncDataChangeListenerBase.class);
-
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS = 300;
-    private static final int STARTUP_LOOP_TICK = 500;
-    private static final int STARTUP_LOOP_MAX_RETRIES = 8;
 
     private static ThreadPoolExecutor dataChangeHandlerExecutor = new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
@@ -46,10 +39,9 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
             TimeUnit.SECONDS,
             new LinkedBlockingQueue<>());
 
-    private ListenerRegistration<K> listenerRegistration;
+    private ListenerRegistration<?> listenerRegistration;
     private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
-    private final Class<K> eventClazz;
 
     /**
      * Constructor.
@@ -57,7 +49,6 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
      */
     public AsyncDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
-        this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
     @Override
@@ -70,18 +61,9 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
         chainingDelegate.addAfterListener(listener);
     }
 
-    @SuppressWarnings("unchecked")
     public void registerListener(final LogicalDatastoreType dsType, final DataBroker db) {
-        try {
-            TaskRetryLooper looper = new TaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
-            listenerRegistration = looper.loopUntilNoException(
-                    (Callable<ListenerRegistration<K>>) () -> (ListenerRegistration) db.registerDataChangeListener(
-                            dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope()));
-        } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
-            throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
-        }
+        listenerRegistration = db.registerDataChangeListener(
+                            dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope());
     }
 
     @Override
@@ -143,12 +125,10 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();
-            } catch (final Exception e) {
-                LOG.error("Error when cleaning up DataChangeListener.", e);
+            } finally {
+                listenerRegistration = null;
             }
-            listenerRegistration = null;
         }
-        LOG.info("Interface Manager Closed");
     }
 
     protected abstract void remove(InstanceIdentifier<T> identifier, T del);
