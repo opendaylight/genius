@@ -21,7 +21,7 @@ import org.opendaylight.controller.liblldp.Packet;
 
 /**
  * Class that represents the Ethernet frame objects
- * taken from opendaylight(helium) adsal bundle
+ * taken from opendaylight(helium) adsal bundle.
  */
 public class Ethernet extends Packet {
     private static final String DMAC = "DestinationMACAddress";
@@ -31,6 +31,7 @@ public class Ethernet extends Packet {
     // TODO: This has to be outside and it should be possible for osgi
     // to add new coming packet classes
     public static final Map<Short, Class<? extends Packet>> etherTypeClassMap;
+
     static {
         etherTypeClassMap = new HashMap<>();
         etherTypeClassMap.put(EtherTypes.ARP.shortValue(), ARP.class);
@@ -42,18 +43,18 @@ public class Ethernet extends Packet {
         // etherTypeClassMap.put(EtherTypes.QINQ.shortValue(), IEEE8021Q.class);
         // etherTypeClassMap.put(EtherTypes.CISCOQINQ.shortValue(), IEEE8021Q.class);
     }
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(DMAC, new ImmutablePair<>(0, 48));
-            put(SMAC, new ImmutablePair<>(48, 48));
-            put(ETHT, new ImmutablePair<>(96, 16));
-        }
-    };
+
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(DMAC, new ImmutablePair<>(0, 48));
+                put(SMAC, new ImmutablePair<>(48, 48));
+                put(ETHT, new ImmutablePair<>(96, 16));
+            }
+        };
     private final Map<String, byte[]> fieldValues;
 
     /**
-     * Default constructor that creates and sets the HashMap
+     * Default constructor that creates and sets the HashMap.
      */
     public Ethernet() {
         super();
@@ -64,7 +65,7 @@ public class Ethernet extends Packet {
 
     /**
      * Constructor that sets the access level for the packet and
-     * creates and sets the HashMap
+     * creates and sets the HashMap.
      * @param writeAccess boolean
      */
     public Ethernet(boolean writeAccess) {
@@ -95,11 +96,11 @@ public class Ethernet extends Packet {
         return BitBufferHelper.getShort(fieldValues.get(ETHT));
     }
 
-    public boolean isBroadcast(){
+    public boolean isBroadcast() {
         return NetUtils.isBroadcastMACAddr(getDestinationMACAddress());
     }
 
-    public boolean isMulticast(){
+    public boolean isMulticast() {
         return NetUtils.isMulticastMACAddr(getDestinationMACAddress());
     }
 
