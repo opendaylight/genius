@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -45,6 +46,11 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
     protected final Class<T> clazz;
 
+    protected AsyncClusteredDataTreeChangeListenerBase() {
+        this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+    }
+
+    @Deprecated
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
     }

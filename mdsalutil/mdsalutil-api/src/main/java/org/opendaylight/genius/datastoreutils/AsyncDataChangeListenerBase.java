@@ -20,6 +20,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -43,10 +44,11 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
     private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
 
-    /**
-     * Constructor.
-     * @param clazz - for which the data change event is received
-     */
+    protected AsyncDataChangeListenerBase() {
+        this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+    }
+
+    @Deprecated
     public AsyncDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
     }

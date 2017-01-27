@@ -7,10 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -22,19 +21,7 @@ public abstract class MatchInfoHelper<T extends DataObject, B extends Builder<T>
     private final Class<B> builderClass;
 
     MatchInfoHelper() {
-        builderClass = getTypeParameter(1);
-    }
-
-    private <U> Class<U> getTypeParameter(int index) {
-        Type superclass = getClass().getGenericSuperclass();
-        if (superclass instanceof Class) {
-            throw new IllegalStateException("Missing type parameters");
-        }
-        ParameterizedType parameterizedType = (ParameterizedType) superclass;
-        if (parameterizedType.getActualTypeArguments().length < index) {
-            throw new IllegalStateException("Missing type parameters");
-        }
-        return (Class<U>) parameterizedType.getActualTypeArguments()[index];
+        builderClass = SuperTypeUtil.getTypeParameter(getClass(), 1);
     }
 
     @Override
@@ -63,8 +50,12 @@ public abstract class MatchInfoHelper<T extends DataObject, B extends Builder<T>
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         MatchInfoHelper<?, ?> that = (MatchInfoHelper<?, ?>) o;
 
