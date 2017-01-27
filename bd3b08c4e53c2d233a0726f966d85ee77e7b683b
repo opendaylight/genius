@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_ae9afb11",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T17:32:47Z",
+      "side": 1,
+      "message": "You might as well do away with the argument entirely, it\u0027s never needed on an abstract class (see MatchInfoHelper).",
+      "revId": "bd3b08c4e53c2d233a0726f966d85ee77e7b683b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
