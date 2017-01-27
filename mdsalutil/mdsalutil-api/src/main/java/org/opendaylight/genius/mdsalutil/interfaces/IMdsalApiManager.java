@@ -22,6 +22,10 @@ public interface IMdsalApiManager {
 
     void installFlow(FlowEntity flowEntity);
 
+    CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
+
+    CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
+
     /**
      * Add a Flow to batched transaction.
      * This is used to batch multiple ConfigDS changes in a single transaction.
@@ -32,8 +36,6 @@ public interface IMdsalApiManager {
      *            batched transaction
      */
     void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
-
-    CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
 
     /**
      * Add a Flow to batched transaction
@@ -47,6 +49,8 @@ public interface IMdsalApiManager {
      *            batched transaction
      */
     void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
+
+    void removeFlow(FlowEntity flowEntity);
 
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
 
@@ -64,10 +68,6 @@ public interface IMdsalApiManager {
      *            batched transaction
      */
     void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
-
-    CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
-
-    void removeFlow(FlowEntity flowEntity);
 
     /**
      *  Remove a Flow using batched transaction.
@@ -159,8 +159,6 @@ public interface IMdsalApiManager {
     /**
      * API to remove the Group on Data Plane Node synchronously. It internally waits for
      * Group Change Notification to confirm group delete request is being sent.
-     *
-     * @param groupEntity
      */
     void syncRemoveGroup(GroupEntity groupEntity);
 

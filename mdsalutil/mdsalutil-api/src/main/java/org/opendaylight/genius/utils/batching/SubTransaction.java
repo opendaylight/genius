@@ -10,14 +10,20 @@ package org.opendaylight.genius.utils.batching;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface SubTransaction {
+
     short CREATE = 1;
     short UPDATE = 2;
     short DELETE = 3;
 
     InstanceIdentifier getInstanceIdentifier();
+
     void setInstanceIdentifier(InstanceIdentifier identifier);
+
     Object getInstance();
+
     void setInstance(Object instance);
+
     short getAction();
+
     void setAction(short action);
 }

@@ -31,18 +31,15 @@ public class HwvtepHACacheTest {
 
     @Test
     public void testAddHAChild() {
-
         InstanceIdentifier<Node> parent = newNodeInstanceIdentifier("ha");
         InstanceIdentifier<Node> child1 = newNodeInstanceIdentifier("d1");
-        InstanceIdentifier<Node> child2 = newNodeInstanceIdentifier("d1");
-        String child1NodeId = child1.firstKeyOf(Node.class).getNodeId().getValue();
-        String child2NodeId = child2.firstKeyOf(Node.class).getNodeId().getValue();
 
         hwvtepHACache.addChild(parent, child1);
 
         assertTrue(hwvtepHACache.isHAEnabledDevice(child1));
         assertTrue(hwvtepHACache.isHAParentNode(parent));
 
+        InstanceIdentifier<Node> child2 = newNodeInstanceIdentifier("d1");
         hwvtepHACache.addChild(parent, child2);
         assertTrue(hwvtepHACache.isHAEnabledDevice(child1));
         assertTrue(hwvtepHACache.isHAEnabledDevice(child2));
@@ -54,6 +51,9 @@ public class HwvtepHACacheTest {
 
         assertTrue(hwvtepHACache.getChildrenForHANode(parent).contains(child1));
         assertTrue(hwvtepHACache.getChildrenForHANode(parent).contains(child2));
+
+        String child1NodeId = child1.firstKeyOf(Node.class).getNodeId().getValue();
+        String child2NodeId = child2.firstKeyOf(Node.class).getNodeId().getValue();
 
         List<DebugEvent> events = hwvtepHACache.getNodeEvents();
         assertTrue(events.contains(new NodeEvent.ChildAddedEvent(child1NodeId)));

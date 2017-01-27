@@ -17,8 +17,11 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 public class HwvtepSouthboundConstants {
 
     public static final String HWVTEP_ENTITY_TYPE = "hwvtep";
-    public static final ImmutableBiMap<Class<? extends EncapsulationTypeBase>, String> ENCAPS_TYPE_MAP = new ImmutableBiMap.Builder<Class<? extends EncapsulationTypeBase>, String>()
+
+    public static final ImmutableBiMap<Class<? extends EncapsulationTypeBase>, String> ENCAPS_TYPE_MAP
+        = new ImmutableBiMap.Builder<Class<? extends EncapsulationTypeBase>, String>()
             .put(EncapsulationTypeVxlanOverIpv4.class, "vxlan_over_ipv4").build();
+
     public static final String ELAN_ENTITY_TYPE = "elan";
     public static final String ELAN_ENTITY_NAME = "elan";
     public static final String TEP_PREFIX = "vxlan_over_ipv4:";

@@ -64,7 +64,8 @@ public class ResourceBatchingManager implements AutoCloseable {
             throw new RuntimeException("Resource type already registered");
         }
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
-        ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
+        ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor)
+                Executors.newScheduledThreadPool(1);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
@@ -175,6 +176,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             this.actResourceList = actResourceList;
         }
 
+        @SuppressWarnings("checkstyle:IllegalCatch")
         public void process() {
             InstanceIdentifier<T> identifier;
             Object instance;
@@ -229,20 +231,22 @@ public class ResourceBatchingManager implements AutoCloseable {
                         WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
                         switch (object.getAction()) {
                             case SubTransaction.CREATE :
-                                writeTransaction.put(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
+                                writeTransaction.put(dsType, object.getInstanceIdentifier(),
+                                    (DataObject) object.getInstance(), true);
                                 break;
                             case SubTransaction.DELETE :
                                 writeTransaction.delete(dsType, object.getInstanceIdentifier());
                                 break;
                             case SubTransaction.UPDATE :
-                                writeTransaction.merge(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
+                                writeTransaction.merge(dsType, object.getInstanceIdentifier(),
+                                    (DataObject) object.getInstance(), true);
                                 break;
                             default:
-                                LOG.error("Unable to determine Action for transaction object with id {}", object.getInstanceIdentifier());
+                                LOG.error("Unable to determine Action for transaction object with id {}",
+                                    object.getInstanceIdentifier());
                         }
-                        CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction.submit();
                         try {
-                            futureOperation.get();
+                            writeTransaction.submit().get();
                         } catch (InterruptedException | ExecutionException exception) {
                             LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
                                     object.getInstanceIdentifier(), object.getInstance(), exception);
