@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_513a12ce",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T18:06:30Z",
+      "side": 1,
+      "message": "Indeed, just an FYI.",
+      "parentUuid": "fafc7978_6e7e53b0",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_aeccbb36",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "I find a try/finally {} more.. \"readable\" here - it takes me a half sec to understand what the code above does, but the try/finally makes it immediately obvious, so I think that\u0027s better. Do you see any (strong?) disadvantage to keeping it as proposed?  If not, willing to remove your -1?  If yes, enlighten me to what I may be missing?",
       "parentUuid": "fafc7978_aeccbb36",
+      "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f12506ac",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-01-27T18:06:30Z",
+      "side": 1,
+      "message": "Reading Autocloseable more closely, yes, the finally approach works for me too. The only situation where setting null first would help is if multiple threads try to close a resource simultaneously, but that\u0027s not supposed to happen, and even if we did want to handle it it would take a bit more care.",
+      "parentUuid": "fafc7978_4e5eef46",
       "revId": "acd58c274b4281f4592310a1637bd59caa20816e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
