@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Enum represents the most common IP protocols numbers It provides the binding
  * between IP protocol names and numbers and provides APIs to read and parse
- * them in either of the two forms
+ * them in either of the two forms.
  *
- * NOTE: Openflow 1.0 supports the IP Proto match only for ICMP, TCP and UDP
+ * <p>NOTE: Openflow 1.0 supports the IP Proto match only for ICMP, TCP and UDP.
  *
- * references:
+ * <p>references:
  * http://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
  */
 public enum IPProtocols {
@@ -223,27 +223,27 @@ public enum IPProtocols {
     }
 
     public static short getProtocolNumberShort(String name) {
-        IPProtocols p = fromString(name);
-        if (p != null) {
-            return p.shortValue();
+        IPProtocols ipProtocols = fromString(name);
+        if (ipProtocols != null) {
+            return ipProtocols.shortValue();
         }
         //This method should be called after validation only
         throw new IllegalArgumentException("Illegal IP protocol value: " + name);
     }
 
     public static int getProtocolNumberInt(String name) {
-        IPProtocols p = fromString(name);
-        if (p != null) {
-            return p.intValue();
+        IPProtocols ipProtocols = fromString(name);
+        if (ipProtocols != null) {
+            return ipProtocols.intValue();
         }
         //This method should be called after validation only
         throw new IllegalArgumentException("Illegal IP protocol value: " + name);
     }
 
     public static byte getProtocolNumberByte(String name) {
-        IPProtocols p = fromString(name);
-        if (p != null) {
-            return p.byteValue();
+        IPProtocols ipProtocols = fromString(name);
+        if (ipProtocols != null) {
+            return ipProtocols.byteValue();
         }
         //This method should be called after validation only
         throw new IllegalArgumentException("Illegal IP protocol value: " + name);
@@ -258,21 +258,21 @@ public enum IPProtocols {
     }
 
     /**
-     * Method to parse an IPProtocol from a numeric string
+     * Method to parse an IPProtocol from a numeric string.
      *
-     * @param s
+     * @param string
      *            The IP protocol string to be parsed
      * @return The IP protocol Enum, or null if invalid protocol string is passed
      */
-    public static IPProtocols fromString(String s) {
+    public static IPProtocols fromString(String string) {
         // null/empty/any/* evaluates to ANY
-        if (s == null || s.isEmpty() || s.equalsIgnoreCase("any") || s.equals("*")) {
+        if (string == null || string.isEmpty() || string.equalsIgnoreCase("any") || string.equals("*")) {
             return IPProtocols.ANY;
         }
 
         // Try parsing numeric and find the related ENUM
         try {
-            int protoNum = Integer.decode(s);
+            int protoNum = Integer.decode(string);
             for (IPProtocols protoEnum : IPProtocols.values()) {
                 if (protoEnum.protocolNumber == protoNum) {
                     return protoEnum;
@@ -283,11 +283,11 @@ public enum IPProtocols {
         } catch (NumberFormatException nfe) {
             // numeric failed try by NAME
             try {
-                return valueOf(s);
-            } catch(IllegalArgumentException e) {
+                return valueOf(string);
+            } catch (IllegalArgumentException e) {
                 // Neither numeric nor enum NAME, attempt human readable name
                 for (IPProtocols protoEnum : IPProtocols.values()) {
-                    if (protoEnum.toString().equalsIgnoreCase(s)) {
+                    if (protoEnum.toString().equalsIgnoreCase(string)) {
                         return protoEnum;
                     }
                 }
