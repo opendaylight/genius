@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3bc5b25b",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/PMRegistrationListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-27T00:21:50Z",
+      "side": 1,
+      "message": "You are right, at that time I didn\u0027t take the time to find out. Corrected.",
+      "parentUuid": "fafc7978_9d881624",
+      "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_fdf5e2cb",
         "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-26T16:47:01Z",
       "side": 1,
       "message": "Should make this make \"final\" while you\u0027re at it.. CSA will want it to be uppercase MBS. Why move this from the Pollerthread to the enclosing outer class? It seems to be only used in Pollerthread, so keep it there?",
+      "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9b8f7e23",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-27T00:21:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_fdf5e2cb",
       "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7ba61ac3",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-27T00:21:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_bdb07af5",
+      "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1d954640",
         "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-01-26T16:47:01Z",
       "side": 1,
       "message": "why remove the /** here and make it just an inline comment instead of valid JavaDoc? May it was missing a \u0027.\u0027 at the end of the phrase?",
+      "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_db990670",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-27T00:21:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_1d954640",
       "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_bb9ec254",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-27T00:21:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_3d692a8c",
+      "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3d000aaa",
         "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2017-01-26T16:47:01Z",
       "side": 1,
       "message": "I don\u0027t understand why this (counters) is a class field, shouldn\u0027t this just be a local variable in the run() method?",
+      "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1ba38e9f",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-01-27T00:21:50Z",
+      "side": 1,
+      "message": "I think so.",
+      "parentUuid": "fafc7978_3d000aaa",
       "revId": "fbd44a096ed1163ed7c0c6f723d46a6e561eaa77",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
