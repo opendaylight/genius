@@ -11,13 +11,18 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -26,8 +31,12 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
@@ -55,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -468,13 +478,45 @@ public class TepCommandHelper {
                 } else {
                     session.getConsole().println("No teps to display");
                 }
+                displayL3greTep(session);
             }
         } else if(session != null){
             session.getConsole().println("No teps configured");
         }
     }
 
-public void showCache(String cacheName) {
+
+    private void displayL3greTep(final CommandSession session) {
+
+        final List<String> output = new ArrayList<>();
+        session.getConsole().println();
+        output.add(StringUtils.repeat("-", 141));
+        output.add(StringUtils.center("Tunnel Monitoring for L3 GRE tunnels", 141));
+        output.add(String.format("%-16s  %-16s  %-16s  %-16s  %-16s %-16s %-16s %-12s", "Tunnel Name", "TunnelType", "GatewayIP", "Source", "Destination",  "DpnID", "Port Name","Monitoring Enabled"));
+        output.add(StringUtils.repeat("-", 141));
+        output.addAll(getL3GRETep());
+        output.add(StringUtils.repeat("-", 141));
+        output.stream().forEach(session.getConsole()::println);
+
+    }
+
+    private List<String> getL3GRETep() {
+        final InstanceIdentifierBuilder<Interfaces> idBuilder = InstanceIdentifier.builder(Interfaces.class);
+        final Optional<Interfaces> interfaces = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, idBuilder.build(), dataBroker);
+        if(interfaces.isPresent()){
+            final List<String> result = interfaces.get().getInterface().parallelStream().filter(v-> v.getType().isAssignableFrom(Tunnel.class) && v.getAugmentation(IfTunnel.class).getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)).map(v->{
+                final IfTunnel tunnel = v.getAugmentation(IfTunnel.class);
+                return String.format("%-16s  %-16s  %-16s  %-16s  %-16s %-16s %-16s %-12s", v.getName(), ITMConstants.TUNNEL_TYPE_MPLSoGRE, String.valueOf(tunnel.getTunnelGateway().getValue())
+                        , String.valueOf(tunnel.getTunnelSource().getValue()), String.valueOf(tunnel.getTunnelDestination().getValue()), v.getAugmentation(ParentRefs.class).getDatapathNodeIdentifier(), v.getName(), tunnel.isInternal());
+            }).collect(Collectors.toList());
+            if(!result.isEmpty()) {
+                return result;
+            }
+        }
+        return Arrays.asList("No L3GRE TEPs configured");
+    }
+
+    public void showCache(String cacheName) {
 
         if( !DataStoreCache.isCacheValid(cacheName)) {
             System.out.println( " " + cacheName + " is not a valid Cache Name ") ;
@@ -686,7 +728,7 @@ public void showCache(String cacheName) {
                 session.getConsole().println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(), tunnelInst.getSrcInfo().getTepDeviceId(),
                         tunnelInst.getDstInfo().getTepDeviceId(), tunnelInst.getSrcInfo().getTepIp().getIpv4Address().getValue(), tunnelInst.getDstInfo().getTepIp().getIpv4Address().getValue(), tunnelState,
                         tunnelType));
-                
+
             }
         }
     }
