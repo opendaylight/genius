@@ -53,6 +53,22 @@ public class ActionNxConntrack extends ActionInfo {
         return ab.build();
     }
 
+    public int getFlags() {
+        return flags;
+    }
+
+    public long getZoneSrc() {
+        return zoneSrc;
+    }
+
+    public int getConntrackZone() {
+        return conntrackZone;
+    }
+
+    public short getRecircTable() {
+        return recircTable;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
