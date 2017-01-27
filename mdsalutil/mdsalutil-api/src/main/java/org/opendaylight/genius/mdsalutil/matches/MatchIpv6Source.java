@@ -41,12 +41,18 @@ public class MatchIpv6Source extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuilder
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        MatchIpv6Source that = (MatchIpv6Source) o;
+        MatchIpv6Source that = (MatchIpv6Source) other;
 
         return prefix != null ? prefix.equals(that.prefix) : that.prefix == null;
     }

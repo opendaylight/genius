@@ -42,22 +42,30 @@ public class MatchIcmpv6 extends MatchInfoHelper<Icmpv6Match, Icmpv6MatchBuilder
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        MatchIcmpv6 that = (MatchIcmpv6) o;
+        MatchIcmpv6 that = (MatchIcmpv6) other;
 
-        if (type != that.type) return false;
+        if (type != that.type) {
+            return false;
+        }
         return code == that.code;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) type;
-        result = 31 * result + (int) code;
+        result = 31 * result + type;
+        result = 31 * result + code;
         return result;
     }
 }
