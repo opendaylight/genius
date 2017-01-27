@@ -22,6 +22,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -50,15 +51,18 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
     protected final Class<T> clazz;
-    private final Class<K> eventClazz;
+
+    protected AsyncClusteredDataChangeListenerBase() {
+        this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+    }
 
     /**
      * Constructor.
      * @param clazz - for which the data change event is received
      */
+    @Deprecated
     public AsyncClusteredDataChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
-        this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
     @Override
@@ -78,9 +82,9 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
                     (Callable<ListenerRegistration<K>>) () -> (ListenerRegistration) db.registerDataChangeListener(
                             dsType, getWildCardPath(), getDataChangeListener(), getDataChangeScope()));
         } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
-            throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
+            LOG.warn("{}: Data Tree Change listener registration failed", clazz);
+            LOG.debug("{}: Data Tree Change listener registration failed", clazz, e);
+            throw new IllegalStateException(clazz + ": startup failed. System needs restart.", e);
         }
     }
 

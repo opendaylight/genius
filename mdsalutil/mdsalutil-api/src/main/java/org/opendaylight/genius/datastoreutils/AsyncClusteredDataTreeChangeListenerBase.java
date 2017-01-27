@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -50,11 +51,14 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             new LinkedBlockingQueue<>());
 
     protected final Class<T> clazz;
-    private final Class<K> eventClazz;
 
+    protected AsyncClusteredDataTreeChangeListenerBase() {
+        this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+    }
+
+    @Deprecated
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
-        this.eventClazz = Preconditions.checkNotNull(eventClazz, "eventClazz can not be null!");
     }
 
     @Override
@@ -84,9 +88,9 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             listenerRegistration = looper
                     .loopUntilNoException(() -> db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener()));
         } catch (final Exception e) {
-            LOG.warn("{}: Data Tree Change listener registration failed.", eventClazz.getName());
-            LOG.debug("{}: Data Tree Change listener registration failed: {}", eventClazz.getName(), e);
-            throw new IllegalStateException( eventClazz.getName() + "{}startup failed. System needs restart.", e);
+            LOG.warn("{}: Data Tree Change listener registration failed", clazz);
+            LOG.debug("{}: Data Tree Change listener registration failed", clazz, e);
+            throw new IllegalStateException(clazz + ": startup failed. System needs restart.", e);
         }
     }
 
