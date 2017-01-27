@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_76e2afd6",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-27T07:19:16Z",
+      "side": 1,
+      "message": "It\u0027s good to implement flows as Map\u003cBigInteger, Set\u003cFlowEntity\u003e\u003e. It would replicate MD-SAL inventory config ds as it is. You could do it when you get time to relook at this.",
+      "parentUuid": "fafc7978_9d8f7623",
+      "revId": "2909d2192f11d4f1623128e6fd3c10f3df4cc719",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_124b815a",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
         "patchSetId": 4
