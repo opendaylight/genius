@@ -27,12 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that represents the IPv4  packet objects
+ * Class that represents the IPv4  packet objects.
  */
-
 public class IPv4 extends Packet {
-    protected static final Logger logger = LoggerFactory
-            .getLogger(IPv4.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(IPv4.class);
+
     private static final String VERSION = "Version";
     private static final String HEADERLENGTH = "HeaderLength";
     private static final String DIFFSERV = "DiffServ";
@@ -49,35 +49,36 @@ public class IPv4 extends Packet {
     private static final String OPTIONS = "Options";
 
     private static final int UNIT_SIZE_SHIFT = 2;
-    private static final int UNIT_SIZE = (1 << UNIT_SIZE_SHIFT);
+    private static final int UNIT_SIZE = 1 << UNIT_SIZE_SHIFT;
     private static final int MIN_HEADER_SIZE = 20;
 
     public static final Map<Byte, Class<? extends Packet>> protocolClassMap;
+
     static {
         protocolClassMap = new HashMap<>();
         protocolClassMap.put(IPProtocols.ICMP.byteValue(), ICMP.class);
         protocolClassMap.put(IPProtocols.UDP.byteValue(), UDP.class);
         protocolClassMap.put(IPProtocols.TCP.byteValue(), TCP.class);
     }
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<String, Pair<Integer, Integer>>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put(VERSION, new ImmutablePair<>(0, 4));
-            put(HEADERLENGTH, new ImmutablePair<>(4, 4));
-            put(DIFFSERV, new ImmutablePair<>(8, 6));
-            put(ECN, new ImmutablePair<>(14, 2));
-            put(TOTLENGTH, new ImmutablePair<>(16, 16));
-            put(IDENTIFICATION, new ImmutablePair<>(32, 16));
-            put(FLAGS, new ImmutablePair<>(48, 3));
-            put(FRAGOFFSET, new ImmutablePair<>(51, 13));
-            put(TTL, new ImmutablePair<>(64, 8));
-            put(PROTOCOL, new ImmutablePair<>(72, 8));
-            put(CHECKSUM, new ImmutablePair<>(80, 16));
-            put(SIP, new ImmutablePair<>(96, 32));
-            put(DIP, new ImmutablePair<>(128, 32));
-            put(OPTIONS, new ImmutablePair<>(160, 0));
-        }
-    };
+
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+                put(VERSION, new ImmutablePair<>(0, 4));
+                put(HEADERLENGTH, new ImmutablePair<>(4, 4));
+                put(DIFFSERV, new ImmutablePair<>(8, 6));
+                put(ECN, new ImmutablePair<>(14, 2));
+                put(TOTLENGTH, new ImmutablePair<>(16, 16));
+                put(IDENTIFICATION, new ImmutablePair<>(32, 16));
+                put(FLAGS, new ImmutablePair<>(48, 3));
+                put(FRAGOFFSET, new ImmutablePair<>(51, 13));
+                put(TTL, new ImmutablePair<>(64, 8));
+                put(PROTOCOL, new ImmutablePair<>(72, 8));
+                put(CHECKSUM, new ImmutablePair<>(80, 16));
+                put(SIP, new ImmutablePair<>(96, 32));
+                put(DIP, new ImmutablePair<>(128, 32));
+                put(OPTIONS, new ImmutablePair<>(160, 0));
+            }
+        };
 
     private final Map<String, byte[]> fieldValues;
 
@@ -127,23 +128,23 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Gets the IP version stored
+     * Gets the IP version stored.
      * @return the version
      */
     public byte getVersion() {
-        return (BitBufferHelper.getByte(fieldValues.get(VERSION)));
+        return BitBufferHelper.getByte(fieldValues.get(VERSION));
     }
 
     /**
-     * Gets the IP header length stored
+     * Gets the IP header length stored.
      * @return the headerLength in bytes
      */
     public int getHeaderLen() {
-        return (4 * BitBufferHelper.getByte(fieldValues.get(HEADERLENGTH)));
+        return 4 * BitBufferHelper.getByte(fieldValues.get(HEADERLENGTH));
     }
 
     /**
-     * Gets the header size in bits
+     * Gets the header size in bits.
      * @return The number of bits constituting the header
      */
     @Override
@@ -157,7 +158,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Gets the differential services value stored
+     * Gets the differential services value stored.
      * @return the diffServ
      */
     public byte getDiffServ() {
@@ -165,7 +166,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Gets the ecn bits stored
+     * Gets the ecn bits stored.
      * @return the ecn bits
      */
     public byte getECN() {
@@ -173,83 +174,83 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Gets the total length of the IP header in bytes
+     * Gets the total length of the IP header in bytes.
      * @return the totalLength
      */
     public short getTotalLength() {
-        return (BitBufferHelper.getShort(fieldValues.get(TOTLENGTH)));
+        return BitBufferHelper.getShort(fieldValues.get(TOTLENGTH));
     }
 
     /**
-     * Gets the identification value stored
+     * Gets the identification value stored.
      * @return the identification
      */
     public short getIdentification() {
-        return (BitBufferHelper.getShort(fieldValues.get(IDENTIFICATION)));
+        return BitBufferHelper.getShort(fieldValues.get(IDENTIFICATION));
     }
 
     /**
-     * Gets the flag values stored
+     * Gets the flag values stored.
      * @return the flags
      */
     public byte getFlags() {
-        return (BitBufferHelper.getByte(fieldValues.get(FLAGS)));
+        return BitBufferHelper.getByte(fieldValues.get(FLAGS));
     }
 
     /**
-     * Gets the TTL value stored
+     * Gets the TTL value stored.
      * @return the ttl
      */
     public byte getTtl() {
-        return (BitBufferHelper.getByte(fieldValues.get(TTL)));
+        return BitBufferHelper.getByte(fieldValues.get(TTL));
     }
 
     /**
-     * Gets the protocol value stored
+     * Gets the protocol value stored.
      * @return the protocol
      */
     public byte getProtocol() {
-        return (BitBufferHelper.getByte(fieldValues.get(PROTOCOL)));
+        return BitBufferHelper.getByte(fieldValues.get(PROTOCOL));
     }
 
     /**
-     * Gets the checksum value stored
+     * Gets the checksum value stored.
      * @return the checksum
      */
     public short getChecksum() {
-        return (BitBufferHelper.getShort(fieldValues.get(CHECKSUM)));
+        return BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
     }
 
     /**
-     * Gets the fragment offset stored
+     * Gets the fragment offset stored.
      * @return the fragmentOffset
      */
     public short getFragmentOffset() {
-        return (BitBufferHelper.getShort(fieldValues.get(FRAGOFFSET)));
+        return BitBufferHelper.getShort(fieldValues.get(FRAGOFFSET));
     }
 
     /**
-     * Gets the source IP address stored
+     * Gets the source IP address stored.
      * @return the sourceAddress
      */
     public int getSourceAddress() {
-        return (BitBufferHelper.getInt(fieldValues.get(SIP)));
+        return BitBufferHelper.getInt(fieldValues.get(SIP));
     }
 
     /**
-     * Gets the destination IP address stored
+     * Gets the destination IP address stored.
      * @return the destinationAddress
      */
     public int getDestinationAddress() {
-        return (BitBufferHelper.getInt(fieldValues.get(DIP)));
+        return BitBufferHelper.getInt(fieldValues.get(DIP));
     }
 
     /**
-     * gets the Options stored
+     * gets the Options stored.
      * @return the options
      */
     public byte[] getOptions() {
-        return (fieldValues.get(OPTIONS));
+        return fieldValues.get(OPTIONS);
     }
 
     @Override
@@ -272,8 +273,8 @@ public class IPv4 extends Packet {
                 // in this packet.
                 payloadClass = null;
             }
-        } else if (headerField.equals(OPTIONS) &&
-                   (readValue == null || readValue.length == 0)) {
+        } else if (headerField.equals(OPTIONS)
+                   && (readValue == null || readValue.length == 0)) {
             hdrFieldsMap.remove(headerField);
             return;
         }
@@ -281,7 +282,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the IP version from the header
+     * Stores the IP version from the header.
      * @param ipVersion the version to set
      * @return IPv4
      */
@@ -292,7 +293,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the length of IP header in words (4 bytes)
+     * Stores the length of IP header in words (4 bytes).
      * @param ipheaderLength the headerLength to set
      * @return IPv4
      */
@@ -303,7 +304,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the differential services value from the IP header
+     * Stores the differential services value from the IP header.
      * @param ipdiffServ the diffServ to set
      * @return IPv4
      */
@@ -314,7 +315,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the ECN bits from the header
+     * Stores the ECN bits from the header.
      * @param ecn ECN bits to set
      * @return IPv4
      */
@@ -325,7 +326,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the total length of IP header in bytes
+     * Stores the total length of IP header in bytes.
      * @param iptotalLength the totalLength to set
      * @return IPv4
      */
@@ -336,7 +337,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the identification number from the header
+     * Stores the identification number from the header.
      * @param ipIdentification the identification to set
      * @return IPv4
      */
@@ -347,7 +348,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the IP flags value
+     * Stores the IP flags value.
      * @param ipFlags the flags to set
      * @return IPv4
      */
@@ -358,7 +359,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the IP fragmentation offset value
+     * Stores the IP fragmentation offset value.
      * @param ipFragmentOffset the fragmentOffset to set
      * @return IPv4
      */
@@ -369,7 +370,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the TTL value
+     * Stores the TTL value.
      * @param ipTtl the ttl to set
      * @return IPv4
      */
@@ -380,7 +381,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the protocol value of the IP payload
+     * Stores the protocol value of the IP payload.
      * @param ipProtocol the protocol to set
      * @return IPv4
      */
@@ -390,10 +391,10 @@ public class IPv4 extends Packet {
         return this;
     }
 
-    /**
+    /*
      * @param checksum the checksum to set
-     */
-    /*public IPv4 setChecksum() {
+     * /
+    public IPv4 setChecksum() {
         short ipChecksum = computeChecksum();
         byte[] checksum = BitBufferHelper.toByteArray(ipChecksum);
         fieldValues.put(CHECKSUM, checksum);
@@ -401,7 +402,7 @@ public class IPv4 extends Packet {
     }*/
 
     /**
-     * Stores the IP source address from the header
+     * Stores the IP source address from the header.
      * @param ipSourceAddress the sourceAddress to set
      * @return IPv4
      */
@@ -412,7 +413,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the IP destination address from the header
+     * Stores the IP destination address from the header.
      * @param ipDestinationAddress the destination Address to set
      * @return IPv4
      */
@@ -423,7 +424,7 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Stores the IP destination address from the header
+     * Stores the IP destination address from the header.
      * @param ipDestinationAddress the destinationAddress to set
      * @return IPv4
      */
@@ -436,16 +437,16 @@ public class IPv4 extends Packet {
 
     /**
      * Generate a random number to set the Identification field
-     * in IPv4 Header
+     * in IPv4 Header.
      * @return short
      */
     private short generateId() {
         Random randomgen = new Random();
-        return (short) (randomgen.nextInt(Short.MAX_VALUE + 1));
+        return (short) randomgen.nextInt(Short.MAX_VALUE + 1);
     }
 
     /**
-     * Store the options from IP header
+     * Store the options from IP header.
      * @param options - byte[]
      * @return IPv4
      */
@@ -455,7 +456,7 @@ public class IPv4 extends Packet {
             fieldValues.remove(OPTIONS);
         } else {
             int len = options.length;
-            int rlen = (len + (UNIT_SIZE - 1)) & ~(UNIT_SIZE - 1);
+            int rlen = len + UNIT_SIZE - 1 & ~(UNIT_SIZE - 1);
             if (rlen > len) {
                 // Padding is required.
                 byte[] newopt = new byte[rlen];
@@ -464,7 +465,7 @@ public class IPv4 extends Packet {
                 len = rlen;
             }
             fieldValues.put(OPTIONS, options);
-            newIHL += (len >>> UNIT_SIZE_SHIFT);
+            newIHL += len >>> UNIT_SIZE_SHIFT;
         }
 
         setHeaderLength(newIHL);
@@ -474,7 +475,7 @@ public class IPv4 extends Packet {
 
     /**
      * Computes the IPv4 header checksum on the passed stream of bytes
-     * representing the packet
+     * representing the packet.
      *
      * @param data
      *            The byte stream
@@ -485,21 +486,21 @@ public class IPv4 extends Packet {
     short computeChecksum(byte[] data, int start) {
         int end = start + getHeaderLen();
         short checkSum = (short) 0;
-        int sum = 0, carry = 0, finalSum = 0;
+        int sum = 0;
         int wordData;
         int checksumStart = start
-                + (getfieldOffset(CHECKSUM) / NetUtils.NumBitsInAByte);
+                + getfieldOffset(CHECKSUM) / NetUtils.NumBitsInAByte;
 
-        for (int i = start; i <= (end - 1); i = i + 2) {
+        for (int i = start; i <= end - 1; i = i + 2) {
             // Skip, if the current bytes are checkSum bytes
             if (i == checksumStart) {
                 continue;
             }
-            wordData = ((data[i] << 8) & 0xFF00) + (data[i + 1] & 0xFF);
+            wordData = (data[i] << 8 & 0xFF00) + (data[i + 1] & 0xFF);
             sum = sum + wordData;
         }
-        carry = (sum >> 16) & 0xFF;
-        finalSum = (sum & 0xFFFF) + carry;
+        int carry = sum >> 16 & 0xFF;
+        int finalSum = (sum & 0xFFFF) + carry;
         checkSum = (short) ~((short) finalSum & 0xFFFF);
 
         return checkSum;
@@ -569,7 +570,7 @@ public class IPv4 extends Packet {
             try {
                 payloadLength = payload.serialize().length;
             } catch (PacketException e) {
-                logger.error("", e);
+                LOG.error("", e);
             }
         }
 
@@ -579,7 +580,7 @@ public class IPv4 extends Packet {
 
     /**
      * Method to perform post deserialization - like compare computed checksum with
-     * the one obtained from IP header
+     * the one obtained from IP header.
      */
     @Override
     protected void postDeserializeCustomOperation(byte[] data, int startBitOffset) {
