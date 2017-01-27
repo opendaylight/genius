@@ -42,12 +42,18 @@ public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!super.equals(other)) {
+            return false;
+        }
 
-        MatchIpProtocol that = (MatchIpProtocol) o;
+        MatchIpProtocol that = (MatchIpProtocol) other;
 
         return protocol == that.protocol;
     }
@@ -55,7 +61,7 @@ public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) protocol;
+        result = 31 * result + protocol;
         return result;
     }
 }
