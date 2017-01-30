@@ -80,6 +80,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
@@ -293,12 +297,15 @@ public class ItmUtils {
     public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName,
                                                         boolean isOfTunnel, int vlanId, IpPrefix prefix,
                                                         IpAddress gwAddress, List<TzMembership> zones,
-                                                        Class<? extends TunnelTypeBase>  tunnelType) {
+                                                        Class<? extends TunnelTypeBase>  tunnelType,
+                                                        String tos) {
         // when Interface Mgr provides support to take in Dpn Id
         return new TunnelEndPointsBuilder().setKey(new TunnelEndPointsKey(ipAddress, portName,tunnelType, vlanId))
                 .setSubnetMask(prefix).setGwIpAddress(gwAddress).setTzMembership(zones)
                 .setOptionOfTunnel(isOfTunnel).setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId))
-                .setTunnelType(tunnelType).build();
+                .setTunnelType(tunnelType)
+                .setOptionTunnelTos(tos)
+                .build();
     }
 
     public static DpnEndpoints createDpnEndpoints(List<DPNTEPsInfo> dpnTepInfo) {
@@ -330,10 +337,12 @@ public class ItmUtils {
                                                  IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
                                                  boolean internal, Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                                 Integer monitorInterval, boolean useOfTunnel) {
+                                                 Integer monitorInterval, boolean useOfTunnel,
+                                                 List<TunnelOptions> tunOptions) {
 
         return buildTunnelInterface(dpn, ifName, desc, enabled, tunType, localIp, remoteIp,  gatewayIp,  vlanId,
-                                    internal,  monitorEnabled, monitorProtocol, monitorInterval,  useOfTunnel, null);
+                                    internal,  monitorEnabled, monitorProtocol, monitorInterval,  useOfTunnel, null,
+                                    tunOptions);
     }
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
@@ -341,7 +350,8 @@ public class ItmUtils {
                                                  IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
                                                  boolean internal, Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                                 Integer monitorInterval, boolean useOfTunnel, String parentIfaceName) {
+                                                 Integer monitorInterval, boolean useOfTunnel, String parentIfaceName,
+                                                 List<TunnelOptions> tunnelOptions) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs =
@@ -363,6 +373,7 @@ public class ItmUtils {
                 .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(internal)
                 .setMonitorEnabled(monitorEnabled).setMonitorProtocol(monitorProtocol)
                 .setMonitorInterval(monitoringInterval).setTunnelRemoteIpFlow(useOfTunnel)
+                .setTunnelOptions(tunnelOptions)
                 .build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
@@ -1536,5 +1547,24 @@ public class ItmUtils {
     public static InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
         return InstanceIdentifier.builder(TunnelsState.class)
                 .child(StateTunnelList.class, tlKey).build();
+    }
+
+    public static List<TunnelOptions> buildTunnelOptions(TunnelEndPoints tep, ItmConfig itmConfig) {
+        List<TunnelOptions> tunOptions = null;
+
+        String tos = tep.getOptionTunnelTos();
+        if (tos == null) {
+            tos = itmConfig.getDefaultTunnelTos();
+        }
+        /* populate tos option only if its not default value of 0 */
+        if (tos != null && !tos.equals("0")) {
+            tunOptions = new ArrayList<>(1);
+            TunnelOptionsBuilder optionsBuilder = new TunnelOptionsBuilder();
+            optionsBuilder.setKey(new TunnelOptionsKey("tos"));
+            optionsBuilder.setTunnelOption("tos");
+            optionsBuilder.setValue(tos);
+            tunOptions.add(optionsBuilder.build());
+        }
+        return tunOptions;
     }
 }
