@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3dc75f47",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T11:32:40Z",
+      "side": 1,
+      "message": "np - renamed without the DS now to prevent this confusion :)",
+      "parentUuid": "fafc7978_223c5ae2",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_c263ceaf",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 25
@@ -224,6 +242,24 @@
       "side": 1,
       "message": "I meant we need to handle a race condition here. i.e. This add can be called even before TerminationPointStateListener#add (ovsdb vs OF). so we may not have parentRef for VM interface and interface-parent-entry not present in interface-child-info container.",
       "parentUuid": "fafc7978_e22b72e9",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fdb5d7cd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T11:32:40Z",
+      "side": 1,
+      "message": "mm this is a good point, I missed this usage of getInterfaceParentEntryFromConfigDS in getInterfaceChildEntries()\n\nCould you explain the logic? I wasn\u0027t aware of the interface-child-info model - does this point from interface-state to child interface-states?\nWhat are the dependencies here?",
+      "parentUuid": "fafc7978_5dafc3e3",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
