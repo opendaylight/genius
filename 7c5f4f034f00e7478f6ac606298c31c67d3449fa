@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1d0d3b91",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-30T12:16:47Z",
+      "side": 1,
+      "message": "I hope you address this as well.",
+      "parentUuid": "fafc7978_6225c2c1",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5d3a23ce",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 25
@@ -260,6 +278,24 @@
       "side": 1,
       "message": "mm this is a good point, I missed this usage of getInterfaceParentEntryFromConfigDS in getInterfaceChildEntries()\n\nCould you explain the logic? I wasn\u0027t aware of the interface-child-info model - does this point from interface-state to child interface-states?\nWhat are the dependencies here?",
       "parentUuid": "fafc7978_5dafc3e3",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3d3c7f2f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-30T12:16:47Z",
+      "side": 1,
+      "message": "From fcNodeConnectorNew, we may not able to retrieve VM interface name to populate parentRef and interface-parent-entry. So I think it is better to (timed)await with timeout 0 on a java synchronizer (may be CountDownLatch with count 1) till parentRef is populated. If latch.await returns false, then we can move it to a queue for later processing through singlethreadpoolexecutor (to maintain DCN notification order).\nOnce InterfaceConfigListener or TerminationPointStateListener populates parentRef and interface-parent-entry, it can do countdown, so that tasks related to interfaceinventorystatelistener can proceed. \nThis needs a concurrenthash map maintaining latch against interface-name key, these logic should get executed in interfaces eos owner node.",
+      "parentUuid": "fafc7978_fdb5d7cd",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
