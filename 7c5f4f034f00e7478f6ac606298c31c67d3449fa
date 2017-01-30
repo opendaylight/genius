@@ -107,6 +107,40 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5d3a23ce",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-30T10:10:21Z",
+      "side": 1,
+      "message": "these APIs are not using DS read, so can we remove it from the method name",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dd4d7374",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-30T10:10:21Z",
+      "side": 1,
+      "message": "this will trigger one more updateDCN which will anyways internally do an add... and the below code is doing one more add job queuing unnecessarily...do we need both?",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2259fafe",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 25
