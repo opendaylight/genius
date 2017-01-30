@@ -311,11 +311,17 @@ public class MDSALUtil {
             Map<Class<?>, Object> mapMatchBuilder = new HashMap<>();
 
             for (MatchInfoBase matchInfoBase : listMatchInfoBase) {
-                matchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
+                // Some callers add null matches
+                if (matchInfoBase != null) {
+                    matchInfoBase.createInnerMatchBuilder(mapMatchBuilder);
+                }
             }
 
             for (MatchInfoBase matchInfoBase : listMatchInfoBase) {
-                matchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
+                // Some callers add null matches
+                if (matchInfoBase != null) {
+                    matchInfoBase.setMatch(matchBuilder, mapMatchBuilder);
+                }
             }
 
             return matchBuilder.build();
