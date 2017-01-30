@@ -187,7 +187,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
-                    idManagerService, mdsalManager);
+                    idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldDpnTepsList.isEmpty()) {
@@ -214,7 +214,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
-                    idManagerService, mdsalManager);
+                    idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldHwList.isEmpty()) {
@@ -236,7 +236,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             ItmTepAddWorker addWorker = new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService,
-                    mdsalManager);
+                    mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
     }
@@ -261,9 +261,13 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                         String port = vteps.getPortname();
                         IpAddress ipAddress = vteps.getIpAddress();
                         boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOptionOfTunnel());
+                        String tos = vteps.getOptionTunnelTos();
+                        if (tos == null) {
+                            tos = itmConfig.getDefaultTunnelTos();
+                        }
                         LOG.trace("DpnID: {}, port: {}, ipAddress: {}", dpnID, port, ipAddress);
                         TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port,
-                            useOfTunnel, vlanID,  ipPrefix, gatewayIP, zones, tunnelType);
+                            useOfTunnel, vlanID,  ipPrefix, gatewayIP, zones, tunnelType, tos);
                         List<TunnelEndPoints> tunnelEndPointsList = mapDPNToTunnelEndpt.get(dpnID);
                         if (tunnelEndPointsList != null) {
                             LOG.trace("Existing DPN info list in the Map: {} ", dpnID);
