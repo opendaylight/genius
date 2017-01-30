@@ -280,10 +280,10 @@ public class TepCommandHelperTest {
                 .setIfIndex(100).setLowerLayerIf(lowerLayerIfList).setType(L2vlan.class).build();
         interfaceTestNew = ItmUtils.buildTunnelInterface(dpId1, tunnelInterfaceName, destinationDevice, enabled,
                 TunnelTypeVxlan.class, ipAddress1, ipAddress2, gtwyIp1, vlanId, true, enabled,monitorProtocol,
-                interval, false);
+                interval, false, null);
         interfaceTestNewCase = ItmUtils.buildTunnelInterface(dpId1, tunnelInterfaceName, destinationDevice, enabled,
                 TunnelTypeGre.class, ipAddress1, ipAddress2, gtwyIp1, vlanId, true, enabled, monitorProtocol,
-                interval, false);
+                interval, false, null);
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
