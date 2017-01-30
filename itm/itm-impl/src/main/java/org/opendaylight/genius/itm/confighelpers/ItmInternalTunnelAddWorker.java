@@ -29,6 +29,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
@@ -45,6 +47,7 @@ public class ItmInternalTunnelAddWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
     private static Boolean monitorEnabled;
     private static Integer monitorInterval;
+    private static ItmConfig itmCfg;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
     private static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
         @Override
@@ -62,11 +65,13 @@ public class ItmInternalTunnelAddWorker {
                                                                  IdManagerService idManagerService,
                                                                  IMdsalApiManager mdsalManager,
                                                                  List<DPNTEPsInfo> cfgdDpnList,
-                                                                 List<DPNTEPsInfo> meshedDpnList) {
+                                                                 List<DPNTEPsInfo> meshedDpnList,
+                                                                 ItmConfig itmConfig) {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
         monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
         monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
+        itmCfg = itmConfig;
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
@@ -202,10 +207,11 @@ public class ItmInternalTunnelAddWorker {
                 + "source IP - {}, destination IP - {} gateway IP - {}",
                 trunkInterfaceName, srcte.getInterfaceName(), srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress);
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+        List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
-                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName);
+                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug(" Trunk Interface builder - {} ", iface);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
