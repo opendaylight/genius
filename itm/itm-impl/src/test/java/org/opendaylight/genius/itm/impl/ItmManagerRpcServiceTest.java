@@ -51,6 +51,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
@@ -189,6 +190,7 @@ public class ItmManagerRpcServiceTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
+    @Mock ItmConfig itmConfig;
 
     ItmManagerRpcService itmManagerRpcService ;
 
@@ -225,7 +227,7 @@ public class ItmManagerRpcServiceTest {
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        itmManagerRpcService = new ItmManagerRpcService(dataBroker,idManagerService, mdsalApiManager);
+        itmManagerRpcService = new ItmManagerRpcService(dataBroker,idManagerService, mdsalApiManager, itmConfig);
     }
 
     @After
@@ -295,7 +297,7 @@ public class ItmManagerRpcServiceTest {
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,
                 tunnelEndPointsVxlan.getIpAddress(),ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(), false, false,
-                monitorProtocol,null, false);
+                monitorProtocol,null, false, null);
         subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);
