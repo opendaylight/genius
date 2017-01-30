@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_42f51e82",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 591,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T09:33:42Z",
+      "side": 1,
+      "message": "Vishal promised to optimize this with a Genius cache since currently we are missing infrastructure for this. This is Carbon code, it won\u0027t go into Boron without a cache.\n\nVishal do you want to comment on this? (again? ;)",
+      "parentUuid": "fafc7978_02479620",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_e25ed2e8",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 25
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-30T07:05:03Z",
       "side": 1,
       "message": "what if interface state is not yet populated for ovsdbTp ? Because it happens via FlowCapableNodeConnector DCNs.",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c2090e97",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T09:33:42Z",
+      "side": 1,
+      "message": "There is no need for the interface-state to actually exist when populating the parentRef (as it is today where the parentRef may be populated before the interface-state exists). Note getPortNameForInterfaceDS does not require any DS info.",
+      "parentUuid": "fafc7978_e25ed2e8",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_22ff3a69",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T09:33:42Z",
+      "side": 1,
+      "message": "it does, see the callers for updateInterfaceParentRef",
+      "parentUuid": "fafc7978_c263ceaf",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2259fafe",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 25
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e22b72e9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T09:33:42Z",
+      "side": 1,
+      "message": "Again, this method does not require any additional info, what do you mean?",
+      "parentUuid": "fafc7978_2259fafe",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6272e27d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 25
@@ -81,6 +153,24 @@
       "writtenOn": "2017-01-30T07:05:03Z",
       "side": 1,
       "message": "parentRefName can be null.",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8246e6bd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T09:33:42Z",
+      "side": 1,
+      "message": "Are you saying tpName.getName() can be null? I haven\u0027t seen such TPs.. in any case what would be the issue with updating a null parentRefName? If the tp has no name, but is pointing to the neutron port - we still have nowhere to point to.",
+      "parentUuid": "fafc7978_6272e27d",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
