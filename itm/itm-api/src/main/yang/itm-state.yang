@@ -106,8 +106,17 @@ module itm-state {
                            type boolean;
                            default false;
                        }
-                 }
-
+                       leaf option-tunnel-tos {
+                           description "Value of ToS bits to be set on the encapsulating
+                               packet. The value of 'inherit' will copy the DSCP value
+                               from inner IPv4 or IPv6 packets.  When ToS is given as
+                               a numberic value, the least significant two bits will
+                               be ignored.";
+                           type string {
+                               length "1..8";
+                           }
+                       }
+                   }
                }
             }
 
