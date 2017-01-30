@@ -213,6 +213,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_48109f4e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-30T12:40:30Z",
+      "side": 1,
+      "message": "How do you propose to handle this?\nIf we get a neutron port add:\n1. it will add an interface WITHOUT parentRef (to prevent races)\n2. InterfaceConfigListener will wake up, see there is no parentRef and fill it in\n3. InterfaceConfigListener will wake up, see there is a parentRef and do nothing in this regard.\n\nWe did 1+2 to prevent the races between southbound/northbound that we discussed, and I don\u0027t see how to avoid (3) this way..\n\nI still have an open question for you on what is the rest of the functionality done here in add (RendererConfigUpdateWorker) - it is written oddly. It should probably have similar \"ignore if no update\" logic? WDYT?",
+      "parentUuid": "fafc7978_dd4d7374",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2259fafe",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 25
