@@ -75,12 +75,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepIpPools;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaKey;
@@ -250,12 +248,15 @@ public class ItmUtils {
     public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName,
                                                         boolean isOfTunnel, int vlanId, IpPrefix prefix,
                                                         IpAddress gwAddress, List<TzMembership> zones,
-                                                        Class<? extends TunnelTypeBase>  tunnel_type) {
+                                                        Class<? extends TunnelTypeBase>  tunnel_type,
+                                                        String tos) {
         // when Interface Mgr provides support to take in Dpn Id
         return new TunnelEndPointsBuilder().setKey(new TunnelEndPointsKey(ipAddress, portName,tunnel_type, vlanId))
                 .setSubnetMask(prefix).setGwIpAddress(gwAddress).setTzMembership(zones)
                 .setOptionOfTunnel(isOfTunnel).setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId))
-                .setTunnelType(tunnel_type).build();
+                .setTunnelType(tunnel_type)
+                .setOptionTunnelTos(tos)
+                .build();
     }
 
     public static DpnEndpoints createDpnEndpoints(List<DPNTEPsInfo> dpnTepInfo) {
@@ -274,7 +275,8 @@ public class ItmUtils {
                                                  IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
                                                  boolean internal, Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                                 Integer monitorInterval, boolean useOfTunnel) {
+                                                 Integer monitorInterval, boolean useOfTunnel,
+                                                 List<TunnelOptions> tunnelOptions) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
@@ -295,6 +297,7 @@ public class ItmUtils {
                 .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(internal)
                 .setMonitorEnabled(monitorEnabled).setMonitorProtocol(monitorProtocol)
                 .setMonitorInterval(monitoringInterval).setTunnelRemoteIpFlow(useOfTunnel)
+                .setTunnelOptions(tunnelOptions)
                 .build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();
@@ -1184,5 +1187,24 @@ public class ItmUtils {
 
         // return TunnelTypeBase object corresponding to tunnel-type
         return TUNNEL_TYPE_MAP.get(tunnelType);
+    }
+
+    public static List<TunnelOptions> buildTunnelOptions(TunnelEndPoints tep, ItmConfig itmConfig) {
+        List<TunnelOptions> tunOptions = null;
+
+        String tos = tep.getOptionTunnelTos();
+        if (tos == null) {
+            tos = itmConfig.getDefaultTunnelTos();
+        }
+        /* populate tos option only if its not default value of 0 */
+        if (tos != null && !tos.equals("0")) {
+            tunOptions = new ArrayList<>();
+            TunnelOptionsBuilder optionsBuilder = new TunnelOptionsBuilder();
+            optionsBuilder.setKey(new TunnelOptionsKey("tos"));
+            optionsBuilder.setTunnelOption("tos");
+            optionsBuilder.setValue(tos);
+            tunOptions.add(optionsBuilder.build());
+        }
+        return tunOptions;
     }
 }
