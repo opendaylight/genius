@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_223c5ae2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 606,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-30T10:18:10Z",
+      "side": 1,
+      "message": "Yes Alon, My Bad. It doesn\u0027t read from interface-state ds.",
+      "parentUuid": "fafc7978_c2090e97",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_c263ceaf",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 25
@@ -101,6 +119,24 @@
       "side": 1,
       "message": "it does, see the callers for updateInterfaceParentRef",
       "parentUuid": "fafc7978_c263ceaf",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6225c2c1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-30T10:18:10Z",
+      "side": 1,
+      "message": "okay, but this is being exposed as API. so Let us run this task in iface_entity owner node which makes caller not to worry about it.\nAlso, what about updating interface-parent-entry in interface-child-info container ? I don\u0027t see its is getting updated.",
+      "parentUuid": "fafc7978_22ff3a69",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -176,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5dafc3e3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-30T10:18:10Z",
+      "side": 1,
+      "message": "I meant we need to handle a race condition here. i.e. This add can be called even before TerminationPointStateListener#add (ovsdb vs OF). so we may not have parentRef for VM interface and interface-parent-entry not present in interface-child-info container.",
+      "parentUuid": "fafc7978_e22b72e9",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6272e27d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 25
@@ -205,6 +259,24 @@
       "side": 1,
       "message": "Are you saying tpName.getName() can be null? I haven\u0027t seen such TPs.. in any case what would be the issue with updating a null parentRefName? If the tp has no name, but is pointing to the neutron port - we still have nowhere to point to.",
       "parentUuid": "fafc7978_6272e27d",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bdeeaf20",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-01-30T10:18:10Z",
+      "side": 1,
+      "message": "ignore it. I thought it was an interface-state ds read.",
+      "parentUuid": "fafc7978_8246e6bd",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
