@@ -23,6 +23,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
@@ -30,6 +34,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.Itm;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,8 +59,9 @@ public class ItmInternalTunnelAddWorker {
              };
 
 
-    public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker, IdManagerService idManagerService,IMdsalApiManager mdsalManager,
-                                                                 List<DPNTEPsInfo> cfgdDpnList, List<DPNTEPsInfo> meshedDpnList) {
+    public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker, IdManagerService idManagerService, IMdsalApiManager mdsalManager,
+                                                                 List<DPNTEPsInfo> cfgdDpnList, List<DPNTEPsInfo> meshedDpnList,
+                                                                 ItmConfig itmConfig) {
         logger.trace( "Building tunnels with DPN List {} " , cfgdDpnList );
       monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
       monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
@@ -68,7 +75,7 @@ public class ItmInternalTunnelAddWorker {
 
         for( DPNTEPsInfo dpn : cfgdDpnList) {
             //#####if dpn is not in meshedDpnList
-            build_tunnel_from(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, t, futures);
+            build_tunnel_from(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, t, futures, itmConfig);
             if(null == meshedDpnList) {
                 meshedDpnList = new ArrayList<>() ;
             }
@@ -89,7 +96,8 @@ public class ItmInternalTunnelAddWorker {
         t.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder, true);
     }
 
-    private static void build_tunnel_from( DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
+    private static void build_tunnel_from( DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures,
+                                           ItmConfig itmConfig) {
         logger.trace( "Building tunnels from DPN {} " , srcDpn );
 
         if( null == meshedDpnList || 0 == meshedDpnList.size()) {
@@ -98,14 +106,15 @@ public class ItmInternalTunnelAddWorker {
         }
         for( DPNTEPsInfo dstDpn: meshedDpnList) {
             if ( ! srcDpn.equals(dstDpn) ) {
-                wireUpWithinTransportZone(srcDpn, dstDpn, dataBroker, idManagerService, mdsalManager, t, futures) ;
+                wireUpWithinTransportZone(srcDpn, dstDpn, dataBroker, idManagerService, mdsalManager, t, futures, itmConfig) ;
             }
         }
 
     }
 
     private static void wireUpWithinTransportZone( DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, DataBroker dataBroker,
-                                                   IdManagerService idManagerService, IMdsalApiManager mdsalManager,WriteTransaction t, List<ListenableFuture<Void>> futures) {
+                                                   IdManagerService idManagerService, IMdsalApiManager mdsalManager,WriteTransaction t, List<ListenableFuture<Void>> futures,
+                                                   ItmConfig itmConfig) {
         logger.trace( "Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn );
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
         List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
@@ -116,7 +125,8 @@ public class ItmInternalTunnelAddWorker {
                 if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
                     if( !ItmUtils.getIntersection(srcte.getTzMembership(), dstte.getTzMembership()).isEmpty()) {
                         // wire them up
-                        wireUpBidirectionalTunnel( srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), dataBroker, idManagerService,  mdsalManager, t, futures );
+                        wireUpBidirectionalTunnel( srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), dataBroker, idManagerService,  mdsalManager, t, futures,
+                                itmConfig);
                         // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
                         break ;
                     }
@@ -126,7 +136,8 @@ public class ItmInternalTunnelAddWorker {
     }
 
     private static void wireUpBidirectionalTunnel( TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
-                                                   DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
+                                                   DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures,
+                                                   ItmConfig itmConfig) {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
 
         if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
@@ -134,19 +145,20 @@ public class ItmInternalTunnelAddWorker {
             ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
         }
         // Create the forward direction tunnel
-        if(!wireUp( srcte, dstte, srcDpnId, dstDpnId, dataBroker, idManagerService, t, futures )) {
+        if(!wireUp( srcte, dstte, srcDpnId, dstDpnId, dataBroker, idManagerService, t, futures, itmConfig)) {
             logger.error("Could not build tunnel between end points {}, {} " , srcte, dstte );
         }
 
         // CHECK IF FORWARD IS NOT BUILT , REVERSE CAN BE BUILT
         // Create the tunnel for the reverse direction
-        if(! wireUp( dstte, srcte, dstDpnId, srcDpnId, dataBroker, idManagerService, t, futures )) {
+        if(! wireUp( dstte, srcte, dstDpnId, srcDpnId, dataBroker, idManagerService, t, futures, itmConfig)) {
             logger.error("Could not build tunnel between end points {}, {} " , dstte, srcte);
         }
     }
 
     private static boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId ,
-                                  DataBroker dataBroker, IdManagerService idManagerService, WriteTransaction t, List<ListenableFuture<Void>> futures) {
+                                  DataBroker dataBroker, IdManagerService idManagerService, WriteTransaction t, List<ListenableFuture<Void>> futures,
+                                  ItmConfig itmConfig) {
         // Wire Up logic
         logger.trace( "Wiring between source tunnel end points {}, destination tunnel end points {} " , srcte, dstte );
         String interfaceName = srcte.getInterfaceName() ;
@@ -161,10 +173,12 @@ public class ItmInternalTunnelAddWorker {
         IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
         logger.debug(  " Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",trunkInterfaceName, interfaceName, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+
+        List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmConfig);
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format( "%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
-                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel);
+                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, tunOptions);
         logger.debug(  " Trunk Interface builder - {} ", iface ) ;
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         logger.debug(  " Trunk Interface Identifier - {} ", trunkIdentifier ) ;
