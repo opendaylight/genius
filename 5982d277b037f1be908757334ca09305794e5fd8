@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_3df59f83",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-30T11:49:33Z",
+      "side": 1,
+      "message": "why do we have to do this for remove and update?",
+      "revId": "5982d277b037f1be908757334ca09305794e5fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7def27b1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-30T11:49:33Z",
+      "side": 1,
+      "message": "if u do update here, this will trigger the update DCN once again...my question was, why do we do enqueuJob at line 133, apart from calling update DCN? isn\u0027t that unnecessary? both are going to do the same operations",
+      "revId": "5982d277b037f1be908757334ca09305794e5fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
