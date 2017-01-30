@@ -28,6 +28,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
@@ -69,7 +71,8 @@ public class ItmExternalTunnelAddWorker {
                                                                               IdManagerService idManagerService,
                                                                               List<DPNTEPsInfo> cfgDpnList,
                                                                               IpAddress extIp,
-                                                                              Class<? extends TunnelTypeBase> tunType) {
+                                                                              Class<? extends TunnelTypeBase> tunType,
+                                                                              ItmConfig itmConfig) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         if (null != cfgDpnList) {
@@ -83,6 +86,7 @@ public class ItmExternalTunnelAddWorker {
                         new String(extIp.getValue()), tunTypeStr);
                 char[] subnetMaskArray = firstEndPt.getSubnetMask().getValue();
                 boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
+                List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(firstEndPt, itmConfig);
                 String subnetMaskStr = String.valueOf(subnetMaskArray);
                 SubnetUtils utils = new SubnetUtils(subnetMaskStr);
                 String dcGwyIpStr = String.valueOf(extIp.getValue());
@@ -95,7 +99,7 @@ public class ItmExternalTunnelAddWorker {
                 Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
                     String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"), true,
                     tunType, firstEndPt.getIpAddress(), extIp, gwyIpAddress, firstEndPt.getVLANID(), false, false,
-                    ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel);
+                    ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
 
                 LOG.debug(" Trunk Interface builder - {} ", iface);
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -120,11 +124,12 @@ public class ItmExternalTunnelAddWorker {
                                                                                      List<BigInteger> dpnId,
                                                                                      IpAddress extIp,
                                                                                      Class<? extends TunnelTypeBase>
-                                                                                             tunType) {
+                                                                                             tunType,
+                                                                                     ItmConfig itmConfig) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         List<DPNTEPsInfo> cfgDpnList = dpnId == null ? ItmUtils.getTunnelMeshInfo(dataBroker)
                         : ItmUtils.getDpnTepListFromDpnId(dataBroker, dpnId);
-        futures = buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgDpnList, extIp, tunType);
+        futures = buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgDpnList, extIp, tunType, itmConfig);
         return futures;
     }
 
@@ -344,7 +349,7 @@ public class ItmExternalTunnelAddWorker {
                 dstIp, gwyIpAddress);
         Interface extTunnelIf = ItmUtils.buildTunnelInterface(dpnId, tunnelIfName,
                 String.format("%s %s", tunType.getName(), "Trunk Interface"), true, tunType, srcIp, dstIp, gwyIpAddress,
-                vlanId, false,monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow);
+                vlanId, false,monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow, null);
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
                 new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, extTunnelIf);
