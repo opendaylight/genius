@@ -186,7 +186,8 @@ public class ItmManagerRpcServiceTest {
             (ItmTestConstants.TUNNEL_TYPE_VXLAN).setDestinationNode(ItmTestConstants.destinationDevice).setSourceNode(ItmTestConstants.sourceDevice).build();
         iface = ItmUtils.buildTunnelInterface(ItmTestConstants.dpId1,trunkInterfaceName, String.format("%s %s",
             ItmUtils.convertTunnelTypetoString(ItmTestConstants.TUNNEL_TYPE_VXLAN), "Trunk Interface"),true,ItmTestConstants.TUNNEL_TYPE_VXLAN,tunnelEndPointsVxlan.getIpAddress()
-            , ItmTestConstants.ipAddress3,ItmTestConstants.gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,ItmTestConstants.monitorProtocol,null, false);
+            , ItmTestConstants.ipAddress3,ItmTestConstants.gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,ItmTestConstants.monitorProtocol,null, false,
+                null);
         subnetsTest = new SubnetsBuilder().setGatewayIp(ItmTestConstants.gtwyIp1).setVlanId(ItmTestConstants.vlanId).setKey(new SubnetsKey(ItmTestConstants.ipPrefixTest))
             .setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);

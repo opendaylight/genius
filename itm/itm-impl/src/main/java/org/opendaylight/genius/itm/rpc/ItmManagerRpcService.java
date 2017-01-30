@@ -37,6 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -97,13 +98,15 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalManager;
     private final IdManagerService idManagerService;
+    private final ItmConfig itmConfig;
 
     @Inject
-    public ItmManagerRpcService(final DataBroker dataBroker,final IdManagerService idManagerService,
-                                final IMdsalApiManager iMdsalApiManager) {
+    public ItmManagerRpcService(final DataBroker dataBroker, final IdManagerService idManagerService,
+                                final IMdsalApiManager iMdsalApiManager, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         this.mdsalManager = iMdsalApiManager;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
@@ -186,7 +189,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, idManagerService,input.getDpnId(), input.getDestinationIp(), input.getTunnelType());
+        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker,
+                                                            idManagerService,input.getDpnId(), input.getDestinationIp(),input.getTunnelType(), itmConfig);
         for (ListenableFuture<Void> extTunnelResult : extTunnelResultList) {
             Futures.addCallback(extTunnelResult, new FutureCallback<Void>(){
 
@@ -214,7 +218,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType()) ;InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType(), itmConfig);
+        InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp = new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp()).setTunnnelType(input.getTunnelType()).build();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         t.put(LogicalDatastoreType.CONFIGURATION, extPath,dcGatewayIp, true);
