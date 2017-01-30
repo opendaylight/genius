@@ -5,4 +5,5 @@
         <tunnel-type>vxlan</tunnel-type>
         <enabled>false</enabled>
     </tunnel-aggregation>
+    <default-tunnel-tos>0</default-tunnel-tos>
 </itm-config>

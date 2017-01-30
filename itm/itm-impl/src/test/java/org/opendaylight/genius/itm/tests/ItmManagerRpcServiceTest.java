@@ -234,7 +234,7 @@ public class ItmManagerRpcServiceTest {
                 ItmUtils.convertTunnelTypetoString(ItmTestConstants.TUNNEL_TYPE_VXLAN), "Trunk Interface"),
                 true,ItmTestConstants.TUNNEL_TYPE_VXLAN,tunnelEndPointsVxlan.getIpAddress(),
                 ItmTestConstants.IP_ADDRESS_3,ItmTestConstants.GTWY_IP_1,
-                tunnelEndPointsVxlan.getVLANID(),false,false, ItmTestConstants.MONITOR_PROTOCOL,null, false);
+                tunnelEndPointsVxlan.getVLANID(),false,false, ItmTestConstants.MONITOR_PROTOCOL,null, false, null);
         subnetsTest = new SubnetsBuilder().setGatewayIp(ItmTestConstants.GTWY_IP_1).setVlanId(ItmTestConstants.VLAN_ID)
                 .setKey(new SubnetsKey(ItmTestConstants.IP_PREFIX_TEST)).setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);
