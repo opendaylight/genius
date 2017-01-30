@@ -183,7 +183,7 @@ public class InterfaceManagerConfigurationTest {
         //Delete test
         // iii) vlan interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, interfaceName);
-        Thread.sleep(2000);
+        Thread.sleep(4000);
         // 3. Then
         // a) check expected interface-child entry mapping in odl-interface-meta/config/interface-child-info is deleted
 
