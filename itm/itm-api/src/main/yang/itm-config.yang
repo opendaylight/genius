@@ -148,6 +148,18 @@ module itm-config {
                 type boolean;
                 default false;
             }
-        }
+       }
+       leaf default-tunnel-tos {
+           description "Default value of ToS bits to be set on the encapsulating
+               packet. The value of 'inherit' will copy the DSCP value
+               from inner IPv4 or IPv6 packets.  When ToS is given as
+               a numberic value, the least significant two bits will
+               be ignored.";
+
+            type string {
+                length "1..8";
+            }
+            default 0;
+       }
     }
 }
