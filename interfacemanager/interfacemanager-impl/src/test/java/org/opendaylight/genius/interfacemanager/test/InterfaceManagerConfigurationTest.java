@@ -241,7 +241,7 @@ public class InterfaceManagerConfigurationTest {
         // Delete test
         // iii) tunnel interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, tunnelInterfaceName);
-        Thread.sleep(2000);
+        Thread.sleep(4000);
 
         // Then
         // a) check if tunnel is deleted from bridge-interface-info
