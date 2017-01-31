@@ -105,6 +105,24 @@
       "revId": "5982d277b037f1be908757334ca09305794e5fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bfddfc16",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-31T16:15:20Z",
+      "side": 1,
+      "message": "we have some other usecases which will be upstreamed soon, where we have to support non-unique port names across switches.. in that case the portname is made unique by prefixing the dpn-id which will come from northbound...the northbound is not neutron-vpn and is a separate module in that case.. Send me an email whenever you are online on IRC..we can have further discussion",
+      "parentUuid": "fafc7978_4e73844d",
+      "revId": "5982d277b037f1be908757334ca09305794e5fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
