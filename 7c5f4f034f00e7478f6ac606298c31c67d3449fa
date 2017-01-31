@@ -179,6 +179,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_6b2f5aa2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-31T10:13:13Z",
+      "side": 1,
+      "message": "I can move the runOnlyInLeaderNode() into this updateInterfaceParentRef function.\nHowever, there is additional logic in the callers, leading to this call, that we want to do only in the EOS owner.\n\nDoes it work ok to have a runOnlyInLeaderNode nested in another runOnlyInLeaderNode? Meaning only add runOnlyInLeaderNode here but keep the others in the calling functions?\nI like the fact that most of the current code declares running only in leader node right after the notification.",
+      "parentUuid": "fafc7978_1d0d3b91",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5d3a23ce",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 25
@@ -314,6 +332,24 @@
       "side": 1,
       "message": "From fcNodeConnectorNew, we may not able to retrieve VM interface name to populate parentRef and interface-parent-entry. So I think it is better to (timed)await with timeout 0 on a java synchronizer (may be CountDownLatch with count 1) till parentRef is populated. If latch.await returns false, then we can move it to a queue for later processing through singlethreadpoolexecutor (to maintain DCN notification order).\nOnce InterfaceConfigListener or TerminationPointStateListener populates parentRef and interface-parent-entry, it can do countdown, so that tasks related to interfaceinventorystatelistener can proceed. \nThis needs a concurrenthash map maintaining latch against interface-name key, these logic should get executed in interfaces eos owner node.",
       "parentUuid": "fafc7978_fdb5d7cd",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6b58fa56",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-31T10:13:13Z",
+      "side": 1,
+      "message": "I am not in favor of adding waits if possible to avoid.\n\nCould you please explain the logic of interface-child-info model, and what kind of id references does it contain?\n\nAlso could you please explain \"we may not be able to retrieve VM interface name\"? What do you mean by this? Do you mean the fcNodeConnector.getName() could be null? That shouldn\u0027t happen as I understand it.",
+      "parentUuid": "fafc7978_3d3c7f2f",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
