@@ -69,6 +69,24 @@
       "revId": "5982d277b037f1be908757334ca09305794e5fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aee9501c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-31T10:34:10Z",
+      "side": 1,
+      "message": "the code is like this because there are other applications(other than neutronvpn) which add interface config DS, with dpn-id + portName.. they want to update parentInterface in parentRefs to dpnId:portName so that they will get a unique identifier to populate interface-child-info map. They were never doing an update of interface configDS with the new data, they were just passing the updated string to the AddWorker.. Now with your changes u r passig the updated parentRefs to addWorker + you are triggering one more updateDCN, basically executing two jobs...",
+      "parentUuid": "fafc7978_2b0c3242",
+      "revId": "5982d277b037f1be908757334ca09305794e5fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
