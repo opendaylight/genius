@@ -87,6 +87,24 @@
       "revId": "5982d277b037f1be908757334ca09305794e5fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4e73844d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-31T11:08:24Z",
+      "side": 1,
+      "message": "Ok, I understand what you\u0027re saying.\nIf you could log onto IRC it would be easier to discuss..\n\nCould you look at the current code behavior in regard to updateParentInterface? It is only called if !isTunnelInterface and there is a datapathNodeIdentifer.\nHowever, looking at interfaces of an existing setup, I see only tunnel interfaces have a datapathNodeIdentifier. This is what I was referring to as dead code in the beginning of the review.\nI would like to try to fix this, as I want all parentRef guessing to move to use interfaceMgrProvider.getParentRefNameForInterface",
+      "parentUuid": "fafc7978_aee9501c",
+      "revId": "5982d277b037f1be908757334ca09305794e5fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
