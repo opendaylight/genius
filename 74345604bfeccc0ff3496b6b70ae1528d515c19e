@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_ae2b10ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-01-31T11:31:49Z",
+      "side": 1,
+      "message": "Faseela, I updated a new patch preserving the old behavior just to show how weird this seems:\na. This function doesn\u0027t seem to do anything in most of the cases.\nb. We will now continue to exit if the original parentRef was missing, and only apply the RendererConfig logic on the updated DCN.\n\nI\u0027m pretty sure this logic shouldn\u0027t stay though, the RendererConfig logic shouldn\u0027t be so complicated. Suggestions are welcome.",
+      "revId": "74345604bfeccc0ff3496b6b70ae1528d515c19e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
