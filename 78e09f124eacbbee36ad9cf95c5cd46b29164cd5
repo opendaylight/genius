@@ -22,6 +22,30 @@
       "revId": "78e09f124eacbbee36ad9cf95c5cd46b29164cd5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2ea3a09f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/IPv4.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-31T11:14:05Z",
+      "side": 1,
+      "message": "it was commented out before already, so I didn\u0027t touch it (just move the comment lines, because Checkstyle didn\u0027t like the method being commented out but not the JavaDoc before it; now both are commented out).  I\u0027ll let someone else remove this, if it\u0027s really never needed ...",
+      "parentUuid": "fafc7978_7100f6aa",
+      "range": {
+        "startLine": 393,
+        "startChar": 0,
+        "endLine": 395,
+        "endChar": 42
+      },
+      "revId": "78e09f124eacbbee36ad9cf95c5cd46b29164cd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
