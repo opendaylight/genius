@@ -36,6 +36,40 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5c6e9b02",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T06:00:18Z",
+      "side": 1,
+      "message": "The current odl-fib is implemented to have only one tep-ip-address for the given prefix in vrfEntry. \nWe need to decide whether to have remote dpId or remote-ip-list as nexthop.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3c73d7ea",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T06:00:18Z",
+      "side": 1,
+      "message": "ELAN is designed to work with single VxLAN tunnel now. But if we have getTunnelInterfaceName, getInternalOrExternalInterfaceName and getEgressActionsForInterface rpc\u0027s working as per this spec, then we are good.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_fcf30f71",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
