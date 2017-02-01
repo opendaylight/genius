@@ -30,9 +30,9 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
     private static final Logger logger = LoggerFactory.getLogger(ItmMonitorIntervalWorker.class) ;
     private DataBroker dataBroker;
     private String tzone;
-    private Integer interval;
+    private Long interval;
 
-    public ItmMonitorIntervalWorker(String tzone,Integer interval, DataBroker dataBroker){
+    public ItmMonitorIntervalWorker(String tzone,Long interval, DataBroker dataBroker){
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.interval = interval;
@@ -49,7 +49,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         return futures;
     }
 
-    private void toggleTunnelMonitoring(Integer interval, String tzone, WriteTransaction t) {
+    private void toggleTunnelMonitoring(Long interval, String tzone, WriteTransaction t) {
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
         logger.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
         InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
@@ -61,7 +61,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         }
     }
 
-    private void toggle(String tunnelInterfaceName, Integer interval, WriteTransaction t) {
+    private void toggle(String tunnelInterfaceName, Long interval, WriteTransaction t) {
         if (tunnelInterfaceName != null) {
             logger.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
