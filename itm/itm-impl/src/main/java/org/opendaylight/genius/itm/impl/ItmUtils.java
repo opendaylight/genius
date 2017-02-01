@@ -277,7 +277,7 @@ public class ItmUtils {
                                                  IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
                                                  boolean internal, Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                                 Integer monitorInterval, boolean useOfTunnel) {
+                                                 Long monitorInterval, boolean useOfTunnel) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
@@ -305,7 +305,7 @@ public class ItmUtils {
 
     public static Interface buildHwTunnelInterface(String tunnelIfName, String desc, boolean enabled, String topo_id,
                                                    String node_id, Class<? extends TunnelTypeBase> tunType, IpAddress srcIp, IpAddress destIp,
-                                                   IpAddress gWIp, Boolean monitor_enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitor_interval){
+                                                   IpAddress gWIp, Boolean monitor_enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Long monitor_interval){
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelIfName)).setName(
                 tunnelIfName).setDescription(desc).
                 setEnabled(enabled).setType(Tunnel.class);
@@ -788,7 +788,7 @@ public class ItmUtils {
         }
     }
 
-    public static Integer readMonitorIntervalfromCache(DataBroker dataBroker) {
+    public static Long readMonitorIntervalfromCache(DataBroker dataBroker) {
         InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.create(TunnelMonitorInterval.class);
         TunnelMonitorInterval tunnelMonitorIOptional = (TunnelMonitorInterval)DataStoreCache.get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"Interval",dataBroker,true);
         if(tunnelMonitorIOptional!=null) {
@@ -798,8 +798,8 @@ public class ItmUtils {
 
     }
 
-    public static Integer determineMonitorInterval(DataBroker dataBroker) {
-        Integer monitorInterval = ItmUtils.readMonitorIntervalfromCache(dataBroker);
+    public static Long determineMonitorInterval(DataBroker dataBroker) {
+        Long monitorInterval = ItmUtils.readMonitorIntervalfromCache(dataBroker);
         LOG.debug("determineMonitorInterval: monitorInterval from DS = {}", monitorInterval);
         if(monitorInterval==null){
             Class<? extends TunnelMonitoringTypeBase> monitorProtocol = determineMonitorProtocol(dataBroker);

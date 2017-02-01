@@ -48,7 +48,7 @@ public class ItmExternalTunnelAddWorker {
     private static final Logger logger = LoggerFactory.getLogger(ItmExternalTunnelAddWorker.class);
 
     private static Boolean monitorEnabled;
-    private static Integer monitorInterval;
+    private static Long monitorInterval;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
 
     private static final FutureCallback<Void> DEFAULT_CALLBACK =
@@ -256,7 +256,7 @@ public class ItmExternalTunnelAddWorker {
     //for tunnels from TOR device
     private static boolean wireUp(String topo_id, String srcNodeid, IpAddress srcIp, String dstNodeId, IpAddress dstIp, IpPrefix srcSubnet,
                                   IpAddress gWIp, IpPrefix dstSubnet, Class<? extends TunnelTypeBase> tunType,Boolean monitorEnabled,  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                  Integer monitorInterval,IdManagerService idManagerService, DataBroker dataBroker, List<ListenableFuture<Void>> futures, WriteTransaction t) {
+                                  Long monitorInterval,IdManagerService idManagerService, DataBroker dataBroker, List<ListenableFuture<Void>> futures, WriteTransaction t) {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gWIp;
         String parentIf =  ItmUtils.getHwParentIf(topo_id, srcNodeid);
@@ -284,7 +284,7 @@ public class ItmExternalTunnelAddWorker {
 
     //for tunnels from CSS
     private static boolean wireUp(BigInteger dpnId, String portname, Integer vlanId, IpAddress srcIp, Boolean remoteIpFlow, String dstNodeId, IpAddress dstIp, IpPrefix srcSubnet,
-                                  IpAddress gWIp, IpPrefix dstSubnet, Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitorInterval,
+                                  IpAddress gWIp, IpPrefix dstSubnet, Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Long monitorInterval,
                                   IdManagerService idManagerService, DataBroker dataBroker, List<ListenableFuture<Void>> futures, WriteTransaction t) {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gWIp;

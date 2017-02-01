@@ -86,7 +86,7 @@ public class TepCommandHelperTest {
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
 
     int vlanId = 100 ;
-    int interval = 1000;
+    long interval = 1000L;
     Boolean enabled = false ;
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     String tepIp1 = "192.168.56.30";
@@ -250,7 +250,7 @@ public class TepCommandHelperTest {
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         transportZonesNew = new TransportZonesBuilder().setTransportZone(transportZoneListNew).build();
-        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000).build();
+        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000L).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
                 .setTunnelInterfaceName(tunnelInterfaceName).setKey(new InternalTunnelKey(dpId1,dpId2,tunnelType1))
