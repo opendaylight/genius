@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_bce2279d",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T05:25:42Z",
+      "side": 1,
+      "message": "I hope parent-refs is just used to contain logical tunnel name in each member tunnel interface. so we might need to use interface-child-info to contain all the member tunnel interfaces for the given logical tunnel group. This simplifies in programming the OF select group.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1c96d3f0",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T05:25:42Z",
+      "side": 1,
+      "message": "I think even for single tunnel, we can go ahead with creating logical group interface with OF select group with single bucket. This way we can make applications to always work on logical group interface name.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fcf30f71",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T05:25:42Z",
+      "side": 1,
+      "message": "I don\u0027t think we need any changes in parent-refs. Let us make use of interface-child-info container. But this makes logical tunnel interface as parent and tunnel member interfaces as child.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5ce97b7f",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T05:25:42Z",
+      "side": 1,
+      "message": "weight can go inside if-tunnel augmentation.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7cff1f35",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T05:25:42Z",
+      "side": 1,
+      "message": "If weight is not given, then does it make each tunnel as equally distributed ?",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
