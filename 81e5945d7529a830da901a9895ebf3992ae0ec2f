@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3fbaa9de",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "Yes. It should contain just the name of the tunnel members.\nCheck out my reply to https://git.opendaylight.org/gerrit/#/c/50779/12/docs/specs/multiple-vxlan-tunnels.rst@238",
+      "parentUuid": "fafc7978_bce2279d",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1c96d3f0",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-01T05:25:42Z",
       "side": 1,
       "message": "I think even for single tunnel, we can go ahead with creating logical group interface with OF select group with single bucket. This way we can make applications to always work on logical group interface name.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bf5fb90d",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "I agree this would make the pipeline uniform but it might have an unnecessary performance penalty considering the ordinary UC is a single tunnel.\n\nIs anyone else supporting this?",
+      "parentUuid": "fafc7978_1c96d3f0",
       "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_bfe4d93b",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "These are part of the changes that needs to be made on the netvirt side to support this.\nI added the remote DPN id to getInternalOrExternalInterfaceName in order to get the logical tunnel name but I\u0027m not sure additional model changes would be required.\nodl-l3vpn:prefix-to-interface already contains the mapping vpn-id+dst-prefix -\u003e dpn-id and is already in use by the FIB layer so dpn-id could be extracted from there.\nRegarding the nexthop-list in the vrfEntry/vpnInterface I\u0027m not sure. \nNexthop-list shouldn\u0027t be used anymore if dpn-id is found in prefix-to-interface but what should it\u0027s value reflect? the dpn-id? the list of all possible underlay ip addresses? the first underlay ip (like today)?\nI don\u0027t want to make a big change in this model if it\u0027s just for cosmetic reasons",
+      "parentUuid": "fafc7978_5c6e9b02",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3c73d7ea",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -64,6 +118,24 @@
       "writtenOn": "2017-02-01T06:00:18Z",
       "side": 1,
       "message": "ELAN is designed to work with single VxLAN tunnel now. But if we have getTunnelInterfaceName, getInternalOrExternalInterfaceName and getEgressActionsForInterface rpc\u0027s working as per this spec, then we are good.",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bfb6993b",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "Yes. The L2 pipeline doesn\u0027t require any code changes on the netvirt side as far as I understand.\nThanks for the confirmation",
+      "parentUuid": "fafc7978_3c73d7ea",
       "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_df1a7d16",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "This is different from any other interface logic genius use today.\nThe way I understand it (please correct me if I am wrong), the IFM looks up parent-ref interfaces in the config DS recursively until no parent is found and then the search continues in the oper DS until the actual lower-layer interface/OF port is found. Then the state of OF port is propagated in the opposite direction up the hierarchy.\nHow will this work if the parent of the actual tunnel would be the logical tunnel? The state of the logical tunnel needs to reflect the state of its\u0027 parent-interfaces unless I want to write a new state propagation logic just for tunnels.\n\nAm I missing something here?",
+      "parentUuid": "fafc7978_fcf30f71",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5ce97b7f",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_ffd82155",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "Sure. I will fix it",
+      "parentUuid": "fafc7978_5ce97b7f",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7cff1f35",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -115,6 +223,24 @@
       "writtenOn": "2017-02-01T05:25:42Z",
       "side": 1,
       "message": "If weight is not given, then does it make each tunnel as equally distributed ?",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ffa661c0",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-01T08:16:38Z",
+      "side": 1,
+      "message": "Yes. I mentioned it in the proposed changes section line #55 but maybe not clearly enough. I will rephrase\n\n\"If weight was not defined, the bucket weight will be configured with a default value of 1\"",
+      "parentUuid": "fafc7978_7cff1f35",
       "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
