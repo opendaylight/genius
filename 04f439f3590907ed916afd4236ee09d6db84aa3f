@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_9c72c37a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-01T00:47:10Z",
+      "side": 1,
+      "message": "There is a Map being introduced for mapping the Tunnel type \"classes\" against \"strings\" in this review -- https://git.opendaylight.org/gerrit/#/c/50274/12/itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java\nCan we not use it here?",
+      "revId": "04f439f3590907ed916afd4236ee09d6db84aa3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
