@@ -197,6 +197,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fc65cf45",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 623,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T04:17:34Z",
+      "side": 1,
+      "message": "Okay, At least add the comment that this API should get invoked from the tasks running in iface Leader Node.",
+      "parentUuid": "fafc7978_6b2f5aa2",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5d3a23ce",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 25
@@ -350,6 +368,24 @@
       "side": 1,
       "message": "I am not in favor of adding waits if possible to avoid.\n\nCould you please explain the logic of interface-child-info model, and what kind of id references does it contain?\n\nAlso could you please explain \"we may not be able to retrieve VM interface name\"? What do you mean by this? Do you mean the fcNodeConnector.getName() could be null? That shouldn\u0027t happen as I understand it.",
       "parentUuid": "fafc7978_3d3c7f2f",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9c6da335",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T04:17:34Z",
+      "side": 1,
+      "message": "fcNodeConnector.getName() gives us only vhu(tap) port name on which VM is attached. As part of this add DCN, we retrieve its child interfaces (i.e. VLAN trunk interface of VM) through getInterfaceChildEntries and process it (to populate interface-state ds, programming table 0 etc.).\n\nDue to race condition, as mentioned earlier interface-child-info may not get populated and we end up in not processing vlan trunk interface.\n\nThere is no way to retrieve VLAN trunk interface name from portName unless we look up on neutron port model or southboundutils. That is the reason i have proposed wait-unit-available approach.",
+      "parentUuid": "fafc7978_6b58fa56",
       "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
