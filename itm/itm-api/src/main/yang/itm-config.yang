@@ -39,7 +39,7 @@ module itm-config {
     }
     container tunnel-monitor-interval {
       leaf interval {
-         type uint16 {
+         type uint32 {
              range "1000..30000";
          }
       }
