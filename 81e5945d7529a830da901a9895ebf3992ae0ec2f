@@ -143,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_2538d69f",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T12:40:04Z",
+      "side": 1,
+      "message": "This is not only VM prefixes, we will also have static routes which doesn\u0027t any entry in prefix-to-interface ds. I think its better to populate dpId in the nexthop-address to avoid more ds lookups to find out target dpId.",
+      "parentUuid": "fafc7978_a2a31c9d",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3c73d7ea",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -243,6 +261,24 @@
       "side": 1,
       "message": "I see. That\u0027s an interesting idea but would this work in combination with OF tunnels?\nthe logical tunnel would be parent of all tunnel members and each tunnel member would be the parent of all OF tunnels? Would this hierarchy work?",
       "parentUuid": "fafc7978_2283ac57",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_255f36e7",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T12:40:04Z",
+      "side": 1,
+      "message": "The current ITM implmentation is just based on tunnel member with parentRef having only dpId. So its just about implementing logical tunnel group on top of member tunnels.",
+      "parentUuid": "fafc7978_222c4c02",
       "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
