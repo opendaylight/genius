@@ -45,6 +45,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
@@ -447,17 +448,20 @@ public class IdManagerTest {
     @Test
     public void testMultithreadedIdAllocationFromReleasedIds() throws Exception {
         setupMockForMultiThreads(true);
+        // Check if the available id count is 3.
+        java.util.Optional<IdLocalPool> idLocalPool = idManager.getIdLocalPool(poolName);
+        assertTrue(idLocalPool.isPresent());
+        assertTrue(idLocalPool.get().getReleasedIds().getAvailableIdCount() == 3);
         int numberOfTasks = 3;
         CountDownLatch latch = new CountDownLatch(numberOfTasks);
         Set<Long> idSet = new CopyOnWriteArraySet<>();
         requestIdsConcurrently(latch, numberOfTasks, idSet, false);
         latch.await();
         waitUntilJobIsDone();
-        DataObject dataObject = configDataStore.get(localPoolIdentifier);
-        if (dataObject instanceof IdPool) {
-            IdPool pool = (IdPool) dataObject;
-            assertTrue(pool.getReleasedIdsHolder().getAvailableIdCount() == 0);
-        }
+        // Check if the available id count is 0.
+        idLocalPool = idManager.getIdLocalPool(poolName);
+        assertTrue(idLocalPool.isPresent());
+        assertTrue(idLocalPool.get().getReleasedIds().getAvailableIdCount() == 0);
     }
 
     @Test
