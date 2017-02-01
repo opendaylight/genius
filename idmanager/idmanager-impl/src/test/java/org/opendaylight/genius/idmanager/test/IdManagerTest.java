@@ -475,7 +475,8 @@ public class IdManagerTest {
         DataObject dataObject = configDataStore.get(localPoolIdentifier);
         if (dataObject instanceof IdPool) {
             IdPool pool = (IdPool) dataObject;
-            assertTrue(pool.getReleasedIdsHolder().getAvailableIdCount() == 0);
+            // Check if the available id count decremented from 2.
+            assertTrue(pool.getReleasedIdsHolder().getAvailableIdCount() < 2);
         }
     }
 
