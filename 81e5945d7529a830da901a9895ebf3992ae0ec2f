@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_02530818",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T09:59:56Z",
+      "side": 1,
+      "message": "The nextHopAddressList in vrfEntry is always populated with connected compute host\u0027s tep ip address for the given prefix. This is used (to find out remote dpn using tep ip address) to program remote fib entries. Now VpnInterfaceManager uses only single tep ip address to populate this entry. I meant how to handle this ? Are we going to add all the tep ip addresses to this nexthop list ? But vrfEntry yang model is getting changed where nexthop-address as the key (as per ecmp spec). So it has to be addressed appropriately.",
+      "parentUuid": "fafc7978_bfe4d93b",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3c73d7ea",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -171,6 +189,24 @@
       "side": 1,
       "message": "This is different from any other interface logic genius use today.\nThe way I understand it (please correct me if I am wrong), the IFM looks up parent-ref interfaces in the config DS recursively until no parent is found and then the search continues in the oper DS until the actual lower-layer interface/OF port is found. Then the state of OF port is propagated in the opposite direction up the hierarchy.\nHow will this work if the parent of the actual tunnel would be the logical tunnel? The state of the logical tunnel needs to reflect the state of its\u0027 parent-interfaces unless I want to write a new state propagation logic just for tunnels.\n\nAm I missing something here?",
       "parentUuid": "fafc7978_fcf30f71",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2283ac57",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-01T09:59:56Z",
+      "side": 1,
+      "message": "For cases like VLAN trunk interface, yes, the op-state is propagated from parent to child interfaces.\n\nWhen we make logical tunnel group as parent, then it\u0027s op state depends on op-state of its child-interfaces. whenever tunnel member changes its state, then it has to update its parent (i.e. logical group interface) op state. Example: making it as down when all of its members op state is down.\nThis makes yang changes too be very minimal at interface side and leveraging already existing interface-child-info model.\n\nAlso it doesn\u0027t make sense to have list of parents :)",
+      "parentUuid": "fafc7978_df1a7d16",
       "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
