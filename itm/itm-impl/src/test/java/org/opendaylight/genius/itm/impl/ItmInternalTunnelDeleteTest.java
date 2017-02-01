@@ -71,7 +71,7 @@ public class ItmInternalTunnelDeleteTest {
     BigInteger dpId1 = BigInteger.valueOf(1);
     BigInteger dpId2 = BigInteger.valueOf(2);
     int vlanId = 100 ;
-    int interval = 1000;
+    long interval = 1000L;
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     String parentInterfaceName = "1:phy0:100" ;

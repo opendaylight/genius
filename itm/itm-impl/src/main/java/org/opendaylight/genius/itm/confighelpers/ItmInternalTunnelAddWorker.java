@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class ItmInternalTunnelAddWorker {
      private static final Logger logger = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
   private static Boolean monitorEnabled;
-  private static Integer monitorInterval;
+  private static Long monitorInterval;
   private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
   private static final FutureCallback<Void> DEFAULT_CALLBACK =
              new FutureCallback<Void>() {

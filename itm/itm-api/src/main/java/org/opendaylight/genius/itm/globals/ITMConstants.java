@@ -22,10 +22,10 @@ public class ITMConstants {
     public static final int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring
     public static final boolean DEFAULT_MONITOR_ENABLED = true;
-    public static final int DEFAULT_MONITOR_INTERVAL = 10000;
-    public static final int BFD_DEFAULT_MONITOR_INTERVAL = 1000;
-    public static final int MIN_MONITOR_INTERVAL = 1000;
-    public static final int MAX_MONITOR_INTERVAL = 30000;
+    public static final long DEFAULT_MONITOR_INTERVAL = 10000L;
+    public static final long BFD_DEFAULT_MONITOR_INTERVAL = 1000L;
+    public static final long MIN_MONITOR_INTERVAL = 1000L;
+    public static final long MAX_MONITOR_INTERVAL = 30000L;
     public static final String DUMMY_IP_ADDRESS = "0.0.0.0";
     public static final String TUNNEL_TYPE_VXLAN = "VXLAN";
     public static final String TUNNEL_TYPE_GRE = "GRE";

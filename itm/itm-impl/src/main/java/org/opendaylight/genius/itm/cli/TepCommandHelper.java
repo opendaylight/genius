@@ -415,7 +415,7 @@ public class TepCommandHelper {
         }
     }
 
-    public void showTeps(boolean monitorEnabled, int monitorInterval, CommandSession session) throws TepException {
+    public void showTeps(boolean monitorEnabled, long monitorInterval, CommandSession session) throws TepException {
         boolean flag = false;
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
@@ -838,7 +838,7 @@ public class TepCommandHelper {
         }
     }
 
-    public void configureTunnelMonitorInterval(int interval) {
+    public void configureTunnelMonitorInterval(long interval) {
         InstanceIdentifier<TunnelMonitorInterval> path =
                 InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
         Optional<TunnelMonitorInterval> storedTunnelMonitor =
