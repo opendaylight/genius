@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_76c73646",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "these should not be wildcarded",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_96dd7a73",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
         "patchSetId": 1
@@ -733,6 +750,40 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_56ff9267",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "copyright",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_36048e7a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "order the imports per checkstyle rules",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d6c8a276",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
         "patchSetId": 1
@@ -744,6 +795,23 @@
       "writtenOn": "2017-02-01T20:19:13Z",
       "side": 1,
       "message": "list all fields before methods in any class (see also https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#Class.27s_methods_.2F_fields_ordering)",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96f8da7d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "many of these comments are distracting since the field names are very detailed already.",
       "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -829,6 +897,23 @@
       "writtenOn": "2017-02-01T20:19:13Z",
       "side": 1,
       "message": "This looks like the kind of (\"value\") class which should have an equals(), hashCode() and toString() as well?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76f57682",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DependencyData.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "I think we have moved away from these type of author comments",
       "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -948,6 +1033,40 @@
       "writtenOn": "2017-02-01T20:19:13Z",
       "side": 1,
       "message": "if empty, then why implements AutoCloseable; remove?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d6f26299",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "this should be at same indent as previous line",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b6efdeaf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-01T20:54:24Z",
+      "side": 1,
+      "message": "maybe move these blocks of code to a method since they look very similar. It might also help make this more readable since it is so nested. I realize the add/delete is different but maybe something can be pulled out that is common.",
       "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
