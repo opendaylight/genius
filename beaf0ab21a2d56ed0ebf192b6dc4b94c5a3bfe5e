@@ -1,0 +1,956 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_9668dabb",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "What do we need this for?  We already have CSS and BP... I\u0027d like to adopt DS ... Felix\u0027s dependency-manager would be a 4th such kind of thing!",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_36748e98",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "This looks like a useless recursive self reference to this project itself (or am I not getting it) ?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96dd7a73",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "Design: We should consider writing a new class that collaborates with the original AsyncDataTreeChangeListenerBase (or possibly subclasses it; although it\u0027s better design in general not to inherit but to associate) than adding all of this new code to this, already widely used, class?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d66262d7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "bad idea to make LOG public, why? see also https://git.opendaylight.org/gerrit/#/c/51010/",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f6a046f6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not public?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1606aace",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "I\u0027d want others to review and comment if changing this from a  ThreadPoolExecutor with a fixed max size to a ScheduledThreadPoolExecutor is fine, or if this should better be a separate additional ScheduledThreadPoolExecutor? (I\u0027m not sure.)",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b68d1e7e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private, not static; probably final?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_169ceabf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "yes enum instead int plz",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f66326af",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "final static, if this is a constant, as it looks like to be?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_365e4ee7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "final static, if this is a constant, as it looks like to be?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96729a7a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "final static, if this is a constant, as it looks like to be?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b65fde0d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not public?  not static, that\u0027s hard to test",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_36abeed9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private final ?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_56a67211",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "not static, that\u0027s hard to test",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3682ce4f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not public?  not static, that\u0027s hard to test",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_165fcae6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "static class, or does this need access to container class?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5642f210",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private final",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_964bba2a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private final",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96961a93",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not public?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96af3ae3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "this idea seems somewhat similar / related to addBeforeListener/addAfterListener which have been added to this class in c/48077 \u0026 c/49487 ?\n\nalso private final ?  And not static, that\u0027s hard to test",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d6e7023f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "not static, if possible at all",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7693b6a3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not package local",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f63cc695",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b6e4fe3b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "no way, josé",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f6d5e643",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "static initialization is very bad and makes code difficult to test.",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_16ea2a0f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "is this a TODO ?  should be addressed then?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_56cb12a5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 375,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "FYI there have been problems with logging in this class in the past, NB https://git.opendaylight.org/gerrit/#/c/50999/",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_56103201",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96e73a12",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "level error in this case, are you really sure?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3615aef1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96f9faca",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 553,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76f616d9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 563,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d60382b6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 574,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b6007eab",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f63166a3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 582,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_56279264",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_362c8e47",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9620da4a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_761d760f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_16bb4ae6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 627,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "suspicious; LOG.error() missing?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d61a6216",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 635,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "does this have to be protected or could it be private?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f6bfa6ce",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "suspicious; LOG.error() missing?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f60a06d1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 666,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not package local",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d6c8a276",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "list all fields before methods in any class (see also https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#Class.27s_methods_.2F_fields_ordering)",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_36bacede",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "either public final as all other fields, or private, but certainly not default package visibility",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96ce1a82",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "either public final as all other fields, or private, but certainly not default package visibility",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76cbb672",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "either public final as all other fields, or private, but certainly not default package visibility",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_56b5d2ec",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "all of the fields set here should definitely be final, and probably be private and have a getter (although that\u0027s more of a convention which I would not insist on)",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_16a22aae",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DeferedEvent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "This looks like the kind of (\"value\") class which should have an equals(), hashCode() and toString() as well?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f6a686c0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DependencyData.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "similar comments to those already made for DeferedEvent apply for this class as well",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_967c5a22",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "wouldn\u0027t there be concurrency issues with these HashMap ?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_56acb2a0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "these 5 fields should probably all be private final ?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96957a42",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not default package visibility ?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76929658",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "private not default package visibility ?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d69f025e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "suspicious; LOG.error() missing?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b69cfe6a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/WildCardListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-01T20:19:13Z",
+      "side": 1,
+      "message": "if empty, then why implements AutoCloseable; remove?",
+      "revId": "beaf0ab21a2d56ed0ebf192b6dc4b94c5a3bfe5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
