@@ -16,6 +16,7 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
+import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
@@ -41,13 +42,14 @@ public class ItmProviderTest {
     @Mock TunnelMonitorIntervalListener tunnelMonitorIntervalListener;
     @Mock TransportZoneListener transportZoneListener;
     @Mock VtepConfigSchemaListener vtepConfigSchemaListener;
+    @Mock OvsdbNodeListener ovsdbNodeListener;
 
     @Test
     public void testClose() {
         ItmProvider provider = new ItmProvider(dataBroker, dpnTepsInfoListener, idManagerService, interfaceStateListener,
                 itmManager, itmManagerRpcService, itmMonitoringListener, itmMonitoringIntervalListener, itmTunnelEventListener,
                 stateTunnelListListener, tepCommandHelper, tunnelMonitorChangeListener, tunnelMonitorIntervalListener,
-                transportZoneListener, vtepConfigSchemaListener);
+                transportZoneListener, vtepConfigSchemaListener, ovsdbNodeListener);
 
         // ensure no exceptions
         // currently this method is empty
