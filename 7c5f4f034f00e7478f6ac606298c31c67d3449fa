@@ -392,6 +392,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9cbbd80d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-02T14:34:49Z",
+      "side": 1,
+      "message": "Peri, as part of new trunk port API, we will have to handle this scenario. For trunk ports subports will be added later so we need to handle possibility of child information coming in after OfPorts. We can address it as part of trunk changes and/or subsequent patches/fixes.",
+      "parentUuid": "fafc7978_9c6da335",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6272e27d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 25
