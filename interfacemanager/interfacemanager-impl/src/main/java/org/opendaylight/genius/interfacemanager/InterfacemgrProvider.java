@@ -175,6 +175,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
             terminationPointStateListener = new TerminationPointStateListener(dataBroker);
             terminationPointStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+            terminationPointStateListener.addAfterListener(interfaceInventoryStateListener);
 
             flowBasedServicesConfigListener = new FlowBasedServicesConfigListener(this);
             flowBasedServicesConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);

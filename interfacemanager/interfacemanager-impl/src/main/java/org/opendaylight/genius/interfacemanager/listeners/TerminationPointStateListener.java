@@ -8,14 +8,19 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.controller.md.sal.binding.api.DataObjectModification.ModificationType;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
+import org.opendaylight.genius.datastoreutils.AsyncChainableClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -25,12 +30,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
+public class TerminationPointStateListener extends AsyncChainableClusteredDataTreeChangeListenerBase<
+    OvsdbTerminationPointAugmentation, FlowCapableNodeConnector, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
     public TerminationPointStateListener(DataBroker dataBroker) {
-        super(OvsdbTerminationPointAugmentation.class, TerminationPointStateListener.class);
+        super();
         this.dataBroker = dataBroker;
     }
 
@@ -82,7 +88,24 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
         }
+    }
 
+    @Override
+    protected Collection<DataTreeModification<FlowCapableNodeConnector>> getDelegateChanges(
+                    Collection<DataTreeModification<OvsdbTerminationPointAugmentation>> changes) {
+        List<DataTreeModification<FlowCapableNodeConnector>> delegatedChanges = new ArrayList<>();
+        String portName = null;
+        for(DataTreeModification<OvsdbTerminationPointAugmentation> change: changes) {
+            if(change.getRootNode().getModificationType() == ModificationType.DELETE) {
+                portName = change.getRootNode().getDataBefore().getName();
+            } else {
+                portName = change.getRootNode().getDataAfter().getName();
+            }
+            if(InterfaceManagerCommonUtils.getPendingNodeConnectorChange(portName) != null) {
+                delegatedChanges.add(InterfaceManagerCommonUtils.getPendingNodeConnectorChange(portName));
+            }
+        }
+        return delegatedChanges;
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
@@ -120,4 +143,5 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             return null;
         }
     }
+
 }

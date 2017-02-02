@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -103,6 +104,13 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
+        return;
+    }
+
+    @Override
+    protected void add(DataTreeModification<FlowCapableNodeConnector> change) {
+        InstanceIdentifier<FlowCapableNodeConnector> key = change.getRootPath().getRootIdentifier();
+        FlowCapableNodeConnector fcNodeConnectorNew = change.getRootNode().getDataAfter();
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
             String portName = fcNodeConnectorNew.getName();
@@ -126,7 +134,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             }
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
-                    fcNodeConnectorNew, portName);
+                    fcNodeConnectorNew, portName, change);
             coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         });
     }
@@ -151,14 +159,16 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
         private final IdManagerService idManager;
+        private final DataTreeModification<FlowCapableNodeConnector> change;
 
         public InterfaceStateAddWorker(IdManagerService idManager, NodeConnectorId nodeConnectorId,
                                        FlowCapableNodeConnector fcNodeConnectorNew,
-                                       String portName) {
+                                       String portName, DataTreeModification<FlowCapableNodeConnector> change) {
             this.nodeConnectorId = nodeConnectorId;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
             this.interfaceName = portName;
             this.idManager = idManager;
+            this.change = change;
         }
 
         @Override
@@ -168,9 +178,12 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId,
                     interfaceName, fcNodeConnectorNew);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            if (interfaceChildEntries == null || interfaceChildEntries.isEmpty()) {
+                InterfaceManagerCommonUtils.addPendingNodeConnectorChange(interfaceName, change);
+            }
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
-                        fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
+                        fcNodeConnectorNew, interfaceChildEntry.getChildInterface(), null);
                 DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, interfaceStateAddWorker);
             }
             return futures;
