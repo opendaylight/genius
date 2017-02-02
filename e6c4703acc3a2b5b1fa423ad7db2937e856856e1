@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9955aa1f",
+        "filename": "docs/specs/listener-dependency-helper.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5401
+      },
+      "writtenOn": "2017-02-02T13:56:28Z",
+      "side": 1,
+      "message": "Plan is to implement both the approaches, on need basis use them in netvirt.\nFrom initial analysis: approach-1, which is timer based; is required to keep track of the prefixes exposed to bgp-vpn. For prefixes, we don\u0027t have a simple iid (key is a combination of rd+prefix). Addressed delete-external-bgp-vpn.\napproach-2 is required most of the other scenarios.",
+      "parentUuid": "1a622d24_58d7264b",
+      "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_d8adf6ea",
         "filename": "docs/specs/listener-dependency-helper.rst",
         "patchSetId": 2
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_795e0647",
+        "filename": "docs/specs/listener-dependency-helper.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5401
+      },
+      "writtenOn": "2017-02-02T13:56:28Z",
+      "side": 1,
+      "message": "Yes. There will be a new wildCardListener which implements \"ClusteredDataTreeChangeListener\"",
+      "parentUuid": "1a622d24_d8adf6ea",
+      "range": {
+        "startLine": 55,
+        "startChar": 70,
+        "endLine": 55,
+        "endChar": 120
+      },
+      "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_b87aba74",
         "filename": "docs/specs/listener-dependency-helper.rst",
         "patchSetId": 2
@@ -53,6 +95,24 @@
       "writtenOn": "2017-01-17T20:47:44Z",
       "side": 1,
       "message": "Would there be a clustered version of LDH for AsyncClusteredDataTreeChangeListenerBase?",
+      "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_194a5a80",
+        "filename": "docs/specs/listener-dependency-helper.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5401
+      },
+      "writtenOn": "2017-02-02T13:56:28Z",
+      "side": 1,
+      "message": "No, not expected at this moment. Can you please explain me more this (if you think we need to have this).",
+      "parentUuid": "1a622d24_b87aba74",
       "revId": "e6c4703acc3a2b5b1fa423ad7db2937e856856e1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
