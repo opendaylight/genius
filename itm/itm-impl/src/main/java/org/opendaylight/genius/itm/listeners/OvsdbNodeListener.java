@@ -40,7 +40,7 @@ import javax.inject.Singleton;
 public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, OvsdbNodeListener>
     implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbNodeListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
     @Inject
     public OvsdbNodeListener(final DataBroker dataBroker) {
@@ -57,7 +57,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         LOG.trace("OvsdbNodeListener Closed");
     }
 
