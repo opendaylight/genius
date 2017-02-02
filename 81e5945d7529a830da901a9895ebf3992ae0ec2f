@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7c3f1426",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-02T15:42:53Z",
+      "side": 1,
+      "message": "I added the vrf-entry changes to the yang model based on the new ECMP changes",
+      "parentUuid": "fafc7978_2538d69f",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3c73d7ea",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 12
@@ -279,6 +297,24 @@
       "side": 1,
       "message": "The current ITM implmentation is just based on tunnel member with parentRef having only dpId. So its just about implementing logical tunnel group on top of member tunnels.",
       "parentUuid": "fafc7978_222c4c02",
+      "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fc2b04e9",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 12
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-02T15:42:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_255f36e7",
       "revId": "81e5945d7529a830da901a9895ebf3992ae0ec2f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
