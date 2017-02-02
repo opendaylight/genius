@@ -109,15 +109,9 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
 
             //VM Migration: Delete existing interface entry for older DPN
-            if (InterfaceManagerCommonUtils.isNovaOrTunnelPort(portName)) {
+            if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
                 NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
                 if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
-                    if (InterfaceManagerCommonUtils.isTunnelPort(portName)) {
-                        LOG.warn("Unexpected DPNID change for tunnel interface {}: old {} new {}", portName,
-                                IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld),
-                                IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
-                        return;
-                    }
                     LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
                     remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
                     //Adding a delay of 10sec for VM migration, so applications can process remove and add events
@@ -127,7 +121,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
                         LOG.error("Error while waiting for the vm migration remove events to get processed");
                     }
                 }
-            } else {
+            } else if (!InterfaceManagerCommonUtils.isTunnelPort(portName)){
                 portName = getDpnPrefixedPortName(nodeConnectorId, portName);
             }
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
