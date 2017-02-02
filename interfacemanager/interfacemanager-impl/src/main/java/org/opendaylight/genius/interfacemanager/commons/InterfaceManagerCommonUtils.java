@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -78,6 +79,9 @@ public class InterfaceManagerCommonUtils {
     private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
+            new ConcurrentHashMap<>();
+
+    private static ConcurrentHashMap<String, DataTreeModification<FlowCapableNodeConnector>> pendingFCNCMap =
             new ConcurrentHashMap<>();
 
     private static final String NOVA_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}";
@@ -524,6 +528,18 @@ public class InterfaceManagerCommonUtils {
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(
             String interfaceName) {
         return bfdStateMap.remove(interfaceName);
+    }
+
+    public static void addPendingNodeConnectorChange(String portName, DataTreeModification<FlowCapableNodeConnector> change) {
+        pendingFCNCMap.put(portName, change);
+    }
+
+    public static DataTreeModification<FlowCapableNodeConnector> getPendingNodeConnectorChange(String portName) {
+        return pendingFCNCMap.get(portName);
+    }
+
+    public static void removePendingNodeConnectorChange(String portName) {
+        pendingFCNCMap.remove(portName);
     }
 
     public static boolean isNovaOrTunnelPort(String portName) {
