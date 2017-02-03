@@ -44,6 +44,7 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
             dataBroker = session.getSALService(DataBroker.class);
             packetProcessingService = session.getRpcService(PacketProcessingService.class);
             mdSalMgr = new MDSALManager( dataBroker, packetProcessingService) ;
+            FlowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(), dataBroker);
         } catch (Exception e) {
             LOG.error( "Error initializing MD SAL Util Services " + e );
         }
@@ -68,6 +69,16 @@ public class MDSALUtilProvider implements BindingAwareConsumer, IMdsalApiManager
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity) {
         return mdSalMgr.installFlow(dpId, flowEntity.getFlowBuilder().build());
+    }
+
+    @Override
+    public void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
+        mdSalMgr.batchedAddFlow(dpId, flowEntity.getFlowBuilder().build());
+    }
+
+    @Override
+    public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
+        mdSalMgr.batchedRemoveFlow(dpId, flowEntity.getFlowBuilder().build());
     }
 
     @Override

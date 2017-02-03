@@ -50,6 +50,10 @@ public interface IMdsalApiManager {
      */
     void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
 
+    void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity);
+
+    void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity);
+
     void removeFlow(FlowEntity flowEntity);
 
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);

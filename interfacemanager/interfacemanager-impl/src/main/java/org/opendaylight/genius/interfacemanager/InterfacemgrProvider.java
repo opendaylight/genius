@@ -170,7 +170,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             createIdPool();
 
             IfmClusterUtils.registerEntityForOwnership(this, entityOwnershipService);
-            BatchingUtils.registerWithBatchManager(new InterfaceBatchHandler(), this.dataBroker);
+            BatchingUtils.registerWithBatchManager(this.dataBroker);
             alivenessManager = rpcProviderRegistry.getRpcService(AlivenessMonitorService.class);
             interfaceManagerRpcService = new InterfaceManagerRpcService(dataBroker, mdsalManager);
             rpcRegistration = getRpcProviderRegistry().addRpcImplementation(
