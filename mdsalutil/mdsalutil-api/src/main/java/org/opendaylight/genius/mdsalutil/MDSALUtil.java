@@ -87,8 +87,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
-import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -223,6 +221,23 @@ public class MDSALUtil {
                         new NodeRef(InstanceIdentifier.builder(Nodes.class)
                                 .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
                 .setIngress(ingress).setEgress(ingress).build();
+    }
+
+    public static TransmitPacketInput getPacketOut(List<ActionInfo> actionInfos, byte[] payload, BigInteger dpnId,
+            NodeConnectorRef nodeConnRef) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static TransmitPacketInput getPacketOut(List<Action> actions, byte[] payload, BigInteger dpnId) {
+        NodeConnectorRef ncRef = getDefaultNodeConnRef(dpnId);
+        return new TransmitPacketInputBuilder()
+                .setAction(actions)
+                .setPayload(payload)
+                .setNode(
+                        new NodeRef(InstanceIdentifier.builder(Nodes.class)
+                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                .setIngress(ncRef).setEgress(ncRef).build();
     }
 
     public static Action retrieveSetTunnelIdAction(BigInteger tunnelId, int actionKey) {
@@ -381,6 +396,11 @@ public class MDSALUtil {
         return getOfPortNumberFromPortName(nodeConnectorId.getValue());
     }
 
+    public static long getOfPortNumberFromPortName(String sMdsalPortName) {
+        String portNumber = sMdsalPortName.substring(sMdsalPortName.lastIndexOf(":") + 1);
+        return Long.parseLong(portNumber);
+    }
+
     public static long getDpnIdFromPortName(NodeConnectorId nodeConnectorId) {
         try {
             String ofPortName = nodeConnectorId.getValue();
@@ -398,17 +418,6 @@ public class MDSALUtil {
             BigInteger dpnId =  new BigInteger(dpIdStr, 16);
             return dpnId;
         }
-        return null;
-    }
-
-    public static long getOfPortNumberFromPortName(String sMdsalPortName) {
-        String portNumber = sMdsalPortName.substring(sMdsalPortName.lastIndexOf(":") + 1);
-        return Long.parseLong(portNumber);
-    }
-
-    public static TransmitPacketInput getPacketOut(List<ActionInfo> actionInfos, byte[] payload, BigInteger dpnId,
-                    NodeConnectorRef nodeConnRef) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -444,16 +453,6 @@ public class MDSALUtil {
         return buildApplyActionsInstruction(actions, 0);
     }
 
-    public static Instruction buildWriteActionsInstruction(List<Action> actions) {
-        WriteActions writeActions = new WriteActionsBuilder().setAction(actions).build();
-        WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
-        InstructionBuilder instructionBuilder = new InstructionBuilder();
-
-        instructionBuilder.setInstruction(writeActionsCase);
-        instructionBuilder.setKey(new InstructionKey(0));
-        return instructionBuilder.build();
-    }
-
     public static Instruction buildApplyActionsInstruction(List<Action> listAction, int instructionKey) {
         ApplyActions applyActions = new ApplyActionsBuilder().setAction(listAction).build();
         ApplyActionsCase applyActionsCase = new ApplyActionsCaseBuilder().setApplyActions(applyActions).build();
@@ -461,6 +460,16 @@ public class MDSALUtil {
 
         instructionBuilder.setInstruction(applyActionsCase);
         instructionBuilder.setKey(new InstructionKey(instructionKey));
+        return instructionBuilder.build();
+    }
+
+    public static Instruction buildWriteActionsInstruction(List<Action> actions) {
+        WriteActions writeActions = new WriteActionsBuilder().setAction(actions).build();
+        WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
+        InstructionBuilder instructionBuilder = new InstructionBuilder();
+
+        instructionBuilder.setInstruction(writeActionsCase);
+        instructionBuilder.setKey(new InstructionKey(0));
         return instructionBuilder.build();
     }
 
@@ -624,17 +633,6 @@ public class MDSALUtil {
             NodeConnectorRef ref) {
         return ((Optional<NodeConnector>) read(dataBroker, LogicalDatastoreType.OPERATIONAL, ref.getValue())).transform(
                 NodeConnector::getId).orNull();
-    }
-
-    public static TransmitPacketInput getPacketOut(List<Action> actions, byte[] payload, BigInteger dpnId) {
-        NodeConnectorRef ncRef = getDefaultNodeConnRef(dpnId);
-        return new TransmitPacketInputBuilder()
-                .setAction(actions)
-                .setPayload(payload)
-                .setNode(
-                        new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
-                .setIngress(ncRef).setEgress(ncRef).build();
     }
 
     public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {

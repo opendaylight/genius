@@ -34,7 +34,7 @@ public class MetaDataUtil {
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex,
                                                            BigInteger serviceMetaData, boolean isSHFlagSet) {
-        int shBit = (isSHFlagSet) ? 1 : 0;
+        int shBit = isSHFlagSet ? 1 : 0;
         return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag)).or(serviceMetaData)
                 .or(BigInteger.valueOf(shBit));
     }
@@ -55,27 +55,27 @@ public class MetaDataUtil {
         return METADATA_MASK_SERVICE_INDEX.or(metadataMaskForLPortTag);
     }
 
+    public static BigInteger getMetaDataMaskForLPortDispatcher(BigInteger metadataMaskForServiceIndex,
+            BigInteger metadataMaskForLPortTag, BigInteger metadataMaskForService) {
+        return metadataMaskForServiceIndex.or(metadataMaskForLPortTag).or(metadataMaskForService);
+    }
+
     public static BigInteger getMetadataLPort(int lPortTag) {
-        return (new BigInteger("FFFF", 16).and(BigInteger.valueOf(lPortTag))).shiftLeft(40);
+        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(lPortTag)).shiftLeft(40);
     }
 
     public static BigInteger getLportFromMetadata(BigInteger metadata) {
-        return (metadata.and(METADATA_MASK_LPORT_TAG)).shiftRight(40);
+        return metadata.and(METADATA_MASK_LPORT_TAG).shiftRight(40);
     }
 
     public static int getElanTagFromMetadata(BigInteger metadata) {
-        return (((metadata.and(MetaDataUtil.METADATA_MASK_SERVICE)).
-                shiftRight(24))).intValue();
+        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE).
+                shiftRight(24).intValue();
     }
 
     public static int getServiceTagFromMetadata(BigInteger metadata) {
-        return (((metadata.and(MetaDataUtil.METADATA_MASK_SERVICE_INDEX)).
-                shiftRight(60))).intValue();
-    }
-
-    public static BigInteger getMetaDataMaskForLPortDispatcher(BigInteger metadataMaskForServiceIndex,
-                                                               BigInteger metadataMaskForLPortTag, BigInteger metadataMaskForService) {
-        return metadataMaskForServiceIndex.or(metadataMaskForLPortTag).or(metadataMaskForService);
+        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE_INDEX).
+                shiftRight(60).intValue();
     }
 
     /**
@@ -96,7 +96,7 @@ public class MetaDataUtil {
     }
 
     public static long getVpnIdFromMetadata(BigInteger metadata) {
-        return (metadata.and(METADATA_MASK_VRFID).shiftRight(1)).longValue();
+        return metadata.and(METADATA_MASK_VRFID).shiftRight(1).longValue();
     }
     public static BigInteger getWriteMetaDataMaskForDispatcherTable() {
         return new BigInteger("FFFFFFFFFFFFFFFE", 16);
