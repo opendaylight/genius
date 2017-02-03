@@ -729,4 +729,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         localPool.put(parentPoolName, localPoolCache);
     }
 
+    public java.util.Optional<IdLocalPool> getIdLocalPool(String parentPoolName) {
+        return java.util.Optional.ofNullable(localPool.get(parentPoolName))
+                .map(localPool -> localPool.deepCopyOf());
+    }
+
 }
