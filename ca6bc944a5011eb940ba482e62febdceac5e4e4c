@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_c8a0f6f6",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-03T07:38:58Z",
+      "side": 1,
+      "message": "my mistake..just changed :)",
+      "parentUuid": "fafc7978_4da09890",
+      "range": {
+        "startLine": 26,
+        "startChar": 16,
+        "endLine": 26,
+        "endChar": 42
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6dcabc50",
         "filename": "docs/specs/service-binding-on-tunnels.rst",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2017-02-03T04:57:14Z",
       "side": 1,
       "message": "17",
+      "range": {
+        "startLine": 84,
+        "startChar": 23,
+        "endLine": 84,
+        "endChar": 26
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_28a6e210",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-03T07:38:58Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "fafc7978_6dcabc50",
       "range": {
         "startLine": 84,
         "startChar": 23,
@@ -128,6 +176,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_68af4ae4",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-03T07:38:58Z",
+      "side": 1,
+      "message": "clarified the initial description section to include this",
+      "parentUuid": "fafc7978_ed04ec7f",
+      "range": {
+        "startLine": 117,
+        "startChar": 26,
+        "endLine": 117,
+        "endChar": 61
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2dff1469",
         "filename": "docs/specs/service-binding-on-tunnels.rst",
         "patchSetId": 3
@@ -139,6 +211,30 @@
       "writtenOn": "2017-02-03T04:57:14Z",
       "side": 1,
       "message": "not 36?",
+      "range": {
+        "startLine": 362,
+        "startChar": 64,
+        "endLine": 362,
+        "endChar": 66
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_287d426f",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-03T07:38:58Z",
+      "side": 1,
+      "message": "vivek can comment more on this.. With updated VNI handling in netvirt, which is more aligned with processing in Table38, corresponding flows will be moved from 36 to 38",
+      "parentUuid": "fafc7978_2dff1469",
       "range": {
         "startLine": 362,
         "startChar": 64,
