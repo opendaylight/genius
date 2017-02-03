@@ -33,25 +33,28 @@ public class NWUtil {
 
     public static  long convertInetAddressToLong(InetAddress address) {
         byte[] ipAddressRaw = address.getAddress();
-        return (((ipAddressRaw[0] & 0xFF) << (3 * 8))
-                + ((ipAddressRaw[1] & 0xFF) << (2 * 8))
-                + ((ipAddressRaw[2] & 0xFF) << (1 * 8))
-                + (ipAddressRaw[3] & 0xFF))
+        return ((ipAddressRaw[0] & 0xFF) << 3 * 8)
+                + ((ipAddressRaw[1] & 0xFF) << 2 * 8)
+                + ((ipAddressRaw[2] & 0xFF) << 1 * 8)
+                + (ipAddressRaw[3] & 0xFF)
                 & 0xffffffffL;
     }
+
     /**
     * Converts IPv4 Address in long to String.
-    * {@link #longToIpv4(long, long)} fixes the issue of {@link MDSALUtil#longToIp(long, long)} not handling IP address greater than byte
+    * {@link #longToIpv4(long, long)} fixes the issue of {@link MDSALUtil#longToIp(long, long)}
+    * not handling IP address greater than byte.
+    *
     * @param ipAddress IP Address to be converted to String
     * @param mask Network mask to be appended
     * @return IP Address converted to String
     */
-    public static String longToIpv4(final long ipAddress, final long mask){
+    public static String longToIpv4(final long ipAddress, final long mask) {
         final StringBuilder builder = new StringBuilder(20);
         final Inet4Address address = InetAddresses.fromInteger((int)ipAddress);
         builder.append(address.toString());
-        if (mask !=0) {
-           builder.append("/").append(mask);
+        if (mask != 0) {
+            builder.append("/").append(mask);
         }
         return builder.toString();
     }
@@ -92,8 +95,7 @@ public class NWUtil {
         return part;
     }
 
-    public static String toStringIpAddress(byte[] ipAddress)
-    {
+    public static String toStringIpAddress(byte[] ipAddress) {
         if (ipAddress == null) {
             return "";
         }
@@ -118,16 +120,15 @@ public class NWUtil {
      * Accepts a MAC address and returns the corresponding long, where the MAC
      * bytes are set on the lower order bytes of the long.
      *
-     * @param macAddress
      * @return a long containing the mac address bytes
      */
     public static long macByteToLong(byte[] macAddress) {
-            long mac = 0;
-            for (int i = 0; i < 6; i++) {
-                    long t = (macAddress[i] & 0xffL) << ((5 - i) * 8);
-                    mac |= t;
-            }
-            return mac;
+        long mac = 0;
+        for (int i = 0; i < 6; i++) {
+            long temp = (macAddress[i] & 0xffL) << (5 - i) * 8;
+            mac |= temp;
+        }
+        return mac;
     }
 
     /**
@@ -140,11 +141,10 @@ public class NWUtil {
      * @return a long containing the mac address bytes
      */
     public static long macToLong(MacAddress macAddress) {
-            return macByteToLong(parseMacAddress(macAddress.getValue()));
+        return macByteToLong(parseMacAddress(macAddress.getValue()));
     }
 
-    public static String toStringMacAddress(byte[] macAddress)
-    {
+    public static String toStringMacAddress(byte[] macAddress) {
         if (macAddress == null) {
             return "";
         }
@@ -153,7 +153,7 @@ public class NWUtil {
 
         for (byte macAddres : macAddress) {
             String tmp = UnsignedBytes.toString(macAddres, 16).toUpperCase();
-            if(tmp.length() == 1 || macAddres == (byte)0) {
+            if (tmp.length() == 1 || macAddres == (byte) 0) {
                 sb.append("0");
             }
             sb.append(tmp);
@@ -165,10 +165,7 @@ public class NWUtil {
     }
 
     /**
-     * Returns the ids of the currently operative DPNs
-     *
-     * @param dataBroker
-     * @return
+     * Returns the ids of the currently operative DPNs.
      */
     public static List<BigInteger> getOperativeDPNs(DataBroker dataBroker) {
         List<BigInteger> result = new LinkedList<>();
@@ -191,9 +188,9 @@ public class NWUtil {
     }
 
     /**
-     * Utility API to check if the supplied ipAddress is IPv4 Address
+     * Utility API to check if the supplied ipAddress is IPv4 Address.
      *
-     * @param ipAddress
+     * @param ipAddress string-ified text of a possible IP address
      * @return true if ipAddress is an IPv4Address and false otherwise
      */
     public static Boolean isIpv4Address(String ipAddress) {
@@ -228,7 +225,7 @@ public class NWUtil {
         int prefixLength = Integer.parseInt(subSplit[1]);
         try {
             int subnet = ipAddressToInt(subnetStr);
-            int mask = -1 << (32 - prefixLength);
+            int mask = -1 << 32 - prefixLength;
 
             return (subnet & mask) == (ipAddress & mask);
 
@@ -239,9 +236,9 @@ public class NWUtil {
     }
 
     /**
-     * Utility API that returns the corresponding ipPrefix based on the ipAddress
+     * Utility API that returns the corresponding ipPrefix based on the ipAddress.
      *
-     * @param ipAddress
+     * @param ipAddress string text of an IP address
      * @return ipAddress appended with a "/32" prefix (if IPv4), else "/128" prefix (for IPv6)
      */
     public static String toIpPrefix(String ipAddress) {

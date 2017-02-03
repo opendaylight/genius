@@ -17,7 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.M
 public interface MatchInfoBase {
 
     /**
-     * Creater the inner match object
+     * Creater the inner match object.
      *
      * @param mapMatchBuilder the map which holds the matches.
      */

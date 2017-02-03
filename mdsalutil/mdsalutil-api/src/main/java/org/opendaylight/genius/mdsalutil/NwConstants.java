@@ -135,7 +135,7 @@ public final class NwConstants {
     public static final short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     public static final short SCF_CHAIN_FWD_TABLE = 75;
     public static final short L3_INTERFACE_TABLE = 80;
-    public static final short ARP_RESPONDER_TABLE= 81;
+    public static final short ARP_RESPONDER_TABLE = 81;
     public static final short SFC_TRANSPORT_CLASSIFIER_TABLE = 82;
     public static final short SFC_TRANSPORT_INGRESS_TABLE = 83;
     public static final short SFC_TRANSPORT_PATH_MAPPER_TABLE = 84;
@@ -186,7 +186,7 @@ public final class NwConstants {
         }
 
         private static long nxmHeader(long vendor, long field, long length) {
-            return ((vendor) << 16) | ((field) << 9) | (length);
+            return vendor << 16 | field << 9 | length;
         }
 
         @Deprecated

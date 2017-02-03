@@ -12,18 +12,18 @@ import java.math.BigInteger;
 public abstract class AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;
 
-    private BigInteger m_dpnId;
+    private BigInteger dpnId;
 
     public AbstractSwitchEntity(BigInteger dpnId) {
-        m_dpnId = dpnId;
+        this.dpnId = dpnId;
     }
 
     public BigInteger getDpnId() {
-        return m_dpnId;
+        return dpnId;
     }
 
     public void setDpnId(BigInteger dpnId) {
-        m_dpnId = dpnId;
+        this.dpnId = dpnId;
     }
 
     // Force subclasses to implement hashCode() & equals() WITH m_dpnId!

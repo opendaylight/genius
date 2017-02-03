@@ -19,12 +19,12 @@ import org.opendaylight.yangtools.util.EvenMoreObjects;
 public class GroupEntity extends AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;
 
-    private long m_lGroupId;
-    private String m_sGroupName;
-    private GroupTypes m_groupType;
-    private List<BucketInfo> m_listBucketInfo;
+    private long groupId;
+    private String groupName;
+    private GroupTypes groupType;
+    private List<BucketInfo> bucketInfos;
 
-    private transient GroupBuilder m_groupBuilder;
+    private transient GroupBuilder groupBuilder;
 
     public GroupEntity(BigInteger dpnId) {
         super(dpnId);
@@ -36,77 +36,77 @@ public class GroupEntity extends AbstractSwitchEntity {
 
     @Override
     public String toString() {
-        return "GroupEntity [dpnId=" + getDpnId() + ", groupId=" + m_lGroupId + ", groupName=" + m_sGroupName + ", groupType="
-                + m_groupType + ", bucketInfo=" + m_listBucketInfo + "]";
+        return "GroupEntity [dpnId=" + getDpnId() + ", groupId=" + groupId + ", groupName=" + groupName
+                + ", groupType=" + groupType + ", bucketInfo=" + bucketInfos + "]";
     }
 
     public List<BucketInfo> getBucketInfoList() {
-        return m_listBucketInfo;
+        return bucketInfos;
     }
 
     public GroupBuilder getGroupBuilder() {
-        if (m_groupBuilder == null) {
-            m_groupBuilder = new GroupBuilder();
+        if (groupBuilder == null) {
+            groupBuilder = new GroupBuilder();
 
             GroupId groupId = new GroupId(getGroupId());
-            m_groupBuilder.setKey(new GroupKey(groupId));
-            m_groupBuilder.setGroupId(groupId);
+            groupBuilder.setKey(new GroupKey(groupId));
+            groupBuilder.setGroupId(groupId);
 
-            m_groupBuilder.setGroupName(getGroupName());
-            m_groupBuilder.setGroupType(getGroupType());
-            m_groupBuilder.setBuckets(MDSALUtil.buildBuckets(getBucketInfoList()));
+            groupBuilder.setGroupName(getGroupName());
+            groupBuilder.setGroupType(getGroupType());
+            groupBuilder.setBuckets(MDSALUtil.buildBuckets(getBucketInfoList()));
         }
 
-        return m_groupBuilder;
+        return groupBuilder;
     }
 
     public long getGroupId() {
-        return m_lGroupId;
+        return groupId;
     }
 
     public String getGroupName() {
-        return m_sGroupName;
+        return groupName;
     }
 
     public GroupTypes getGroupType() {
-        return m_groupType;
+        return groupType;
     }
 
     public void setBucketInfoList(List<BucketInfo> listBucketInfo) {
-        m_listBucketInfo = listBucketInfo;
+        this.bucketInfos = listBucketInfo;
     }
 
-    public void setGroupId(long lGroupId) {
-        m_lGroupId = lGroupId;
-        if (m_groupBuilder != null) {
+    public void setGroupId(long groupIdAsLong) {
+        this.groupId = groupIdAsLong;
+        if (this.groupBuilder != null) {
             GroupId groupId = new GroupId(getGroupId());
-            m_groupBuilder.setKey(new GroupKey(groupId));
-            m_groupBuilder.setGroupId(groupId);
+            this.groupBuilder.setKey(new GroupKey(groupId));
+            this.groupBuilder.setGroupId(groupId);
         }
     }
 
-    public void setGroupName(String sGroupName) {
-        m_sGroupName = sGroupName;
-        m_groupBuilder = null;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+        this.groupBuilder = null;
     }
 
     public void setGroupType(GroupTypes groupType) {
-        m_groupType = groupType;
-        m_groupBuilder = null;
+        this.groupType = groupType;
+        this.groupBuilder = null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDpnId(), m_lGroupId, m_sGroupName, m_groupType, m_listBucketInfo);
+        return Objects.hash(getDpnId(), groupId, groupName, groupType, bucketInfos);
     }
 
     @Override
     public boolean equals(Object obj) {
         return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
-                          && Objects.equals(this.m_lGroupId, other.m_lGroupId)
-                          && Objects.equals(this.m_sGroupName, other.m_sGroupName)
-                          && Objects.equals(this.m_groupType, other.m_groupType)
-                          && Objects.equals(this.m_listBucketInfo, other.m_listBucketInfo));
+                          && Objects.equals(this.groupId, other.groupId)
+                          && Objects.equals(this.groupName, other.groupName)
+                          && Objects.equals(this.groupType, other.groupType)
+                          && Objects.equals(this.bucketInfos, other.bucketInfos));
     }
 }
