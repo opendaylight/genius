@@ -30,6 +30,7 @@ public class Ethernet extends Packet {
 
     // TODO: This has to be outside and it should be possible for osgi
     // to add new coming packet classes
+    @SuppressWarnings("checkstyle:ConstantName") // public constant is used in other projects; too late to rename easily
     public static final Map<Short, Class<? extends Packet>> etherTypeClassMap;
 
     static {

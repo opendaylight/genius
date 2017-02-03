@@ -49,15 +49,15 @@ public abstract class MatchInfoHelper<T extends DataObject, B extends Builder<T>
     protected abstract void populateBuilder(B builder);
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
 
-        MatchInfoHelper<?, ?> that = (MatchInfoHelper<?, ?>) o;
+        MatchInfoHelper<?, ?> that = (MatchInfoHelper<?, ?>) other;
 
         return builderClass != null ? builderClass.equals(that.builderClass) : that.builderClass == null;
     }

@@ -24,7 +24,6 @@ import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.mdsal.binding.testutils.AssertDataObjects;
 
 /**
  * Fake IMdsalApiManager useful for tests.
