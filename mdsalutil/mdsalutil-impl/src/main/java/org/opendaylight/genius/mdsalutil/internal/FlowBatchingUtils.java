@@ -5,10 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
+package org.opendaylight.genius.mdsalutil.internal;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.utils.batching.ActionableResource;
 import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
@@ -19,22 +17,17 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchingUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(BatchingUtils.class);
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class FlowBatchingUtils {
+    private static final Logger LOG = LoggerFactory.getLogger((Class)FlowBatchingUtils.class);
     public static final int BATCH_SIZE = 1000;
     public static final int PERIODICITY = 500;
     public static Integer batchSize;
     public static Integer batchInterval;
     private static DataBroker dataBroker;
-    private static BlockingQueue<ActionableResource> topologyConfigShardBufferQ;
-    private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
-    private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
-
-    public enum EntityType  {
-        DEFAULT_CONFIG,
-        DEFAULT_OPERATIONAL,
-        TOPOLOGY_CONFIG
-    }
+    private static BlockingQueue<ActionableResource> inventoryConfigShardBufferQ;
 
     public static DataBroker getBroker() {
         return dataBroker;
@@ -45,7 +38,7 @@ public class BatchingUtils {
     }
 
     public static void registerWithBatchManager(ResourceHandler resourceHandler, DataBroker dataBroker) {
-        BatchingUtils.setBroker(dataBroker);
+        FlowBatchingUtils.setBroker(dataBroker);
         batchSize = 1000;
         if (Integer.getInteger("batch.size") != null) {
             batchSize = Integer.getInteger("batch.size");
@@ -55,51 +48,34 @@ public class BatchingUtils {
             batchInterval = Integer.getInteger("batch.wait.time");
         }
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-TOPOLOGY-CONFIG", topologyConfigShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-CONFIG", defaultConfigShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.OPERATIONAL));
+        resBatchingManager.registerBatchableResource("MDSALUTIL-INVENTORY-CONFIG", inventoryConfigShardBufferQ, resourceHandler);
     }
 
-    static <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {
+    static <T extends DataObject> void update(InstanceIdentifier<T> path, T data) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.UPDATE);
         actResource.setInstanceIdentifier(path);
         actResource.setInstance(data);
-        getQueue(entityType).add(actResource);
+        inventoryConfigShardBufferQ.add(actResource);
     }
 
-    public static <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
+    public static <T extends DataObject> void write(InstanceIdentifier<T> path, T data) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.CREATE);
         actResource.setInstanceIdentifier(path);
         actResource.setInstance(data);
-        getQueue(entityType).add(actResource);
+        inventoryConfigShardBufferQ.add(actResource);
     }
 
-    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
-        switch (entityType) {
-            case DEFAULT_CONFIG:
-                return defaultConfigShardBufferQ;
-            case TOPOLOGY_CONFIG:
-                return topologyConfigShardBufferQ;
-            case DEFAULT_OPERATIONAL:
-                return defaultOperationalShardBufferQ;
-            default:
-                return null;
-        }
-    }
-
-    public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
+    static <T extends DataObject> void delete(InstanceIdentifier<T> path) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.DELETE);
         actResource.setInstanceIdentifier(path);
         actResource.setInstance(null);
-        getQueue(entityType).add(actResource);
+        inventoryConfigShardBufferQ.add(actResource);
     }
 
     static {
-        topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
-        defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
-        defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
+        inventoryConfigShardBufferQ = new LinkedBlockingQueue<>();
     }
 }
