@@ -52,13 +52,13 @@ public class IPv4 extends Packet {
     private static final int UNIT_SIZE = 1 << UNIT_SIZE_SHIFT;
     private static final int MIN_HEADER_SIZE = 20;
 
-    public static final Map<Byte, Class<? extends Packet>> protocolClassMap;
+    private static final Map<Byte, Class<? extends Packet>> PROTOCOL_CLASS_MAP;
 
     static {
-        protocolClassMap = new HashMap<>();
-        protocolClassMap.put(IPProtocols.ICMP.byteValue(), ICMP.class);
-        protocolClassMap.put(IPProtocols.UDP.byteValue(), UDP.class);
-        protocolClassMap.put(IPProtocols.TCP.byteValue(), TCP.class);
+        PROTOCOL_CLASS_MAP = new HashMap<>();
+        PROTOCOL_CLASS_MAP.put(IPProtocols.ICMP.byteValue(), ICMP.class);
+        PROTOCOL_CLASS_MAP.put(IPProtocols.UDP.byteValue(), UDP.class);
+        PROTOCOL_CLASS_MAP.put(IPProtocols.TCP.byteValue(), TCP.class);
     }
 
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
@@ -265,7 +265,7 @@ public class IPv4 extends Packet {
             // Don't set payloadClass if framgment offset is not zero.
             byte[] fragoff = hdrFieldsMap.get(FRAGOFFSET);
             if (fragoff == null || BitBufferHelper.getShort(fragoff) == 0) {
-                payloadClass = protocolClassMap.get(readValue[0]);
+                payloadClass = PROTOCOL_CLASS_MAP.get(readValue[0]);
             }
         } else if (headerField.equals(FRAGOFFSET)) {
             if (readValue != null && BitBufferHelper.getShort(readValue) != 0) {
