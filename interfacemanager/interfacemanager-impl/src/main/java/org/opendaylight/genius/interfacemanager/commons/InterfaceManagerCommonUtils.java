@@ -234,9 +234,9 @@ public class InterfaceManagerCommonUtils {
                 IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
                 mkInstructions);
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            futures.add(mdsalApiManager.installFlow(dpnId, flowEntity));
+            mdsalApiManager.batchedAddFlow(dpnId, flowEntity);
         } else {
-            futures.add(mdsalApiManager.removeFlow(dpnId, flowEntity));
+            mdsalApiManager.batchedRemoveFlow(dpnId, flowEntity);
         }
     }
 
@@ -395,16 +395,20 @@ public class InterfaceManagerCommonUtils {
             ifaceBuilder.setIfIndex(ifIndex);
             InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
         }
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                .buildStateInterfaceId(interfaceName);
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
+            .rev140508.interfaces .state.Interface> ifStateId = IfmUtil.buildStateInterfaceId(interfaceName);
         List<String> childLowerLayerIfList = new ArrayList<>();
         childLowerLayerIfList.add(0, nodeConnectorId.getValue());
         ifaceBuilder.setAdminStatus(adminStatus).setOperStatus(operStatus).setPhysAddress(physAddress)
                 .setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
-                .build();
-        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = ifaceBuilder.build();
+        if (!InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)) {
+            transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
+        } else {
+            BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        }
 
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         // Update the DpnToInterfaceList OpDS
@@ -549,7 +553,7 @@ public class InterfaceManagerCommonUtils {
                                                         .child(InterfaceNameEntry.class, interfaceNameEntryKey)
                                                         .build();
         InterfaceNameEntryBuilder entryBuilder = new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
-        transaction.put(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build(), true);
+        BatchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
     public static void deleteDpnToInterface(DataBroker dataBroker, BigInteger dpId, String infName, WriteTransaction transaction) {
