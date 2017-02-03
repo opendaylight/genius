@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_8aeb83af",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-03T11:46:40Z",
+      "side": 1,
+      "message": "Table name is different from one in spec: http://docs.opendaylight.org/en/latest/submodules/netvirt/docs/specs/l3vpn-over-vxlan-with-evpn-rt5.html#inter-subnet\nEither change this or have the change reviewed and merged in spec.",
+      "range": {
+        "startLine": 112,
+        "startChar": 30,
+        "endLine": 112,
+        "endChar": 49
+      },
+      "revId": "e0ced3649bdadc549b0ff9e2f7800c390c37514e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
