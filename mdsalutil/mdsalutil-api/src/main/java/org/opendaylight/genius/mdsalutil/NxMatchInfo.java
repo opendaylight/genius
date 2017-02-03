@@ -23,63 +23,63 @@ public class NxMatchInfo implements Serializable, MatchInfoBase {
 
     private static final long serialVersionUID = 1L;
 
-    private final NxMatchFieldType m_matchField;
-    private final long[] m_alMatchValues;
-    private final BigInteger[] m_aBigIntValues;
-    private final String[] m_asMatchValues;
+    private final NxMatchFieldType matchField;
+    private final long[] alMatchValues;
+    private final BigInteger[] bigIntValues;
+    private final String[] asMatchValues;
 
     public NxMatchInfo(NxMatchFieldType matchField, long[] alMatchValues) {
-        m_matchField = matchField;
-        m_alMatchValues = alMatchValues;
-        m_aBigIntValues = null;
-        m_asMatchValues = null;
+        this.matchField = matchField;
+        this.alMatchValues = alMatchValues;
+        this.bigIntValues = null;
+        this.asMatchValues = null;
     }
 
     public NxMatchInfo(NxMatchFieldType matchField, BigInteger[] alBigMatchValues) {
-        m_matchField = matchField;
-        m_alMatchValues = null;
-        m_aBigIntValues = alBigMatchValues;
-        m_asMatchValues = null;
+        this.matchField = matchField;
+        this.alMatchValues = null;
+        this.bigIntValues = alBigMatchValues;
+        this.asMatchValues = null;
     }
 
     public NxMatchInfo(NxMatchFieldType matchField, String[] alStringMatchValues) {
-        m_matchField = matchField;
-        m_alMatchValues = null;
-        m_aBigIntValues = null;
-        m_asMatchValues = alStringMatchValues;
+        this.matchField = matchField;
+        this.alMatchValues = null;
+        this.bigIntValues = null;
+        this.asMatchValues = alStringMatchValues;
     }
 
     @Override
     public void createInnerMatchBuilder(Map<Class<?>, Object> mapMatchBuilder) {
-        m_matchField.createInnerMatchBuilder(this, mapMatchBuilder);
+        this.matchField.createInnerMatchBuilder(this, mapMatchBuilder);
     }
 
     @Override
     public void setMatch(MatchBuilder matchBuilder, Map<Class<?>, Object> mapMatchBuilder) {
-        m_matchField.setMatch(matchBuilder, this, mapMatchBuilder);
+        this.matchField.setMatch(matchBuilder, this, mapMatchBuilder);
     }
 
     public NxMatchFieldType getMatchField() {
-        return m_matchField;
+        return matchField;
     }
 
     public long[] getMatchValues() {
-        return m_alMatchValues;
+        return alMatchValues;
     }
 
     public BigInteger[] getBigMatchValues() {
-        return m_aBigIntValues;
+        return bigIntValues;
     }
 
     public String[] getStringMatchValues() {
-        return m_asMatchValues;
+        return asMatchValues;
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).omitNullValues().add("matchField", m_matchField)
-                .add("matchValues", Arrays.toString(m_alMatchValues)).add("bigMatchValues", m_aBigIntValues)
-                .add("stringMatchValues", Arrays.deepToString(m_asMatchValues)).toString();
+        return MoreObjects.toStringHelper(this).omitNullValues().add("matchField", matchField)
+                .add("matchValues", Arrays.toString(alMatchValues)).add("bigMatchValues", bigIntValues)
+                .add("stringMatchValues", Arrays.deepToString(asMatchValues)).toString();
     }
 
     @Override
@@ -87,8 +87,8 @@ public class NxMatchInfo implements Serializable, MatchInfoBase {
         // BEWARE, Caveat Emptor: Array ([]) type fields must use
         // Arrays.hashCode(). deepHashCode() would have to be used for nested
         // arrays.
-        return Objects.hash(m_matchField, Arrays.hashCode(m_alMatchValues),
-                Arrays.hashCode(m_aBigIntValues), Arrays.hashCode(m_asMatchValues));
+        return Objects.hash(matchField, Arrays.hashCode(alMatchValues),
+                Arrays.hashCode(bigIntValues), Arrays.hashCode(asMatchValues));
     }
 
     @Override
@@ -98,10 +98,10 @@ public class NxMatchInfo implements Serializable, MatchInfoBase {
         // arrays. Use == only for primitive types; if ever changing
         // those field types, must change to Objects.equals.
         return EvenMoreObjects.equalsHelper(this, obj,
-            (self, other) -> Objects.equals(self.m_matchField, other.m_matchField)
-                          && Arrays.equals(self.m_alMatchValues, other.m_alMatchValues)
-                          && Arrays.equals(self.m_aBigIntValues, other.m_aBigIntValues)
-                          && Arrays.equals(self.m_asMatchValues, other.m_asMatchValues));
+            (self, other) -> Objects.equals(self.matchField, other.matchField)
+                          && Arrays.equals(self.alMatchValues, other.alMatchValues)
+                          && Arrays.equals(self.bigIntValues, other.bigIntValues)
+                          && Arrays.equals(self.asMatchValues, other.asMatchValues));
     }
 
 }

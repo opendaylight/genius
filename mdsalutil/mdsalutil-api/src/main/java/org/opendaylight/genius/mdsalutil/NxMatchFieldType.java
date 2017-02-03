@@ -435,10 +435,10 @@ public enum NxMatchFieldType {
                                 .addAugmentation(NxAugMatchNodesNodeTableFlow.class, am)
                                 .build())
                         .build());
-                GeneralAugMatchNodesNodeTableFlow m = new GeneralAugMatchNodesNodeTableFlowBuilder()
+                GeneralAugMatchNodesNodeTableFlow match = new GeneralAugMatchNodesNodeTableFlowBuilder()
                         .setExtensionList(extensions)
                         .build();
-                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, m);
+                matchBuilderInOut.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, match);
             }
         }
     };

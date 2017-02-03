@@ -14,7 +14,8 @@ public class MetaDataUtil {
     public static final BigInteger METADATA_MASK_LPORT_TAG =     new BigInteger("0FFFFF0000000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE =       new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
-    public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID = new BigInteger("08000000FFFFFF00", 16);
+    public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID
+        = new BigInteger("08000000FFFFFF00", 16);
     public static final BigInteger METADATA_MASK_LABEL_ITM =     new BigInteger("40FFFFFF000000FF", 16);
     public static final BigInteger METADA_MASK_TUNNEL_ID =       new BigInteger("00000000FFFFFF00", 16);
     public static final BigInteger METADATA_MASK_SERVICE_SH_FLAG = new BigInteger("000000FFFF000001", 16);
@@ -60,8 +61,8 @@ public class MetaDataUtil {
         return metadataMaskForServiceIndex.or(metadataMaskForLPortTag).or(metadataMaskForService);
     }
 
-    public static BigInteger getMetadataLPort(int lPortTag) {
-        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(lPortTag)).shiftLeft(40);
+    public static BigInteger getMetadataLPort(int portTag) {
+        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portTag)).shiftLeft(40);
     }
 
     public static BigInteger getLportFromMetadata(BigInteger metadata) {
@@ -87,7 +88,7 @@ public class MetaDataUtil {
         return BigInteger.valueOf(0X08).shiftLeft(56).or(BigInteger.valueOf(vni).shiftLeft(8));
     }
 
-    public static long getNatRouterIdFromMetadata(BigInteger metadata){
+    public static long getNatRouterIdFromMetadata(BigInteger metadata) {
         return getVpnIdFromMetadata(metadata);
     }
 
@@ -98,6 +99,7 @@ public class MetaDataUtil {
     public static long getVpnIdFromMetadata(BigInteger metadata) {
         return metadata.and(METADATA_MASK_VRFID).shiftRight(1).longValue();
     }
+
     public static BigInteger getWriteMetaDataMaskForDispatcherTable() {
         return new BigInteger("FFFFFFFFFFFFFFFE", 16);
     }
@@ -105,9 +107,11 @@ public class MetaDataUtil {
     public static BigInteger getLportTagForReg6(int lportTag) {
         return new BigInteger("FFFFF", 16).and(BigInteger.valueOf(lportTag)).shiftLeft(8);
     }
+
     public static BigInteger getServiceIndexForReg6(int serviceIndex) {
         return new BigInteger("F", 16).and(BigInteger.valueOf(serviceIndex)).shiftLeft(28);
     }
+
     public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex) {
         return getServiceIndexForReg6(serviceIndex).or(getLportTagForReg6(lportTag)).longValue();
     }
