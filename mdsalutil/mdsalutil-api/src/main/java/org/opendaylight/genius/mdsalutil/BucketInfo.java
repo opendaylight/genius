@@ -70,9 +70,9 @@ public class BucketInfo extends ActionInfoList implements Serializable {
     @Override
     public boolean equals(Object obj) {
         return EvenMoreObjects.equalsHelper(this, obj,
-                (self, other) -> Objects.equals(self.getActionInfos(), other.getActionInfos())
-                              && Objects.equals(self.weight, other.weight)
-                              && Objects.equals(self.watchPort, other.watchPort)
-                              && Objects.equals(self.watchGroup, other.watchGroup));
+            (self, other) -> Objects.equals(self.getActionInfos(), other.getActionInfos())
+                          && Objects.equals(self.weight, other.weight)
+                          && Objects.equals(self.watchPort, other.watchPort)
+                          && Objects.equals(self.watchGroup, other.watchGroup));
     }
 }

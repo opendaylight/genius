@@ -87,8 +87,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
-import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -333,38 +331,26 @@ public class MDSALUtil {
         return getNodeConnRef(NODE_PREFIX + SEPARATOR + dpId, port);
     }
 
-    public static NodeConnectorRef getNodeConnRef(String sNodeId, String port) {
-        String sNodeConnectorKey;
-        StringBuilder sbTmp;
-        NodeId nodeId;
-        NodeKey nodeKey;
-        NodeConnectorId nodeConnectorId;
-        NodeConnectorKey nodeConnectorKey;
-        InstanceIdentifierBuilder<Nodes> nodesInstanceIdentifierBuilder;
-        InstanceIdentifierBuilder<Node> nodeInstanceIdentifierBuilder;
-        InstanceIdentifierBuilder<NodeConnector> nodeConnectorInstanceIdentifierBuilder;
-        InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier;
-        NodeConnectorRef nodeConnectorRef;
+    public static NodeConnectorRef getNodeConnRef(String nodeIdAsString, String port) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(nodeIdAsString);
+        sb.append(SEPARATOR);
+        sb.append(port);
+        String nodeConnectorKeyAsString = sb.toString();
+        NodeConnectorId nodeConnectorId = new NodeConnectorId(nodeConnectorKeyAsString);
+        NodeConnectorKey nodeConnectorKey = new NodeConnectorKey(nodeConnectorId);
 
-        sbTmp = new StringBuilder();
+        NodeId nodeId = new NodeId(nodeIdAsString);
+        NodeKey nodeKey = new NodeKey(nodeId);
 
-        sbTmp.append(sNodeId);
-        sbTmp.append(SEPARATOR);
-        sbTmp.append(port);
-
-        sNodeConnectorKey = sbTmp.toString();
-        nodeConnectorId = new NodeConnectorId(sNodeConnectorKey);
-        nodeConnectorKey = new NodeConnectorKey(nodeConnectorId);
-
-        nodeId = new NodeId(sNodeId);
-        nodeKey = new NodeKey(nodeId);
-
-        nodesInstanceIdentifierBuilder = InstanceIdentifier.builder(Nodes.class);
-        nodeInstanceIdentifierBuilder = nodesInstanceIdentifierBuilder.child(Node.class, nodeKey);
-        nodeConnectorInstanceIdentifierBuilder = nodeInstanceIdentifierBuilder.child(
-                NodeConnector.class, nodeConnectorKey);
-        nodeConnectorInstanceIdentifier = nodeConnectorInstanceIdentifierBuilder.toInstance();
-        nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);
+        InstanceIdentifierBuilder<Nodes> nodesInstanceIdentifierBuilder = InstanceIdentifier.builder(Nodes.class);
+        InstanceIdentifierBuilder<Node> nodeInstanceIdentifierBuilder
+            = nodesInstanceIdentifierBuilder.child(Node.class, nodeKey);
+        InstanceIdentifierBuilder<NodeConnector> nodeConnectorInstanceIdentifierBuilder
+            = nodeInstanceIdentifierBuilder.child(NodeConnector.class, nodeConnectorKey);
+        InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier
+            = nodeConnectorInstanceIdentifierBuilder.toInstance();
+        NodeConnectorRef nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);
         return nodeConnectorRef;
     }
 
@@ -392,7 +378,7 @@ public class MDSALUtil {
         }
     }
 
-    public static BigInteger getDpnId(String datapathId){
+    public static BigInteger getDpnId(String datapathId) {
         if (datapathId != null) {
             String dpIdStr = datapathId.replace(":", "");
             BigInteger dpnId =  new BigInteger(dpIdStr, 16);
@@ -401,8 +387,8 @@ public class MDSALUtil {
         return null;
     }
 
-    public static long getOfPortNumberFromPortName(String sMdsalPortName) {
-        String portNumber = sMdsalPortName.substring(sMdsalPortName.lastIndexOf(":") + 1);
+    public static long getOfPortNumberFromPortName(String mdsalPortName) {
+        String portNumber = mdsalPortName.substring(mdsalPortName.lastIndexOf(":") + 1);
         return Long.parseLong(portNumber);
     }
 
@@ -541,7 +527,8 @@ public class MDSALUtil {
      * Deprecated write.
      *
      * @deprecated Use
-     *             {@link SingleTransactionDataBroker#syncWrite(DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
+     *             {@link SingleTransactionDataBroker#syncWrite(
+     *                     DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
      */
     @Deprecated
     public static <T extends DataObject> void syncWrite(DataBroker broker,
@@ -559,7 +546,8 @@ public class MDSALUtil {
      * Deprecated update.
      *
      * @deprecated Use
-     *             {@link SingleTransactionDataBroker#syncUpdate(DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
+     *             {@link SingleTransactionDataBroker#syncUpdate(
+     *                          DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
      */
     @Deprecated
     public static <T extends DataObject> void syncUpdate(DataBroker broker,

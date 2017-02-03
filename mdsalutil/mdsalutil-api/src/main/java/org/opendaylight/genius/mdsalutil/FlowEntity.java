@@ -21,20 +21,20 @@ import org.opendaylight.yangtools.util.EvenMoreObjects;
 public class FlowEntity extends AbstractSwitchEntity {
     private static final long serialVersionUID = 1L;
 
-    private short m_shTableId;
-    private String m_sFlowId;
-    private int m_nPriority;
-    private String m_sFlowName;
-    private int m_nIdleTimeOut;
-    private int m_nHardTimeOut;
-    private BigInteger m_biCookie;
-    private List<MatchInfoBase> m_listMatchInfo = new ArrayList<>();
-    private List<InstructionInfo> m_listInstructionInfo = new ArrayList<>();
+    private short tableId;
+    private String flowId;
+    private int priority;
+    private String flowName;
+    private int idleTimeOut;
+    private int hardTimeOut;
+    private BigInteger biCookie;
+    private List<MatchInfoBase> listMatchInfo = new ArrayList<>();
+    private List<InstructionInfo> listInstructionInfo = new ArrayList<>();
 
-    private boolean m_bStrictFlag;
-    private boolean m_bSendFlowRemFlag;
+    private boolean strictFlag;
+    private boolean sendFlowRemFlag;
 
-    private transient FlowBuilder m_flowBuilder;
+    private transient FlowBuilder flowBuilder;
 
     public FlowEntity(BigInteger dpnId) {
         super(dpnId);
@@ -46,142 +46,142 @@ public class FlowEntity extends AbstractSwitchEntity {
 
     @Override
     public String toString() {
-        return "FlowEntity [dpnId=" + getDpnId() + ", tableId=" + m_shTableId + ", flowId=" + m_sFlowId + ", priority=" + m_nPriority
-                + ", flowName=" + m_sFlowName + ", idleTimeOut=" + m_nIdleTimeOut + ", hardTimeOut="
-                + m_nHardTimeOut + ", cookie=" + m_biCookie + ", matchInfo=" + m_listMatchInfo
-                + ", instructionInfo=" + m_listInstructionInfo + ", strictFlag=" + m_bStrictFlag
-                + ", sendFlowRemFlag=" + m_bSendFlowRemFlag + "]";
+        return "FlowEntity [dpnId=" + getDpnId() + ", tableId=" + tableId + ", flowId=" + flowId + ", priority="
+                + priority + ", flowName=" + flowName + ", idleTimeOut=" + idleTimeOut + ", hardTimeOut="
+                + hardTimeOut + ", cookie=" + biCookie + ", matchInfo=" + listMatchInfo
+                + ", instructionInfo=" + listInstructionInfo + ", strictFlag=" + strictFlag
+                + ", sendFlowRemFlag=" + sendFlowRemFlag + "]";
     }
 
     public BigInteger getCookie() {
-        return m_biCookie;
+        return biCookie;
     }
 
     public String getFlowId() {
-        return m_sFlowId;
+        return flowId;
     }
 
     public String getFlowName() {
-        return m_sFlowName;
+        return flowName;
     }
 
     public int getHardTimeOut() {
-        return m_nHardTimeOut;
+        return hardTimeOut;
     }
 
     public int getIdleTimeOut() {
-        return m_nIdleTimeOut;
+        return idleTimeOut;
     }
 
     public List<InstructionInfo> getInstructionInfoList() {
-        return m_listInstructionInfo;
+        return listInstructionInfo;
     }
 
     public List<MatchInfoBase> getMatchInfoList() {
-        return m_listMatchInfo;
+        return listMatchInfo;
     }
 
     public int getPriority() {
-        return m_nPriority;
+        return priority;
     }
 
     public boolean getSendFlowRemFlag() {
-        return m_bSendFlowRemFlag;
+        return sendFlowRemFlag;
     }
 
     public boolean getStrictFlag() {
-        return m_bStrictFlag;
+        return strictFlag;
     }
 
     public short getTableId() {
-        return m_shTableId;
+        return tableId;
     }
 
     public void setCookie(BigInteger biCookie) {
-        m_biCookie = biCookie;
-        m_flowBuilder = null;
+        this.biCookie = biCookie;
+        this.flowBuilder = null;
     }
 
     public FlowBuilder getFlowBuilder() {
-        if (m_flowBuilder == null) {
-            m_flowBuilder = new FlowBuilder();
+        if (flowBuilder == null) {
+            flowBuilder = new FlowBuilder();
 
-            m_flowBuilder.setKey(new FlowKey(new FlowId(getFlowId())));
+            flowBuilder.setKey(new FlowKey(new FlowId(getFlowId())));
 
-            m_flowBuilder.setTableId(getTableId());
-            m_flowBuilder.setPriority(getPriority());
-            m_flowBuilder.setFlowName(getFlowName());
-            m_flowBuilder.setIdleTimeout(getIdleTimeOut());
-            m_flowBuilder.setHardTimeout(getHardTimeOut());
-            m_flowBuilder.setCookie(new FlowCookie(getCookie()));
-            m_flowBuilder.setMatch(MDSALUtil.buildMatches(getMatchInfoList()));
-            m_flowBuilder.setInstructions(MDSALUtil.buildInstructions(getInstructionInfoList()));
+            flowBuilder.setTableId(getTableId());
+            flowBuilder.setPriority(getPriority());
+            flowBuilder.setFlowName(getFlowName());
+            flowBuilder.setIdleTimeout(getIdleTimeOut());
+            flowBuilder.setHardTimeout(getHardTimeOut());
+            flowBuilder.setCookie(new FlowCookie(getCookie()));
+            flowBuilder.setMatch(MDSALUtil.buildMatches(getMatchInfoList()));
+            flowBuilder.setInstructions(MDSALUtil.buildInstructions(getInstructionInfoList()));
 
-            m_flowBuilder.setStrict(getStrictFlag());
+            flowBuilder.setStrict(getStrictFlag());
             // TODO Fix Me
             //m_flowBuilder.setResyncFlag(getResyncFlag());
             if (getSendFlowRemFlag()) {
-                m_flowBuilder.setFlags(new FlowModFlags(false, false, false, false, true));
+                flowBuilder.setFlags(new FlowModFlags(false, false, false, false, true));
             }
 
-            m_flowBuilder.setBarrier(false);
-            m_flowBuilder.setInstallHw(true);
+            flowBuilder.setBarrier(false);
+            flowBuilder.setInstallHw(true);
         }
 
-        return m_flowBuilder;
+        return flowBuilder;
     }
 
-    public void setFlowId(String sFlowId) {
-        m_sFlowId = sFlowId;
-        if (m_flowBuilder != null) {
-            m_flowBuilder.setKey(new FlowKey(new FlowId(sFlowId)));
+    public void setFlowId(String flowId) {
+        this.flowId = flowId;
+        if (this.flowBuilder != null) {
+            this.flowBuilder.setKey(new FlowKey(new FlowId(flowId)));
         }
     }
 
-    public void setFlowName(String sFlowName) {
-        m_sFlowName = sFlowName;
-        m_flowBuilder = null;
+    public void setFlowName(String flowName) {
+        this.flowName = flowName;
+        this.flowBuilder = null;
     }
 
-    public void setHardTimeOut(int nHardTimeOut) {
-        m_nHardTimeOut = nHardTimeOut;
-        m_flowBuilder = null;
+    public void setHardTimeOut(int hardTimeOut) {
+        this.hardTimeOut = hardTimeOut;
+        this.flowBuilder = null;
     }
 
-    public void setIdleTimeOut(int nIdleTimeOut) {
-        m_nIdleTimeOut = nIdleTimeOut;
-        m_flowBuilder = null;
+    public void setIdleTimeOut(int idleTimeOut) {
+        this.idleTimeOut = idleTimeOut;
+        this.flowBuilder = null;
     }
 
     public void setInstructionInfoList(List<InstructionInfo> listInstructionInfo) {
-        m_listInstructionInfo = listInstructionInfo;
-        m_flowBuilder = null;
+        this.listInstructionInfo = listInstructionInfo;
+        this.flowBuilder = null;
     }
 
     @SuppressWarnings("unchecked")
     public void setMatchInfoList(List<? extends MatchInfoBase> listMatchInfo) {
-        m_listMatchInfo = (List<MatchInfoBase>) listMatchInfo;
-        m_flowBuilder = null;
+        this.listMatchInfo = (List<MatchInfoBase>) listMatchInfo;
+        this.flowBuilder = null;
     }
 
-    public void setPriority(int nPriority) {
-        m_nPriority = nPriority;
-        m_flowBuilder = null;
+    public void setPriority(int priority) {
+        this.priority = priority;
+        this.flowBuilder = null;
     }
 
-    public void setSendFlowRemFlag(boolean bSendFlowRemFlag) {
-        m_bSendFlowRemFlag = bSendFlowRemFlag;
-        m_flowBuilder = null;
+    public void setSendFlowRemFlag(boolean sendFlowRemFlag) {
+        this.sendFlowRemFlag = sendFlowRemFlag;
+        this.flowBuilder = null;
     }
 
-    public void setStrictFlag(boolean bStrictFlag) {
-        m_bStrictFlag = bStrictFlag;
-        m_flowBuilder = null;
+    public void setStrictFlag(boolean strictFlag) {
+        this.strictFlag = strictFlag;
+        this.flowBuilder = null;
     }
 
-    public void setTableId(short shTableId) {
-        m_shTableId = shTableId;
-        m_flowBuilder = null;
+    public void setTableId(short tableId) {
+        this.tableId = tableId;
+        this.flowBuilder = null;
     }
 
     // int variant is a convenience, because Java is dumb: setTableId(123) does
@@ -195,25 +195,25 @@ public class FlowEntity extends AbstractSwitchEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDpnId(), m_shTableId, m_sFlowId, m_nPriority, m_sFlowName, m_nIdleTimeOut,
-                m_nHardTimeOut, m_biCookie, m_listMatchInfo, m_listInstructionInfo, m_bStrictFlag, m_bSendFlowRemFlag);
+        return Objects.hash(getDpnId(), tableId, flowId, priority, flowName, idleTimeOut,
+                hardTimeOut, biCookie, listMatchInfo, listInstructionInfo, strictFlag, sendFlowRemFlag);
     }
 
     @Override
     public boolean equals(Object obj) {
         return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
-                          && Objects.equals(self.m_shTableId, other.m_shTableId)
-                          && Objects.equals(self.m_sFlowId, other.m_sFlowId)
-                          && Objects.equals(self.m_nPriority, other.m_nPriority)
-                          && Objects.equals(self.m_sFlowName, other.m_sFlowName)
-                          && Objects.equals(self.m_nIdleTimeOut, other.m_nIdleTimeOut)
-                          && Objects.equals(self.m_nHardTimeOut, other.m_nHardTimeOut)
-                          && Objects.equals(self.m_biCookie, other.m_biCookie)
-                          && Objects.equals(self.m_listMatchInfo, other.m_listMatchInfo)
-                          && Objects.equals(self.m_listInstructionInfo, other.m_listInstructionInfo)
-                          && Objects.equals(self.m_bStrictFlag, other.m_bStrictFlag)
-                          && Objects.equals(self.m_bSendFlowRemFlag, other.m_bSendFlowRemFlag)
+                          && Objects.equals(self.tableId, other.tableId)
+                          && Objects.equals(self.flowId, other.flowId)
+                          && Objects.equals(self.priority, other.priority)
+                          && Objects.equals(self.flowName, other.flowName)
+                          && Objects.equals(self.idleTimeOut, other.idleTimeOut)
+                          && Objects.equals(self.hardTimeOut, other.hardTimeOut)
+                          && Objects.equals(self.biCookie, other.biCookie)
+                          && Objects.equals(self.listMatchInfo, other.listMatchInfo)
+                          && Objects.equals(self.listInstructionInfo, other.listInstructionInfo)
+                          && Objects.equals(self.strictFlag, other.strictFlag)
+                          && Objects.equals(self.sendFlowRemFlag, other.sendFlowRemFlag)
                 );
     }
 

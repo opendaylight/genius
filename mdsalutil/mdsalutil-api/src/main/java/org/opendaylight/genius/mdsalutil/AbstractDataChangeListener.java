@@ -25,6 +25,7 @@ public abstract class AbstractDataChangeListener<T extends DataObject> implement
     protected final Class<T> clazz;
 
     /**
+     * Constructor.
      * @param clazz - for which the data change event is received
      */
     public AbstractDataChangeListener(Class<T> clazz) {
@@ -33,7 +34,7 @@ public abstract class AbstractDataChangeListener<T extends DataObject> implement
 
     @Override
     public void onDataChanged(final AsyncDataChangeEvent<InstanceIdentifier<?>, DataObject> changeEvent) {
-        Preconditions.checkNotNull(changeEvent,"Async ChangeEvent can not be null!");
+        Preconditions.checkNotNull(changeEvent, "Async ChangeEvent can not be null!");
 
         /* All DataObjects for create */
         final Map<InstanceIdentifier<?>, DataObject> createdData = changeEvent.getCreatedData() != null

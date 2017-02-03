@@ -44,33 +44,41 @@ public final class FlowInfoKey {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((dpId == null) ? 0 : dpId.hashCode());
-        result = prime * result + ((matches == null) ? 0 : matches.hashCode());
+        result = prime * result + (dpId == null ? 0 : dpId.hashCode());
+        result = prime * result + (matches == null ? 0 : matches.hashCode());
         result = prime * result + tableId;
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         FlowInfoKey other = (FlowInfoKey) obj;
         if (dpId == null) {
-            if (other.dpId != null)
+            if (other.dpId != null) {
                 return false;
-        } else if (!dpId.equals(other.dpId))
+            }
+        } else if (!dpId.equals(other.dpId)) {
             return false;
+        }
         if (matches == null) {
-            if (other.matches != null)
+            if (other.matches != null) {
                 return false;
-        } else if (!matches.equals(other.matches))
+            }
+        } else if (!matches.equals(other.matches)) {
             return false;
-        if (tableId != other.tableId)
+        }
+        if (tableId != other.tableId) {
             return false;
+        }
         return true;
     }
 

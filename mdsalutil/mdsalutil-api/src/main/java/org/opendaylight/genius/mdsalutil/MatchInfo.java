@@ -7,14 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import com.google.common.base.MoreObjects;
 import java.io.Serializable;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
-import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public abstract class MatchInfo implements Serializable, MatchInfoBase {
     private static final long serialVersionUID = 1L;

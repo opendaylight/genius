@@ -14,39 +14,43 @@ public abstract class ActionInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final int m_actionKey;
+    private final int actionKey;
 
     public ActionInfo(int actionKey) {
-        m_actionKey = actionKey;
+        this.actionKey = actionKey;
     }
 
     public int getActionKey() {
-        return m_actionKey;
+        return actionKey;
     }
 
     public Action buildAction() {
         return buildAction(getActionKey());
     }
 
-    public abstract Action buildAction(int actionKey);
+    public abstract Action buildAction(int newActionKey);
 
     @Override
     public String toString() {
-        return "ActionInfo{actionKey = " + m_actionKey + "}";
+        return "ActionInfo{actionKey = " + actionKey + "}";
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
 
-        ActionInfo that = (ActionInfo) o;
+        ActionInfo that = (ActionInfo) other;
 
-        return m_actionKey == that.m_actionKey;
+        return actionKey == that.actionKey;
     }
 
     @Override
     public int hashCode() {
-        return m_actionKey;
+        return actionKey;
     }
 }
