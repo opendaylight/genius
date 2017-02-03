@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_30f2c8d2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/AbstractDataChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-02-03T16:01:25Z",
+      "side": 1,
+      "message": "This is a bit pedantic, but I like Javadocs to say what something does (or should be used for), not what it is ;-). \"Create an instance\" for a constructor for example!",
+      "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b0b518f0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/GroupEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-02-03T16:01:25Z",
+      "side": 1,
+      "message": "Why not groupId?",
+      "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_30c92879",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-02-03T16:01:25Z",
+      "side": 1,
+      "message": "Urgh... Couldn\u0027t this be nodeId, since the nodeId in the method isn\u0027t actually used?",
+      "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
