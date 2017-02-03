@@ -87,8 +87,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
-import org.opendaylight.yangtools.concepts.Builder;
-import org.opendaylight.yangtools.yang.binding.ChildOf;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -382,17 +380,20 @@ public class MDSALUtil {
     }
 
     public static long getDpnIdFromPortName(NodeConnectorId nodeConnectorId) {
+        if (nodeConnectorId == null || nodeConnectorId.getValue() == null) {
+            return -1;
+        }
         try {
             String ofPortName = nodeConnectorId.getValue();
             return Long.parseLong(ofPortName.substring(ofPortName.indexOf(":") + 1,
                     ofPortName.lastIndexOf(":")));
-        } catch (Exception e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             LOG.error("NodeConnectorId not of expected format openflow:dpnid:portnum");
             return -1;
         }
     }
 
-    public static BigInteger getDpnId(String datapathId){
+    public static BigInteger getDpnId(String datapathId) {
         if (datapathId != null) {
             String dpIdStr = datapathId.replace(":", "");
             BigInteger dpnId =  new BigInteger(dpIdStr, 16);
