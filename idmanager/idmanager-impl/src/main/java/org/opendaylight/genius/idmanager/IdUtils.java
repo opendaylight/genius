@@ -149,7 +149,7 @@ public class IdUtils {
 
     protected AvailableIdsHolderBuilder getAvailableIdsHolderBuilder(IdPool pool) {
         AvailableIdsHolder availableIds = pool.getAvailableIdsHolder();
-        if (availableIds != null ) {
+        if (availableIds != null) {
             return new AvailableIdsHolderBuilder(availableIds);
         }
         return new AvailableIdsHolderBuilder();

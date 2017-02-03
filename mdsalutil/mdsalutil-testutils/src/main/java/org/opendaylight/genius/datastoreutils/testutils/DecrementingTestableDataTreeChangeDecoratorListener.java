@@ -27,7 +27,7 @@ public class DecrementingTestableDataTreeChangeDecoratorListener implements Data
 
     @Override
     public void onDataTreeChanged(Collection changes) {
-        delegate.consumedEvents( - changes.size());
+        delegate.consumedEvents(- changes.size());
     }
 
 }

@@ -625,7 +625,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             } finally {
                 idUtils.releaseIdLatchMap.remove(idLatchKey);
             }
-        } );
+        });
         localPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
