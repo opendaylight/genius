@@ -410,6 +410,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8d4ba0af",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-03T06:17:48Z",
+      "side": 1,
+      "message": "This is generic race condition that can occur b/w OF and OVSDB southbound events which leads to VM interfaces not getting processed. I have already talked to Alon and he mentioned he will address it.\n\nI suggest not to check-in this code unless theses comments are addressed (also improving southboundUtils.getNodeByTerminationPointExternalId(interfaceName) or having local cache in genius).\n\nSince we already have EVPN, ECMP features coming in to ODL/master, this should not block the testing.",
+      "parentUuid": "fafc7978_9cbbd80d",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6272e27d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 25
