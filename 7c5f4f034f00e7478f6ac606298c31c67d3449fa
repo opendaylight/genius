@@ -428,6 +428,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_6d891cca",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-03T06:33:13Z",
+      "side": 1,
+      "message": "Peri I have a doubt here...if this event comes first, we will just add tapPort interface-state and return.. whenever OVSDB event comes, Alon is anyways doing updateParentRef().. This will do add of trunk interface and trunk-member interfaces as part of the update listener..won\u0027t that help?",
+      "parentUuid": "fafc7978_8d4ba0af",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6272e27d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 25
