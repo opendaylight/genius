@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
+package org.opendaylight.genius.mdsalutil.internal;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -19,11 +19,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 import java.util.List;
 
-public class InterfaceBatchHandler implements ResourceHandler {
-    private final LogicalDatastoreType dataStoreType;
-    public InterfaceBatchHandler(LogicalDatastoreType datastoreType) {
-        this.dataStoreType = datastoreType;
-    }
+public class MdSalUtilBatchHandler implements ResourceHandler {
     public void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update,List<SubTransaction> transactionObjects) {
         if (update != null && !(update instanceof DataObject)) {
             return;
@@ -61,19 +57,19 @@ public class InterfaceBatchHandler implements ResourceHandler {
     }
 
     public DataBroker getResourceBroker() {
-        return BatchingUtils.getBroker();
+        return FlowBatchingUtils.getBroker();
     }
 
     public int getBatchSize() {
-        return BatchingUtils.batchSize;
+        return FlowBatchingUtils.batchSize;
     }
 
     public int getBatchInterval() {
-        return BatchingUtils.batchInterval;
+        return FlowBatchingUtils.batchInterval;
     }
 
     public LogicalDatastoreType getDatastoreType() {
-        return this.dataStoreType;
+        return LogicalDatastoreType.CONFIGURATION;
     }
 
     private void buildSubTransactions(List<SubTransaction> transactionObjects, InstanceIdentifier identifier,

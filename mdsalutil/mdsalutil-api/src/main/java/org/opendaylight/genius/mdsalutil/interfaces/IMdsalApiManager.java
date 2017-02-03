@@ -49,6 +49,28 @@ public interface IMdsalApiManager {
      */
     void addFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
 
+    /**
+     * Add a Flow through ResourceBatchingManager
+     * This is used to batch multiple ConfigDS changes in a single transaction and programming on specific DPN.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param flowEntity
+     *            Flow being added
+     */
+    void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity);
+
+    /**
+     * Remove a Flow through ResourceBatchingManager
+     * This is used to batch multiple ConfigDS changes in a single transaction and programming on specific DPN.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param flowEntity
+     *            Flow being added
+     */
+    void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity);
+
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
 
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, FlowEntity flowEntity);
