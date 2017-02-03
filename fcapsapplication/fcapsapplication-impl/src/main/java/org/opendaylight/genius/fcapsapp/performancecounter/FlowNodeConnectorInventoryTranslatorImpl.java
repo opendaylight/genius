@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
@@ -19,17 +20,22 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,11 +106,13 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                     String.valueOf(nodeConnIdent.firstKeyOf(NodeConnector.class).getId()));
             long dataPathId = getDpIdFromPortName(nodeConnectorIdentifier);
             if (dpnToPortMultiMap.containsKey(dataPathId)) {
-                LOG.debug("Node Connector {} removed", nodeConnectorIdentifier);
-                dpnToPortMultiMap.remove(dataPathId, nodeConnectorIdentifier);
-                sendNodeConnectorUpdation(dataPathId);
-                PortNameMapping.updatePortMap("openflow:" + dataPathId + ":" + del.getName(), nodeConnectorIdentifier,
-                        "DELETE");
+                if (getSwitchStatus(dataPathId)) {
+                    LOG.debug("Node Connector {} removed", nodeConnectorIdentifier);
+                    dpnToPortMultiMap.remove(dataPathId, nodeConnectorIdentifier);
+                    sendNodeConnectorUpdation(dataPathId);
+                    PortNameMapping.updatePortMap("openflow:" + dataPathId + ":" + del.getName(),
+                            nodeConnectorIdentifier, "DELETE");
+                }
             }
         }
     }
@@ -148,7 +156,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                     PortNameMapping.updatePortMap("openflow:" + dataPathId + ":" + add.getName(),
                             nodeConnectorIdentifier, "ADD");
                 } else {
-                    LOG.error("Duplicate Event.Node Connector already added");
+                    LOG.debug("Node Connector {} already added for dpn {}", nodeConnectorIdentifier, dataPathId);
                 }
             }
         }
@@ -200,5 +208,31 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         }
         LOG.debug("NumberOfOFPorts:" + nodeListPortsCountStr + " portlistsize " + portname.size());
         agent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
+    }
+
+    public boolean getSwitchStatus(long switchId) {
+        NodeId nodeId = new NodeId("openflow:" + switchId);
+        LOG.debug("Querying switch with dataPathId {} is up/down", nodeId);
+        InstanceIdentifier<Node> nodeInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, new NodeKey(nodeId)).build();
+        Optional<Node> nodeOptional = read(dataBroker, LogicalDatastoreType.OPERATIONAL, nodeInstanceId);
+        if (nodeOptional.isPresent()) {
+            LOG.debug("Switch {} is up", nodeId);
+            return true;
+        }
+        LOG.debug("Switch {} is down", nodeId);
+        return false;
+    }
+
+    public static <T extends DataObject> Optional<T> read(DataBroker broker, LogicalDatastoreType datastoreType,
+                                                          InstanceIdentifier<T> path) {
+        ReadOnlyTransaction tx = broker.newReadOnlyTransaction();
+        Optional<T> result = Optional.absent();
+        try {
+            result = tx.read(datastoreType, path).checkedGet();
+        } catch (ReadFailedException e) {
+            LOG.error("Exception occured while reading from Datastore", e.getMessage());
+        }
+        return result;
     }
 }
