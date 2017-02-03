@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_4da09890",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-03T04:57:14Z",
+      "side": 1,
+      "message": "Only external? the rest of the doc promise more",
+      "range": {
+        "startLine": 26,
+        "startChar": 16,
+        "endLine": 26,
+        "endChar": 42
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6dcabc50",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-03T04:57:14Z",
+      "side": 1,
+      "message": "17",
+      "range": {
+        "startLine": 84,
+        "startChar": 23,
+        "endLine": 84,
+        "endChar": 26
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8dd8c01e",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-03T04:57:14Z",
+      "side": 1,
+      "message": "Is there a limitation that egress services table numbers must be bigger than 220?\nIf there it\u0027s important to mention it",
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0dedf0c3",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-03T04:57:14Z",
+      "side": 1,
+      "message": "I noticed the metadata is also set in the egress table to the same value as reg6. Why is it needed? I was thinking about extending the service binding to support goto group in addition to goto table but write_metadata is performed after goto group. Do you see any issue with it?",
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ed04ec7f",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-03T04:57:14Z",
+      "side": 1,
+      "message": "what will be the bits of the tunnel-type? is it being set as part of getEgressActionsForInterface?",
+      "range": {
+        "startLine": 117,
+        "startChar": 26,
+        "endLine": 117,
+        "endChar": 61
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2dff1469",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-03T04:57:14Z",
+      "side": 1,
+      "message": "not 36?",
+      "range": {
+        "startLine": 362,
+        "startChar": 64,
+        "endLine": 362,
+        "endChar": 66
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
