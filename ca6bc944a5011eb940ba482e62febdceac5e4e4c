@@ -105,6 +105,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_881a6e6c",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-03T07:06:26Z",
+      "side": 1,
+      "message": "This brace is intruding in column for spacing. increase this column length by 1 character. notice this is going one character more than the \u003d\u003d\u003d\u003d\u003d\u003d",
+      "range": {
+        "startLine": 117,
+        "startChar": 60,
+        "endLine": 117,
+        "endChar": 61
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2dff1469",
         "filename": "docs/specs/service-binding-on-tunnels.rst",
         "patchSetId": 3
@@ -121,6 +144,46 @@
         "startChar": 64,
         "endLine": 362,
         "endChar": 66
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e8269ab9",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-03T07:06:26Z",
+      "side": 1,
+      "message": "tabs to spaces",
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c82bd680",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-03T07:06:26Z",
+      "side": 1,
+      "message": "break it up. unbroken line means title/heading.",
+      "range": {
+        "startLine": 366,
+        "startChar": 24,
+        "endLine": 366,
+        "endChar": 26
       },
       "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
