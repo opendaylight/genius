@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
 import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
@@ -28,9 +29,11 @@ public class BatchingUtils {
     private static DataBroker dataBroker;
     private static BlockingQueue<ActionableResource> topologyConfigShardBufferQ;
     private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
+    private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
 
     public enum EntityType  {
         DEFAULT_CONFIG,
+        DEFAULT_OPERATIONAL,
         TOPOLOGY_CONFIG
     }
 
@@ -42,7 +45,7 @@ public class BatchingUtils {
         dataBroker = broker;
     }
 
-    public static void registerWithBatchManager(ResourceHandler resourceHandler, DataBroker dataBroker) {
+    public static void registerWithBatchManager(DataBroker dataBroker) {
         BatchingUtils.setBroker(dataBroker);
         batchSize = 1000;
         if (Integer.getInteger("batch.size") != null) {
@@ -53,8 +56,9 @@ public class BatchingUtils {
             batchInterval = Integer.getInteger("batch.wait.time");
         }
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-TOPOLOGY-CONFIG", topologyConfigShardBufferQ, resourceHandler);
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-CONFIG", defaultConfigShardBufferQ, resourceHandler);
+        resBatchingManager.registerBatchableResource("INTERFACEMGR-TOPOLOGY-CONFIG", topologyConfigShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
+        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-CONFIG", defaultConfigShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
+        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.OPERATIONAL));
     }
 
     static <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {
@@ -79,6 +83,8 @@ public class BatchingUtils {
                 return defaultConfigShardBufferQ;
             case TOPOLOGY_CONFIG:
                 return topologyConfigShardBufferQ;
+            case DEFAULT_OPERATIONAL:
+                return defaultOperationalShardBufferQ;
             default:
                 return null;
         }
@@ -95,5 +101,6 @@ public class BatchingUtils {
     static {
         topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
         defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
+        defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
     }
 }
