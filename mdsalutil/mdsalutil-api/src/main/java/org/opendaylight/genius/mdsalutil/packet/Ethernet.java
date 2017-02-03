@@ -30,15 +30,15 @@ public class Ethernet extends Packet {
 
     // TODO: This has to be outside and it should be possible for osgi
     // to add new coming packet classes
-    private static final Map<Short, Class<? extends Packet>> ETHER_TYPE_CLASS_MAP;
+    public static final Map<Short, Class<? extends Packet>> etherTypeClassMap;
 
     static {
-        ETHER_TYPE_CLASS_MAP = new HashMap<>();
-        ETHER_TYPE_CLASS_MAP.put(EtherTypes.ARP.shortValue(), ARP.class);
-        ETHER_TYPE_CLASS_MAP.put(EtherTypes.LLDP.shortValue(), LLDP.class);
-        ETHER_TYPE_CLASS_MAP.put(EtherTypes.IPv4.shortValue(), IPv4.class);
+        etherTypeClassMap = new HashMap<>();
+        etherTypeClassMap.put(EtherTypes.ARP.shortValue(), ARP.class);
+        etherTypeClassMap.put(EtherTypes.LLDP.shortValue(), LLDP.class);
+        etherTypeClassMap.put(EtherTypes.IPv4.shortValue(), IPv4.class);
         // TODO: Add support for more classes here
-        ETHER_TYPE_CLASS_MAP.put(EtherTypes.VLANTAGGED.shortValue(), IEEE8021Q.class);
+        etherTypeClassMap.put(EtherTypes.VLANTAGGED.shortValue(), IEEE8021Q.class);
         // etherTypeClassMap.put(EtherTypes.OLDQINQ.shortValue(), IEEE8021Q.class);
         // etherTypeClassMap.put(EtherTypes.QINQ.shortValue(), IEEE8021Q.class);
         // etherTypeClassMap.put(EtherTypes.CISCOQINQ.shortValue(), IEEE8021Q.class);
@@ -78,7 +78,7 @@ public class Ethernet extends Packet {
     @Override
     public void setHeaderField(String headerField, byte[] readValue) {
         if (headerField.equals(ETHT)) {
-            payloadClass = ETHER_TYPE_CLASS_MAP.get(BitBufferHelper
+            payloadClass = etherTypeClassMap.get(BitBufferHelper
                     .getShort(readValue));
         }
         hdrFieldsMap.put(headerField, readValue);
