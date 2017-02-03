@@ -247,6 +247,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_48cec65b",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-02-03T09:22:34Z",
+      "side": 1,
+      "message": "Table 36 is/was used for non-standard use of VNI values (VNI containing service specific id values). With proposed changes in Netvirt, now valid VNI values will be used and standard processing of VNI will be carried out. Table 38 handling external VxLAN tunnels, is used for standard VNI processing. Thus packets from internal VxLAN tunnels also carrying valid VNI values will now goto 38.\n\nAnyway, as the plan for L3 service is to use asymmetric IRB for intra-DC scenarios, only ELAN needs to bind on internal VxLAN tunnels. So this table row should be removed.",
+      "parentUuid": "fafc7978_287d426f",
+      "range": {
+        "startLine": 362,
+        "startChar": 64,
+        "endLine": 362,
+        "endChar": 66
+      },
+      "revId": "ca6bc944a5011eb940ba482e62febdceac5e4e4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_e8269ab9",
         "filename": "docs/specs/service-binding-on-tunnels.rst",
         "patchSetId": 3
