@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7ea261af",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-02-04T06:51:53Z",
+      "side": 1,
+      "message": "specify that this can be avoided by using service binding on \u0027tunnel_type\u0027",
+      "range": {
+        "startLine": 238,
+        "startChar": 57,
+        "endLine": 238,
+        "endChar": 69
+      },
+      "revId": "f5c090c5269ea1bc13bc70bebf17d04e118932d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5ea5ddb3",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-02-04T06:51:53Z",
+      "side": 1,
+      "message": "considering asymmetric IRB, L3VPN does not need to bind on internal tunnels. Remove this row.",
+      "range": {
+        "startLine": 374,
+        "startChar": 42,
+        "endLine": 374,
+        "endChar": 78
+      },
+      "revId": "f5c090c5269ea1bc13bc70bebf17d04e118932d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
