@@ -72,6 +72,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_de68ad23",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T17:46:12Z",
+      "side": 1,
+      "message": "now i feel, there is no need of EOS itself here, as there is no race condition i could see...since interfaceconfigDS is fetched before updating parent-refs, it will not even proceed further if config is not there.. however i do understand that the listener is clustered and hence we need some way not to run it on all nodes. just a thought for future improvement!",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5e083d91",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 30
@@ -119,6 +136,23 @@
       "side": 1,
       "message": "perfect! no issues here then",
       "parentUuid": "fafc7978_7e2c2103",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3e78d9f1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T17:46:12Z",
+      "side": 1,
+      "message": "why is this moved inside tunnel check?",
       "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
