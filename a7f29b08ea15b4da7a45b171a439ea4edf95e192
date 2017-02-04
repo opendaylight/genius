@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7e054179",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T11:19:23Z",
+      "side": 1,
+      "message": "my question on synchronization is this.. you have to use DJC key same as neutron vpn coz neutronvpn is the one who was previously writing and updating interface config DS..by using the same key, you ensure that interface config ADD/UPDATE will be processed in same order in single node..i have two questions here:\n\n1. will there be a case, where neutronvpn interface add comes later than terminationpoint add event? what will be the behavior then?\n\n2. previously since both the events were triggered by neutronvpn, both add and update would have been triggered by the same node, and things were synchronized. Now, add is still done by neutronVPN, and update by interface-manager, both events can be triggered on different nodes, and can\u0027t these events go out of order? I basically want to make sure when update and add are triggered out of order, the code should still work.. I am not able to understand whether that is already taken care, pls do confirm if that is already in place",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1ed7d5ee",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T11:19:23Z",
+      "side": 1,
+      "message": "not returning parentRefs for the configDCN part looks good now.",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5e083d91",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T11:19:23Z",
+      "side": 1,
+      "message": "if interface config DS is not populated by the time we receive this event, won\u0027t we create an interface entry only with parent-refs?",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
