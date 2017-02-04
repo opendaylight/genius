@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9e8745d7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T17:29:42Z",
+      "side": 1,
+      "message": "doing updateParentRefs() from within InterfaceConfigListener is perfectly fine! that is having no issues.. my worry is only on the updateParentRefs() being called from TerminationPointListener... suppose you have a 3 node cluster.. neutronvpn interface config add, and interface-mananager terminationpointlistener updateParentRefs() gets fired at same time.. so, as per your comment, neutronvpn event order does not matter, coz terminationpointlistener will not even process the event since interface is not created yet. then, i think you are right...the DJC key should be parentInterface, rather than neutronvpn key.. you can change it back... also, hope you have tested this change in clustered setup, by booting an openstack VM on network, rather than port.. the northbound and southbound events coming exactly at same time is more visible when we do that way..",
+      "parentUuid": "fafc7978_3ef3b99f",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1ed7d5ee",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
         "patchSetId": 30
@@ -83,6 +101,24 @@
       "side": 1,
       "message": "see implementation of ParentRefUpdateWorker in InterfacemgrProvider - it will only write something if the interface config exists. This write of parentRef only wouldn\u0027t work otherwise by the way, since it is missing mandatory fields.",
       "parentUuid": "fafc7978_5e083d91",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_de21cdfd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T17:29:42Z",
+      "side": 1,
+      "message": "perfect! no issues here then",
+      "parentUuid": "fafc7978_7e2c2103",
       "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
