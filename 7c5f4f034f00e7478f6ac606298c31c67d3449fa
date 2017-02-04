@@ -482,6 +482,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9e02a56d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-04T11:21:34Z",
+      "side": 1,
+      "message": "Peri, this key is for writing to interface config DS,which is done by neutron vpn..currently add is done by neutronvpn and update by interface-manager..thats why this is aligned to neutronvpn key..after the write, interface config DCN has anyways keyed on parent-interface",
+      "parentUuid": "fafc7978_decc2d64",
+      "revId": "7c5f4f034f00e7478f6ac606298c31c67d3449fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6272e27d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 25
