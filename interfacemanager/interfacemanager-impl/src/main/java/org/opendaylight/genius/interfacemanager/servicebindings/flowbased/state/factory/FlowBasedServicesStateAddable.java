@@ -13,4 +13,5 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 
 public interface FlowBasedServicesStateAddable {
     List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState);
+    List<ListenableFuture<Void>> bindServicesOnInterfaceType(String ifaceName);
 }

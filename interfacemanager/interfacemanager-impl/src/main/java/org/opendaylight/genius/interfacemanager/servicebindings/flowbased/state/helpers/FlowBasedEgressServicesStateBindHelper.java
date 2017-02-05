@@ -79,15 +79,22 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
             return bindServiceOnVlan(allServices, ifaceState, dataBroker);
         } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
-            return bindServiceOnTunnel(allServices, ifaceState, dataBroker);
+            return bindServiceOnTunnelInterface(allServices, ifaceState, dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnTunnel(
+    private static List<ListenableFuture<Void>> bindServiceOnTunnelInterface(
             List<BoundServices> allServices, Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        // FIXME : not supported yet
+        LOG.info("binding egresss services on tunnel - WIP");
+        return futures;
+    }
+
+    @Override
+    public List<ListenableFuture<Void>> bindServicesOnInterfaceType(String ifaceName) {
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        LOG.info("binding services on tunnel type - WIP");
         return futures;
     }
 

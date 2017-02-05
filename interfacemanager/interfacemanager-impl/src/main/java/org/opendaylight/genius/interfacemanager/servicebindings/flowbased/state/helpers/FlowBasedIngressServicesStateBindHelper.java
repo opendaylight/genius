@@ -88,6 +88,13 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
         return futures;
     }
 
+    @Override
+    public List<ListenableFuture<Void>> bindServicesOnInterfaceType(String ifaceName) {
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        LOG.info("binding services on tunnel type - WIP");
+        return futures;
+    }
+
     private static List<ListenableFuture<Void>> bindServiceOnTunnel(
             List<BoundServices> allServices, Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -128,13 +135,13 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
         FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, highestPriority, ifState.getName(), t, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex);
         BoundServices prev = null;
         for (BoundServices boundService : allServices) {
-            if (prev!=null) {
+            if (prev != null) {
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority());
             }
             prev = boundService;
         }
-        if (prev!=null) {
-            FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority()+1));
+        if (prev != null) {
+            FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
         }
         futures.add(t.submit());
         return futures;

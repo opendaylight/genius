@@ -65,13 +65,6 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
                 InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
         Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-        if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
-            LOG.warn("Interface not up, not Binding Service for Interface: {}", interfaceName);
-            return futures;
-        }
-
         // Get the Parent ServiceInfo
         ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode, dataBroker);
         if (servicesInfo == null) {
@@ -85,18 +78,31 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
             return futures;
         }
 
-        // Split based on type of interface....
-        if (ifState.getType().isAssignableFrom(L2vlan.class)) {
-            return bindServiceOnVlan(boundServiceNew, allServices, ifState, dataBroker);
-        } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
-            return bindServiceOnTunnel(boundServiceNew, allServices, ifState, dataBroker);
+        if(FlowBasedServicesUtils.isTunnelTypeBasedServiceBinding(interfaceName)){
+            bindServiceOnTunnelType(boundServiceNew, allServices, dataBroker);
+        } else {
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+            if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
+                LOG.warn("Interface not up, not Binding Service for Interface: {}", interfaceName);
+                return futures;
+            }
+            if (ifState.getType() == null) {
+                return futures;
+            }
+            // Split based on type of interface...
+            if (ifState.getType().isAssignableFrom(L2vlan.class)) {
+                return bindServiceOnVlan(boundServiceNew, allServices, ifState, dataBroker);
+            } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
+                return bindServiceOnTunnel(boundServiceNew, allServices, ifState, dataBroker);
+            }
         }
         return futures;
     }
 
     private static List<ListenableFuture<Void>> bindServiceOnTunnel(BoundServices boundServiceNew, List<BoundServices> allServices,
                                                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState, DataBroker dataBroker) {
-        // TODO - binding egress services on tunnels is not supported currently
+        LOG.info("bind service on egress tunnel interface - WIP");
         return null;
     }
 
@@ -147,5 +153,11 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
         FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew, ifState.getName(), transaction, ifState.getIfIndex(), currentServiceIndex, nextServiceIndex, iface);
         futures.add(transaction.submit());
         return futures;
+    }
+
+    private static List<ListenableFuture<Void>> bindServiceOnTunnelType(BoundServices boundServiceNew,
+                                                                        List<BoundServices> allServices,DataBroker dataBroker) {
+        LOG.info("Tunnel Type based egress service binding - WIP");
+        return null;
     }
 }
