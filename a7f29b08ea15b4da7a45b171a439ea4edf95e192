@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fe25b1c2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-02-05T09:47:13Z",
+      "side": 1,
+      "message": "I am testing this with CSIT in addition to the basic tests, I am running 3node as well - which has plenty of VMs booting on the network..\n\nI changed the key to \"interfaceName\" - it should be the interfaceName, not the parentInterface, since we do the writing to the key interfaceName.. right?",
+      "parentUuid": "fafc7978_9e8745d7",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1ed7d5ee",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
         "patchSetId": 30
@@ -83,6 +101,24 @@
       "writtenOn": "2017-02-04T17:46:12Z",
       "side": 1,
       "message": "now i feel, there is no need of EOS itself here, as there is no race condition i could see...since interfaceconfigDS is fetched before updating parent-refs, it will not even proceed further if config is not there.. however i do understand that the listener is clustered and hence we need some way not to run it on all nodes. just a thought for future improvement!",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_de20adb2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-02-05T09:47:13Z",
+      "side": 1,
+      "message": "yeah, since its a clustered listener we need the ability to run it once, EOS is a good solution for now but food for thought :)",
+      "parentUuid": "fafc7978_de68ad23",
       "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -153,6 +189,24 @@
       "writtenOn": "2017-02-04T17:46:12Z",
       "side": 1,
       "message": "why is this moved inside tunnel check?",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_be132965",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-02-05T09:47:13Z",
+      "side": 1,
+      "message": "technically we already checked for this condition earlier, and we only change the value inside the if, so no need to check again outside the if..\nbut I reverted this change now, it isn\u0027t really relevant..",
+      "parentUuid": "fafc7978_3e78d9f1",
       "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
