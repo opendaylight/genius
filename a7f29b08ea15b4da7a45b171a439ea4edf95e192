@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_f93f8b23",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-05T16:41:02Z",
+      "side": 1,
+      "message": "i think peri suggested parentInterface coz all jobs inside interfaceConfigListener as well as inventorystatelisteners are using parentInterface.. but for your case, i finally feel,  it does not really matter..let us see the csit results, you can correct it if really needed..",
+      "parentUuid": "fafc7978_fe25b1c2",
+      "revId": "a7f29b08ea15b4da7a45b171a439ea4edf95e192",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1ed7d5ee",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
         "patchSetId": 30
