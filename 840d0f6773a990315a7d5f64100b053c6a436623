@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_79bd5b68",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-05T19:19:32Z",
+      "side": 1,
+      "message": "looks like a copy paste of the egress part... couldn\u0027t this logic be unified to some abstract parent?",
+      "revId": "840d0f6773a990315a7d5f64100b053c6a436623",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b9b7c385",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-05T19:19:32Z",
+      "side": 1,
+      "message": "Why don\u0027t you use AsyncDataTreeChangeListenerBase? DataChangeListener is deprecated",
+      "range": {
+        "startLine": 45,
+        "startChar": 56,
+        "endLine": 45,
+        "endChar": 82
+      },
+      "revId": "840d0f6773a990315a7d5f64100b053c6a436623",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d9aba71c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/factory/FlowBasedServicesStateAddable.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-05T19:19:32Z",
+      "side": 1,
+      "message": "if this method is designed only for tunnels the name should reflect it",
+      "range": {
+        "startLine": 16,
+        "startChar": 33,
+        "endLine": 16,
+        "endChar": 60
+      },
+      "revId": "840d0f6773a990315a7d5f64100b053c6a436623",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
