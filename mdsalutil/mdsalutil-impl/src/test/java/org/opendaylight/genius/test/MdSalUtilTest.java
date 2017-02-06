@@ -29,7 +29,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.binding.test.AbstractDataBrokerTest;
+import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -54,9 +54,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
-//@RunWith(PowerMockRunner.class)
 @PrepareForTest(MDSALUtil.class)
-public class MdSalUtilTest extends AbstractDataBrokerTest {
+public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
+
      DataBroker dataBroker;
      @Mock PacketProcessingService ppS ;
      MDSALManager mdSalMgr = null ;
@@ -78,62 +78,62 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
         }
 
         @Test
-        public void testInstallFlow() {
+        public void testInstallFlow() throws Exception {
             String dpnId = "openflow:1";
             String tableId1 = "12";
 
             //Install Flow 1
             FlowEntity testFlow1 = createFlowEntity(dpnId, tableId1) ;
-            mdSalMgr.installFlow(testFlow1);
+            mdSalMgr.installFlow(testFlow1).get();
             assertEquals(1, flowFwder.getDataChgCount());
 
             // Install FLow 2
             String tableId2 = "13" ;
              FlowEntity testFlow2 = createFlowEntity(dpnId, tableId2) ;
-             mdSalMgr.installFlow(testFlow2);
+             mdSalMgr.installFlow(testFlow2).get();
              assertEquals(2, flowFwder.getDataChgCount());
         }
 
         @Test
-        public void testRemoveFlow() {
+        public void testRemoveFlow() throws Exception {
             String dpnId = "openflow:1";
             String tableId = "13" ;
             FlowEntity testFlow = createFlowEntity(dpnId, tableId) ;
 
             // To test RemoveFlow add and then delete Flows
-            mdSalMgr.installFlow(testFlow) ;
+            mdSalMgr.installFlow(testFlow).get();
             assertEquals(1, flowFwder.getDataChgCount());
-            mdSalMgr.removeFlow(testFlow);
+            mdSalMgr.removeFlow(testFlow).get();
             assertEquals(0, flowFwder.getDataChgCount());
         }
 
         @Test
-        public void testInstallGroup() {
+        public void testInstallGroup() throws Exception {
             // Install Group 1
             String inport = "2" ;
             int vlanid = 100 ;
             GroupEntity grpEntity1 = createGroupEntity(Nodeid, inport, vlanid) ;
 
-             mdSalMgr.installGroup(grpEntity1);
+             mdSalMgr.installGroup(grpEntity1).get();
              assertEquals(1, grpFwder.getDataChgCount());
 
              // Install Group 2
                 inport = "3" ;
                 vlanid = 100 ;
                 GroupEntity grpEntity2 = createGroupEntity(Nodeid, inport, vlanid) ;
-                mdSalMgr.installGroup(grpEntity2);
+                mdSalMgr.installGroup(grpEntity2).get();
                 assertEquals(2, grpFwder.getDataChgCount());
         }
 
         @Test
-        public void testRemoveGroup() {
+        public void testRemoveGroup() throws Exception {
             String inport = "2" ;
             int vlanid = 100 ;
             GroupEntity grpEntity = createGroupEntity(Nodeid, inport, vlanid) ;
             // To test RemoveGroup  add and then delete Group
-            mdSalMgr.installGroup(grpEntity);
+            mdSalMgr.installGroup(grpEntity).get();
             assertEquals(1, grpFwder.getDataChgCount());
-            mdSalMgr.removeGroup(grpEntity);
+            mdSalMgr.removeGroup(grpEntity).get();
             assertEquals(0, grpFwder.getDataChgCount());
         }
 
