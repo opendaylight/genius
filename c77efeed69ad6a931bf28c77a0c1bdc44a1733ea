@@ -1,0 +1,135 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_2473a616",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "Wouldn\u0027t \u0027VxLan Tunnel Aggregation\u0027 be a better term? It implies load balancing and Ha using multiple tunnels ad is self explanatory.",
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8461b23b",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "No need to use bulleted list. This section will flow well enough as simple paragraphs. Bulletted list here throws later use of blocks out of alignment.",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 40,
+        "endChar": 2
+      },
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c4b73a85",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "Thought: I think would help to break propose changes further into logical sub-sections as \u0027ITM changes\u0027 and\u0027IFM changes\u0027.",
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_444fcabd",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "Can you add \u0027emphasis\u0027 for cases where existing yangs are being modified to highlight changes being made?",
+      "range": {
+        "startLine": 224,
+        "startChar": 0,
+        "endLine": 224,
+        "endChar": 12
+      },
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c4a0da45",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "why not give default 1?",
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_04030243",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "Would be good to capture JSON for RPC also.",
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_04b1428f",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T07:21:02Z",
+      "side": 1,
+      "message": "Can you add test case(s) for this with OFTunnels too?",
+      "revId": "c77efeed69ad6a931bf28c77a0c1bdc44a1733ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
