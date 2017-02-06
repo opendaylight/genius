@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -30,11 +30,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.liblldp.HexEncode;
 import org.opendaylight.controller.liblldp.NetUtils;
 import org.opendaylight.controller.liblldp.Packet;
+import org.opendaylight.controller.liblldp.PacketException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
@@ -119,8 +118,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
     private final ConcurrentMap<String, String> macsDB = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>>
-           getMacFutures = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>> macAddrs = new ConcurrentHashMap<>();
 
     @Inject
     public ArpUtilImpl(final DataBroker dataBroker, final PacketProcessingService packetProcessingService,
@@ -157,14 +155,12 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     public Future<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
         try {
             final String dstIpAddress = getIpAddressInString(input.getIpaddress());
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("getMac rpc invoked for ip " + dstIpAddress);
-            }
-            if (getMacFutures.get(dstIpAddress) != null) {
+            LOG.trace("getMac rpc invoked for ip " + dstIpAddress);
+            if (macAddrs.get(dstIpAddress) != null) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info("get mac already in progress for the ip " + dstIpAddress);
                 }
-                return getMacFutures.get(dstIpAddress);
+                return macAddrs.get(dstIpAddress);
             }
             SendArpRequestInputBuilder builder = new SendArpRequestInputBuilder()
                     .setInterfaceAddress(input.getInterfaceAddress()).setIpaddress(input.getIpaddress());
@@ -174,9 +170,9 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             Futures.addCallback(JdkFutureAdapters.listenInPoolThread(arpReqFt, threadPool),
                     new FutureCallback<RpcResult<Void>>() {
                         @Override
-                        public void onFailure(Throwable e) {
+                        public void onFailure(Throwable ex) {
                             RpcResultBuilder<GetMacOutput> resultBuilder = RpcResultBuilder.<GetMacOutput>failed()
-                                    .withError(ErrorType.APPLICATION, e.getMessage(), e);
+                                    .withError(ErrorType.APPLICATION, ex.getMessage(), ex);
                             ft.set(resultBuilder.build());
                         }
 
@@ -186,10 +182,10 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                         }
                     });
 
-            getMacFutures.put(dstIpAddress, ft);
+            macAddrs.put(dstIpAddress, ft);
             return ft;
-        } catch (Exception e) {
-            LOG.trace("failed to handle getMac request for {} {}", input.getIpaddress(), e);
+        } catch (UnknownHostException e) {
+            LOG.error("Failed to handle getMac request for {}: ", input.getIpaddress(), e);
             RpcResultBuilder<GetMacOutput> resultBuilder = RpcResultBuilder.<GetMacOutput>failed()
                     .withError(ErrorType.APPLICATION, e.getMessage(), e);
             return Futures.immediateFuture(resultBuilder.build());
@@ -217,7 +213,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
         try {
             dstIpBytes = getIpAddressBytes(arpReqInput.getIpaddress());
-        } catch (Exception e) {
+        } catch (UnknownHostException e) {
+            LOG.error("Cannot get IP address: ", e);
             failureBuilder.withError(ErrorType.APPLICATION, UNKNOWN_IP_ADDRESS_SUPPLIED);
             return Futures.immediateFuture(failureBuilder.build());
         }
@@ -253,7 +250,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 checkNotNull(srcIpBytes, FAILED_TO_GET_SRC_IP_FOR_INTERFACE, interfaceName);
 
                 payload = ArpPacketUtil.getPayload(ARP_REQUEST_OP, srcMac, srcIpBytes,
-                        ArpPacketUtil.EthernetDestination_Broadcast, dstIpBytes);
+                        ArpPacketUtil.ETHERNET_BROADCAST_DESTINATION, dstIpBytes);
 
                 List<Action> actions = getEgressAction(interfaceName);
                 sendPacketOutWithActions(dpnId, payload, ref, actions);
@@ -261,7 +258,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("sent arp request for " + arpReqInput.getIpaddress());
                 }
-            } catch (Throwable e) {
+            } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException e) {
                 LOG.trace("failed to send arp req for {} on interface {}", arpReqInput.getIpaddress(), interfaceName);
 
                 failureBuilder.withError(ErrorType.APPLICATION, FAILED_TO_SEND_ARP_REQ_FOR_INTERFACE + interfaceName,
@@ -318,9 +315,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 actions = rpcResult.getResult().getAction();
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Exception when egress actions for interface {}", interfaceName, e);
-        } catch (Exception e) {
-            LOG.error("Exception when egress actions for interface {}", interfaceName, e);
+            LOG.error("Exception when egress actions for interface {}: ", interfaceName, e);
         }
         return actions;
     }
@@ -332,8 +327,6 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
         BigInteger dpnId;
         byte[] payload;
-        // byte srcMac[] = new byte[] { (byte) 0, (byte) 0, (byte) 0, (byte) 0,
-        // (byte) 0, (byte) 0 };
         byte[] srcMac;
 
         try {
@@ -346,9 +339,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             checkArgument(null != dpnId && BigInteger.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);
             checkNotNull(ref, NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
 
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("sendArpRequest received dpnId {} out interface {}", dpnId, interfaceName);
-            }
+            LOG.trace("sendArpRequest received dpnId {} out interface {}", dpnId, interfaceName);
 
             byte[] srcIpBytes = getIpAddressBytes(input.getSrcIpaddress());
             byte[] dstIpBytes = getIpAddressBytes(input.getDstIpaddress());
@@ -364,15 +355,12 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
             List<Action> actions = getEgressAction(interfaceName);
             sendPacketOutWithActions(dpnId, payload, ref, actions);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(
-                        "Sent ARP response for IP {}, from source MAC {} to target MAC {} and target IP {} via dpnId {}",
-                        input.getSrcIpaddress().getIpv4Address().getValue(), HexEncode.bytesToHexStringFormat(srcMac),
-                        HexEncode.bytesToHexStringFormat(dstMac), input.getDstIpaddress().getIpv4Address().getValue(),
-                        dpnId);
-            }
-        } catch (Throwable e) {
-            LOG.error("failed to send arp response for {} {}", input.getSrcIpaddress(), e);
+            LOG.debug("Sent ARP response for IP {}, from source MAC {} to target MAC {} and target IP {} via dpnId {}",
+                    input.getSrcIpaddress().getIpv4Address().getValue(), HexEncode.bytesToHexStringFormat(srcMac),
+                    HexEncode.bytesToHexStringFormat(dstMac), input.getDstIpaddress().getIpv4Address().getValue(),
+                    dpnId);
+        } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException e) {
+            LOG.error("failed to send arp response for {}: ", input.getSrcIpaddress(), e);
             return RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, e.getMessage(), e).buildFuture();
         }
         RpcResultBuilder<Void> rpcResultBuilder = RpcResultBuilder.success();
@@ -382,9 +370,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     @Override
     public void onPacketReceived(PacketReceived packetReceived) {
         Class<? extends PacketInReason> pktInReason = packetReceived.getPacketInReason();
-        if (LOG.isTraceEnabled()) {
-            LOG.trace("Packet Received {}", packetReceived);
-        }
+        LOG.trace("Packet Received {}", packetReceived);
 
         if (pktInReason == SendToController.class) {
 
@@ -415,8 +401,6 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 Metadata metadata = packetReceived.getMatch().getMetadata();
 
                 String interfaceName = getInterfaceName(ref, metadata, dataBroker);
-                // Long vpnId =
-                // MetaDataUtil.getVpnIdFromMetadata(metadata.getMetadata());
 
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr, srcMac);
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(), NWUtil.toStringMacAddress(srcMac));
@@ -426,17 +410,18 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 } else {
                     fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, tableId, metadata.getMetadata());
                 }
-                if (getMacFutures.get(srcInetAddr.getHostAddress()) != null) {
+                if (macAddrs.get(srcInetAddr.getHostAddress()) != null) {
                     threadPool.submit(new MacResponderTask(arp));
                 }
 
-            } catch (Throwable e) {
-                LOG.trace("Failed to decode packet: {}", e);
+            } catch (PacketException | UnknownHostException | InterruptedException | ExecutionException e) {
+                LOG.trace("Failed to decode packet: ", e);
             }
         }
     }
 
-    private GetPortFromInterfaceOutput getPortFromInterface(String interfaceName) throws Throwable {
+    private GetPortFromInterfaceOutput getPortFromInterface(String interfaceName)
+            throws InterruptedException, ExecutionException {
         GetPortFromInterfaceInputBuilder getPortFromInterfaceInputBuilder = new GetPortFromInterfaceInputBuilder();
         getPortFromInterfaceInputBuilder.setIntfName(interfaceName);
 
@@ -450,7 +435,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         return result;
     }
 
-    private String getInterfaceName(NodeConnectorRef ref, Metadata metadata, DataBroker dataBroker2) throws Throwable {
+    private String getInterfaceName(NodeConnectorRef ref, Metadata metadata, DataBroker dataBroker2)
+            throws InterruptedException, ExecutionException {
         LOG.debug("metadata received is {} ", metadata);
 
         GetInterfaceFromIfIndexInputBuilder ifIndexInputBuilder = new GetInterfaceFromIfIndexInputBuilder();
@@ -482,7 +468,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             try {
                 srcAddr = InetAddress.getByAddress(arp.getSenderProtocolAddress());
                 srcMac = NWUtil.toStringMacAddress(arp.getSenderHardwareAddress());
-                future = getMacFutures.remove(srcAddr.getHostAddress());
+                future = macAddrs.remove(srcAddr.getHostAddress());
                 if (future == null) {
                     LOG.trace("There are no pending mac requests.");
                     return;
@@ -492,8 +478,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("sent the mac response for ip {}", srcAddr.getHostAddress());
                 }
-            } catch (Exception e) {
-                LOG.trace("failed to send mac response {} ", e);
+            } catch (UnknownHostException e) {
+                LOG.error("failed to send mac response: ", e);
                 resultBuilder = RpcResultBuilder.<GetMacOutput>failed().withError(ErrorType.APPLICATION, e.getMessage(),
                         e);
             }
@@ -563,24 +549,26 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private InstanceIdentifier<Interface> buildInterfaceId(String interfaceName) {
         InstanceIdentifierBuilder<Interface> idBuilder = InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(interfaceName));
-        InstanceIdentifier<Interface> id = idBuilder.build();
-        return id;
+        return idBuilder.build();
     }
 
     private NodeConnectorId getNodeConnectorFromInterfaceName(String interfaceName) {
-        InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> idBuilder = InstanceIdentifier
-                .builder(InterfacesState.class)
-                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
-                        new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
-                                interfaceName));
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = idBuilder
-                .build();
+        InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .interfaces.state.Interface> idBuilder = InstanceIdentifier.builder(InterfacesState.class)
+            .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .interfaces.state.Interface.class, new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .interfaces.rev140508.interfaces.state.InterfaceKey(interfaceName));
 
-        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateOptional = MDSALUtil
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .interfaces.rev140508.interfaces.state.Interface> ifStateId = idBuilder.build();
+
+        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .interfaces.rev140508.interfaces.state.Interface> ifStateOptional = MDSALUtil
                 .read(dataBroker, LogicalDatastoreType.OPERATIONAL, ifStateId);
 
         if (ifStateOptional.isPresent()) {
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifStateOptional
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                .interfaces.state.Interface ifState = ifStateOptional
                     .get();
             List<String> lowerLayerIf = ifState.getLowerLayerIf();
             if (!lowerLayerIf.isEmpty()) {

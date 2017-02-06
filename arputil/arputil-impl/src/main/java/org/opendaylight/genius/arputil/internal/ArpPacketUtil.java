@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -15,19 +15,23 @@ import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 
 public class ArpPacketUtil {
 
-    public static byte[] EthernetDestination_Broadcast = new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
-            (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
-    public static byte[] MAC_Broadcast = new byte[] { (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0 };
+    private ArpPacketUtil() {
+    }
+
+    protected static final byte[] ETHERNET_BROADCAST_DESTINATION = new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+        (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+    protected static final byte[] BROADCAST_MAC = new byte[] { (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
+        (byte) 0 };
 
     public static byte[] getPayload(short opCode, byte[] senderMacAddress, byte[] senderIP, byte[] targetMacAddress,
-                                    byte[] targetIP) throws PacketException {
+            byte[] targetIP) throws PacketException {
         ARP arp = createARPPacket(opCode, senderMacAddress, senderIP, targetMacAddress, targetIP);
         Ethernet ethernet = createEthernetPacket(senderMacAddress, targetMacAddress, arp);
         return ethernet.serialize();
     }
 
     public static ARP createARPPacket(short opCode, byte[] senderMacAddress, byte[] senderIP, byte[] targetMacAddress,
-                                      byte[] targetIP) {
+            byte[] targetIP) {
         ARP arp = new ARP();
         arp.setHardwareType(ARP.HW_TYPE_ETHERNET);
         arp.setProtocolType(EtherTypes.IPv4.shortValue());
@@ -41,8 +45,7 @@ public class ArpPacketUtil {
         return arp;
     }
 
-    public static Ethernet createEthernetPacket(byte[] sourceMAC, byte[] targetMAC, ARP arp)
-            throws PacketException {
+    public static Ethernet createEthernetPacket(byte[] sourceMAC, byte[] targetMAC, ARP arp) throws PacketException {
         Ethernet ethernet = new Ethernet();
         ethernet.setSourceMACAddress(sourceMAC);
         ethernet.setDestinationMACAddress(targetMAC);
