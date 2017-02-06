@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_446d0a98",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-06T01:39:11Z",
+      "side": 1,
+      "message": "Yes, will combine them as part of the subsequent patches.. Too much of duplication is there",
+      "parentUuid": "fafc7978_79bd5b68",
+      "revId": "840d0f6773a990315a7d5f64100b053c6a436623",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_b9b7c385",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
         "patchSetId": 1
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_c410da03",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-06T01:39:11Z",
+      "side": 1,
+      "message": "True, will change this",
+      "parentUuid": "fafc7978_b9b7c385",
+      "range": {
+        "startLine": 45,
+        "startChar": 56,
+        "endLine": 45,
+        "endChar": 82
+      },
+      "revId": "840d0f6773a990315a7d5f64100b053c6a436623",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d9aba71c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/factory/FlowBasedServicesStateAddable.java",
         "patchSetId": 1
@@ -53,6 +95,30 @@
       "writtenOn": "2017-02-05T19:19:32Z",
       "side": 1,
       "message": "if this method is designed only for tunnels the name should reflect it",
+      "range": {
+        "startLine": 16,
+        "startChar": 33,
+        "endLine": 16,
+        "endChar": 60
+      },
+      "revId": "840d0f6773a990315a7d5f64100b053c6a436623",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_64092edd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/factory/FlowBasedServicesStateAddable.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-06T01:39:11Z",
+      "side": 1,
+      "message": "i think we want to keep it generic, so that we can extend it in future if needed..i will make the method name binsServiceOnInterfaceType in all places uniformly",
+      "parentUuid": "fafc7978_d9aba71c",
       "range": {
         "startLine": 16,
         "startChar": 33,
