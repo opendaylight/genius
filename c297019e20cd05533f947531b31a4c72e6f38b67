@@ -34,6 +34,24 @@
       "revId": "c297019e20cd05533f947531b31a4c72e6f38b67",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_241c46c1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-06T06:13:08Z",
+      "side": 1,
+      "message": "Yes, it should work but it will throw an exception and we need to make sure we handle it gracefully than logging it and causing false flags.",
+      "parentUuid": "fafc7978_04730281",
+      "revId": "c297019e20cd05533f947531b31a4c72e6f38b67",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
