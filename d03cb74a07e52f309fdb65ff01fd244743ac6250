@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_df20a7b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 33
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-02-06T10:20:44Z",
+      "side": 1,
+      "message": "With the new approach, we never \"guess\" the parentRef, so it will be empty by design (see netvirt commit under same topic).\n\nThe only way it is updated, is if a new TP update links this interface to it after it was created - on interface creation it will be null.",
+      "parentUuid": "fafc7978_df59c75c",
+      "revId": "d03cb74a07e52f309fdb65ff01fd244743ac6250",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
