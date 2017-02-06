@@ -7,11 +7,15 @@
  */
 package org.opendaylight.genius.test;
 
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +34,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.binding.test.AbstractDataBrokerTest;
+import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestCustomizer;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -76,6 +81,19 @@ public class MdSalUtilTest extends AbstractDataBrokerTest {
             NodeKey s1Key = new NodeKey(new NodeId("openflow:1"));
             addFlowCapableNode(s1Key);
         }
+     @Override
+     protected DataBrokerTestCustomizer createDataBrokerTestCustomizer() {
+         return new DataBrokerTestCustomizer() {
+             @Override
+            public ListeningExecutorService getCommitCoordinatorExecutor() {
+                 return MoreExecutors.listeningDecorator(MoreExecutors.newDirectExecutorService());
+             }
+
+             protected ExecutorService getDatastoreExecutor(LogicalDatastoreType type) {
+                 return MoreExecutors.newDirectExecutorService();
+             }
+         };
+     }
 
         @Test
         public void testInstallFlow() {
