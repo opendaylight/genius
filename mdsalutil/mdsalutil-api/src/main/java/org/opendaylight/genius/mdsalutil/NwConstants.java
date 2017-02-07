@@ -56,14 +56,15 @@ public final class NwConstants {
     // Ingress (w.r.t switch) service indexes
     public static final short DEFAULT_SERVICE_INDEX = 0;
     public static final short ACL_SERVICE_INDEX = 1;
-    public static final short DHCP_SERVICE_INDEX = 2;
-    public static final short QOS_SERVICE_INDEX = 3;
-    public static final short IPV6_SERVICE_INDEX = 4;
-    public static final short SCF_SERVICE_INDEX = 5;
-    public static final short SFC_SERVICE_INDEX = 5;
-    public static final short L3VPN_SERVICE_INDEX = 6;
-    public static final short ELAN_SERVICE_INDEX = 7;
-    public static final short DEFAULT_EGRESS_SERVICE_INDEX = 7;
+    public static final short INGRESS_COUNTERS_SERVICE_INDEX = 2;
+    public static final short DHCP_SERVICE_INDEX = 3;
+    public static final short QOS_SERVICE_INDEX = 4;
+    public static final short IPV6_SERVICE_INDEX = 5;
+    public static final short SCF_SERVICE_INDEX = 6;
+    public static final short SFC_SERVICE_INDEX = 6;
+    public static final short L3VPN_SERVICE_INDEX = 7;
+    public static final short ELAN_SERVICE_INDEX = 8;
+    public static final short DEFAULT_EGRESS_SERVICE_INDEX = 8;
 
     public static final String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     public static final String ACL_SERVICE_NAME = "ACL_SERVICE";
@@ -77,8 +78,11 @@ public final class NwConstants {
 
     // Egress (w.r.t switch) service indexes
     public static final short EGRESS_ACL_SERVICE_INDEX = 6;
+    public static final short EGRESS_COUNTERS_SERVICE_INDEX = 7;
 
     public static final String EGRESS_ACL_SERVICE_NAME = "EGRESS_ACL_SERVICE";
+    public static final String INGRESS_COUNTERS_SERVICE_NAME = "INGRESS_COUNTERS_SERVICE";
+    public static final String EGRESS_COUNTERS_SERVICE_NAME = "EGRESS_COUNTERS_SERVICE";
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger COOKIE_QOS_TABLE = new BigInteger("4000001", 16);
@@ -145,6 +149,7 @@ public final class NwConstants {
     public static final short INGRESS_LEARN_TABLE = 212;
     public static final short INGRESS_LEARN_ACL_REMOTE_ACL_TABLE = 213;
     public static final short INGRESS_LEARN_ACL_FILTER_TABLE = 214;
+    public static final short INGRESS_COUNTERS_TABLE = 219;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 241;
     public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 242;
@@ -152,6 +157,7 @@ public final class NwConstants {
     public static final short EGRESS_LEARN_TABLE = 242;
     public static final short EGRESS_LEARN_ACL_REMOTE_ACL_TABLE = 243;
     public static final short EGRESS_LEARN_ACL_FILTER_TABLE = 244;
+    public static final short EGRESS_COUNTERS_TABLE = 249;
 
     public enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
