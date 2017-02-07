@@ -34,11 +34,11 @@ class ExpectedServicesInfo {
     static def newboundService() {
         new BoundServicesBuilder >> [
             serviceName = "default.23701c04-7e58-4c65-9425-78a80d49a218"
-            servicePriority = 7 as short
+            servicePriority = 8 as short
             serviceType = ServiceTypeFlowBased
             addAugmentation(StypeOpenflow, new StypeOpenflowBuilder >> [
                 flowCookie = 134217735bi
-                flowPriority = 7
+                flowPriority = 8
                 instruction = #[
                     new InstructionBuilder >> [
                         instruction = new ApplyActionsCaseBuilder >> [
