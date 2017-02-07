@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2015 - 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -15,6 +15,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -35,11 +36,35 @@ public class ResourceBatchingManager implements AutoCloseable {
     private static final int INITIAL_DELAY = 3000;
     private static final TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
 
+    private static final int PERIODICITY_IN_MS = 500;
+    private static final int BATCH_SIZE = 1000;
+
+    public enum SHARD_RESOURCE {
+        CONFIG_TOPOLOGY(LogicalDatastoreType.CONFIGURATION),
+        OPERATIONAL_TOPOLOGY(LogicalDatastoreType.OPERATIONAL),
+        CONFIG_INVENTORY(LogicalDatastoreType.CONFIGURATION),
+        OPERATIONAL_INVENTORY(LogicalDatastoreType.OPERATIONAL);
+
+        BlockingQueue<ActionableResource> queue = new LinkedBlockingQueue<>();
+        LogicalDatastoreType datastoreType;
+
+        SHARD_RESOURCE(LogicalDatastoreType datastoreType) {
+            this.datastoreType = datastoreType;
+        }
+
+        public LogicalDatastoreType getDatastoreType(){
+            return datastoreType;
+        }
+        BlockingQueue<ActionableResource> getQueue() {
+            return queue;
+        }
+    }
+
     private final ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>>
-        resourceHandlerMapper = new ConcurrentHashMap<>();
+            resourceHandlerMapper = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledThreadPoolExecutor>
-        resourceBatchingThreadMapper = new ConcurrentHashMap<>();
+            resourceBatchingThreadMapper = new ConcurrentHashMap<>();
 
     private static ResourceBatchingManager instance;
 
@@ -53,7 +78,8 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     @Override
     public void close() {
-        LOG.trace("ResourceBatchingManager Closed");
+        LOG.trace("ResourceBatchingManager Closed, closing all batched resources");
+        resourceBatchingThreadMapper.values().forEach(ScheduledThreadPoolExecutor::shutdown);
     }
 
     public void registerBatchableResource(
@@ -64,14 +90,54 @@ public class ResourceBatchingManager implements AutoCloseable {
             throw new RuntimeException("Resource type already registered");
         }
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
-        ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor)
-                Executors.newScheduledThreadPool(1);
+        ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
         if (resDelegatorService.getPoolSize() == 0 ) {
             resDelegatorService.scheduleWithFixedDelay(
                     new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+        }
+    }
+
+    public void registerDefaultBatchHandlers(DataBroker broker) {
+        LOG.trace("Registering default batch handlers");
+        Integer batchSize = Integer.getInteger("resource.manager.batch.size", BATCH_SIZE);
+        Integer batchInterval = Integer.getInteger("resource.manager.batch.periodicity.ms", PERIODICITY_IN_MS);
+
+        for (SHARD_RESOURCE shardResource : SHARD_RESOURCE.values()) {
+            if (resourceHandlerMapper.containsKey(shardResource.name())) {
+                continue;
+            }
+            DefaultBatchHandler batchHandler = new DefaultBatchHandler(broker, shardResource.datastoreType, batchSize, batchInterval);
+            registerBatchableResource(shardResource.name(), shardResource.getQueue(), batchHandler);
+        }
+    }
+
+    public void put(SHARD_RESOURCE shardResource, InstanceIdentifier identifier, DataObject updatedData) {
+        BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        if (queue != null) {
+            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+                    identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
+            queue.add(actResource);
+        }
+    }
+
+    public void merge(SHARD_RESOURCE shardResource, InstanceIdentifier identifier, DataObject updatedData) {
+        BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        if (queue != null) {
+            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+                    identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
+            queue.add(actResource);
+        }
+    }
+
+    public void delete(SHARD_RESOURCE shardResource, InstanceIdentifier identifier) {
+        BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        if (queue != null) {
+            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+                    identifier, ActionableResource.DELETE, null, null/*oldData*/);
+            queue.add(actResource);
         }
     }
 
@@ -113,6 +179,8 @@ public class ResourceBatchingManager implements AutoCloseable {
     public void deregisterBatchableResource(String resourceType) {
         resourceHandlerMapper.remove(resourceType);
         resourceBatchingThreadMapper.remove(resourceType);
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = resourceBatchingThreadMapper.get(resourceType);
+        scheduledThreadPoolExecutor.shutdown();
     }
 
     private class Batcher implements Runnable {
@@ -176,7 +244,6 @@ public class ResourceBatchingManager implements AutoCloseable {
             this.actResourceList = actResourceList;
         }
 
-        @SuppressWarnings("checkstyle:IllegalCatch")
         public void process() {
             InstanceIdentifier<T> identifier;
             Object instance;
@@ -231,22 +298,20 @@ public class ResourceBatchingManager implements AutoCloseable {
                         WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
                         switch (object.getAction()) {
                             case SubTransaction.CREATE :
-                                writeTransaction.put(dsType, object.getInstanceIdentifier(),
-                                    (DataObject) object.getInstance(), true);
+                                writeTransaction.put(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
                                 break;
                             case SubTransaction.DELETE :
                                 writeTransaction.delete(dsType, object.getInstanceIdentifier());
                                 break;
                             case SubTransaction.UPDATE :
-                                writeTransaction.merge(dsType, object.getInstanceIdentifier(),
-                                    (DataObject) object.getInstance(), true);
+                                writeTransaction.merge(dsType, object.getInstanceIdentifier(), (DataObject)object.getInstance(), true);
                                 break;
                             default:
-                                LOG.error("Unable to determine Action for transaction object with id {}",
-                                    object.getInstanceIdentifier());
+                                LOG.error("Unable to determine Action for transaction object with id {}", object.getInstanceIdentifier());
                         }
+                        CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction.submit();
                         try {
-                            writeTransaction.submit().get();
+                            futureOperation.get();
                         } catch (InterruptedException | ExecutionException exception) {
                             LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
                                     object.getInstanceIdentifier(), object.getInstance(), exception);
