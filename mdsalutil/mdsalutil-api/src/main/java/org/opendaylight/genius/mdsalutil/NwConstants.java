@@ -79,6 +79,11 @@ public final class NwConstants {
     public static final short EGRESS_ACL_SERVICE_INDEX = 6;
 
     public static final String EGRESS_ACL_SERVICE_NAME = "EGRESS_ACL_SERVICE";
+    
+    public static final String INGRESS_COUNTERS_SERVICE_NAME = "INGRESS_COUNTERS_SERVICE";
+    public static final String EGRESS_COUNTERS_SERVICE_NAME = "EGRESS_COUNTERS_SERVICE";
+    public static final short INGRESS_COUNTERS_SERVICE_INDEX = 1;
+    public static final short EGRESS_COUNTERS_SERVICE_INDEX = 8;
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger COOKIE_QOS_TABLE = new BigInteger("4000001", 16);
@@ -116,6 +121,7 @@ public final class NwConstants {
     public static final short SNAT_TABLE = 28;
     public static final short INTERNAL_TUNNEL_TABLE = 36;
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
+    public static final short INGRESS_COUNTERS_TABLE = 39;
     public static final short INGRESS_ACL_TABLE = 40;
     public static final short INGRESS_ACL_FILTER_TABLE = 41;
     public static final short INGRESS_LEARN_TABLE = 41;
@@ -148,6 +154,7 @@ public final class NwConstants {
     public static final short EGRESS_ACL_FILTER_TABLE = 252;
     public static final short EGRESS_LEARN_TABLE = 252;
     public static final short EGRESS_LEARN2_TABLE = 253;
+    public static final short EGRESS_COUNTERS_TABLE = 254;
 
     public enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
