@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_aae11c00",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/AbstractDataChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:38:53Z",
+      "side": 1,
+      "message": "I totally agree re. useful-or-none JavaDoc, and do this in all new code I write.. however in this particular case of bulk Checkstyle related clean up of a method had a @param but no text before it, I just couldn\u0027t be bothered, so had a choice of deleting it completely, but loosing the @param (shame), or making up something to but before @param as quickly as possible... ;-) Can\u0027t Fix the World in 1 Gerrit!",
+      "parentUuid": "fafc7978_d0841cb3",
+      "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_b0b518f0",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/GroupEntity.java",
         "patchSetId": 1
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_0ae828e1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/GroupEntity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:38:53Z",
+      "side": 1,
+      "message": "sure .. anything as long as Checkstyle does not complain about (like it does for m_* style fields)",
+      "parentUuid": "fafc7978_b0b518f0",
+      "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_30c92879",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 1
@@ -83,6 +119,24 @@
       "writtenOn": "2017-02-03T16:01:25Z",
       "side": 1,
       "message": "Urgh... Couldn\u0027t this be nodeId, since the nodeId in the method isn\u0027t actually used?",
+      "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_eae20400",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:38:53Z",
+      "side": 1,
+      "message": "sure .. as long as both CS and you are happy, I\u0027m happy! ;)",
+      "parentUuid": "fafc7978_30c92879",
       "revId": "82a76708eeb91e1ce7b81798d81d9e4160c7a5ab",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
