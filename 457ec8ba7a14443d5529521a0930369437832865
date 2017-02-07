@@ -1,0 +1,197 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_4ac99077",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "make this public *final* class",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2ac40c5e",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "why only protected and not just private?",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8aa258ac",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "dito",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6aa574b4",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "particularly because it was in an isTraceEnabled: this can be a performance issue if this is called a lot, and causes excessive string concatenation, you must use this:\n\nLOG.trace(\"getMac rpc invoked for ip {}\", dstIpAddress);",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_caac60a3",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "I would not put the \": \" so just \".. for {}\" - let slf4j handle how to present the Exception.  Also change of trace to error - sure not a problem (we have issues recently with log flooding in CSIT, did you follow that? Just saying - I would probably do this as well though... ;-)",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aaaf5c93",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "dito",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0a96684c",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "dito re \u0027:\u0027  (also I hope that changing this trace to error doesn\u0027t cause log flooding.. but unless someone says otherwise, I would go ahead and do it like you propose)",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ea904450",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "this is good",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4aa0709f",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "dito re \u0027:\u0027  (also I hope that changing this trace to error doesn\u0027t cause log flooding.. but unless someone says otherwise, I would go ahead and do it like you propose)",
+      "range": {
+        "startLine": 363,
+        "startChar": 48,
+        "endLine": 363,
+        "endChar": 49
+      },
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8a89b828",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "dito re \u0027:\u0027  (also I was wondering why you left this as trace() when you changed to error() everywhere else?",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2a9b6c73",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-07T00:58:43Z",
+      "side": 1,
+      "message": "dito re \u0027:\u0027  (also I hope that changing this trace to error doesn\u0027t cause log flooding.. but unless someone says otherwise, I would go ahead and do it like you propose)",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
