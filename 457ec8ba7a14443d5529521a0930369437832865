@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_80d4f747",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_4ac99077",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2ac40c5e",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-07T00:58:43Z",
       "side": 1,
       "message": "why only protected and not just private?",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_00c0077b",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "This constant is used by ArpUtilImpl class.",
+      "parentUuid": "fafc7978_2ac40c5e",
       "revId": "457ec8ba7a14443d5529521a0930369437832865",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_60bf53fc",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpPacketUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "This constant is used by ArpUtilImpl class.",
+      "parentUuid": "fafc7978_8aa258ac",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6aa574b4",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2017-02-07T00:58:43Z",
       "side": 1,
       "message": "particularly because it was in an isTraceEnabled: this can be a performance issue if this is called a lot, and causes excessive string concatenation, you must use this:\n\nLOG.trace(\"getMac rpc invoked for ip {}\", dstIpAddress);",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_40684f87",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_6aa574b4",
       "revId": "457ec8ba7a14443d5529521a0930369437832865",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_800997df",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Ok to the format. Yes, I read the thread :). As a general rule, I think we should log an error when we catch an exception.",
+      "parentUuid": "fafc7978_caac60a3",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_aaaf5c93",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2017-02-07T00:58:43Z",
       "side": 1,
       "message": "dito",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_601bd31b",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_aaaf5c93",
       "revId": "457ec8ba7a14443d5529521a0930369437832865",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_20cf0b81",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_0a96684c",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_ea904450",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 2
@@ -132,6 +258,24 @@
       "writtenOn": "2017-02-07T00:58:43Z",
       "side": 1,
       "message": "this is good",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_00cac76d",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_ea904450",
       "revId": "457ec8ba7a14443d5529521a0930369437832865",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -161,6 +305,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_60c91378",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_4aa0709f",
+      "range": {
+        "startLine": 363,
+        "startChar": 48,
+        "endLine": 363,
+        "endChar": 49
+      },
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_8a89b828",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 2
@@ -178,6 +346,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_40c4cf5e",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_8a89b828",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2a9b6c73",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 2
@@ -189,6 +375,24 @@
       "writtenOn": "2017-02-07T00:58:43Z",
       "side": 1,
       "message": "dito re \u0027:\u0027  (also I hope that changing this trace to error doesn\u0027t cause log flooding.. but unless someone says otherwise, I would go ahead and do it like you propose)",
+      "revId": "457ec8ba7a14443d5529521a0930369437832865",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a0a2dbab",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-07T09:37:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_2a9b6c73",
       "revId": "457ec8ba7a14443d5529521a0930369437832865",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
