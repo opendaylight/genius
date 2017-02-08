@@ -41,7 +41,7 @@ public class ShowVxlan extends OsgiCommandSupport {
             IfmCLIUtil.showVxlanHeaderOutput(session);
         }
         for (Interface iface : vxlanList) {
-            InterfaceInfo ifaceState = interfaceManager.getInterfaceInfoFromOperationalDataStore(iface.getName());
+            InterfaceInfo ifaceState = interfaceManager.getInterfaceInfoFromOperationalDSCache(iface.getName());
             IfmCLIUtil.showVxlanOutput(iface, ifaceState, session);
         }
         return null;
