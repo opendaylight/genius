@@ -326,7 +326,7 @@ public class InterfaceManagerCommonUtils {
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
         InterfaceMetaUtils.createLportTagInterfaceMap(interfaceOperShardTransaction, interfaceName, ifIndex);
         if (ifState == null) {
-            LOG.debug("could not retrieve interface state corresponding to {}", interfaceName);
+            LOG.debug("received null ifState (for parent), cannot add state for {}", interfaceName);
             return;
         }
         LOG.debug("adding interface state for {}", interfaceName);
@@ -433,7 +433,8 @@ public class InterfaceManagerCommonUtils {
     // bound to another trunk interface should not
     // be allowed
     public static boolean createInterfaceChildEntryIfNotPresent(DataBroker dataBroker, WriteTransaction tx,
-            String parentInterface, String childInterface) {
+                                                                String parentInterface, String childInterface,
+                                                                IfL2vlan.L2vlanMode l2vlanMode) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
@@ -441,23 +442,39 @@ public class InterfaceManagerCommonUtils {
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIdentifier, dataBroker);
 
         if (interfaceParentEntry != null) {
-            if (!Objects.equals(parentInterface, interfaceParentEntry.getParentInterface())) {
-                LOG.error("Trying to bind the same parent interface {} to multiple trunk interfaces",
-                        parentInterface);
-            } else {
+            List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
+            if (interfaceChildEntries != null && interfaceChildEntries.contains(childInterface)) {
                 LOG.trace("Child entry for interface {} already exists", childInterface);
+                return false;
             }
-            return false;
+
+            if (l2vlanMode == IfL2vlan.L2vlanMode.Trunk && interfaceChildEntries != null) {
+                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                    String curChildInterface = interfaceChildEntry.getChildInterface();
+                    Interface iface = getInterfaceFromConfigDS(curChildInterface, dataBroker);
+                    if (isTrunkInterface(iface)) {
+                        LOG.error("Trying to bind child interface {} of type Trunk to parent interface {}," +
+                                        "but it is already bound to a trunk interface {}",
+                                childInterface, parentInterface, curChildInterface);
+                        return false;
+                    }
+                }
+            }
         }
 
-        LOG.info("First vlan trunk {} bound on parent-interface {}", childInterface, parentInterface);
-        InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
-        InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
-                .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-        InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
-                .setChildInterface(childInterface);
-        tx.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+        LOG.info("Creating child interface {} of type {} bound on parent-interface {}",
+                childInterface, l2vlanMode, parentInterface);
+        createInterfaceChildEntry(parentInterface, childInterface);
         return true;
+    }
+
+    public static boolean isTrunkInterface(Interface iface) {
+        if (iface != null) {
+            IfL2vlan ifL2vlan = iface.getAugmentation(IfL2vlan.class);
+            return ifL2vlan != null && IfL2vlan.L2vlanMode.Trunk.equals(ifL2vlan.getL2vlanMode());
+        }
+
+        return false;
     }
 
     public static boolean deleteParentInterfaceEntry(String parentInterface) {
