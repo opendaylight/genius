@@ -15,7 +15,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.routing.RouteChangeListener;
@@ -29,6 +28,7 @@ import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.test.infra.TemporaryDataBrokerTestModuleWithLocalFixForBug7538;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
@@ -71,7 +71,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
 
-        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+        DataBroker dataBroker = TemporaryDataBrokerTestModuleWithLocalFixForBug7538.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
 
         LockManagerService lockManager = new LockManager(dataBroker);
