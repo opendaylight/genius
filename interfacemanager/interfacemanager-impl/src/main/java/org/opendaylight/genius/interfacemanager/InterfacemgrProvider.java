@@ -54,6 +54,7 @@ import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMon
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -400,36 +401,45 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;
         }
+
+        return populateInterfaceInfo(interfaceName, ifState);
+    }
+
+
+    public InterfaceInfo populateInterfaceInfo(String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml
+        .ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         Integer lportTag = ifState.getIfIndex();
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
-            interfaceInfo.setPortName(IfmUtil.getPortName(dataBroker, ncId));
+            if (Tunnel.class.equals(ifState.getType())) {
+                interfaceInfo.setPortName(interfaceName);
+            } else {
+                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+                ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+                interfaceInfo.setPortName(parentRefs.getParentInterface());
+            }
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
         InterfaceInfo.InterfaceOpState opState ;
-        if(ifState.getOperStatus() == OperStatus.Up)
-        {
+        if (ifState.getOperStatus() == OperStatus.Up) {
             opState = InterfaceInfo.InterfaceOpState.UP;
-        }
-        else if (ifState.getOperStatus() == OperStatus.Down)
-        {
+        } else if (ifState.getOperStatus() == OperStatus.Down) {
             opState = InterfaceInfo.InterfaceOpState.DOWN;
-        }
-        else
-        {
+        } else {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
-        interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
+        interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED
+            : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
-        if (lportTag != null){
+        if (lportTag != null) {
             interfaceInfo.setInterfaceTag(lportTag);
         }
         interfaceInfo.setOpState(opState);
@@ -438,6 +448,18 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
         }
         return interfaceInfo;
+    }
+
+
+    @Override
+    public InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromCache(interfaceName);
+        if (ifState == null) {
+            LOG.warn("Interface {} is not present", interfaceName);
+            return null;
+        }
+        return populateInterfaceInfo(interfaceName, ifState);
     }
 
     @Override
