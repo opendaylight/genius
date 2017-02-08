@@ -172,15 +172,22 @@ public class InterfaceManagerCommonUtils {
         return getInterfaceFromConfigDS(interfaceKey.getName(), dataBroker);
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(
-            String interfaceName, DataBroker dataBroker) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceStateMap
-                .get(interfaceName);
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+        .Interface getInterfaceStateFromCache(
+            String interfaceName) {
+        return interfaceStateMap.get(interfaceName);
+    }
+
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+        .Interface  getInterfaceStateFromOperDS(String interfaceName, DataBroker dataBroker) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = getInterfaceStateFromCache(interfaceName);
         if (ifState != null) {
             return ifState;
         }
-        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateOptional = IfmUtil
-                .read(LogicalDatastoreType.OPERATIONAL, IfmUtil.buildStateInterfaceId(interfaceName), dataBroker);
+        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface>  ifStateOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, IfmUtil
+            .buildStateInterfaceId( interfaceName), dataBroker);
         if (ifStateOptional.isPresent()) {
             ifState = ifStateOptional.get();
             interfaceStateMap.put(ifState.getName(), ifState);
