@@ -29,7 +29,6 @@ public class InterfaceStateListener
     private final DataBroker dataBroker;
 
     public InterfaceStateListener(DataBroker dataBroker) {
-        super(Interface.class, InterfaceStateListener.class);
         this.dataBroker = dataBroker;
     }
 
@@ -40,39 +39,40 @@ public class InterfaceStateListener
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
+        InterfaceManagerCommonUtils.removeFromInterfaceStateCache(interfaceStateOld);
         LOG.debug("Received interface state remove event for {}, ignoring", interfaceStateOld.getName());
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
+        InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
     }
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
+        InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         if (!Tunnel.class.equals(interfaceStateNew.getType())
             || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received Tunnel state add event for {}", interfaceStateNew.getName());
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            coordinator.enqueueJob(interfaceStateNew.getName(), () -> {
-                final List<ListenableFuture<Void>> futures = new ArrayList<>();
-                Interface.OperStatus bfdState = InterfaceManagerCommonUtils
-                        .getBfdStateFromCache(interfaceStateNew.getName());
-                if (bfdState != null && bfdState != interfaceStateNew.getOperStatus()
-                        && interfaceStateNew.getOperStatus() != Interface.OperStatus.Unknown) {
-                    // update opstate of interface if TEP has gone down/up as a
-                    // result of BFD monitoring
-                    LOG.debug("updating tunnel state for interface {} as {}", interfaceStateNew.getName(), bfdState);
-                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                    InterfaceManagerCommonUtils.updateOpState(transaction, interfaceStateNew.getName(), bfdState);
-                    futures.add(transaction.submit());
-                }
-                return futures;
-            });
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        LOG.debug("Received Tunnel state add event for {}", interfaceStateNew.getName());
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        coordinator.enqueueJob(interfaceStateNew.getName(), () -> {
+            final List<ListenableFuture<Void>> futures = new ArrayList<>();
+            Interface.OperStatus bfdState = InterfaceManagerCommonUtils
+                    .getBfdStateFromCache(interfaceStateNew.getName());
+            if (bfdState != null && bfdState != interfaceStateNew.getOperStatus()
+                    && interfaceStateNew.getOperStatus() != Interface.OperStatus.Unknown) {
+                // update opstate of interface if TEP has gone down/up as a
+                // result of BFD monitoring
+                LOG.debug("updating tunnel state for interface {}", interfaceStateNew.getName());
+                WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceStateNew.getName(), bfdState);
+                futures.add(transaction.submit());
+            }
+            return futures;
+        });
     }
 
     @Override
