@@ -11,12 +11,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -26,13 +28,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
+public class InterfaceTopologyStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
+    private final InterfacemgrProvider interfaceMgrProvider;
 
-    public InterfaceTopologyStateListener(DataBroker dataBroker) {
-        super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
+    public InterfaceTopologyStateListener(DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider) {
         this.dataBroker = dataBroker;
+        this.interfaceMgrProvider = interfaceMgrProvider;
     }
 
     @Override
@@ -50,9 +53,16 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
     protected void remove(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeOld) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                 identifier, bridgeOld);
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
-        jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+
+        InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
+        interfaceMgrProvider.removeBridgeForNodeIid(nodeIid);
+
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
+            jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker,
+                IfmConstants.JOB_MAX_RETRIES);
+        });
     }
 
     @Override
@@ -60,26 +70,41 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
                           OvsdbBridgeAugmentation bridgeNew) {
         LOG.debug("Received Update DataChange Notification for identifier: {}, ovsdbBridgeAugmentation old: {}, new: {}.",
                 identifier, bridgeOld, bridgeNew);
-        DatapathId oldDpid = bridgeOld.getDatapathId();
-        DatapathId newDpid = bridgeNew.getDatapathId();
-        if(oldDpid == null && newDpid != null){
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
-        } else if(oldDpid != null && !oldDpid.equals(newDpid)){
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
-        }
+
+        InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
+        interfaceMgrProvider.addBridgeForNodeIid(nodeIid, bridgeNew);
+
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            DatapathId oldDpid = bridgeOld.getDatapathId();
+            DatapathId newDpid = bridgeNew.getDatapathId();
+            if(oldDpid == null && newDpid != null){
+                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+                RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
+                jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                    IfmConstants.JOB_MAX_RETRIES);
+            } else if(oldDpid != null && !oldDpid.equals(newDpid)){
+                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+                RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
+                jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                    IfmConstants.JOB_MAX_RETRIES);
+            }
+        });
     }
 
     @Override
     protected void add(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                 identifier, bridgeNew);
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+
+        InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
+        interfaceMgrProvider.addBridgeForNodeIid(nodeIid, bridgeNew);
+
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
+            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                IfmConstants.JOB_MAX_RETRIES);
+        });
     }
 
     private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
