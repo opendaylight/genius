@@ -18,7 +18,6 @@ import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPTunnelsStateListener;
@@ -95,7 +94,6 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(CacheBridgeEntryConfigListener.class);
         bind(CacheBridgeRefEntryListener.class);
-        bind(CacheInterfaceConfigListener.class);
         bind(CacheInterfaceStateListener.class);
         bind(FlowBasedServicesConfigListener.class);
         bind(FlowBasedServicesInterfaceStateListener.class);
