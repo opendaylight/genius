@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_953c2de4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-09T13:57:26Z",
+      "side": 1,
+      "message": "this is nearly correct definition.",
+      "revId": "3373f4bb635808d3ed64a3bc0061c586901f3bc9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
