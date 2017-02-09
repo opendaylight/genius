@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -62,6 +63,10 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
     protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                           OvsdbTerminationPointAugmentation tpOld) {
         LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
+
+        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+        interfaceMgrProvider.ifaceToTpMap.remove(oldInterfaceName);
+        interfaceMgrProvider.ifaceToNodeMap.remove(oldInterfaceName);
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
@@ -83,16 +88,26 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
-
+        String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
+        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+        interfaceMgrProvider.ifaceToTpMap.put(newInterfaceName, tpNew);
+        Node node = interfaceMgrProvider.ifaceToNodeMap.get(newInterfaceName);
+        if (node == null) {
+            InstanceIdentifier<Node> nodeInstanceId = identifier.firstIdentifierOf(Node.class);
+            // TODO: Replace this read also with cache. probably once we move to blueprint
+            node = mdsalUtils.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceId);
+            if(node != null) {
+                interfaceMgrProvider.ifaceToNodeMap.put(newInterfaceName, node);
+            }
+        }
+        String dpnId = southboundUtils.getDataPathIdStr(node);
+        if (dpnId == null) {
+            return;
+        }
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
-            String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
-            if (newInterfaceName != null && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
-                InstanceIdentifier<Node> nodeInstanceId = identifier.firstIdentifierOf(Node.class);
-                String dpnId = southboundUtils.getDatapathIdFromNodeInstanceId(nodeInstanceId);
-                if (dpnId == null) {
-                    return;
-                }
+            if (dpnId != null && newInterfaceName != null &&
+                    (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
+
                 String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
                 LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
                         + "of that interface ID to this termination point's interface-state name {}",
