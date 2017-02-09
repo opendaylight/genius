@@ -26,10 +26,9 @@ import java.util.List;
 
 public class InterfaceStateListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
     public InterfaceStateListener(DataBroker dataBroker) {
-        super(Interface.class, InterfaceStateListener.class);
         this.dataBroker = dataBroker;
     }
 
@@ -40,16 +39,19 @@ public class InterfaceStateListener extends AsyncClusteredDataTreeChangeListener
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
+        InterfaceManagerCommonUtils.removeFromInterfaceStateCache(interfaceStateOld);
         LOG.debug("Received interface state remove event for {}, ignoring", interfaceStateOld.getName());
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
+        InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
     }
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
+        InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         if(!Tunnel.class.equals(interfaceStateNew.getType())){
             return;
         }
