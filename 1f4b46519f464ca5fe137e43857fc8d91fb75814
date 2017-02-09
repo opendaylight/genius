@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1b407ca4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-02-09T13:25:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_bbb850e6",
+      "range": {
+        "startLine": 56,
+        "startChar": 24,
+        "endLine": 56,
+        "endChar": 40
+      },
+      "revId": "1f4b46519f464ca5fe137e43857fc8d91fb75814",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5bc96477",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
         "patchSetId": 1
@@ -41,6 +65,78 @@
         "startChar": 9,
         "endLine": 68,
         "endChar": 124
+      },
+      "revId": "1f4b46519f464ca5fe137e43857fc8d91fb75814",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7b2f08f7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-02-09T13:25:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_5bc96477",
+      "range": {
+        "startLine": 68,
+        "startChar": 9,
+        "endLine": 68,
+        "endChar": 124
+      },
+      "revId": "1f4b46519f464ca5fe137e43857fc8d91fb75814",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_db36f451",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-02-09T13:25:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_1b96bc4c",
+      "range": {
+        "startLine": 79,
+        "startChar": 51,
+        "endLine": 79,
+        "endChar": 54
+      },
+      "revId": "1f4b46519f464ca5fe137e43857fc8d91fb75814",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bb397043",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-02-09T13:25:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_bbafb093",
+      "range": {
+        "startLine": 89,
+        "startChar": 46,
+        "endLine": 89,
+        "endChar": 47
       },
       "revId": "1f4b46519f464ca5fe137e43857fc8d91fb75814",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
