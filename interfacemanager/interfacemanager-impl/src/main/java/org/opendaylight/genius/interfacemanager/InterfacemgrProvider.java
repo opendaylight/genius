@@ -14,7 +14,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -49,7 +51,6 @@ import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListen
 import org.opendaylight.genius.interfacemanager.pmcounters.NodeConnectorStatsImpl;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.InterfaceBatchHandler;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
@@ -96,7 +97,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
@@ -107,6 +107,9 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
     private static final InterfaceStatusMonitor interfaceStatusMonitor = InterfaceStatusMonitor.getInstance();
+
+    private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
+    private Map<String, Node> ifaceToNodeMap;
 
     private RpcProviderRegistry rpcProviderRegistry;
     private IdManagerService idManager;
@@ -223,6 +226,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
             this.mdsalUtils = new MdsalUtils(dataBroker);
             this.southboundUtils = new SouthboundUtils(mdsalUtils);
+            this.ifaceToTpMap = new ConcurrentHashMap<>();
+            this.ifaceToNodeMap = new ConcurrentHashMap<>();
 
             interfaceStatusMonitor.reportStatus("OPERATIONAL");
         } catch (Exception e) {
@@ -450,7 +455,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         } else {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
-        interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED
+        interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
             : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
         if (lportTag != null) {
@@ -604,27 +609,67 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         return InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, interfaceName);
     }
 
+    public void addTerminationPointForInterface(String interfaceName,
+            OvsdbTerminationPointAugmentation terminationPoint) {
+        if (interfaceName != null && terminationPoint != null) {
+            ifaceToTpMap.put(interfaceName, terminationPoint);
+        }
+    }
+
+    public OvsdbTerminationPointAugmentation getTerminationPoint(String interfaceName) {
+        return ifaceToTpMap.get(interfaceName);
+    }
+
+    public void removeTerminationPointForInterface(String interfaceName) {
+        if(interfaceName != null) {
+            ifaceToTpMap.remove(interfaceName);
+        }
+    }
+
+    public void addNodeForInterface(String interfaceName, Node node) {
+        if(interfaceName != null && node != null) {
+            ifaceToNodeMap.put(interfaceName,  node);
+        }
+    }
+
+    public Node getNodeForInterface(String interfaceName) {
+        return getNodeForInterface(interfaceName, null);
+    }
+
+    private Node getNodeForInterface(String interfaceName, InstanceIdentifier<Node> nodeInstanceId) {
+        Node node = ifaceToNodeMap.get(interfaceName);
+        if (node == null && nodeInstanceId != null) {
+            // TODO: Replace this read also with cache. probably once we move to blueprint
+            node = mdsalUtils.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceId);
+            addNodeForInterface(interfaceName, node);
+        }
+        return node;
+    }
+
+    public String getDpidForInterface(String interfaceName, InstanceIdentifier<Node> nodeInstanceId) {
+        Node node = getNodeForInterface(interfaceName, nodeInstanceId);
+        return southboundUtils.getDataPathIdStr(node);
+    }
+
+    public void removeNodeForInterface(String interfaceName) {
+        if(interfaceName != null) {
+            ifaceToNodeMap.remove(interfaceName);
+        }
+    }
+
     @Override
     public String getParentRefNameForInterface(String interfaceName) {
         String parentRefName = null;
 
-        // FIXME Note this utility isn't very good for scale/performance as it traverses all nodes,
-        // probably need to use a cache instead of these (iface_name->dpnId+tpName).
-        Node node = southboundUtils.getNodeByTerminationPointExternalId(interfaceName);
-        if (node != null) {
+        Node node = getNodeForInterface(interfaceName);
+        OvsdbTerminationPointAugmentation ovsdbTp = getTerminationPoint(interfaceName);
+        if (node != null && ovsdbTp != null) {
             String dpnId = southboundUtils.getDataPathIdStr(node);
             if (dpnId == null) {
                 LOG.error("Got node {} when looking for TP with external ID {}, "
                         + "but unexpectedly got NULL dpnId for this node", node, interfaceName);
                 return null;
             }
-            TerminationPoint tp = SouthboundUtils.getTerminationPointByExternalId(node, interfaceName);
-            if (tp == null) {
-                LOG.error("Got node {} when looking for TP with external ID {}, "
-                        + "but unexpectedly got a NULL TP from this node", node, interfaceName);
-                return null;
-            }
-            OvsdbTerminationPointAugmentation ovsdbTp = tp.getAugmentation(OvsdbTerminationPointAugmentation.class);
             parentRefName = getPortNameForInterface(dpnId, ovsdbTp.getName());
             LOG.debug("Building parent ref for neutron port {}, using parentRefName {} acquired by external ID",
                     interfaceName, parentRefName);

@@ -29,7 +29,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +83,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
+        InterfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
             String ifName = interfaceOld.getName();
@@ -104,6 +104,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
+        InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
@@ -131,6 +132,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
+        InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
