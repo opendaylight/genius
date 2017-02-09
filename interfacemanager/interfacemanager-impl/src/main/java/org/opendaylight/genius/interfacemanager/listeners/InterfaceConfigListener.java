@@ -88,6 +88,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
+        InterfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
             String ifName = interfaceOld.getName();
@@ -108,6 +109,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
+        InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
@@ -135,6 +137,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
+        InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
