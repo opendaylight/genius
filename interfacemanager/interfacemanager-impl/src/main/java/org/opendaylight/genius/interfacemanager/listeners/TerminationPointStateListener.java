@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -20,7 +20,6 @@ import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
-import org.opendaylight.ovsdb.utils.mdsal.utils.MdsalUtils;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -34,16 +33,11 @@ import org.slf4j.LoggerFactory;
 public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private final DataBroker dataBroker;
-    private final MdsalUtils mdsalUtils;
-    private final SouthboundUtils southboundUtils;
     private final InterfacemgrProvider interfaceMgrProvider;
 
     public TerminationPointStateListener(DataBroker dataBroker,
                                          final InterfacemgrProvider interfaceMgrProvider) {
-        super(OvsdbTerminationPointAugmentation.class, TerminationPointStateListener.class);
         this.dataBroker = dataBroker;
-        this.mdsalUtils = new MdsalUtils(dataBroker);
-        this.southboundUtils = new SouthboundUtils(mdsalUtils);
         this.interfaceMgrProvider = interfaceMgrProvider;
     }
 
@@ -62,6 +56,9 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
     protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                           OvsdbTerminationPointAugmentation tpOld) {
         LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
+
+        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+        interfaceMgrProvider.removeTerminationPointForInterface(oldInterfaceName);
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
@@ -83,16 +80,14 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
-
+        String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
+        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+        interfaceMgrProvider.addTerminationPointForInterface(newInterfaceName, tpNew);
+        String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName,
+                        identifier.firstIdentifierOf(Node.class));
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
-            String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
-            if (newInterfaceName != null && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
-                InstanceIdentifier<Node> nodeInstanceId = identifier.firstIdentifierOf(Node.class);
-                String dpnId = southboundUtils.getDatapathIdFromNodeInstanceId(nodeInstanceId);
-                if (dpnId == null) {
-                    return;
-                }
+            if (dpnId != null && newInterfaceName != null &&
+                    (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
                 String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
                 LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
                         + "of that interface ID to this termination point's interface-state name {}",
