@@ -450,14 +450,14 @@ public class TepCommandHelper {
             if (session != null) {
                 if (flag) {
                     for (String p : result) {
-                        session.getConsole().println(p);
+                        System.out.println(p);
                     }
                 } else {
-                    session.getConsole().println("No teps to display");
+                    System.out.println("No teps to display");
                 }
             }
         } else if(session != null){
-            session.getConsole().println("No teps configured");
+            System.out.println("No teps configured");
         }
     }
 
@@ -648,9 +648,9 @@ public void showCache(String cacheName) {
             }
         }
         String displayFormat = "%-16s  %-16s  %-16s  %-16s  %-16s  %-10s  %-10s";
-        session.getConsole().println(String.format(displayFormat, "Tunnel Name", "Source-DPN",
+        System.out.println(String.format(displayFormat, "Tunnel Name", "Source-DPN",
                         "Destination-DPN", "Source-IP", "Destination-IP", "Trunk-State", "Transport Type"));
-        session.getConsole().println("-------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
 
         for (StateTunnelList tunnelInst : tunnelLists) {
            // Display only the internal tunnels
@@ -670,7 +670,7 @@ public void showCache(String cacheName) {
                    tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
                 else if (tunType.equals(TunnelTypeMplsOverGre.class))
                     tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
-                session.getConsole().println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(), tunnelInst.getSrcInfo().getTepDeviceId(),
+                System.out.println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(), tunnelInst.getSrcInfo().getTepDeviceId(),
                         tunnelInst.getDstInfo().getTepDeviceId(), tunnelInst.getSrcInfo().getTepIp().getIpv4Address().getValue(), tunnelInst.getDstInfo().getTepIp().getIpv4Address().getValue(), tunnelState,
                         tunnelType));
                 
