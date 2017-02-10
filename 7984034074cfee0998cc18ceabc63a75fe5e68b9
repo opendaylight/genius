@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e6786a91",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T12:32:58Z",
+      "side": 1,
+      "message": "space before {",
+      "range": {
+        "startLine": 430,
+        "startChar": 78,
+        "endLine": 430,
+        "endChar": 80
+      },
+      "revId": "7984034074cfee0998cc18ceabc63a75fe5e68b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_467056a5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T12:32:58Z",
+      "side": 1,
+      "message": "space before (",
+      "range": {
+        "startLine": 435,
+        "startChar": 13,
+        "endLine": 435,
+        "endChar": 15
+      },
+      "revId": "7984034074cfee0998cc18ceabc63a75fe5e68b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_267392b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T12:32:58Z",
+      "side": 1,
+      "message": "space after :",
+      "range": {
+        "startLine": 454,
+        "startChar": 11,
+        "endLine": 454,
+        "endChar": 13
+      },
+      "revId": "7984034074cfee0998cc18ceabc63a75fe5e68b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
