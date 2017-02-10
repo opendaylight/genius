@@ -19,6 +19,41 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_89b534f0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T05:55:35Z",
+      "side": 1,
+      "message": "Nit: Also make it as final.",
+      "parentUuid": "fafc7978_0e778a3b",
+      "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_09c94478",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 594,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T05:55:35Z",
+      "side": 1,
+      "message": "You could have methods like getNode(interfaceName), getTerminationPoint(interfaceName). In those methods, lookup local cache for the data (and if it not available then you can use southboundutils) and return it.",
+      "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_4e907243",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -47,6 +82,23 @@
       "writtenOn": "2017-02-10T00:02:46Z",
       "side": 1,
       "message": "see comment in other class. Also, and perhaps most importantly, do you not need to remove/invalidate/evict what you cache here, ever?  (I don\u0027t know enough about the functional use case to judge, so just asking.)",
+      "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_298c0835",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T05:55:35Z",
+      "side": 1,
+      "message": "this check is not required. because there is dpnId !\u003d null at line no 108.",
       "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
