@@ -122,5 +122,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         getOrNewFlows().remove(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }
+    @Override
+    public void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity){
+        getOrNewFlows().add(flowEntity);
+    }
+    @Override
+    public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity){
+        getOrNewFlows().remove(flowEntity);
+    }
 
 }
