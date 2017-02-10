@@ -56,13 +56,14 @@ public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdP
     @Override
     protected void update(InstanceIdentifier<IdPool> identifier,
             IdPool original, IdPool update) {
-        if (update.getAvailableIdsHolder() != original.getAvailableIdsHolder()
-                || update.getReleasedIdsHolder() != original.getReleasedIdsHolder()) {
+        if (! update.getAvailableIdsHolder().equals(original.getAvailableIdsHolder())
+                || ! update.getReleasedIdsHolder().equals(original.getReleasedIdsHolder())) {
             String parentPoolName = update.getParentPoolName();
             String poolName = update.getPoolName();
             if (parentPoolName != null && !parentPoolName.isEmpty()) {
-                if (!idUtils.getPoolUpdatedMap(poolName)) {
-                    LOG.info("Received update for NAME {} : {} - {}", update.getPoolName(), original, update);
+                if (!idUtils.getPoolUpdatedMap(poolName)
+                        && poolName.equals(idUtils.getLocalPoolName(parentPoolName))) {
+                    LOG.info("Received update for pool {} : {} - {}", update.getPoolName(), original, update);
                     idManager.updateLocalIdPoolCache(update, parentPoolName);
                 } else {
                     idUtils.decrementPoolUpdatedMap(poolName);

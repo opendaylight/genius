@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Singleton;
 
@@ -65,7 +66,7 @@ public class IdUtils {
 
     public final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
     public final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
 
     private final int bladeId;
 
@@ -297,24 +298,23 @@ public class IdUtils {
     }
 
     public void incrementPoolUpdatedMap(String localPoolName) {
-        Integer value = poolUpdatedMap.get(localPoolName);
+        AtomicInteger value = poolUpdatedMap.putIfAbsent(localPoolName, new AtomicInteger(0));
         if (value == null) {
-            value = 0;
+            value = poolUpdatedMap.get(localPoolName);
         }
-        poolUpdatedMap.put(localPoolName, value + 1);
+        value.incrementAndGet();
     }
 
     public void decrementPoolUpdatedMap(String localPoolName) {
-        Integer value = poolUpdatedMap.get(localPoolName);
-        if (value == null) {
-            value = 1;
+        AtomicInteger value = poolUpdatedMap.get(localPoolName);
+        if (value != null && value.get() >= 1) {
+            value.decrementAndGet();
         }
-        poolUpdatedMap.put(localPoolName, value - 1);
     }
 
     public boolean getPoolUpdatedMap(String localPoolName) {
-        Integer value = poolUpdatedMap.get(localPoolName);
-        return value != null && value >= 0;
+        AtomicInteger value = poolUpdatedMap.get(localPoolName);
+        return value != null && value.get() > 0 ? true : false;
     }
 
     public void removeFromPoolUpdatedMap(String localPoolName) {
