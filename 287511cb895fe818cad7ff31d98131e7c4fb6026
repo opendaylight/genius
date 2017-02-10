@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_a99e3852",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T06:33:14Z",
+      "side": 1,
+      "message": "Nit: checkstyle issue",
+      "revId": "287511cb895fe818cad7ff31d98131e7c4fb6026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_89b1b4e3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/InterfaceBatchHandler.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T06:33:14Z",
+      "side": 1,
+      "message": "make it as private final",
+      "revId": "287511cb895fe818cad7ff31d98131e7c4fb6026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_09c5c43b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/InterfaceBatchHandler.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T06:33:14Z",
+      "side": 1,
+      "message": "Nit: There can be line space.",
+      "revId": "287511cb895fe818cad7ff31d98131e7c4fb6026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_49deac12",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T06:33:14Z",
+      "side": 1,
+      "message": "same here.",
+      "revId": "287511cb895fe818cad7ff31d98131e7c4fb6026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6939f040",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/FlowBatchingUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T06:33:14Z",
+      "side": 1,
+      "message": "I see FlowBatchingUtils and BatchingUtils does the same, but with two different classes and replicating same code. We should strive for single BatchingUtil class which can provide register option for any kind of ResourceHandlers.",
+      "revId": "287511cb895fe818cad7ff31d98131e7c4fb6026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e9ede0b8",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MdSalUtilBatchHandler.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-10T06:33:14Z",
+      "side": 1,
+      "message": "I see add/update/delete are same in most of the Batch Handler classes. let us move it to ResourceHandler interface as default methods so that we can avoid lot of boilerplate code.\nsame comment for InterfaceBatchHandler.",
+      "revId": "287511cb895fe818cad7ff31d98131e7c4fb6026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
