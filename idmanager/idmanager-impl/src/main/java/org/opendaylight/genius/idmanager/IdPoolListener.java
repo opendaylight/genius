@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdPool, IdPoolListener> implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdPoolListener.class);
-    DataBroker broker;
-    IdManager idManager;
+    private final DataBroker broker;
+    private final IdManager idManager;
     public IdPoolListener(DataBroker broker, IdManager idManager) {
         super(IdPool.class, IdPoolListener.class);
         this.broker = broker;
@@ -38,12 +38,14 @@ public class IdPoolListener extends AsyncClusteredDataTreeChangeListenerBase<IdP
     @Override
     protected void update(InstanceIdentifier<IdPool> identifier,
             IdPool original, IdPool update) {
-        if (update.getAvailableIdsHolder() != original.getAvailableIdsHolder() || update.getReleasedIdsHolder() != original.getReleasedIdsHolder()) {
+        if (!update.getAvailableIdsHolder().equals(original.getAvailableIdsHolder())
+                || !update.getReleasedIdsHolder().equals(original.getReleasedIdsHolder())) {
             String parentPoolName = update.getParentPoolName();
             String poolName = update.getPoolName();
             if (parentPoolName != null && !parentPoolName.isEmpty()) {
-                if (!IdUtils.getPoolUpdatedMap(poolName)) {
-                    LOG.info("Received update for NAME {} : {} - {}", update.getPoolName(), original, update);
+                if (!IdUtils.getPoolUpdatedMap(poolName)
+                        && poolName.equals(IdUtils.getLocalPoolName(parentPoolName))) {
+                    LOG.info("Received update for pool {} : {} - {}", update.getPoolName(), original, update);
                     idManager.updateLocalIdPoolCache(update, parentPoolName);
                 } else {
                     IdUtils.decrementPoolUpdatedMap(poolName);

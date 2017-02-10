@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -117,7 +118,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
         ReleasedIdHolder releasedIdHolder = new ReleasedIdHolder(releasedIdsHolder.getDelayedTimeSec());
         releasedIdHolder.setAvailableIdCount(releasedIdsHolder.getAvailableIdCount());
         List<DelayedIdEntries> delayedEntries = releasedIdsHolder.getDelayedIdEntries();
-        List<DelayedIdEntry> delayedIdEntryInCache = new ArrayList<>();
+        List<DelayedIdEntry> delayedIdEntryInCache = new CopyOnWriteArrayList<>();
         if (delayedEntries != null) {
             delayedIdEntryInCache = delayedEntries
                     .parallelStream()
