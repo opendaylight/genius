@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0e778a3b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-10T00:02:46Z",
+      "side": 1,
+      "message": "minor, but you would typically put Map instead of ConcurrentHashMap here, and then you would use \u003d new ConcurrentHashMap\u003c\u003e(), like you have.  And thanks for not making this static! ;)",
+      "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4e907243",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-10T00:02:46Z",
+      "side": 1,
+      "message": "the problem with reading the cache here that you populated in the other class is that it\u0027s not \"encapsulated\" - you\u0027re not sure if and when the cache was populated, and anyone could mess with it .. but AFAIK this is how it\u0027s done elsewhere in ODL as well, so I\u0027m not going to -1 it because of this... ;-) FYI the Cache API I\u0027m working on in infrautils will kind of \"force\" you to have a single entry CacheFunction, and that will avoid this kind of problem.",
+      "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8e9a5a61",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-10T00:02:46Z",
+      "side": 1,
+      "message": "see comment in other class. Also, and perhaps most importantly, do you not need to remove/invalidate/evict what you cache here, ever?  (I don\u0027t know enough about the functional use case to judge, so just asking.)",
+      "revId": "1b91567dc4ca145e0171aa556b9b17eb7191da01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
