@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_49618c38",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T07:34:38Z",
+      "side": 1,
+      "message": "120 characters allowed per line. ALso space before {",
+      "range": {
+        "startLine": 429,
+        "startChar": 47,
+        "endLine": 429,
+        "endChar": 166
+      },
+      "revId": "0171a6d531b8da8bde8d750166d4c0b25e7d1096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_29640848",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T07:34:38Z",
+      "side": 1,
+      "message": "space before (",
+      "range": {
+        "startLine": 434,
+        "startChar": 12,
+        "endLine": 434,
+        "endChar": 14
+      },
+      "revId": "0171a6d531b8da8bde8d750166d4c0b25e7d1096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_895b7486",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T07:34:38Z",
+      "side": 1,
+      "message": "space before and after else",
+      "range": {
+        "startLine": 436,
+        "startChar": 11,
+        "endLine": 436,
+        "endChar": 18
+      },
+      "revId": "0171a6d531b8da8bde8d750166d4c0b25e7d1096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_695e1078",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-02-10T07:34:38Z",
+      "side": 1,
+      "message": "more than 120 chars? not allowed",
+      "range": {
+        "startLine": 472,
+        "startChar": 87,
+        "endLine": 473,
+        "endChar": 93
+      },
+      "revId": "0171a6d531b8da8bde8d750166d4c0b25e7d1096",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
