@@ -30,16 +30,15 @@ import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.validator.TransportZoneNameAllowed;
-import org.opendaylight.genius.itm.validator.TransportZoneValidator;
-import org.opendaylight.genius.itm.validator.ValidatorErrorCode;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
@@ -49,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,16 +65,19 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final ITMManager itmManager;
+    private final ItmConfig itmConfig;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager) {
+                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager,
+                                 final ItmConfig itmConfig) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
         this.itmManager = itmManager;
         this.mdsalManager = iMdsalApiManager;
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
@@ -120,7 +123,30 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
     @Override
     protected void remove(InstanceIdentifier<TransportZone> key, TransportZone tzOld) {
         LOG.debug("Received Transport Zone Remove Event: {}, {}", key, tzOld);
-        if(validateTransportZoneParam(tzOld)){
+
+        boolean allowTunnelDeletion = false;
+
+        // check if TZ received for removal is default-transport-zone,
+        // if yes, then check if it is received from northbound, then
+        // do not entertain request and skip tunnels remove operation
+        // if def-tz removal request is due to def-tz-enabled flag is disabled or
+        // due to change in def-tz-tunnel-type, then allow def-tz tunnels deletion
+        if (tzOld.getZoneName().equalsIgnoreCase(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+            // Get TunnelTypeBase object for tunnel-type configured in config file
+            Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(itmConfig.getDefTzTunnelType());
+
+            if ((!itmConfig.isDefTzEnabled()) || (!tzOld.getTunnelType().equals(tunType))) {
+                allowTunnelDeletion = true;
+            } else {
+                // this is case when def-tz removal request is from Northbound.
+                allowTunnelDeletion = false;
+                LOG.error("Deletion of {} is an incorrect usage",ITMConstants.DEFAULT_TRANSPORT_ZONE);
+            }
+        } else {
+            allowTunnelDeletion = true;
+        }
+
+        if (allowTunnelDeletion) {
             //TODO : DPList code can be refactor with new specific class
             // which implement TransportZoneValidator
             List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzOld);
@@ -300,18 +326,5 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
-    }
-
-    private boolean validateTransportZoneParam(TransportZone transportZone) {
-        boolean validateParam = true;
-        ArrayList<TransportZoneValidator> tzValidatorList = new ArrayList<>();
-        tzValidatorList.add(new TransportZoneNameAllowed());
-        for(TransportZoneValidator tzValidator :tzValidatorList){
-            if(tzValidator.validate(transportZone) == ValidatorErrorCode.ERROR){
-                validateParam = false;
-                break;
-            }
-        }
-        return validateParam;
     }
 }
