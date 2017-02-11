@@ -42,23 +42,26 @@ public class OvsVlanMemberConfigUpdateHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         ParentRefs parentRefsOld = interfaceOld.getAugmentation(ParentRefs.class);
 
-        InterfaceParentEntryKey interfaceParentEntryKey =
-                new InterfaceParentEntryKey(parentRefsOld.getParentInterface());
-        InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
-        InterfaceChildEntry interfaceChildEntry =
-                InterfaceMetaUtils.getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey,
-                        dataBroker);
-
+        // For trunk subports interface is initially created without parentRef
+        InterfaceChildEntry interfaceChildEntry = null;
+        if (parentRefsOld != null) {
+            InterfaceParentEntryKey interfaceParentEntryKey =
+                    new InterfaceParentEntryKey(parentRefsOld.getParentInterface());
+            InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
+            interfaceChildEntry = InterfaceMetaUtils.getInterfaceChildEntryFromConfigDS(
+                            interfaceParentEntryKey, interfaceChildEntryKey, dataBroker);
+        }
         if (interfaceChildEntry == null) {
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService, mdsalApiManager));
+                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
+                    mdsalApiManager));
             return futures;
         }
 
         IfL2vlan ifL2vlanOld = interfaceOld.getAugmentation(IfL2vlan.class);
-        if (ifL2vlanOld == null || ifL2vlanNew.getL2vlanMode() != ifL2vlanOld.getL2vlanMode()) {
-            LOG.error("Configuration Error. Vlan Mode Change of Vlan Trunk Member {} as new trunk member: {} is "
-                    + "not allowed.", interfaceOld, interfaceNew);
+        if (ifL2vlanOld == null) {
+            LOG.error("Configuration Error. Changing non VLAN interface to VLAN is not allowed.",
+                interfaceOld, interfaceNew);
             return futures;
         }
 
