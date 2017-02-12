@@ -131,9 +131,15 @@ public class ItmManagerRpcService implements ItmRpcService {
         {
             InternalTunnel tunnel = tnl.get();
             GetTunnelInterfaceNameOutputBuilder output = new GetTunnelInterfaceNameOutputBuilder() ;
-            output.setInterfaceName(tunnel.getTunnelInterfaceName()) ;
-            resultBld = RpcResultBuilder.success();
-            resultBld.withResult(output.build()) ;
+            List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
+            if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
+                output.setInterfaceName(tunnelInterfaces.get(0));
+                resultBld = RpcResultBuilder.success();
+                resultBld.withResult(output.build());
+            } else {
+                resultBld = RpcResultBuilder.failed();
+            }
+
         }else {
             resultBld = RpcResultBuilder.failed();
         }
@@ -395,12 +401,18 @@ public class ItmManagerRpcService implements ItmRpcService {
                     Optional<InternalTunnel> tnl = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
                     if (tnl != null && tnl.isPresent()) {
                         InternalTunnel tunnel = tnl.get();
-                        GetInternalOrExternalInterfaceNameOutputBuilder
-                                output =
-                                new GetInternalOrExternalInterfaceNameOutputBuilder()
-                                        .setInterfaceName(tunnel.getTunnelInterfaceName());
-                        resultBld = RpcResultBuilder.success();
-                        resultBld.withResult(output.build());
+                        List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
+                        if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
+                            GetInternalOrExternalInterfaceNameOutputBuilder
+                                    output =
+                                    new GetInternalOrExternalInterfaceNameOutputBuilder()
+                                            .setInterfaceName(tunnelInterfaces.get(0));
+                            resultBld = RpcResultBuilder.success();
+                            resultBld.withResult(output.build());
+                        } else {
+                            LOG.error("No tunnel interface found between source DPN {} ans destination IP {}", srcDpn,
+                                    dstIp);
+                        }
                         break;
                     }else{
                         LOG.error("Tunnel not found for source DPN {} ans destination IP {}", srcDpn, dstIp);

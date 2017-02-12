@@ -138,5 +138,16 @@ module itm-config {
           type string;
           default "vxlan";
        }
+       list tunnel-aggregation {
+            key "tunnel-type";
+            leaf tunnel-type {
+                type string;
+            }
+
+            leaf enabled {
+                type boolean;
+                default false;
+            }
+        }
     }
 }
