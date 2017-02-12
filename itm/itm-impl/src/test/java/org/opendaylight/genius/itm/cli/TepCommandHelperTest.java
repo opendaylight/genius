@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -255,8 +256,8 @@ public class TepCommandHelperTest {
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
-                .setTunnelInterfaceName(tunnelInterfaceName).setKey(new InternalTunnelKey(dpId1,dpId2,tunnelType1))
-                .setTransportType(tunnelType1).build();
+                .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName))
+                .setKey(new InternalTunnelKey(dpId1, dpId2, tunnelType1)).setTransportType(tunnelType1).build();
         internalTunnelList.add(internalTunnelTest);
         stateTunnelListTest = new StateTunnelListBuilder().setTunnelInterfaceName(tunnelInterfaceName).setOperState(TunnelOperStatus.Up).build();
         stateTunnelList.add(stateTunnelListTest);

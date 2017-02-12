@@ -17,6 +17,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import org.junit.After;
@@ -261,9 +262,10 @@ public class ItmManagerRpcServiceTest {
         externalTunnel= new ExternalTunnelBuilder().setSourceDevice(sourceDevice).setDestinationDevice
                 (destinationDevice).setTransportType(tunnelType1).setTunnelInterfaceName(tunnelInterfaceName).setKey(new
                 ExternalTunnelKey(destinationDevice,sourceDevice,tunnelType1)).build();
-        internalTunnel = new InternalTunnelBuilder().setTunnelInterfaceName(tunnelInterfaceName).setDestinationDPN
-                (dpId2).setSourceDPN(dpId1).setTransportType(tunnelType1).setKey(new InternalTunnelKey(dpId2,dpId1,
-                tunnelType1)).build();
+        internalTunnel = new InternalTunnelBuilder()
+                .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName)).setDestinationDPN(dpId2)
+                .setSourceDPN(dpId1).setTransportType(tunnelType1)
+                .setKey(new InternalTunnelKey(dpId2, dpId1, tunnelType1)).build();
         getInternalOrExternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
                 .setDestinationIp(ipAddress1).setSourceDpid(dpId1).setTunnelType(tunnelType1).build();
         addExternalTunnelEndpointInput = new AddExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType1)

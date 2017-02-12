@@ -12,6 +12,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.genius.itm.tests.ItmTestConstants;
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
+import java.util.Collections
 
 class ExpectedInternalTunnelIdentifierObjects {
 
@@ -20,7 +21,7 @@ class ExpectedInternalTunnelIdentifierObjects {
             destinationDPN = ItmTestConstants.dpId2
             sourceDPN = ItmTestConstants.dpId1
             transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
-            tunnelInterfaceName = ItmTestConstants.parentInterfaceName
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.parentInterfaceName)
         ]
     }
 }
