@@ -43,6 +43,7 @@ import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPTunnelsStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceInventoryStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.InterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
@@ -131,6 +132,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
     private CacheInterfaceStateListener cacheInterfaceStateListener;
     private CacheBridgeEntryConfigListener cacheBridgeEntryConfigListener;
     private CacheBridgeRefEntryListener cacheBridgeRefEntryListener;
+    private InterfaceStateListener interfaceStateListener;
     private EntityOwnershipService entityOwnershipService;
     private MdsalUtils mdsalUtils;
     private SouthboundUtils southboundUtils;
@@ -217,6 +219,8 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
 
             cacheBridgeRefEntryListener = new CacheBridgeRefEntryListener(dataBroker);
 
+            interfaceStateListener = new InterfaceStateListener(dataBroker);
+
             //Initialize nodeconnectorstatsimpl
             nodeConnectorStatsManager = new NodeConnectorStatsImpl(dataBroker, notificationService,
                     session.getRpcService(OpendaylightPortStatisticsService.class), session.getRpcService(OpendaylightFlowTableStatisticsService.class));
@@ -267,6 +271,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
         flowBasedServicesConfigListener.close();
         flowBasedServicesInterfaceStateListener.close();
         terminationPointStateListener.close();
+        interfaceStateListener.close();
     }
 
     public RpcProviderRegistry getRpcProviderRegistry() {

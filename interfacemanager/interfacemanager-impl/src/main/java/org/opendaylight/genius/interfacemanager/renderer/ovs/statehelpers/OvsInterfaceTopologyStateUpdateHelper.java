@@ -64,39 +64,39 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     }
 
     public static List<ListenableFuture<Void>> updateTunnelState(final DataBroker dataBroker,
-                                                                 final OvsdbTerminationPointAugmentation terminationPointNew) {
-        final Interface interfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
-        final Interface.OperStatus interfaceOperStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
-        InterfaceManagerCommonUtils.addBfdStateToCache(terminationPointNew.getName(), interfaceOperStatus);
-        if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown) {
-            IfmClusterUtils.runOnlyInLeaderNode(() -> {
-                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-                jobCoordinator.enqueueJob(terminationPointNew.getName(), () -> {
-                    // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
-                    final List<ListenableFuture<Void>> futures = new ArrayList<>();
-                    LOG.debug("updating tunnel state for interface {}", terminationPointNew.getName());
+                                                                 OvsdbTerminationPointAugmentation terminationPointNew) {
+        final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
+        final String interfaceName = terminationPointNew.getName();
+        InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            jobCoordinator.enqueueJob(interfaceName, () -> {
+                // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
+                final List<ListenableFuture<Void>> futures = new ArrayList<>();
+                final Interface interfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(
+                    terminationPointNew.getName(), dataBroker);
+                if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown &&
+                    interfaceState.getOperStatus() != interfaceBfdStatus) {
+                    LOG.debug("updating tunnel state for interface {}", interfaceName);
                     WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                    InterfaceManagerCommonUtils.updateOpState(transaction, terminationPointNew.getName(), interfaceOperStatus);
+                    InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName,
+                        interfaceBfdStatus);
                     futures.add(transaction.submit());
-                    return futures;
-                });
+                }
+                return futures;
             });
-        }
+        });
         return null;
     }
 
-    private static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus getTunnelOpState(
-            List<InterfaceBfdStatus> tunnelBfdStatus) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus livenessState = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
+    private static Interface.OperStatus getTunnelOpState(List<InterfaceBfdStatus> tunnelBfdStatus) {
+        Interface.OperStatus livenessState = Interface.OperStatus.Down;
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
             for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
                 if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
                     String bfdOpState = bfdState.getBfdStatusValue();
-                    if (bfdOpState.equalsIgnoreCase(SouthboundUtils.BFD_STATE_UP)) {
-                        livenessState = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up;
-                    } else {
-                        livenessState = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
-                    }
+                    livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ?
+                        Interface.OperStatus.Up : Interface.OperStatus.Down;
                     break;
                 }
             }
