@@ -80,6 +80,11 @@ module odl-interface {
         base tunnel-type-base;
     }
 
+    identity tunnel-type-logical-group {
+        description "Aggregation group of multiple tunnel endpoints between two DPNs";
+        base tunnel-type-base;
+    }
+
     identity tunnel-monitoring-type-base {
         description "Base identity for all tunnel-monitoring-types";
     }
@@ -278,6 +283,12 @@ module odl-interface {
         leaf tunnel-destination {
             type inet:ip-address;
             description "Remote Endpoint IP address";
+        }
+
+        leaf weight {
+            type uint16;
+            default 1;
+            description "Bucket weight if tunnel belongs to OF select group";
         }
 
         leaf tunnel-gateway {
