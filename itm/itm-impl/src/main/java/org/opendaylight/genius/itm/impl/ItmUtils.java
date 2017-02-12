@@ -341,7 +341,7 @@ public class ItmUtils {
                                                       String trunkInterfaceName) {
         InternalTunnel tnl = new InternalTunnelBuilder().setKey(new InternalTunnelKey(dstDpnId, srcDpnId, tunType)).setDestinationDPN(dstDpnId)
                 .setSourceDPN(srcDpnId).setTransportType(tunType)
-                .setTunnelInterfaceName(trunkInterfaceName).build();
+                .setTunnelInterfaceNames(Collections.singletonList(trunkInterfaceName)).build();
         return tnl ;
     }
 
@@ -852,9 +852,12 @@ public class ItmUtils {
                                     Optional<InternalTunnel> TunnelsOptional =
                                             ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
                                     if (TunnelsOptional.isPresent()) {
-                                        String tunnelInterfaceName = TunnelsOptional.get().getTunnelInterfaceName();
-                                        LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
-                                        tunnels.add(tunnelInterfaceName);
+                                        List<String> tunnelInterfaceNames = TunnelsOptional.get().getTunnelInterfaceNames();
+                                        if (tunnelInterfaceNames != null && !tunnelInterfaceNames.isEmpty()) {
+                                            String tunnelInterfaceName = tunnelInterfaceNames.get(0);
+                                            LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
+                                            tunnels.add(tunnelInterfaceName);
+                                        }
                                     }
                                 }
                             }
@@ -907,9 +910,13 @@ public class ItmUtils {
                                     Optional<InternalTunnel> tunnelsOptional =
                                             ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
                                     if (tunnelsOptional.isPresent()) {
-                                        String tunnelInterfaceName = tunnelsOptional.get().getTunnelInterfaceName();
-                                        LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
-                                        tunnels.add(tunnelInterfaceName);
+                                        List<String> tunnelInterfaceNames = tunnelsOptional.get()
+                                                .getTunnelInterfaceNames();
+                                        if (tunnelInterfaceNames != null && !tunnelInterfaceNames.isEmpty()) {
+                                            String tunnelInterfaceName = tunnelInterfaceNames.get(0);
+                                            LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
+                                            tunnels.add(tunnelInterfaceName);
+                                        }
                                     }
                                 }
                             }
@@ -959,10 +966,27 @@ public class ItmUtils {
     }
     public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
         InternalTunnel internalTunnel = null;
+<<<<<<< HEAD
         internalTunnel = itmCache.getInternalTunnel(interfaceName);
         if (internalTunnel == null) {
             updateTunnelsCache(broker);
             internalTunnel = itmCache.getInternalTunnel(interfaceName);
+=======
+        TunnelList tunnelList = getAllInternalTunnels(broker);
+        if (tunnelList != null && tunnelList.getInternalTunnel() != null) {
+            List<InternalTunnel> internalTunnels = tunnelList.getInternalTunnel();
+            for (InternalTunnel tunnel : internalTunnels) {
+                List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
+                if (tunnelInterfaceNames != null) {
+                    for (String tunnelInterfaceName : tunnelInterfaceNames) {
+                        if (tunnelInterfaceName.equalsIgnoreCase(interfaceName)) {
+                            internalTunnel = tunnel;
+                            break;
+                        }
+                    }
+                }
+            }
+>>>>>>> Yang model changes for multiple VxLAN tunnel support
         }
         return internalTunnel;
     }

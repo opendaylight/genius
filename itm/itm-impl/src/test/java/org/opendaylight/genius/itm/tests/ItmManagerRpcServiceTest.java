@@ -13,6 +13,7 @@ import com.google.common.base.Optional;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -156,10 +157,13 @@ public class ItmManagerRpcServiceTest {
             .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
-        internalTunnel = new InternalTunnelBuilder().setTunnelInterfaceName(ItmTestConstants.parentInterfaceName).setDestinationDPN
-            (ItmTestConstants.dpId2).setSourceDPN(ItmTestConstants.dpId1).setTransportType(ItmTestConstants.TUNNEL_TYPE_VXLAN).
-            setKey(new InternalTunnelKey(ItmTestConstants.dpId2,ItmTestConstants.dpId1,
-                ItmTestConstants.TUNNEL_TYPE_VXLAN)).build();
+        internalTunnel = new InternalTunnelBuilder()
+                .setTunnelInterfaceNames(Collections.singletonList(ItmTestConstants.parentInterfaceName))
+                .setDestinationDPN(ItmTestConstants.dpId2).setSourceDPN(ItmTestConstants.dpId1)
+                .setTransportType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setKey(new InternalTunnelKey(ItmTestConstants.dpId2, ItmTestConstants.dpId1,
+                        ItmTestConstants.TUNNEL_TYPE_VXLAN))
+                .build();
         getExternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
             .setDestinationIp(ItmTestConstants.ipAddress3).setSourceDpid(ItmTestConstants.dpId1).setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
         getInternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()

@@ -9,6 +9,7 @@
 package org.opendaylight.genius.itm.impl;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -56,7 +57,12 @@ public class ItmCache {
     }
 
     public void addInternalTunnel(InternalTunnel tunnel) {
-        this.internalTunnels.put(tunnel.getTunnelInterfaceName(), tunnel);
+        List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
+        if (tunnelInterfaceNames != null) {
+            for (String tunnelInterfaceName : tunnelInterfaceNames) {
+                this.internalTunnels.put(tunnelInterfaceName, tunnel);
+            }
+        }
     }
 
     public InternalTunnel getInternalTunnel(String name) {

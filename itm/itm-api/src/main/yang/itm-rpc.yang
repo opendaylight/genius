@@ -53,13 +53,18 @@ module itm-rpc {
         }
 
         rpc get-internal-or-external-interface-name {
-            description "used to retrieve tunnel interface id with src Dpn and destination ip";
+            description "used to retrieve tunnel interface id with src Dpn and destination ip/dpn";
                 input {
                     leaf source-dpid {
                     type uint64;
                     }
                     leaf destination-ip {
                     type inet:ip-address;
+                    }
+                    leaf destination-dpid {
+                        type uint64;
+                        description "Optional. if destination-dpid is abesnt,"
+                             + "the destination-ip will be used to get the tunnel name";
                     }
                     leaf tunnel-type {
                         type identityref {
