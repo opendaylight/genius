@@ -37,6 +37,8 @@ import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.Southb
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey;
@@ -63,6 +65,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.powermock.api.mockito.PowerMockito;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -93,6 +96,7 @@ public class TopologyStateInterfaceTest {
 
     @Before
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(IfmClusterUtils.class);
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),
@@ -210,7 +214,6 @@ public class TopologyStateInterfaceTest {
         updateHelper.updateBridgeRefEntry(bridgeIid, bridgeNew, bridgeOld, dataBroker);
     }
 
-    @Test
     public void testUpdateTunnelState(){
 
         List<InterfaceBfdStatus> interfaceBfdStatus = new ArrayList<>();
