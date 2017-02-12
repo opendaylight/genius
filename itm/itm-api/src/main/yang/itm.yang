@@ -71,6 +71,11 @@ module itm {
                         type boolean;
                         default false;
                     }
+                    leaf weight {
+                        type uint16;
+                        default 1;
+                        description "Bucket weight if tunnel belongs to OF select group";
+                    }
                 }
                  list device-vteps {
                   key "node-id ip-address";
