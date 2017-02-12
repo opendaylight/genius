@@ -139,4 +139,20 @@ module itm-config {
           default "vxlan";
        }
     }
+
+    container tunnel-aggregation-config {
+          list tunnel-aggregation {
+              key "tunnel-type";
+              leaf tunnel-type {
+                  type identityref {
+                      base odlif:tunnel-type-base;
+                  }
+              }
+
+              leaf enabled {
+                  type boolean;
+                  default false;
+              }
+          }
+     }
 }
