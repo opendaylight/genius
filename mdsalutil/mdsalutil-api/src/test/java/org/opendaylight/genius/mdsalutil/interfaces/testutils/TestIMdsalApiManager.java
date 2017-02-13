@@ -9,6 +9,7 @@ package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,14 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     @Override
     public void installFlow(FlowEntity flowEntity) {
         getFlows().add(flowEntity);
+    }
+    @Override
+    public void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity){
+        getFlows().add(flowEntity);
+    }
+    @Override
+    public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity){
+        getFlows().remove(flowEntity);
     }
 
 }

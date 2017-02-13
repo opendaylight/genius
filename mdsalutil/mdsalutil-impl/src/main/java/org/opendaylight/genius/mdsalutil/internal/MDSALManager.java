@@ -180,6 +180,24 @@ public class MDSALManager implements AutoCloseable {
         tx.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
     }
 
+    public void batchedAddFlow(BigInteger dpId, Flow flow) {
+        FlowKey flowKey = new FlowKey( new FlowId(flow.getId()) );
+        Node nodeDpn = buildDpnNode(dpId);
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class,flowKey).build();
+        FlowBatchingUtils.write(flowInstanceId, flow);
+    }
+
+    public void batchedRemoveFlow(BigInteger dpId, Flow flow) {
+        FlowKey flowKey = new FlowKey( new FlowId(flow.getId()) );
+        Node nodeDpn = buildDpnNode(dpId);
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class,flowKey).build();
+        FlowBatchingUtils.delete(flowInstanceId);
+    }
+
     public void installGroup(GroupEntity groupEntity) {
         try {
             WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();

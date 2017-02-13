@@ -235,9 +235,11 @@ public class InterfaceMetaUtils {
 
     public static void createLportTagInterfaceMap(WriteTransaction t, String infName, Integer ifIndex) {
         LOG.debug("creating lport tag to interface map for {}",infName);
-        InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
-        IfIndexInterface ifIndexInterface = new IfIndexInterfaceBuilder().setIfIndex(ifIndex).setKey(new IfIndexInterfaceKey(ifIndex)).setInterfaceName(infName).build();
-        t.put(LogicalDatastoreType.OPERATIONAL, id, ifIndexInterface, true);
+        InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
+                .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
+        IfIndexInterface ifIndexInterface = new IfIndexInterfaceBuilder().setIfIndex(ifIndex)
+                .setKey(new IfIndexInterfaceKey(ifIndex)).setInterfaceName(infName).build();
+        BatchingUtils.write(id, ifIndexInterface, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
     public static void removeLportTagInterfaceMap(IdManagerService idManager, WriteTransaction t, String infName) {
