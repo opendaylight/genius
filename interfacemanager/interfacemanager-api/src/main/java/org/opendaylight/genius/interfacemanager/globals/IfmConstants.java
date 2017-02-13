@@ -41,4 +41,11 @@ public class IfmConstants {
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
 
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
+
+    // TUNNEL TYPE KEYWORDS
+    // These are the reserved keywords to be used for service-binding on tunnel-type
+
+    public static final String ALL_VXLAN_INTERNAL = "all_vxlan_internal";
+    public static final String ALL_VXLAN_EXTERNAL = "all_vxlan_external";
+    public static final String ALL_MPLS_OVER_GRE = "all_mpls_over_gre";
 }
