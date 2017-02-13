@@ -70,13 +70,13 @@ public class MetaDataUtil {
     }
 
     public static int getElanTagFromMetadata(BigInteger metadata) {
-        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE).
-                shiftRight(24).intValue();
+        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE)
+                .shiftRight(24).intValue();
     }
 
     public static int getServiceTagFromMetadata(BigInteger metadata) {
-        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE_INDEX).
-                shiftRight(60).intValue();
+        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE_INDEX)
+                .shiftRight(60).intValue();
     }
 
     /**

@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * will then supply a single transaction to such CRUD methods of the
  * subscribers, on which such subscribers write data to that transaction.
  * Finally the framework attempts to reliably write this single transaction
- * which represents a batch of an ordered list of entities owned by that subscriber, 
+ * which represents a batch of an ordered list of entities owned by that subscriber,
  * to be written/updated/removed from a specific datastore as registered by the subscriber.
  */
 public class ResourceBatchingManager implements AutoCloseable {
@@ -77,7 +77,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
-        if (resDelegatorService.getPoolSize() == 0 ) {
+        if (resDelegatorService.getPoolSize() == 0) {
             resDelegatorService.scheduleWithFixedDelay(
                     new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
         }
