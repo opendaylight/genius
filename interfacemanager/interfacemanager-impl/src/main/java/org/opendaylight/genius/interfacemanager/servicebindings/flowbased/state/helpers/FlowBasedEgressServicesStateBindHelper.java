@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -30,14 +31,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServicesStateAddable{
+public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedServicesStateBindHelper{
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateBindHelper.class);
-
-    private InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateAddable flowBasedServicesStateAddable;
 
     private FlowBasedEgressServicesStateBindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
+
     }
 
     public static void intitializeFlowBasedEgressServicesStateBindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -57,41 +57,14 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         return flowBasedServicesStateAddable;
     }
 
-    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        if(ifaceState.getType() == null) {
-            return futures;
-        }
-        LOG.debug("binding services on interface {}", ifaceState.getName());
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
-        if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
-            return bindServiceOnVlan(allServices, ifaceState, dataBroker);
-        } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
-            return bindServiceOnTunnel(allServices, ifaceState, dataBroker);
-        }
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> bindServiceOnTunnel(
+    protected List<ListenableFuture<Void>> bindServiceOnTunnelInterface(
             List<BoundServices> allServices, Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        // FIXME : not supported yet
+        LOG.info("binding egresss services on tunnel - WIP");
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnVlan(
+    protected List<ListenableFuture<Void>> bindServiceOnVlan(
             List<BoundServices> allServices,
             Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -99,7 +72,7 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         Collections.sort(allServices,
-                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+                Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
         short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority() : highestPriority.getServicePriority() + 1);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);

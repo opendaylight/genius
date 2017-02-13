@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -29,14 +30,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
+public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBasedServicesStateUnbindHelper{
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateUnbindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateRemovable flowBasedIngressServicesStateRemovable;
 
     private FlowBasedIngressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
+
     }
 
     public static void intitializeFlowBasedIngressServicesStateRemoveHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -60,35 +61,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         flowBasedIngressServicesStateRemovable = null;
     }
 
-    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        if(ifaceState.getType() == null) {
-            return futures;
-        }
-        LOG.debug("unbinding services on interface {}", ifaceState.getName());
-
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeIngress.class, dataBroker);
-        if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
-            return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
-            return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        }
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(
+    protected List<ListenableFuture<Void>> unbindServiceOnTunnel(
             List<BoundServices> allServices,
             Interface iface,
             Integer ifIndex, DataBroker dataBroker) {
@@ -115,7 +88,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(
+    protected List<ListenableFuture<Void>> unbindServiceOnVlan(
             List<BoundServices> allServices, Interface ifaceState,
             Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -127,7 +100,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         Collections.sort(allServices,
-                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+                Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
         FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
