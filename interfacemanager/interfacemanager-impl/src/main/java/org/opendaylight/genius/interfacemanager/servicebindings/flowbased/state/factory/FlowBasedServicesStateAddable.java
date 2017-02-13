@@ -8,9 +8,13 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 
 public interface FlowBasedServicesStateAddable {
     List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState);
+
+    List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName);
 }
