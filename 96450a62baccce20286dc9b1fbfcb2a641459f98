@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_d51eaa62",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 620,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-13T04:58:04Z",
+      "side": 1,
+      "message": "Aim of this caching is to eliminate use of southboundUtils which does DS read. There is no value add with reading from DS. If it is not in cache it means it is either not present, or in-flight which is not much different from DS not being populated. It just increases the window of failure by a few ms.",
+      "parentUuid": "fafc7978_5a14a94d",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3a172553",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b519667b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 639,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-13T04:58:04Z",
+      "side": 1,
+      "message": "same as above. Whole point of this caching is to eliminate usage of those southboundutils method which do DS reads. Once the TODO is implemented, this nodeInstanceId won\u0027t be needed anymore. getNodeByTerminationPointExternIId() is going to read ALL nodes and go through externalIids of each TP on each node till it finds a match. Even on a moderate setup it will not perform.",
+      "parentUuid": "fafc7978_3a172553",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7a088d2d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2017-02-13T04:36:20Z",
       "side": 1,
       "message": "use getNodeForInterface and getTerminationPoint methods.",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_15283285",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 664,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-13T04:58:04Z",
+      "side": 1,
+      "message": "Good catch, missed this one.",
+      "parentUuid": "fafc7978_7a088d2d",
       "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
