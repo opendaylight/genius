@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f5164ea6",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-02-13T08:54:09Z",
+      "side": 1,
+      "message": "will this be populated always? or only when the tunnel is part of the group-interface?",
+      "revId": "cc2683b6f82d20a498ab2c8f7abd9f85e3a7a4bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f5648e4a",
+        "filename": "itm/itm-api/src/main/yang/itm.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-02-13T08:54:09Z",
+      "side": 1,
+      "message": "shoudnt this be part of group-interface (also)?",
+      "revId": "cc2683b6f82d20a498ab2c8f7abd9f85e3a7a4bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
