@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -57,7 +58,7 @@ public class IdUtils {
     private static final long DEFAULT_AVAILABLE_ID_COUNT = 0;
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
-    public static ConcurrentHashMap<String, Integer> poolUpdatedMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
     public static final String ID_POOL_CACHE = "ID_POOL_CACHE";
 
     private static int BLADE_ID;
@@ -296,24 +297,23 @@ public class IdUtils {
     }
 
     public static void incrementPoolUpdatedMap(String localPoolName) {
-        Integer value = poolUpdatedMap.get(localPoolName);
+        AtomicInteger value = poolUpdatedMap.putIfAbsent(localPoolName, new AtomicInteger(0));
         if (value == null) {
-            value = 0;
+            value = poolUpdatedMap.get(localPoolName);
         }
-        poolUpdatedMap.put(localPoolName, value + 1);
+        value.incrementAndGet();
     }
 
     public static void decrementPoolUpdatedMap(String localPoolName) {
-        Integer value = poolUpdatedMap.get(localPoolName);
-        if (value == null) {
-            value = 1;
+        AtomicInteger value = poolUpdatedMap.get(localPoolName);
+        if (value != null && value.get() >= 1) {
+            value.decrementAndGet();
         }
-        poolUpdatedMap.put(localPoolName, value - 1);
     }
 
     public static boolean getPoolUpdatedMap(String localPoolName) {
-        Integer value = poolUpdatedMap.get(localPoolName);
-        return value!=null && value >= 0 ? true : false;
+        AtomicInteger value = poolUpdatedMap.get(localPoolName);
+        return value != null && value.get() > 0 ? true : false;
     }
 
     public static void removeFromPoolUpdatedMap(String localPoolName) {
