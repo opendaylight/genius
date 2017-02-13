@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_75fede39",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-13T09:21:40Z",
+      "side": 1,
+      "message": "When netvirt call the RPC it has no notion whether the answer will be group or a single tunnel so it\u0027s not possible to populate only when there is group.\n\nAs not all vrf-entries are behind dpns, only when the dpn is known it will be added to the RPC.\n\nPer Peri\u0027s comment on the spec review https://git.opendaylight.org/gerrit/#/c/50779/12/docs/specs/multiple-vxlan-tunnels.rst@79 we were thinking about protecting the logical tunnels creation using global config parameter so when it\u0027s turned on, logical group will be created also for single tunnel.\n\nIf we have this config, it would be possible to skip destination dpn-id in this RPC when this feature is turned off",
+      "parentUuid": "fafc7978_f5164ea6",
+      "revId": "cc2683b6f82d20a498ab2c8f7abd9f85e3a7a4bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_f5648e4a",
         "filename": "itm/itm-api/src/main/yang/itm.yang",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-13T08:54:09Z",
       "side": 1,
       "message": "shoudnt this be part of group-interface (also)?",
+      "revId": "cc2683b6f82d20a498ab2c8f7abd9f85e3a7a4bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b58fa6cb",
+        "filename": "itm/itm-api/src/main/yang/itm.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-13T09:21:40Z",
+      "side": 1,
+      "message": "group interface will be created by the TransportZoneListener as part of tep creation\nI would not be configured by an application.\nthe weight set in the TZ tep will be populated to the if-tunnel of the individual tunnel member interfaces",
+      "parentUuid": "fafc7978_f5648e4a",
       "revId": "cc2683b6f82d20a498ab2c8f7abd9f85e3a7a4bb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
