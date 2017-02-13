@@ -18,24 +18,18 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
+public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigUnbindHelper {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigUnbindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigRemovable flowBasedEgressServicesRemovable;
 
     private FlowBasedEgressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
     }
 
     public static void intitializeFlowBasedEgressServicesConfigRemoveHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -56,43 +50,12 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         return flowBasedEgressServicesRemovable;
     }
 
-    @Override
-    public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-            BoundServices boundServiceOld) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        String interfaceName =
-                InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
-                .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-
-        // Get the Parent ServiceInfo
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
-                dataBroker);
-        if (servicesInfo == null) {
-            LOG.error("Reached Impossible part in the code for bound service: {}", boundServiceOld);
-            return futures;
-        }
-
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-            ifState = InterfaceManagerCommonUtils.getInterfaceState(interfaceName, dataBroker);
-        if (ifState == null) {
-            LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
-            return futures;
-        }
-        List<BoundServices> boundServices = servicesInfo.getBoundServices();
-
-        if (L2vlan.class.equals(ifState.getType())
-            || Tunnel.class.equals(ifState.getType())) {
-            unbindService(boundServiceOld, boundServices, ifState, dataBroker);
-        }
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> unbindService(BoundServices boundServiceOld,
-            List<BoundServices> boundServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifaceState, DataBroker dataBroker) {
+    protected List<ListenableFuture<Void>> unbindServiceOnInterface(BoundServices boundServiceOld,
+                                                                    List<BoundServices> boundServices,
+                                                                    org.opendaylight.yang.gen.v1.urn.ietf.params
+                                                                            .xml.ns.yang.ietf.interfaces.rev140508
+                                                                            .interfaces.state.Interface ifaceState,
+                                                                    DataBroker dataBroker) {
         LOG.info("unbinding egress service {} for interface: {}", boundServiceOld.getServiceName(), ifaceState
             .getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -157,13 +120,9 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
-            List<BoundServices> boundServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifState, DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-
-        // FIXME : not yet supported
-        return futures;
+    protected List<ListenableFuture<Void>> unbindServiceOnInterfaceType(BoundServices boundServiceNew,
+                                                                        List<BoundServices> allServices,
+                                                                        DataBroker dataBroker) {
+        return null;
     }
 }
