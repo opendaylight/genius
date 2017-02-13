@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_35ed768c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-13T09:15:36Z",
+      "side": 1,
+      "message": "spacing: surprised checkstyle didn\u0027t catch it, normally I get checkstyle failure for this.\n\nnaming: I prefer not to have cache in API. IFM is providing information and how it does it should be transparent to callers.",
+      "parentUuid": "fafc7978_15c95226",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5a14a94d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 3
