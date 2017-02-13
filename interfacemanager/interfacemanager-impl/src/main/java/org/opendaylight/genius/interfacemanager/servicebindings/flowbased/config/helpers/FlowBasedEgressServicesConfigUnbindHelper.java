@@ -18,22 +18,19 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
+public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigUnbindHelper {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigUnbindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigRemovable flowBasedEgressServicesRemovable;
 
     private FlowBasedEgressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
     }
 
     public static void intitializeFlowBasedEgressServicesConfigRemoveHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -55,19 +52,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
     }
 
     @Override
-    public List<ListenableFuture<Void>> unbindService(String interfaceName, BoundServices boundServiceOld,
-                                                      List<BoundServices> boundServices,
-                                                      BoundServicesState boundServicesState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        if (L2vlan.class.equals(boundServicesState.getInterfaceType())
-            || Tunnel.class.equals(boundServicesState.getInterfaceType())) {
-            unbindService(boundServiceOld, boundServices, boundServicesState, dataBroker);
-        }
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> unbindService(BoundServices boundServiceOld,
+    protected List<ListenableFuture<Void>> unbindServiceOnInterface(String interfaceName, BoundServices boundServiceOld,
                                                               List<BoundServices> boundServices,
                                                               BoundServicesState boundServicesState,
                                                               DataBroker dataBroker) {
@@ -136,13 +121,9 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
-            List<BoundServices> boundServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifState, DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-
-        // FIXME : not yet supported
-        return futures;
+    protected List<ListenableFuture<Void>> unbindServiceOnInterfaceType(BoundServices boundServiceNew,
+                                                                        List<BoundServices> allServices,
+                                                                        DataBroker dataBroker) {
+        return null;
     }
 }
