@@ -19,24 +19,18 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedServicesConfigAddable {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigBindHelper.class);
+public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedServicesConfigBindHelper {
 
-    private final InterfacemgrProvider interfaceMgrProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigBindHelper.class);
     private static volatile FlowBasedServicesConfigAddable flowBasedEgressServicesAddable;
 
     private FlowBasedEgressServicesConfigBindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
     }
 
     public static void intitializeFlowBasedEgressServicesConfigAddHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -56,53 +50,20 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
         return flowBasedEgressServicesAddable;
     }
 
-    @Override
-    public List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-            BoundServices boundServiceNew) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        String interfaceName = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class))
-                .getInterfaceName();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceName, dataBroker);
-        if (ifState == null) {
-            LOG.warn("Interface not operational, not binding Service for Interface: {}", interfaceName);
-            return futures;
-        }
-
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
-                .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-        // Get the Parent ServiceInfo
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
-                dataBroker);
-        if (servicesInfo == null) {
-            LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices.isEmpty()) {
-            LOG.error("Reached Impossible part 2 in the code during bind service for: {}", boundServiceNew);
-            return futures;
-        }
-
-        if (L2vlan.class.equals(ifState.getType()) || Tunnel.class.equals(ifState.getType())) {
-            bindService(boundServiceNew, allServices, ifState, dataBroker);
-        }
-        return futures;
+    protected List<ListenableFuture<Void>> bindServiceOnTunnel(BoundServices boundServiceNew, List<BoundServices>
+        allServices, Interface ifState, DataBroker dataBroker) {
+        LOG.info("bind service on egress tunnel interface - WIP");
+        return null;
     }
 
-    private static List<ListenableFuture<Void>> bindService(BoundServices boundServiceNew,
-            List<BoundServices> allServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState,
-            DataBroker dataBroker) {
+    protected List<ListenableFuture<Void>> bindServiceOnVlan(BoundServices boundServiceNew, List<BoundServices>
+        allServices, Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifState);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
-        LOG.info("binding egress service {} for interface: {}", boundServiceNew.getServiceName(), ifState.getName());
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface
+            = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
+        LOG.info("binding egress service for vlan port: {}", ifState.getName());
         if (allServices.size() == 1) {
             // calling LportDispatcherTableForService with current service index
             // as 0 and next service index as
@@ -169,5 +130,12 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
                 ifState.getIfIndex(), currentServiceIndex, nextServiceIndex, iface);
         futures.add(transaction.submit());
         return futures;
+    }
+
+    protected List<ListenableFuture<Void>> bindServiceOnInterfaceType(BoundServices boundServiceNew,
+                                                                 List<BoundServices> allServices,DataBroker
+                                                                          dataBroker) {
+        LOG.info("Tunnel Type based egress service binding - WIP");
+        return null;
     }
 }
