@@ -29,14 +29,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
+public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedServicesStateUnbindHelper{
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateUnbindHelper.class);
 
     private InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
     private FlowBasedEgressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
+
     }
 
     public static void intitializeFlowBasedEgressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -55,35 +56,8 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         }
         return flowBasedServicesStateRemovable;
     }
-    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        if(ifaceState.getType() == null) {
-            return futures;
-        }
-        LOG.debug("unbinding services on interface {}", ifaceState.getName());
 
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
-        if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
-            return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
-            return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        }
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(
+    protected List<ListenableFuture<Void>> unbindServiceOnTunnel(
             List<BoundServices> allServices,
             Interface iface,
             Integer ifIndex, DataBroker dataBroker) {
@@ -92,7 +66,7 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(
+    protected List<ListenableFuture<Void>> unbindServiceOnVlan(
             List<BoundServices> allServices, Interface ifaceState,
             Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
