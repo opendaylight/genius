@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a003e240",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 19
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-13T13:48:02Z",
+      "side": 1,
+      "message": "Allows full BW utilization for NICs with different speed",
+      "parentUuid": "fafc7978_8973717f",
+      "revId": "07c3433269ef782c575e0a9746e412e075dc8806",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_2091b247",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 19
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3b0e0735",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 19
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-13T13:48:02Z",
+      "side": 1,
+      "message": "Added to the config section",
+      "parentUuid": "fafc7978_2091b247",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 16
+      },
+      "revId": "07c3433269ef782c575e0a9746e412e075dc8806",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_a9ed95f1",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 19
@@ -53,6 +95,24 @@
       "writtenOn": "2017-02-13T11:35:04Z",
       "side": 1,
       "message": "what is the behavior at ingress? services will bind to group interface or on the individual tunnel interfaces? if services bind on tunnel type it would work but interface specific binding need to be defined.",
+      "revId": "07c3433269ef782c575e0a9746e412e075dc8806",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_db1edb62",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 19
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-13T13:48:02Z",
+      "side": 1,
+      "message": "Ingress binding will take place only for the tunnel members.\n\nSince you are not the first to ask this, I\u0027ll add this point to the spec.",
+      "parentUuid": "fafc7978_a9ed95f1",
       "revId": "07c3433269ef782c575e0a9746e412e075dc8806",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
