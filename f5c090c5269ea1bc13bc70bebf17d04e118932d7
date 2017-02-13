@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_605a9af4",
+        "filename": "docs/specs/service-binding-on-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-13T10:41:36Z",
+      "side": 1,
+      "message": "this cannot be avoided, since this gets created when tunnel ports are created..at that time, we have no idea, on whether tunnel-type service binding on interface service binding is going to happen in future",
+      "parentUuid": "fafc7978_7ea261af",
+      "range": {
+        "startLine": 238,
+        "startChar": 57,
+        "endLine": 238,
+        "endChar": 69
+      },
+      "revId": "f5c090c5269ea1bc13bc70bebf17d04e118932d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5ea5ddb3",
         "filename": "docs/specs/service-binding-on-tunnels.rst",
         "patchSetId": 6
