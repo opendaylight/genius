@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_5a14a94d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 620,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-13T04:36:20Z",
+      "side": 1,
+      "message": "use southboundutils to retrieve ovsdbtp if it is not present in local cache.",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3a172553",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 639,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-13T04:36:20Z",
+      "side": 1,
+      "message": "why do you use nodeInstanceId if this is not known (only interface name is known)? you could simply use southboundUtils.getNodeByTerminationPointExternalId(interfaceName); if local cache doesn\u0027t have the value.",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7a088d2d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 664,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-13T04:36:20Z",
+      "side": 1,
+      "message": "use getNodeForInterface and getTerminationPoint methods.",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
