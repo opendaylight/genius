@@ -22,25 +22,21 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
+public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigUnbindHelper {
+
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigRemovable flowBasedIngressServicesRemovable;
 
     private FlowBasedIngressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
+
     }
 
     public static void intitializeFlowBasedIngressServicesConfigRemoveHelper(
@@ -66,48 +62,13 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         flowBasedIngressServicesRemovable = null;
     }
 
-    @Override
-    public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-            BoundServices boundServiceOld) {
+    protected List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
+                                                               List<BoundServices> boundServices,
+                                                               org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                                                                       .ietf.interfaces.rev140508.interfaces.state
+                                                                       .Interface ifaceState,
+                                                               DataBroker dataBroker) {
 
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        String interfaceName = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class))
-                .getInterfaceName();
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
-                .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-
-        // Get the Parent ServiceInfo
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
-                dataBroker);
-        if (servicesInfo == null) {
-            LOG.error("Reached Impossible part in the code for bound service: {}", boundServiceOld);
-            return futures;
-        }
-
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceName, dataBroker);
-        if (ifState == null) {
-            LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
-            return futures;
-        }
-        List<BoundServices> boundServices = servicesInfo.getBoundServices();
-
-        // Split based on type of interface....
-        if (L2vlan.class.equals(ifState.getType())) {
-            return unbindServiceOnVlan(boundServiceOld, boundServices, ifState, dataBroker);
-        } else if (Tunnel.class.equals(ifState.getType())) {
-            return unbindServiceOnTunnel(boundServiceOld, boundServices, ifState, dataBroker);
-        }
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
-            List<BoundServices> boundServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifaceState,
-            DataBroker dataBroker) {
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 ifaceState.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -171,7 +132,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
+    protected List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
             List<BoundServices> boundServices,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState,
@@ -227,5 +188,13 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             futures.add(tx.submit());
         }
         return futures;
+    }
+
+    @Override
+    protected List<ListenableFuture<Void>> unbindServiceOnInterfaceType(BoundServices boundServiceNew,
+                                                                        List<BoundServices> allServices,
+                                                                        DataBroker dataBroker) {
+        //TODO
+        return null;
     }
 }
