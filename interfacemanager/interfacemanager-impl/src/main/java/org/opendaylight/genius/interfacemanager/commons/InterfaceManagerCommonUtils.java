@@ -391,8 +391,7 @@ public class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         Integer ifIndex;
         if (interfaceInfo != null) {
-            if(!interfaceInfo.isEnabled() || (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo) &&
-                    checkIfBfdStateIsDown(interfaceInfo.getName()))){
+            if(!interfaceInfo.isEnabled()){
                 operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
             }
 
