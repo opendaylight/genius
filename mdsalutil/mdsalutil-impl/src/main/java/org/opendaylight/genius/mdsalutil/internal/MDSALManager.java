@@ -18,14 +18,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
@@ -473,7 +471,7 @@ public class MDSALManager implements AutoCloseable {
         }
     }
 
-    class GroupListener extends AsyncClusteredDataChangeListenerBase<Group,GroupListener> {
+    class GroupListener extends AsyncClusteredDataTreeChangeListenerBase<Group,GroupListener> {
 
         public GroupListener() {
             super(Group.class,GroupListener.class);
@@ -507,22 +505,17 @@ public class MDSALManager implements AutoCloseable {
         }
 
         @Override
-        protected InstanceIdentifier<Group> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Group.class);
-        }
-
-        @Override
-        protected ClusteredDataChangeListener getDataChangeListener() {
+        protected GroupListener getDataTreeChangeListener() {
             return GroupListener.this;
         }
 
         @Override
-        protected DataChangeScope getDataChangeScope() {
-            return DataChangeScope.SUBTREE;
+        protected InstanceIdentifier<Group> getWildCardPath() {
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Group.class);
         }
     }
 
-    class FlowListener extends AsyncClusteredDataChangeListenerBase<Flow,FlowListener> {
+    class FlowListener extends AsyncClusteredDataTreeChangeListenerBase<Flow,FlowListener> {
 
         public FlowListener() {
             super(Flow.class, FlowListener.class);
@@ -554,18 +547,13 @@ public class MDSALManager implements AutoCloseable {
         }
 
         @Override
-        protected InstanceIdentifier<Flow> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class);
-        }
-
-        @Override
-        protected ClusteredDataChangeListener getDataChangeListener() {
+        protected FlowListener getDataTreeChangeListener() {
             return FlowListener.this;
         }
 
         @Override
-        protected DataChangeScope getDataChangeScope() {
-            return DataChangeScope.SUBTREE;
+        protected InstanceIdentifier<Flow> getWildCardPath() {
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class);
         }
     }
 

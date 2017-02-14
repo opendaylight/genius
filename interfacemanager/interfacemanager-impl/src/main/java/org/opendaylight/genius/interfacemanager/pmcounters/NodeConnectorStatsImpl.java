@@ -8,22 +8,10 @@
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInputBuilder;
@@ -46,7 +34,19 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
+public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
     private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
@@ -69,27 +69,17 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
     private ScheduledExecutorService portStatExecutorService;
     private OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
     public NodeConnectorStatsImpl(DataBroker db, NotificationService notificationService, OpendaylightPortStatisticsService statPortService, OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
-        super(Node.class);
+        super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = statPortService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
-        registerListener(db);
+        registerListener(LogicalDatastoreType.OPERATIONAL, db);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE, getThreadFactory("Port Stats Request Task"));
         notificationService.registerNotificationListener(portStatsListener);
         notificationService.registerNotificationListener(flowTableStatsListener);
         pmagent.registerMbean();
     }
 
-    private void registerListener(final DataBroker db) {
-        try {
-            db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL,
-                    getWildCardPath(), NodeConnectorStatsImpl.this, AsyncDataBroker.DataChangeScope.SUBTREE);
-        } catch (final Exception e) {
-            logger.error("NodeConnectorStatsImpl: DataChange listener registration fail!", e);
-            throw new IllegalStateException("NodeConnectorStatsImpl: registration Listener failed.", e);
-        }
-    }
-
-    private InstanceIdentifier<Node> getWildCardPath() {
+    public InstanceIdentifier<Node> getWildCardPath() {
         return InstanceIdentifier.create(Nodes.class).child(Node.class);
     }
 
@@ -283,5 +273,10 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
         if (nodes.size() == 1) {
             schedulePortStatRequestTask();
         }
+    }
+
+    @Override
+    protected NodeConnectorStatsImpl getDataTreeChangeListener() {
+        return NodeConnectorStatsImpl.this;
     }
 }
