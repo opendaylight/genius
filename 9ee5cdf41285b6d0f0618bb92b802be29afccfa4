@@ -34,6 +34,24 @@
       "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4114b54d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-14T12:43:41Z",
+      "side": 1,
+      "message": "Checked, we don\u0027t have any vlan trunk entries because the port that becomes VLAN Member will never have corresponding tap port. With Alon\u0027s changes flow entries will only get added when tap port is created. Unless you\u0027r talking about trunk parent, I think entries for that will still remain but without vlanid check, right?",
+      "parentUuid": "fafc7978_e3c85124",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
