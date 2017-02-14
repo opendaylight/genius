@@ -17,8 +17,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -30,7 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface> implements AutoCloseable {
+public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Interface, ItmTunnelEventListener>
+    implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(ItmTunnelEventListener.class);
     private final DataBroker broker;
@@ -39,7 +40,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     @Inject
     public ItmTunnelEventListener(final DataBroker dataBroker) {
-        super(Interface.class);
+        super(Interface.class, ItmTunnelEventListener.class);
         this.broker = dataBroker;
         try {
             this.alarmAgent = new JMXAlarmAgent();
@@ -50,7 +51,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
 
     @PostConstruct
     public void start() throws JMException {
-        registerListener(this.broker);
+        registerListener(LogicalDatastoreType.OPERATIONAL, this.broker);
         if (alarmAgent != null) {
             alarmAgent.registerMbean();
         }
@@ -73,17 +74,7 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
         }
     }
 
-    private void registerListener(final DataBroker db) {
-        try {
-            listenerRegistration = broker.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL,
-                    getWildCardPath(), ItmTunnelEventListener.this, AsyncDataBroker.DataChangeScope.SUBTREE);
-        } catch (final Exception e) {
-            logger.error("ITM Monitor Interfaces DataChange listener registration fail!", e);
-            throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
-        }
-    }
-
-    private InstanceIdentifier<Interface> getWildCardPath() {
+    public InstanceIdentifier<Interface> getWildCardPath() {
         return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
     }
 
@@ -203,6 +194,11 @@ public class ItmTunnelEventListener extends AbstractDataChangeListener<Interface
                 }
             }
         }
+    }
+
+    @Override
+    protected ItmTunnelEventListener getDataTreeChangeListener() {
+        return ItmTunnelEventListener.this;
     }
 
     public void raiseInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
