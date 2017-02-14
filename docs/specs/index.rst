@@ -14,3 +14,4 @@ Contents:
    of-tunnels
    itm-tunnel-auto-config
    service-binding-on-tunnels
+   qos-shaping
