@@ -75,6 +75,30 @@
       "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_17b02ff3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-02-14T15:39:00Z",
+      "side": 1,
+      "message": "Ahh ok, that was the missing piece.. I was looking at InterfaceConfigListener, this should do the trick",
+      "parentUuid": "fafc7978_97ed3ff2",
+      "range": {
+        "startLine": 218,
+        "startChar": 51,
+        "endLine": 218,
+        "endChar": 70
+      },
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
