@@ -23,11 +23,11 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -58,7 +58,8 @@ import org.slf4j.LoggerFactory;
  * @see VtepConfigSchema
  */
 @Singleton
-public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepConfigSchema> implements AutoCloseable {
+public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<VtepConfigSchema, VtepConfigSchemaListener> implements
+    AutoCloseable {
 
     /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger(VtepConfigSchemaListener.class);
@@ -81,14 +82,14 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      */
     @Inject
     public VtepConfigSchemaListener(final DataBroker dataBroker, final ItmConfig itmConfig) {
-        super(VtepConfigSchema.class);
+        super(VtepConfigSchema.class, VtepConfigSchemaListener.class);
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
     }
 
     @PostConstruct
     public void start() {
-        registerListener(this.dataBroker);
+        registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
         LOG.info("VtepConfigSchemaListener Started");
     }
 
@@ -111,28 +112,13 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
         LOG.info("VtepConfigSchemaListener Closed");
     }
 
-    /**
-     * Register listener.
-     *
-     * @param db
-     *            the db
-     */
-    private void registerListener(final DataBroker db) {
-        try {
-            this.listenerRegistration = db.registerDataChangeListener(LogicalDatastoreType.CONFIGURATION,
-                    getWildCardPath(), VtepConfigSchemaListener.this, AsyncDataBroker.DataChangeScope.SUBTREE);
-        } catch (final Exception e) {
-            LOG.error("VtepConfigSchemaListener DataChange listener registration fail!", e);
-            throw new IllegalStateException("VtepConfigSchemaListener registration Listener failed.", e);
-        }
-    }
 
     /**
      * Gets the wild card path.
      *
      * @return the wild card path
      */
-    private InstanceIdentifier<VtepConfigSchema> getWildCardPath() {
+    public InstanceIdentifier<VtepConfigSchema> getWildCardPath() {
         return ItmUtils.getVtepConfigSchemaIdentifier();
     }
 
@@ -222,6 +208,11 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
         } catch (Exception e) {
             LOG.error("Failed to handle DCN for add VtepConfigSchema: {}", e);
         }
+    }
+
+    @Override
+    protected VtepConfigSchemaListener getDataTreeChangeListener() {
+        return VtepConfigSchemaListener.this;
     }
 
     /**
