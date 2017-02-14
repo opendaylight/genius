@@ -16,3 +16,4 @@ Contents:
    of-tunnels
    service-binding-on-tunnels
    Load balancing and high availability of multiple VxLAN tunnels <multiple-vxlan-tunnels>
+   qos-shaping
