@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e3c85124",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-14T06:06:39Z",
+      "side": 1,
+      "message": "similarly don\u0027t we have to delete vlan-trunk related entries (example: table 0 flow entry) when vlan trunk becomes vlan member ? just check OvsInterfaceConfigUpdateHelper#updateConfiguration already does it.",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
