@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e10969de",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T10:33:51Z",
+      "side": 1,
+      "message": "interfacemanager-impl currently has not have CS enforcement, that\u0027s why IMHO it would be AWESOME if 1 of you two (Vishal or Alon) would be motivated to make a contribution getting interfacemanager-impl to be be fully CS compliant!! I\u0027ll even help, maybe David too, if you\u0027d be interested in splitting up the packages among us? Send email if you\u0027re interested to follow-up on this offer.",
+      "parentUuid": "fafc7978_35ed768c",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5a14a94d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 3
