@@ -32,7 +32,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -477,7 +477,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    class GroupListener extends AsyncClusteredDataChangeListenerBase<Group, GroupListener> {
+    class GroupListener extends AsyncClusteredDataTreeChangeListenerBase<Group, GroupListener> {
 
         GroupListener() {
             super(Group.class, GroupListener.class);
@@ -517,17 +517,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
 
         @Override
-        protected ClusteredDataChangeListener getDataChangeListener() {
+        protected GroupListener getDataTreeChangeListener() {
             return GroupListener.this;
-        }
-
-        @Override
-        protected DataChangeScope getDataChangeScope() {
-            return DataChangeScope.SUBTREE;
         }
     }
 
-    class FlowListener extends AsyncClusteredDataChangeListenerBase<Flow, FlowListener> {
+    class FlowListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowListener> {
 
         FlowListener() {
             super(Flow.class, FlowListener.class);
@@ -565,13 +560,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
 
         @Override
-        protected ClusteredDataChangeListener getDataChangeListener() {
+        protected FlowListener getDataTreeChangeListener() {
             return FlowListener.this;
-        }
-
-        @Override
-        protected DataChangeScope getDataChangeScope() {
-            return DataChangeScope.SUBTREE;
         }
     }
 
