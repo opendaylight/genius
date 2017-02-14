@@ -16,6 +16,24 @@
       "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c3c0ade2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-14T07:00:21Z",
+      "side": 1,
+      "message": "Yes, that is the only open testing left to do. It should work but won\u0027t be surprised if needs bit more changes.",
+      "parentUuid": "fafc7978_e3c85124",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
