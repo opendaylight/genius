@@ -25,7 +25,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.AbstractDataChangeListener;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInputBuilder;
@@ -49,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
+public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
 
     private static final Logger logger = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
     private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
@@ -76,28 +76,24 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
     public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
                                   final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
                                   final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
-        super(Node.class);
+        super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
-        registerListener(dataBroker);
+        registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE, getThreadFactory("Port Stats Request Task"));
         notificationService.registerNotificationListener(portStatsListener);
         notificationService.registerNotificationListener(flowTableStatsListener);
         pmagent.registerMbean();
     }
 
-    private void registerListener(final DataBroker db) {
-        try {
-            db.registerDataChangeListener(LogicalDatastoreType.OPERATIONAL,
-                    getWildCardPath(), NodeConnectorStatsImpl.this, AsyncDataBroker.DataChangeScope.SUBTREE);
-        } catch (final Exception e) {
-            logger.error("NodeConnectorStatsImpl: DataChange listener registration fail!", e);
-            throw new IllegalStateException("NodeConnectorStatsImpl: registration Listener failed.", e);
-        }
+    @Override
+    public InstanceIdentifier<Node> getWildCardPath() {
+        return InstanceIdentifier.create(Nodes.class).child(Node.class);
     }
 
-    private InstanceIdentifier<Node> getWildCardPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class);
+    @Override
+    protected NodeConnectorStatsImpl getDataTreeChangeListener() {
+        return NodeConnectorStatsImpl.this;
     }
 
     /*
