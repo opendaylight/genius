@@ -9,7 +9,6 @@ package org.opendaylight.genius.alivenessmonitor.internal;
 
 import com.google.common.base.Strings;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,33 +65,12 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
     @Override
     public String handlePacketIn(Packet protocolPacket, PacketReceived packetReceived) {
-        String sourceDpnId = null;
-        String sourcePortNumber = null;
-        int serviceId = -1;
-        int packetId = 0;
-
         String tempString = null;
-
         byte lldpTlvTypeCur;
-
         LLDP lldpPacket = (LLDP) protocolPacket;
-
-        LLDPTLV lldpTlvCur = lldpPacket.getSystemNameId();
-        if (lldpTlvCur != null) {
-            sourceDpnId = new String(lldpTlvCur.getValue(), Charset.defaultCharset());
-        }
-
-        lldpTlvCur = lldpPacket.getPortId();
-        if (lldpTlvCur != null) {
-            sourcePortNumber = new String(lldpTlvCur.getValue(), Charset.defaultCharset());
-        }
 
         for (LLDPTLV lldpTlv : lldpPacket.getOptionalTLVList()) {
             lldpTlvTypeCur = lldpTlv.getType();
-
-            if (lldpTlvTypeCur == LLDPTLV.TLVType.SystemName.getValue()) {
-                sourceDpnId = new String(lldpTlvCur.getValue(), Charset.defaultCharset());
-            }
         }
 
         for (LLDPTLV lldpTlv : lldpPacket.getCustomTlvList()) {
@@ -100,7 +78,6 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
             if (lldpTlvTypeCur == LLDPTLV.TLVType.Custom.getValue()) {
                 tempString = new String(lldpTlv.getValue());
-                serviceId = 0;
             }
         }
 
@@ -118,8 +95,8 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             return monitorKey;
         } else {
             LOG.debug("No associated interface found to handle received LLDP Packet");
+            return null;
         }
-        return null;
     }
 
     @Override
