@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,45 +8,47 @@
 
 package org.opendaylight.genius.fcapsappjmx;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.management.AttributeChangeNotification;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
-import java.util.ArrayList;
 
 public class ControlPathFailureAlarm extends NotificationBroadcasterSupport implements ControlPathFailureAlarmMBean {
 
-    ArrayList<String> raiseAlarmObject = new ArrayList<>();
-    ArrayList<String> clearAlarmObject = new ArrayList<>();
+    private List<String> raiseAlarmObject = new ArrayList<>();
+    private List<String> clearAlarmObject = new ArrayList<>();
     private long sequenceNumber = 1;
 
-    public void setRaiseAlarmObject(ArrayList<String> raiseAlarmObject) {
+    @Override
+    public void setRaiseAlarmObject(List<String> raiseAlarmObject) {
         this.raiseAlarmObject = raiseAlarmObject;
 
-        Notification notif = new AttributeChangeNotification(this,
-                sequenceNumber++, System.currentTimeMillis(),
-                "raise alarm object notified ", "raiseAlarmObject", "ArrayList",
-                "", this.raiseAlarmObject);
+        Notification notif = new AttributeChangeNotification(this, sequenceNumber++, System.currentTimeMillis(),
+                "raise alarm object notified ", "raiseAlarmObject", "ArrayList", "", this.raiseAlarmObject);
         sendNotification(notif);
     }
 
-    public ArrayList<String> getRaiseAlarmObject() {
+    @Override
+    public List<String> getRaiseAlarmObject() {
         return raiseAlarmObject;
     }
 
-    public void setClearAlarmObject(ArrayList<String> clearAlarmObject) {
+    @Override
+    public void setClearAlarmObject(List<String> clearAlarmObject) {
         this.clearAlarmObject = clearAlarmObject;
 
-        Notification notif = new AttributeChangeNotification(this,
-                sequenceNumber++, System.currentTimeMillis(),
-                "clear alarm object notified ", "clearAlarmObject", "ArrayList",
-                "", this.clearAlarmObject);
+        Notification notif = new AttributeChangeNotification(this, sequenceNumber++, System.currentTimeMillis(),
+                "clear alarm object notified ", "clearAlarmObject", "ArrayList", "", this.clearAlarmObject);
         sendNotification(notif);
     }
 
-    public ArrayList<String> getClearAlarmObject() {
+    @Override
+    public List<String> getClearAlarmObject() {
         return clearAlarmObject;
     }
 
+    @Override
     public synchronized void raiseAlarm(String alarmName, String additionalText, String source) {
         raiseAlarmObject.add(alarmName);
         raiseAlarmObject.add(additionalText);
@@ -55,6 +57,7 @@ public class ControlPathFailureAlarm extends NotificationBroadcasterSupport impl
         raiseAlarmObject.clear();
     }
 
+    @Override
     public synchronized void clearAlarm(String alarmName, String additionalText, String source) {
         clearAlarmObject.add(alarmName);
         clearAlarmObject.add(additionalText);
