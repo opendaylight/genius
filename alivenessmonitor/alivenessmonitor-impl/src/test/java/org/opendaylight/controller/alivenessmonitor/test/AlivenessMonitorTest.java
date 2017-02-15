@@ -172,7 +172,7 @@ public class AlivenessMonitorTest {
         arpHandler = new AlivenessProtocolHandlerARP(dataBroker,
                 interfaceManager, alivenessMonitor, arpService);
         lldpHandler = new AlivenessProtocolHandlerLLDP(dataBroker,
-                interfaceManager, alivenessMonitor, packetProcessingService);
+                alivenessMonitor, packetProcessingService);
         mockId = 1L;
         when(idManager.allocateId(any(AllocateIdInput.class)))
                 .thenReturn(
