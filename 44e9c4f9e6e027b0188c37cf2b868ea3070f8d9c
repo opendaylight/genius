@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_4e14d943",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-15T19:35:54Z",
+      "side": 1,
+      "message": "it\u0027s surprising to see you introducing this in a Checkstyle related change - remove?",
+      "revId": "44e9c4f9e6e027b0188c37cf2b868ea3070f8d9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
