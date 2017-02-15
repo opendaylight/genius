@@ -37,7 +37,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
 
-    private static ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
+    private final ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
