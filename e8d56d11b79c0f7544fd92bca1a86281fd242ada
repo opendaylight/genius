@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_da908b45",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 2532
+      },
+      "writtenOn": "2017-02-15T11:21:01Z",
+      "side": 1,
+      "message": "Currently in BGPL3VPN, the single TEP IP on an OVS is announced as the BGP next-hop in route advertisements to the DC gateway. \nWhen we have two TEP IPs, which one should be used? DC gateway may not have connectivity to only one of them in the underlay. That TEP should be announced as BGP next-hop. But how would the controller know which one?",
+      "range": {
+        "startLine": 113,
+        "startChar": 37,
+        "endLine": 113,
+        "endChar": 38
+      },
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
