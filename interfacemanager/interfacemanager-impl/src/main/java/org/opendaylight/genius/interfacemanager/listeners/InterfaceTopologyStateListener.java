@@ -10,7 +10,12 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -26,13 +31,26 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
-    public InterfaceTopologyStateListener(DataBroker dataBroker) {
+    @Inject
+    public InterfaceTopologyStateListener(final DataBroker dataBroker) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
+        LOG.info("InterfaceTopologyStateListener started");
+    }
+
+    @PreDestroy
+    public void close() {
+        LOG.info("InterfaceTopologyStateListener closed");
     }
 
     @Override

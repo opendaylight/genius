@@ -19,6 +19,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
@@ -46,6 +50,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
 
     private static final Logger logger = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
@@ -65,18 +70,32 @@ public class NodeConnectorStatsImpl extends AbstractDataChangeListener<Node>{
     Map<String, Map<String, String>> nodeAndNcIdBytesReceiveMap = new ConcurrentHashMap<>();
     Map<String, Map<String, String>> nodeAndEntriesPerOFTableMap = new ConcurrentHashMap<>();
     private ScheduledFuture<?> scheduledResult;
-    private OpendaylightPortStatisticsService statPortService;
+    private final OpendaylightPortStatisticsService statPortService;
     private ScheduledExecutorService portStatExecutorService;
-    private OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
-    public NodeConnectorStatsImpl(DataBroker db, NotificationService notificationService, OpendaylightPortStatisticsService statPortService, OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
+    private final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
+
+    @Inject
+    public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
+                                  final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
+                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
         super(Node.class);
-        this.statPortService = statPortService;
+        this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
-        registerListener(db);
+        registerListener(dataBroker);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE, getThreadFactory("Port Stats Request Task"));
         notificationService.registerNotificationListener(portStatsListener);
         notificationService.registerNotificationListener(flowTableStatsListener);
         pmagent.registerMbean();
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        logger.info("NodeConnectorStatsImpl started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        logger.info("NodeConnectorStatsImpl closed");
     }
 
     private void registerListener(final DataBroker db) {

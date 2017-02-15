@@ -8,9 +8,16 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.opendaylight.controller.config.api.osgi.WaitingServiceTracker;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -25,24 +32,47 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<Interface, VlanMemberConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(VlanMemberConfigListener.class);
-    private DataBroker dataBroker;
-    private IdManagerService idManager;
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
     private AlivenessMonitorService alivenessMonitorService;
-    private IMdsalApiManager mdsalApiManager;
+    private final IMdsalApiManager mdsalApiManager;
 
-    public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
-                                    final AlivenessMonitorService alivenessMonitorService,
-                                    final IMdsalApiManager mdsalApiManager) {
+    @Inject
+    public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManagerService,
+                                    final IMdsalApiManager iMdsalApiManager,
+                                    final BundleContext bundleContext) {
         super(Interface.class, VlanMemberConfigListener.class);
         this.dataBroker = dataBroker;
-        this.idManager = idManager;
-        this.alivenessMonitorService = alivenessMonitorService;
-        this.mdsalApiManager = mdsalApiManager;
+        this.idManager = idManagerService;
+        this.mdsalApiManager = iMdsalApiManager;
+
+        GlobalEventExecutor.INSTANCE.execute(new Runnable() {
+            @Override
+            public void run() {
+                final WaitingServiceTracker<AlivenessMonitorService> tracker = WaitingServiceTracker.create(
+                        AlivenessMonitorService.class, bundleContext);
+                alivenessMonitorService = tracker.waitForService(WaitingServiceTracker.FIVE_MINUTES);
+                LOG.info("VlanMemberConfigListener initialized. alivenessMonitorService={}", alivenessMonitorService);
+            }
+        });
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
+        LOG.info("VlanMemberConfigListener started");
+    }
+
+    @PreDestroy
+    public void close(){
+        LOG.info("VlanMemberConfigListener closed");
     }
 
     @Override

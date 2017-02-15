@@ -11,8 +11,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -31,6 +35,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private final DataBroker dataBroker;
@@ -38,6 +43,7 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
     private final SouthboundUtils southboundUtils;
     private final InterfacemgrProvider interfaceMgrProvider;
 
+    @Inject
     public TerminationPointStateListener(DataBroker dataBroker,
                                          final InterfacemgrProvider interfaceMgrProvider) {
         super(OvsdbTerminationPointAugmentation.class, TerminationPointStateListener.class);
@@ -45,6 +51,17 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
         this.mdsalUtils = new MdsalUtils(dataBroker);
         this.southboundUtils = new SouthboundUtils(mdsalUtils);
         this.interfaceMgrProvider = interfaceMgrProvider;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
+        LOG.info("TerminationPointStateListener started");
+    }
+
+    @PreDestroy
+    public void close(){
+        LOG.info("TerminationPointStateListener closed");
     }
 
     @Override
