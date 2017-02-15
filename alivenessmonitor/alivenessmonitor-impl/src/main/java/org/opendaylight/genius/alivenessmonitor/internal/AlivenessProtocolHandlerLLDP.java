@@ -25,6 +25,7 @@ import org.opendaylight.controller.liblldp.LLDPTLV.TLVType;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.liblldp.PacketException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -137,7 +138,14 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
         // Get Mac Address for the source interface
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
-            .interfaces.state.Interface interfaceState = getInterfaceFromOperDS(sourceInterface);
+            .interfaces.state.Interface interfaceState;
+        try {
+            interfaceState = getInterfaceFromOperDS(sourceInterface);
+        } catch (ReadFailedException e) {
+            LOG.error("getInterfaceFromOperDS failed for sourceInterface: {}", sourceInterface, e);
+            return;
+        }
+
         byte[] sourceMac = getMacAddress(interfaceState, sourceInterface);
         if (sourceMac == null) {
             LOG.error("Could not read mac address for the source interface {} from the Inventory. "

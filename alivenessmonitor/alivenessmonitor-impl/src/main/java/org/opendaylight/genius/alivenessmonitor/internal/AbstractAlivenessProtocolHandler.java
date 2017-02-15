@@ -13,8 +13,9 @@ import com.google.common.base.Strings;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -31,14 +32,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
-import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHandler {
-    private final DataBroker dataBroker;
+    private final SingleTransactionDataBroker singleTxDataBroker;
     private final OdlInterfaceRpcService interfaceManager;
     private final InventoryReader inventoryReader;
 
@@ -48,36 +48,22 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
             final OdlInterfaceRpcService interfaceManager,
             final AlivenessMonitor alivenessMonitor,
             final EtherTypes etherType) {
-        this.dataBroker = dataBroker;
+        this.singleTxDataBroker = new SingleTransactionDataBroker(dataBroker);
         this.interfaceManager = interfaceManager;
         alivenessMonitor.registerHandler(etherType, this);
         inventoryReader = new InventoryReader(dataBroker);
     }
 
-    private <T extends DataObject> Optional<T> read(
-            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
-        try {
-            ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
-
-            return tx.read(datastoreType, path).get();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Cannot read object {} from datastore: ", path, e);
-
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected Interface getInterfaceFromConfigDS(String interfaceName) {
+    protected Optional<Interface> getInterfaceFromConfigDS(String interfaceName) throws ReadFailedException {
         InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-        InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(
-                interfaceKey);
-
-        return read(LogicalDatastoreType.CONFIGURATION, interfaceId).orNull();
+        InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(interfaceKey);
+        return singleTxDataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION, interfaceId);
     }
 
     // @formatter:off
     protected org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
-        .state.Interface getInterfaceFromOperDS(String interfaceName) {
+        .state.Interface getInterfaceFromOperDS(String interfaceName) throws ReadFailedException {
+
         InstanceIdentifier.InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
             .interfaces.rev140508.interfaces.state.Interface> idBuilder = InstanceIdentifier
                 .builder(InterfacesState.class)
@@ -88,7 +74,7 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
             .state.Interface> id = idBuilder.build();
 
-        return read(LogicalDatastoreType.OPERATIONAL, id).orNull();
+        return singleTxDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, id);
     }
     // @formatter:on
 
@@ -112,13 +98,13 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
     }
 
     private InstanceIdentifier<NodeConnector> getNodeConnectorId(
-            String interfaceName) {
+            String interfaceName) throws ReadFailedException {
         InstanceIdentifier<Interface> id = InstanceIdentifier
                 .builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(interfaceName))
                 .build();
 
-        if (read(LogicalDatastoreType.CONFIGURATION, id).isPresent()) {
+        if (singleTxDataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION, id).isPresent()) {
             NodeConnectorId ncId = getNodeConnectorIdFromInterface(
                     interfaceName);
             NodeId nodeId = getNodeIdFromNodeConnectorId(ncId);
