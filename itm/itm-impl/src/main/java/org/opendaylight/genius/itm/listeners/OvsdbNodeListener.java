@@ -98,7 +98,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             bridgeName = ovsdbNewBridgeAugmentation.getBridgeName().getValue();
 
             // Read DPN ID from OVSDBBridgeAugmentation
-            strDpnId = ItmUtils.getStrDatapathId(ovsdbNodeNew);
+            strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
             if (strDpnId == null || strDpnId.isEmpty()) {
                 LOG.error("OvsdbBridgeAugmentation ADD: DPID for bridge {} is NULL.",
                     bridgeName);

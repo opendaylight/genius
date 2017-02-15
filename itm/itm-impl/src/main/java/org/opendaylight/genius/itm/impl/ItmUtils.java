@@ -1260,16 +1260,14 @@ public class ItmUtils {
      * Gets the bridge datapath ID in string form from
      * Network topology Node's OvsdbBridgeAugmentation in the Operational DS.
      *
-     * @param node Network Topology Node
+     * @param augmentedNode Ovsdb Augmented Network Topology Node
      *
      * @return the datapath ID of bridge in string form
      */
-    public static String getStrDatapathId(Node node) {
-        OvsdbBridgeAugmentation ovsdbBridgeAugmentation =
-            node.getAugmentation(OvsdbBridgeAugmentation.class);
+    public static String getStrDatapathId(OvsdbBridgeAugmentation augmentedNode) {
         String datapathId = null;
-        if (ovsdbBridgeAugmentation != null && ovsdbBridgeAugmentation.getDatapathId() != null) {
-            datapathId = ovsdbBridgeAugmentation.getDatapathId().getValue();
+        if (augmentedNode != null && augmentedNode.getDatapathId() != null) {
+            datapathId = augmentedNode.getDatapathId().getValue();
         }
         return datapathId;
     }
