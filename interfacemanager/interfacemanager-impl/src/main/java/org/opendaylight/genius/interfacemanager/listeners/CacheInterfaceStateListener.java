@@ -9,6 +9,10 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -27,14 +31,28 @@ import org.slf4j.LoggerFactory;
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
+@Singleton
 public class CacheInterfaceStateListener implements ClusteredDataTreeChangeListener<Interface> {
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterfaceStateListener.class);
-    private DataBroker db;
+    private final DataBroker db;
     private ListenerRegistration<CacheInterfaceStateListener> registration;
 
-    public CacheInterfaceStateListener(DataBroker broker) {
-        this.db = broker;
-        registerListener(db);
+    @Inject
+    public CacheInterfaceStateListener(final DataBroker dataBroker) {
+        this.db = dataBroker;
+    }
+
+    @PostConstruct
+    public void start() throws Exception {
+        registerListener(this.db);
+        LOG.info("CacheInterfaceStateListener started");
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        if(registration != null) {
+            registration.close();
+        }
     }
 
     private void registerListener(DataBroker db) {
@@ -50,12 +68,6 @@ public class CacheInterfaceStateListener implements ClusteredDataTreeChangeListe
 
     private InstanceIdentifier<Interface> getWildcardPath() {
         return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
-    }
-
-    public void close() {
-        if(registration != null) {
-            registration.close();
-        }
     }
 
     @Override

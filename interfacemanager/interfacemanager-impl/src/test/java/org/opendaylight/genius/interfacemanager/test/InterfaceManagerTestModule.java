@@ -8,13 +8,10 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.net.UnknownHostException;
 import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.routing.RouteChangeListener;
@@ -22,12 +19,24 @@ import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.ProviderCo
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RoutedRpcRegistration;
 import org.opendaylight.controller.sal.binding.api.BindingAwareBroker.RpcRegistration;
 import org.opendaylight.controller.sal.binding.api.BindingAwareService;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.controller.sal.binding.api.rpc.RpcContextIdentifier;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
-import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
+import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
+import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
+import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
+import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
+import org.opendaylight.genius.interfacemanager.listeners.HwVTEPTunnelsStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.InterfaceConfigListener;
+import org.opendaylight.genius.interfacemanager.listeners.InterfaceInventoryStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.test.infra.TemporaryDataBrokerTestModuleWithLocalFixForBug7538;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -36,8 +45,9 @@ import org.opendaylight.infrautils.inject.ModuleSetupRuntimeException;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.impl.rev160406.InterfacemgrImplModule;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -45,6 +55,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.RpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.osgi.framework.BundleContext;
 
 /**
  * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTest}.
@@ -77,6 +88,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         LockManagerService lockManager = new LockManager(dataBroker);
         bind(LockManagerService.class).toInstance(lockManager);
 
+        bind(BundleContext.class);
+
         IdUtils idUtils = new IdUtils();
         IdManagerService idManager;
         try {
@@ -94,11 +107,27 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         EntityOwnershipService entityOwnershipService = TestEntityOwnershipService.newInstance();
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
 
+        bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));
+
         // Temporary bindings which normally would be on top, but cauz of CSS vs BP are here, for now:
-        InterfacemgrProvider interfaceManager = interfaceManager(mdsalManager, entityOwnershipService, dataBroker,
-                idManager);
-        bind(IInterfaceManager.class).toInstance(interfaceManager);
-        bind(Stopper.class).toInstance(new Stopper(interfaceManager));
+        /*InterfacemgrProvider interfaceManager = interfaceManager(mdsalManager, entityOwnershipService, dataBroker,
+                idManager);*/
+        bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
+        /*bind(Stopper.class).toInstance(new Stopper(interfaceManager));*/
+        bind(CacheBridgeEntryConfigListener.class);
+        bind(CacheBridgeRefEntryListener.class);
+        bind(CacheInterfaceConfigListener.class);
+        bind(CacheInterfaceStateListener.class);
+        bind(FlowBasedServicesConfigListener.class);
+        bind(FlowBasedServicesInterfaceStateListener.class);
+        bind(HwVTEPConfigListener.class);
+        bind(HwVTEPTunnelsStateListener.class);
+        bind(InterfaceConfigListener.class);
+        bind(InterfaceInventoryStateListener.class);
+        bind(InterfaceTopologyStateListener.class);
+        bind(TerminationPointStateListener.class);
+        bind(VlanMemberConfigListener.class);
+
     }
 
     @Singleton
@@ -120,31 +149,13 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         }
     }
 
-    /**
-     * This method duplicates the logic in {@link InterfacemgrImplModule#createInstance()}.
-     * This isn't ideal, but as interface-manager will hopefully soon be converted from CSS to BP,
-     * at which point this can be simplified to be based on @Inject etc. just like e.g. the AclServiceModule
-     * and AclServiceTestModule or ElanServiceTestModule, we do it like this, for now.
-     */
-    private InterfacemgrProvider interfaceManager(IMdsalApiManager mdsalManager,
-            EntityOwnershipService entityOwnershipService, DataBroker dataBroker, IdManagerService idManager) {
-
-        InterfacemgrProvider provider = new InterfacemgrProvider();
-
-        RpcProviderRegistry rpcProviderRegistry = mock(RpcProviderRegistry.class /* TODO how-to? exception() */);
-        when(rpcProviderRegistry.getRpcService(IdManagerService.class)).thenReturn(idManager);
-
-        provider.setRpcProviderRegistry(rpcProviderRegistry);
-        provider.setMdsalManager(mdsalManager);
-        provider.setEntityOwnershipService(entityOwnershipService);
-        provider.setNotificationService(mock(NotificationService.class));
-
-        // TODO just use rpcProviderRegistry, which IS-A ProviderContext here?
-        ProviderContext session = new TestProviderContext(dataBroker);
-        provider.onSessionInitiated(session);
-
+    /*private InterfacemgrProvider interfaceManager(IMdsalApiManager mdsalManager,
+            EntityOwnershipService entityOwnershipService, DataBroker dataBroker, IdManagerService idManager)
+    {
+        InterfaceManagerRpcService interfaceManagerRpcService = new InterfaceManagerRpcService(dataBroker, mdsalManager);
+        InterfacemgrProvider provider = new InterfacemgrProvider(dataBroker, entityOwnershipService, idManager, interfaceManagerRpcService);
         return provider;
-    }
+    }*/
 
     static class TestProviderContext implements ProviderContext {
 
