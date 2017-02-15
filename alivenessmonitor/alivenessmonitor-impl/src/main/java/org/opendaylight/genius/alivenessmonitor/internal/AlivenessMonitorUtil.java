@@ -25,7 +25,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringStateKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class AlivenessMonitorUtil {
+final class AlivenessMonitorUtil {
+
+    private AlivenessMonitorUtil() {}
 
     static InstanceIdentifier<MonitoringState> getMonitorStateId(String keyId) {
         return InstanceIdentifier.builder(MonitoringStates.class)
@@ -52,38 +54,7 @@ public class AlivenessMonitorUtil {
                 .child(InterfaceMonitorEntry.class, new InterfaceMonitorEntryKey(interfaceName)).build();
     }
 
-    public static String toStringMacAddress(byte[] macAddress) {
-        if (macAddress == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder(18);
-
-        for (byte macAddres : macAddress) {
-            sb.append(UnsignedBytes.toString(macAddres, 16).toUpperCase());
-            sb.append(":");
-        }
-
-        sb.setLength(17);
-        return sb.toString();
-    }
-
-    public static byte[] parseIpAddress(String ipAddress) {
-        byte cur;
-
-        String[] addressPart = ipAddress.split(".");
-        int size = addressPart.length;
-
-        byte[] part = new byte[size];
-        for (int i = 0; i < size; i++) {
-            cur = UnsignedBytes.parseUnsignedByte(addressPart[i], 16);
-            part[i] = cur;
-        }
-
-        return part;
-    }
-
-    public static byte[] parseMacAddress(String macAddress) {
+    static byte[] parseMacAddress(String macAddress) {
         byte cur;
 
         String[] addressPart = macAddress.split(":");
