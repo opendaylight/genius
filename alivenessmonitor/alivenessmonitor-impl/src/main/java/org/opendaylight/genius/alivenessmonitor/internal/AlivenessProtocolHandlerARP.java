@@ -60,7 +60,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     @Inject
     public AlivenessProtocolHandlerARP(final DataBroker dataBroker, final OdlInterfaceRpcService interfaceManager,
             final AlivenessMonitor alivenessMonitor, final OdlArputilService arpService) {
-        super(dataBroker, interfaceManager, alivenessMonitor, EtherTypes.Arp);
+        super(dataBroker, alivenessMonitor, EtherTypes.Arp);
         this.interfaceManager = interfaceManager;
         this.arpService = arpService;
     }
