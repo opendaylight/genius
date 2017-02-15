@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7a519fd7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 451,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-15T10:51:35Z",
+      "side": 1,
+      "message": "what if the incoming interface is Transparent? and there is already a transparent interface bound?",
+      "revId": "cad72d1071bb50862490327debfeab5688e8af03",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
