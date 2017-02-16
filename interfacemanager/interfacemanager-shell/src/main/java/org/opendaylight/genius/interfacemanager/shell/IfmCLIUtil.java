@@ -1,11 +1,13 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016 - 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.genius.interfacemanager.shell;
+
+import java.util.Formatter;
 
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -14,8 +16,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-
-import java.util.Formatter;
 
 public class IfmCLIUtil {
     private static final String VLAN_OUTPUT_FORMAT_LINE1 = "%-55s";
@@ -37,7 +37,8 @@ public class IfmCLIUtil {
         sb.setLength(0);
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT, "Description", "", "", ""));
         sb.setLength(0);
-        session.getConsole().println(fmt.format("--------------------------------------------------------------------------------"));
+        session.getConsole().println(fmt
+            .format("--------------------------------------------------------------------------------"));
         sb.setLength(0);
         fmt.close();
     }

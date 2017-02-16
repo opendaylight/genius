@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016 - 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,21 +7,19 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
+import java.util.List;
 
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
-import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 @Command(scope = "vlan", name = "show", description = "view the configured vlan ports")
 public class ShowVlan extends OsgiCommandSupport {
-    private static final Logger logger = LoggerFactory.getLogger(ShowVlan.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShowVlan.class);
     private IInterfaceManager interfaceManager;
 
     public void setInterfaceManager(IInterfaceManager interfaceManager) {
@@ -30,7 +28,7 @@ public class ShowVlan extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() {
-        logger.debug("Executing show VLAN command");
+        LOG.debug("Executing show VLAN command");
         List<Interface> vlanList = interfaceManager.getVlanInterfaces();
         if (!vlanList.isEmpty()) {
             IfmCLIUtil.showVlanHeaderOutput(session);

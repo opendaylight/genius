@@ -8,6 +8,8 @@
 package org.opendaylight.genius.interfacemanager.shell;
 
 
+import java.util.List;
+
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -17,11 +19,9 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 @Command(scope = "vxlan", name = "show", description = "view the configured vxlan ports")
 public class ShowVxlan extends OsgiCommandSupport {
-    private static final Logger logger = LoggerFactory.getLogger(ShowVxlan.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShowVxlan.class);
     private IInterfaceManager interfaceManager;
     private DataBroker dataBroker;
 
@@ -29,13 +29,13 @@ public class ShowVxlan extends OsgiCommandSupport {
         this.interfaceManager = interfaceManager;
     }
 
-    public void setDataBroker(DataBroker dataBroker){
+    public void setDataBroker(DataBroker dataBroker) {
         this.dataBroker = dataBroker;
     }
 
     @Override
     protected Object doExecute() {
-        logger.debug("Executing show Vxlan command");
+        LOG.debug("Executing show Vxlan command");
         List<Interface> vxlanList = interfaceManager.getVxlanInterfaces();
         if (!vxlanList.isEmpty()) {
             IfmCLIUtil.showVxlanHeaderOutput(session);
