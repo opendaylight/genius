@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,6 +8,10 @@
 package org.opendaylight.genius.fcapsapp;
 
 import com.google.common.base.Preconditions;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
@@ -21,37 +25,37 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 @Singleton
 public class FcapsProvider implements AutoCloseable {
-
-    public static Logger s_logger = LoggerFactory.getLogger(FcapsProvider.class);
     private final DataBroker dataBroker;
     private final NotificationService notificationService;
     private final PacketInCounterHandler packetInCounterHandler;
     private final NodeEventListener<FlowCapableNode> nodeEventListener;
 
+    public static final Logger LOG = LoggerFactory.getLogger(FcapsProvider.class);
+
     /**
-     * Contructor sets the services
-     * @param dataBroker instance of databroker
-     * @param notificationService instance of notificationservice
-     * @param packetInCounterHandler instance of PacketInCounterHandler
-     * @param nodeEventListener instance of NodeEventListener
+     * Constructor sets the services.
+     *
+     * @param dataBroker
+     *            instance of databroker
+     * @param notificationService
+     *            instance of notificationservice
+     * @param packetInCounterHandler
+     *            instance of PacketInCounterHandler
+     * @param nodeEventListener
+     *            instance of NodeEventListener
      */
     @Inject
-    public FcapsProvider(final DataBroker dataBroker,
-                         final NotificationService notificationService,
-                         final PacketInCounterHandler packetInCounterHandler,
-                         final NodeEventListener nodeEventListener){
+    public FcapsProvider(final DataBroker dataBroker, final NotificationService notificationService,
+            final PacketInCounterHandler packetInCounterHandler,
+            final NodeEventListener nodeEventListener) {
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
-        s_logger.info("FcapsProvider dataBroker is set");
+        LOG.info("FcapsProvider dataBroker is set");
 
-        this.notificationService = Preconditions.checkNotNull(notificationService, "notificationService can not be null!");
-        s_logger.info("FcapsProvider notificationProviderService is set");
+        this.notificationService = Preconditions.checkNotNull(notificationService,
+                "notificationService can not be null!");
+        LOG.info("FcapsProvider notificationProviderService is set");
 
         this.packetInCounterHandler = packetInCounterHandler;
         this.nodeEventListener = nodeEventListener;
@@ -62,29 +66,22 @@ public class FcapsProvider implements AutoCloseable {
         PortNameMapping.registerPortMappingBean();
         registerListener(dataBroker);
         notificationService.registerNotificationListener(packetInCounterHandler);
-        s_logger.info("FcapsProvider started");
+        LOG.info("FcapsProvider started");
     }
 
     @PreDestroy
     @Override
     public void close() throws Exception {
-        s_logger.info("FcapsProvider closed");
+        LOG.info("FcapsProvider closed");
     }
 
     private void registerListener(DataBroker dataBroker) {
-        final DataTreeIdentifier<FlowCapableNode> treeId =
-                new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, getWildCardPath());
-        try {
-            dataBroker.registerDataTreeChangeListener(treeId, nodeEventListener);
-        } catch (Exception e) {
-            s_logger.error("Registeration failed on DataTreeChangeListener {}",e);
-        }
+        final DataTreeIdentifier<FlowCapableNode> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
+                getWildCardPath());
+        dataBroker.registerDataTreeChangeListener(treeId, nodeEventListener);
     }
 
     private InstanceIdentifier<FlowCapableNode> getWildCardPath() {
-        return InstanceIdentifier.create(Nodes.class)
-                .child(Node.class)
-                .augmentation(FlowCapableNode.class);
+        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class);
     }
-
 }
