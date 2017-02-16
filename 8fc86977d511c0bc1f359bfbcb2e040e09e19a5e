@@ -121,6 +121,24 @@
       "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1e9fa051",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 661,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-16T11:35:49Z",
+      "side": 1,
+      "message": "I believe this is not used for nova ports but non-neutron ports. This logic came with Alon\u0027s changes and I believe is an Octavia use case. Caching is not introducing any new logic, only optimizing where we get information from.",
+      "parentUuid": "fafc7978_be75b499",
+      "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
