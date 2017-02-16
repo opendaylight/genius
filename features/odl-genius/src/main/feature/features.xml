@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<features name="odl-genius-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
+
+  <feature name='odl-genius' version='${project.version}'>
+    <configfile
+      finalname="etc/opendaylight/datastore/initial/config/genius-itm-config.xml">mvn:org.opendaylight.genius/itm-impl/{{VERSION}}/xml/config</configfile>
+  </feature>
+</features>

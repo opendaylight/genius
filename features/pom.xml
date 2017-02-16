@@ -25,14 +25,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
     <modules>
         <module>genius-features</module>
-        <!--
-        <module>genius-features4</module>
         <module>odl-genius-api</module>
         <module>odl-genius</module>
         <module>odl-genius-rest</module>
         <module>odl-genius-ui</module>
         <module>odl-genius-fcaps-framework</module>
         <module>odl-genius-fcaps-application</module>
-        -->
+        <module>features4-genius</module>
     </modules>
 </project>
