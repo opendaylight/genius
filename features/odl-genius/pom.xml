@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright © 2017 Red Hat, Inc. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.opendaylight.odlparent</groupId>
+    <artifactId>single-feature-parent</artifactId>
+    <version>1.8.0-SNAPSHOT</version>
+    <relativePath />
+  </parent>
+
+  <groupId>org.opendaylight.genius</groupId>
+  <artifactId>odl-genius</artifactId>
+  <version>0.2.0-SNAPSHOT</version>
+  <packaging>feature</packaging>
+  <name>OpenDaylight :: genius :: Impls</name>
+
+  <!-- TODO Replace all <properties> by dependencyManagement <scope>import of respective upstream project -->
+  <properties>
+    <openflowplugin.version>0.4.0-SNAPSHOT</openflowplugin.version>
+    <ovsdb.version>1.4.0-SNAPSHOT</ovsdb.version>
+    <mdsal.model.version>0.10.0-SNAPSHOT</mdsal.model.version>
+    <mdsal.version>1.5.0-SNAPSHOT</mdsal.version>
+    <restconf.version>1.5.0-SNAPSHOT</restconf.version>
+    <yangtools.version>1.1.0-SNAPSHOT</yangtools.version>
+    <dluxapps.version>0.5.0-SNAPSHOT</dluxapps.version>
+    <liblldp.version>0.12.0-SNAPSHOT</liblldp.version>
+    <infrautils.version>1.1.0-SNAPSHOT</infrautils.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.opendaylight.genius</groupId>
+        <artifactId>genius-artifacts</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- Other Features -->
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>odl-genius-api</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>odl-ovsdb-southbound-impl</artifactId>
+      <version>${ovsdb.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>odl-ovsdb-hwvtepsouthbound</artifactId>
+      <version>${ovsdb.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.openflowplugin</groupId>
+      <artifactId>odl-openflowplugin-southbound</artifactId>
+      <version>${openflowplugin.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.openflowplugin</groupId>
+      <artifactId>odl-openflowplugin-flow-services</artifactId>
+      <version>${openflowplugin.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>odl-infrautils-counters</artifactId>
+      <version>${infrautils.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>odl-infrautils-inject</artifactId>
+      <version>${infrautils.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+
+    <!-- Libraries from other projects -->
+    <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>utils.southbound-utils</artifactId>
+      <version>${ovsdb.version}</version>
+    </dependency>
+
+    <!-- External libraries to wrap -->
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+    </dependency>
+
+    <!-- Bundles from this project -->
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>lockmanager-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-shell</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>mdsalutil-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>arputil-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>alivenessmonitor-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>alivenessmonitor-impl-protocols</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>interfacemanager-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>interfacemanager-shell</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>itm-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>resourcemanager-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>
