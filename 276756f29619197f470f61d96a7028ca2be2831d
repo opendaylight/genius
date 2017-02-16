@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d12a292b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-16T13:24:37Z",
+      "side": 1,
+      "message": "missing JavaDoc, see review in AsyncDataTreeChangeListenerBase",
+      "revId": "276756f29619197f470f61d96a7028ca2be2831d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9130a19f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-16T13:24:37Z",
+      "side": 1,
+      "message": "I think it would be good and in this case very important to in addition to putting the @Deprecated annotation also but a /** @deprecated */ JavaDoc which has a few lines explaining why this is deprecated, and what it is deprecated by - like when you are another developer and see this is suddenly showing up as deprecated in a code that uses it, if you can just hover over it and get clear instructions what you\u0027re supposed to do, it really helps to then later eventually removed deprecated APIs... For an example of this, see e.g. the @Deprecated ChainableDataChangeListener.",
+      "revId": "276756f29619197f470f61d96a7028ca2be2831d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
