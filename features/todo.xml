@@ -1,0 +1,51 @@
+  <feature name='odl-genius' version='${project.version}' description='OpenDaylight :: genius'>
+    <dependency><groupId></groupId><artifactId>odl-mdsal-broker</artifactId><version>${mdsal.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-genius-api</artifactId><version>${project.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-ovsdb-southbound-impl</artifactId><version>${ovsdb.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-ovsdb-hwvtepsouthbound</artifactId><version>${ovsdb.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-openflowplugin-southbound</artifactId><version>${openflowplugin.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-openflowplugin-flow-services</artifactId><version>${openflowplugin.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-infrautils-counters</artifactId><version>${infrautils.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-infrautils-inject</artifactId><version>${infrautils.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId>commons-net</groupId><artifactId>commons-net</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>lockmanager-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>idmanager-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>idmanager-shell</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>mdsalutil-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>arputil-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>alivenessmonitor-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>alivenessmonitor-impl-protocols</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>interfacemanager-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>interfacemanager-shell</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>itm-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>resourcemanager-impl</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.ovsdb</groupId><artifactId>utils.southbound-utils</artifactId></dependency>
+    <dependency><groupId>javax.inject</groupId><artifactId>javax.inject</artifactId><version>1</version></dependency>
+    <configfile finalname="${configfile.directory}/mdsalutil-impl-default-config.xml">mvn:org.opendaylight.genius/mdsalutil-impl/{{VERSION}}/xml/config</configfile>
+    <configfile finalname="${configfile.directory}/interfacemanager-impl-default-config.xml">mvn:org.opendaylight.genius/interfacemanager-impl/{{VERSION}}/xml/config</configfile>
+    <configfile finalname="etc/opendaylight/datastore/initial/config/genius-itm-config.xml">mvn:org.opendaylight.genius/itm-impl/{{VERSION}}/xml/config</configfile>
+   </feature>
+
+  <feature name='odl-genius-rest' version='${project.version}' description='OpenDaylight :: genius :: REST'>
+    <dependency><groupId></groupId><artifactId>odl-genius</artifactId><version>${project.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-restconf</artifactId><version>${restconf.version}</version><type>xml</type><classifier>features</classifier></dependency>
+  </feature>
+
+  <feature name='odl-genius-ui' version='${project.version}' description='OpenDaylight :: genius :: UI'>
+    <dependency><groupId></groupId><artifactId>odl-genius-rest</artifactId><version>${project.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-mdsal-apidocs</artifactId><version>${restconf.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-dluxapps-yangman</artifactId><version>${dluxapps.version}</version><type>xml</type><classifier>features</classifier></dependency>
+  </feature>
+
+  <feature name='odl-genius-fcaps-framework' version='${project.version}' description='OpenDaylight :: genius :: fcapsframework'>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>fcaps-api</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>alarmmanager</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>countermanager</artifactId></dependency>
+  </feature>
+
+  <feature name='odl-genius-fcaps-application' version='${project.version}' description='OpenDaylight :: genius :: fcapsapp'>
+    <dependency><groupId></groupId><artifactId>odl-openflowplugin-flow-services</artifactId><version>${openflowplugin.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId>javax.inject</groupId><artifactId>javax.inject</artifactId><version>1</version></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>fcapsapplication-jmxapi</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>fcapsapplication-impl</artifactId></dependency>
+  </feature>
