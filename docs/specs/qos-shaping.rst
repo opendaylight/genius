@@ -67,17 +67,17 @@ A new augment "ovs-qos" is added to if:interface in odl-interface.yang
    leaf ovs-qos-uid {
        type yang:uuid;
             description
-              "represents whether port has qos configured in ovsdb";
+              "represents whether service on vlan port has qos configured";
         }
         leaf ovs-queue-uid {
             type yang:uuid;
             description
-              "represents whether port has qos queue configured in ovsdb";
+              "represents whether service on vlan port has qos queue";
         }
         leaf ovs-qos-queue {
             type uint32;
             description
-              "represents whether qos mapping of queue";
+              "represents qos mapping of queue";
         }
     }
 
@@ -111,7 +111,7 @@ Alternatives
 The unified REST API for ovsdb port adjustment could be created if future release. The QoS engress queues and ingress rate limiting should be a part of this API.  
 Usage
 =====
-User will configure unimgr service with egress rate limits. That will follow to process described above.
+User will configure unimgr service with egress rate limits. The unimgr will create Ovsdb QoS and Queue using Ovsdb project. The netvirt qos service will be used in feature release. This queue will be used for egressing traffic of created service.
 
 Features to Install
 -------------------
