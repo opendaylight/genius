@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_d15ea975",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5401
+      },
+      "writtenOn": "2017-02-16T13:54:17Z",
+      "side": 1,
+      "message": "Before submitting this static-\u003efinal change, can some one do a 3-NOde-cluster reboot multi-DPN test case. I requested this test in Ericsson 80-DPN testbed (it will take time).",
+      "range": {
+        "startLine": 41,
+        "startChar": 12,
+        "endLine": 41,
+        "endChar": 17
+      },
+      "revId": "276756f29619197f470f61d96a7028ca2be2831d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9130a19f",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
         "patchSetId": 2
