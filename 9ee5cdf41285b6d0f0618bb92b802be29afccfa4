@@ -55,6 +55,41 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1e0fa02f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T10:18:47Z",
+      "side": 1,
+      "message": "this means, for a vlan-member though it is created initially as trunk, there will be no southbound event for the same. In that case, we are safe.",
+      "parentUuid": "fafc7978_4114b54d",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_be2774b5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T10:18:47Z",
+      "side": 1,
+      "message": "trunk subport remove will also come as an update?",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_97ed3ff2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
         "patchSetId": 2
