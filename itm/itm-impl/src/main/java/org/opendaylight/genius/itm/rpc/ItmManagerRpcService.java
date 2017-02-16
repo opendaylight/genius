@@ -203,7 +203,6 @@ public class ItmManagerRpcService implements ItmRpcService {
                 }
             });
         }
-        result.set(RpcResultBuilder.<Void>success().build());
         return result;
     }
 
