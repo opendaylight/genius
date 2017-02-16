@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_6e8f1dcd",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 856
+      },
+      "writtenOn": "2017-02-16T00:05:44Z",
+      "side": 1,
+      "message": "What creates the queues?  How about the qos entries?\nMaybe an example or two in the use case section would help to explain.",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0eb81175",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 856
+      },
+      "writtenOn": "2017-02-16T00:05:44Z",
+      "side": 1,
+      "message": "Do these interfaces correspond (or have a mapping to) ovsdb ports/interfaces?  Since the ovsdb.yang model already provides qos (and queue) entries in the ovsdb model, it\u0027s not clear to my why that needs to be replicated again here.",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cebd696a",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 856
+      },
+      "writtenOn": "2017-02-16T00:05:44Z",
+      "side": 1,
+      "message": "The ovsdb.yang model in OVSDB project associates qos and queue entries to instance-identifiers (e.g. ovsdb-qos-ref).  Would it be possible to use those instead of having to replicate the ovsdb uuid in another model? (assuming the answer to previous question results in need to have references to qos and queue entries in the interface model).",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
