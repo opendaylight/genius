@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -43,13 +43,13 @@ public interface IInterfaceManager {
     InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName,
             InterfaceInfo.InterfaceType interfaceType);
 
-    /*
+    InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
+
+    /**
      * This API is currently used only for CLI usage. Please be careful that this API
      * can return stale entries since it is just a cache read.
      */
     InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName);
-
-    InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
 
     Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
 
