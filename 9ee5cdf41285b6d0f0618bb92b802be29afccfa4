@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_be901444",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-16T11:33:25Z",
+      "side": 1,
+      "message": "yes, vlan member will never have a southbound event. southbound is always for trunk parent.",
+      "parentUuid": "fafc7978_1e0fa02f",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_be2774b5",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
         "patchSetId": 2
@@ -84,6 +102,24 @@
       "writtenOn": "2017-02-16T10:18:47Z",
       "side": 1,
       "message": "trunk subport remove will also come as an update?",
+      "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5e72c849",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-16T11:33:25Z",
+      "side": 1,
+      "message": "yes. add/delete happens on neutron port create/delete, which always happen before/after subport create/delete. Order is:\n\n1. create neutronport\n2. add it as subport\n3. remove subport\n4. delete neutronport\n\n2 and 3 will always be updates.",
+      "parentUuid": "fafc7978_be2774b5",
       "revId": "9ee5cdf41285b6d0f0618bb92b802be29afccfa4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
