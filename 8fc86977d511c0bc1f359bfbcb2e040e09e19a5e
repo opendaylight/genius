@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7b94fee1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T10:01:56Z",
+      "side": 1,
+      "message": "what is this used for?",
+      "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7bfd1e3a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T10:01:56Z",
+      "side": 1,
+      "message": "i think it is better to have all caches in one common place..and even utils there..InterfaceMgrProvider file itself get removed on BP migration",
+      "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dbba4a6d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 660,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T10:01:56Z",
+      "side": 1,
+      "message": "why do we need this node !\u003d null check?",
+      "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
