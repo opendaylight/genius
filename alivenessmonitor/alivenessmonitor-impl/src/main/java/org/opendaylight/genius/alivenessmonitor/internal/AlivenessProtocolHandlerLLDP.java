@@ -36,7 +36,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
@@ -51,9 +50,9 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
     private final AtomicInteger packetId = new AtomicInteger(0);
 
     @Inject
-    public AlivenessProtocolHandlerLLDP(final DataBroker dataBroker, final OdlInterfaceRpcService interfaceManager,
+    public AlivenessProtocolHandlerLLDP(final DataBroker dataBroker,
             final AlivenessMonitor alivenessMonitor, final PacketProcessingService packetProcessingService) {
-        super(dataBroker, interfaceManager, alivenessMonitor,
+        super(dataBroker, alivenessMonitor,
                 org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes.Lldp);
         this.packetProcessingService = packetProcessingService;
     }
