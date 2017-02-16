@@ -157,6 +157,24 @@
       "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5e73e814",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 661,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-16T11:58:21Z",
+      "side": 1,
+      "message": "Yes, that is why I have a TODO for it in getNodeForInterface.",
+      "parentUuid": "fafc7978_5ea9287a",
+      "revId": "8fc86977d511c0bc1f359bfbcb2e040e09e19a5e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
