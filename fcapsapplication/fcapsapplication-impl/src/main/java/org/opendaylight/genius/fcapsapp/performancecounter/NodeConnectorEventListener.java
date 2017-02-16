@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -15,7 +15,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.Fl
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public abstract  class NodeConnectorEventListener <T extends DataObject> implements ClusteredDataTreeChangeListener<T>,AutoCloseable,FlowCapableNodeConnectorCommitter<T> {
+public abstract class NodeConnectorEventListener<T extends DataObject>
+        implements ClusteredDataTreeChangeListener<T>, AutoCloseable, FlowCapableNodeConnectorCommitter<T> {
     NodeConnectorEventListener(Class<FlowCapableNodeConnector> flowCapableNodeConnectorClass) {
     }
 
@@ -24,8 +25,8 @@ public abstract  class NodeConnectorEventListener <T extends DataObject> impleme
         for (DataTreeModification<T> change : changes) {
             final InstanceIdentifier<T> key = change.getRootPath().getRootIdentifier();
             final DataObjectModification<T> mod = change.getRootNode();
-            final InstanceIdentifier<FlowCapableNodeConnector> nodeConnIdent =
-                    key.firstIdentifierOf(FlowCapableNodeConnector.class);
+            final InstanceIdentifier<FlowCapableNodeConnector> nodeConnIdent = key
+                    .firstIdentifierOf(FlowCapableNodeConnector.class);
 
             switch (mod.getModificationType()) {
                 case DELETE:
@@ -41,7 +42,6 @@ public abstract  class NodeConnectorEventListener <T extends DataObject> impleme
                         update(key, mod.getDataBefore(), mod.getDataAfter(), nodeConnIdent);
                     }
                     break;
-
 
                 default:
                     throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
