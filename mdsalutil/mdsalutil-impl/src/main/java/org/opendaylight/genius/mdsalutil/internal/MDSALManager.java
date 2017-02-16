@@ -62,12 +62,12 @@ public class MDSALManager implements AutoCloseable {
 
     private static final Logger s_logger = LoggerFactory.getLogger(MDSALManager.class);
 
-    private DataBroker m_dataBroker;
+    private final DataBroker m_dataBroker;
 
-    private PacketProcessingService m_packetProcessingService;
-    private ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
-    private ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<> ();
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final PacketProcessingService m_packetProcessingService;
+    private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<> ();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
      * Writes the flows and Groups to the MD SAL DataStore
@@ -110,9 +110,7 @@ public class MDSALManager implements AutoCloseable {
         return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class);
     }
 
-    public void installFlow(FlowEntity flowEntity) {
-
-        try {
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
             WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
             s_logger.trace("InstallFlow for flowEntity {} ", flowEntity);
 
@@ -141,9 +139,8 @@ public class MDSALManager implements AutoCloseable {
                     }
                 }
             });
-        } catch (Exception e) {
-            s_logger.error("Could not install flow: {}", flowEntity, e);
-        }
+
+            return submitFuture;
     }
 
     public void writeFlowEntity(FlowEntity flowEntity, WriteTransaction tx) {
@@ -196,8 +193,7 @@ public class MDSALManager implements AutoCloseable {
         FlowBatchingUtils.delete(flowInstanceId);
     }
 
-    public void installGroup(GroupEntity groupEntity) {
-        try {
+    public CheckedFuture<Void, TransactionCommitFailedException> installGroup(GroupEntity groupEntity) {
             WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
             writeGroupEntity(groupEntity, tx);
 
@@ -223,10 +219,8 @@ public class MDSALManager implements AutoCloseable {
                     }
                 }
             });
-        } catch (Exception e) {
-            s_logger.error("Could not install Group: {}", groupEntity, e);
-            throw e;
-        }
+
+            return submitFuture;
     }
 
     public void writeGroupEntity(GroupEntity groupEntity, WriteTransaction tx) {
@@ -264,8 +258,7 @@ public class MDSALManager implements AutoCloseable {
     }
 
 
-    public void removeFlow(FlowEntity flowEntity) {
-        try {
+    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(FlowEntity flowEntity) {
             WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
             deleteFlowEntity(flowEntity, tx);
 
@@ -291,9 +284,8 @@ public class MDSALManager implements AutoCloseable {
                 }
 
             });
-        } catch (Exception e) {
-            s_logger.error("Could not remove Flow: {}", flowEntity, e);
-        }
+
+            return submitFuture;
     }
 
     public void deleteFlowEntity(FlowEntity flowEntity, WriteTransaction tx) {
@@ -323,8 +315,7 @@ public class MDSALManager implements AutoCloseable {
         tx.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId );
     }
 
-    public void removeGroup(GroupEntity groupEntity) {
-        try {
+    public CheckedFuture<Void, TransactionCommitFailedException> removeGroup(GroupEntity groupEntity) {
             WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
             removeGroupEntity(groupEntity, tx);
 
@@ -349,9 +340,8 @@ public class MDSALManager implements AutoCloseable {
                     }
                 }
             });
-        } catch (Exception e) {
-            s_logger.error("Could not remove Group: {}", groupEntity, e);
-        }
+
+            return submitFuture;
     }
 
     public void removeGroupEntity(GroupEntity groupEntity, WriteTransaction tx) {
