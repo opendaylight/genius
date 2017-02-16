@@ -1,0 +1,23 @@
+  <feature name='odl-genius-rest' version='${project.version}' description='OpenDaylight :: genius :: REST'>
+    <dependency><groupId></groupId><artifactId>odl-genius</artifactId><version>${project.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-restconf</artifactId><version>${restconf.version}</version><type>xml</type><classifier>features</classifier></dependency>
+  </feature>
+
+  <feature name='odl-genius-ui' version='${project.version}' description='OpenDaylight :: genius :: UI'>
+    <dependency><groupId></groupId><artifactId>odl-genius-rest</artifactId><version>${project.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-mdsal-apidocs</artifactId><version>${restconf.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId></groupId><artifactId>odl-dluxapps-yangman</artifactId><version>${dluxapps.version}</version><type>xml</type><classifier>features</classifier></dependency>
+  </feature>
+
+  <feature name='odl-genius-fcaps-framework' version='${project.version}' description='OpenDaylight :: genius :: fcapsframework'>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>fcaps-api</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>alarmmanager</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>countermanager</artifactId></dependency>
+  </feature>
+
+  <feature name='odl-genius-fcaps-application' version='${project.version}' description='OpenDaylight :: genius :: fcapsapp'>
+    <dependency><groupId></groupId><artifactId>odl-openflowplugin-flow-services</artifactId><version>${openflowplugin.version}</version><type>xml</type><classifier>features</classifier></dependency>
+    <dependency><groupId>javax.inject</groupId><artifactId>javax.inject</artifactId><version>1</version></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>fcapsapplication-jmxapi</artifactId></dependency>
+    <dependency><groupId>org.opendaylight.genius</groupId><artifactId>fcapsapplication-impl</artifactId></dependency>
+  </feature>
