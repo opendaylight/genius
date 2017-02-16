@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,17 +7,13 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.lang.Integer;
-import java.lang.String;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class NodeUpdateCounter {
@@ -25,37 +21,38 @@ public class NodeUpdateCounter {
     private static final Logger LOG = LoggerFactory.getLogger(NodeUpdateCounter.class);
     private String nodeListEFSCountStr;
     private static HashSet<String> dpnList = new HashSet<>();
-    public final PMAgent pMAgent;
-    Map<String, String> counter_map = new HashMap<>();
+    public final PMAgent agent;
+    private final Map<String, String> countersMap = new HashMap<>();
 
     @Inject
-    public NodeUpdateCounter(final PMAgent pMAgent) {
-        this.pMAgent = pMAgent;
+    public NodeUpdateCounter(final PMAgent agent) {
+        this.agent = agent;
     }
 
-    public void nodeAddedNotification(String sNode,String hostName) {
-        dpnList.add(sNode);
-        sendNodeUpdation(dpnList.size(),hostName);
-    }
-
-    public void nodeRemovedNotification(String sNode,String hostName) {
-        dpnList.remove(sNode);
+    public void nodeAddedNotification(String node, String hostName) {
+        dpnList.add(node);
         sendNodeUpdation(dpnList.size(), hostName);
     }
 
-    private void sendNodeUpdation(Integer count,String hostName) {
+    public void nodeRemovedNotification(String node, String hostName) {
+        dpnList.remove(node);
+        sendNodeUpdation(dpnList.size(), hostName);
+    }
+
+    private void sendNodeUpdation(Integer count, String hostName) {
 
         if (hostName != null) {
             nodeListEFSCountStr = "Node_" + hostName + "_NumberOfEFS";
             LOG.debug("NumberOfEFS:" + nodeListEFSCountStr + " dpnList.size " + count);
 
-            counter_map.put("NumberOfEFS:" + nodeListEFSCountStr, "" + count);
-            pMAgent.connectToPMAgent(counter_map);
-        } else
+            countersMap.put("NumberOfEFS:" + nodeListEFSCountStr, "" + count);
+            agent.connectToPMAgent(countersMap);
+        } else {
             LOG.error("Hostname is null upon NumberOfEFS counter");
+        }
     }
 
-    public boolean isDpnConnectedLocal(String sNode) {
-        return dpnList.contains(sNode);
+    public boolean isDpnConnectedLocal(String node) {
+        return dpnList.contains(node);
     }
 }
