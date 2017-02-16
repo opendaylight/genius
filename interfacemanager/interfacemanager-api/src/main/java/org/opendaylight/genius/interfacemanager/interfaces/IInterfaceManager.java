@@ -43,13 +43,13 @@ public interface IInterfaceManager {
     InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName,
             InterfaceInfo.InterfaceType interfaceType);
 
-    /*
+    InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
+
+    /**
      * This API is currently used only for CLI usage. Please be careful that this API
      * can return stale entries since it is just a cache read.
      */
     InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName);
-
-    InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName);
 
     Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
 
