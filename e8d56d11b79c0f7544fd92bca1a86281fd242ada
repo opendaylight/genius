@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_3bb0b642",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T09:06:22Z",
+      "side": 1,
+      "message": "shouldn\u0027t this logical tunnel be created only for the when the first tunnel interface on an OVS is created?",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3bc5568e",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T09:06:22Z",
+      "side": 1,
+      "message": "currently as part of service-binding-on tunnels default table 220 entries will get created when OFPort is created on the switch...so u r saying, if somebody binds a service on group-tunnel, then only this entry will come, not by default?",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1b92129f",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T09:06:22Z",
+      "side": 1,
+      "message": "please indicate unique group-id will be generated for the logical group interface using idmanager, and what will be the group range allocated for the same",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_da908b45",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 20
@@ -19,6 +70,23 @@
         "endLine": 113,
         "endChar": 38
       },
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7bba3e24",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T09:06:22Z",
+      "side": 1,
+      "message": "do we have to add group-id in interface-state information?",
       "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
