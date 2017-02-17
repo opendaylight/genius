@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.alivenessmonitor.internal;
 
-import com.google.common.primitives.UnsignedBytes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.InterfaceMonitorMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorConfigs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfiles;
@@ -54,18 +53,4 @@ final class AlivenessMonitorUtil {
                 .child(InterfaceMonitorEntry.class, new InterfaceMonitorEntryKey(interfaceName)).build();
     }
 
-    static byte[] parseMacAddress(String macAddress) {
-        byte cur;
-
-        String[] addressPart = macAddress.split(":");
-        int size = addressPart.length;
-
-        byte[] part = new byte[size];
-        for (int i = 0; i < size; i++) {
-            cur = UnsignedBytes.parseUnsignedByte(addressPart[i], 16);
-            part[i] = cur;
-        }
-
-        return part;
-    }
 }

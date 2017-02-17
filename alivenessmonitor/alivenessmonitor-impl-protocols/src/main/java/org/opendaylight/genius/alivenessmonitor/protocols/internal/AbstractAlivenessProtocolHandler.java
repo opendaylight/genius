@@ -6,14 +6,17 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.genius.alivenessmonitor.internal;
+package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import com.google.common.primitives.UnsignedBytes;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -25,15 +28,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHandler {
-    private final DataBroker dataBroker;
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAlivenessProtocolHandler.class);
 
-    AbstractAlivenessProtocolHandler(final DataBroker dataBroker,
-            final AlivenessMonitor alivenessMonitor,
+    private final DataBroker dataBroker;
+
+    AbstractAlivenessProtocolHandler(
+            final DataBroker dataBroker,
+            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final EtherTypes etherType) {
         this.dataBroker = dataBroker;
-        alivenessMonitor.registerHandler(etherType, this);
+        alivenessProtocolHandlerRegistry.register(etherType, this);
     }
 
     private <T extends DataObject> Optional<T> read(
@@ -66,8 +71,7 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
     }
     // @formatter:on
 
-    private InstanceIdentifier<Interface> getInterfaceIdentifier(
-            InterfaceKey interfaceKey) {
+    private InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<Interface> interfaceInstanceIdentifierBuilder = InstanceIdentifier
                 .builder(Interfaces.class).child(Interface.class, interfaceKey);
 
@@ -80,9 +84,24 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
         String macAddress = interfaceState.getPhysAddress().getValue();
 
         if (!Strings.isNullOrEmpty(macAddress)) {
-            return AlivenessMonitorUtil.parseMacAddress(macAddress);
+            return parseMacAddress(macAddress);
         }
         return null;
+    }
+
+    private byte[] parseMacAddress(String macAddress) {
+        byte cur;
+
+        String[] addressPart = macAddress.split(":");
+        int size = addressPart.length;
+
+        byte[] part = new byte[size];
+        for (int i = 0; i < size; i++) {
+            cur = UnsignedBytes.parseUnsignedByte(addressPart[i], 16);
+            part[i] = cur;
+        }
+
+        return part;
     }
 
 }

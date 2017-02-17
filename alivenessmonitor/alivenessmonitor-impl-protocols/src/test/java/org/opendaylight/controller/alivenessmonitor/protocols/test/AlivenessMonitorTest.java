@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.controller.alivenessmonitor.test;
+package org.opendaylight.controller.alivenessmonitor.protocols.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -47,9 +47,10 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitor;
-import org.opendaylight.genius.alivenessmonitor.internal.AlivenessProtocolHandler;
-import org.opendaylight.genius.alivenessmonitor.internal.AlivenessProtocolHandlerARP;
-import org.opendaylight.genius.alivenessmonitor.internal.AlivenessProtocolHandlerLLDP;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerARP;
+import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerLLDP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInput;
@@ -166,13 +167,14 @@ public class AlivenessMonitorTest {
                 .thenReturn(Futures.immediateFuture(
                         RpcResultBuilder.<Void>success().build()));
 
+        AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistry();
         alivenessMonitor = new AlivenessMonitor(dataBroker, idManager,
-                notificationPublishService, notificationService);
+                notificationPublishService, notificationService, alivenessProtocolHandlerRegistry);
         alivenessMonitor.start();
         arpHandler = new AlivenessProtocolHandlerARP(dataBroker,
-                interfaceManager, alivenessMonitor, arpService);
+                interfaceManager, alivenessProtocolHandlerRegistry, arpService);
         lldpHandler = new AlivenessProtocolHandlerLLDP(dataBroker,
-                alivenessMonitor, packetProcessingService);
+                alivenessProtocolHandlerRegistry, packetProcessingService);
         mockId = 1L;
         when(idManager.allocateId(any(AllocateIdInput.class)))
                 .thenReturn(
@@ -258,7 +260,6 @@ public class AlivenessMonitorTest {
                                 .setMode(MonitoringMode.OneOne)
                                 .setProfileId(profileId).build())
                 .build();
-        @SuppressWarnings("unchecked")
         Optional<MonitorProfile> optionalProfile = Optional
                 .of(getTestMonitorProfile());
         CheckedFuture<Optional<MonitorProfile>, ReadFailedException> proFuture = Futures

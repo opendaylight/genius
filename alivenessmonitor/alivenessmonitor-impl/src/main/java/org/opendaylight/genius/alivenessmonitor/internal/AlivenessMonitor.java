@@ -29,10 +29,7 @@ import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -58,6 +55,8 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -121,13 +120,14 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AlivenessMonitor
         implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitor.class);
+
     private final DataBroker dataBroker;
     private IdManagerService idManager;
     private NotificationPublishService notificationPublishService;
     private final NotificationService notificationService;
-    private final Map<Class<?>, AlivenessProtocolHandler> packetTypeToProtocolHandler;
-    private final Map<EtherTypes, AlivenessProtocolHandler> ethTypeToProtocolHandler;
+    private final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry;
     private final ConcurrentMap<Long, ScheduledFuture<?>> monitoringTasks;
     private final ScheduledExecutorService monitorService;
     private final ExecutorService callbackExecutorService;
@@ -176,13 +176,14 @@ public class AlivenessMonitor
     @Inject
     public AlivenessMonitor(final DataBroker dataBroker, final IdManagerService idManager,
             final NotificationPublishService notificationPublishService,
-            final NotificationService notificationService) {
+            final NotificationService notificationService,
+            AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.notificationPublishService = notificationPublishService;
         this.notificationService = notificationService;
-        ethTypeToProtocolHandler = new EnumMap<>(EtherTypes.class);
-        packetTypeToProtocolHandler = new HashMap<>();
+        this.alivenessProtocolHandlerRegistry = alivenessProtocolHandlerRegistry;
+
         monitorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
                 getMonitoringThreadFactory("Aliveness Monitoring Task"));
         callbackExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE,
@@ -236,11 +237,6 @@ public class AlivenessMonitor
                         .transform(MonitoridKeyEntry::getMonitorKey).orNull();
             }
         });
-    }
-
-    public void registerHandler(EtherTypes etherType, AlivenessProtocolHandler protocolHandler) {
-        ethTypeToProtocolHandler.put(etherType, protocolHandler);
-        packetTypeToProtocolHandler.put(protocolHandler.getPacketClass(), protocolHandler);
     }
 
     private void createIdPool() {
@@ -335,7 +331,8 @@ public class AlivenessMonitor
                 LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, objPayload.getClass());
             }
 
-            AlivenessProtocolHandler livenessProtocolHandler = packetTypeToProtocolHandler.get(objPayload.getClass());
+            AlivenessProtocolHandler livenessProtocolHandler = alivenessProtocolHandlerRegistry
+                    .getOpt(objPayload.getClass());
             if (livenessProtocolHandler == null) {
                 return;
             }
@@ -540,7 +537,7 @@ public class AlivenessMonitor
                 final MonitoringInfo monitoringInfo = new MonitoringInfoBuilder().setId(monitorId).setMode(in.getMode())
                         .setProfileId(profileId).setDestination(in.getDestination()).setSource(in.getSource()).build();
                 // Construct the initial monitor state
-                handler = ethTypeToProtocolHandler.get(ethType);
+                handler = alivenessProtocolHandlerRegistry.get(ethType);
                 final String monitoringKey = handler.getUniqueMonitoringKey(monitoringInfo);
 
                 MonitoringState monitoringState = null;
@@ -712,7 +709,7 @@ public class AlivenessMonitor
                                 EtherTypes protocolType = profile.getProtocolType();
                                 if (protocolType == EtherTypes.Bfd) {
                                     LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
-                                    ((HwVtepTunnelsStateHandler) ethTypeToProtocolHandler.get(protocolType))
+                                    ((HwVtepTunnelsStateHandler) alivenessProtocolHandlerRegistry.get(protocolType))
                                             .resetMonitoringTask(info, true);
                                 } else {
                                     scheduleMonitoringTask(info, profile.getMonitorInterval());
@@ -755,8 +752,8 @@ public class AlivenessMonitor
         EtherTypes protocolType = optProfile.get().getProtocolType();
         if (protocolType == EtherTypes.Bfd) {
             LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
-            ((HwVtepTunnelsStateHandler) ethTypeToProtocolHandler.get(protocolType)).resetMonitoringTask(monitoringInfo,
-                    false);
+            ((HwVtepTunnelsStateHandler) alivenessProtocolHandlerRegistry.get(protocolType))
+                    .resetMonitoringTask(monitoringInfo, false);
             return true;
         }
         ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);
@@ -884,7 +881,7 @@ public class AlivenessMonitor
             @Override
             public void onSuccess(Void noarg) {
                 // invoke packetout on protocol handler
-                AlivenessProtocolHandler handler = ethTypeToProtocolHandler.get(profile.getProtocolType());
+                AlivenessProtocolHandler handler = alivenessProtocolHandlerRegistry.getOpt(profile.getProtocolType());
                 if (handler != null) {
                     LOG.debug("Sending monitoring packet {}", monitoringInfo);
                     handler.startMonitoringTask(monitoringInfo);
