@@ -44,7 +44,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -121,25 +120,28 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AlivenessMonitor
         implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener, AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitor.class);
-    private final DataBroker dataBroker;
-    private IdManagerService idManager;
-    private NotificationPublishService notificationPublishService;
-    private final NotificationService notificationService;
-    private final Map<Class<?>, AlivenessProtocolHandler> packetTypeToProtocolHandler;
-    private final Map<EtherTypes, AlivenessProtocolHandler> ethTypeToProtocolHandler;
-    private final ConcurrentMap<Long, ScheduledFuture<?>> monitoringTasks;
-    private final ScheduledExecutorService monitorService;
-    private final ExecutorService callbackExecutorService;
-    private LoadingCache<Long, String> monitorIdKeyCache;
+
     private static final int THREAD_POOL_SIZE = 4;
     private static final boolean INTERRUPT_TASK = true;
     private static final int NO_DELAY = 0;
     private static final Long INITIAL_COUNT = 0L;
     private static final boolean CREATE_MISSING_PARENT = true;
     private static final int INVALID_ID = 0;
+
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final NotificationPublishService notificationPublishService;
+    private final Map<Class<?>, AlivenessProtocolHandler> packetTypeToProtocolHandler;
+    private final Map<EtherTypes, AlivenessProtocolHandler> ethTypeToProtocolHandler;
+    private final ConcurrentMap<Long, ScheduledFuture<?>> monitoringTasks;
+    private final ScheduledExecutorService monitorService;
+    private final ExecutorService callbackExecutorService;
+    private final LoadingCache<Long, String> monitorIdKeyCache;
+    private final ListenerRegistration<AlivenessMonitor> listenerRegistration;
+    // TODO clean up: visibility package local instead of private because accessed in HwVtepTunnelsStateHandler
     final ConcurrentMap<String, Semaphore> lockMap = new ConcurrentHashMap<>();
-    private ListenerRegistration<AlivenessMonitor> listenerRegistration;
 
     private class FutureCallbackImpl implements FutureCallback<Void> {
         private final String message;
@@ -180,7 +182,6 @@ public class AlivenessMonitor
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.notificationPublishService = notificationPublishService;
-        this.notificationService = notificationService;
         ethTypeToProtocolHandler = new EnumMap<>(EtherTypes.class);
         packetTypeToProtocolHandler = new HashMap<>();
         monitorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
@@ -188,14 +189,17 @@ public class AlivenessMonitor
         callbackExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE,
                 getMonitoringThreadFactory("Aliveness Callback Handler"));
         monitoringTasks = new ConcurrentHashMap<>();
-    }
 
-    @PostConstruct
-    public void start() {
-        LOG.info("{} start", getClass().getSimpleName());
         createIdPool();
-        initializeCache();
+        monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
+            @Override
+            public String load(Long monitorId) {
+                return read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId))
+                        .transform(MonitoridKeyEntry::getMonitorKey).orNull();
+            }
+        });
         listenerRegistration = notificationService.registerNotificationListener(this);
+        LOG.info("{} started", getClass().getSimpleName());
     }
 
     @Override
@@ -206,18 +210,8 @@ public class AlivenessMonitor
         callbackExecutorService.shutdown();
         if (listenerRegistration != null) {
             listenerRegistration.close();
-            listenerRegistration = null;
         }
         LOG.info("{} close", getClass().getSimpleName());
-    }
-
-    // The following setters should only be used by the test classes.
-    public void setIdManager(IdManagerService idManager) {
-        this.idManager = idManager;
-    }
-
-    public void setNotificationPublishService(NotificationPublishService notificationPublishService) {
-        this.notificationPublishService = notificationPublishService;
     }
 
     private ThreadFactory getMonitoringThreadFactory(String threadNameFormat) {
@@ -226,16 +220,6 @@ public class AlivenessMonitor
         builder.setUncaughtExceptionHandler(
             (thread, ex) -> LOG.error("Received Uncaught Exception event in Thread: {}", thread.getName(), ex));
         return builder.build();
-    }
-
-    private void initializeCache() {
-        monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
-            @Override
-            public String load(Long monitorId) {
-                return read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId))
-                        .transform(MonitoridKeyEntry::getMonitorKey).orNull();
-            }
-        });
     }
 
     public void registerHandler(EtherTypes etherType, AlivenessProtocolHandler protocolHandler) {
