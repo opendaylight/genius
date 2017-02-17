@@ -75,6 +75,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>inject</artifactId>
       <version>${genius.infrautils.version}</version>
   </dependency>
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>value</artifactId>
+  </dependency>
 
   <!-- Dependencies with <scope>test -->
   <dependency>
