@@ -1,0 +1,190 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_008575ac",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_aaac87a1",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_609441e2",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_cac58b3e",
+      "range": {
+        "startLine": 12,
+        "startChar": 57,
+        "endLine": 12,
+        "endChar": 59
+      },
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_408f7dcc",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_eaca0f4e",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a0bd896a",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "This has been already taken care.",
+      "parentUuid": "fafc7978_4a8cfb35",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_80c045e1",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_6a90df43",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e20cb63d",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "It\u0027s available in REST API sections",
+      "parentUuid": "fafc7978_8a9d435c",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e0b79184",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_2aaed785",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c0ba4d6d",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_4aba3bc1",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_20b1998f",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_aab127e3",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_00ac5534",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-02-17T12:30:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_8ab423d2",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
