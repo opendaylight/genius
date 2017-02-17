@@ -170,7 +170,6 @@ public class AlivenessMonitorTest {
         AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistry();
         alivenessMonitor = new AlivenessMonitor(dataBroker, idManager,
                 notificationPublishService, notificationService, alivenessProtocolHandlerRegistry);
-        alivenessMonitor.start();
         arpHandler = new AlivenessProtocolHandlerARP(dataBroker,
                 interfaceManager, alivenessProtocolHandlerRegistry, arpService);
         lldpHandler = new AlivenessProtocolHandlerLLDP(dataBroker,
