@@ -7,11 +7,16 @@
  */
 package org.opendaylight.genius.alivenessmonitor.internal;
 
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessMonitorAndProtocolsConstants;
+
+/**
+ * Constants private to alivenessmonitor.internal.
+ */
 public class AlivenessMonitorConstants {
     static final String MONITOR_IDPOOL_NAME = "aliveness-monitor";
     static final long MONITOR_IDPOOL_START = 1L;
     static final long MONITOR_IDPOOL_SIZE = 65535;
-    static final String SEPERATOR = ".";
+    static final String SEPERATOR = AlivenessMonitorAndProtocolsConstants.SEPERATOR;
 
     // BFD parameters
     static final String BFD_PARAM_ENABLE = "enable";

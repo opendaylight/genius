@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.alivenessmonitor.internal;
+package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
 import com.google.common.base.Strings;
 import java.math.BigInteger;
@@ -14,8 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.liblldp.EtherTypes;
 import org.opendaylight.controller.liblldp.LLDP;
@@ -24,6 +22,7 @@ import org.opendaylight.controller.liblldp.LLDPTLV.TLVType;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.liblldp.PacketException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -43,16 +42,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Tr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandler {
+
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerLLDP.class);
+
     private final PacketProcessingService packetProcessingService;
     private final AtomicInteger packetId = new AtomicInteger(0);
 
-    @Inject
-    public AlivenessProtocolHandlerLLDP(final DataBroker dataBroker,
-            final AlivenessMonitor alivenessMonitor, final PacketProcessingService packetProcessingService) {
-        super(dataBroker, alivenessMonitor,
+    public AlivenessProtocolHandlerLLDP(
+            final DataBroker dataBroker,
+            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
+            final PacketProcessingService packetProcessingService) {
+        super(dataBroker, alivenessProtocolHandlerRegistry,
                 org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes.Lldp);
         this.packetProcessingService = packetProcessingService;
     }

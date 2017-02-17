@@ -5,9 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.alivenessmonitor.internal;
+package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorConstants.SEPERATOR;
+import static org.opendaylight.genius.alivenessmonitor.protocols.AlivenessMonitorAndProtocolsConstants.SEPERATOR;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -21,10 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -51,16 +50,19 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandler {
+
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerARP.class);
+
     private final OdlArputilService arpService;
     private final OdlInterfaceRpcService interfaceManager;
 
-    @Inject
-    public AlivenessProtocolHandlerARP(final DataBroker dataBroker, final OdlInterfaceRpcService interfaceManager,
-            final AlivenessMonitor alivenessMonitor, final OdlArputilService arpService) {
-        super(dataBroker, alivenessMonitor, EtherTypes.Arp);
+    public AlivenessProtocolHandlerARP(
+            final DataBroker dataBroker,
+            final OdlInterfaceRpcService interfaceManager,
+            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
+            final OdlArputilService arpService) {
+        super(dataBroker, alivenessProtocolHandlerRegistry, EtherTypes.Arp);
         this.interfaceManager = interfaceManager;
         this.arpService = arpService;
     }
