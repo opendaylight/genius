@@ -26,7 +26,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -42,7 +41,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -58,6 +56,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ThreadFactoryProvider;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -184,9 +183,9 @@ public class AlivenessMonitor
         ethTypeToProtocolHandler = new EnumMap<>(EtherTypes.class);
         packetTypeToProtocolHandler = new HashMap<>();
         monitorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
-                getMonitoringThreadFactory("Aliveness Monitoring Task"));
+                ThreadFactoryProvider.builder().namePrefix("Aliveness Monitoring Task").logger(LOG).build().get());
         callbackExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE,
-                getMonitoringThreadFactory("Aliveness Callback Handler"));
+                ThreadFactoryProvider.builder().namePrefix("Aliveness Callback Handler").logger(LOG).build().get());
         monitoringTasks = new ConcurrentHashMap<>();
     }
 
@@ -218,14 +217,6 @@ public class AlivenessMonitor
 
     public void setNotificationPublishService(NotificationPublishService notificationPublishService) {
         this.notificationPublishService = notificationPublishService;
-    }
-
-    private ThreadFactory getMonitoringThreadFactory(String threadNameFormat) {
-        ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
-        builder.setNameFormat(threadNameFormat);
-        builder.setUncaughtExceptionHandler(
-            (thread, ex) -> LOG.error("Received Uncaught Exception event in Thread: {}", thread.getName(), ex));
-        return builder.build();
     }
 
     private void initializeCache() {

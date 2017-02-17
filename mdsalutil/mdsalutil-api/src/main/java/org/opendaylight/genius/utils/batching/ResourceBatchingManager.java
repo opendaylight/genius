@@ -23,6 +23,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.infra.ThreadFactoryProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -73,7 +74,8 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
         ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor)
-                Executors.newScheduledThreadPool(1);
+                Executors.newScheduledThreadPool(1, ThreadFactoryProvider.builder()
+                        .namePrefix("ResourceBatchingManager").logger(LOG).build().get());
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
