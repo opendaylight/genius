@@ -20,14 +20,19 @@ import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataChangeEvent;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ThreadFactoryProvider;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Deprecated
 public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extends DataChangeListener>
         implements DataChangeListener, ChainableDataChangeListener, AutoCloseable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncDataChangeListenerBase.class);
 
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
@@ -38,7 +43,11 @@ public abstract class AsyncDataChangeListenerBase<T extends DataObject, K extend
             DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
             TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>());
+            new LinkedBlockingQueue<>(),
+            ThreadFactoryProvider.builder()
+                .namePrefix("AsyncDataChangeListenerBase-DataChangeHandler")
+                .logger(LOG)
+                .build().get());
 
     private ListenerRegistration<?> listenerRegistration;
     private final ChainableDataChangeListenerImpl chainingDelegate = new ChainableDataChangeListenerImpl();
