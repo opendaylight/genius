@@ -30,15 +30,14 @@ import org.slf4j.LoggerFactory;
 
 public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<Interface, VlanMemberConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(VlanMemberConfigListener.class);
-    private DataBroker dataBroker;
-    private IdManagerService idManager;
-    private AlivenessMonitorService alivenessMonitorService;
-    private IMdsalApiManager mdsalApiManager;
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final AlivenessMonitorService alivenessMonitorService;
+    private final IMdsalApiManager mdsalApiManager;
 
     public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
                                     final AlivenessMonitorService alivenessMonitorService,
                                     final IMdsalApiManager mdsalApiManager) {
-        super(Interface.class, VlanMemberConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.alivenessMonitorService = alivenessMonitorService;
@@ -56,28 +55,45 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;
         }
+        removeVlanMember(key, interfaceOld);
+    }
 
-        ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
+    private void removeVlanMember(InstanceIdentifier<Interface> key, Interface deleted) {
+        IfL2vlan ifL2vlan = deleted.getAugmentation(IfL2vlan.class);
+        ParentRefs parentRefs = deleted.getAugmentation(ParentRefs.class);
         if (parentRefs == null) {
-            LOG.error("Attempt to remove Vlan Trunk-Member {} without a parent interface", interfaceOld);
+            LOG.error("Attempt to remove Vlan Trunk-Member {} without a parent interface", deleted);
             return;
         }
 
         String lowerLayerIf = parentRefs.getParentInterface();
-        if (lowerLayerIf.equals(interfaceOld.getName())) {
-            LOG.error("Attempt to remove Vlan Trunk-Member {} with same parent interface name.", interfaceOld);
+        if (lowerLayerIf.equals(deleted.getName())) {
+            LOG.error("Attempt to remove Vlan Trunk-Member {} with same parent interface name.", deleted);
             return;
         }
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigRemoveWorker removeWorker = new RendererConfigRemoveWorker(key, interfaceOld, parentRefs, ifL2vlan);
+        RendererConfigRemoveWorker removeWorker = new RendererConfigRemoveWorker(key, deleted, parentRefs, ifL2vlan);
         coordinator.enqueueJob(lowerLayerIf, removeWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
         IfL2vlan ifL2vlanNew = interfaceNew.getAugmentation(IfL2vlan.class);
-        if (ifL2vlanNew == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlanNew.getL2vlanMode()) {
+        if (ifL2vlanNew == null) {
+            return;
+        }
+        IfL2vlan ifL2vlanOld = interfaceOld.getAugmentation(IfL2vlan.class);
+        if (IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanNew.getL2vlanMode() &&
+                        IfL2vlan.L2vlanMode.Trunk == ifL2vlanOld.getL2vlanMode()) {
+            // Trunk subport add use case
+            addVlanMember(key, interfaceNew);
+            return;
+        } else if (IfL2vlan.L2vlanMode.Trunk == ifL2vlanNew.getL2vlanMode() &&
+                        IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanOld.getL2vlanMode()) {
+            // Trunk subport remove use case
+            removeVlanMember(key, interfaceOld);
+        } else if (IfL2vlan.L2vlanMode.TrunkMember != ifL2vlanNew.getL2vlanMode()) {
             return;
         }
 
@@ -107,20 +123,24 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;
         }
+        addVlanMember(key, interfaceNew);
+    }
 
-        ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
+    private void addVlanMember(InstanceIdentifier<Interface> key, Interface added) {
+        IfL2vlan ifL2vlan = added.getAugmentation(IfL2vlan.class);
+        ParentRefs parentRefs = added.getAugmentation(ParentRefs.class);
         if (parentRefs == null) {
             return;
         }
 
         String lowerLayerIf = parentRefs.getParentInterface();
-        if (lowerLayerIf.equals(interfaceNew.getName())) {
-            LOG.error("Attempt to add Vlan Trunk-Member {} with same parent interface name.", interfaceNew);
+        if (lowerLayerIf.equals(added.getName())) {
+            LOG.error("Attempt to add Vlan Trunk-Member {} with same parent interface name.", added);
             return;
         }
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs, ifL2vlan);
+        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, added, parentRefs, ifL2vlan);
         coordinator.enqueueJob(lowerLayerIf, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
