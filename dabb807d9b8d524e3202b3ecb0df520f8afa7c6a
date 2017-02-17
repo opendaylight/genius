@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c59d3cbe",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-17T16:31:06Z",
+      "side": 1,
+      "message": "please mention the module in which the yang file will be available",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a5a2b8fa",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-17T16:31:06Z",
+      "side": 1,
+      "message": "are we planning to get in such a big feature on boron sr3?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
