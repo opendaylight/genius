@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.alivenessmonitor.internal;
+package org.opendaylight.genius.alivenessmonitor.protocols;
 
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
@@ -15,7 +15,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
  * Protocol specific Handler interface defined by the Aliveness monitor service
  * Handler will be registered with Alivnessmonitor service along with the
  * protocol type it supports.
- *
  */
 public interface AlivenessProtocolHandler {
 

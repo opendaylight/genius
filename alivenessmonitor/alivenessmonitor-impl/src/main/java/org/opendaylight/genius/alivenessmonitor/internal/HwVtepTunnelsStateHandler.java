@@ -17,13 +17,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
+import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -70,17 +71,14 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     private final AlivenessMonitor alivenessMonitor;
 
     @Inject
-    public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor) {
+    public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
+            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         super(Tunnels.class, HwVtepTunnelsStateHandler.class);
         this.dataBroker = dataBroker;
         this.alivenessMonitor = alivenessMonitor;
-    }
-
-    @PostConstruct
-    public void start() {
-        LOG.info("{} start", getClass().getSimpleName());
-        alivenessMonitor.registerHandler(EtherTypes.Bfd, this);
+        alivenessProtocolHandlerRegistry.register(EtherTypes.Bfd, this);
         registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
+        LOG.info("{} started", getClass().getSimpleName());
     }
 
     @Override
