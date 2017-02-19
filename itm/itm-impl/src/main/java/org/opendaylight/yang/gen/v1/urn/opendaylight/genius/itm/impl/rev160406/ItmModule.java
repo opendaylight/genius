@@ -23,6 +23,7 @@ public class ItmModule extends org.opendaylight.yang.gen.v1.urn.opendaylight.gen
         provider.setNotificationPublishService(getNotificationPublishServiceDependency());
         provider.setNotificationService(getNotificationServiceDependency());
         provider.setRpcProviderRegistry(getRpcregistryDependency());
+        provider.setInterfaceManager(getOdlinterfaceDependency());
         getBrokerDependency().registerProvider(provider);
         return provider;
     }

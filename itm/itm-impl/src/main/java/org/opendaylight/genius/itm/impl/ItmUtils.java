@@ -30,6 +30,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -52,32 +53,12 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepIpPools;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaKey;
@@ -86,25 +67,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.vtep.config.schema.DpnIdsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.ip.pools.VtepIpPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.ip.pools.VtepIpPoolKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.DstInfoBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.SrcInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -119,6 +95,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -949,26 +927,19 @@ public class ItmUtils {
     }
     public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
         InternalTunnel internalTunnel = null;
-        TunnelList tunnelList = getAllInternalTunnels(broker);
-        if (tunnelList != null && tunnelList.getInternalTunnel() != null) {
-            List<InternalTunnel> internalTunnels = tunnelList.getInternalTunnel();
-            for (InternalTunnel tunnel : internalTunnels) {
-                if (tunnel.getTunnelInterfaceName().equalsIgnoreCase(interfaceName)) {
-                    internalTunnel = tunnel;
-                    break;
-                }
-            }
+        internalTunnel = itmCache.getInternalTunnel(interfaceName);
+        if (internalTunnel == null) {
+            updateTunnelsCache(broker);
+            internalTunnel = itmCache.getInternalTunnel(interfaceName);
         }
         return internalTunnel;
     }
     public static ExternalTunnel getExternalTunnel(String interfaceName, DataBroker broker) {
         ExternalTunnel externalTunnel = null;
-        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
-        for (ExternalTunnel tunnel : externalTunnels) {
-            if (StringUtils.equalsIgnoreCase(interfaceName, tunnel.getTunnelInterfaceName())) {
-                externalTunnel = tunnel;
-                break;
-            }
+        externalTunnel = itmCache.getExternalTunnel(interfaceName);
+        if (externalTunnel == null) {
+            updateTunnelsCache(broker);
+            externalTunnel = itmCache.getExternalTunnel(interfaceName);
         }
         return externalTunnel;
     }
@@ -1047,19 +1018,27 @@ public class ItmUtils {
     }
 
     public static Interface getInterface(
-            String name, DataBroker broker) {
+            String name, IInterfaceManager ifaceManager) {
         Interface result = itmCache.getInterface(name);
         if (result == null) {
-            InstanceIdentifier<Interface> iid =
-                    InstanceIdentifier.builder(Interfaces.class)
-                            .child(Interface.class, new InterfaceKey(name)).build();
-            Optional<Interface> optInterface = read(LogicalDatastoreType.CONFIGURATION, iid, broker);
-            if (optInterface.isPresent()) {
-                result = optInterface.get();
+            result = ifaceManager.getInterfaceInfoFromConfigDataStore(name);
+            if (result != null) {
                 itmCache.addInterface(result);
             }
         }
         return result;
+    }
+
+    public static StateTunnelList getTunnelState(DataBroker dataBroker, String ifaceName,
+                                                           InstanceIdentifier<StateTunnelList> stListId){
+        StateTunnelList tunnelState = (StateTunnelList)DataStoreCache.get(ITMConstants.TUNNEL_STATE_CACHE_NAME, ifaceName);
+        if(tunnelState == null) {
+            Optional<StateTunnelList> tunnelsState = ItmUtils.read(LogicalDatastoreType.OPERATIONAL, stListId, dataBroker);
+            if(tunnelsState.isPresent()){
+                return tunnelState;
+            }
+        }
+        return tunnelState;
     }
 
     public static Class<? extends TunnelMonitoringTypeBase> readMonitoringProtocolFromCache(DataBroker dataBroker) {
@@ -1119,5 +1098,61 @@ public class ItmUtils {
         List<TzMembership> zones = new ArrayList<>();
         zones.add(new TzMembershipBuilder().setZoneName(zoneName).build());
         return zones;
+    }
+
+    public static StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state, TunnelOperStatus tunOpStatus, IInterfaceManager  ifaceManager, DataBroker broker) {
+        StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = ItmUtils
+                .getInterface(name, ifaceManager);
+        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        if (ifTunnel == null && parentRefs == null) {
+            return null;
+        }
+        DstInfoBuilder dstInfoBuilder = new DstInfoBuilder();
+        SrcInfoBuilder srcInfoBuilder = new SrcInfoBuilder();
+        dstInfoBuilder.setTepIp(ifTunnel.getTunnelDestination());
+        srcInfoBuilder.setTepIp(ifTunnel.getTunnelSource());
+        // TODO: Add/Improve logic for device type
+        InternalTunnel internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
+        ExternalTunnel externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
+        if (internalTunnel == null && externalTunnel == null) {
+            // both not present in cache. let us update and try again.
+            ItmUtils.updateTunnelsCache(broker);
+            internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
+            externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
+        }
+        if (internalTunnel != null) {
+            srcInfoBuilder.setTepDeviceId(internalTunnel.getSourceDPN().toString())
+                    .setTepDeviceType(TepTypeInternal.class);
+            dstInfoBuilder.setTepDeviceId(internalTunnel.getDestinationDPN().toString())
+                    .setTepDeviceType(TepTypeInternal.class);
+            stlBuilder.setTransportType(internalTunnel.getTransportType());
+        } else if (externalTunnel != null) {
+            ExternalTunnel tunnel = ItmUtils.itmCache.getExternalTunnel(name);
+            srcInfoBuilder.setTepDeviceId(tunnel.getSourceDevice())
+                    .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()));
+            dstInfoBuilder.setTepDeviceId(tunnel.getDestinationDevice())
+                    .setTepDeviceType(getDeviceType(tunnel.getDestinationDevice()))
+                    .setTepIp(ifTunnel.getTunnelDestination());
+            stlBuilder.setTransportType(tunnel.getTransportType());
+        }
+        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setOperState(tunOpStatus).setTunnelState(state)
+                .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build());
+        return stlBuilder.build();
+    }
+    public static Class<? extends TepTypeBase> getDeviceType(String device) {
+        if (device.startsWith("hwvtep")) {
+            return TepTypeHwvtep.class;
+        } else if (device.contains("IpAddress")) {
+            return TepTypeExternal.class;
+        } else {
+            return TepTypeInternal.class;
+        }
+    }
+
+    public static InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
+        return InstanceIdentifier.builder(TunnelsState.class)
+                .child(StateTunnelList.class, tlKey).build();
     }
 }
