@@ -40,6 +40,8 @@ public class ITMConstants{
   public static final String TUNNEL_STATE_UP = "UP";
   public static final String TUNNEL_STATE_DOWN = "DOWN";
   public static final String TUNNEL_STATE_UNKNOWN = "UNKNOWN";
+  public static final String ITM_PREFIX = "ITM";
+  public static final String ITM_ALARM = "ITM_ALARM";
 }
 
 

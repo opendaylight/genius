@@ -123,7 +123,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tzChangeListener = new TransportZoneListener(dataBroker, idManager) ;
             itmRpcService = new ItmManagerRpcService(dataBroker, idManager);
             vtepConfigSchemaListener = new VtepConfigSchemaListener(dataBroker);
-            this.ifStateListener = new InterfaceStateListener(dataBroker);
+            ifStateListener = new InterfaceStateListener(dataBroker, interfaceManager);
             tnlToggleListener = new TunnelMonitorChangeListener(dataBroker);
             tnlIntervalListener = new TunnelMonitorIntervalListener(dataBroker);
             tepCommandHelper = new TepCommandHelper(dataBroker);
@@ -141,6 +141,7 @@ public class ItmProvider implements BindingAwareProvider, AutoCloseable, IITMPro
             tepCommandHelper.setInterfaceManager(interfaceManager);
             tepCommandHelper.configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE,ITMConstants.TUNNEL_TYPE_VXLAN);
             itmStateListener =new ItmTunnelEventListener(dataBroker);
+            ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
             createIdPool();
             itmStatusMonitor.reportStatus("OPERATIONAL");
             DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);

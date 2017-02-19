@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -87,7 +88,7 @@ public class ItmInternalTunnelAddWorker {
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
-        t.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder, true);
+        ITMBatchingUtils.update(dep,tnlBuilder , ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     private static void build_tunnel_from( DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,  IdManagerService idManagerService, IMdsalApiManager mdsalManager, WriteTransaction t, List<ListenableFuture<Void>> futures) {
@@ -167,7 +168,7 @@ public class ItmInternalTunnelAddWorker {
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         logger.debug(  " Trunk Interface Identifier - {} ", trunkIdentifier ) ;
         logger.trace(  " Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface ) ;
-        t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
+        ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
         ItmUtils.itmCache.addInterface(iface);
         // also update itm-state ds?
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
@@ -175,7 +176,7 @@ public class ItmInternalTunnelAddWorker {
                 .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType));
         InternalTunnel tnl = ItmUtils.buildInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName);
         //ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tnl, dataBroker, DEFAULT_CALLBACK);
-        t.merge(LogicalDatastoreType.CONFIGURATION,path, tnl, true) ;
+        ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
         ItmUtils.itmCache.addInternalTunnel(tnl);
         return true;
     }
