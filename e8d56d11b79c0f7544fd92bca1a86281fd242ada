@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_31273514",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-20T08:03:13Z",
+      "side": 1,
+      "message": "Yes. I will emphasize it",
+      "parentUuid": "fafc7978_3bb0b642",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3bc5568e",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 20
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_51ee39b5",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-20T08:03:13Z",
+      "side": 1,
+      "message": "This is what I was thinking since the group has no actual OF port so no point binding it to the default service like all other tunnel port.\nThis could also be the default service per tunnel type instead of binding all the individual tunnels to it. I assume binding to tunnel type is would be preferred. Right?",
+      "parentUuid": "fafc7978_3bc5568e",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1b92129f",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 20
@@ -47,6 +83,24 @@
       "writtenOn": "2017-02-16T09:06:22Z",
       "side": 1,
       "message": "please indicate unique group-id will be generated for the logical group interface using idmanager, and what will be the group range allocated for the same",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_36af202c",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-20T08:03:13Z",
+      "side": 1,
+      "message": "Done. Added to ITM section",
+      "parentUuid": "fafc7978_1b92129f",
       "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -76,6 +130,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b63830f0",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-20T08:03:13Z",
+      "side": 1,
+      "message": "There are couple of alternatives here\n1. Choose the 1st TEP and publish that as BGP nexthop\n2. Mark one of the nexthops by extending the FIB yang model \n\nAs I understand from Vivek S, for Ericsson UC you would like this feature disabled for now and prefer to use bonding. This is the reason why it is protected by global configuration and option #2 will be deferred for future release",
+      "parentUuid": "fafc7978_da908b45",
+      "range": {
+        "startLine": 113,
+        "startChar": 37,
+        "endLine": 113,
+        "endChar": 38
+      },
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7bba3e24",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 20
@@ -87,6 +165,24 @@
       "writtenOn": "2017-02-16T09:06:22Z",
       "side": 1,
       "message": "do we have to add group-id in interface-state information?",
+      "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_71789df2",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 20
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-20T08:03:13Z",
+      "side": 1,
+      "message": "My thinking was that it\u0027s not needed.\n\nThe group id will be allocated from a dedicated pool to be shared between this feature and the policy-based path selection app https://git.opendaylight.org/gerrit/#/c/51457/\nSince the select group is the default one it could use some constant to allocate a fixed id from the pool while others consuming ids from this pool will use the route-name/route-group name defined in the policy app",
+      "parentUuid": "fafc7978_7bba3e24",
       "revId": "e8d56d11b79c0f7544fd92bca1a86281fd242ada",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
