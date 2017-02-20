@@ -116,6 +116,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.tzChangeListener = transportZoneListener;
         this.vtepConfigSchemaListener = vtepConfigSchemaListener;
         this.ovsdbChangeListener = ovsdbNodeListener;
+        ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
     @PostConstruct
