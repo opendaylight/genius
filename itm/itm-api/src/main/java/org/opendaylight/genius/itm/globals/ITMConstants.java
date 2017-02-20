@@ -54,4 +54,6 @@ public class ITMConstants {
     public static final int DUMMY_VLANID = 0;
     public static final String DEFAULT_BRIDGE_NAME = "br-int";
     public static final String BRIDGE_URI_PREFIX = "bridge";
+    public static final String ITM_PREFIX = "ITM";
+    public static final String ITM_ALARM = "ITM_ALARM";
 }
