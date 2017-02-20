@@ -13,10 +13,18 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateUpdateHelper;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -35,20 +43,25 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.DstInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.SrcInfoBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.*;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 @Singleton
 public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener> implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
     private final DataBroker broker;
+	private final IInterfaceManager ifaceManager;
 
     @Inject
-    public InterfaceStateListener(final DataBroker dataBroker) {
+    public InterfaceStateListener(final DataBroker dataBroker,IInterfaceManager iInterfaceManager) {
         super(Interface.class, InterfaceStateListener.class);
         this.broker = dataBroker;
+		this.ifaceManager = iInterfaceManager;
     }
 
     @PostConstruct
@@ -87,7 +100,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
-            updateItmState(iface);
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            ItmTunnelAddWorker itmTunnelAddWorker = new ItmTunnelAddWorker(iface);
+            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelAddWorker);
         }
     }
 
@@ -96,10 +111,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
-            StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
-            InstanceIdentifier<StateTunnelList> stListId = buildStateTunnelListId(tlKey);
-            LOG.trace("Deleting tunnel_state for Id: {}", stListId);
-            ItmUtils.asyncDelete(LogicalDatastoreType.OPERATIONAL, stListId, broker, ItmUtils.DEFAULT_CALLBACK);
+            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+            ItmTunnelRemoveWorker itmTunnelRemoveWorker = new ItmTunnelRemoveWorker(iface);
+            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelRemoveWorker);
         }
     }
 
@@ -112,115 +126,54 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         if (ItmUtils.isItmIfType(original.getType())) {
             LOG.trace("Interface updated. Old: {} New: {}", original, update);
             OperStatus operStatus = update.getOperStatus();
-            if (operStatus != null) {
+            if (!Objects.equals(original.getOperStatus(), update.getOperStatus())) {
                 LOG.debug("Tunnel Interface {} changed state to {}", original.getName(), operStatus);
-                updateItmState(update);
+                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+                ItmTunnelUpdateWorker itmTunnelUpdateWorker = new ItmTunnelUpdateWorker(original, update);
+                jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + original.getName(), itmTunnelUpdateWorker);
             }
         }
     }
 
-    private void updateItmState(Interface iface) {
-        StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
-        LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, iface.getName());
-        InstanceIdentifier<StateTunnelList> stListId = buildStateTunnelListId(tlKey);
-        Optional<StateTunnelList> tunnelsState = ItmUtils.read(LogicalDatastoreType.OPERATIONAL, stListId, broker);
-        StateTunnelList tunnelStateList;
-        StateTunnelListBuilder stlBuilder;
-        TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = iface.getOperStatus().equals(OperStatus.Up);
-        switch (iface.getOperStatus()) {
-            case Up:
-                tunnelOperStatus = TunnelOperStatus.Up;
-                break;
-            case Down:
-                tunnelOperStatus = TunnelOperStatus.Down;
-                break;
-            case Unknown:
-                tunnelOperStatus = TunnelOperStatus.Unknown;
-                break;
-            default:
-                tunnelOperStatus = TunnelOperStatus.Ignore;
+    private class ItmTunnelAddWorker implements Callable<List<ListenableFuture<Void>>> {
+        private Interface iface;
+
+        public ItmTunnelAddWorker(Interface iface) {
+            this.iface = iface;
         }
-        if(tunnelsState.isPresent()) {
-            tunnelStateList = tunnelsState.get();
-            stlBuilder = new StateTunnelListBuilder(tunnelStateList);
-            stlBuilder.setTunnelState(tunnelState);
-            stlBuilder.setOperState(tunnelOperStatus);
-            StateTunnelList stList = stlBuilder.build();
-            LOG.trace("Updating tunnel_state: {} for Id: {}", stList, stListId);
-            ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL, stListId, stList, broker, ItmUtils.DEFAULT_CALLBACK);
-        } else {
-            // Create new Tunnel State
-            try {
-                /*
-                 * FIXME: A defensive try-catch to find issues without
-                 * disrupting existing behavior.
-                 */
-                tunnelStateList = buildStateTunnelList(tlKey, iface.getName(), tunnelState, tunnelOperStatus);
-                LOG.trace("Creating tunnel_state: {} for Id: {}", tunnelStateList, stListId);
-                ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL, stListId, tunnelStateList, broker,
-                        ItmUtils.DEFAULT_CALLBACK);
-            } catch (Exception e) {
-                LOG.warn("Exception trying to create tunnel state for {}", iface.getName(), e);
-            }
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            return ItmTunnelStateAddHelper.addTunnel(iface,ifaceManager, broker);
         }
+
     }
 
+    private class ItmTunnelRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+        private Interface iface;
 
-    private StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state, TunnelOperStatus tunOpStatus) {
-        StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = ItmUtils
-                .getInterface(name, broker);
-        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-        if (ifTunnel == null && parentRefs == null) {
-            return null;
+        public ItmTunnelRemoveWorker(Interface iface) {
+            this.iface = iface;
         }
-        DstInfoBuilder dstInfoBuilder = new DstInfoBuilder();
-        SrcInfoBuilder srcInfoBuilder = new SrcInfoBuilder();
-        dstInfoBuilder.setTepIp(ifTunnel.getTunnelDestination());
-        srcInfoBuilder.setTepIp(ifTunnel.getTunnelSource());
-        // TODO: Add/Improve logic for device type
-        InternalTunnel internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
-        ExternalTunnel externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
-        if (internalTunnel == null && externalTunnel == null) {
-            // both not present in cache. let us update and try again.
-            ItmUtils.updateTunnelsCache(broker);
-            internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
-            externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            return ItmTunnelStateRemoveHelper.removeTunnel(iface,ifaceManager, broker);
         }
-        if (internalTunnel != null) {
-            srcInfoBuilder.setTepDeviceId(internalTunnel.getSourceDPN().toString())
-                    .setTepDeviceType(TepTypeInternal.class);
-            dstInfoBuilder.setTepDeviceId(internalTunnel.getDestinationDPN().toString())
-                    .setTepDeviceType(TepTypeInternal.class);
-            stlBuilder.setTransportType(internalTunnel.getTransportType());
-        } else if (externalTunnel != null) {
-            ExternalTunnel tunnel = ItmUtils.itmCache.getExternalTunnel(name);
-            srcInfoBuilder.setTepDeviceId(tunnel.getSourceDevice())
-                    .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()));
-            dstInfoBuilder.setTepDeviceId(tunnel.getDestinationDevice())
-                    .setTepDeviceType(getDeviceType(tunnel.getDestinationDevice()))
-                    .setTepIp(ifTunnel.getTunnelDestination());
-            stlBuilder.setTransportType(tunnel.getTransportType());
-        }
-        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setOperState(tunOpStatus).setTunnelState(state)
-            .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build());
-        return stlBuilder.build();
+
     }
 
-    private Class<? extends TepTypeBase> getDeviceType(String device) {
-        if (device.startsWith("hwvtep")) {
-            return TepTypeHwvtep.class;
-        } else if (device.contains("IpAddress")) {
-            return TepTypeExternal.class;
-        } else {
-            return TepTypeInternal.class;
-        }
-    }
+    private class ItmTunnelUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+        private Interface updatedIface;
+        private Interface originalIface;
 
-    private InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
-        return InstanceIdentifier.builder(TunnelsState.class)
-                .child(StateTunnelList.class, tlKey).build();
+        public ItmTunnelUpdateWorker(Interface originalIface, Interface updatedIface) {
+            this.updatedIface = updatedIface;
+            this.originalIface = updatedIface;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            return ItmTunnelStateUpdateHelper.updateTunnel(originalIface, updatedIface, ifaceManager, broker);
+        }
+
     }
 }
