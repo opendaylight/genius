@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,9 +19,11 @@ public class TepEnableTunnelMonitor extends OsgiCommandSupport {
 
     private static final Logger logger = LoggerFactory.getLogger(TepEnableTunnelMonitor.class);
 
-    @Argument(index = 0, name = "true|false", description = "true|false to enable/disable Tunnel Monitoring", required = true, multiValued = false)
+    @Argument(index = 0, name = "true|false", description = "true|false to enable/disable Tunnel Monitoring"
+              , required = true, multiValued = false)
     private Boolean enableTunnelMonitor;
-    @Argument(index = 1, name = "monitorProtocol", description = "monitorProtocol", required = false, multiValued = false)
+    @Argument(index = 1, name = "monitorProtocol", description = "monitorProtocol", required = false
+              , multiValued = false)
     private String monitorProtocol;
 
     private IITMProvider itmProvider;

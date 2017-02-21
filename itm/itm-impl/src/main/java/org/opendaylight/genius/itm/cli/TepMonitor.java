@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -33,10 +33,9 @@ public class TepMonitor extends OsgiCommandSupport {
   protected Object doExecute() {
     try {
       logger.debug("Executing TEP monitor command with interval: " + "\t" + interval);
-      if(!(interval >=ITMConstants.MIN_MONITOR_INTERVAL && interval<=ITMConstants.MAX_MONITOR_INTERVAL)){
+      if (!(interval >= ITMConstants.MIN_MONITOR_INTERVAL && interval <= ITMConstants.MAX_MONITOR_INTERVAL)) {
         session.getConsole().println("Monitoring Interval must be in the range 100 - 30000");
-      }
-      else {
+      } else {
         itmProvider.configureTunnelMonitorInterval(interval);
       }
     } catch (Exception e) {

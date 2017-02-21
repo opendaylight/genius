@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -14,16 +14,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SubnetObject {
-    private IpAddress _gatewayIp;
-    private SubnetsKey _key;
-    private IpPrefix _prefix;
-    private java.lang.Integer _vlanId;
+    private IpAddress gatewayIp;
+    private SubnetsKey key;
+    private IpPrefix prefix;
+    private java.lang.Integer vlanId;
     private static final Logger LOG = LoggerFactory.getLogger(SubnetObject.class);
 
-    public SubnetObject(IpAddress gWIP, SubnetsKey key, IpPrefix mask, Integer vlanId) {
-        _gatewayIp = gWIP;
-        _key = key;
-        _prefix = mask;
+    public SubnetObject(IpAddress gwIp, SubnetsKey key, IpPrefix mask, Integer id) {
+        gatewayIp = gwIp;
+        key = key;
+        prefix = mask;
         try {
             if (vlanId != null) {
                 checkVlanIdRange(vlanId);
@@ -31,23 +31,23 @@ public class SubnetObject {
         } catch (IllegalArgumentException e) {
             LOG.error("Invalid VlanID. expected: 0 to 4095");
         }
-        _vlanId = vlanId;
+        vlanId = id;
     }
 
     public IpAddress get_gatewayIp() {
-        return _gatewayIp;
+        return gatewayIp;
     }
 
     public SubnetsKey get_key() {
-        return _key;
+        return key;
     }
 
     public IpPrefix get_prefix() {
-        return _prefix;
+        return prefix;
     }
 
     public java.lang.Integer get_vlanId() {
-        return _vlanId;
+        return vlanId;
     }
 
     private int hash = 0;
@@ -61,10 +61,10 @@ public class SubnetObject {
 
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((_gatewayIp == null) ? 0 : _gatewayIp.hashCode());
-        result = prime * result + ((_key == null) ? 0 : _key.hashCode());
-        result = prime * result + ((_prefix == null) ? 0 : _prefix.hashCode());
-        result = prime * result + ((_vlanId == null) ? 0 : _vlanId.hashCode());
+        result = prime * result + ((gatewayIp == null) ? 0 : gatewayIp.hashCode());
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
+        result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+        result = prime * result + ((vlanId == null) ? 0 : vlanId.hashCode());
         hash = result;
         hashValid = true;
         return result;
@@ -79,32 +79,32 @@ public class SubnetObject {
             return false;
         }
         SubnetObject other = (SubnetObject) obj;
-        if (_gatewayIp == null) {
+        if (gatewayIp == null) {
             if (other.get_gatewayIp() != null) {
                 return false;
             }
-        } else if (!_gatewayIp.equals(other.get_gatewayIp())) {
+        } else if (!gatewayIp.equals(other.get_gatewayIp())) {
             return false;
         }
-        if (_key == null) {
+        if (key == null) {
             if (other.get_key() != null) {
                 return false;
             }
-        } else if (!_key.equals(other.get_key())) {
+        } else if (!key.equals(other.get_key())) {
             return false;
         }
-        if (_prefix == null) {
+        if (prefix == null) {
             if (other.get_prefix() != null) {
                 return false;
             }
-        } else if (!_prefix.equals(other.get_prefix())) {
+        } else if (!prefix.equals(other.get_prefix())) {
             return false;
         }
-        if (_vlanId == null) {
+        if (vlanId == null) {
             if (other.get_vlanId() != null) {
                 return false;
             }
-        } else if (!_vlanId.equals(other.get_vlanId())) {
+        } else if (!vlanId.equals(other.get_vlanId())) {
             return false;
         }
         return true;
@@ -115,41 +115,41 @@ public class SubnetObject {
         java.lang.StringBuilder builder = new java.lang.StringBuilder("Subnets [");
         boolean first = true;
 
-        if (_gatewayIp != null) {
+        if (gatewayIp != null) {
             if (first) {
                 first = false;
             } else {
                 builder.append(", ");
             }
-            builder.append("_gatewayIp=");
-            builder.append(_gatewayIp);
+            builder.append("gatewayIp=");
+            builder.append(gatewayIp);
         }
-        if (_key != null) {
+        if (key != null) {
             if (first) {
                 first = false;
             } else {
                 builder.append(", ");
             }
-            builder.append("_key=");
-            builder.append(_key);
+            builder.append("key=");
+            builder.append(key);
         }
-        if (_prefix != null) {
+        if (prefix != null) {
             if (first) {
                 first = false;
             } else {
                 builder.append(", ");
             }
-            builder.append("_prefix=");
-            builder.append(_prefix);
+            builder.append("prefix=");
+            builder.append(prefix);
         }
-        if (_vlanId != null) {
+        if (vlanId != null) {
             if (first) {
                 first = false;
             } else {
                 builder.append(", ");
             }
-            builder.append("_vlanId=");
-            builder.append(_vlanId);
+            builder.append("vlanId=");
+            builder.append(vlanId);
         }
         return builder.append(']').toString();
     }

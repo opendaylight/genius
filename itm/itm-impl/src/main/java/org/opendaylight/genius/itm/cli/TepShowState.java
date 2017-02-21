@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -16,7 +16,7 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 
-@Command(scope = "tep", name = "show-state", description="Monitors tunnel state")
+@Command(scope = "tep", name = "show-state", description = "Monitors tunnel state")
 
 public class TepShowState extends OsgiCommandSupport {
 
@@ -31,17 +31,17 @@ public class TepShowState extends OsgiCommandSupport {
         List<StateTunnelList> tunnels = null ;
         List<Object> values = null ;
         values = DataStoreCache.getValues(ITMConstants.TUNNEL_STATE_CACHE_NAME);
-        if( values != null ) {
+        if (values != null) {
              tunnels = new ArrayList<>() ;
-            for( Object value : values ) {
+            for (Object value : values) {
                  tunnels.add((StateTunnelList)value) ;
             }
         }
-        if( tunnels != null ) {
+        if (tunnels != null) {
            itmProvider.showState(tunnels, session);
-        }
-        else
+        } else {
             session.getConsole().println("No Internal Tunnels configured on the switch");
+        }
         return null;
     }
 }

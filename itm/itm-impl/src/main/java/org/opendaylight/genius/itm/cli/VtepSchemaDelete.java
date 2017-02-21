@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -62,7 +62,7 @@ public class VtepSchemaDelete extends OsgiCommandSupport {
             LOG.debug("Executing vtep:schema-delete command\t {} ", this.deleteAll);
             this.itmProvider.deleteAllVtepSchemas();
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"vtep:schema-delete all\": ", e);
             throw e;
         }

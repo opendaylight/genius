@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -45,7 +45,8 @@ public class TepDelete extends OsgiCommandSupport {
         if (dpnId == null || portName == null || vlanId == null || ipAddress == null || subnetMask == null
                         || transportZone == null) {
             session.getConsole().println("Insufficient Arguments");
-            session.getConsole().println("Correct Usage : exec tep-delete dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
+            session.getConsole().println("Correct Usage : exec tep-delete dpnId portName vlanId ipAddress subnetMask"
+                    + " gatewayIp transportZone");
             return null;
         }
         itmProvider.deleteVtep(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);

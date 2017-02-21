@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -45,12 +45,14 @@ public class TepAdd extends OsgiCommandSupport {
             if (dpnId == null || portName == null || vlanId == null || ipAddress == null || subnetMask == null
                     || transportZone == null) {
                 session.getConsole().println("Insufficient Arguments");
-                session.getConsole().println("Correct Usage : exec tep-add dpnId portName vlanId ipAddress subnetMask gatewayIp transportZone");
+                session.getConsole().println("Correct Usage : exec tep-add dpnId portName vlanId subnetMask "
+                        + "gatewayIp transportZone");
                 return null;
             }
             LOG.debug("Executing create TEP command" + "\t" + dpnId + "\t" + portName + "\t" + vlanId + "\t"
                     + ipAddress + "\t" + subnetMask + "\t" + gatewayIp + "\t" + transportZone);
-            itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+            itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
+                    transportZone, session);
         } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"tep-add\": ", e);
             throw e;
