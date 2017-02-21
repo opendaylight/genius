@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_6c79d4c7",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-21T10:31:12Z",
+      "side": 1,
+      "message": "It will be good to specify that there can be only one TEP IP per DPN per transport zone. If there is more than one TEP IP of a specific DPN in the same transport zone, then tunnel meshing logic will get complicated",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7f717843",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-21T10:31:12Z",
+      "side": 1,
+      "message": "ITM changes section doesn\u0027t talk about the external tunnel building - for eg. tunnels towards DC gateway / TOR. Since there will be two TEP IPs per DPN, ambiguity arises as to which TEP should be chosen for building external tunnels. Connectivity could be with one TEP but another TEP could be chosen for tunnel building.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ff01e86a",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-21T10:31:12Z",
+      "side": 1,
+      "message": "ITM TEP Auto-Config feature, which learns the TEP IP from south bound may have an impact due this feature.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9fc25c32",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-21T10:31:12Z",
+      "side": 1,
+      "message": "I think we need another Yang change - define a container in itm-state.yang for logical group just like the tunnel-list. If the flag is on then logical group/tunnel should be stored here.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5fa594a0",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-21T10:31:12Z",
+      "side": 1,
+      "message": "Can we not use the get-tunnel-interface-name rpc, which takes source and destination dp-id. Do we need this change?",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bfe480e1",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-21T10:31:12Z",
+      "side": 1,
+      "message": "tep:show-state should also display logical group status.\n\nAlso, there are other TEP related CLIs where there maybe a check for allowing only one TEP / DPN.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
