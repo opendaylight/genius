@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f3063f85",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "please see a proper author title",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_93d6d3ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "what is this comment?",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d3321b5e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "u can make use of the default batch handler coming in \n\nhttps://git.opendaylight.org/gerrit/#/c/51513/3",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7341afa8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "remove * imports",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_533e2b29",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "remove * import",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_934413b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "pls put in alphabetical order, checkstyle enabling for itm is on the way",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f3147fa1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "space after (",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d3197bd8",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-21T17:51:51Z",
+      "side": 1,
+      "message": "alignment?",
+      "revId": "c8ff5b55e7263217941043db1d01b33cc6d5e0d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
