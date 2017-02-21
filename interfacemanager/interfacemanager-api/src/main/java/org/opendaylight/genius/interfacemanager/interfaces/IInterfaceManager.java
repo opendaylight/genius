@@ -20,22 +20,17 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 
 public interface IInterfaceManager {
-    @Deprecated
+
     Long getPortForInterface(String ifName);
 
-    @Deprecated
     Long getPortForInterface(Interface intf);
 
-    @Deprecated
     BigInteger getDpnForInterface(String ifName);
 
-    @Deprecated
     BigInteger getDpnForInterface(Interface intrf);
 
-    @Deprecated
     String getEndpointIpForDpn(BigInteger dpnId);
 
-    @Deprecated
     List<ActionInfo> getInterfaceEgressActions(String ifName);
 
     InterfaceInfo getInterfaceInfo(String intInfo);
