@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2015-2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class DSShowCache extends OsgiCommandSupport {
     @Argument(index = 0, name = "CacheName", description = "CacheName", required = true, multiValued = false)
     private String cacheName;
-    private static final Logger logger = LoggerFactory.getLogger(DSShowCache.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DSShowCache.class);
     private IITMProvider itmProvider;
 
     public void setItmProvider(IITMProvider itmProvider) {
@@ -27,7 +27,7 @@ public class DSShowCache extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() {
-        logger.debug("Executing show Cache command");
+        LOG.debug("Executing show Cache command");
         itmProvider.showCache(cacheName);
         return null;
     }

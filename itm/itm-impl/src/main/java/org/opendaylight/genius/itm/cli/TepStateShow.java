@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -10,7 +10,7 @@ package org.opendaylight.genius.itm.cli;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 
-@Command(scope = "tep", name = "state-show", description="Monitors tunnel state")
+@Command(scope = "tep", name = "state-show", description = "Monitors tunnel state")
 
     public class TepStateShow extends OsgiCommandSupport {
 

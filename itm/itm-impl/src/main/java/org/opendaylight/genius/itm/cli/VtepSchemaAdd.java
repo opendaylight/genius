@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -17,8 +17,6 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.config.schemas.VtepConfigSchema;
 
 /**
  * The Class which implements karaf command "vtep:schema-add".
@@ -117,10 +115,11 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
                 usage();
                 return null;
             }
-            LOG.debug("Executing vtep:schema-add command\t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {}", schemaName,
-                    portName, vlanId, subnetCIDR, gatewayIp, transportZone, tunnelType, dpnIds, excludeIpFilter);
+            LOG.debug("Executing vtep:schema-add command\t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {}"
+                    , schemaName, portName, vlanId, subnetCIDR, gatewayIp, transportZone, tunnelType, dpnIds
+                    , excludeIpFilter);
 
-            if( null == tunnelType) {
+            if (null == tunnelType) {
                 tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
             }
             VtepConfigSchema schema = ItmUtils.constructVtepConfigSchema(schemaName, portName, vlanId, subnetCIDR,
