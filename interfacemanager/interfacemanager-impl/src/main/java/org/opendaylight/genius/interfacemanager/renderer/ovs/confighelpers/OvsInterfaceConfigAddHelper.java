@@ -70,8 +70,8 @@ public class OvsInterfaceConfigAddHelper {
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
-        if(!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker, defaultConfigShardTransaction,
-                parentRefs.getParentInterface(), interfaceNew.getName())){
+        if (!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker, defaultConfigShardTransaction,
+                parentRefs.getParentInterface(), interfaceNew.getName(), ifL2vlan.getL2vlanMode())) {
             return;
         }
         LOG.debug("adding vlan configuration for {}",interfaceNew.getName());
