@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_10d3f660",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-22T14:01:37Z",
+      "side": 1,
+      "message": "Done.\n\nI actually mentioned it in the policy spec https://git.opendaylight.org/gerrit/#/c/51457 but I will empathize it in this paragraph as well",
+      "parentUuid": "fafc7978_6c79d4c7",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7f717843",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-21T10:31:12Z",
       "side": 1,
       "message": "ITM changes section doesn\u0027t talk about the external tunnel building - for eg. tunnels towards DC gateway / TOR. Since there will be two TEP IPs per DPN, ambiguity arises as to which TEP should be chosen for building external tunnels. Connectivity could be with one TEP but another TEP could be chosen for tunnel building.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9056c65a",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-22T14:01:37Z",
+      "side": 1,
+      "message": "Good point.\nWe haven\u0027t planned to support this for Carbon but we may want to include this as part of Nitrogen content",
+      "parentUuid": "fafc7978_7f717843",
       "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5081fef9",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-22T14:01:37Z",
+      "side": 1,
+      "message": "Can you explain why?\n\nWe were planning to configure multiple TEPs only from local_ip info in the OVS other_config - see more details in the netvirt policy spec https://git.opendaylight.org/gerrit/#/c/51457\n\nBased on my understanding ITM TEP Auto-Config feature uses external-ids to determine the association between tep ip and a transport-zone and there is no plan to enhance auto-config to support multiple TEPs as part of this feature",
+      "parentUuid": "fafc7978_ff01e86a",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9fc25c32",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
@@ -64,6 +118,24 @@
       "writtenOn": "2017-02-21T10:31:12Z",
       "side": 1,
       "message": "I think we need another Yang change - define a container in itm-state.yang for logical group just like the tunnel-list. If the flag is on then logical group/tunnel should be stored here.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_907ec617",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-22T14:01:37Z",
+      "side": 1,
+      "message": "Why can\u0027t the logical group be stored in the tunnel-list just like any other tunnel? this would also simplify tep:show-state enhancement to present the state of the logical tunnel",
+      "parentUuid": "fafc7978_9fc25c32",
       "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_70c9a258",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-22T14:01:37Z",
+      "side": 1,
+      "message": "We could. This will simply complicate the L3VPN code that attempts to create an abstraction over internal/external tunnel lookup",
+      "parentUuid": "fafc7978_5fa594a0",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_bfe480e1",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
@@ -98,6 +188,24 @@
       "writtenOn": "2017-02-21T10:31:12Z",
       "side": 1,
       "message": "tep:show-state should also display logical group status.\n\nAlso, there are other TEP related CLIs where there maybe a check for allowing only one TEP / DPN.",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_70252208",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-22T14:01:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_bfe480e1",
       "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
