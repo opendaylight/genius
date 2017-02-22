@@ -33,12 +33,12 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
-import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelDestinationIp;
+import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelSourceIp;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -212,12 +212,10 @@ public class InterfaceManagerCommonUtils {
         if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
             matches.add(new MatchInPort(dpnId, portNo));
             if (BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
-                matches.add(new NxMatchInfo(NxMatchFieldType.tun_src_ip,
-                        new String[] { tunnel.getTunnelDestination().getIpv4Address().getValue() }));
+                matches.add(new NxMatchTunnelSourceIp(tunnel.getTunnelDestination().getIpv4Address()));
             }
             if (BooleanUtils.isTrue(tunnel.isTunnelSourceIpFlow())) {
-                matches.add(new NxMatchInfo(NxMatchFieldType.tun_dst_ip,
-                        new String[] { tunnel.getTunnelSource().getIpv4Address().getValue() }));
+                matches.add(new NxMatchTunnelDestinationIp(tunnel.getTunnelSource().getIpv4Address()));
             }
 
             mkInstructions.add(
