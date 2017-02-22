@@ -12,8 +12,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -29,7 +31,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
+@Singleton
 public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
     private final DataBroker dataBroker;
@@ -46,16 +48,18 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
     private final IMdsalApiManager mdsalApiManager;
     private final InterfacemgrProvider interfaceMgrProvider;
 
+    @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
-                                   final AlivenessMonitorService alivenessMonitorService,
                                    final IMdsalApiManager mdsalApiManager,
-                                   final InterfacemgrProvider interfaceMgrProvider) {
+                                   final InterfacemgrProvider interfaceMgrProvider,
+                                   final AlivenessMonitorService alivenessMonitorService) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
-        this.alivenessMonitorService = alivenessMonitorService;
         this.mdsalApiManager = mdsalApiManager;
         this.interfaceMgrProvider = interfaceMgrProvider;
+        this.alivenessMonitorService = alivenessMonitorService;
+        this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
     @Override
