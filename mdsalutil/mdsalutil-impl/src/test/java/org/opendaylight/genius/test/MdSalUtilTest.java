@@ -84,13 +84,13 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
             //Install Flow 1
             FlowEntity testFlow1 = createFlowEntity(dpnId, tableId1) ;
-            mdSalMgr.installFlow(testFlow1).get();
+            mdSalMgr.installFlowInternal(testFlow1).get();
             assertEquals(1, flowFwder.getDataChgCount());
 
             // Install FLow 2
             String tableId2 = "13" ;
              FlowEntity testFlow2 = createFlowEntity(dpnId, tableId2) ;
-             mdSalMgr.installFlow(testFlow2).get();
+             mdSalMgr.installFlowInternal(testFlow2).get();
              assertEquals(2, flowFwder.getDataChgCount());
         }
 
@@ -101,9 +101,9 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
             FlowEntity testFlow = createFlowEntity(dpnId, tableId) ;
 
             // To test RemoveFlow add and then delete Flows
-            mdSalMgr.installFlow(testFlow).get();
+            mdSalMgr.installFlowInternal(testFlow).get();
             assertEquals(1, flowFwder.getDataChgCount());
-            mdSalMgr.removeFlow(testFlow).get();
+            mdSalMgr.removeFlowInternal(testFlow).get();
             assertEquals(0, flowFwder.getDataChgCount());
         }
 
@@ -114,14 +114,14 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
             int vlanid = 100 ;
             GroupEntity grpEntity1 = createGroupEntity(Nodeid, inport, vlanid) ;
 
-             mdSalMgr.installGroup(grpEntity1).get();
+             mdSalMgr.installGroupInternal(grpEntity1).get();
              assertEquals(1, grpFwder.getDataChgCount());
 
              // Install Group 2
                 inport = "3" ;
                 vlanid = 100 ;
                 GroupEntity grpEntity2 = createGroupEntity(Nodeid, inport, vlanid) ;
-                mdSalMgr.installGroup(grpEntity2).get();
+                mdSalMgr.installGroupInternal(grpEntity2).get();
                 assertEquals(2, grpFwder.getDataChgCount());
         }
 
@@ -131,9 +131,9 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
             int vlanid = 100 ;
             GroupEntity grpEntity = createGroupEntity(Nodeid, inport, vlanid) ;
             // To test RemoveGroup  add and then delete Group
-            mdSalMgr.installGroup(grpEntity).get();
+            mdSalMgr.installGroupInternal(grpEntity).get();
             assertEquals(1, grpFwder.getDataChgCount());
-            mdSalMgr.removeGroup(grpEntity).get();
+            mdSalMgr.removeGroupInternal(grpEntity).get();
             assertEquals(0, grpFwder.getDataChgCount());
         }
 
