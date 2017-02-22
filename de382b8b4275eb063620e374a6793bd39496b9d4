@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3b7d561d",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 6456
+      },
+      "writtenOn": "2017-02-22T09:17:42Z",
+      "side": 1,
+      "message": "I was thinking about new QoS service which is in work now.\nInitially we can create queue from unimgr code using ovsdb project.\nIn any case, it’s out of genius project. \nWill update UC section.",
+      "parentUuid": "fafc7978_6e8f1dcd",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_0eb81175",
         "filename": "docs/specs/qos-shaping.rst",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9ba562b7",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 6456
+      },
+      "writtenOn": "2017-02-22T09:17:42Z",
+      "side": 1,
+      "message": "Here is mapping of service  ( vlan port) to ovsdb queue.\nIt indicates whatever is output action for service lport.\nI will change description in yang.",
+      "parentUuid": "fafc7978_0eb81175",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_cebd696a",
         "filename": "docs/specs/qos-shaping.rst",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2017-02-16T00:05:44Z",
       "side": 1,
       "message": "The ovsdb.yang model in OVSDB project associates qos and queue entries to instance-identifiers (e.g. ovsdb-qos-ref).  Would it be possible to use those instead of having to replicate the ovsdb uuid in another model? (assuming the answer to previous question results in need to have references to qos and queue entries in the interface model).",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3b96f64c",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 6456
+      },
+      "writtenOn": "2017-02-22T09:17:42Z",
+      "side": 1,
+      "message": "It looks like we can have link to ovsdb model object here.",
+      "parentUuid": "fafc7978_cebd696a",
       "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
