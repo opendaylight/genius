@@ -116,10 +116,6 @@ public final class NwConstants {
     public static final short SNAT_TABLE = 28;
     public static final short INTERNAL_TUNNEL_TABLE = 36;
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
-    public static final short INGRESS_ACL_TABLE = 40;
-    public static final short INGRESS_ACL_FILTER_TABLE = 41;
-    public static final short INGRESS_LEARN_TABLE = 41;
-    public static final short INGRESS_LEARN2_TABLE = 42;
     public static final short INBOUND_NAPT_TABLE = 44;
     public static final short IPV6_TABLE = 45;
     public static final short OUTBOUND_NAPT_TABLE = 46;
@@ -143,11 +139,17 @@ public final class NwConstants {
     public static final short SFC_TRANSPORT_NEXT_HOP_TABLE = 86;
     public static final short SFC_TRANSPORT_EGRESS_TABLE = 87;
     public static final short QOS_DSCP_TABLE = 90;
+    public static final short INGRESS_ACL_TABLE = 211;
+    public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 212;
+    public static final short INGRESS_ACL_FILTER_TABLE = 213;
+    public static final short INGRESS_LEARN_TABLE = 213;
+    public static final short INGRESS_LEARN2_TABLE = 214;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
     public static final short EGRESS_ACL_TABLE = 251;
-    public static final short EGRESS_ACL_FILTER_TABLE = 252;
-    public static final short EGRESS_LEARN_TABLE = 252;
-    public static final short EGRESS_LEARN2_TABLE = 253;
+    public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 252;
+    public static final short EGRESS_ACL_FILTER_TABLE = 253;
+    public static final short EGRESS_LEARN_TABLE = 253;
+    public static final short EGRESS_LEARN2_TABLE = 254;
 
     public enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
