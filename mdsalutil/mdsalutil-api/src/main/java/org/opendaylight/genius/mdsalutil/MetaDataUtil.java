@@ -10,10 +10,11 @@ package org.opendaylight.genius.mdsalutil;
 import java.math.BigInteger;
 
 public class MetaDataUtil {
-    public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("00000000FFFFFFFE", 16);
     public static final BigInteger METADATA_MASK_LPORT_TAG =     new BigInteger("0FFFFF0000000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE =       new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
+    public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("00000000FFFFFFFE", 16);
+    public static final BigInteger METADATA_MASK_REMOTE_ACL_ID = new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID
         = new BigInteger("08000000FFFFFF00", 16);
     public static final BigInteger METADATA_MASK_LABEL_ITM =     new BigInteger("40FFFFFF000000FF", 16);
@@ -72,6 +73,10 @@ public class MetaDataUtil {
     public static int getElanTagFromMetadata(BigInteger metadata) {
         return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE)
                 .shiftRight(24).intValue();
+    }
+
+    public static BigInteger getElanTagMetadata(long elanTag) {
+        return BigInteger.valueOf(elanTag).shiftLeft(24);
     }
 
     public static int getServiceTagFromMetadata(BigInteger metadata) {
