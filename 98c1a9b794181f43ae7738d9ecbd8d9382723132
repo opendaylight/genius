@@ -2,6 +2,78 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_7fb20d95",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-02-23T08:27:13Z",
+      "side": 1,
+      "message": "itmConfig is blueprint global variable. Wouldn\u0027t the read from datastore fail for it unlike the monitorProtocol and monitorEnabled variables?",
+      "parentUuid": "fafc7978_9304104b",
+      "range": {
+        "startLine": 78,
+        "startChar": 106,
+        "endLine": 78,
+        "endChar": 115
+      },
+      "revId": "98c1a9b794181f43ae7738d9ecbd8d9382723132",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5faf492a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-02-23T08:27:13Z",
+      "side": 1,
+      "message": "can you elaborate what will happen if NULL is passed here?",
+      "parentUuid": "fafc7978_9327f0c9",
+      "range": {
+        "startLine": 300,
+        "startChar": 16,
+        "endLine": 300,
+        "endChar": 48
+      },
+      "revId": "98c1a9b794181f43ae7738d9ecbd8d9382723132",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bf563528",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1192,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-02-23T08:27:13Z",
+      "side": 1,
+      "message": "if new options come in future, new source of option can be added as function parameter. otherwise all the callers will have same common code to fist populate the map and then get a list of options.",
+      "parentUuid": "fafc7978_93b25092",
+      "range": {
+        "startLine": 1192,
+        "startChar": 38,
+        "endLine": 1192,
+        "endChar": 56
+      },
+      "revId": "98c1a9b794181f43ae7738d9ecbd8d9382723132",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_24b4f8cf",
         "filename": "itm/itm-impl/src/main/resources/initial/genius-itm-config.xml",
         "patchSetId": 2
@@ -14,6 +86,30 @@
       "side": 1,
       "message": "The qos spec should be updated to match if this change is made.",
       "parentUuid": "fafc7978_137780a1",
+      "range": {
+        "startLine": 4,
+        "startChar": 5,
+        "endLine": 4,
+        "endChar": 12
+      },
+      "revId": "98c1a9b794181f43ae7738d9ecbd8d9382723132",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9f537138",
+        "filename": "itm/itm-impl/src/main/resources/initial/genius-itm-config.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-02-23T08:27:13Z",
+      "side": 1,
+      "message": "I will keep it as default.",
+      "parentUuid": "fafc7978_24b4f8cf",
       "range": {
         "startLine": 4,
         "startChar": 5,
