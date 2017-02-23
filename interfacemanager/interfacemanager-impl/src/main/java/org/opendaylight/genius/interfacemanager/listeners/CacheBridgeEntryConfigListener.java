@@ -9,6 +9,9 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collection;
+import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
+import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -28,20 +31,16 @@ import org.slf4j.LoggerFactory;
  * and update the bridgeEntryCache as per changes in DS.
  *
  */
+@Singleton
 public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry>{
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheBridgeEntryConfigListener.class);
-    private final DataBroker db;
     private ListenerRegistration<CacheBridgeEntryConfigListener> registration;
+    private final DataTreeIdentifier<BridgeEntry> treeId =
+            new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
 
-    public CacheBridgeEntryConfigListener(DataBroker broker) {
-        this.db = broker;
-        registerListener(db);
-    }
-
-    private void registerListener(DataBroker dataBroker) {
-        final DataTreeIdentifier<BridgeEntry> treeId =
-                new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
+    @Inject
+    public CacheBridgeEntryConfigListener(final DataBroker dataBroker) {
         try {
             LOG.trace("Registering on path: {}", treeId);
             registration = dataBroker.registerDataTreeChangeListener(treeId, CacheBridgeEntryConfigListener.this);
@@ -50,14 +49,15 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
         }
     }
 
-    protected InstanceIdentifier<BridgeEntry> getWildcardPath() {
-        return InstanceIdentifier.create(BridgeInterfaceInfo.class).child(BridgeEntry.class);
-    }
-
-    public void close() {
+    @PreDestroy
+    public void close() throws Exception {
         if(registration != null) {
             registration.close();
         }
+    }
+
+    protected InstanceIdentifier<BridgeEntry> getWildcardPath() {
+        return InstanceIdentifier.create(BridgeInterfaceInfo.class).child(BridgeEntry.class);
     }
 
     @Override
@@ -77,6 +77,5 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
             }
         }
     }
-
 
 }
