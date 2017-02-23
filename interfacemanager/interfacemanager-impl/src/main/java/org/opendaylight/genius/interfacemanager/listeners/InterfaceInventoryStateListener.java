@@ -11,7 +11,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -44,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * NOTE: This class just creates an ifstate entry whose interface-name will be the same as the node-connector portname.
  * If PortName is not unique across DPNs, this implementation can have problems.
  */
-
+@Singleton
 public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
@@ -52,13 +55,17 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     private final IMdsalApiManager mdsalApiManager;
     private final AlivenessMonitorService alivenessMonitorService;
 
-    public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManager,
-                                           final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
+    @Inject
+    public InterfaceInventoryStateListener(final DataBroker dataBroker,
+                                           final IdManagerService idManagerService,
+                                           final IMdsalApiManager iMdsalApiManager,
+                                           final AlivenessMonitorService alivenessMonitorService) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
-        this.idManager = idManager;
-        this.mdsalApiManager = mdsalApiManager;
+        this.idManager = idManagerService;
+        this.mdsalApiManager = iMdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @Override

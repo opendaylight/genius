@@ -105,9 +105,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private final IMdsalApiManager mdsalMgr;
 
     @Inject
-    public InterfaceManagerRpcService(DataBroker dataBroker, IMdsalApiManager mdsalMgr) {
+    public InterfaceManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager iMdsalApiManager) {
         this.dataBroker = dataBroker;
-        this.mdsalMgr = mdsalMgr;
+        this.mdsalMgr = iMdsalApiManager;
     }
 
     @Override
