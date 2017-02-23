@@ -12,6 +12,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -31,16 +35,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedServicesConfigListener
-        extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
-
+@Singleton
+public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
-    private final InterfacemgrProvider interfacemgrProvider;
 
-    public FlowBasedServicesConfigListener(InterfacemgrProvider interfacemgrProvider) {
+    @Inject
+    public FlowBasedServicesConfigListener(final DataBroker dataBroker, final InterfacemgrProvider interfacemgrProvider) {
         super(BoundServices.class, FlowBasedServicesConfigListener.class);
-        this.interfacemgrProvider = interfacemgrProvider;
         initializeFlowBasedServiceHelpers(interfacemgrProvider);
+        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
     private void initializeFlowBasedServiceHelpers(InterfacemgrProvider interfaceMgrProvider) {
