@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8a3ccdc9",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-23T09:01:06Z",
+      "side": 1,
+      "message": "The auto-config feature seems to deal only with one TEP IP. For instance, the OvsExternalIdsInfo seems to only have one IP field and not a list. Same could be with the external-ids field in the schema. So, I wanted to mentioned that the auto-config also needs to be enhanced with this multiple TEPs/DPN. Otherwise, this feature will be supported by NB but not SB.",
+      "parentUuid": "fafc7978_5081fef9",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9fc25c32",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
@@ -136,6 +154,24 @@
       "side": 1,
       "message": "Why can\u0027t the logical group be stored in the tunnel-list just like any other tunnel? this would also simplify tep:show-state enhancement to present the state of the logical tunnel",
       "parentUuid": "fafc7978_9fc25c32",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ca8ed578",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-23T09:01:06Z",
+      "side": 1,
+      "message": "You could have the logical group also stored here.The key being, the source and destination dpn-id will be the same but the tunnel type will be the newly defined tunnel-type-logical-group.But this brings another point -- won\u0027t you have two tunnels for the internal tunnels with the same key.Should you make the tunnel-interface-name as a list?",
+      "parentUuid": "fafc7978_907ec617",
       "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
