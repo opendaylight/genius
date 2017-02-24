@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxTunIpv4DstKey;
@@ -25,7 +24,7 @@ public class NxMatchTunnelDestinationIp extends NxMatchInfoHelper<NxmNxTunIpv4Ds
     }
 
     public NxMatchTunnelDestinationIp(Ipv4Address address) {
-        super(NxmNxTunIpv4DstKey.class, NxMatchFieldType.tun_dst_ip, new String[] {address.getValue()});
+        super(NxmNxTunIpv4DstKey.class);
         this.address = address;
     }
 

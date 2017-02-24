@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.zone.grouping.NxmNxCtZone;
@@ -20,7 +19,7 @@ public class NxMatchCtZone extends NxMatchInfoHelper<NxmNxCtZone, NxmNxCtZoneBui
     private final int zone;
 
     public NxMatchCtZone(int zone) {
-        super(NxmNxCtZoneKey.class, NxMatchFieldType.ct_zone, new long[] {zone});
+        super(NxmNxCtZoneKey.class);
         this.zone = zone;
     }
 

@@ -9,9 +9,6 @@ package org.opendaylight.genius.mdsalutil.nxmatches;
 
 import com.google.common.collect.ImmutableBiMap;
 import java.util.Map;
-import java.util.Objects;
-
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg4;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg5;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
@@ -49,10 +46,7 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
     public NxMatchRegister(
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg>
             register, long value, Long mask) {
-        super(KEYS.get(register),
-                register.equals(NxmNxReg4.class) ? NxMatchFieldType.nxm_reg_4
-                        : register.equals(NxmNxReg5.class) ? NxMatchFieldType.nxm_reg_5 : NxMatchFieldType.nxm_reg_6,
-                new long[] { value });
+        super(KEYS.get(register));
         if (!KEYS.containsKey(register)) {
             throw new IllegalArgumentException("Unknown NXM register " + register);
         }
@@ -95,23 +89,24 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
         if (!super.equals(other)) {
             return false;
         }
+
         NxMatchRegister that = (NxMatchRegister) other;
 
         if (value != that.value) {
             return false;
         }
-        if (!Objects.equals(mask, that.mask)) {
+        if (register != null ? !register.equals(that.register) : that.register != null) {
             return false;
         }
-        return register != null ? register.equals(that.register) : that.register == null;
+        return mask != null ? mask.equals(that.mask) : that.mask == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (register != null ? register.hashCode() : 0);
-        result = 31 * result + (mask != null ? mask.hashCode() : 0);
         result = 31 * result + (int) (value ^ (value >>> 32));
+        result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
     }
 }
