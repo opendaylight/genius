@@ -24,4 +24,58 @@ class ExpectedInternalTunnelIdentifierObjects {
             tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.parentInterfaceName)
         ]
     }
+
+    static def newInternalTunnelIdentifierVxLanOneToTwo() {
+        new InternalTunnelBuilder >> [
+            destinationDPN = ItmTestConstants.dpId2
+            sourceDPN = ItmTestConstants.dpId1
+            transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.tunnelInterfaceNameVxLanOneToTwo)
+        ]
+    }
+
+    static def newInternalTunnelIdentifierVxLanTwoToOne() {
+        new InternalTunnelBuilder >> [
+            destinationDPN = ItmTestConstants.dpId1
+            sourceDPN = ItmTestConstants.dpId2
+            transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.tunnelInterfaceNameVxLanTwoToOne)
+        ]
+    }
+
+    static def newInternalTunnelIdentifierGreOneToTwo() {
+        new InternalTunnelBuilder >> [
+            destinationDPN = ItmTestConstants.dpId2
+            sourceDPN = ItmTestConstants.dpId1
+            transportType = ItmTestConstants.TUNNEL_TYPE_GRE
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.tunnelInterfaceNameGreOneToTwo)
+        ]
+    }
+
+    static def newInternalTunnelIdentifierGreTwoToOne() {
+        new InternalTunnelBuilder >> [
+            destinationDPN = ItmTestConstants.dpId1
+            sourceDPN = ItmTestConstants.dpId2
+            transportType = ItmTestConstants.TUNNEL_TYPE_GRE
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.tunnelInterfaceNameGreTwoToOne)
+        ]
+    }
+
+    static def newInternalTunnelIdentifierBothOneToTwo() {
+        new InternalTunnelBuilder >> [
+            destinationDPN = ItmTestConstants.dpId2
+            sourceDPN = ItmTestConstants.dpId1
+            transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.tunnelInterfaceNameBothOneToTwo)
+        ]
+    }
+
+    static def newInternalTunnelIdentifierBothTwoToOne() {
+        new InternalTunnelBuilder >> [
+            destinationDPN = ItmTestConstants.dpId1
+            sourceDPN = ItmTestConstants.dpId2
+            transportType = ItmTestConstants.TUNNEL_TYPE_GRE
+            tunnelInterfaceNames = Collections.singletonList(ItmTestConstants.tunnelInterfaceNameBothTwoToOne)
+        ]
+    }
 }
