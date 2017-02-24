@@ -31,4 +31,67 @@ class ExpectedExternalTunnelObjects {
               tunnelInterfaceName = ItmTestConstants.parentInterfaceName
          ]
     }
+
+    static def newExternalTunnel() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.DESTINATION_DEV_IP_ADDR_STR
+              sourceDevice = ItmTestConstants.DPID_STR_ONE
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName3
+         ]
+    }
+
+    static def newExternalTunnel1() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.MC_30_URL_FOR_EXTENDED
+              sourceDevice = ItmTestConstants.DPID_STR_ONE
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName1
+         ]
+    }
+
+    static def newExternalTunnel2() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.DPID_STR_ONE
+              sourceDevice = ItmTestConstants.MC_30_URL_FOR_EXTENDED
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName2
+         ]
+    }
+
+    static def newExternalTunnel3() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.MC_40_URL_FOR_EXTENDED
+              sourceDevice = ItmTestConstants.DPID_STR_ONE
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName3
+         ]
+    }
+
+    static def newExternalTunnel4() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.DPID_STR_ONE
+              sourceDevice = ItmTestConstants.MC_40_URL_FOR_EXTENDED
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName4
+         ]
+    }
+
+    static def newExternalTunnel5() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.MC_40_URL_FOR_EXTENDED
+              sourceDevice = ItmTestConstants.MC_30_URL_FOR_EXTENDED
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName5
+         ]
+    }
+
+    static def newExternalTunnel6() {
+         new ExternalTunnelBuilder >> [
+              destinationDevice = ItmTestConstants.MC_30_URL_FOR_EXTENDED
+              sourceDevice = ItmTestConstants.MC_40_URL_FOR_EXTENDED
+              transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
+              tunnelInterfaceName = ItmTestConstants.tunnelInterfaceName6
+         ]
+    }
 }

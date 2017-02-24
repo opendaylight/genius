@@ -56,4 +56,9 @@ public class ITMConstants {
     public static final String BRIDGE_URI_PREFIX = "bridge";
     public static final String ITM_PREFIX = "ITM";
     public static final String ITM_ALARM = "ITM_ALARM";
+    public static final String INVALID_IP_ERROR_STR = "Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255";
+    public static final String SUBNET_MASK_ERROR_STR = "Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32";
+    public static final String MISMATCH_IPWITH_SUBNET_ERROR_STR
+                                       = "IpAddress and gateWayIp should belong to the subnet provided";
+
 }
