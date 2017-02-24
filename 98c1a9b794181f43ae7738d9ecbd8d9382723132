@@ -50,6 +50,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_abd0b01f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-02-24T09:32:09Z",
+      "side": 1,
+      "message": "Tried by doing a get using the rest api for interfaces, no NULL pointer exception was thrown",
+      "parentUuid": "fafc7978_ca1b7571",
+      "range": {
+        "startLine": 300,
+        "startChar": 16,
+        "endLine": 300,
+        "endChar": 48
+      },
+      "revId": "98c1a9b794181f43ae7738d9ecbd8d9382723132",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_bf563528",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 2
