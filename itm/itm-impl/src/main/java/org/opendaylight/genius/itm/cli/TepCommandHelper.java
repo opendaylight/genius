@@ -14,15 +14,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.google.common.util.concurrent.CheckedFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
@@ -134,12 +138,12 @@ public class TepCommandHelper {
         try {
             subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
         } catch (Exception e) {
-            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
+            handleError(ITMConstants.SUBNET_MASK_ERROR_STR, session);
             return;
         }
 
         if (!validateIPs(ipAddress, subnetMask, gatewayIp)) {
-            handleError("IpAddress and gateWayIp should belong to the subnet provided", session);
+            handleError(ITMConstants.MISMATCH_IPWITH_SUBNET_ERROR_STR, session);
             return;
         }
 
@@ -513,12 +517,12 @@ public class TepCommandHelper {
         try {
             subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
         } catch (Exception e) {
-            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
+            handleError(ITMConstants.SUBNET_MASK_ERROR_STR, session);
             return;
         }
 
         if (!validateIPs(ipAddress, subnetMask, gatewayIp)) {
-            handleError("IpAddress and gateWayIp should belong to the subnet provided", session);
+            handleError(ITMConstants.MISMATCH_IPWITH_SUBNET_ERROR_STR, session);
             return;
         }
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
@@ -617,7 +621,7 @@ public class TepCommandHelper {
                             tzPaths.add(tpath);
                             if (tZones.getTransportZone() == null || tZones.getTransportZone().size() == 0) {
                                 MDSALDataStoreUtils.asyncRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, path,
-                                        ItmUtils.DEFAULT_CALLBACK);
+                                        ItmUtils.DEFAULT_CALLBACK).get();
                                 return;
                             }
                         }
@@ -626,7 +630,7 @@ public class TepCommandHelper {
                     allPaths.addAll(subnetPaths);
                     allPaths.addAll(tzPaths);
                     ItmUtils.asyncBulkRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, allPaths,
-                            ItmUtils.DEFAULT_CALLBACK);
+                            ItmUtils.DEFAULT_CALLBACK).get();
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -635,7 +639,7 @@ public class TepCommandHelper {
                 vtepDelCommitList.clear();
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error("deleteOnCommit() failed", e);
         }
     }
 
@@ -829,12 +833,16 @@ public class TepCommandHelper {
             else
                 monitorType = TunnelMonitoringTypeBfd.class;
         }
-        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().isEnabled() != monitorEnabled) {
-            TunnelMonitorParams tunnelMonitor =
-                    new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled).setMonitorProtocol(monitorType).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                    ItmUtils.DEFAULT_CALLBACK);
-
+        if (!storedTunnelMonitor.isPresent()|| storedTunnelMonitor.get().isEnabled() != monitorEnabled)  {
+            TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled).setMonitorProtocol(monitorType).build();
+            try {
+                ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
+                        ItmUtils.DEFAULT_CALLBACK).get();
+            } catch (InterruptedException e) {
+                LOG.error("configureTunnelMonitorParams() failed", e);
+            } catch (ExecutionException e) {
+                LOG.error("configureTunnelMonitorParams() failed", e);
+            }
         }
     }
 
@@ -845,8 +853,14 @@ public class TepCommandHelper {
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                    ItmUtils.DEFAULT_CALLBACK);
+            try {
+                ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
+                        ItmUtils.DEFAULT_CALLBACK).get();
+            } catch (InterruptedException e) {
+                LOG.error("configureTunnelMonitorParams() failed", e);
+            } catch (ExecutionException e) {
+                LOG.error("configureTunnelMonitorParams() failed", e);
+            }
         }
     }
 
