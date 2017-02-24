@@ -14,15 +14,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.google.common.util.concurrent.CheckedFuture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
@@ -616,8 +620,8 @@ public class TepCommandHelper {
                                     .builder(TransportZones.class).child(TransportZone.class, tZ.getKey()).build();
                             tzPaths.add(tpath);
                             if (tZones.getTransportZone() == null || tZones.getTransportZone().size() == 0) {
-                                MDSALDataStoreUtils.asyncRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, path,
-                                        ItmUtils.DEFAULT_CALLBACK);
+                                CheckedFuture<Void, TransactionCommitFailedException> future = ItmUtils.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, path);
+                                future.get();
                                 return;
                             }
                         }
@@ -625,8 +629,8 @@ public class TepCommandHelper {
                     allPaths.addAll(vtepPaths);
                     allPaths.addAll(subnetPaths);
                     allPaths.addAll(tzPaths);
-                    ItmUtils.asyncBulkRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, allPaths,
-                            ItmUtils.DEFAULT_CALLBACK);
+                    CheckedFuture<Void, TransactionCommitFailedException> future = ItmUtils.syncBulkRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, allPaths);
+                    future.get();
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -829,12 +833,16 @@ public class TepCommandHelper {
             else
                 monitorType = TunnelMonitoringTypeBfd.class;
         }
-        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().isEnabled() != monitorEnabled) {
-            TunnelMonitorParams tunnelMonitor =
-                    new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled).setMonitorProtocol(monitorType).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                    ItmUtils.DEFAULT_CALLBACK);
-
+        if (!storedTunnelMonitor.isPresent()|| storedTunnelMonitor.get().isEnabled() != monitorEnabled)  {
+            TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled).setMonitorProtocol(monitorType).build();
+            CheckedFuture<Void, TransactionCommitFailedException> future = ItmUtils.syncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker);
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -845,8 +853,14 @@ public class TepCommandHelper {
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                    ItmUtils.DEFAULT_CALLBACK);
+            CheckedFuture<Void, TransactionCommitFailedException> future =ItmUtils.syncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker);
+            try {
+                future.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
     }
 

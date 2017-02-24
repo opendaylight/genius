@@ -188,12 +188,43 @@ public class ItmUtils {
         Futures.addCallback(tx.submit(), callback);
     }
 
+    public static <T extends DataObject> CheckedFuture<Void, TransactionCommitFailedException> syncUpdate(LogicalDatastoreType datastoreType,
+                                                                                                           InstanceIdentifier<T> path, T data, DataBroker broker) {
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        tx.merge(datastoreType, path, data, true);
+        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+        return futures;
+    }
+
     public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker, FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, path);
         Futures.addCallback(tx.submit(), callback);
     }
+
+    public static <T extends DataObject> CheckedFuture<Void, TransactionCommitFailedException> syncDelete(DataBroker broker,LogicalDatastoreType datastoreType,
+                                                                                                           InstanceIdentifier<T> path) {
+
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        tx.delete(datastoreType, path);
+        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+        return futures;
+    }
+
+    public static <T extends DataObject> CheckedFuture<Void, TransactionCommitFailedException> syncBulkRemove(final DataBroker broker,final LogicalDatastoreType datastoreType,
+                                                                                                          List<InstanceIdentifier<T>> pathList) {
+        if (pathList.isEmpty()) {
+            return null;
+        }
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        for (InstanceIdentifier<T> path : pathList) {
+            tx.delete(datastoreType, path);
+        }
+        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+        return futures;
+    }
+
     public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,final LogicalDatastoreType datastoreType,
                                                               List<InstanceIdentifier<T>> pathList, FutureCallback<Void> callback) {
         if (!pathList.isEmpty()) {
