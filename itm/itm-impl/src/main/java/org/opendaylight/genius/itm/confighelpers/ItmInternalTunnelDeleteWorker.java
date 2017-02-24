@@ -55,7 +55,7 @@ public class ItmInternalTunnelDeleteWorker {
             for (DPNTEPsInfo srcDpn : dpnTepsList) {
                 logger.trace("Processing srcDpn " + srcDpn);
 
-                List<TunnelEndPoints> meshedEndPtCache = ItmUtils.getTEPsForDpn(srcDpn.getDPNID(), meshedDpnList);
+                List<TunnelEndPoints> meshedEndPtCache = new ArrayList<>(ItmUtils.getTEPsForDpn(srcDpn.getDPNID(), meshedDpnList));
                 if (meshedEndPtCache == null) {
                     logger.debug("No Tunnel End Point configured for this DPN {}", srcDpn.getDPNID());
                     continue;

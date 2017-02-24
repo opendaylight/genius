@@ -8,12 +8,14 @@
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -52,11 +54,13 @@ public class MDSALDataStoreUtils {
         Futures.addCallback(tx.submit(), callback);
     }
 
-    public static <T extends DataObject> void asyncRemove(final DataBroker broker,
-            final LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, FutureCallback<Void> callback) {
+    public static <T extends DataObject> CheckedFuture<Void, TransactionCommitFailedException> asyncRemove(final DataBroker broker,
+                                                                                                           final LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback);
+        CheckedFuture<Void, TransactionCommitFailedException> future = tx.submit();
+        Futures.addCallback(future, callback);
+        return future;
     }
 
 }
