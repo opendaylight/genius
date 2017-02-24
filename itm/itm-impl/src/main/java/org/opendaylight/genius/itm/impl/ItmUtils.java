@@ -181,11 +181,13 @@ public class ItmUtils {
         Futures.addCallback(tx.submit(), callback);
     }
 
-    public static <T extends DataObject> void asyncUpdate(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, T data, DataBroker broker, FutureCallback<Void> callback) {
+    public static <T extends DataObject> CheckedFuture<Void, TransactionCommitFailedException> asyncUpdate(LogicalDatastoreType datastoreType,
+                                                                                                           InstanceIdentifier<T> path, T data, DataBroker broker, FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
+        CheckedFuture<Void, TransactionCommitFailedException> future = tx.submit();
+        Futures.addCallback(future, callback);
+        return future;
     }
 
     public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
@@ -194,15 +196,19 @@ public class ItmUtils {
         tx.delete(datastoreType, path);
         Futures.addCallback(tx.submit(), callback);
     }
-    public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,final LogicalDatastoreType datastoreType,
-                                                              List<InstanceIdentifier<T>> pathList, FutureCallback<Void> callback) {
+
+    public static <T extends DataObject> CheckedFuture<Void, TransactionCommitFailedException> asyncBulkRemove(final DataBroker broker, final LogicalDatastoreType datastoreType,
+                                                                                                               List<InstanceIdentifier<T>> pathList, FutureCallback<Void> callback) {
+        CheckedFuture<Void, TransactionCommitFailedException> future = null;
         if (!pathList.isEmpty()) {
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             for (InstanceIdentifier<T> path : pathList) {
                 tx.delete(datastoreType, path);
             }
-            Futures.addCallback(tx.submit(), callback);
+            future = tx.submit();
+            Futures.addCallback(future, callback);
         }
+        return future;
     }
 
     public static String getInterfaceName(final BigInteger datapathid, final String portName, final Integer vlanId) {
