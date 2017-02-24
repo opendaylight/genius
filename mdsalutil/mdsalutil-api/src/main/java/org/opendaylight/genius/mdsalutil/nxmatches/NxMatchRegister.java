@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.nxmatches;
 
 import com.google.common.collect.ImmutableBiMap;
 import java.util.Map;
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg4;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg5;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
@@ -41,9 +40,7 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg>
                     register,
             long value) {
-        super(KEYS.get(register), register.equals(NxmNxReg4.class) ? NxMatchFieldType.nxm_reg_4
-                        : register.equals(NxmNxReg5.class) ? NxMatchFieldType.nxm_reg_5 : NxMatchFieldType.nxm_reg_6,
-                new long[] {value});
+        super(KEYS.get(register));
         if (!KEYS.containsKey(register)) {
             throw new IllegalArgumentException("Unknown NXM register " + register);
         }

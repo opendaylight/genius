@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtStateKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.ct.state.grouping.NxmNxCtState;
@@ -21,7 +20,7 @@ public class NxMatchCtState extends NxMatchInfoHelper<NxmNxCtState, NxmNxCtState
     private final long mask;
 
     public NxMatchCtState(long state, long mask) {
-        super(NxmNxCtStateKey.class, NxMatchFieldType.ct_state, new long[] {state, mask});
+        super(NxmNxCtStateKey.class);
         this.state = state;
         this.mask = mask;
     }

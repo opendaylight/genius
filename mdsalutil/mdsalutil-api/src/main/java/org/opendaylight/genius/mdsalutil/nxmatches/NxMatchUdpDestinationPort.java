@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmOfUdpDstKey;
@@ -22,7 +21,7 @@ public class NxMatchUdpDestinationPort extends NxMatchInfoHelper<NxmOfUdpDst, Nx
     private final int mask;
 
     public NxMatchUdpDestinationPort(int port, int mask) {
-        super(NxmOfUdpDstKey.class, NxMatchFieldType.nx_udp_dst_with_mask, new long[] {port, mask});
+        super(NxmOfUdpDstKey.class);
         this.port = port;
         this.mask = mask;
     }
