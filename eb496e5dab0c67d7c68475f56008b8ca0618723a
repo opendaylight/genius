@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e414a245",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-26T18:39:56Z",
+      "side": 1,
+      "message": "It would b useful to log the interface name in this and the next error log.",
+      "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0418c673",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-26T18:39:56Z",
+      "side": 1,
+      "message": "this ctor is deprecated and can be removed",
+      "range": {
+        "startLine": 43,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 13
+      },
+      "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6428b286",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-26T18:39:56Z",
+      "side": 1,
+      "message": "is tunnel binding per type supported only for these 3 types?",
+      "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
