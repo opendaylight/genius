@@ -10,13 +10,21 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -73,6 +81,17 @@ public class OvsInterfaceStateRemoveHelper {
             if (iface != null || iface == null && !interfaceName.contains(fcNodeConnectorOld.getName())) {
                 FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
             }
+            // invoke unbind service on the interface since interface is got removed from the southbound
+            DataStoreJobCoordinator.getInstance().enqueueJob(InterfaceManagerCommonUtils.getInterfaceServiceKey(interfaceName),
+                    () -> {
+                        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState
+                            = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                        Optional.ofNullable(ifState).ifPresent(interfaceState -> FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
+                            .forEach(serviceMode -> FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                                    .getFlowBasedServicesStateRemoveRenderer()
+                                    .unbindServicesFromInterface(interfaceState)));
+                        return Collections.emptyList();
+                        }, IfmConstants.JOB_MAX_RETRIES);
 
             // Delete the Vpn Interface from DpnToInterface Op DS.
             InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName,
