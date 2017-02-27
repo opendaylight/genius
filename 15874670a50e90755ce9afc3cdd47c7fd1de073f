@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_27c6ac68",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 692,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-27T10:04:45Z",
+      "side": 1,
+      "message": "check IfmUtil.getDpnId and see whether that can be reused",
+      "revId": "15874670a50e90755ce9afc3cdd47c7fd1de073f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
