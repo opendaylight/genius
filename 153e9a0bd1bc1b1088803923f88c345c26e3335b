@@ -16,6 +16,24 @@
       "revId": "153e9a0bd1bc1b1088803923f88c345c26e3335b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a7245c60",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-02-27T08:40:50Z",
+      "side": 1,
+      "message": "In FlowBasedServicesInterfaceStateListener#add, interface state was ignored when OperStatus is down.\nBut the flow/group programming shouldn\u0027t depend on port\u0027s operational state. So we can still invoke flowBasedServicesStateAddable.bindServicesOnInterface irrespective of interface\u0027s op state to program table 17 flow entries.",
+      "parentUuid": "fafc7978_64339214",
+      "revId": "153e9a0bd1bc1b1088803923f88c345c26e3335b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
