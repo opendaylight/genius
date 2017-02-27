@@ -257,83 +257,80 @@ public class ResourceBatchingManager implements AutoCloseable {
         public void process() {
             InstanceIdentifier<T> identifier;
             Object instance;
-            try {
-                LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
-                Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
-                if (resMapper == null) {
-                    LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
-                    return;
+
+            LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
+            Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
+            if (resMapper == null) {
+                LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
+                return;
+            }
+            ResourceHandler resHandler = resMapper.getRight();
+            DataBroker broker = resHandler.getResourceBroker();
+            LogicalDatastoreType dsType = resHandler.getDatastoreType();
+            WriteTransaction tx = broker.newWriteOnlyTransaction();
+            List<SubTransaction> transactionObjects = new ArrayList<>();
+            for (ActionableResource actResource : actResourceList) {
+                switch (actResource.getAction()) {
+                    case ActionableResource.CREATE:
+                        identifier = actResource.getInstanceIdentifier();
+                        instance = actResource.getInstance();
+                        resHandler.create(tx, dsType, identifier, instance,transactionObjects);
+                        break;
+                    case ActionableResource.UPDATE:
+                        identifier = actResource.getInstanceIdentifier();
+                        Object updated = actResource.getInstance();
+                        Object original = actResource.getOldInstance();
+                        resHandler.update(tx, dsType, identifier, original, updated,transactionObjects);
+                        break;
+                    case ActionableResource.DELETE:
+                        identifier = actResource.getInstanceIdentifier();
+                        instance = actResource.getInstance();
+                        resHandler.delete(tx, dsType, identifier, instance,transactionObjects);
+                        break;
+                    default:
+                        LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
+                                resourceType, actResource.getKey());
                 }
-                ResourceHandler resHandler = resMapper.getRight();
-                DataBroker broker = resHandler.getResourceBroker();
-                LogicalDatastoreType dsType = resHandler.getDatastoreType();
-                WriteTransaction tx = broker.newWriteOnlyTransaction();
-                List<SubTransaction> transactionObjects = new ArrayList<>();
-                for (ActionableResource actResource : actResourceList) {
-                    switch (actResource.getAction()) {
-                        case ActionableResource.CREATE:
-                            identifier = actResource.getInstanceIdentifier();
-                            instance = actResource.getInstance();
-                            resHandler.create(tx, dsType, identifier, instance,transactionObjects);
+            }
+
+            long start = System.currentTimeMillis();
+            CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+
+            try {
+                futures.get();
+                long time = System.currentTimeMillis() - start;
+                LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
+
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.error("Exception occurred while batch writing to datastore", e);
+                LOG.info("Trying to submit transaction operations one at a time for resType {}", resourceType);
+                for (SubTransaction object : transactionObjects) {
+                    WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
+                    switch (object.getAction()) {
+                        case SubTransaction.CREATE:
+                            writeTransaction.put(dsType, object.getInstanceIdentifier(),
+                                    (DataObject) object.getInstance(), true);
                             break;
-                        case ActionableResource.UPDATE:
-                            identifier = actResource.getInstanceIdentifier();
-                            Object updated = actResource.getInstance();
-                            Object original = actResource.getOldInstance();
-                            resHandler.update(tx, dsType, identifier, original, updated,transactionObjects);
+                        case SubTransaction.DELETE:
+                            writeTransaction.delete(dsType, object.getInstanceIdentifier());
                             break;
-                        case ActionableResource.DELETE:
-                            identifier = actResource.getInstanceIdentifier();
-                            instance = actResource.getInstance();
-                            resHandler.delete(tx, dsType, identifier, instance,transactionObjects);
+                        case SubTransaction.UPDATE:
+                            writeTransaction.merge(dsType, object.getInstanceIdentifier(),
+                                    (DataObject) object.getInstance(), true);
                             break;
                         default:
-                            LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
-                                    resourceType, actResource.getKey());
+                            LOG.error("Unable to determine Action for transaction object with id {}",
+                                    object.getInstanceIdentifier());
+                    }
+                    CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction
+                            .submit();
+                    try {
+                        futureOperation.get();
+                    } catch (InterruptedException | ExecutionException exception) {
+                        LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
+                                object.getInstanceIdentifier(), object.getInstance(), exception);
                     }
                 }
-
-                long start = System.currentTimeMillis();
-                CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-
-                try {
-                    futures.get();
-                    long time = System.currentTimeMillis() - start;
-                    LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
-
-                } catch (InterruptedException | ExecutionException e) {
-                    LOG.error("Exception occurred while batch writing to datastore", e);
-                    LOG.info("Trying to submit transaction operations one at a time for resType {}", resourceType);
-                    for (SubTransaction object : transactionObjects) {
-                        WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
-                        switch (object.getAction()) {
-                            case SubTransaction.CREATE:
-                                writeTransaction.put(dsType, object.getInstanceIdentifier(),
-                                        (DataObject) object.getInstance(), true);
-                                break;
-                            case SubTransaction.DELETE:
-                                writeTransaction.delete(dsType, object.getInstanceIdentifier());
-                                break;
-                            case SubTransaction.UPDATE:
-                                writeTransaction.merge(dsType, object.getInstanceIdentifier(),
-                                        (DataObject) object.getInstance(), true);
-                                break;
-                            default:
-                                LOG.error("Unable to determine Action for transaction object with id {}",
-                                        object.getInstanceIdentifier());
-                        }
-                        CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction
-                                .submit();
-                        try {
-                            futureOperation.get();
-                        } catch (InterruptedException | ExecutionException exception) {
-                            LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
-                                    object.getInstanceIdentifier(), object.getInstance(), exception);
-                        }
-                    }
-                }
-            } finally {
-                LOG.error("Transaction submission failed");
             }
         }
     }
