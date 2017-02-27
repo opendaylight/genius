@@ -9,6 +9,9 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collection;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -27,34 +30,32 @@ import org.slf4j.LoggerFactory;
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
+@Singleton
 public class CacheInterfaceConfigListener implements ClusteredDataTreeChangeListener<Interface> {
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterfaceConfigListener.class);
-    private DataBroker db;
     private ListenerRegistration<CacheInterfaceConfigListener> registration;
+    private final DataTreeIdentifier<Interface> treeId =
+            new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
 
-    public CacheInterfaceConfigListener(DataBroker broker) {
-        this.db = broker;
-        registerListener(db);
-    }
-
-    private void registerListener(DataBroker db) {
-        final DataTreeIdentifier<Interface> treeId =
-                new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
+    @Inject
+    public CacheInterfaceConfigListener(final DataBroker dataBroker) {
         try {
             LOG.trace("Registering on path: {}", treeId);
-            registration = db.registerDataTreeChangeListener(treeId, CacheInterfaceConfigListener.this);
+            registration = dataBroker.registerDataTreeChangeListener(treeId, CacheInterfaceConfigListener.this);
         } catch (final Exception e) {
             LOG.warn("CacheInterfaceConfigListener registration failed", e);
         }
     }
-    protected InstanceIdentifier<Interface> getWildcardPath() {
-        return InstanceIdentifier.create(Interfaces.class).child(Interface.class);
-    }
 
-    public void close() {
+    @PreDestroy
+    public void close() throws Exception {
         if(registration != null) {
             registration.close();
         }
+    }
+
+    protected InstanceIdentifier<Interface> getWildcardPath() {
+        return InstanceIdentifier.create(Interfaces.class).child(Interface.class);
     }
 
     @Override
