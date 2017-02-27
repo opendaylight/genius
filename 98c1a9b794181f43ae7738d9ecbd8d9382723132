@@ -122,6 +122,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_071568e4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1192,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-02-27T08:40:54Z",
+      "side": 1,
+      "message": "Tunnel options are properties of tunnel interface. And most of the tunnel interface data comes from yang model and optional xml config, I think this will remain for newer tunnel options as well.",
+      "parentUuid": "fafc7978_cba53448",
+      "range": {
+        "startLine": 1192,
+        "startChar": 38,
+        "endLine": 1192,
+        "endChar": 56
+      },
+      "revId": "98c1a9b794181f43ae7738d9ecbd8d9382723132",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_24b4f8cf",
         "filename": "itm/itm-impl/src/main/resources/initial/genius-itm-config.xml",
         "patchSetId": 2
