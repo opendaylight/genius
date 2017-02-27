@@ -62,6 +62,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -411,7 +412,7 @@ public class InterfaceManagerCommonUtils {
                 .build();
         if(InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)){
             BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        }else {
+        } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
 
@@ -614,6 +615,10 @@ public class InterfaceManagerCommonUtils {
         } else {
             return getDpnPrefixedPortName(dpnId, portName);
         }
+    }
+
+    public static String getInterfaceServiceKey(String interfaceName) {
+        return "Iface-service-bind-unbind-" + interfaceName;
     }
 
     private static String getDpnPrefixedPortName(NodeConnectorId nodeConnectorId, String portName) {

@@ -10,13 +10,17 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -94,6 +98,15 @@ public class OvsInterfaceStateAddHelper {
             FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo),
                     interfaceName, ifState.getIfIndex());
         }
+        // call the ingress and egress bind service on the interface if there are already services
+        // created on the interface.
+        DataStoreJobCoordinator.getInstance().enqueueJob(InterfaceManagerCommonUtils.getInterfaceServiceKey(interfaceName),
+                () -> {
+                    FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+                        FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                        .getFlowBasedServicesStateAddRenderer().bindServicesOnInterface(ifState));
+                    return Collections.emptyList();
+                    }, IfmConstants.JOB_MAX_RETRIES);
 
         futures.add(defaultOperationalShardTransaction.submit());
         return futures;
