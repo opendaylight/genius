@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_64339214",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-27T07:24:40Z",
+      "side": 1,
+      "message": "binding will now take place also for ports in OperStatus.Down status\nDoes it make sense?",
+      "revId": "153e9a0bd1bc1b1088803923f88c345c26e3335b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
