@@ -9,6 +9,7 @@
 package org.opendaylight.genius.interfacemanager.commons;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -62,6 +65,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -363,7 +367,9 @@ public class InterfaceManagerCommonUtils {
             ifaceBuilder.setType(interfaceInfo.getType());
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        interfaceOperShardTransaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+                childInterfaceState = ifaceBuilder.build();
+        interfaceOperShardTransaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, childInterfaceState, true);
 
         // install ingress flow
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -373,6 +379,12 @@ public class InterfaceManagerCommonUtils {
             FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, dataBroker, ifIndex);
             FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
         }
+
+        // call the ingress and egress bind service on the interface if there are already services
+        // created on the interface.
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+            FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+            .getFlowBasedServicesStateAddRenderer().bindServicesOnInterface(childInterfaceState));
 
         // Update the DpnToInterfaceList OpDS
         createOrUpdateDpnToInterface(dpId, interfaceName,interfaceOperShardTransaction);
@@ -411,7 +423,7 @@ public class InterfaceManagerCommonUtils {
                 .build();
         if(InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)){
             BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        }else {
+        } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
 
