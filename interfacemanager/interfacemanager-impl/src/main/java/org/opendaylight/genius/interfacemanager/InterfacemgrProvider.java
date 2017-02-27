@@ -56,6 +56,10 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.Interface
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedEgressServicesStateBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedEgressServicesStateUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateBindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateUnbindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils.ServiceMode;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
@@ -202,9 +206,7 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             flowBasedServicesConfigListener = new FlowBasedServicesConfigListener(this);
             flowBasedServicesConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
 
-            flowBasedServicesInterfaceStateListener =
-                    new FlowBasedServicesInterfaceStateListener(this);
-            flowBasedServicesInterfaceStateListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+            initializeFlowBasedServiceStateBindHelpers(this);
 
             vlanMemberConfigListener =
                     new VlanMemberConfigListener(dataBroker, idManager, alivenessManager, mdsalManager);
@@ -716,6 +718,13 @@ public class InterfacemgrProvider implements BindingAwareProvider, AutoCloseable
             futures.add(submitFuture);
             return futures;
         }
+    }
+
+    private void initializeFlowBasedServiceStateBindHelpers(InterfacemgrProvider interfaceMgrProvider) {
+        FlowBasedIngressServicesStateBindHelper.intitializeFlowBasedIngressServicesStateAddHelper(interfaceMgrProvider);
+        FlowBasedIngressServicesStateUnbindHelper.intitializeFlowBasedIngressServicesStateRemoveHelper(interfaceMgrProvider);
+        FlowBasedEgressServicesStateBindHelper.intitializeFlowBasedEgressServicesStateBindHelper(interfaceMgrProvider);
+        FlowBasedEgressServicesStateUnbindHelper.intitializeFlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
     }
 
 }
