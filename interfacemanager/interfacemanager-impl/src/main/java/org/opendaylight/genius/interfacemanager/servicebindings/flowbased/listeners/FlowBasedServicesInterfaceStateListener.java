@@ -53,10 +53,9 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        for(Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
+        for(Class<? extends ServiceModeBase> serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
             FlowBasedServicesStateRemovable flowBasedServicesStateRemovable = FlowBasedServicesStateRendererFactory.
-                    getFlowBasedServicesStateRendererFactory((Class<? extends ServiceModeBase>) serviceMode).
-                    getFlowBasedServicesStateRemoveRenderer();
+                    getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateRemoveRenderer();
             RendererStateInterfaceUnbindWorker stateUnbindWorker =
                     new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, interfaceStateOld);
             coordinator.enqueueJob(interfaceStateOld.getName(), stateUnbindWorker);
@@ -65,46 +64,17 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
-        LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
+        LOG.debug("Received interface state update event for {}, ignoring...", interfaceStateOld.getName());
     }
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if (interfaceStateNew.getOperStatus() == Interface.OperStatus.Down) {
-            LOG.info("Interface: {} operstate is down when adding. Not Binding services", interfaceStateNew.getName());
-            return;
-        }
-        LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        for(Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
-            FlowBasedServicesStateAddable flowBasedServicesStateAddable = FlowBasedServicesStateRendererFactory.
-                    getFlowBasedServicesStateRendererFactory((Class<? extends ServiceModeBase>) serviceMode).
-                    getFlowBasedServicesStateAddRenderer();
-            RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable,
-                    interfaceStateNew);
-            coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker);
-        }
+        LOG.debug("Received interface state add event for {}, ignoring...", interfaceStateNew.getName());
     }
 
     @Override
     protected FlowBasedServicesInterfaceStateListener getDataTreeChangeListener() {
         return FlowBasedServicesInterfaceStateListener.this;
-    }
-
-    private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
-        Interface iface;
-        FlowBasedServicesStateAddable flowBasedServicesStateAddable;
-
-        public RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable,
-                                                Interface iface) {
-            this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
-            this.iface = iface;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() {
-            return flowBasedServicesStateAddable.bindServicesOnInterface(iface);
-        }
     }
 
     private class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
