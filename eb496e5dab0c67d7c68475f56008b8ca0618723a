@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_d21e800b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-27T10:27:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_e414a245",
+      "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_0418c673",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
         "patchSetId": 5
@@ -42,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3218ac1d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-27T10:27:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_0418c673",
+      "range": {
+        "startLine": 43,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 13
+      },
+      "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6428b286",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
         "patchSetId": 5
@@ -53,6 +95,24 @@
       "writtenOn": "2017-02-26T18:39:56Z",
       "side": 1,
       "message": "is tunnel binding per type supported only for these 3 types?",
+      "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_726074a5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-27T10:27:02Z",
+      "side": 1,
+      "message": "we will have to add the remaining keywords to the map, when it is needed. There is no restriction as far as logic is considered",
+      "parentUuid": "fafc7978_6428b286",
       "revId": "eb496e5dab0c67d7c68475f56008b8ca0618723a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
