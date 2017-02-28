@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_4514859f",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "Do we handle counter overflows?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_850aed76",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "This can be moved to Proposed Change, as \u0027out-fo-scope\u0027 doesn\u0027t seem right fit for this statement.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c527d510",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "many terminologies used here..  CounterManager will be part of what bundle?  CounterFramework is a different module than CounterManager and CounterFramwork provides a dynamic instance to CounterManager?  \n\nWhat are those dynamic instances?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_c59d3cbe",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -19,6 +70,193 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_457be5f4",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "we donot capture how many of the OF-Switches are currently CONNECTED / DISCONNECTED?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a524510d",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "bgp-counter-info",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_051efdba",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "do we not provide per neighbour prefix counts?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e51ad9c4",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "flow-capable-switch-counter-info",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_258061bf",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "can you please clarify what is this duration?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_85814dc5",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "difference between OF-port-sent and internal-port-sent?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6586e9dc",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "flows-per-OF-table would be more appropriate.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c5551551",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "is set to 15 minutes",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_054c3dc7",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "for 200 switches.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_65d429bd",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "You may want to mention that actually what we are collecting is network state and not a configuration.   However, we are storing it in configuration datastore in order to persist such state across reboots.\n\nWhen a switch connects to controller after some outage in the management connectivity and if the counter values persisted are skewed negatively, how do we handle that?\n\nEg., on a reconnection switch says - 200 pkts received\n      controller has earlier persisted for the same switch - 350 pkts received",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_05e39da4",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "how do you make sure on a cluster reboot, this application\u0027s data collection from the switches are triggered later..\n\n This kind of requirement may be needed as other applications may be involved in more critical task of re-establishing connectivity, while this is only collecting statistics!",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_a5a2b8fa",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -30,6 +268,40 @@
       "writtenOn": "2017-02-17T16:31:06Z",
       "side": 1,
       "message": "are we planning to get in such a big feature on boron sr3?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_05755df9",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "the countermanager resides inside odl-netvirt-openstack bundle?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4562c53e",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-02-28T05:09:51Z",
+      "side": 1,
+      "message": "all the above 4 sections need to be filled.",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
