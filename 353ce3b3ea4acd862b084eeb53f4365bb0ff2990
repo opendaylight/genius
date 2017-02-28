@@ -125,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_de99667a",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-28T12:16:00Z",
+      "side": 1,
+      "message": "The community default for transport-zone creation in netvirt is based on auto-tunnel code generating transport-zones dynamically based on networks/routers association to DPNs. It will be enhanced to support multiple teps per DPN.\n\nWe don\u0027t have the capacity to enhance the auto-tunnels genius code based on the external-ids definitions for the Carbon release. Going forward, I think the auto-tunnels code in netvirt and genius should start using some shared infrastructure so we won\u0027t have such discrepancies. If you have someone from your side who will be willing to take this part it could be great although AFAIK your deployments will completely turn off this feature so I\u0027m not sure if you have any interest in this UC for Carbon.",
+      "parentUuid": "fafc7978_8a3ccdc9",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9fc25c32",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
@@ -178,6 +196,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_61a384b2",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-28T12:16:00Z",
+      "side": 1,
+      "message": "The key is a combination of source-dpn, dest-dpn and tunnel-type so I don\u0027t see any issues with it since tunnel type is different for logical group\n\n   container tunnel-list {\n      list internal-tunnel {\n               key  \"source-DPN destination-DPN transport-type\";\n               leaf source-DPN {\n                    type uint64;\n               }\n\n               leaf destination-DPN {\n                    type uint64;\n               }\n\n               leaf transport-type {\n                   type identityref {\n                       base odlif:tunnel-type-base;\n                   }\n               }",
+      "parentUuid": "fafc7978_ca8ed578",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5fa594a0",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
@@ -206,6 +242,24 @@
       "writtenOn": "2017-02-22T14:01:37Z",
       "side": 1,
       "message": "We could. This will simply complicate the L3VPN code that attempts to create an abstraction over internal/external tunnel lookup",
+      "parentUuid": "fafc7978_5fa594a0",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_04ec5429",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-02-28T12:16:00Z",
+      "side": 1,
+      "message": "L3VPN uses this API to extract the internal/external tunnel based on the nexthop-ip (today)\nIt has no notion whether nexthop-ip is",
       "parentUuid": "fafc7978_5fa594a0",
       "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
