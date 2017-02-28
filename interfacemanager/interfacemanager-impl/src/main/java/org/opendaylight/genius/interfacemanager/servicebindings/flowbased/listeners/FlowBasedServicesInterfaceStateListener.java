@@ -10,6 +10,10 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.liste
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -28,14 +32,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
-    private InterfacemgrProvider interfacemgrProvider;
 
-    public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider) {
+    @Inject
+    public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider, DataBroker dataBroker) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
-        this.interfacemgrProvider = interfacemgrProvider;
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     private void initializeFlowBasedServiceStateBindHelpers(InterfacemgrProvider interfaceMgrProvider) {
@@ -44,6 +49,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
         FlowBasedEgressServicesStateBindHelper.intitializeFlowBasedEgressServicesStateBindHelper(interfaceMgrProvider);
         FlowBasedEgressServicesStateUnbindHelper.intitializeFlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
     }
+
     @Override
     protected InstanceIdentifier<Interface> getWildCardPath() {
         return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
