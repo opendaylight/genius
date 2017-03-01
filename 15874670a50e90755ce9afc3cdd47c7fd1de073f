@@ -16,6 +16,24 @@
       "revId": "15874670a50e90755ce9afc3cdd47c7fd1de073f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5b23c8a6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 692,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-01T04:40:56Z",
+      "side": 1,
+      "message": "good catch. It returns BigInteger dpid given OvsdbBridgeAugmentation, so will let us eliminate dependency on southboundUtils.\n\n@Alon: This change would then eliminate dependency on OVSDB.southboundUtils Want to remove that from pom etc in this patch or want to keep for now [in case we need later] and then remove it?",
+      "parentUuid": "fafc7978_27c6ac68",
+      "revId": "15874670a50e90755ce9afc3cdd47c7fd1de073f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
