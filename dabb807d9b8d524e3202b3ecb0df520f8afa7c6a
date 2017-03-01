@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_c638703f",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "counters datatype is BigInteger. This should be fine enough to hold large values.",
+      "parentUuid": "fafc7978_4514859f",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_850aed76",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "This can be moved to Proposed Change, as \u0027out-fo-scope\u0027 doesn\u0027t seem right fit for this statement.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_26417ca9",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_850aed76",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_464480b6",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "CounterManager is the existing module.\nCounterframework is the new module to be introduced as part\nof this feature spec.\nUpdated Proposed change to be clear of the modules.",
+      "parentUuid": "fafc7978_c527d510",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_c59d3cbe",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -64,6 +118,24 @@
       "writtenOn": "2017-02-17T16:31:06Z",
       "side": 1,
       "message": "please mention the module in which the yang file will be available",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_861948d9",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_c59d3cbe",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e60ad477",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "updated connected-flow-capable-switches",
+      "parentUuid": "fafc7978_457be5f4",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_a524510d",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -98,6 +188,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "bgp-counter-info",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c60fd086",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_a524510d",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -138,6 +246,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_26285ce1",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_e51ad9c4",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_258061bf",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -149,6 +275,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "can you please clarify what is this duration?",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8667884c",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "OF-port Duration represents the duration of time that OF port has been installed on OF switch.",
+      "parentUuid": "fafc7978_258061bf",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -172,6 +316,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_0653986b",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "OF-port-sent is packets sent on the OF-port,\ninternal-port-sent is the tunnel port on which no of packets sent.\nUpdated the parameter to be more clear as \npackets-sent-on-tunnel",
+      "parentUuid": "fafc7978_85814dc5",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6586e9dc",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -183,6 +345,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "flows-per-OF-table would be more appropriate.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_664c24c9",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_6586e9dc",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -206,6 +386,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_464920b6",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_c5551551",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_054c3dc7",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -217,6 +415,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "for 200 switches.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a6be0c63",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_054c3dc7",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -240,6 +456,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e6cf7427",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Updated algorithm logic on how upon switch reconnection the statistics are calculated",
+      "parentUuid": "fafc7978_65d429bd",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_05e39da4",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -251,6 +485,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "how do you make sure on a cluster reboot, this application\u0027s data collection from the switches are triggered later..\n\n This kind of requirement may be needed as other applications may be involved in more critical task of re-establishing connectivity, while this is only collecting statistics!",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_66e384a4",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "This is not scope of this feature, as it is only collecting the statistics whenever it is available in JMX , if not it will ignore.",
+      "parentUuid": "fafc7978_05e39da4",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -274,6 +526,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_46e00096",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "No. Removed",
+      "parentUuid": "fafc7978_a5a2b8fa",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_05755df9",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -291,6 +561,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_46f76059",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "No, countermanager resides in genius fcapsmanager.\nBgp statistics are implemented in BGP module which resides in netvirt. So, the statistics will be available when odl-netvirt-openstack feature is installed",
+      "parentUuid": "fafc7978_05755df9",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_4562c53e",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 4
@@ -302,6 +590,24 @@
       "writtenOn": "2017-02-28T05:09:51Z",
       "side": 1,
       "message": "all the above 4 sections need to be filled.",
+      "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e69db40b",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 371,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-01T13:21:43Z",
+      "side": 1,
+      "message": "Updated. REST API sections gives the sample output of the rest api output.\nHigher level testcases are added in CSIT sections",
+      "parentUuid": "fafc7978_4562c53e",
       "revId": "dabb807d9b8d524e3202b3ecb0df520f8afa7c6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
