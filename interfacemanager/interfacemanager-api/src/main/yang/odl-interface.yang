@@ -344,4 +344,24 @@ module odl-interface {
               "represents whether port belongs to external network.";
         }
     }
+
+    /* vlan port to qos queue */
+    augment "/if:interfaces/if:interface" {
+        ext:augment-identifier "ovs-qos";     
+        leaf ovs-qos-uid {
+            type instance-identifier;
+            description
+              "represents whether service port has qos configured in ovsdb";
+        }
+        leaf ovs-queue-uid {
+            type instance-identifier;
+            description
+              "represents whether port has qos queue configured in ovsdb";
+        }
+        leaf ovs-qos-queue {
+            type instance-identifier;
+            description
+              "represents whether qos mapping of queue";
+        }
+    }
 }
