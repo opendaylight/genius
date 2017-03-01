@@ -198,12 +198,14 @@ public class NWUtil {
             InetAddress address = InetAddress.getByName(ipAddress);
             if (address instanceof Inet4Address) {
                 return true;
+            } else {
+                return false;
             }
         } catch (UnknownHostException e) {
-            LOG.error("Exception while checking the address type {}", e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            final String msg = "UnknownHostException while checking the type of (supposed) IP address: " + ipAddress;
+            LOG.error(msg, e);
+            throw new RuntimeException(msg, e);
         }
-        return false;
     }
 
     /**
