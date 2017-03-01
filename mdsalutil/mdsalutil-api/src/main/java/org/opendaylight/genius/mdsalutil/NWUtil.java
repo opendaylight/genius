@@ -196,14 +196,13 @@ public class NWUtil {
     public static Boolean isIpv4Address(String ipAddress) {
         try {
             InetAddress address = InetAddress.getByName(ipAddress);
-            if (address instanceof Inet4Address) {
-                return true;
-            }
+            return address instanceof Inet4Address;
         } catch (UnknownHostException e) {
-            LOG.error("Exception while checking the address type {}", e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            final String msg = "UnknownHostException while checking whether '" + ipAddress + "' is an IPv4 address";
+            // Double LOG & re-throw anti pattern usually bad, exceptionally OK here, just to be sure this is seen:
+            LOG.error(msg, e);
+            throw new RuntimeException(msg, e);
         }
-        return false;
     }
 
     /**
