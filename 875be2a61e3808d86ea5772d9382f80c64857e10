@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e0563ccd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-01T08:58:46Z",
+      "side": 1,
+      "message": "This could become\n\n    return address instanceof Inet4Address;",
+      "revId": "875be2a61e3808d86ea5772d9382f80c64857e10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_606a4c82",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-01T08:58:46Z",
+      "side": 1,
+      "message": "\"... while checking whether \" + ipAddress + \" is an IPv4 address\" matches the method\u0027s intent better IMO.",
+      "revId": "875be2a61e3808d86ea5772d9382f80c64857e10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
