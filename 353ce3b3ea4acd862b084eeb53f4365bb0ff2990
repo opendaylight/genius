@@ -214,6 +214,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_812db297",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 21
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-01T13:43:59Z",
+      "side": 1,
+      "message": "What you have mentioned is true for the logical group. I was referring to the redundant internal tunnels - multiple vxlan tunnels between the same pair of DPNs -- the Source and Destination DPNs will be the same and the transport-type will be Vxlan. Hence we have the same key for those multiple Vxlan tunnels -- we need a list here.",
+      "parentUuid": "fafc7978_61a384b2",
+      "revId": "353ce3b3ea4acd862b084eeb53f4365bb0ff2990",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5fa594a0",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 21
