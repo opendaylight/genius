@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
@@ -70,7 +71,7 @@ public class FlowBasedServicesConfigListener
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable, key,
                 boundServiceOld);
-        coordinator.enqueueJob(interfaceName, configWorker);
+        coordinator.enqueueJob(interfaceName, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class FlowBasedServicesConfigListener
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(flowBasedServicesAddable, key,
                 boundServicesNew);
-        coordinator.enqueueJob(interfaceName, configWorker);
+        coordinator.enqueueJob(interfaceName, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
