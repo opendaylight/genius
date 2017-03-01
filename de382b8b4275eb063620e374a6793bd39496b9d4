@@ -121,6 +121,24 @@
       "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_368ecbd0",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 856
+      },
+      "writtenOn": "2017-03-01T18:27:18Z",
+      "side": 1,
+      "message": "The ovsdb.yang model already keeps a list of QoS entries.  I still think you should reference the qos entry using the instance identifier from the ovsdb model.\n\nSee the following in the ovsdb model:     \n     typedef ovsdb-qos-ref {\n        description \"A reference to a ovsdb QoS entry\";\n        type instance-identifier;\n    }\n\n    typedef ovsdb-queue-ref {\n        description \"A reference to an ovsdb queue entry\";\n        type instance-identifier;\n    }\n\nFor this use case of associating a service (vlan interface) to a qos/queue - is there always just a single queue involved?\n\nYou could have the model be:\n    - ovsdb-qos-ref - iid of the qos entry\n    - queue-number - the number of the specific queue for the vlan service within the list of queues in the qos entry",
+      "parentUuid": "fafc7978_3b96f64c",
+      "revId": "de382b8b4275eb063620e374a6793bd39496b9d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
