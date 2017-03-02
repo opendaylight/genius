@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1d5bdff6",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 24
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-02T09:49:12Z",
+      "side": 1,
+      "message": "This UC is described in the policy spec (netvirt)\nhttps://git.opendaylight.org/gerrit/#/c/51457/\ndesigned based on the infrastructure added by this spec",
+      "parentUuid": "fafc7978_dd531715",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 9
+      },
+      "revId": "69c412833d026c2ed1178d02a0f499fc378e5f80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_bdb8d32a",
         "filename": "docs/specs/multiple-vxlan-tunnels.rst",
         "patchSetId": 24
@@ -36,6 +60,30 @@
       "writtenOn": "2017-03-02T09:31:26Z",
       "side": 1,
       "message": "As far as I understand, transport zones are per DPN (not per TEP). As a result, if a DPN has multiple TEPs, my understanding of the proposal is that all TEPs would be connected to all TEPs of other DPNs. So, for example, if two DPNs each have two TEPs it would result in *four* tunnels between the two.\nIn some cases, when a DPN has multiple links for overlay, they may belong to a specific underlay network that doesn\u0027t have connectivity to all other underlays (e.g. MPLS and Internet).\nWhile this would imply that some of the tunnels would just remain down, it could be cleaner if those tunnels would never be created e.g. by having the ability to associate a TEP to a transport zone instead of the entire DPN.\nSimilarly to the current concept of TZ, a TEP could then belong to one or more TZs to allow cases where certain DPNs have multiple TEPs while others don\u0027t.",
+      "range": {
+        "startLine": 43,
+        "startChar": 15,
+        "endLine": 43,
+        "endChar": 33
+      },
+      "revId": "69c412833d026c2ed1178d02a0f499fc378e5f80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1d291f37",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 24
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-02T09:49:12Z",
+      "side": 1,
+      "message": "Transport zone creation is also in the scope of netvirt spec. It was designed to connect the overlays only between TEPs in the same underlay network.\nIn addition, it allows OVS to be connected in mixed topologies where not all nodes are connected to the same list of underlay networks.",
+      "parentUuid": "fafc7978_bdb8d32a",
       "range": {
         "startLine": 43,
         "startChar": 15,
