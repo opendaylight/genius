@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5ae56d07",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 6456
+      },
+      "writtenOn": "2017-03-02T08:51:50Z",
+      "side": 1,
+      "message": "Fixed",
+      "parentUuid": "fafc7978_362a4b90",
+      "revId": "162ae73df983cc6b321a5c90efbf87fdeed75665",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_89015807",
         "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-01T18:43:54Z",
       "side": 1,
       "message": "I think you can replace \u0027ovs-queue-uid\u0027 and \u0027ovs-qos-queue\u0027 with a single leaf - say, \u0027service-queue\u0027.  This could be the integer queue number value which is a key to the queue list present in \u0027ovs-qos-uid\u0027.",
+      "revId": "162ae73df983cc6b321a5c90efbf87fdeed75665",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5a93ad5a",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 6456
+      },
+      "writtenOn": "2017-03-02T08:51:50Z",
+      "side": 1,
+      "message": "Will fix.",
+      "parentUuid": "fafc7978_89015807",
       "revId": "162ae73df983cc6b321a5c90efbf87fdeed75665",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
