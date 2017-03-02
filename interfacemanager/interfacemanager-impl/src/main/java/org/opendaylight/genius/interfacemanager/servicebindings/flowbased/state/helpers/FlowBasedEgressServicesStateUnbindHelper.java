@@ -105,12 +105,14 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         Collections.sort(allServices,
                 (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+
         BoundServices highestPriority = allServices.remove(0);
         FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
             FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
         }
         futures.add(t.submit());
+        
         // remove the default egress service bound on the interface, once all flows are removed
         FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceState.getName());
         return futures;

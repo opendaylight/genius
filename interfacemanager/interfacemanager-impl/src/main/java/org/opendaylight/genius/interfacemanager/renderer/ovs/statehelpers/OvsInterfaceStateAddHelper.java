@@ -91,8 +91,6 @@ public class OvsInterfaceStateAddHelper {
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
             FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker,
                     ifState.getIfIndex());
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo),
-                    interfaceName, ifState.getIfIndex());
         }
 
         futures.add(defaultOperationalShardTransaction.submit());
