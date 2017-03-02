@@ -241,6 +241,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>counterframework</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>fcaps-api</artifactId>
       <version>${project.version}</version>
     </dependency>

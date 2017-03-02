@@ -75,6 +75,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <feature name='odl-genius-fcaps-framework' version='${project.version}' description='OpenDaylight :: genius :: fcapsframework'>
     <bundle>mvn:org.opendaylight.genius/fcaps-api/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/alarmmanager/{{VERSION}}</bundle>
+    <bundle>mvn:org.opendaylight.genius/counterframework/{{VERSION}}</bundle>
     <bundle>mvn:org.opendaylight.genius/countermanager/{{VERSION}}</bundle>
   </feature>
 
