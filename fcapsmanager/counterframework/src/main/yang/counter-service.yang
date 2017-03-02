@@ -1,0 +1,91 @@
+module pm-counter-service {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:pm:counter:config";
+    prefix "pm-counter-service";
+
+    description
+        "Bulk counter api";
+
+    revision "2016-10-19" {
+        description
+            "Initial revision";
+    }
+
+    container performance-counters {
+        config true;
+        list controller-switch-mappings {
+            key controller-host-name;
+            leaf controller-host-name { type string; }
+            leaf connected-flow-capable-switches { type uint64; }
+        }
+        container flow-capable-switch-counters {
+            uses flow-capable-switch-counters-info;
+        }
+
+        container bgp-counters {
+            uses bgp-counters-info;
+        }
+    }
+
+    grouping bgp-counters-info {
+        leaf bgp-total-prefixes { type uint64; }
+        list bgp-neighbor-counters {
+            key as-id;
+            leaf as-id { type uint64; }
+            leaf neighbor-ip { type string; }
+            leaf packets-received { type uint64; }
+            leaf packets-sent { type uint64; }
+            leaf previous-packets-received { type uint64; }
+            leaf previous-packets-sent { type uint64; }
+        }
+        list bgp-route-counters {
+            key rd;
+            leaf rd { type uint64; }
+            leaf routes { type uint64; }
+        }
+    }
+
+    grouping flow-capable-switch-counters-info {
+        list flow-capable-switches {
+            key flow-datapath-id;
+            leaf flow-datapath-id { type uint64; }
+            leaf ports  { type uint64; }
+
+            leaf packet-in-messages-sent { type uint64; }
+            leaf packet-in-messages-received { type uint64; }
+            leaf previous-packet-in-messages-sent { type uint64; }
+            leaf previous-packet-in-messages-received { type uint64; }
+
+            list switch-ports-counters {
+                key port-id;
+                leaf port-id { type uint64; }
+
+                leaf packets-received-drop { type uint64; }
+                leaf packets-received-error { type uint64; }
+                leaf duration { type uint64; }
+                leaf packets-sent { type uint64; }
+                leaf packets-received { type uint64; }
+                leaf bytes-sent { type uint64; }
+                leaf bytes-received { type uint64; }
+                leaf packets-received-on-tunnel { type uint64; }
+                leaf packets-sent-on-tunnel { type uint64; }
+
+                leaf previous-packets-received-drop { type uint64; }
+                leaf previous-packets-received-error { type uint64; }
+                leaf previous-duration { type uint64; }
+                leaf previous-packets-sent { type uint64; }
+                leaf previous-packets-received { type uint64; }
+                leaf previous-bytes-sent { type uint64; }
+                leaf previous-bytes-received { type uint64; }
+                leaf previous-packets-received-on-tunnel { type uint64; }
+                leaf previous-packets-sent-on-tunnel { type uint64; }
+            }
+
+            list table-counters {
+                key table-id;
+                leaf table-id { type uint64; }
+                leaf flow-count { type uint64; }
+            }
+        }
+    }
+}
