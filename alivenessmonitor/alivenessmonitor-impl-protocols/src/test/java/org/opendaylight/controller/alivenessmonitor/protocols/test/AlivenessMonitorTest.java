@@ -51,6 +51,7 @@ import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandl
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerARP;
 import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerLLDP;
+import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerRegistryImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInput;
@@ -167,7 +168,7 @@ public class AlivenessMonitorTest {
                 .thenReturn(Futures.immediateFuture(
                         RpcResultBuilder.<Void>success().build()));
 
-        AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistry();
+        AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistryImpl();
         alivenessMonitor = new AlivenessMonitor(dataBroker, idManager,
                 notificationPublishService, notificationService, alivenessProtocolHandlerRegistry);
         alivenessMonitor.start();
