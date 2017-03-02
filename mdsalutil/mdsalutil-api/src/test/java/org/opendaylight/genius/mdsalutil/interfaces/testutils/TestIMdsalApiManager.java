@@ -24,6 +24,8 @@ import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fake IMdsalApiManager useful for tests.
@@ -39,6 +41,8 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
  * @author Michael Vorburger
  */
 public abstract class TestIMdsalApiManager implements IMdsalApiManager {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestIMdsalApiManager.class);
 
     private List<FlowEntity> flows;
 
@@ -104,6 +108,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         try {
             assertThat(flows).containsExactlyElementsIn(expectedFlowsAsNewArrayList);
         } catch (AssertionError e) {
+            // We LOG the expected and actual flow in case of a failed assertion
+            // because, even though that is typically just a HUGE String that's
+            // hard to read (the diff printed subsequently by assertEqualBeans
+            // is, much, more readable), there are cases when looking more closely
+            // at the full toString() output of the flows is still useful, so:
+            LOG.warn("assert fail; expected flows: {}", expectedFlowsAsNewArrayList);
+            LOG.warn("assert fail; actual flows  : {}", flows);
             // The point of this is basically just that our assertEqualBeans output,
             // in case of a comparison failure, is *A LOT* more clearly readable
             // than what G Truth (or Hamcrest) can do based on toString.
