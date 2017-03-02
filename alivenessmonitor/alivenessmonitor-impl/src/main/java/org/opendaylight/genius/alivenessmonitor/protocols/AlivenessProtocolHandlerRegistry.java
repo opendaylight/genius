@@ -7,11 +7,7 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.concurrent.ThreadSafe;
-import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -21,43 +17,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
  *
  * @author Michael Vorburger.ch
  */
-@Singleton
 @ThreadSafe
-public class AlivenessProtocolHandlerRegistry {
+public interface AlivenessProtocolHandlerRegistry {
 
-    private final Map<EtherTypes, AlivenessProtocolHandler> ethTypeToProtocolHandler = new EnumMap<>(EtherTypes.class);
-    private final Map<Class<?>, AlivenessProtocolHandler> packetTypeToProtocolHandler = new HashMap<>();
+    void register(EtherTypes etherType, AlivenessProtocolHandler protocolHandler);
 
-    public synchronized void register(EtherTypes etherType, AlivenessProtocolHandler protocolHandler) {
-        ethTypeToProtocolHandler.put(etherType, protocolHandler);
-        packetTypeToProtocolHandler.put(protocolHandler.getPacketClass(), protocolHandler);
-    }
+    @Nullable AlivenessProtocolHandler getOpt(EtherTypes etherType);
 
-    // TODO does this have to be synchronized? It's only reading, never
-    // modifying fields.. but the content of the Maps pointed to by the fields
-    // could have been modified, so.. ?
-    public synchronized @Nullable AlivenessProtocolHandler getOpt(EtherTypes etherType) {
-        return ethTypeToProtocolHandler.get(etherType);
-    }
+    @Nullable AlivenessProtocolHandler getOpt(Class<? extends Object> packetClass);
 
-    public synchronized @Nullable AlivenessProtocolHandler getOpt(Class<? extends Object> packetClass) {
-        return packetTypeToProtocolHandler.get(packetClass);
-    }
-
-    public @NonNull AlivenessProtocolHandler get(EtherTypes etherType) {
-        AlivenessProtocolHandler handler = getOpt(etherType);
-        if (handler == null) {
-            throw new IllegalStateException("No handler registered for etherType: " + etherType);
-        }
-        return handler;
-    }
-
-    public @NonNull AlivenessProtocolHandler get(Class<?> packetClass) {
-        AlivenessProtocolHandler handler = getOpt(packetClass);
-        if (handler == null) {
-            throw new IllegalStateException("No handler registered for packetClass: " + packetClass);
-        }
-        return handler;
-    }
-
+    @NonNull  AlivenessProtocolHandler get(EtherTypes etherType);
 }
