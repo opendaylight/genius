@@ -347,21 +347,18 @@ module odl-interface {
 
     /* vlan port to qos queue */
     augment "/if:interfaces/if:interface" {
-        ext:augment-identifier "ovs-qos";     
-        leaf ovs-qos-uid {
+        ext:augment-identifier "ovs-qos";    
+        when "if:type = 'ianaift:l2vlan'";
+        
+        leaf ovs-qos-ref {
             type instance-identifier;
             description
-              "represents whether service port has qos configured in ovsdb";
+              "represents whether service port has associated qos. A reference to a ovsdb QoS entry";
         }
-        leaf ovs-queue-uid {
-            type instance-identifier;
+        leaf service-queue {
+            type uint32;
             description
-              "represents whether port has qos queue configured in ovsdb";
-        }
-        leaf ovs-qos-queue {
-            type instance-identifier;
-            description
-              "represents whether qos mapping of queue";
-        }
+              "specific queue number within the list of queues in the qos entry";
+        }       
     }
 }
