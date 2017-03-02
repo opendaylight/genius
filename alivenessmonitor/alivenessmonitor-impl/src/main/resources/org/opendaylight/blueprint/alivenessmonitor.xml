@@ -18,7 +18,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <reference id="notificationService"
              interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
 
-  <service ref="alivenessProtocolHandlerRegistry"
+  <service ref="alivenessProtocolHandlerRegistryImpl"
            interface="org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry" />
 
   <odl:rpc-service id="idManagerService"
