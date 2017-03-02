@@ -16,6 +16,24 @@
       "revId": "ab28d8d693a6207e04df211a895f908a7f322d8b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f41ef06e",
+        "filename": "features/odl-genius/src/main/feature/features.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-02T20:20:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_14645448",
+      "revId": "ab28d8d693a6207e04df211a895f908a7f322d8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
