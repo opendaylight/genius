@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2015, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,7 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/**
+/*
  * Created by echiapt on 7/5/2016.
  */
 @Command(scope = "tep", name = "rem-external-endpoint", description = "removing an external endpoint")
@@ -41,11 +41,11 @@ public class RemoveExternalEndpoint extends OsgiCommandSupport {
         try {
             LOG.debug("RemoveExternalEndpoint: destinationIP {} with tunnelType {}", destinationIp, tunnelType);
             Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-            if( tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_VXLAN))
-                tunType = TunnelTypeVxlan.class ;
-            else if( tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_GRE) )
-                tunType = TunnelTypeGre.class ;
-            else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
+            if ( tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
+                tunType = TunnelTypeVxlan.class;
+            } else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_GRE) ) {
+                tunType = TunnelTypeGre.class;
+            } else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
                 tunType = TunnelTypeMplsOverGre.class;
             } else {
                 System.out.println("Invalid tunnel-type " + tunnelType);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -29,7 +29,8 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private IMdsalApiManager mdsalManager;
     private List<HwVtep> cfgdHwVteps;
 
-    public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
+    public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker,
+                           IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
         this.cfgdDpnList = cfgdDpnList ;
         this.dataBroker = broker ;
         this.idManagerService = idManagerService;
@@ -43,25 +44,29 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        logger.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",cfgdDpnList, meshedDpnList );
-        futures.addAll( ItmInternalTunnelAddWorker.build_all_tunnels(dataBroker, idManagerService,mdsalManager, cfgdDpnList, meshedDpnList) ) ;
+        logger.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} "
+                ,cfgdDpnList, meshedDpnList );
+        futures.addAll( ItmInternalTunnelAddWorker.build_all_tunnels(dataBroker, idManagerService, mdsalManager,
+                cfgdDpnList, meshedDpnList) ) ;
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
-        if(dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
+        if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
-                futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+                futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService
+                        , cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
             }
         }
         //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
         logger.debug("invoking build hwVtepTunnels with hwVteplist {}", cfgdHwVteps );
-        futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService,cfgdDpnList,cfgdHwVteps));
+        futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService
+                ,cfgdDpnList,cfgdHwVteps));
         return futures ;
     }
 
     @Override
     public String toString() {
-        return "ItmTepAddWorker  { " +
-        "Configured Dpn List : " + cfgdDpnList +
-        "  Meshed Dpn List : " + meshedDpnList + " }" ;
+        return "ItmTepAddWorker  { "
+                + "Configured Dpn List : " + cfgdDpnList
+                + "  Meshed Dpn List : " + meshedDpnList + " }" ;
     }
 }

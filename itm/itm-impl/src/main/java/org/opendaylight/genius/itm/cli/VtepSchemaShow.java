@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -37,7 +37,8 @@ public class VtepSchemaShow extends OsgiCommandSupport {
     private String schemaName;
 
     private static String VTEP_CONFIG_SCHEMA_CLI_FORMAT = "%-14s %-12s %-8s %-16s %-13s %-14s %-11s %-20s %-32s";
-    public static final String HEADER_UNDERLINE = "---------------------------------------------------------------------------------------------------------------------------------------";
+    public static final String HEADER_UNDERLINE = "------------------------------------------------------------------"
+            + "---------------------------------------------------------------------";
 
     /** The Constant logger. */
     private static final Logger LOG = LoggerFactory.getLogger(VtepSchemaShow.class);
@@ -121,24 +122,25 @@ public class VtepSchemaShow extends OsgiCommandSupport {
 
         Class<? extends TunnelTypeBase> tunType = schema.getTunnelType();
 
-        if( tunType.equals(TunnelTypeGre.class) )
-            strTunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
-        else
-            strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
+        if (tunType.equals(TunnelTypeGre.class)) {
+            strTunnelType = ITMConstants.TUNNEL_TYPE_GRE;
+        } else {
+            strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        }
         String dpnId = (dpnIterator.hasNext() ? String.valueOf(dpnIterator.next()) : StringUtils.EMPTY);
         String excludeIpFilter = (ipFilterIterator.hasNext() ? String.valueOf(ipFilterIterator.next())
                 : StringUtils.EMPTY);
 
         // Print first row
-        session.getConsole().println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, schema.getSchemaName(), portName, vlanId,
-                subnetCIDR, gatewayIp, transportZone, strTunnelType, dpnId, excludeIpFilter));
+        session.getConsole().println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, schema.getSchemaName()
+                , portName, vlanId, subnetCIDR, gatewayIp, transportZone, strTunnelType, dpnId, excludeIpFilter));
         while (dpnIterator.hasNext() || ipFilterIterator.hasNext()) {
             dpnId = (dpnIterator.hasNext() ? String.valueOf(dpnIterator.next()) : StringUtils.EMPTY);
             excludeIpFilter = (ipFilterIterator.hasNext() ? String.valueOf(ipFilterIterator.next())
                     : StringUtils.EMPTY);
-            session.getConsole().println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, StringUtils.EMPTY, StringUtils.EMPTY,
-                    StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY,
-                    dpnId, excludeIpFilter));
+            session.getConsole().println(String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, StringUtils.EMPTY
+                    , StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY, StringUtils.EMPTY
+                    , StringUtils.EMPTY, dpnId, excludeIpFilter));
         }
         session.getConsole().println(System.lineSeparator());
     }
@@ -165,10 +167,8 @@ public class VtepSchemaShow extends OsgiCommandSupport {
      */
     private String getHeaderOutput() {
         String headerBuilder =
-                String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, "SchemaName", "PortName", "VlanID", "Subnet",
-                        "GatewayIP", "TransportZone", "TunnelType", "DPN-IDS", "ExcludeIpFilter") +
-                        '\n' +
-                        HEADER_UNDERLINE;
+                String.format(VTEP_CONFIG_SCHEMA_CLI_FORMAT, "SchemaName", "PortName", "VlanID", "Subnet", "GatewayIP"
+                        , "TransportZone", "TunnelType", "DPN-IDS", "ExcludeIpFilter") + '\n' + HEADER_UNDERLINE;
         return headerBuilder;
     }
 }
