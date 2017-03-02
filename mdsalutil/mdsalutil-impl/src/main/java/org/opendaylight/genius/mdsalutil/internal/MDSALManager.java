@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -63,97 +63,104 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager {
 
     private static final long FIXED_DELAY_IN_MILLISECONDS = 5000;
-    private static final Logger s_logger = LoggerFactory.getLogger(MDSALManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MDSALManager.class);
 
-    private final DataBroker m_dataBroker;
+    private final DataBroker dataBroker;
 
-    private final PacketProcessingService m_packetProcessingService;
+    private final PacketProcessingService packetProcessingService;
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
-     * Writes the flows and Groups to the MD SAL DataStore
-     * which will be sent to the openflowplugin for installing flows/groups on the switch.
-     * Other modules of VPN service that wants to install flows / groups on the switch
+     * Writes the flows and Groups to the MD SAL DataStore which will be sent to
+     * the openflowplugin for installing flows/groups on the switch. Other
+     * modules of VPN service that wants to install flows / groups on the switch
      * uses this utility
      *
-     * @param db - dataBroker reference
-     * @param pktProcService- PacketProcessingService for sending the packet outs
+     * @param db
+     *            - dataBroker reference
+     * @param pktProcService-
+     *            PacketProcessingService for sending the packet outs
      */
     @Inject
     public MDSALManager(DataBroker db, PacketProcessingService pktProcService) {
-        m_dataBroker = db;
-        m_packetProcessingService = pktProcService;
-        s_logger.info( "MDSAL Manager Initialized ") ;
+        this.dataBroker = db;
+        this.packetProcessingService = pktProcService;
+        LOG.info("MDSAL Manager Initialized ");
     }
 
     @Override
     protected void start() throws Exception {
-        s_logger.info("{} start", getClass().getSimpleName());
-        registerListener(m_dataBroker);
+        LOG.info("{} start", getClass().getSimpleName());
+        registerListener(dataBroker);
     }
 
     @Override
     protected void stop() throws Exception {
-        s_logger.info("{} stop", getClass().getSimpleName());
+        LOG.info("{} stop", getClass().getSimpleName());
     }
 
     private void registerListener(DataBroker db) {
-        try {
-            FlowListener flowListener = new FlowListener();
-            GroupListener groupListener = new GroupListener();
-            FlowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(), db);
-            flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
-            groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
-        } catch (final Exception e) {
-            s_logger.error("GroupEventHandler: DataChange listener registration fail!", e);
-            throw new IllegalStateException("GroupEventHandler: registration Listener failed.", e);
-        }
+        FlowListener flowListener = new FlowListener();
+        GroupListener groupListener = new GroupListener();
+        FlowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(), db);
+        flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
+        groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
     }
 
     private InstanceIdentifier<Group> getWildCardGroupPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Group.class);
+        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
+                .child(Group.class);
     }
 
     private InstanceIdentifier<Flow> getWildCardFlowPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class);
+        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
+                .child(Table.class).child(Flow.class);
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> installFlowInternal(FlowEntity flowEntity) {
-            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
-            s_logger.trace("InstallFlow for flowEntity {} ", flowEntity);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        LOG.trace("InstallFlow for flowEntity {} ", flowEntity);
 
-            writeFlowEntityInternal(flowEntity, tx);
+        writeFlowEntityInternal(flowEntity, tx);
 
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
+        CheckedFuture<Void, TransactionCommitFailedException> submitFuture = tx.submit();
 
-            Futures.addCallback(submitFuture, new FutureCallback<Void>() {
+        Futures.addCallback(submitFuture, new FutureCallback<Void>() {
 
-                @Override
-                public void onSuccess(final Void result) {
-                    // Commited successfully
-                    s_logger.debug( "Install Flow -- Committedsuccessfully ") ;
+            @Override
+            public void onSuccess(final Void result) {
+                // Committed successfully
+                LOG.debug("Install Flow -- Committedsuccessfully ");
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                // Transaction failed
+
+                if (throwable instanceof OptimisticLockFailedException) {
+                    // Failed because of concurrent transaction modifying same
+                    // data
+                    LOG.error("Install Flow -- Failed because of concurrent transaction modifying same data");
+                } else {
+                    // Some other type of TransactionCommitFailedException
+                    LOG.error("Install Flow -- Some other type of TransactionCommitFailedException", throwable);
                 }
+            }
+        });
 
-                @Override
-                public void onFailure(final Throwable t) {
-                    // Transaction failed
+        return submitFuture;
+    }
 
-                    if(t instanceof OptimisticLockFailedException) {
-                        // Failed because of concurrent transaction modifying same data
-                        s_logger.error( "Install Flow -- Failed because of concurrent transaction modifying same data ") ;
-                    } else {
-                        // Some other type of TransactionCommitFailedException
-                        s_logger.error( "Install Flow -- Some other type of TransactionCommitFailedException " + t) ;
-                    }
-                }
-            });
-
-            return submitFuture;
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlowInternal(BigInteger dpId, Flow flow) {
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        writeFlowInternal(dpId, flow, tx);
+        return tx.submit();
     }
 
     public void writeFlowEntityInternal(FlowEntity flowEntity, WriteTransaction tx) {
@@ -161,79 +168,74 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
             flowEntity.setCookie(new BigInteger("0110000", 16));
         }
 
-        FlowKey flowKey = new FlowKey( new FlowId(flowEntity.getFlowId()) );
+        FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
 
         FlowBuilder flowbld = flowEntity.getFlowBuilder();
 
         Node nodeDpn = buildDpnNode(flowEntity.getDpnId());
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class,flowKey).build();
+                .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
 
-        tx.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flowbld.build(),true );
-    }
-
-    public CheckedFuture<Void,TransactionCommitFailedException> installFlowInternal(BigInteger dpId, Flow flow) {
-        WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
-        writeFlowInternal(dpId, flow, tx);
-        return tx.submit();
+        tx.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flowbld.build(), true);
     }
 
     public void writeFlowInternal(BigInteger dpId, Flow flow, WriteTransaction tx) {
-        FlowKey flowKey = new FlowKey( new FlowId(flow.getId()) );
+        FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class,flowKey).build();
+                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
         tx.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
     }
 
     public void batchedAddFlowInternal(BigInteger dpId, Flow flow) {
-        FlowKey flowKey = new FlowKey( new FlowId(flow.getId()) );
+        FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class,flowKey).build();
+                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
         FlowBatchingUtils.write(flowInstanceId, flow);
     }
 
     public void batchedRemoveFlowInternal(BigInteger dpId, Flow flow) {
-        FlowKey flowKey = new FlowKey( new FlowId(flow.getId()) );
+        FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class,flowKey).build();
+                .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
         FlowBatchingUtils.delete(flowInstanceId);
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> installGroupInternal(GroupEntity groupEntity) {
-            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
-            writeGroupEntityInternal(groupEntity, tx);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        writeGroupEntityInternal(groupEntity, tx);
 
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
+        CheckedFuture<Void, TransactionCommitFailedException> submitFuture = tx.submit();
 
-            Futures.addCallback(submitFuture, new FutureCallback<Void>() {
-                @Override
-                public void onSuccess(final Void result) {
-                    // Commited successfully
-                    s_logger.debug( "Install Group -- Committedsuccessfully ") ;
+        Futures.addCallback(submitFuture, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(final Void result) {
+                // Committed successfully
+                LOG.debug("Install Group -- Committedsuccessfully ");
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                // Transaction failed
+
+                if (throwable instanceof OptimisticLockFailedException) {
+                    // Failed because of concurrent transaction modifying same
+                    // data
+                    LOG.error("Install Group -- Failed because of concurrent transaction modifying same data");
+                } else {
+                    // Some other type of TransactionCommitFailedException
+                    LOG.error("Install Group -- Some other type of TransactionCommitFailedException", throwable);
                 }
+            }
+        });
 
-                @Override
-                public void onFailure(final Throwable t) {
-                    // Transaction failed
-
-                    if(t instanceof OptimisticLockFailedException) {
-                        // Failed because of concurrent transaction modifying same data
-                        s_logger.error( "Install Group -- Failed because of concurrent transaction modifying same data ") ;
-                    } else {
-                        // Some other type of TransactionCommitFailedException
-                        s_logger.error( "Install Group -- Some other type of TransactionCommitFailedException " + t) ;
-                    }
-                }
-            });
-
-            return submitFuture;
+        return submitFuture;
     }
 
     public void writeGroupEntityInternal(GroupEntity groupEntity, WriteTransaction tx) {
@@ -271,33 +273,34 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowInternal(FlowEntity flowEntity) {
-            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
-            deleteFlowEntityInternal(flowEntity, tx);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        deleteFlowEntityInternal(flowEntity, tx);
 
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
+        CheckedFuture<Void, TransactionCommitFailedException> submitFuture = tx.submit();
 
-            Futures.addCallback(submitFuture, new FutureCallback<Void>() {
-                @Override
-                public void onSuccess(final Void result) {
-                    // Commited successfully
-                    s_logger.debug( "Delete Flow -- Committedsuccessfully ") ;
+        Futures.addCallback(submitFuture, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(final Void result) {
+                // Committed successfully
+                LOG.debug("Delete Flow -- Committedsuccessfully ");
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                // Transaction failed
+                if (throwable instanceof OptimisticLockFailedException) {
+                    // Failed because of concurrent transaction modifying same
+                    // data
+                    LOG.error("Delete Flow -- Failed because of concurrent transaction modifying same data");
+                } else {
+                    // Some other type of TransactionCommitFailedException
+                    LOG.error("Delete Flow -- Some other type of TransactionCommitFailedException", throwable);
                 }
+            }
 
-                @Override
-                public void onFailure(final Throwable t) {
-                    // Transaction failed
-                    if(t instanceof OptimisticLockFailedException) {
-                        // Failed because of concurrent transaction modifying same data
-                        s_logger.error( "Delete Flow -- Failed because of concurrent transaction modifying same data ") ;
-                    } else {
-                        // Some other type of TransactionCommitFailedException
-                        s_logger.error( "Delete Flow -- Some other type of TransactionCommitFailedException " + t) ;
-                    }
-                }
+        });
 
-            });
-
-            return submitFuture;
+        return submitFuture;
     }
 
     public void deleteFlowEntityInternal(FlowEntity flowEntity, WriteTransaction tx) {
@@ -307,13 +310,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
 
-
-        tx.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId);
+        tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
 
-    public CheckedFuture<Void,TransactionCommitFailedException> removeFlowNewInternal(BigInteger dpnId, Flow flowEntity) {
-        s_logger.debug("Remove flow {}",flowEntity);
-        WriteTransaction  tx = m_dataBroker.newWriteOnlyTransaction();
+    public CheckedFuture<Void, TransactionCommitFailedException> removeFlowNewInternal(BigInteger dpnId,
+            Flow flowEntity) {
+        LOG.debug("Remove flow {}", flowEntity);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         deleteFlowInternal(dpnId, flowEntity, tx);
         return tx.submit();
     }
@@ -324,36 +327,37 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
-        tx.delete(LogicalDatastoreType.CONFIGURATION,flowInstanceId );
+        tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeGroupInternal(GroupEntity groupEntity) {
-            WriteTransaction tx = m_dataBroker.newWriteOnlyTransaction();
-            removeGroupEntityInternal(groupEntity, tx);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        removeGroupEntityInternal(groupEntity, tx);
 
-            CheckedFuture<Void,TransactionCommitFailedException> submitFuture  = tx.submit();
+        CheckedFuture<Void, TransactionCommitFailedException> submitFuture = tx.submit();
 
-            Futures.addCallback(submitFuture, new FutureCallback<Void>() {
-                @Override
-                public void onSuccess(final Void result) {
-                    // Commited successfully
-                    s_logger.debug( "Install Group -- Committedsuccessfully ") ;
+        Futures.addCallback(submitFuture, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(final Void result) {
+                // Committed successfully
+                LOG.debug("Install Group -- Committedsuccessfully ");
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                // Transaction failed
+                if (throwable instanceof OptimisticLockFailedException) {
+                    // Failed because of concurrent transaction modifying same
+                    // data
+                    LOG.error("Install Group -- Failed because of concurrent transaction modifying same data");
+                } else {
+                    // Some other type of TransactionCommitFailedException
+                    LOG.error("Install Group -- Some other type of TransactionCommitFailedException", throwable);
                 }
+            }
+        });
 
-                @Override
-                public void onFailure(final Throwable t) {
-                    // Transaction failed
-                    if(t instanceof OptimisticLockFailedException) {
-                        // Failed because of concurrent transaction modifying same data
-                        s_logger.error( "Install Group -- Failed because of concurrent transaction modifying same data ") ;
-                    } else {
-                        // Some other type of TransactionCommitFailedException
-                        s_logger.error( "Install Group -- Some other type of TransactionCommitFailedException " + t) ;
-                    }
-                }
-            });
-
-            return submitFuture;
+        return submitFuture;
     }
 
     public void removeGroupEntityInternal(GroupEntity groupEntity, WriteTransaction tx) {
@@ -362,7 +366,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
 
-        tx.delete(LogicalDatastoreType.CONFIGURATION,groupInstanceId );
+        tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
     }
 
     public void modifyGroupInternal(GroupEntity groupEntity) {
@@ -378,15 +382,16 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         sendPacketOutWithActions(dpnId, groupId, payload, actionInfos);
     }
 
-    public void sendPacketOutWithActionsInternal(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos) {
+    public void sendPacketOutWithActionsInternal(BigInteger dpnId, long groupId, byte[] payload,
+            List<ActionInfo> actionInfos) {
 
-        m_packetProcessingService.transmitPacket(MDSALUtil.getPacketOut(actionInfos, payload, dpnId,
-                getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
+        packetProcessingService.transmitPacket(
+                MDSALUtil.getPacketOut(actionInfos, payload, dpnId, getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
     }
 
     public void sendARPPacketOutWithActionsInternal(BigInteger dpnId, byte[] payload, List<ActionInfo> actions) {
-        m_packetProcessingService.transmitPacket(MDSALUtil.getPacketOut(actions, payload, dpnId,
-                getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
+        packetProcessingService.transmitPacket(
+                MDSALUtil.getPacketOut(actions, payload, dpnId, getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
     }
 
     protected InstanceIdentifier<Node> nodeToInstanceId(Node node) {
@@ -394,22 +399,21 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
     }
 
     protected static NodeConnectorRef getNodeConnRef(final String nodeId, final String port) {
-        StringBuilder _stringBuilder = new StringBuilder(nodeId);
-        StringBuilder _append = _stringBuilder.append(":");
-        StringBuilder sBuild = _append.append(port);
-        String _string = sBuild.toString();
-        NodeConnectorId _nodeConnectorId = new NodeConnectorId(_string);
-        NodeConnectorKey _nodeConnectorKey = new NodeConnectorKey(_nodeConnectorId);
-        NodeConnectorKey nConKey = _nodeConnectorKey;
-        InstanceIdentifierBuilder<Nodes> _builder = InstanceIdentifier.builder(Nodes.class);
-        NodeId _nodeId = new NodeId(nodeId);
-        NodeKey _nodeKey = new NodeKey(_nodeId);
-        InstanceIdentifierBuilder<Node> _child = _builder.child(Node.class, _nodeKey);
-        InstanceIdentifierBuilder<NodeConnector> _child_1 = _child.child(
-                NodeConnector.class, nConKey);
-        InstanceIdentifier<NodeConnector> path = _child_1.toInstance();
-        NodeConnectorRef _nodeConnectorRef = new NodeConnectorRef(path);
-        return _nodeConnectorRef;
+        StringBuilder stringBuilder = new StringBuilder(nodeId);
+        StringBuilder append = stringBuilder.append(":");
+        StringBuilder build = append.append(port);
+        String string = build.toString();
+        NodeConnectorId nodeConnectorId = new NodeConnectorId(string);
+        NodeConnectorKey nodeConnectorKey = new NodeConnectorKey(nodeConnectorId);
+        NodeConnectorKey connectorKey = nodeConnectorKey;
+        InstanceIdentifierBuilder<Nodes> builder = InstanceIdentifier.builder(Nodes.class);
+
+        NodeKey nodeKey = new NodeKey(new NodeId(nodeId));
+        InstanceIdentifierBuilder<Node> child = builder.child(Node.class, nodeKey);
+        InstanceIdentifierBuilder<NodeConnector> anotherChild = child.child(NodeConnector.class, connectorKey);
+        InstanceIdentifier<NodeConnector> path = anotherChild.toInstance();
+        NodeConnectorRef nodeConnectorRef = new NodeConnectorRef(path);
+        return nodeConnectorRef;
     }
 
     protected Node buildDpnNode(BigInteger dpnId) {
@@ -420,8 +424,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
     }
 
     public void syncSetUpFlowInternal(FlowEntity flowEntity, long delay, boolean isRemove) {
-        if (s_logger.isTraceEnabled()) {
-            s_logger.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
         }
         if (flowEntity.getCookie() == null) {
             flowEntity.setCookie(new BigInteger("0110000", 16));
@@ -429,21 +433,21 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         Flow flow = flowEntity.getFlowBuilder().build();
         String flowId = flowEntity.getFlowId();
         BigInteger dpId = flowEntity.getDpnId();
-        FlowKey flowKey = new FlowKey( new FlowId(flowId));
+        FlowKey flowKey = new FlowKey(new FlowId(flowId));
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
         if (isRemove) {
-            MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+            MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
         } else {
-            MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow);
+            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow);
         }
     }
 
     public void syncSetUpGroupInternal(GroupEntity groupEntity, long delayTime, boolean isRemove) {
-        if (s_logger.isTraceEnabled()) {
-            s_logger.trace("syncSetUpGroup for groupEntity {} ", groupEntity);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("syncSetUpGroup for groupEntity {} ", groupEntity);
         }
         Group group = groupEntity.getGroupBuilder().build();
         BigInteger dpId = groupEntity.getDpnId();
@@ -451,34 +455,34 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         long groupId = groupEntity.getGroupId();
         GroupKey groupKey = new GroupKey(new GroupId(groupId));
         InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Group.class, groupKey).build();
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class).child(Group.class, groupKey)
+                .build();
         if (isRemove) {
-            MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+            MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
-            MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
+            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
         }
     }
 
     public void syncSetUpGroupInternal(BigInteger dpId, Group group, long delayTime, boolean isRemove) {
-        s_logger.trace("syncSetUpGroup for group {} ", group);
+        LOG.trace("syncSetUpGroup for group {} ", group);
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue();
         GroupKey groupKey = new GroupKey(new GroupId(groupId));
         InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Group.class, groupKey).build();
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class).child(Group.class, groupKey)
+                .build();
         if (isRemove) {
-            MDSALUtil.syncDelete(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+            MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
-            MDSALUtil.syncWrite(m_dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
+            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId, group);
         }
     }
 
-    class GroupListener extends AsyncClusteredDataChangeListenerBase<Group,GroupListener> {
+    class GroupListener extends AsyncClusteredDataChangeListenerBase<Group, GroupListener> {
 
-        public GroupListener() {
-            super(Group.class,GroupListener.class);
+        GroupListener() {
+            super(Group.class, GroupListener.class);
         }
 
         @Override
@@ -510,7 +514,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
 
         @Override
         protected InstanceIdentifier<Group> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Group.class);
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
+                    .child(Group.class);
         }
 
         @Override
@@ -524,9 +529,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         }
     }
 
-    class FlowListener extends AsyncClusteredDataChangeListenerBase<Flow,FlowListener> {
+    class FlowListener extends AsyncClusteredDataChangeListenerBase<Flow, FlowListener> {
 
-        public FlowListener() {
+        FlowListener() {
             super(Flow.class, FlowListener.class);
         }
 
@@ -557,7 +562,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
 
         @Override
         protected InstanceIdentifier<Flow> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class);
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
+                    .child(Table.class).child(Flow.class);
         }
 
         @Override
@@ -616,7 +622,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         modifyGroupInternal(groupEntity);
     }
 
-
     @Override
     public void removeGroup(GroupEntity groupEntity) {
         removeGroupInternal(groupEntity);
@@ -627,23 +632,19 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
         sendPacketOutInternal(dpnId, groupId, payload);
     }
 
-
     @Override
-    public void sendPacketOutWithActions(BigInteger dpnId, long groupId,
-                                         byte[] payload, List<ActionInfo> actionInfos) {
+    public void sendPacketOutWithActions(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos) {
         sendPacketOutWithActionsInternal(dpnId, groupId, payload, actionInfos);
     }
 
-
     @Override
-    public void sendARPPacketOutWithActions(BigInteger dpnId, byte[] payload,
-                                            List<ActionInfo> actionInfo) {
+    public void sendARPPacketOutWithActions(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfo) {
         sendARPPacketOutWithActionsInternal(dpnId, payload, actionInfo);
     }
 
     @Override
     public void syncRemoveFlow(FlowEntity flowEntity, long delayTime) {
-        syncSetUpFlowInternal(flowEntity,  delayTime, true);
+        syncSetUpFlowInternal(flowEntity, delayTime, true);
     }
 
     @Override
