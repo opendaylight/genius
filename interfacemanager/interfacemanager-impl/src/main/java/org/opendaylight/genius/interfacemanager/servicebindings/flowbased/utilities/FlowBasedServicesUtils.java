@@ -71,6 +71,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.crypto.Data;
+
 public class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
 
@@ -393,9 +395,7 @@ public class FlowBasedServicesUtils {
                 ServiceModeEgress.class));
     }
 
-    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
-                                                          Interface interfaceInfo, String portNo,
-                                                          String interfaceName, int ifIndex) {
+    public static void bindDefaultEgressDispatcherService(List<ListenableFuture<Void>> futures, DataBroker dataBroker, Interface interfaceInfo, String portNo, String interfaceName, int ifIndex) {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex);
@@ -405,7 +405,7 @@ public class FlowBasedServicesUtils {
                         ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), priority,
                         NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
         IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
-        futures.add(tx.submit());
+        tx.submit();
     }
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId, WriteTransaction t) {

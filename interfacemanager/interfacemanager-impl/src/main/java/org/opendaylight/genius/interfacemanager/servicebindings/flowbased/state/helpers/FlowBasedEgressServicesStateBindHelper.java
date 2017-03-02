@@ -62,24 +62,36 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         if(ifaceState.getType() == null) {
             return futures;
         }
+
         LOG.debug("binding services on interface {}", ifaceState.getName());
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
-        if (servicesInfo == null) {
+
+        // bind the default egress dispatcher service for this interface
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface
+            = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifaceState.getName(), dataBroker);
+        NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifaceState);
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
+            ServiceModeEgress.class, dataBroker);
+        if (servicesInfo != null) {
+            List<BoundServices> allServices = servicesInfo.getBoundServices();
+            if (allServices != null && !allServices.isEmpty()) {
+                if (L2vlan.class.equals(ifaceState.getType())) {
+                    futures = bindServiceOnVlan(dpId, allServices, ifaceState, dataBroker, iface);
+                } else if (Tunnel.class.equals(ifaceState.getType())) {
+                    futures = bindServiceOnTunnel(allServices, ifaceState, dataBroker);
+                }
+            }else{
+                LOG.trace("bound services is empty for interface {}", ifaceState.getName());
+            }
+        }else{
             LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
         }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
-            return bindServiceOnVlan(allServices, ifaceState, dataBroker);
-        } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
-            return bindServiceOnTunnel(allServices, ifaceState, dataBroker);
+        // Bind default Egress Dispatcher Service for vlan interfaces
+        if (L2vlan.class.equals(ifaceState.getType())) {
+            Long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(futures, dataBroker, iface, Long.toString(portNo), ifaceState.getName(), ifaceState.getIfIndex());
         }
         return futures;
     }
@@ -91,18 +103,17 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnVlan(
-            List<BoundServices> allServices,
-            Interface ifState, DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> bindServiceOnVlan(BigInteger dpId, List<BoundServices> allServices,
+            Interface ifState, DataBroker dataBroker, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                                                                      .interfaces.rev140508.interfaces.Interface
+                                                                      iface) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         Collections.sort(allServices,
                 (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+
         BoundServices highestPriority = allServices.remove(0);
         short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority() : highestPriority.getServicePriority() + 1);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), t, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
         BoundServices prev = null;
         for (BoundServices boundService : allServices) {
