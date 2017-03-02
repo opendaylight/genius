@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -9,14 +9,9 @@ package org.opendaylight.genius.test;
 
 import java.util.Collection;
 
-import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
-import com.google.common.base.Preconditions;
 
 public abstract class AbstractMockForwardingRulesManager<D extends DataObject> implements DataTreeChangeListener<D> {
 
@@ -24,9 +19,8 @@ public abstract class AbstractMockForwardingRulesManager<D extends DataObject> i
         // Do Nothing
     }
 
-
+    @Override
     public void onDataTreeChanged(Collection<DataTreeModification<D>> changes) {
         // TODO Auto-generated method stub
     }
-
 }

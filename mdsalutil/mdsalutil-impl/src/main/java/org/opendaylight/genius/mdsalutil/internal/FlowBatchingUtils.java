@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.mdsalutil.internal;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.utils.batching.ActionableResource;
 import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
@@ -17,11 +19,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 public class FlowBatchingUtils {
-    private static final Logger LOG = LoggerFactory.getLogger((Class)FlowBatchingUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBatchingUtils.class);
     public static final int BATCH_SIZE = 1000;
     public static final int PERIODICITY = 500;
     public static Integer batchSize;
@@ -48,7 +47,8 @@ public class FlowBatchingUtils {
             batchInterval = Integer.getInteger("batch.wait.time");
         }
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("MDSALUTIL-INVENTORY-CONFIG", inventoryConfigShardBufferQ, resourceHandler);
+        resBatchingManager.registerBatchableResource("MDSALUTIL-INVENTORY-CONFIG", inventoryConfigShardBufferQ,
+                resourceHandler);
     }
 
     static <T extends DataObject> void update(InstanceIdentifier<T> path, T data) {
