@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_b0de2ddb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionSetFieldMeta.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-03T14:51:15Z",
+      "side": 1,
+      "message": "This needs to compare using equals(). (You should ask your IDE to generate the equals and hashCode methods for you.)",
+      "revId": "4da30f7e8a299c639f2a8d8cf2b0e734f3463be1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
