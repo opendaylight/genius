@@ -106,7 +106,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             List<BoundServices> boundServices,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
             .Interface ifaceState, DataBroker dataBroker) {
-
+        LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(), ifaceState
+            .getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifaceState);

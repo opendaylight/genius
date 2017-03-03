@@ -185,7 +185,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifState);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        LOG.info("binding service for vlan port: {}", ifState.getName());
+        LOG.info("binding ingress service {} for vlan port: {}", boundServiceNew.getServiceName(), ifState.getName());
         if (allServices.size() == 1) {
             // calling LportDispatcherTableForService with current service index
             // as 0 and next service index as some value since this is the only

@@ -96,7 +96,8 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
             List<BoundServices> boundServices,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
             .Interface ifaceState, DataBroker dataBroker) {
-
+        LOG.info("unbinding egress service {} for vlan port: {}", boundServiceOld.getServiceName(), ifaceState
+            .getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifaceState.getName(), dataBroker);
@@ -115,28 +116,40 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         BoundServices high = highLow[1];
         // This means the one removed was the highest priority service
         if (high == null) {
+            LOG.trace("Deleting table 220 entry for service {}, match service index {}", boundServiceOld,
+                NwConstants.DEFAULT_SERVICE_INDEX);
             FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, tx,
                     NwConstants.DEFAULT_SERVICE_INDEX);
             if (low != null) {
                 //delete the lower services flow entry.
+                LOG.trace("Deleting table 220 entry for lower service {}, match service index {}", low,
+                    low.getServicePriority());
                 FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), low, tx,
                         low.getServicePriority());
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
                         : low.getServicePriority() + 1);
+                LOG.trace("Installing new entry for lower service {}, match service index {}, update service index {}",
+                    low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, ifaceState.getName(), tx,
                         ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
             }
         } else {
+            LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld,
+                boundServiceOld.getServicePriority());
             FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundServiceOld, tx,
                     boundServiceOld.getServicePriority());
             short lowerServiceIndex = (short) (low != null ? low.getServicePriority()
                     : boundServiceOld.getServicePriority() + 1);
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
             if (high.equals(highest)) {
+                LOG.trace("Update the existing higher service {}, match service index {}, update service index {}",
+                    high, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifaceState.getName(), tx,
                         ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
             } else {
+                LOG.trace("Update the existing higher service {}, match service index {}, update service index {}",
+                    high, high.getServicePriority(), lowerServiceIndex);
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high, ifaceState.getName(), tx,
                         ifaceState.getIfIndex(), high.getServicePriority(), lowerServiceIndex, iface);
             }
