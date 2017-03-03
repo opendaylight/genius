@@ -110,6 +110,24 @@
       "revId": "69c412833d026c2ed1178d02a0f499fc378e5f80",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a47a73ba",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 24
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 6154
+      },
+      "writtenOn": "2017-03-03T08:51:51Z",
+      "side": 1,
+      "message": "Correcting a small typo in 2nd paragraph below :\n\nSince alternate tunnel is available in the tunnel-aggregation-group , remote routes should *not* be removed.",
+      "parentUuid": "fafc7978_9a17d544",
+      "revId": "69c412833d026c2ed1178d02a0f499fc378e5f80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
