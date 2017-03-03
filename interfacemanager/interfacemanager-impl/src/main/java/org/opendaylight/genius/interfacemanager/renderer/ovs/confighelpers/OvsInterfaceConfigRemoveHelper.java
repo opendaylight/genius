@@ -74,7 +74,7 @@ public class OvsInterfaceConfigRemoveHelper {
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
-        LOG.debug("removing vlan configuration for {}", interfaceName);
+        LOG.info("removing vlan configuration for interface {}", interfaceName);
         InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, defaultOperationalShardTransaction,
                 idManagerService);
 
@@ -113,7 +113,7 @@ public class OvsInterfaceConfigRemoveHelper {
             IdManagerService idManager, IMdsalApiManager mdsalApiManager,
             WriteTransaction defaultOperationalShardTransaction, WriteTransaction defaultConfigShardTransaction,
             List<ListenableFuture<Void>> futures) {
-        LOG.debug("removing tunnel configuration for {}", interfaceName);
+        LOG.info("removing tunnel configuration for interface {}", interfaceName);
         BigInteger dpId = null;
         if (parentRefs != null) {
             dpId = parentRefs.getDatapathNodeIdentifier();

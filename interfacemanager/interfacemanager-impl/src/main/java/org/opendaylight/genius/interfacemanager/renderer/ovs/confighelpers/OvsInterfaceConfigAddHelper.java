@@ -74,7 +74,7 @@ public class OvsInterfaceConfigAddHelper {
                 parentRefs.getParentInterface(), interfaceNew.getName(), ifL2vlan.getL2vlanMode())) {
             return;
         }
-        LOG.debug("adding vlan configuration for {}",interfaceNew.getName());
+        LOG.info("adding vlan configuration for interface {}",interfaceNew.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
 
@@ -92,7 +92,6 @@ public class OvsInterfaceConfigAddHelper {
                                                AlivenessMonitorService alivenessMonitorService,
                                                IfTunnel ifTunnel, IMdsalApiManager mdsalApiManager,
                                                List<ListenableFuture<Void>> futures) {
-        LOG.debug("adding tunnel configuration for {}", interfaceNew.getName());
         if (parentRefs == null) {
             LOG.warn("ParentRefs for interface: {} Not Found. " +
                     "Creation of Tunnel OF-Port not supported when dpid not provided.", interfaceNew.getName());
@@ -105,7 +104,7 @@ public class OvsInterfaceConfigAddHelper {
                     "Creation of OF-Port not supported.", interfaceNew.getName());
             return;
         }
-
+        LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
         boolean createTunnelPort = true;
         String tunnelName = interfaceNew.getName();
         if(SouthboundUtils.isOfTunnel(ifTunnel)) {
