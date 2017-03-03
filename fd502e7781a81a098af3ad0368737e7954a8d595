@@ -71,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b5445f4a",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-03-03T12:45:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_9a298ae8",
+      "revId": "fd502e7781a81a098af3ad0368737e7954a8d595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3a9cde5c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 4
@@ -134,6 +152,24 @@
       "writtenOn": "2017-03-03T11:37:05Z",
       "side": 1,
       "message": "you can initialize Arraylist of size one as you know in advance  how many objects you are adding",
+      "revId": "fd502e7781a81a098af3ad0368737e7954a8d595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b5fc5fb9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 1371,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2017-03-03T12:45:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_fae376d6",
       "revId": "fd502e7781a81a098af3ad0368737e7954a8d595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
