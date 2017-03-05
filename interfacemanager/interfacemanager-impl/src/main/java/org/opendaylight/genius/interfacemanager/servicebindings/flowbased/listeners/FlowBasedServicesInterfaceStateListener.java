@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
@@ -61,7 +62,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
                     getFlowBasedServicesStateRemoveRenderer();
             RendererStateInterfaceUnbindWorker stateUnbindWorker =
                     new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, interfaceStateOld);
-            coordinator.enqueueJob(interfaceStateOld.getName(), stateUnbindWorker);
+            coordinator.enqueueJob(interfaceStateOld.getName(), stateUnbindWorker, IfmConstants.JOB_MAX_RETRIES);
         }
     }
 
@@ -84,7 +85,7 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
                     getFlowBasedServicesStateAddRenderer();
             RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable,
                     interfaceStateNew);
-            coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker);
+            coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker, IfmConstants.JOB_MAX_RETRIES);
         }
     }
 
