@@ -76,7 +76,7 @@ public class OvsInterfaceConfigAddHelper {
                 parentRefs.getParentInterface(), interfaceNew.getName())){
             return;
         }
-        LOG.debug("adding vlan configuration for {}",interfaceNew.getName());
+        LOG.info("adding vlan configuration for interface {}",interfaceNew.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
 
@@ -94,7 +94,6 @@ public class OvsInterfaceConfigAddHelper {
                                                AlivenessMonitorService alivenessMonitorService,
                                                IMdsalApiManager mdsalApiManager,
                                                List<ListenableFuture<Void>> futures) {
-        LOG.debug("adding tunnel configuration for {}", interfaceNew.getName());
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         if (parentRefs == null) {
             LOG.warn("ParentRefs for interface: {} Not Found. " +
@@ -108,7 +107,7 @@ public class OvsInterfaceConfigAddHelper {
                     "Creation of OF-Port not supported.", interfaceNew.getName());
             return;
         }
-
+        LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId,
                 interfaceNew.getName());

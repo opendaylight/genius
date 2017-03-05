@@ -103,7 +103,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             BoundServices boundServiceOld,
             List<BoundServices> boundServices, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState,
             DataBroker dataBroker) {
-
+        LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(), ifaceState
+            .getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifaceState);
@@ -120,19 +121,23 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         BoundServices high = highLow[1];
         // This means the one removed was the highest priority service
         if (high == null) {
-            LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld, NwConstants.DEFAULT_SERVICE_INDEX);
+            LOG.trace("Deleting ingress dispatcher table entry for service {}, match service index {}",
+                boundServiceOld, NwConstants.DEFAULT_SERVICE_INDEX);
             FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, t, NwConstants.DEFAULT_SERVICE_INDEX);
             if (low != null) {
                 //delete the lower services flow entry.
-                LOG.trace("Deleting table entry for lower service {}, match service index {}", low, low.getServicePriority());
+                LOG.trace("Deleting ingress dispatcher table entry for lower service {}, match service index {}",
+                    low, low.getServicePriority());
                 FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), low, t, low.getServicePriority());
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) ((lower!=null) ? lower.getServicePriority() : low.getServicePriority() + 1);
-                LOG.trace("Installing new entry for lower service {}, match service index {}, update service index {}", low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                LOG.trace("Installing new ingress dispatcher table entry for lower service {}, match service index " +
+                    "{}, update service index {}", low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifaceState.getName(), t, ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
             }
         } else {
-            LOG.trace("Deleting table entry for service {}, match service index {}", boundServiceOld, boundServiceOld.getServicePriority());
+            LOG.trace("Deleting ingress dispatcher table entry for service {}, match service index {}",
+                boundServiceOld, boundServiceOld.getServicePriority());
             FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, t, boundServiceOld.getServicePriority());
             short lowerServiceIndex = (short) ((low!=null) ? low.getServicePriority() : boundServiceOld.getServicePriority() + 1);
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);

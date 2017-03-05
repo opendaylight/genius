@@ -69,7 +69,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         if(ifaceState.getType() == null) {
             return futures;
         }
-        LOG.debug("unbinding services on interface {}", ifaceState.getName());
+        LOG.info("unbind all ingress services on interface {}", ifaceState.getName());
 
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeIngress.class, dataBroker);

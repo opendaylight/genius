@@ -77,7 +77,7 @@ public class OvsInterfaceConfigRemoveHelper {
                         IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode())) {
             return;
         }
-        LOG.debug("removing vlan configuration for {}", interfaceName);
+        LOG.info("removing vlan configuration for interface {}", interfaceName);
         InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, defaultOperationalShardTransaction, idManagerService);
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
@@ -112,7 +112,6 @@ public class OvsInterfaceConfigRemoveHelper {
                                                   WriteTransaction defaultOperationalShardTransaction,
                                                   WriteTransaction defaultConfigShardTransaction,
                                                   List<ListenableFuture<Void>> futures) {
-        LOG.debug("removing tunnel configuration for {}",interfaceName);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = null;
         if (parentRefs != null) {
@@ -123,6 +122,7 @@ public class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
+        LOG.info("removing tunnel configuration for interface {}",interfaceName);
         OvsdbBridgeRef ovsdbBridgeRef =
                 InterfaceMetaUtils.getOvsdbBridgeRef(dpId, dataBroker);
         if (ovsdbBridgeRef != null) {

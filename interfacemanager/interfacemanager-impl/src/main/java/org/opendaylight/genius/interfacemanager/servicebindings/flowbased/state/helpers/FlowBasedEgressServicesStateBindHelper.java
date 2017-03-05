@@ -100,6 +100,7 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
             List<BoundServices> allServices,
             Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
+        LOG.info("bind all egress services for vlan port: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();

@@ -342,6 +342,7 @@ public class FlowBasedServicesUtils {
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService, currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
+        LOG.debug("Installing Egress Dispatcher Flow {}, {}", flowRef, interfaceName);
         installFlow(dpId, egressFlow, t);
     }
 
@@ -416,8 +417,8 @@ public class FlowBasedServicesUtils {
     }
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId, WriteTransaction t) {
-        LOG.debug("Removing Ingress Flows");
         String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name, serviceOld, serviceOld.getServicePriority());
+        LOG.debug("Removing Ingress Flow {}", flowKeyStr);
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -568,6 +569,7 @@ public class FlowBasedServicesUtils {
         String flowRef = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef, 0, 0,
                 NwConstants.VLAN_TABLE_COOKIE, matches, instructions);
+        LOG.debug("Installing ingress flow {} for {}", flowRef, iface.getName());
         installFlow(dpId, ingressFlow, inventoryConfigShardTransaction);
         futures.add(inventoryConfigShardTransaction.submit());
     }

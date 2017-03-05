@@ -42,6 +42,7 @@ public class OvsInterfaceConfigUpdateHelper{
                                                                    IdManagerService idManager, IMdsalApiManager mdsalApiManager,
                                                                    Interface interfaceNew, Interface interfaceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
+        LOG.info("updating configuration for interface {}",interfaceNew.getName());
 
         // If any of the port attributes are modified, treat it as a delete and recreate scenario
         if(portAttributesModified(interfaceOld, interfaceNew)) {
