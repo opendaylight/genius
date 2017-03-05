@@ -185,7 +185,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifState);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        LOG.info("binding service for vlan port: {}", ifState.getName());
+        LOG.info("binding ingress service {} for vlan port: {}", boundServiceNew.getServiceName(), ifState.getName());
         if (allServices.size() == 1) {
             // calling LportDispatcherTableForService with current service index
             // as 0 and next service index as some value since this is the only
@@ -213,7 +213,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, low)[0];
                 short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
                         : low.getServicePriority() + 1);
-                LOG.trace("Installing table 17 entry for existing service {} service match on "
+                LOG.trace("Installing ingress dispatcher table entry for existing service {} service match on "
                         + "service index {} update with service index {}",
                         low, low.getServicePriority(), lowerServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifState.getName(), transaction,
@@ -225,20 +225,21 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         if (high != null) {
             currentServiceIndex = boundServiceNew.getServicePriority();
             if (high.equals(highest)) {
-                LOG.trace("Installing table 17 entry for existing service {} service match on "
+                LOG.trace("Installing ingress dispatcher table entry for existing service {} service match on "
                         + "service index {} update with service index {}",
                         high, NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction,
                         ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, currentServiceIndex);
             } else {
-                LOG.trace("Installing table 17 entry for existing service {} service match on "
+                LOG.trace("Installing ingress dispatcher table entry for existing service {} service match on "
                         + "service index {} update with service index {}",
                         high, high.getServicePriority(), currentServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, ifState.getName(), transaction,
                         ifState.getIfIndex(), high.getServicePriority(), currentServiceIndex);
             }
         }
-        LOG.trace("Installing table 17 entry for new service match on service index {} update with service index {}",
+        LOG.trace("Installing ingress dispatcher table entry for new service match on service index {} update with " +
+                "service index {}",
                 currentServiceIndex, nextServiceIndex);
         FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundServiceNew, ifState.getName(), transaction,
                 ifState.getIfIndex(), currentServiceIndex, nextServiceIndex);
