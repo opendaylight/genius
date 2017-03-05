@@ -128,6 +128,24 @@
       "revId": "69c412833d026c2ed1178d02a0f499fc378e5f80",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a869a1fa",
+        "filename": "docs/specs/multiple-vxlan-tunnels.rst",
+        "patchSetId": 24
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-05T09:37:24Z",
+      "side": 1,
+      "message": "You are right, it hasn\u0027t been described as part of the netvirt changes.\n\nIf the global config option for vxlan tunnels is enabled, only logical tunnel changes will be taken into consideration when deciding to advertise/withdraw prefixes from DC-GW. The same kind of logic will also need to be applied on tunnel state changes in the L2 pipeline.\nI will add it to the netvirt changes section",
+      "parentUuid": "fafc7978_a47a73ba",
+      "revId": "69c412833d026c2ed1178d02a0f499fc378e5f80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
