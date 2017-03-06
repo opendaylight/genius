@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -73,6 +74,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
@@ -238,6 +240,8 @@ public class ItmUtils {
         String tunnelTypeStr;
         if (tunnelType.contains("TunnelTypeGre")) {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
+        } else if (tunnelType.contains("TunnelTypeLogicalGroup")) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         } else {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
@@ -260,6 +264,14 @@ public class ItmUtils {
                 remoteHostName, tunnelTypeStr);
         LOG.trace("Releasing Id for trunkInterface - {}", trunkInterfaceName);
         //releaseId(idManager, trunkInterfaceName) ;
+    }
+
+    public static String getLogicalTunnelGroupName(BigInteger srcDpnId, BigInteger destDpnId) {
+        String tunnelTypeStr = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
+        String groupName = String.format("%s:%s:%s", srcDpnId.toString(), destDpnId.toString(), tunnelTypeStr);
+        LOG.trace("logical tunnel group name is {}", groupName);
+        groupName = String.format("%s%s", TUNNEL, getUniqueIdString(groupName));
+        return groupName;
     }
 
     public static InetAddress getInetAddressFromIpAddress(IpAddress ip) {
@@ -306,9 +318,21 @@ public class ItmUtils {
                                                  boolean internal, Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                                                  Integer monitorInterval, boolean useOfTunnel) {
+
+        return buildTunnelInterface(dpn, ifName, desc, enabled, tunType, localIp, remoteIp,  gatewayIp,  vlanId,
+                                    internal,  monitorEnabled, monitorProtocol, monitorInterval,  useOfTunnel, null);
+    }
+
+    public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
+                                                 Class<? extends TunnelTypeBase> tunType, IpAddress localIp,
+                                                 IpAddress remoteIp, IpAddress gatewayIp, Integer vlanId,
+                                                 boolean internal, Boolean monitorEnabled,
+                                                 Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
+                                                 Integer monitorInterval, boolean useOfTunnel, String parentIfaceName) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
-        ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
+        ParentRefs parentRefs =
+                new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).setParentInterface(parentIfaceName).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
         Long monitoringInterval = null;
         if (vlanId > 0) {
@@ -1107,6 +1131,8 @@ public class ItmUtils {
             tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
         } else if (tunType.equals(TunnelTypeMplsOverGre.class)) {
             tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
+        } else if (tunType.equals(TunnelTypeLogicalGroup.class)) {
+            tunnelType = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         }
         return tunnelType ;
     }
