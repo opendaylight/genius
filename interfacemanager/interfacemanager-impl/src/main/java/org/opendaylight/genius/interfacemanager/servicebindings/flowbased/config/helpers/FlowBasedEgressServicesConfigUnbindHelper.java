@@ -73,18 +73,17 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
             return futures;
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-        if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
-            LOG.info("Not unbinding Service since operstatus is DOWN for Interface: {}", interfaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        if (ifState == null) {
+            LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
             return futures;
         }
         List<BoundServices> boundServices = servicesInfo.getBoundServices();
-
         // Split based on type of interface....
-        if (ifState.getType().isAssignableFrom(L2vlan.class)) {
+        if (L2vlan.class.equals(ifState.getType())) {
             return unbindServiceOnVlan(boundServiceOld, boundServices, ifState, dataBroker);
-        } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
+        } else if (Tunnel.class.equals(ifState.getType())) {
             return unbindServiceOnTunnel(boundServiceOld, boundServices, ifState, dataBroker);
         }
         return futures;

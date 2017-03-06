@@ -69,31 +69,33 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
 
     public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
                                                              BoundServices boundServiceOld) {
+
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         String interfaceName =
                 InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier
+            .firstIdentifierOf(ServicesInfo.class)).getServiceMode();
         // Get the Parent ServiceInfo
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode, dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
+            dataBroker);
         if (servicesInfo == null) {
             LOG.error("Reached Impossible part in the code for bound service: {}", boundServiceOld);
             return futures;
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-        if (ifState == null || ifState.getType() == null || ifState.getOperStatus() == OperStatus.Down) {
-            LOG.info("Not unbinding Service since operstatus is DOWN for Interface: {}", interfaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        if (ifState == null) {
+            LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
             return futures;
         }
         List<BoundServices> boundServices = servicesInfo.getBoundServices();
 
         // Split based on type of interface....
-        if (ifState.getType().isAssignableFrom(L2vlan.class)) {
+        if (L2vlan.class.equals(ifState.getType())) {
             return unbindServiceOnVlan(boundServiceOld, boundServices, ifState, dataBroker);
-        } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
+        } else if (Tunnel.class.equals(ifState.getType())) {
             return unbindServiceOnTunnel(boundServiceOld, boundServices, ifState, dataBroker);
         }
         return futures;

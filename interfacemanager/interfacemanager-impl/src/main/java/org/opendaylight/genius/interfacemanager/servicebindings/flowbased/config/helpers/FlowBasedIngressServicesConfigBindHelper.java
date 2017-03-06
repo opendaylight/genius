@@ -71,20 +71,21 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
                                                            BoundServices boundServiceNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        String interfaceName =
-                InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-        if (ifState == null || ifState.getOperStatus() == OperStatus.Down) {
-            LOG.warn("Interface not up, not Binding Service for Interface: {}", interfaceName);
+        String interfaceName =
+            InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        if (ifState == null) {
+            LOG.warn("Interface not operational, not binding Service for Interface: {}", interfaceName);
             return futures;
         }
 
         // Get the Parent ServiceInfo
-
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode, dataBroker);
+        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier.keyOf(instanceIdentifier
+             .firstIdentifierOf(ServicesInfo.class)).getServiceMode();
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
+            dataBroker);
         if (servicesInfo == null) {
             LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
             return futures;
@@ -95,13 +96,11 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
             LOG.error("Reached Impossible part 2 in the code during bind service for: {}", boundServiceNew);
             return futures;
         }
-        if(ifState.getType() == null) {
-            return futures;
-        }
+
         // Split based on type of interface...
-        if (ifState.getType().isAssignableFrom(L2vlan.class)) {
+        if (L2vlan.class.equals(ifState.getType())) {
             return bindServiceOnVlan(boundServiceNew, allServices, ifState, dataBroker);
-        } else if (ifState.getType().isAssignableFrom(Tunnel.class)) {
+        } else if (Tunnel.class.equals(ifState.getType())) {
             return bindServiceOnTunnel(boundServiceNew, allServices, ifState, dataBroker);
         }
         return futures;
