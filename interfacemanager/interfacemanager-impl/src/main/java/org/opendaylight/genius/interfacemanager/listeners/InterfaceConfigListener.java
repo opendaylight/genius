@@ -24,6 +24,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsIn
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
+import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -47,17 +48,19 @@ public class InterfaceConfigListener
     private final AlivenessMonitorService alivenessMonitorService;
     private final IMdsalApiManager mdsalApiManager;
     private final InterfacemgrProvider interfaceMgrProvider;
+    private final IITMProvider iITMProvider;
 
     @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
             final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
-            final AlivenessMonitorService alivenessMonitorService) {
+            final AlivenessMonitorService alivenessMonitorService, final IITMProvider itmProvider) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.mdsalApiManager = mdsalApiManager;
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.alivenessMonitorService = alivenessMonitorService;
+        this.iITMProvider = itmProvider;
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -179,8 +182,8 @@ public class InterfaceConfigListener
             // If another renderer(for eg : CSS) needs to be supported, check
             // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, idManager,
-                    alivenessMonitorService, mdsalApiManager);
+            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew,
+                    idManager, alivenessMonitorService, mdsalApiManager, iITMProvider);
         }
 
         @Override
@@ -210,7 +213,7 @@ public class InterfaceConfigListener
             // can be performed here
             // to call the respective helpers.
             return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService, idManager,
-                    mdsalApiManager, interfaceNew, interfaceOld);
+                    mdsalApiManager, interfaceNew, interfaceOld, iITMProvider);
         }
 
         @Override

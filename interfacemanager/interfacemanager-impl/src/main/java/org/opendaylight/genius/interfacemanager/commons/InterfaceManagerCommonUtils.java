@@ -60,7 +60,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -147,6 +149,13 @@ public final class InterfaceManagerCommonUtils {
     public static List<Interface> getAllVlanInterfacesFromCache() {
         return interfaceConfigMap.values().stream()
                 .filter(iface -> IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VLAN_INTERFACE)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Interface> getAllLogicTunnelInterfacesFromCache() {
+        return interfaceConfigMap.values().stream()
+                .filter(iface -> iface.getAugmentation(IfTunnel.class) != null
+                    && iface.getAugmentation(IfTunnel.class).getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class))
                 .collect(Collectors.toList());
     }
 
@@ -431,7 +440,17 @@ public final class InterfaceManagerCommonUtils {
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         List<String> childLowerLayerIfList = new ArrayList<>();
-        childLowerLayerIfList.add(0, nodeConnectorId.getValue());
+        if (nodeConnectorId != null) {
+            childLowerLayerIfList.add(0, nodeConnectorId.getValue());
+        } else {
+            //logical tunnel group doesn't have OF port
+            ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
+            if (parentRefs != null) {
+                BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+                String lowref = MDSALUtil.NODE_PREFIX + MDSALUtil.SEPARATOR + dpId + MDSALUtil.SEPARATOR + 0;
+                childLowerLayerIfList.add(0, lowref);
+            }
+        }
         ifaceBuilder.setAdminStatus(adminStatus).setOperStatus(operStatus).setPhysAddress(physAddress)
                 .setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
@@ -443,10 +462,11 @@ public final class InterfaceManagerCommonUtils {
         } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
-
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        // Update the DpnToInterfaceList OpDS
-        createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
+        if (nodeConnectorId != null) {
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            // Update the DpnToInterfaceList OpDS
+            createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
+        }
         return ifState;
 }
 
