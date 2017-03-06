@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Preconditions;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -48,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
@@ -324,7 +326,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     public void configureTunnelMonitorInterval(int interval) {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
     }
-    
+
     public boolean validateIP (final String ip){
         if (ip == null || ip.equals("")) {
             return false;
@@ -334,5 +336,13 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         Pattern pattern = Pattern.compile(PATTERN);
         Matcher matcher = pattern.matcher(ip);
         return matcher.matches();
+    }
+
+    public InternalTunnel getInternalTunnel(String name) {
+        return ItmUtils.itmCache.getInternalTunnel(name);
+    }
+
+    public Collection<InternalTunnel> getAllInternalTunnels() {
+        return ItmUtils.itmCache.getAllInternalTunnel();
     }
 }

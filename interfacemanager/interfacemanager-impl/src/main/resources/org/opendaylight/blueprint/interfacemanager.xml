@@ -34,6 +34,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="notificationService"
                interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
 
+    <reference id="iITMProvider"
+               interface="org.opendaylight.genius.itm.api.IITMProvider" />
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <service ref="interfacemgrProvider"
