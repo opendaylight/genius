@@ -1,0 +1,6 @@
+<tunnel-aggregation-config xmlns="urn:opendaylight:genius:itm:config">
+    <tunnel-aggregation xmlns="urn:opendaylight:genius:itm:config">
+        <tunnel-type>TunnelTypeVxlan</tunnel-type>
+        <enabled>true</enabled>
+    </tunnel-aggregation>
+</tunnel-aggregation-config>
