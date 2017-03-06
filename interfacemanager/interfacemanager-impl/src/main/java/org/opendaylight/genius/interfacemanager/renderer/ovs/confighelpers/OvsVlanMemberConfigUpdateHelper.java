@@ -51,7 +51,7 @@ public class OvsVlanMemberConfigUpdateHelper {
         if (interfaceChildEntry == null) {
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
                     interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
-                    mdsalApiManager));
+                    mdsalApiManager, null));
             return futures;
         }
 

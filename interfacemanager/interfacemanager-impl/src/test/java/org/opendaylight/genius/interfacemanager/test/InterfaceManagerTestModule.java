@@ -32,6 +32,7 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.test.infra.TestEntityOwnershipService;
+import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.ModuleSetupRuntimeException;
@@ -92,6 +93,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         EntityOwnershipService entityOwnershipService = TestEntityOwnershipService.newInstance();
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
 
+        bind(IITMProvider.class).toInstance(mock(IITMProvider.class));
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(CacheBridgeEntryConfigListener.class);
