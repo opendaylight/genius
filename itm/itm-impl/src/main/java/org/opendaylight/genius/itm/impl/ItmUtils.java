@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -71,6 +72,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
@@ -218,8 +220,10 @@ public class ItmUtils {
     public static String getTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName,
                                                String localHostName, String remoteHostName, String tunnelType) {
         String tunnelTypeStr;
-        if(tunnelType.contains("TunnelTypeGre")) {
+        if (tunnelType.contains("TunnelTypeGre")) {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
+        } else if (tunnelType.contains("TunnelTypeLogicalGroup")) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         } else {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
@@ -1024,6 +1028,8 @@ public class ItmUtils {
             tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
         } else if (tunnelType.equals(TunnelTypeMplsOverGre.class)) {
             tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
+        } else if (tunType.equals(TunnelTypeLogicalGroup.class)) {
+            tunnelType = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         }
         return tunnelType ;
     }

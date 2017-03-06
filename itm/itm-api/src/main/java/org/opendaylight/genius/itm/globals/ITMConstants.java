@@ -33,6 +33,7 @@ public class ITMConstants {
     // changes the name
     @SuppressWarnings("checkstyle:ConstantName")
     public static final String TUNNEL_TYPE_MPLSoGRE = "MPLS_OVER_GRE";
+    public static final String TUNNEL_TYPE_LOGICAL_GROUP_VXLAN = "LOGICAL_VXLAN_GROUP";
     public static final String TUNNEL_TYPE_INVALID = "Invalid";
     public static final String MONITOR_TYPE_LLDP = "LLDP";
     public static final String MONITOR_TYPE_BFD = "BFD";

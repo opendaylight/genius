@@ -62,6 +62,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -143,6 +144,13 @@ public class InterfaceManagerCommonUtils {
     public static List<Interface> getAllVlanInterfacesFromCache() {
         return interfaceConfigMap.values().stream()
                 .filter(iface -> IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VLAN_INTERFACE)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Interface> getAllLogicTunnelInterfacesFromCache() {
+        return interfaceConfigMap.values().stream()
+                .filter(iface -> iface.getAugmentation(IfTunnel.class) != null
+                    && iface.getAugmentation(IfTunnel.class).getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class))
                 .collect(Collectors.toList());
     }
 
@@ -403,21 +411,24 @@ public class InterfaceManagerCommonUtils {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         List<String> childLowerLayerIfList = new ArrayList<>();
-        childLowerLayerIfList.add(0, nodeConnectorId.getValue());
+        if (nodeConnectorId != null) {
+            childLowerLayerIfList.add(0, nodeConnectorId.getValue());
+        }
         ifaceBuilder.setAdminStatus(adminStatus).setOperStatus(operStatus).setPhysAddress(physAddress)
                 .setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
                 .build();
-        if(InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)){
+        if (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)) {
             BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        }else {
+        } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
-
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        // Update the DpnToInterfaceList OpDS
-        createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
+        if (nodeConnectorId != null) {
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            // Update the DpnToInterfaceList OpDS
+            createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
+        }
         return ifState;
     }
 
