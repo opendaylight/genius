@@ -103,20 +103,21 @@ public class SouthboundUtils {
     // Option values for VxLAN-GPE + NSH tunnels
     private static final String TUNNEL_OPTIONS_VALUE_FLOW = "flow";
     private static final String TUNNEL_OPTIONS_VALUE_GPE = "gpe";
-     // UDP port for VxLAN-GPE Tunnels
+    // UDP port for VxLAN-GPE Tunnels
     private static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
-    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
-        {
-            put(TunnelTypeGre.class, InterfaceTypeGre.class);
-            put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
-            put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
-        }
-    };
+    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP =
+            new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
+                {
+                    put(TunnelTypeGre.class, InterfaceTypeGre.class);
+                    put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
+                    put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
+                }
+            };
 
-    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName, DataBroker dataBroker,
-            List<ListenableFuture<Void>> futures) {
+    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName,
+            DataBroker dataBroker, List<ListenableFuture<Void>> futures) {
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
             addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
@@ -191,8 +192,7 @@ public class SouthboundUtils {
             OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String portName, DataBroker dataBroker,
             WriteTransaction tx) {
         if (ifL2vlan.getVlanId() != null) {
-            addTerminationPoint(bridgeIid, portName, ifL2vlan.getVlanId().getValue(),
-                    null, null, ifTunnel);
+            addTerminationPoint(bridgeIid, portName, ifL2vlan.getVlanId().getValue(), null, null, ifTunnel);
         }
     }
 
@@ -220,13 +220,13 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_LOCAL_IP, TUNNEL_OPTIONS_VALUE_FLOW);
         } else {
             IpAddress localIp = ifTunnel.getTunnelSource();
-            options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
+            options.put(TUNNEL_OPTIONS_LOCAL_IP, String.valueOf(localIp.getValue()));
         }
         if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
             options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
         } else {
             IpAddress remoteIp = ifTunnel.getTunnelDestination();
-            options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, String.valueOf(remoteIp.getValue()));
         }
 
         // Specific options for each type of tunnel
@@ -241,7 +241,8 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_NSHC2, TUNNEL_OPTIONS_VALUE_FLOW);
             options.put(TUNNEL_OPTIONS_NSHC3, TUNNEL_OPTIONS_VALUE_FLOW);
             options.put(TUNNEL_OPTIONS_NSHC4, TUNNEL_OPTIONS_VALUE_FLOW);
-            // VxLAN-GPE interfaces will not use the default UDP port to avoid problems with other meshes
+            // VxLAN-GPE interfaces will not use the default UDP port to avoid
+            // problems with other meshes
             options.put(TUNNEL_OPTIONS_DESTINATION_PORT, TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT);
         }
 
@@ -276,7 +277,7 @@ public class SouthboundUtils {
     }
 
     private static void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
-                                            Class<? extends InterfaceTypeBase> type, Map<String, String> options, IfTunnel ifTunnel) {
+            Class<? extends InterfaceTypeBase> type, Map<String, String> options, IfTunnel ifTunnel) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
@@ -325,7 +326,7 @@ public class SouthboundUtils {
         List<InterfaceBfd> bfdParams = new ArrayList<>();
         bfdParams.add(
                 getIfBfdObj(BFD_PARAM_ENABLE, ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() : "false"));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null && ifTunnel.getMonitorInterval() != null
                 ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
         return bfdParams;
     }
