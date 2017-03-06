@@ -26,6 +26,11 @@ public class IfmConstants {
     public static final String IFM_IDPOOL_NAME = "interfaces";
     public static final long IFM_ID_POOL_START = 1L;
     public static final long IFM_ID_POOL_END = 65535;
+
+    public static final String VXLAN_GROUP_POOL_NAME = "vxlangroup";
+    public static final long VXLAN_GROUP_POOL_START = 300000L;
+    public static final long VXLAN_GROUP_POOL_END = 310000L;
+
     // Group Prefix
     public static final long VLAN_GROUP_START = 1000;
     public static final long TRUNK_GROUP_START = 20000;

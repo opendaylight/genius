@@ -533,4 +533,8 @@ public class IfmUtil {
             return futures;
         });
     }
+
+    public static long getLogicalTunnelSelectGroupId(int lportTag) {
+        return org.opendaylight.genius.interfacemanager.globals.IfmConstants.VXLAN_GROUP_POOL_START + lportTag;
+    }
 }

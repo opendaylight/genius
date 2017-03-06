@@ -769,5 +769,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return tpList;
     }
 
+    public long getLogicalTunnelSelectGroupId(int lportTag) {
+        return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
+    }
 
 }

@@ -101,4 +101,6 @@ public interface IInterfaceManager {
 
     void updateInterfaceParentRef(String interfaceName, String parentInterface, boolean readInterfaceBeforeWrite);
 
+    long getLogicalTunnelSelectGroupId(int lportTag);
+
 }

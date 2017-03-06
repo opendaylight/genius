@@ -219,7 +219,7 @@ public class InterfaceMetaUtils {
     }
 
     public static void createLportTagInterfaceMap(WriteTransaction tx, String infName, Integer ifIndex) {
-        LOG.debug("creating lport tag to interface map for {}",infName);
+        LOG.debug("creating lport tag to interface map for {} ifIndex {}",infName, ifIndex);
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         IfIndexInterface ifIndexInterface = new IfIndexInterfaceBuilder().setIfIndex(ifIndex)
