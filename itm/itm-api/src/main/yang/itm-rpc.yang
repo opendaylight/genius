@@ -56,10 +56,10 @@ module itm-rpc {
             description "used to retrieve tunnel interface id with src Dpn and destination ip/dpn";
                 input {
                     leaf source-dpid {
-                    type uint64;
+                        type uint64;
                     }
                     leaf destination-ip {
-                    type inet:ip-address;
+                        type inet:ip-address;
                     }
                     leaf destination-dpid {
                         type uint64;
