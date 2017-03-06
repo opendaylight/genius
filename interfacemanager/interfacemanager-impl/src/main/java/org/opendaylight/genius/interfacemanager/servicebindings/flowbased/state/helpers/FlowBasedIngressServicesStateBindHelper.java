@@ -62,12 +62,11 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
         return flowBasedIngressServicesStateAddable;
     }
     public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         if(ifaceState.getType() == null) {
-            return futures;
+            return null;
         }
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("binding services on interface {}", ifaceState.getName());
-
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeIngress.class, dataBroker);
         if (servicesInfo == null) {
@@ -80,9 +79,9 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
             LOG.trace("bound services is empty for interface {}", ifaceState.getName());
             return futures;
         }
-        if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
+        if (L2vlan.class.equals(ifaceState.getType())) {
             return bindServiceOnVlan(allServices, ifaceState, dataBroker);
-        } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
+        } else if (Tunnel.class.equals(ifaceState.getType())){
             return bindServiceOnTunnel(allServices, ifaceState, dataBroker);
         }
         return futures;
