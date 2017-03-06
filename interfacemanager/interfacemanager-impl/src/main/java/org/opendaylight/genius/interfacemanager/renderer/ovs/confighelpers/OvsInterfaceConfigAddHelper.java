@@ -36,6 +36,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -54,7 +56,7 @@ public class OvsInterfaceConfigAddHelper {
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
             addTunnelConfiguration(dataBroker, parentRefs, interfaceNew, idManager, alivenessMonitorService, ifTunnel,
-                    mdsalApiManager, futures);
+                    mdsalApiManager, defaultOperShardTransaction, futures);
         } else {
             addVlanConfiguration(interfaceNew, parentRefs, dataBroker, idManager, defaultConfigShardTransaction,
                     defaultOperShardTransaction, futures);
@@ -91,9 +93,12 @@ public class OvsInterfaceConfigAddHelper {
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs, Interface interfaceNew,
-            IdManagerService idManager, AlivenessMonitorService alivenessMonitorService, IfTunnel ifTunnel,
-            IMdsalApiManager mdsalApiManager, List<ListenableFuture<Void>> futures) {
+    private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
+                                               Interface interfaceNew, IdManagerService idManager,
+                                               AlivenessMonitorService alivenessMonitorService,
+                                               IfTunnel ifTunnel, IMdsalApiManager mdsalApiManager,
+                                               WriteTransaction defaultOperShardTransaction,
+                                               List<ListenableFuture<Void>> futures) {
         if (parentRefs == null) {
             LOG.warn(
                     "ParentRefs for interface: {} Not Found. "
@@ -109,6 +114,10 @@ public class OvsInterfaceConfigAddHelper {
             return;
         }
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
+
+        if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+            addLogicalTunnelGroup(interfaceNew, idManager, defaultOperShardTransaction);
+        }
         boolean createTunnelPort = true;
         String tunnelName = interfaceNew.getName();
         if (SouthboundUtils.isOfTunnel(ifTunnel)) {
@@ -119,7 +128,14 @@ public class OvsInterfaceConfigAddHelper {
             InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
                     Optional.absent());
         }
-
+        String parentInterface = parentRefs.getParentInterface();
+        if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)
+                && parentInterface != null && !parentInterface.isEmpty()) {
+            LOG.debug("MULTIPLE_VxLAN_TUNNELS: createInterfaceChildEntry for {} in logical group {}",
+                    tunnelName, parentInterface);
+            InterfaceManagerCommonUtils.createInterfaceChildEntry(parentInterface, tunnelName,
+                    Optional.of(defaultOperShardTransaction));
+        }
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
 
@@ -198,5 +214,16 @@ public class OvsInterfaceConfigAddHelper {
         public String toString() {
             return "VlanMemberStateAddWorker [interfaceName=" + interfaceName + ", ifState=" + ifState + "]";
         }
+    }
+
+    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager, WriteTransaction tx) {
+        LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", itfNew.getName());
+        InterfaceManagerCommonUtils.addStateEntry(itfNew, itfNew.getName(), tx,
+                                                  idManager, null /*physAddress*/,
+                                                  org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                                                  .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
+                                                  org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                                                  .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
+                                                  null /*nodeConnectorId*/);
     }
 }
