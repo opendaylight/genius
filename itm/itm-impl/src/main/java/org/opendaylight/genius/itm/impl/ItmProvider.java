@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Preconditions;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -25,6 +26,7 @@ import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
 import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
@@ -48,6 +50,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
@@ -346,4 +349,20 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         Matcher matcher = pattern.matcher(ip);
         return matcher.matches();
     }
+
+    public InternalTunnel getInternalTunnel(String name) {
+        return ItmUtils.itmCache.getInternalTunnel(name);
+    }
+
+    public Collection<InternalTunnel> getAllInternalTunnels() {
+        return ItmUtils.itmCache.getAllInternalTunnel();
+    }
+
+    public String getLogicalTunnelGroupName(BigInteger srcDpnId, BigInteger destDpnId) {
+        if (!ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
+            return null;
+        }
+        return ItmUtils.getLogicalTunnelGroupName(srcDpnId, destDpnId);
+    }
+
 }
