@@ -61,10 +61,10 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
     }
 
     public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         if(ifaceState.getType() == null) {
-            return futures;
+            return null;
         }
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("unbind all ingress services on interface {}", ifaceState.getName());
 
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
@@ -80,9 +80,9 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
             return futures;
         }
 
-        if (ifaceState.getType().isAssignableFrom(L2vlan.class)) {
+        if (L2vlan.class.equals(ifaceState.getType())) {
             return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        } else if (ifaceState.getType().isAssignableFrom(Tunnel.class)){
+        } else if (Tunnel.class.equals(ifaceState.getType())){
             return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         }
         return futures;
