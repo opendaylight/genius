@@ -34,6 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
@@ -708,6 +709,8 @@ public class TepCommandHelper {
                     tunnelType = ITMConstants.TUNNEL_TYPE_GRE;
                 } else if (tunType.equals(TunnelTypeMplsOverGre.class)) {
                     tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
+                } else if (tunType.equals(TunnelTypeLogicalGroup.class)) {
+                    tunnelType = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
                 }
                 System.out.println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(),
                         tunnelInst.getSrcInfo().getTepDeviceId(), tunnelInst.getDstInfo().getTepDeviceId(),
