@@ -58,10 +58,10 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
     }
 
     public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         if(ifaceState.getType() == null) {
-            return futures;
+            return null;
         }
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("binding services on interface {}", ifaceState.getName());
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
