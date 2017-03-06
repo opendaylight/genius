@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_30ba3dc1",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-06T10:17:27Z",
+      "side": 1,
+      "message": "remove the \"-\" x2 here?  I\u0027ll just do it inline... ;)",
+      "revId": "7912b31a675cab9887489a8dcfe05ee0ac77888c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
