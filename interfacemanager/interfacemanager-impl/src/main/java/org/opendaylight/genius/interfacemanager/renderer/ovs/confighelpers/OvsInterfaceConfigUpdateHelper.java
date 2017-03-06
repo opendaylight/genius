@@ -19,6 +19,7 @@ import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -39,7 +40,8 @@ public class OvsInterfaceConfigUpdateHelper{
 
     public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,  AlivenessMonitorService alivenessMonitorService,
                                                                    IdManagerService idManager, IMdsalApiManager mdsalApiManager,
-                                                                   Interface interfaceNew, Interface interfaceOld) {
+                                                                   Interface interfaceNew, Interface interfaceOld,
+                                                                   IITMProvider itmProvider) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("updating configuration for interface {}",interfaceNew.getName());
         // If any of the port attributes are modified, treat it as a delete and recreate scenario
@@ -47,7 +49,8 @@ public class OvsInterfaceConfigUpdateHelper{
             futures.addAll(OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService, interfaceOld, idManager,
                     mdsalApiManager, interfaceOld.getAugmentation(ParentRefs.class)));
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager,alivenessMonitorService,mdsalApiManager));
+                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew,
+                    idManager,alivenessMonitorService,mdsalApiManager, itmProvider));
             return futures;
         }
 
@@ -56,7 +59,8 @@ public class OvsInterfaceConfigUpdateHelper{
                 InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
         if (ifState == null) {
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService, mdsalApiManager));
+                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew,
+                    idManager, alivenessMonitorService, mdsalApiManager, itmProvider));
             return futures;
         }
 

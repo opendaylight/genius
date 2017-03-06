@@ -113,6 +113,8 @@ public class IfmUtil {
         /*
          * NodeConnectorId is of form 'openflow:dpnid:portnum'
          */
+        if (portId == null)
+            return BigInteger.ZERO;
         String[] split = portId.getValue().split(IfmConstants.OF_URI_SEPARATOR);
         return new BigInteger(split[1]);
     }

@@ -49,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,7 +188,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
-                    idManagerService, mdsalManager);
+                    idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldDpnTepsList.isEmpty()) {
@@ -214,7 +215,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
-                    idManagerService, mdsalManager);
+                    idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldHwList.isEmpty()) {
@@ -236,7 +237,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             ItmTepAddWorker addWorker = new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService,
-                    mdsalManager);
+                    mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
     }
