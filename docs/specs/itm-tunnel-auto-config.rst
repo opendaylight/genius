@@ -53,7 +53,7 @@ Following use cases will not be supported:
 * Operator is not supposed to delete ``default-transport-zone`` from REST, such
   scenario will be taken as incorrect configuration.
 * Dynamic change in the bridge for tunnel creation via change in Openvswitch table’s
-  external_ids parameter ``dpn-br-name`` is not supported.
+  external_ids parameter ``br-name`` is not supported.
 * Dynamic change for ``of-tunnel`` tep configuration via change in Openvswitch table’s
   external_ids parameter ``of-tunnel`` is not supported.
 * Dynamic change for configurable parameters ``def-tz-enabled`` and ``def-tz-tunnel-type``
@@ -168,7 +168,7 @@ OVSDB would provide ITM TEP parameter values.
 ITM TEP parameter         OVSDB field
 ====================      ==================================================================
 DPN-ID                    ``ovsdb:datapath-id`` from bridge whose name is pre-configured
-                          with openvswitch:external_ids:dpn-br-name:value
+                          with openvswitch:external_ids:br-name:value
 
 IP-Address                ``openvswitch:external_ids:tep-ip``:value
 
@@ -177,7 +177,7 @@ Transport Zone Name       ``openvswitch:external_ids:tzname``:value
 of-tunnel                 ``openvswitch:external_ids:of-tunnel``:value
 ====================      ==================================================================
 
-NOTE: If ``openvswitch:external_ids:dpn-br-name`` is not configured, then by default
+NOTE: If ``openvswitch:external_ids:br-name`` is not configured, then by default
 ``br-int`` will be considered to fetch DPN-ID which in turn would be used for
 tunnel creation.
 
@@ -295,11 +295,11 @@ using ``ovs-vsctl`` commands to add TEP, then TEP parameters details are passed 
 plugin via OVSDB connection which in turn, is updated into Network Topology Operational DS.
 ITM listens for change in Network Topology Node.
 
-When TEP parameters (like ``tep-ip``, ``tzname``, ``dpn-br-name``, ``of-tunnel``) are
+When TEP parameters (like ``tep-ip``, ``tzname``, ``br-name``, ``of-tunnel``) are
 received in add notification of OVSDB Node, then TEP is added.
 
 For TEP addition, TEP-IP and DPN-ID are mandatory. TEP-IP is obtained from ``tep-ip``
-TEP parameter and DPN-ID is fetched from OVSDB node based on ``dpn-br-name`` TEP parameter:
+TEP parameter and DPN-ID is fetched from OVSDB node based on ``br-name`` TEP parameter:
 
 * if bridge name is specified, then datapath ID of the specified bridge is fetched.
 * if bridge name is not specified, then datapath ID of the ``br-int`` bridge is fetched.
@@ -525,7 +525,7 @@ the ``ovs-vsctl`` command:
 
   ovs-vsctl    set O . external_ids:tep-ip=192.168.56.102
   ovs-vsctl    set O . external_ids:tzname=TZA
-  ovs-vsctl    set O . external_ids:dpn-br-name=br0
+  ovs-vsctl    set O . external_ids:br-name=br0
   ovs-vsctl    set O . external_ids:of-tunnel=true
 
   * To clear TEP params in one go by clearing external_ids column from

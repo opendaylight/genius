@@ -54,4 +54,9 @@ public class ITMConstants {
     public static final int DUMMY_VLANID = 0;
     public static final String DEFAULT_BRIDGE_NAME = "br-int";
     public static final String BRIDGE_URI_PREFIX = "bridge";
+    // Southbound side OVSDB ExternalIds list TEP parameters
+    public static final String EXT_ID_TEP_PARAM_KEY_TEP_IP = "tep-ip";
+    public static final String EXT_ID_TEP_PARAM_KEY_TZNAME = "tzname";
+    public static final String EXT_ID_TEP_PARAM_KEY_BR_NAME = "br-name";
+    public static final String EXT_ID_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
 }
