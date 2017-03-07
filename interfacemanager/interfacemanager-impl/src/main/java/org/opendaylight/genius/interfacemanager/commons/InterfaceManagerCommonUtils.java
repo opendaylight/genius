@@ -255,14 +255,18 @@ public class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
-    public static void createInterfaceChildEntry(String parentInterface, String childInterface) {
+    public static void createInterfaceChildEntry(String parentInterface, String childInterface, WriteTransaction tx) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
         InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+        if(tx == null) {
+            BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+        }else {
+            tx.put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+        }
     }
 
     public static void deleteInterfaceChildEntry(String parentInterface, String childInterface) {
@@ -472,7 +476,7 @@ public class InterfaceManagerCommonUtils {
 
         LOG.info("Creating child interface {} of type {} bound on parent-interface {}",
                 childInterface, l2vlanMode, parentInterface);
-        createInterfaceChildEntry(parentInterface, childInterface);
+        createInterfaceChildEntry(parentInterface, childInterface, tx);
         return true;
     }
 

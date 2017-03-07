@@ -103,7 +103,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
             String synchronizationKey = isTunnelInterface ?
                     parentRefs.getDatapathNodeIdentifier().toString() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
                     interfaceOld.getName() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
 
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
             String synchronizationKey = isTunnelInterface ?
                     interfaceNew.getName() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
