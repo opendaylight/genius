@@ -143,7 +143,7 @@ public class AlivenessMonitor
     // TODO clean up: visibility package local instead of private because accessed in HwVtepTunnelsStateHandler
     final ConcurrentMap<String, Semaphore> lockMap = new ConcurrentHashMap<>();
 
-    private class FutureCallbackImpl implements FutureCallback<Void> {
+    private static class FutureCallbackImpl implements FutureCallback<Void> {
         private final String message;
 
         FutureCallbackImpl(String message) {

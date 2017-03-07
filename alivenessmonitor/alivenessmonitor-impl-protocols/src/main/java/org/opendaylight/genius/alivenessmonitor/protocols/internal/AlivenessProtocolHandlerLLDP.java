@@ -7,8 +7,12 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +23,6 @@ import org.opendaylight.controller.liblldp.EtherTypes;
 import org.opendaylight.controller.liblldp.LLDP;
 import org.opendaylight.controller.liblldp.LLDPTLV;
 import org.opendaylight.controller.liblldp.LLDPTLV.TLVType;
-import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.liblldp.PacketException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -43,9 +46,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Tr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandler {
+public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandler<LLDP> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerLLDP.class);
+
+    // TODO org.opendaylight.controller.liblldp.LLDPTLV uses Charset.defaultCharset() .. bug there?
+    private static final Charset LLDPTLV_CHARSET = StandardCharsets.US_ASCII;
 
     private final PacketProcessingService packetProcessingService;
     private final AtomicInteger packetId = new AtomicInteger(0);
@@ -60,16 +66,17 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
     }
 
     @Override
-    public Class<?> getPacketClass() {
+    public Class<LLDP> getPacketClass() {
         return LLDP.class;
     }
 
     @Override
-    public String handlePacketIn(Packet protocolPacket, PacketReceived packetReceived) {
+    @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE") // TODO remove when 1st  below lldpTlvTypeCur below is removed
+    public String handlePacketIn(LLDP lldpPacket, PacketReceived packetReceived) {
         String tempString = null;
         byte lldpTlvTypeCur;
-        LLDP lldpPacket = (LLDP) protocolPacket;
 
+        // TODO Remove? this seems completely pointless - lldpTlvTypeCur will get overwritten below..
         for (LLDPTLV lldpTlv : lldpPacket.getOptionalTLVList()) {
             lldpTlvTypeCur = lldpTlv.getType();
         }
@@ -78,7 +85,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             lldpTlvTypeCur = lldpTlv.getType();
 
             if (lldpTlvTypeCur == LLDPTLV.TLVType.Custom.getValue()) {
-                tempString = new String(lldpTlv.getValue());
+                tempString = new String(lldpTlv.getValue(), LLDPTLV_CHARSET);
             }
         }
 
@@ -123,19 +130,18 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             return;
         }
 
-        byte[] sourceMac = getMacAddress(interfaceState, sourceInterface);
-        if (sourceMac == null) {
+        Optional<byte[]> optSourceMac = getMacAddress(interfaceState, sourceInterface);
+        if (!optSourceMac.isPresent()) {
             LOG.error("Could not read mac address for the source interface {} from the Inventory. "
                     + "LLDP packet cannot be send.", sourceInterface);
             return;
         }
+        byte[] sourceMac = optSourceMac.get();
 
-        long nodeId = -1;
-        long portNum = -1;
         String lowerLayerIf = interfaceState.getLowerLayerIf().get(0);
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-        nodeId = Long.valueOf(getDpnFromNodeConnectorId(nodeConnectorId));
-        portNum = Long.valueOf(getPortNoFromNodeConnectorId(nodeConnectorId));
+        long nodeId = Long.parseLong(getDpnFromNodeConnectorId(nodeConnectorId));
+        long portNum = Long.parseLong(getPortNoFromNodeConnectorId(nodeConnectorId));
         Ethernet ethenetLLDPPacket = makeLLDPPacket(Long.toString(nodeId), portNum, 0, sourceMac, sourceInterface);
 
         try {
@@ -218,7 +224,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
         LOG.debug("Sending LLDP packet, custome value " + customValue);
 
-        LLDPTLV lldpTlvCustom = buildLLDTLV(TLVType.Custom, customValue.getBytes());
+        LLDPTLV lldpTlvCustom = buildLLDTLV(TLVType.Custom, customValue.getBytes(LLDPTLV_CHARSET));
 
         @SuppressWarnings("AbbreviationAsWordInName")
         List<LLDPTLV> lstLLDPTLVCustom = new ArrayList<>();
