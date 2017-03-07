@@ -93,6 +93,8 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     @Override
     @PreDestroy
     public void close() {
+        dataTreeChangeHandlerExecutor.shutdownNow();
+
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();

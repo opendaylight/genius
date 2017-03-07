@@ -107,6 +107,8 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     @Override
     @PreDestroy
     public void close() {
+        dataTreeChangeHandlerExecutor.shutdownNow();
+
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();
