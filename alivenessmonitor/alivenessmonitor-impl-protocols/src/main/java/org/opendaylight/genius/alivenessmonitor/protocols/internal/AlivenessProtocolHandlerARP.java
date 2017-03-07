@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
@@ -50,7 +49,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandler {
+public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandler<ARP> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerARP.class);
 
@@ -68,13 +67,12 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     }
 
     @Override
-    public Class<?> getPacketClass() {
+    public Class<ARP> getPacketClass() {
         return ARP.class;
     }
 
     @Override
-    public String handlePacketIn(Packet protocolPacket, PacketReceived packetReceived) {
-        ARP packet = (ARP) protocolPacket;
+    public String handlePacketIn(ARP packet, PacketReceived packetReceived) {
         short tableId = packetReceived.getTableId().getValue();
         int arpType = packet.getOpCode();
 
@@ -162,7 +160,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
 
                 @Override
                 public void onSuccess(RpcResult<Void> result) {
-                    if (!result.isSuccessful()) {
+                    if (result != null && !result.isSuccessful()) {
                         LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
                     } else {
                         LOG.debug("Successful RPC Result - {}", msgFormat);
