@@ -16,10 +16,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
@@ -36,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
+public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
     @Inject
@@ -70,16 +71,14 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
-        LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        for(Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
-            FlowBasedServicesStateRemovable flowBasedServicesStateRemovable = FlowBasedServicesStateRendererFactory.
-                    getFlowBasedServicesStateRendererFactory((Class<? extends ServiceModeBase>) serviceMode).
-                    getFlowBasedServicesStateRemoveRenderer();
-            RendererStateInterfaceUnbindWorker stateUnbindWorker =
-                    new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, interfaceStateOld);
-            coordinator.enqueueJob(interfaceStateOld.getName(), stateUnbindWorker, IfmConstants.JOB_MAX_RETRIES);
-        }
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
+            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+            FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+                coordinator.enqueueJob(interfaceStateOld.getName(), new RendererStateInterfaceUnbindWorker
+                    (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                        .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld), IfmConstants.JOB_MAX_RETRIES));
+        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
     }
 
     @Override
@@ -89,20 +88,14 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if (interfaceStateNew.getOperStatus() == Interface.OperStatus.Down) {
-            LOG.info("Interface: {} operstate is down when adding. Not Binding services", interfaceStateNew.getName());
-            return;
-        }
-        LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        for(Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
-            FlowBasedServicesStateAddable flowBasedServicesStateAddable = FlowBasedServicesStateRendererFactory.
-                    getFlowBasedServicesStateRendererFactory((Class<? extends ServiceModeBase>) serviceMode).
-                    getFlowBasedServicesStateAddRenderer();
-            RendererStateInterfaceBindWorker stateBindWorker = new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable,
-                    interfaceStateNew);
-            coordinator.enqueueJob(interfaceStateNew.getName(), stateBindWorker, IfmConstants.JOB_MAX_RETRIES);
-        }
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
+            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+            FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+                coordinator.enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker
+                    (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                        .getFlowBasedServicesStateAddRenderer(), interfaceStateNew), IfmConstants.JOB_MAX_RETRIES));
+        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
     }
 
     @Override

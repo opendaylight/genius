@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class OvsInterfaceConfigAddHelper {
             createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ?
                     true : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName());
+            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(), Optional.absent());
         }
 
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);

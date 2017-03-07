@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -255,14 +254,19 @@ public class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
-    public static void createInterfaceChildEntry(String parentInterface, String childInterface) {
+    public static void createInterfaceChildEntry(String parentInterface, String childInterface,
+                                                 Optional<WriteTransaction> txOptional) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
         InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+        if(!txOptional.isPresent()) {
+            BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+        } else {
+            txOptional.get().put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+        }
     }
 
     public static void deleteInterfaceChildEntry(String parentInterface, String childInterface) {
@@ -472,7 +476,7 @@ public class InterfaceManagerCommonUtils {
 
         LOG.info("Creating child interface {} of type {} bound on parent-interface {}",
                 childInterface, l2vlanMode, parentInterface);
-        createInterfaceChildEntry(parentInterface, childInterface);
+        createInterfaceChildEntry(parentInterface, childInterface, Optional.of(tx) );
         return true;
     }
 
