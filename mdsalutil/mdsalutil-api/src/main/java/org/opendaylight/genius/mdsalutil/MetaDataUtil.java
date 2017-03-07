@@ -15,6 +15,7 @@ public class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
     public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("00000000FFFFFFFE", 16);
     public static final BigInteger METADATA_MASK_REMOTE_ACL_ID = new BigInteger("0000000000FFFFFE", 16);
+    public static final BigInteger METADATA_MASK_CLASSIFER_ID = new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID
         = new BigInteger("08000000FFFFFF00", 16);
     public static final BigInteger METADATA_MASK_LABEL_ITM =     new BigInteger("40FFFFFF000000FF", 16);
@@ -39,6 +40,10 @@ public class MetaDataUtil {
         int shBit = isSHFlagSet ? 1 : 0;
         return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag)).or(serviceMetaData)
                 .or(BigInteger.valueOf(shBit));
+    }
+
+    public static BigInteger getClassifierMetaData(long classifier) {
+        return METADATA_MASK_CLASSIFER_ID.and(BigInteger.valueOf(classifier).shiftLeft(1));
     }
 
     public static BigInteger getServiceIndexMetaData(int serviceIndex) {
@@ -71,8 +76,11 @@ public class MetaDataUtil {
     }
 
     public static int getElanTagFromMetadata(BigInteger metadata) {
-        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE)
-                .shiftRight(24).intValue();
+        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE).shiftRight(24).intValue();
+    }
+
+    public static long getClassifierFromMetadata(BigInteger metadata) {
+        return metadata.and(METADATA_MASK_CLASSIFER_ID).shiftRight(1).longValue();
     }
 
     public static BigInteger getElanTagMetadata(long elanTag) {
