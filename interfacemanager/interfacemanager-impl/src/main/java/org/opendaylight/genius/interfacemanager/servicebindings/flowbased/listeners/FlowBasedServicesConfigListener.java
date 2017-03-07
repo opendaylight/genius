@@ -14,12 +14,14 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesRendererFactory;
@@ -28,15 +30,15 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
+public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
 
     @Inject
@@ -64,17 +66,18 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
 
     @Override
     protected void remove(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld) {
-        String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        LOG.info("Service Binding Entry removed for Interface: {}, Data: {}",
-                interfaceName, boundServiceOld);
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
-                .keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-        FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
-                .getFlowBasedServicesRendererFactory(serviceMode).                getFlowBasedServicesRemoveRenderer();
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable, key,
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            ServicesInfoKey serviceKey = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class));
+            LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
                 boundServiceOld);
-        coordinator.enqueueJob(interfaceName, configWorker, IfmConstants.JOB_MAX_RETRIES);
+            FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable =
+                FlowBasedServicesRendererFactory.getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
+                    .getFlowBasedServicesRemoveRenderer();
+            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+            RendererConfigRemoveWorker configWorker =
+                new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable, key, boundServiceOld);
+            coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
+        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
     }
 
     @Override
@@ -89,18 +92,18 @@ public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListener
 
     @Override
     protected void add(InstanceIdentifier<BoundServices> key, BoundServices boundServicesNew) {
-        String interfaceName = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
-        LOG.info("Service Binding Entry created for Interface: {}, Data: {}",
-                interfaceName, boundServicesNew);
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
-                .keyOf(key.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-
-        FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
-                .getFlowBasedServicesRendererFactory(serviceMode).getFlowBasedServicesAddRenderer();
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(flowBasedServicesAddable, key,
+        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+            ServicesInfoKey serviceKey = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class));
+            LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
                 boundServicesNew);
-        coordinator.enqueueJob(interfaceName, configWorker, IfmConstants.JOB_MAX_RETRIES);
+            FlowBasedServicesConfigAddable flowBasedServicesAddable =
+                FlowBasedServicesRendererFactory.getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
+                    .getFlowBasedServicesAddRenderer();
+            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+            RendererConfigAddWorker configWorker =
+                new RendererConfigAddWorker(flowBasedServicesAddable, key, boundServicesNew);
+            coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
+        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
     }
 
     @Override
