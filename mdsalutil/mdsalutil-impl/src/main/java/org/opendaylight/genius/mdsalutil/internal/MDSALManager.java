@@ -11,6 +11,7 @@ package org.opendaylight.genius.mdsalutil.internal;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.BucketId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.Buckets;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.BucketKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -719,5 +724,39 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager{
     @Override
     public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
         batchedRemoveFlowInternal(dpId, flowEntity.getFlowBuilder().build());
+    }
+
+    @Override
+    public void addBucketToTx(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
+        addBucket(dpId, groupId, bucket, tx);
+    }
+
+    @Override
+    public void removeBucketToTx(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
+        deleteBucket(dpId, groupId, bucketId, tx);
+    }
+
+    public void deleteBucket(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
+
+        Node nodeDpn = buildDpnNode(dpId);
+        InstanceIdentifier<Bucket> bucketInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupId)))
+                .child(Buckets.class)
+                .child(Bucket.class, new BucketKey(new BucketId(bucketId))).build();
+
+        tx.delete(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
+    }
+
+    public void addBucket(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
+
+        Node nodeDpn = buildDpnNode(dpId);
+        InstanceIdentifier<Bucket> bucketInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupId)))
+                .child(Buckets.class)
+                .child(Bucket.class, bucket.getKey()).build();
+
+        tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
     }
 }
