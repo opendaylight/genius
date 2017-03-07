@@ -58,7 +58,14 @@ public class DataStoreJobCoordinator {
             jobQueueMap.put(i, jobEntriesMap);
         }
 
-        new Thread(new JobQueueHandler()).start();
+        Thread jobQueueHandlerThread = new Thread(new JobQueueHandler());
+        jobQueueHandlerThread.setDaemon(true);
+        jobQueueHandlerThread.start();
+    }
+
+    /* package local */ void destroy() {
+        fjPool.shutdownNow();
+        scheduledExecutorService.shutdownNow();
     }
 
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker) {

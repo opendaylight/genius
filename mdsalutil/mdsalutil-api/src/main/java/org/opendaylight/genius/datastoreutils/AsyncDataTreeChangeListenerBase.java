@@ -54,6 +54,10 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
     }
 
+    /* package local */ static void destroy() {
+        dataTreeChangeHandlerExecutor.shutdownNow();
+    }
+
     @Override
     public void addBeforeListener(DataTreeChangeListener<T> listener) {
         chainingDelegate.addBeforeListener(listener);
