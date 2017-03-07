@@ -63,6 +63,10 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
     }
 
+    /* package local */ static void destroy() {
+        dataChangeHandlerExecutor.shutdownNow();
+    }
+
     @Override
     public void addBeforeListener(DataChangeListener listener) {
         chainingDelegate.addBeforeListener(listener);

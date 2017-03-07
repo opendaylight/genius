@@ -71,6 +71,11 @@ public class DataStoreJobCoordinator {
         .newThread(new JobQueueHandler()).start();
     }
 
+    /* package local */ void destroy() {
+        fjPool.shutdownNow();
+        scheduledExecutorService.shutdownNow();
+    }
+
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker) {
         enqueueJob(key, mainWorker, null, 0);
     }
