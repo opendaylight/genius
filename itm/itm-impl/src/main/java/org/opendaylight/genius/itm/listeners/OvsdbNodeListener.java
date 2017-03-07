@@ -130,7 +130,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             // store ExternalIds required parameters
             String newTepIp = ovsdbExternalIdsInfo.getTepIp();
             String tzName = ovsdbExternalIdsInfo.getTzName();
-            String dpnBridgeName = ovsdbExternalIdsInfo.getDpnBrName();
+            String dpnBridgeName = ovsdbExternalIdsInfo.getBrName();
             boolean ofTunnel = ovsdbExternalIdsInfo.getOfTunnel();
 
             // check if TEP-IP is configured or not
@@ -209,7 +209,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         if (newExternalIdsInfoObj != null) {
             newTepIp = newExternalIdsInfoObj.getTepIp();
             tzName = newExternalIdsInfoObj.getTzName();
-            newDpnBridgeName = newExternalIdsInfoObj.getDpnBrName();
+            newDpnBridgeName = newExternalIdsInfoObj.getBrName();
             newOfTunnel = newExternalIdsInfoObj.getOfTunnel();
 
             // All map params have been read, now clear it up.
@@ -217,7 +217,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         }
 
         if (oldExternalIdsInfoObj != null) {
-            oldDpnBridgeName = oldExternalIdsInfoObj.getDpnBrName();
+            oldDpnBridgeName = oldExternalIdsInfoObj.getBrName();
             oldTzName = oldExternalIdsInfoObj.getTzName();
             oldTepIp = oldExternalIdsInfoObj.getTepIp();
 
@@ -389,16 +389,16 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
         if (ovsdbNodeExternalIdsList != null) {
             for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-                if (externalId.getExternalIdKey().equals("tep-ip")) {
+                if (externalId.getExternalIdKey().equals(ITMConstants.EXT_ID_TEP_PARAM_KEY_TEP_IP)) {
                     String tepIp = externalId.getExternalIdValue();
                     externalIdsInfoObj.setTepIp(tepIp);
-                } else if (externalId.getExternalIdKey().equals("tzname")) {
+                } else if (externalId.getExternalIdKey().equals(ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME)) {
                     String tzName = externalId.getExternalIdValue();
                     externalIdsInfoObj.setTzName(tzName);
-                } else if (externalId.getExternalIdKey().equals("dpn-br-name")) {
+                } else if (externalId.getExternalIdKey().equals(ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME)) {
                     String dpnBridgeName = externalId.getExternalIdValue();
-                    externalIdsInfoObj.setDpnBrName(dpnBridgeName);
-                } else if (externalId.getExternalIdKey().equals("of-tunnel")) {
+                    externalIdsInfoObj.setBrName(dpnBridgeName);
+                } else if (externalId.getExternalIdKey().equals(ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL)) {
                     boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
                     externalIdsInfoObj.setOfTunnel(ofTunnel);
                 }
