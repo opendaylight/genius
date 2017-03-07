@@ -88,7 +88,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, flowCapableNodeConnectorOld.getName());
 
             remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
                     fcNodeConnectorNew, portName);
             coordinator.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
             InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
                     fcNodeConnectorNew, portName);
             coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,

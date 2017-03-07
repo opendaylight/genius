@@ -112,7 +112,7 @@ public class OvsInterfaceConfigAddHelper {
             createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ?
                     true : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName());
+            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(), null);
         }
 
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
