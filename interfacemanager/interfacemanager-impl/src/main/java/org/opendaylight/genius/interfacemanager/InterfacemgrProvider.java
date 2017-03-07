@@ -556,13 +556,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public void updateInterfaceParentRef(String interfaceName, String parentInterface) {
-        // This should generally be called by EOS Owner for IFACE_ENTITY - runOnlyInLeaderNode()
+        // This should generally be called by EOS Owner for INTERFACE_CONFIG_ENTITY - runOnlyInLeaderNode()
         updateInterfaceParentRef(interfaceName, parentInterface, true);
     }
 
     @Override
     public void updateInterfaceParentRef(String interfaceName, String parentInterface, boolean readInterfaceBeforeWrite) {
-        // This should generally be called by EOS Owner for IFACE_ENTITY - runOnlyInLeaderNode()
+        // This should generally be called by EOS Owner for INTERFACE_CONFIG_ENTITY - runOnlyInLeaderNode()
         if (interfaceName == null) {
             return;
         }
