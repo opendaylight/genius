@@ -141,7 +141,7 @@ public class AlivenessMonitor
     final ConcurrentMap<String, Semaphore> lockMap = new ConcurrentHashMap<>();
     private ListenerRegistration<AlivenessMonitor> listenerRegistration;
 
-    private class FutureCallbackImpl implements FutureCallback<Void> {
+    private static class FutureCallbackImpl implements FutureCallback<Void> {
         private final String message;
 
         FutureCallbackImpl(String message) {
