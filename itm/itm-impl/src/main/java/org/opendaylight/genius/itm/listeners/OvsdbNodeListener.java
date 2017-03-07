@@ -89,7 +89,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
     }
 
     @Override protected void add(InstanceIdentifier<Node> identifier, Node ovsdbNodeNew) {
-        String bridgeName = null, strDpnId = "";
+        String bridgeName = null, strDpid = "";
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Add.",
@@ -101,9 +101,9 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         if (ovsdbNewBridgeAugmentation != null) {
             bridgeName = ovsdbNewBridgeAugmentation.getBridgeName().getValue();
 
-            // Read DPN ID from OVSDBBridgeAugmentation
-            strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
-            if (strDpnId == null || strDpnId.isEmpty()) {
+            // Read DPID from OVSDBBridgeAugmentation
+            strDpid = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
+            if (strDpid == null || strDpid.isEmpty()) {
                 LOG.error("OvsdbBridgeAugmentation ADD: DPID for bridge {} is NULL.",
                     bridgeName);
                 return;
@@ -130,14 +130,14 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             // store ExternalIds required parameters
             String newTepIp = ovsdbExternalIdsInfo.getTepIp();
             String tzName = ovsdbExternalIdsInfo.getTzName();
-            String dpnBridgeName = ovsdbExternalIdsInfo.getDpnBrName();
+            String newBridgeName = ovsdbExternalIdsInfo.getBrName();
             boolean ofTunnel = ovsdbExternalIdsInfo.getOfTunnel();
 
             // check if TEP-IP is configured or not
             if (newTepIp != null && !newTepIp.isEmpty()) {
                 // if bridge received is the one configured for TEPs from OVS side or
                 // if it is br-int, then add TEP into Config DS
-                if (dpnBridgeName.equals(bridgeName)) {
+                if (newBridgeName.equals(bridgeName)) {
                     LOG.trace("Ovs Node [{}] is configured with TEP-IP.",
                         ovsdbNodeNew.getNodeId().getValue());
 
@@ -152,18 +152,18 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                         }
                     }
 
-                    LOG.trace("TEP-IP: {}, TZ name: {}, DPN Bridge Name: {}, Bridge DPID: {},"
-                        + "of-tunnel flag: {}", newTepIp, tzName, dpnBridgeName, strDpnId, ofTunnel);
+                    LOG.trace("TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {},"
+                        + "of-tunnel flag: {}", newTepIp, tzName, newBridgeName, strDpid, ofTunnel);
 
                     // Enqueue 'add TEP received from southbound OVSDB into ITM config DS' operation
                     // into DataStoreJobCoordinator
                     DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                     OvsdbTepAddWorker addWorker =
-                        new OvsdbTepAddWorker(newTepIp, strDpnId, tzName, ofTunnel, dataBroker);
+                        new OvsdbTepAddWorker(newTepIp, strDpid, tzName, ofTunnel, dataBroker);
                     coordinator.enqueueJob(newTepIp, addWorker);
                 } else {
                     LOG.trace("TEP ({}) would be added later when bridge ({}) gets added into Ovs Node [{}].",
-                        newTepIp, dpnBridgeName, ovsdbNodeNew.getNodeId().getValue());
+                        newTepIp, newBridgeName, ovsdbNodeNew.getNodeId().getValue());
                 }
             } else {
                 LOG.trace("Ovs Node [{}] is not configured with TEP-IP. Nothing to do.",
@@ -177,11 +177,11 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         Node ovsdbNodeNew) {
         String newTepIp = null, oldTepIp = null;
         String tzName = null, oldTzName = null;
-        String oldDpnBridgeName = null, newDpnBridgeName = null;
+        String oldBridgeName = null, newBridgeName = null;
         boolean newOfTunnel = false;
         boolean isExternalIdsUpdated = false, isExternalIdsDeleted = false;
         boolean isTepIpAdded = false, isTepIpRemoved = false, isTepIpUpdated = false;
-        boolean isTzChanged = false, isDpnBrChanged = false;
+        boolean isTzChanged = false, isBrChanged = false;
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Update.",
             ovsdbNodeOld.getNodeId().getValue());
@@ -209,7 +209,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         if (newExternalIdsInfoObj != null) {
             newTepIp = newExternalIdsInfoObj.getTepIp();
             tzName = newExternalIdsInfoObj.getTzName();
-            newDpnBridgeName = newExternalIdsInfoObj.getDpnBrName();
+            newBridgeName = newExternalIdsInfoObj.getBrName();
             newOfTunnel = newExternalIdsInfoObj.getOfTunnel();
 
             // All map params have been read, now clear it up.
@@ -217,7 +217,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         }
 
         if (oldExternalIdsInfoObj != null) {
-            oldDpnBridgeName = oldExternalIdsInfoObj.getDpnBrName();
+            oldBridgeName = oldExternalIdsInfoObj.getBrName();
             oldTzName = oldExternalIdsInfoObj.getTzName();
             oldTepIp = oldExternalIdsInfoObj.getTepIp();
 
@@ -251,11 +251,11 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                     LOG.trace("tzname is changed from {} to {} for TEP-IP: {}", oldTzName, tzName, newTepIp);
                 }
             }
-            if (!oldDpnBridgeName.equals(newDpnBridgeName)) {
+            if (!oldBridgeName.equals(newBridgeName)) {
                 isExternalIdsUpdated = true;
                 if (oldTepIp != null && newTepIp != null) {
-                    isDpnBrChanged = true;
-                    LOG.trace("dpn-br-name is changed from {} to {} for TEP-IP: {}", oldDpnBridgeName, newDpnBridgeName, newTepIp);
+                    isBrChanged = true;
+                    LOG.trace("br-name is changed from {} to {} for TEP-IP: {}", oldBridgeName, newBridgeName, newTepIp);
                 }
             }
 
@@ -265,9 +265,9 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             }
         }
 
-        String strOldDpnId = "", strNewDpnId = "";
+        String strOldDpid = "", strNewDpid = "";
         // handle TEP-remove in remove case, TZ change case, Bridge change case
-        if (isExternalIdsDeleted || isTepIpRemoved || isTzChanged || isDpnBrChanged) {
+        if (isExternalIdsDeleted || isTepIpRemoved || isTzChanged || isBrChanged) {
             // check if defTzEnabled flag is false in config file,
             // if flag is OFF, then no need to add TEP into ITM config DS.
             if (oldTzName == null || oldTzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
@@ -280,27 +280,27 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                 oldTzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
             }
             // TBD: Move this time taking operations into DataStoreJobCoordinator
-            strOldDpnId = ItmUtils.getBridgeDpid(ovsdbNodeNew, oldDpnBridgeName,
+            strOldDpid = ItmUtils.getBridgeDpid(ovsdbNodeNew, oldBridgeName,
                 dataBroker);
-            if (strOldDpnId == null || strOldDpnId.isEmpty()) {
+            if (strOldDpid == null || strOldDpid.isEmpty()) {
                 LOG.error(
-                    "TEP {} cannot be deleted. DPN-ID for bridge {} is NULL.",
-                    oldTepIp, oldDpnBridgeName);
+                    "TEP {} cannot be deleted. DPID for bridge {} is NULL.",
+                    oldTepIp, oldBridgeName);
                 return;
             }
             // remove TEP
             LOG.trace(
-                "Update case: Removing TEP-IP: {}, TZ name: {}, DPN Bridge Name: {}, Bridge DPID: {}",
-                oldTepIp, oldTzName, oldDpnBridgeName, strOldDpnId);
+                "Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}",
+                oldTepIp, oldTzName, oldBridgeName, strOldDpid);
 
             // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             OvsdbTepRemoveWorker
-                removeWorker = new OvsdbTepRemoveWorker(oldTepIp, strOldDpnId, oldTzName, dataBroker);
+                removeWorker = new OvsdbTepRemoveWorker(oldTepIp, strOldDpid, oldTzName, dataBroker);
             coordinator.enqueueJob(oldTepIp, removeWorker);
         }
         // handle TEP-add in add case, TZ change case, Bridge change case
-        if (isTepIpAdded || isTzChanged || isDpnBrChanged) {
+        if (isTepIpAdded || isTzChanged || isBrChanged) {
             // check if defTzEnabled flag is false in config file,
             // if flag is OFF, then no need to add TEP into ITM config DS.
             if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
@@ -314,22 +314,22 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             }
             // TBD: Move this time taking operations into DataStoreJobCoordinator
             // get Datapath ID for bridge
-            strNewDpnId = ItmUtils.getBridgeDpid(ovsdbNodeNew, newDpnBridgeName,
+            strNewDpid = ItmUtils.getBridgeDpid(ovsdbNodeNew, newBridgeName,
                 dataBroker);
-            if (strNewDpnId == null || strNewDpnId.isEmpty()) {
+            if (strNewDpid == null || strNewDpid.isEmpty()) {
                 LOG.error(
-                    "TEP {} cannot be added. DPN-ID for bridge {} is NULL.",
-                    newTepIp, newDpnBridgeName);
+                    "TEP {} cannot be added. DPID for bridge {} is NULL.",
+                    newTepIp, newBridgeName);
                 return;
             }
             LOG.trace(
-                "Update case: Adding TEP-IP: {}, TZ name: {}, DPN Bridge Name: {}, Bridge DPID: {},"
-                    + "of-tunnel: {}", newTepIp, tzName, newDpnBridgeName, strNewDpnId,newOfTunnel);
+                "Update case: Adding TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {},"
+                    + "of-tunnel: {}", newTepIp, tzName, newBridgeName, strNewDpid,newOfTunnel);
 
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             OvsdbTepAddWorker
-                addWorker = new OvsdbTepAddWorker(newTepIp, strNewDpnId, tzName, newOfTunnel, dataBroker);
+                addWorker = new OvsdbTepAddWorker(newTepIp, strNewDpid, tzName, newOfTunnel, dataBroker);
             coordinator.enqueueJob(newTepIp, addWorker);
         }
     }
@@ -389,16 +389,16 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
         if (ovsdbNodeExternalIdsList != null) {
             for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-                if (externalId.getExternalIdKey().equals("tep-ip")) {
+                if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TEP_IP.equals(externalId.getExternalIdKey())) {
                     String tepIp = externalId.getExternalIdValue();
                     externalIdsInfoObj.setTepIp(tepIp);
-                } else if (externalId.getExternalIdKey().equals("tzname")) {
+                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
                     String tzName = externalId.getExternalIdValue();
                     externalIdsInfoObj.setTzName(tzName);
-                } else if (externalId.getExternalIdKey().equals("dpn-br-name")) {
-                    String dpnBridgeName = externalId.getExternalIdValue();
-                    externalIdsInfoObj.setDpnBrName(dpnBridgeName);
-                } else if (externalId.getExternalIdKey().equals("of-tunnel")) {
+                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
+                    String bridgeName = externalId.getExternalIdValue();
+                    externalIdsInfoObj.setBrName(bridgeName);
+                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
                     boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
                     externalIdsInfoObj.setOfTunnel(ofTunnel);
                 }
