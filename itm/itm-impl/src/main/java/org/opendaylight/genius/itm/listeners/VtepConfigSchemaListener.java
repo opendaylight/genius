@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -193,8 +193,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             handleUpdateOfDpnIds(orignalSchema, updatedSchema);
 
         } catch (Exception e) {
-            String error = "Failed to handle DCN for update VtepConfigSchema original:" +
-                    original + ", updated: " + updated;
+            String error = "Failed to handle DCN for update VtepConfigSchema original:"
+                    + original + ", updated: " + updated;
             LOG.error(error, e);
         }
     }
@@ -282,7 +282,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
      */
     private void handleNewlyAddedDpnsToSchema(VtepConfigSchema original, List<DpnIds> originalDpnIds,
                                               List<DpnIds> updatedDpnIds) {
-        LOG.trace("Handle Addition of DPNs from VTEP Original Dpn: {}. Updated Dpn: {}", originalDpnIds, updatedDpnIds) ;
+        LOG.trace("Handle Addition of DPNs from VTEP Original Dpn: {}. Updated Dpn: {}"
+                , originalDpnIds, updatedDpnIds) ;
         ArrayList<DpnIds> newlyAddedDpns = new ArrayList<>(updatedDpnIds);
         newlyAddedDpns.removeAll(originalDpnIds);
         LOG.debug("Newly added DPNs {} to VTEP config schema [{}].", newlyAddedDpns, original.getSchemaName());
@@ -350,10 +351,11 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
-        if( tunnelType.equals(TunnelTypeVxlan.class))
-            tunType = ITMConstants.TUNNEL_TYPE_VXLAN ;
-        else
-            tunType =  ITMConstants.TUNNEL_TYPE_GRE;
+        if (tunnelType.equals(TunnelTypeVxlan.class)) {
+            tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
+        } else {
+            tunType = ITMConstants.TUNNEL_TYPE_GRE;
+        }
         tepCommandHelper.configureTunnelType(schema.getTransportZoneName(),
                 StringUtils.upperCase(tunType));
 
@@ -370,7 +372,8 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
             }
             try {
                 tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
-                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp
+                        , schema.getTransportZoneName(), null);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
@@ -576,7 +579,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
     /**
      * Calculate available ips.
      *
-     * @param subnetCidr
+     * @param subnetUtils
      *            the subnet cidr
      * @param excludeIpFilter
      *            the exclude ip filter

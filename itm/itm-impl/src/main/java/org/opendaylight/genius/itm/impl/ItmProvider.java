@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -58,7 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */{
+public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
     private ITMManager itmManager;
@@ -136,13 +136,13 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         if (tnlIntervalListener != null) {
             tnlIntervalListener.close();
         }
-        if(tnlToggleListener!= null){
+        if (tnlToggleListener != null) {
             tnlToggleListener.close();
         }
-        if(tunnelStateListener!= null){
+        if (tunnelStateListener != null) {
             tunnelStateListener.close();
         }
-        if(dpnTepsInfoListener!= null){
+        if (dpnTepsInfoListener != null) {
             dpnTepsInfoListener.close();
         }
         if (ovsdbChangeListener != null) {
@@ -190,7 +190,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                                  String gatewayIp, String transportZone, CommandSession session) {
         if (tepCommandHelper != null) {
             try {
-                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+                tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask
+                        , gatewayIp, transportZone, session);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
@@ -212,7 +213,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public void showTeps(CommandSession session) {
         try {
-            tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(), ItmUtils.determineMonitorInterval(this.dataBroker), session);
+            tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS()
+                    , ItmUtils.determineMonitorInterval(this.dataBroker), session);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -222,11 +224,12 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         if (tunnels != null) {
             try {
                 tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS(), session);
-            }catch(TepException e) {
+            } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
-        }else
+        } else {
             LOG.debug("No tunnels available");
+        }
     }
 
     @Override
@@ -237,7 +240,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
                            String gatewayIp, String transportZone, CommandSession session) {
         try {
-            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress
+                    , subnetMask, gatewayIp, transportZone, session);
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
@@ -296,13 +300,15 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                 List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.getDpnIds()) ;
                 originalDpnList.removeAll(lstDpnsForDelete) ;
                 builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList)) ;
-                // schema.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(ItmUtils.getDpnIdList(schema.getDpnIds()).removeAll(lstDpnsForAdd)));
+                // schema.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(ItmUtils.getDpnIdList(schema.getDpnIds())
+                // .removeAll(lstDpnsForAdd)));
             }
        // }
         schema = builder.build();
         MDSALUtil.syncWrite(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
                 ItmUtils.getVtepConfigSchemaIdentifier(schemaName), schema);
-        LOG.debug("Vtep config schema {} updated to config DS with DPN's {}", schemaName, ItmUtils.getDpnIdList(schema.getDpnIds()));
+        LOG.debug("Vtep config schema {} updated to config DS with DPN's {}"
+                , schemaName, ItmUtils.getDpnIdList(schema.getDpnIds()));
     }
 
     @Override
@@ -325,7 +331,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         tepCommandHelper.configureTunnelMonitorInterval(interval);
     }
     
-    public boolean validateIP (final String ip){
+    public boolean validateIP(final String ip) {
         if (ip == null || ip.equals("")) {
             return false;
         }

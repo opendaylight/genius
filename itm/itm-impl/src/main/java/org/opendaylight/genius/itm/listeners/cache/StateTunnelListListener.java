@@ -24,7 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListenerBase<StateTunnelList,StateTunnelListListener> implements AutoCloseable{
+public class StateTunnelListListener
+        extends AsyncClusteredDataTreeChangeListenerBase<StateTunnelList,StateTunnelListListener>
+        implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(StateTunnelListListener.class);
     private final DataBroker broker;
 
@@ -78,8 +80,8 @@ public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected InstanceIdentifier<StateTunnelList> getWildCardPath() {
-        return InstanceIdentifier.builder(TunnelsState.class).
-                child(StateTunnelList.class).build();
+        return InstanceIdentifier.builder(TunnelsState.class)
+                .child(StateTunnelList.class).build();
     }
 
 }

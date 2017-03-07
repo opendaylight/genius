@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -27,48 +27,50 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger logger = LoggerFactory.getLogger(ItmMonitorIntervalWorker.class) ;
+    private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorIntervalWorker.class) ;
     private DataBroker dataBroker;
     private String tzone;
     private Integer interval;
 
-    public ItmMonitorIntervalWorker(String tzone,Integer interval, DataBroker dataBroker){
+    public ItmMonitorIntervalWorker(String tzone,Integer interval, DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.interval = interval;
-        logger.debug("ItmMonitorIntervalWorker: monitorInterval = {}",interval);
-        logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval );
+        LOG.debug("ItmMonitorIntervalWorker: monitorInterval = {}",interval);
+        LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval );
     }
 
     @Override public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        logger.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval );
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(interval,tzone,t);
-        futures.add(t.submit());
+        LOG.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval );
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        toggleTunnelMonitoring(interval,tzone,transaction);
+        futures.add(transaction.submit());
         return futures;
     }
 
-    private void toggleTunnelMonitoring(Integer interval, String tzone, WriteTransaction t) {
+    private void toggleTunnelMonitoring(Integer interval, String tzone, WriteTransaction transaction) {
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
-        logger.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
+        LOG.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
         InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
         TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
-        if(tunnelList !=null &&!tunnelList.isEmpty()) {
-            for (String tunnel : tunnelList)
-                toggle(tunnel, interval,t);
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder
+                , dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        if (tunnelList != null && !tunnelList.isEmpty()) {
+            for (String tunnel : tunnelList) {
+                toggle(tunnel, interval, transaction);
+            }
         }
     }
 
-    private void toggle(String tunnelInterfaceName, Integer interval, WriteTransaction t) {
+    private void toggle(String tunnelInterfaceName, Integer interval, WriteTransaction transaction) {
         if (tunnelInterfaceName != null) {
-            logger.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
+            LOG.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
             IfTunnel tunnel = new IfTunnelBuilder().setMonitorInterval(interval.longValue()).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
                     .addAugmentation(IfTunnel.class, tunnel);
-            t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
+            transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
         }
     }
 }

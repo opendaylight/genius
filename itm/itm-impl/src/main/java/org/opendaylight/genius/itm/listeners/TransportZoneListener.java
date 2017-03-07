@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -38,7 +38,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
@@ -69,14 +68,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-                                 final IMdsalApiManager iMdsalApiManager,final ITMManager itmManager,
+                                 final IMdsalApiManager mdsalManager,final ITMManager itmManager,
                                  final ItmConfig itmConfig) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
         this.itmManager = itmManager;
-        this.mdsalManager = iMdsalApiManager;
+        this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
     }
 
@@ -152,11 +151,12 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             List<DPNTEPsInfo> opDpnList = createDPNTepInfo(tzOld);
             List<HwVtep> hwVtepList = createhWVteps(tzOld);
             LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
-            if(!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
+            if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
                 LOG.trace("Delete: Invoking ItmManager with hwVtep List {} " , hwVtepList);
                 DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                 ItmTepRemoveWorker removeWorker =
-                        new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker, idManagerService, mdsalManager);
+                        new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker
+                                , idManagerService, mdsalManager);
                 coordinator.enqueueJob(tzOld.getZoneName(), removeWorker);
             }
         }

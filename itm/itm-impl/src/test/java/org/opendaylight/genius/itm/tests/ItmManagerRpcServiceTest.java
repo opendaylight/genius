@@ -61,7 +61,35 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.BuildExternalTunnelFromDpnsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.BuildExternalTunnelFromDpnsInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs
+        .rev160406.GetExternalTunnelInterfaceNameInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetInternalOrExternalInterfaceNameInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs
+        .rev160406.GetInternalOrExternalInterfaceNameInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetInternalOrExternalInterfaceNameOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs
+        .rev160406.GetInternalOrExternalInterfaceNameOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
@@ -109,25 +137,28 @@ public class ItmManagerRpcServiceTest {
     GetTunnelInterfaceNameInput getTunnelInterfaceNameInput;
 
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ItmTestConstants.ipAddress3), ItmTestConstants.dpId1.toString(),
-                    TunnelTypeMplsOverGre.class));
+            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ItmTestConstants.ipAddress3)
+                    , ItmTestConstants.dpId1.toString(), TunnelTypeMplsOverGre.class));
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifierNew = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ItmTestConstants.ipAddress3), ItmTestConstants.dpId1.toString(),
-                    ItmTestConstants.TUNNEL_TYPE_VXLAN));
+            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ItmTestConstants.ipAddress3)
+                    , ItmTestConstants.dpId1.toString(), ItmTestConstants.TUNNEL_TYPE_VXLAN));
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier2 = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(ItmTestConstants.destinationDevice, ItmTestConstants.sourceDevice,
-                ItmTestConstants.TUNNEL_TYPE_VXLAN));
+            .child(ExternalTunnel.class, new ExternalTunnelKey(ItmTestConstants.destinationDevice
+                    , ItmTestConstants.sourceDevice, ItmTestConstants.TUNNEL_TYPE_VXLAN));
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifier = InstanceIdentifier.create(TunnelList.class)
-            .child(InternalTunnel.class, new InternalTunnelKey(ItmTestConstants.dpId2, ItmTestConstants.dpId1, ItmTestConstants.TUNNEL_TYPE_VXLAN));
+            .child(InternalTunnel.class, new InternalTunnelKey(ItmTestConstants.dpId2, ItmTestConstants.dpId1
+                    , ItmTestConstants.TUNNEL_TYPE_VXLAN));
     InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).build();
     InstanceIdentifier<Interface> interfaceIdentifier;
     InstanceIdentifier<TransportZones> transportZonesIdentifier = InstanceIdentifier.create(TransportZones.class);
     InstanceIdentifier<DeviceVteps> deviceVtepsIdentifier = InstanceIdentifier.builder(TransportZones.class)
             .child(TransportZone.class, new TransportZoneKey(ItmTestConstants.TZ_NAME))
-            .child(Subnets.class, new SubnetsKey(ItmTestConstants.ipPrefixTest)).child(DeviceVteps.class, deviceVtepKey).build();
+            .child(Subnets.class, new SubnetsKey(ItmTestConstants.ipPrefixTest))
+            .child(DeviceVteps.class, deviceVtepKey).build();
     InstanceIdentifier<DeviceVteps> deviceVtepsIdentifier2 = InstanceIdentifier.builder(TransportZones.class)
-        .child(TransportZone.class, new TransportZoneKey(ItmTestConstants.TZ_NAME))
-        .child(Subnets.class, new SubnetsKey(ItmTestConstants.ipPrefixTest)).child(DeviceVteps.class, deviceVtep2Key).build();
+            .child(TransportZone.class, new TransportZoneKey(ItmTestConstants.TZ_NAME))
+            .child(Subnets.class, new SubnetsKey(ItmTestConstants.ipPrefixTest))
+            .child(DeviceVteps.class, deviceVtep2Key).build();
 
     @Inject DataBroker dataBroker;
     @Inject IdManagerService idManagerService;
@@ -143,66 +174,93 @@ public class ItmManagerRpcServiceTest {
         dpId1List.add(ItmTestConstants.dpId1);
         stringList.add(ItmTestConstants.sourceDevice2);
 
-        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, ItmTestConstants.parentInterfaceName, ItmTestConstants.ipAddress3
-            .getIpv4Address().getValue(), ItmTestConstants.ipAddress3.getIpv4Address().getValue(), ItmTestConstants.TUNNEL_TYPE_VXLAN.getName());
+        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, ItmTestConstants.parentInterfaceName
+                , ItmTestConstants.ipAddress3.getIpv4Address().getValue()
+                , ItmTestConstants.ipAddress3.getIpv4Address().getValue()
+                , ItmTestConstants.TUNNEL_TYPE_VXLAN.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
-        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(ItmTestConstants.vlanId).setPortname(ItmTestConstants.portName1).setIpAddress
-            (ItmTestConstants.ipAddress3).setGwIpAddress(ItmTestConstants.gtwyIp1).setInterfaceName(ItmTestConstants.parentInterfaceName).setTzMembership
-            (ItmUtils.createTransportZoneMembership(ItmTestConstants.TZ_NAME)).setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setSubnetMask
-            (ItmTestConstants.ipPrefixTest).setKey(new TunnelEndPointsKey
-            (ItmTestConstants.ipAddress3,ItmTestConstants.portName1,ItmTestConstants.TUNNEL_TYPE_VXLAN,ItmTestConstants.vlanId)).build();
+        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(ItmTestConstants.vlanId)
+                .setPortname(ItmTestConstants.portName1).setIpAddress(ItmTestConstants.ipAddress3)
+                .setGwIpAddress(ItmTestConstants.gtwyIp1).setInterfaceName(ItmTestConstants.parentInterfaceName)
+                .setTzMembership(ItmUtils.createTransportZoneMembership(ItmTestConstants.TZ_NAME))
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setSubnetMask(ItmTestConstants.ipPrefixTest)
+                .setKey(new TunnelEndPointsKey(ItmTestConstants.ipAddress3,ItmTestConstants.portName1
+                        ,ItmTestConstants.TUNNEL_TYPE_VXLAN,ItmTestConstants.vlanId)).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(ItmTestConstants.dpId1).setKey(new DPNTEPsInfoKey(ItmTestConstants.dpId1)).setUp(true)
-            .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(ItmTestConstants.dpId1)
+                .setKey(new DPNTEPsInfoKey(ItmTestConstants.dpId1)).setUp(true)
+                .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
-        internalTunnel = new InternalTunnelBuilder().setTunnelInterfaceName(ItmTestConstants.parentInterfaceName).setDestinationDPN
-            (ItmTestConstants.dpId2).setSourceDPN(ItmTestConstants.dpId1).setTransportType(ItmTestConstants.TUNNEL_TYPE_VXLAN).
-            setKey(new InternalTunnelKey(ItmTestConstants.dpId2,ItmTestConstants.dpId1,
-                ItmTestConstants.TUNNEL_TYPE_VXLAN)).build();
+        internalTunnel = new InternalTunnelBuilder().setTunnelInterfaceName(ItmTestConstants.parentInterfaceName)
+                .setDestinationDPN(ItmTestConstants.dpId2).setSourceDPN(ItmTestConstants.dpId1)
+                .setTransportType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setKey(new InternalTunnelKey(ItmTestConstants.dpId2,ItmTestConstants.dpId1
+                        , ItmTestConstants.TUNNEL_TYPE_VXLAN)).build();
         getExternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
-            .setDestinationIp(ItmTestConstants.ipAddress3).setSourceDpid(ItmTestConstants.dpId1).setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
+                .setDestinationIp(ItmTestConstants.ipAddress3).setSourceDpid(ItmTestConstants.dpId1)
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
         getInternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
-            .setDestinationIp(ItmTestConstants.ipAddress3).setSourceDpid(ItmTestConstants.dpId1).setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
-        addExternalTunnelEndpointInput = new AddExternalTunnelEndpointInputBuilder().setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-            .setDestinationIp(ItmTestConstants.ipAddress3).build();
-        addL2GwDeviceInput = new AddL2GwDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3).setNodeId(ItmTestConstants.sourceDevice)
-            .setTopologyId(ItmTestConstants.destinationDevice).build();
-        deleteL2GwDeviceInput = new DeleteL2GwDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3).setNodeId(ItmTestConstants.sourceDevice)
-            .setTopologyId(ItmTestConstants.destinationDevice).build();
-        addL2GwMlagDeviceInput = new AddL2GwMlagDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3).setNodeId(stringList)
-            .setTopologyId(ItmTestConstants.destinationDevice).build();
-        deleteL2GwMlagDeviceInput = new DeleteL2GwMlagDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3).setNodeId
-            (stringList).setTopologyId(ItmTestConstants.destinationDevice).build();
-        buildExternalTunnelFromDpnsInput = new BuildExternalTunnelFromDpnsInputBuilder().setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-            .setDestinationIp(ItmTestConstants.ipAddress3).setDpnId(dpId1List).build();
-        removeExternalTunnelFromDpnsInput = new RemoveExternalTunnelFromDpnsInputBuilder().setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-            .setDestinationIp(ItmTestConstants.ipAddress3).setDpnId(dpId1List).build();
-        removeExternalTunnelEndpointInput = new RemoveExternalTunnelEndpointInputBuilder().setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-            .setDestinationIp(ItmTestConstants.ipAddress3).build();
-        getTunnelInterfaceNameInput = new GetTunnelInterfaceNameInputBuilder().setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-            .setSourceDpid(ItmTestConstants.dpId1).setDestinationDpid(ItmTestConstants.dpId2).build();
-        getExternalTunnelInterfaceNameInput = new GetExternalTunnelInterfaceNameInputBuilder().setTunnelType
-            (ItmTestConstants.TUNNEL_TYPE_VXLAN).setDestinationNode(ItmTestConstants.destinationDevice).setSourceNode(ItmTestConstants.sourceDevice).build();
-        iface = ItmUtils.buildTunnelInterface(ItmTestConstants.dpId1,trunkInterfaceName, String.format("%s %s",
-            ItmUtils.convertTunnelTypetoString(ItmTestConstants.TUNNEL_TYPE_VXLAN), "Trunk Interface"),true,ItmTestConstants.TUNNEL_TYPE_VXLAN,tunnelEndPointsVxlan.getIpAddress()
-            , ItmTestConstants.ipAddress3,ItmTestConstants.gtwyIp1,tunnelEndPointsVxlan.getVLANID(),false,false,ItmTestConstants.monitorProtocol,null, false);
-        subnetsTest = new SubnetsBuilder().setGatewayIp(ItmTestConstants.gtwyIp1).setVlanId(ItmTestConstants.vlanId).setKey(new SubnetsKey(ItmTestConstants.ipPrefixTest))
-            .setDeviceVteps(deviceVtepsList).build();
+                .setDestinationIp(ItmTestConstants.ipAddress3).setSourceDpid(ItmTestConstants.dpId1)
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
+        addExternalTunnelEndpointInput = new AddExternalTunnelEndpointInputBuilder()
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setDestinationIp(ItmTestConstants.ipAddress3).build();
+        addL2GwDeviceInput = new AddL2GwDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3)
+                .setNodeId(ItmTestConstants.sourceDevice)
+                .setTopologyId(ItmTestConstants.destinationDevice).build();
+        deleteL2GwDeviceInput = new DeleteL2GwDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3)
+                .setNodeId(ItmTestConstants.sourceDevice)
+                .setTopologyId(ItmTestConstants.destinationDevice).build();
+        addL2GwMlagDeviceInput = new AddL2GwMlagDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3)
+                .setNodeId(stringList)
+                .setTopologyId(ItmTestConstants.destinationDevice).build();
+        deleteL2GwMlagDeviceInput = new DeleteL2GwMlagDeviceInputBuilder().setIpAddress(ItmTestConstants.ipAddress3)
+                .setNodeId(stringList).setTopologyId(ItmTestConstants.destinationDevice).build();
+        buildExternalTunnelFromDpnsInput = new BuildExternalTunnelFromDpnsInputBuilder()
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setDestinationIp(ItmTestConstants.ipAddress3).setDpnId(dpId1List).build();
+        removeExternalTunnelFromDpnsInput = new RemoveExternalTunnelFromDpnsInputBuilder()
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setDestinationIp(ItmTestConstants.ipAddress3).setDpnId(dpId1List).build();
+        removeExternalTunnelEndpointInput = new RemoveExternalTunnelEndpointInputBuilder()
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setDestinationIp(ItmTestConstants.ipAddress3).build();
+        getTunnelInterfaceNameInput = new GetTunnelInterfaceNameInputBuilder()
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setSourceDpid(ItmTestConstants.dpId1).setDestinationDpid(ItmTestConstants.dpId2).build();
+        getExternalTunnelInterfaceNameInput = new GetExternalTunnelInterfaceNameInputBuilder()
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setDestinationNode(ItmTestConstants.destinationDevice)
+                .setSourceNode(ItmTestConstants.sourceDevice).build();
+        iface = ItmUtils.buildTunnelInterface(ItmTestConstants.dpId1,trunkInterfaceName, String.format("%s %s"
+                , ItmUtils.convertTunnelTypetoString(ItmTestConstants.TUNNEL_TYPE_VXLAN), "Trunk Interface")
+                ,true,ItmTestConstants.TUNNEL_TYPE_VXLAN,tunnelEndPointsVxlan.getIpAddress()
+                , ItmTestConstants.ipAddress3,ItmTestConstants.gtwyIp1
+                , tunnelEndPointsVxlan.getVLANID(),false,false, ItmTestConstants.monitorProtocol,null, false);
+        subnetsTest = new SubnetsBuilder().setGatewayIp(ItmTestConstants.gtwyIp1).setVlanId(ItmTestConstants.vlanId)
+                .setKey(new SubnetsKey(ItmTestConstants.ipPrefixTest)).setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);
-        transportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME).setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setKey(new
-            TransportZoneKey(ItmTestConstants.TZ_NAME)).setSubnets(subnetsList).build();
+        transportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).setSubnets(subnetsList).build();
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
 
         // build external tunnel objects
-        externalTunnel= new ExternalTunnelBuilder().setSourceDevice(ItmTestConstants.dpId1.toString()).setDestinationDevice
-            (String.valueOf(ItmTestConstants.ipAddress3)).setTransportType(TunnelTypeMplsOverGre.class).setTunnelInterfaceName(ItmTestConstants.parentInterfaceName).setKey(new
-            ExternalTunnelKey(String.valueOf(ItmTestConstants.ipAddress3),ItmTestConstants.dpId1.toString(),TunnelTypeMplsOverGre.class)).build();
+        externalTunnel = new ExternalTunnelBuilder().setSourceDevice(ItmTestConstants.dpId1.toString())
+                .setDestinationDevice(String.valueOf(ItmTestConstants.ipAddress3))
+                .setTransportType(TunnelTypeMplsOverGre.class)
+                .setTunnelInterfaceName(ItmTestConstants.parentInterfaceName)
+                .setKey(new ExternalTunnelKey(String.valueOf(ItmTestConstants.ipAddress3)
+                        ,ItmTestConstants.dpId1.toString(),TunnelTypeMplsOverGre.class)).build();
 
-        externalTunnel2= new ExternalTunnelBuilder().setSourceDevice(ItmTestConstants.sourceDevice).setDestinationDevice
-            (ItmTestConstants.destinationDevice).setTransportType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setTunnelInterfaceName(ItmTestConstants.parentInterfaceName).setKey(new
-            ExternalTunnelKey(ItmTestConstants.destinationDevice,ItmTestConstants.sourceDevice,ItmTestConstants.TUNNEL_TYPE_VXLAN)).build();
+        externalTunnel2 = new ExternalTunnelBuilder().setSourceDevice(ItmTestConstants.sourceDevice)
+                .setDestinationDevice(ItmTestConstants.destinationDevice)
+                .setTransportType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
+                .setTunnelInterfaceName(ItmTestConstants.parentInterfaceName)
+                .setKey(new ExternalTunnelKey(ItmTestConstants.destinationDevice
+                        , ItmTestConstants.sourceDevice, ItmTestConstants.TUNNEL_TYPE_VXLAN)).build();
 
         getInternalOrExternalInterfaceNameOutput = new GetInternalOrExternalInterfaceNameOutputBuilder().
             setInterfaceName(ItmTestConstants.parentInterfaceName).build();
@@ -254,8 +312,9 @@ public class ItmManagerRpcServiceTest {
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
         // check ExternalTunnelEndpoint is added in config DS
-        assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),  dataBroker.newReadOnlyTransaction().
-            read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
+        assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest()
+                ,  dataBroker.newReadOnlyTransaction()
+                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
     }
 
     @Test
@@ -298,7 +357,8 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testDeleteL2GwMlagDevice() throws Exception {
-        Future<RpcResult<java.lang.Void>> rpcRes = itmManagerRpcService.deleteL2GwMlagDevice(deleteL2GwMlagDeviceInput);
+        Future<RpcResult<java.lang.Void>> rpcRes =
+                itmManagerRpcService.deleteL2GwMlagDevice(deleteL2GwMlagDeviceInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
@@ -312,19 +372,22 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testBuildExternalTunnelFromDpns() throws Exception {
-        Future<RpcResult<Void>> rpcRes = itmManagerRpcService.buildExternalTunnelFromDpns(buildExternalTunnelFromDpnsInput);
+        Future<RpcResult<Void>> rpcRes =
+                itmManagerRpcService.buildExternalTunnelFromDpns(buildExternalTunnelFromDpnsInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
         // check ExternalTunnel From Dpns is added in config DS
-        assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),  dataBroker.newReadOnlyTransaction().
-            read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
+        assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),
+                dataBroker.newReadOnlyTransaction()
+                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
     }
 
     @Test
     public void testRemoveExternalTunnelFromDpns() throws Exception {
-        Future<RpcResult<Void>> rpcRes = itmManagerRpcService.removeExternalTunnelFromDpns(removeExternalTunnelFromDpnsInput);
+        Future<RpcResult<Void>> rpcRes =
+                itmManagerRpcService.removeExternalTunnelFromDpns(removeExternalTunnelFromDpnsInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
@@ -340,7 +403,8 @@ public class ItmManagerRpcServiceTest {
     @Test
     public void testRemoveExternalTunnelEndpoint() throws Exception {
         // call RPC to add ExternalTunnelEndpoint as pre-requisite
-        Future<RpcResult<Void>> rpcRes = itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
+        Future<RpcResult<Void>> rpcRes =
+                itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();

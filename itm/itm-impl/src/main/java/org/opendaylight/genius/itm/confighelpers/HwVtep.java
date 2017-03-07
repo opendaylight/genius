@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,61 +11,78 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 
-/**
+/*
  * Created by eanraju on 02-Feb-16.
  */
 public class HwVtep {
 
     private String transportZone;
-    private Class<? extends TunnelTypeBase> tunnel_type;
+    private Class<? extends TunnelTypeBase> tunnelType;
     private IpPrefix ipPrefix;
     private IpAddress gatewayIP;
     private int vlanID;
-    private String topo_id;
-    private String node_id;
+    private String topoId;
+    private String nodeId;
     IpAddress hwIp;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
 
-        HwVtep HwVtep = (HwVtep) o;
+        HwVtep hwVtep = (HwVtep) obj;
 
-        if (vlanID != HwVtep.vlanID) return false;
-        if (!transportZone.equals(HwVtep.transportZone)) return false;
-        if (tunnel_type != null ? !tunnel_type.equals(HwVtep.tunnel_type) : HwVtep.tunnel_type != null) return false;
-        if (!ipPrefix.equals(HwVtep.ipPrefix)) return false;
-        if (gatewayIP != null ? !gatewayIP.equals(HwVtep.gatewayIP) : HwVtep.gatewayIP != null) return false;
-        if (!topo_id.equals(HwVtep.topo_id)) return false;
-        if (!node_id.equals(HwVtep.node_id)) return false;
-        return hwIp.equals(HwVtep.hwIp);
+        if (vlanID != hwVtep.vlanID) {
+            return false;
+        }
+        if (!transportZone.equals(hwVtep.transportZone)) {
+            return false;
+        }
+        if (tunnelType != null ? !tunnelType.equals(hwVtep.tunnelType) : hwVtep.tunnelType != null) {
+            return false;
+        }
+        if (!ipPrefix.equals(hwVtep.ipPrefix)) {
+            return false;
+        }
+        if (gatewayIP != null ? !gatewayIP.equals(hwVtep.gatewayIP) : hwVtep.gatewayIP != null) {
+            return false;
+        }
+        if (!topoId.equals(hwVtep.topoId)) {
+            return false;
+        }
+        if (!nodeId.equals(hwVtep.nodeId)) {
+            return false;
+        }
+        return hwIp.equals(hwVtep.hwIp);
 
     }
 
     @Override
     public String toString() {
-        return "HwVtep{" +
-                "transportZone='" + transportZone + '\'' +
-                ", tunnel_type=" + tunnel_type +
-                ", ipPrefix=" + ipPrefix +
-                ", gatewayIP=" + gatewayIP +
-                ", vlanID=" + vlanID +
-                ", topo_id='" + topo_id + '\'' +
-                ", node_id='" + node_id + '\'' +
-                ", hwIp=" + hwIp +
-                '}';
+        return "HwVtep{"
+                + "transportZone='" + transportZone + '\''
+                + ", tunnelType=" + tunnelType
+                + ", ipPrefix=" + ipPrefix
+                + ", gatewayIP=" + gatewayIP
+                + ", vlanID=" + vlanID
+                + ", topoId='" + topoId + '\''
+                + ", nodeId='" + nodeId + '\''
+                + ", hwIp=" + hwIp + '}';
     }
 
     @Override
     public int hashCode() {
         int result = transportZone.hashCode();
-        result = 31 * result + (tunnel_type != null ? tunnel_type.hashCode() : 0);
+        result = 31 * result + (tunnelType != null ? tunnelType.hashCode() : 0);
         result = 31 * result + ipPrefix.hashCode();
         result = 31 * result + (gatewayIP != null ? gatewayIP.hashCode() : 0);
         result = 31 * result + vlanID;
-        result = 31 * result + topo_id.hashCode();
-        result = 31 * result + node_id.hashCode();
+        result = 31 * result + topoId.hashCode();
+        result = 31 * result + nodeId.hashCode();
         result = 31 * result + hwIp.hashCode();
         return result;
     }
@@ -79,11 +96,11 @@ public class HwVtep {
     }
 
     public Class<? extends TunnelTypeBase> getTunnel_type() {
-        return tunnel_type;
+        return tunnelType;
     }
 
-    public void setTunnel_type(Class<? extends TunnelTypeBase> tunnel_type) {
-        this.tunnel_type = tunnel_type;
+    public void setTunnel_type(Class<? extends TunnelTypeBase> tunnelType) {
+        this.tunnelType = tunnelType;
     }
 
     public IpPrefix getIpPrefix() {
@@ -111,19 +128,19 @@ public class HwVtep {
     }
 
     public String getTopo_id() {
-        return topo_id;
+        return topoId;
     }
 
-    public void setTopo_id(String topo_id) {
-        this.topo_id = topo_id;
+    public void setTopo_id(String topoId) {
+        this.topoId = topoId;
     }
 
     public String getNode_id() {
-        return node_id;
+        return nodeId;
     }
 
-    public void setNode_id(String node_id) {
-        this.node_id = node_id;
+    public void setNode_id(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     public IpAddress getHwIp() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -28,7 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerBase<TunnelMonitorInterval, TunnelMonitorIntervalListener>
+public class TunnelMonitorIntervalListener
+        extends AsyncDataTreeChangeListenerBase<TunnelMonitorInterval, TunnelMonitorIntervalListener>
         implements  AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorIntervalListener.class);
     private ListenerRegistration<DataChangeListener> monitorIntervalListenerRegistration;
@@ -61,12 +62,14 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
         LOG.debug("remove TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if (tZonesOptional.isPresent()) {
-            TransportZones tZones = tZonesOptional.get();
-            for (TransportZone tzone : tZones.getTransportZone()) {
+        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION
+                , path, broker);
+        if (transportZonesOptional.isPresent()) {
+            TransportZones tzones = transportZonesOptional.get();
+            for (TransportZone tzone : tzones.getTransportZone()) {
                 //if you remove configuration, the last configured interval is only set i.e no change
-                LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.getInterval());
+                LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}"
+                        ,tzone.getZoneName(),dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModification.getInterval(), broker);
                 coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
@@ -80,11 +83,13 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
         LOG.debug("update TunnelMonitorIntervalListener called with {}",dataObjectModificationAfter.getInterval());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if (tZonesOptional.isPresent()) {
-            TransportZones tZones = tZonesOptional.get();
-            for (TransportZone tzone : tZones.getTransportZone()) {
-                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModificationAfter.getInterval());
+        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION
+                , path, broker);
+        if (transportZonesOptional.isPresent()) {
+            TransportZones tzones = transportZonesOptional.get();
+            for (TransportZone tzone : tzones.getTransportZone()) {
+                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}"
+                         ,tzone.getZoneName(),dataObjectModificationAfter.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModificationAfter.getInterval(), broker);
                 coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
@@ -97,11 +102,13 @@ public class TunnelMonitorIntervalListener  extends AsyncDataTreeChangeListenerB
         LOG.debug("Add TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
-        if (tZonesOptional.isPresent()) {
-            TransportZones tZones = tZonesOptional.get();
-            for (TransportZone tzone : tZones.getTransportZone()) {
-                LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}",tzone.getZoneName(),dataObjectModification.getInterval());
+        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION
+                , path, broker);
+        if (transportZonesOptional.isPresent()) {
+            TransportZones tzones = transportZonesOptional.get();
+            for (TransportZone tzone : tzones.getTransportZone()) {
+                LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}"
+                        ,tzone.getZoneName(),dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModification.getInterval(), broker);
                 //conversion to milliseconds done while writing to i/f-mgr config DS
