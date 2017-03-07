@@ -41,6 +41,10 @@ public class MetaDataUtil {
                 .or(BigInteger.valueOf(shBit));
     }
 
+    public static BigInteger getServiceMetaData(long service) {
+        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(service)).shiftLeft(24);
+    }
+
     public static BigInteger getServiceIndexMetaData(int serviceIndex) {
         return new BigInteger("F", 16).and(BigInteger.valueOf(serviceIndex)).shiftLeft(60);
     }
@@ -70,9 +74,12 @@ public class MetaDataUtil {
         return metadata.and(METADATA_MASK_LPORT_TAG).shiftRight(40);
     }
 
+    public static int getServiceFromMetadata(BigInteger metadata) {
+        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE).shiftRight(24).intValue();
+    }
+
     public static int getElanTagFromMetadata(BigInteger metadata) {
-        return metadata.and(MetaDataUtil.METADATA_MASK_SERVICE)
-                .shiftRight(24).intValue();
+        return getServiceFromMetadata(metadata);
     }
 
     public static BigInteger getElanTagMetadata(long elanTag) {
