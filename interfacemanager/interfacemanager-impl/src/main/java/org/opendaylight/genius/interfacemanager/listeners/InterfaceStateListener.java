@@ -69,7 +69,7 @@ public class InterfaceStateListener extends AsyncClusteredDataTreeChangeListener
                 }
                 return futures;
             });
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
