@@ -12,22 +12,20 @@ import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.primitives.UnsignedBytes;
 import java.util.concurrent.ExecutionException;
+import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHandler {
+abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements AlivenessProtocolHandler<P> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractAlivenessProtocolHandler.class);
 
@@ -71,22 +69,15 @@ abstract class AbstractAlivenessProtocolHandler implements AlivenessProtocolHand
     }
     // @formatter:on
 
-    private InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
-        InstanceIdentifier.InstanceIdentifierBuilder<Interface> interfaceInstanceIdentifierBuilder = InstanceIdentifier
-                .builder(Interfaces.class).child(Interface.class, interfaceKey);
-
-        return interfaceInstanceIdentifierBuilder.build();
-    }
-
-    protected byte[] getMacAddress(
+    protected Optional<byte[]> getMacAddress(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                 .interfaces.rev140508.interfaces.state.Interface interfaceState, String interfaceName) {
         String macAddress = interfaceState.getPhysAddress().getValue();
 
         if (!Strings.isNullOrEmpty(macAddress)) {
-            return parseMacAddress(macAddress);
+            return Optional.of(parseMacAddress(macAddress));
         }
-        return null;
+        return Optional.absent();
     }
 
     private byte[] parseMacAddress(String macAddress) {

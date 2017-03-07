@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols;
 
+import javax.annotation.Nullable;
 import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
@@ -16,11 +17,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
  * Handler will be registered with Alivnessmonitor service along with the
  * protocol type it supports.
  */
-public interface AlivenessProtocolHandler {
+public interface AlivenessProtocolHandler<T extends Packet> {
 
-    Class<?> getPacketClass();
+    Class<T> getPacketClass();
 
-    String handlePacketIn(Packet protocolPacket, PacketReceived packetReceived);
+    @Nullable String handlePacketIn(T protocolPacket, PacketReceived packetReceived);
 
     void startMonitoringTask(MonitoringInfo monitorInfo);
 
