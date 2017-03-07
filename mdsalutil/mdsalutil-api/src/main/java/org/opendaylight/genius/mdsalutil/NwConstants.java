@@ -77,8 +77,10 @@ public final class NwConstants {
 
     // Egress (w.r.t switch) service indexes
     public static final short EGRESS_ACL_SERVICE_INDEX = 6;
+    public static final short EGRESS_POLICY_SERVICE_INDEX = 6;
 
     public static final String EGRESS_ACL_SERVICE_NAME = "EGRESS_ACL_SERVICE";
+    public static final String EGRESS_POLICY_SERVICE_NAME = "POLICY_SERVICE";
 
     public static final BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
     public static final BigInteger COOKIE_QOS_TABLE = new BigInteger("4000001", 16);
@@ -92,6 +94,8 @@ public final class NwConstants {
     public static final BigInteger EGRESS_DISPATCHER_TABLE_COOKIE = new BigInteger("8000007", 16);
     public static final BigInteger COOKIE_OUTBOUND_NAPT_TABLE = new BigInteger("8000008", 16);
     public static final BigInteger COOKIE_L3_GW_MAC_TABLE = new BigInteger("8000009", 16);
+    public static final BigInteger EGRESS_POLICY_CLASSIFIER_COOKIE = new BigInteger("8000230", 16);
+    public static final BigInteger EGRESS_POLICY_ROUTING_COOKIE = new BigInteger("8000231", 16);
     public static final BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
     public static final BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
     public static final BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
@@ -144,6 +148,8 @@ public final class NwConstants {
     public static final short SFC_TRANSPORT_EGRESS_TABLE = 87;
     public static final short QOS_DSCP_TABLE = 90;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
+    public static final short EGRESS_POLICY_CLASSIFIER_TABLE = 230;
+    public static final short EGRESS_POLICY_ROUTING_TABLE = 231;
     public static final short EGRESS_ACL_TABLE = 251;
     public static final short EGRESS_ACL_FILTER_TABLE = 252;
     public static final short EGRESS_LEARN_TABLE = 252;
