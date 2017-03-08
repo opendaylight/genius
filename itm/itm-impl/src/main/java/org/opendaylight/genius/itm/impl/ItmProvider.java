@@ -120,8 +120,14 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @PostConstruct
     public void start() {
-        createIdPool();
-        LOG.info("ItmProvider Started");
+        try {
+            itmStatusMonitor.reportStatus("STARTING");
+            createIdPool();
+            LOG.info("ItmProvider Started");
+            itmStatusMonitor.reportStatus("OPERATIONAL");
+        }catch (Exception ex) {
+            itmStatusMonitor.reportStatus("ERROR");
+        }
     }
 
     @Override

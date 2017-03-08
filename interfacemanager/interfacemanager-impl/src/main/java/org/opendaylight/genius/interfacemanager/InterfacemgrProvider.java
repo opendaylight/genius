@@ -116,6 +116,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @PostConstruct
     public void start() throws Exception {
         try {
+            interfaceStatusMonitor.registerMbean();
             createIdPool();
             IfmClusterUtils.registerEntityForOwnership(this, this.entityOwnershipService);
             BatchingUtils.registerWithBatchManager( this.dataBroker);
