@@ -25,6 +25,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -35,8 +36,12 @@ import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.itm.config.TunnelAggregation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -97,13 +102,15 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalManager;
     private final IdManagerService idManagerService;
+    private final boolean tunnelAggregationEnabled;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker,final IdManagerService idManagerService,
-                                final IMdsalApiManager iMdsalApiManager) {
+                                final IMdsalApiManager mdsalApiManager) {
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
-        this.mdsalManager = iMdsalApiManager;
+        this.mdsalManager = mdsalApiManager;
+        this.tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
     }
 
     @PostConstruct
@@ -119,16 +126,18 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public Future<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(GetTunnelInterfaceNameInput input) {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
-        BigInteger sourceDpn = input.getSourceDpid() ;
-        BigInteger destinationDpn = input.getDestinationDpid() ;
-        InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
-                TunnelList.class)
-                .child(InternalTunnel.class, new InternalTunnelKey(destinationDpn, sourceDpn, input.getTunnelType()));
+        BigInteger sourceDpn = input.getSourceDpid();
+        BigInteger destinationDpn = input.getDestinationDpid();
+        Optional<InternalTunnel> tnl = null;
 
-        Optional<InternalTunnel> tnl = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-
-        if( tnl != null && tnl.isPresent())
-        {
+        if (isTunnelAggragationUsed(input.getTunnelType())) {
+            tnl = getInternalTunnelFromDS(sourceDpn, destinationDpn, TunnelTypeLogicalGroup.class);
+            LOG.debug("MULTIPLE_VxLAN_TUNNELS: getTunnelInterfaceName {}", tnl);
+        }
+        if (tnl == null || !tnl.isPresent()) {
+            tnl = getInternalTunnelFromDS(sourceDpn, destinationDpn, input.getTunnelType());
+        }
+        if (tnl != null && tnl.isPresent()) {
             InternalTunnel tunnel = tnl.get();
             GetTunnelInterfaceNameOutputBuilder output = new GetTunnelInterfaceNameOutputBuilder() ;
             List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
@@ -140,7 +149,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 resultBld = RpcResultBuilder.failed();
             }
 
-        }else {
+        } else {
             resultBld = RpcResultBuilder.failed();
         }
 
@@ -386,7 +395,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             resultBld.withResult(output.build()) ;
         } else {
             List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker);
-            if(meshedDpnList == null){
+            if (meshedDpnList == null) {
                 LOG.error("There are no tunnel mesh info in config DS");
                 return Futures.immediateFuture(resultBld.build());
             }
@@ -394,11 +403,15 @@ public class ItmManagerRpcService implements ItmRpcService {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
-                    InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
-                            TunnelList.class)
-                            .child(InternalTunnel.class, new InternalTunnelKey(teps.getDPNID(), srcDpn, input.getTunnelType()));
 
-                    Optional<InternalTunnel> tnl = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+                    Optional<InternalTunnel> tnl = null;
+                    if (isTunnelAggragationUsed(input.getTunnelType())) {
+                        tnl = getInternalTunnelFromDS(srcDpn, teps.getDPNID(), TunnelTypeLogicalGroup.class);
+                        LOG.debug("MULTIPLE_VxLAN_TUNNELS: getInternalOrExternalInterfaceName {}", tnl);
+                    }
+                    if (tnl == null || !tnl.isPresent()) {
+                        tnl = getInternalTunnelFromDS(srcDpn, teps.getDPNID(), input.getTunnelType());
+                    }
                     if (tnl != null && tnl.isPresent()) {
                         InternalTunnel tunnel = tnl.get();
                         List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
@@ -751,4 +764,16 @@ public class ItmManagerRpcService implements ItmRpcService {
         return Futures.immediateFuture(resultBld.build());
     }
 
+    private Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger destDpn,
+                                                              Class<? extends TunnelTypeBase> type) {
+        InstanceIdentifier<InternalTunnel> pathLogicTunnel = InstanceIdentifier.create(TunnelList.class)
+                .child(InternalTunnel.class,
+                        new InternalTunnelKey(destDpn, srcDpn, type));
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, pathLogicTunnel, dataBroker);
+    }
+
+    private boolean isTunnelAggragationUsed(Class<? extends TunnelTypeBase> tunType) {
+        return (tunnelAggregationEnabled && (tunType.isAssignableFrom(TunnelTypeVxlan.class)
+                || tunType.isAssignableFrom(TunnelTypeLogicalGroup.class)));
+    }
 }
