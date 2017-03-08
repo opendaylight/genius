@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_e51f3c59",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-08T05:14:12Z",
+      "side": 1,
+      "message": "change SERVICE_MODE_MAP with ImmutableBiMap\u003cServiceMode, Class\u003c? extends ServiceModeBase\u003e\u003e and then enqueue the job with FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -\u003e ....).\nYou could refer https://git.opendaylight.org/gerrit/#/c/52277/6/interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java for this change",
+      "revId": "db6c1d05bb418fe3ff18dd9c0284d3f635c2c5ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_65334cf6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-08T05:14:12Z",
+      "side": 1,
+      "message": "same comment as above.",
+      "revId": "db6c1d05bb418fe3ff18dd9c0284d3f635c2c5ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9976a604",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 1
