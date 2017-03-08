@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
@@ -48,7 +49,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -200,7 +200,7 @@ public class IfmUtil {
     }
 
     public static long getGroupId(long ifIndex, InterfaceInfo.InterfaceType infType) {
-        if (infType == InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE) {
+        if (infType == LOGICAL_GROUP_INTERFACE) {
             return ifIndex + IfmConstants.LOGICAL_GROUP_START;
         }
         else if (infType == VLAN_INTERFACE) {
@@ -350,11 +350,15 @@ public class IfmUtil {
                         result.add(new ActionSetFieldVlanVid(actionKeyStart++, vlanVid));
                     }
                     result.add(new ActionOutput(actionKeyStart++, new Uri(portNo)));
-                }else{
-                    long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
-                    result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
-                            IfmConstants.REG6_END_INDEX, regValue));
-                    result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
+                } else {
+                    getEgressActionInfosForInterface(ifaceType, ifIndex, actionKeyStart, result);
+                }
+                break;
+            case LOGICAL_GROUP_INTERFACE:
+                if (isDefaultEgress) {
+                    LOG.debug("MULTIPLE_VxLAN_TUNNELS: default egress action treatment will be added later");
+                } else {
+                    getEgressActionInfosForInterface(ifaceType, ifIndex, actionKeyStart, result);
                 }
                 break;
             default:
@@ -362,6 +366,17 @@ public class IfmUtil {
                 break;
         }
         return result;
+    }
+
+    public static void getEgressActionInfosForInterface(InterfaceInfo.InterfaceType ifaceType,
+            int ifIndex, int actionKeyStart, List<ActionInfo> result) {
+        if (ifaceType != VLAN_INTERFACE && ifaceType != LOGICAL_GROUP_INTERFACE) {
+            return;
+        }
+        long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
+        result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
+                IfmConstants.REG6_END_INDEX, regValue));
+        result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
