@@ -357,6 +357,16 @@ public class IfmUtil {
                     result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
                 }
                 break;
+            case LOGICAL_GROUP_INTERFACE:
+                if (isDefaultEgress) {
+                    LOG.debug("MULTIPLE_VxLAN_TUNNELS: default egress action treatment will be added later");
+                } else {
+                    BigInteger regValue = MetaDataUtil.getLportTagForReg6(ifIndex);
+                    result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
+                            IfmConstants.REG6_END_INDEX, regValue.longValue()));
+                    result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
+                }
+                break;
             default:
                 LOG.warn("Interface Type {} not handled yet", ifaceType);
                 break;
