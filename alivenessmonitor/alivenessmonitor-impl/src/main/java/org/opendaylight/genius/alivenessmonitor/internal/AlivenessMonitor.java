@@ -56,6 +56,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.infra.ThreadFactoryProvider;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -186,9 +187,9 @@ public class AlivenessMonitor
         this.alivenessProtocolHandlerRegistry = alivenessProtocolHandlerRegistry;
 
         monitorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
-                getMonitoringThreadFactory("Aliveness Monitoring Task"));
+                ThreadFactoryProvider.builder().namePrefix("Aliveness Monitoring Task").logger(LOG).build().get());
         callbackExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE,
-                getMonitoringThreadFactory("Aliveness Callback Handler"));
+                ThreadFactoryProvider.builder().namePrefix("Aliveness Callback Handler").logger(LOG).build().get());
         monitoringTasks = new ConcurrentHashMap<>();
 
         createIdPool();
