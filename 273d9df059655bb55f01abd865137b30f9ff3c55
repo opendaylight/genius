@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c5003868",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 744,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-08T07:26:52Z",
+      "side": 1,
+      "message": "Don\u0027t we need to have check for group/bucket existence before adding/deleting bucket respectively ?",
+      "revId": "273d9df059655bb55f01abd865137b30f9ff3c55",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
