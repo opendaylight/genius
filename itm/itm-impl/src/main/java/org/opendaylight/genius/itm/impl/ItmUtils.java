@@ -37,6 +37,7 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -1536,5 +1537,21 @@ public class ItmUtils {
     public static InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
         return InstanceIdentifier.builder(TunnelsState.class)
                 .child(StateTunnelList.class, tlKey).build();
+    }
+
+    public static  Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger destDpn,
+                                                                    Class<? extends TunnelTypeBase> type,
+                                                                    DataBroker dataBroker) {
+        InstanceIdentifier<InternalTunnel> pathLogicTunnel = InstanceIdentifier.create(TunnelList.class)
+                .child(InternalTunnel.class,
+                        new InternalTunnelKey(destDpn, srcDpn, type));
+        //TODO: need to be replaced by cached copy
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, pathLogicTunnel, dataBroker);
+    }
+
+    public static boolean isTunnelAggregationUsed(Class<? extends TunnelTypeBase> tunType) {
+        return (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()
+                && (tunType.isAssignableFrom(TunnelTypeVxlan.class)
+                        || tunType.isAssignableFrom(TunnelTypeLogicalGroup.class)));
     }
 }
