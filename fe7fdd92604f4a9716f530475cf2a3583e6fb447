@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c5ccb8bd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-08T05:38:04Z",
+      "side": 1,
+      "message": "you\u0027ll need suppress warning for this, will cause checkstyle issues.",
+      "range": {
+        "startLine": 128,
+        "startChar": 16,
+        "endLine": 128,
+        "endChar": 28
+      },
+      "revId": "fe7fdd92604f4a9716f530475cf2a3583e6fb447",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
