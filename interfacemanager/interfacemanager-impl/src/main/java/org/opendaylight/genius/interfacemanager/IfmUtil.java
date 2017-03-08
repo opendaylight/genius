@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
@@ -210,7 +211,7 @@ public class IfmUtil {
     }
 
     public static long getGroupId(long ifIndex, InterfaceInfo.InterfaceType infType) {
-        if (infType == InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE) {
+        if (infType == LOGICAL_GROUP_INTERFACE) {
             return ifIndex + IfmConstants.LOGICAL_GROUP_START;
         } else if (infType == VLAN_INTERFACE) {
             return ifIndex + IfmConstants.VLAN_GROUP_START;
@@ -379,11 +380,14 @@ public class IfmUtil {
                     }
                     result.add(new ActionOutput(actionKeyStart++, new Uri(portNo)));
                 } else {
-                    long regValue =
-                        MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
-                    result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
-                            IfmConstants.REG6_END_INDEX, regValue));
-                    result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
+                    addEgressActionInfosForInterface(ifIndex, actionKeyStart, result);
+                }
+                break;
+            case LOGICAL_GROUP_INTERFACE:
+                if (isDefaultEgress) {
+                    LOG.debug("MULTIPLE_VxLAN_TUNNELS: default egress action treatment will be added later");
+                } else {
+                    addEgressActionInfosForInterface(ifIndex, actionKeyStart, result);
                 }
                 break;
             default:
@@ -391,6 +395,13 @@ public class IfmUtil {
                 break;
         }
         return result;
+    }
+
+    public static void addEgressActionInfosForInterface(int ifIndex, int actionKeyStart, List<ActionInfo> result) {
+        long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
+        result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
+                IfmConstants.REG6_END_INDEX, regValue));
+        result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
