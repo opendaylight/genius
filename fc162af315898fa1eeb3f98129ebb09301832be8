@@ -16,6 +16,24 @@
       "revId": "fc162af315898fa1eeb3f98129ebb09301832be8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a40ecce2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/IfmClusterUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-09T10:57:07Z",
+      "side": 1,
+      "message": "Oops...right..things will be slower when everything goes to same PL..will change it",
+      "parentUuid": "fafc7978_02a6abad",
+      "revId": "fc162af315898fa1eeb3f98129ebb09301832be8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
