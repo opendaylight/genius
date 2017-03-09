@@ -1,0 +1,37 @@
+digraph structs {
+	subgraph {
+"interfacemanager-impl" -> "interfacemanager-api";
+"interfacemanager-api" -> "iana-if-type-2014-05-08";
+"interfacemanager-impl" -> "idmanager-api";
+"interfacemanager-impl" -> "utils.southbound-utils";
+"interfacemanager-api" -> "mdsalutil-api";
+"interfacemanager-impl" -> "model-flow-base";
+"interfacemanager" -> "interfacemanager-api";
+"interfacemanager-api" -> "yang-binding";
+"interfacemanager-impl" -> "hwvtepsouthbound-api";
+"interfacemanager-impl" -> "javax.inject";
+"interfacemanager" -> "interfacemanager-impl";
+"interfacemanager-shell" -> "interfacemanager-impl";
+"interfacemanager-impl" -> "mdsalutil-api";
+"interfacemanager-impl" -> "southbound-api";
+"interfacemanager-api" -> "southbound-api";
+"interfacemanager-shell" -> "org.apache.karaf.shell.console";
+"interfacemanager-impl" -> "guava";
+"interfacemanager-impl" -> "model-flow-service";
+"interfacemanager-impl" -> "alivenessmonitor-api";
+"interfacemanager" -> "interfacemanager-shell";
+"interfacemanager-impl" -> "idmanager-impl";
+"interfacemanager-api" -> "ietf-inet-types-2013-07-15";
+"interfacemanager-impl" -> "ietf-interfaces";
+"interfacemanager-impl" -> "openflowplugin-extension-nicira";
+"interfacemanager-api" -> "ietf-yang-types-20130715";
+"interfacemanager-api" -> "ietf-interfaces";
+"interfacemanager-shell" -> "interfacemanager-api";
+"interfacemanager-api" -> "yang-ext";
+"interfacemanager-impl" -> "testutils";
+"interfacemanager-api" -> "model-inventory";
+"interfacemanager-impl" -> "lockmanager-impl";
+"interfacemanager-api" -> "openflowplugin-extension-nicira";
+}
+rankdir=LR;
+}
