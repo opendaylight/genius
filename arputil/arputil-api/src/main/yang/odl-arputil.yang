@@ -130,10 +130,16 @@ module odl-arputil {
     }
 
     notification arp-response-received {
-         leaf ipaddress {
+		 leaf dst-ipaddress {
              type inet:ip-address;
          }
-         leaf macaddress {
+         leaf src-ipaddress {
+             type inet:ip-address;
+         }
+         leaf src-mac {
+             type yang:phys-address;
+         }
+         leaf dst-mac {
              type yang:phys-address;
          }
          leaf of-table-id {
