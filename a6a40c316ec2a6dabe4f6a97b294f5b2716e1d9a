@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d8c65399",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/IfmClusterUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 6177
+      },
+      "writtenOn": "2017-03-09T18:55:07Z",
+      "side": 1,
+      "message": "here as well :)",
+      "revId": "a6a40c316ec2a6dabe4f6a97b294f5b2716e1d9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
