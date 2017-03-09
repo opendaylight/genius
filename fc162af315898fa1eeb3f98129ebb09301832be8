@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_02a6abad",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/IfmClusterUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6177
+      },
+      "writtenOn": "2017-03-09T09:15:49Z",
+      "side": 1,
+      "message": "Shouldn\u0027t we use entity here instead of INTERFACE_CONFIG_ENTITY?",
+      "revId": "fc162af315898fa1eeb3f98129ebb09301832be8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
