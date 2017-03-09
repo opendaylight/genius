@@ -387,6 +387,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                     addr = dstInetAddr;
                 }
                 byte[] srcMac = ethernet.getSourceMACAddress();
+                byte[] dstMac = ethernet.getDestinationMACAddress();
 
                 NodeConnectorRef ref = packetReceived.getIngress();
 
@@ -400,7 +401,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                     fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, tableId,
                             metadata.getMetadata());
                 } else {
-                    fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, tableId, metadata.getMetadata());
+                    fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, tableId, metadata.getMetadata(),
+                            dstInetAddr, dstMac);
                 }
                 if (macAddrs.get(srcInetAddr.getHostAddress()) != null) {
                     threadPool.submit(new MacResponderTask(arp));
@@ -479,19 +481,25 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
     }
 
-    private void fireArpRespRecvdNotification(String interfaceName, InetAddress inetAddr, byte[] macAddressBytes,
-            int tableId, BigInteger metadata) throws InterruptedException {
+    private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
+            int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
+                    throws InterruptedException {
         ArpUtilCounters.arp_res_rcv.inc();
 
-        IpAddress ip = new IpAddress(inetAddr.getHostAddress().toCharArray());
-        String macAddress = NWUtil.toStringMacAddress(macAddressBytes);
-        PhysAddress mac = new PhysAddress(macAddress);
+        IpAddress srcIp = new IpAddress(srcInetAddr.getHostAddress().toCharArray());
+        IpAddress dstIp = new IpAddress(dstInetAddr.getHostAddress().toCharArray());
+        String srcMacAddress = NWUtil.toStringMacAddress(srcMacAddressBytes);
+        PhysAddress srcMac = new PhysAddress(srcMacAddress);
+        String dstMacAddress = NWUtil.toStringMacAddress(dstMacAddressBytes);
+        PhysAddress dstMac = new PhysAddress(dstMacAddress);
         ArpResponseReceivedBuilder builder = new ArpResponseReceivedBuilder();
         builder.setInterface(interfaceName);
-        builder.setIpaddress(ip);
+        builder.setSrcIpaddress(srcIp);
         builder.setOfTableId((long) tableId);
-        builder.setMacaddress(mac);
+        builder.setSrcMac(srcMac);
         builder.setMetadata(metadata);
+        builder.setDstIpaddress(dstIp);
+        builder.setDstMac(dstMac);
         ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
         if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
             ArpUtilCounters.arp_res_rcv_notification_rejected.inc();
