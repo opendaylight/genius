@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_98820bc6",
+        "filename": "fcapsmanager/alarmmanager/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-09T22:29:18Z",
+      "side": 1,
+      "message": "Why is this section in the fcapsmanager needed if you want to activate FindBugs in the aliveness-monitor?",
+      "range": {
+        "startLine": 58,
+        "startChar": 12,
+        "endLine": 64,
+        "endChar": 21
+      },
+      "revId": "f959c8ef1c56d725d4233248c2ee5977086d0c48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
