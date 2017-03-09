@@ -29,6 +29,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Asynchronous clustered {@link DataTreeChangeListener} base class.
+ */
+// TODO JavaDoc * @deprecated EXPLAIN HERE WHAT TO USE INSTEAD OF THIS
 @Deprecated
 public abstract class AsyncClusteredDataTreeChangeListenerBase
     <T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>

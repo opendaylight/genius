@@ -29,6 +29,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Asynchronous clustered {@link DataChangeListener} base class.
+ * @deprecated Use {@link AsyncClusteredDataTreeChangeListenerBase} instead of this.
+ */
 @Deprecated
 public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject, K extends ClusteredDataChangeListener>
         implements ClusteredDataChangeListener, ChainableDataChangeListener, AutoCloseable {
@@ -39,7 +43,7 @@ public abstract class AsyncClusteredDataChangeListenerBase<T extends DataObject,
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE = 1;
     private static final int DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS = 300;
 
-    private static ThreadPoolExecutor dataChangeHandlerExecutor = new ThreadPoolExecutor(
+    private final ThreadPoolExecutor dataChangeHandlerExecutor = new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
