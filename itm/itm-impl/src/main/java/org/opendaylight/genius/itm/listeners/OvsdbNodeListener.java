@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -9,19 +9,22 @@
 package org.opendaylight.genius.itm.listeners;
 
 import java.util.List;
-
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.itm.commons.OvsdbExternalIdsInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
-import org.opendaylight.genius.itm.commons.OvsdbExternalIdsInfo;
+import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -29,11 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * This class listens for OvsdbNode creation/removal/update in Network Topology Operational DS.
@@ -89,7 +87,8 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
     }
 
     @Override protected void add(InstanceIdentifier<Node> identifier, Node ovsdbNodeNew) {
-        String bridgeName = null, strDpnId = "";
+        String bridgeName = null;
+        String strDpnId = "";
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Add.",
@@ -175,13 +174,20 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
     @Override protected void update(InstanceIdentifier<Node> identifier, Node ovsdbNodeOld,
         Node ovsdbNodeNew) {
-        String newTepIp = null, oldTepIp = null;
-        String tzName = null, oldTzName = null;
-        String oldDpnBridgeName = null, newDpnBridgeName = null;
+        String newTepIp = null;
+        String oldTepIp = null;
+        String tzName = null;
+        String oldTzName = null;
+        String oldDpnBridgeName = null;
+        String newDpnBridgeName = null;
         boolean newOfTunnel = false;
-        boolean isExternalIdsUpdated = false, isExternalIdsDeleted = false;
-        boolean isTepIpAdded = false, isTepIpRemoved = false, isTepIpUpdated = false;
-        boolean isTzChanged = false, isDpnBrChanged = false;
+        boolean isExternalIdsUpdated = false;
+        boolean isExternalIdsDeleted = false;
+        boolean isTepIpAdded = false;
+        boolean isTepIpRemoved = false;
+        boolean isTepIpUpdated = false;
+        boolean isTzChanged = false;
+        boolean isDpnBrChanged = false;
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Update.",
             ovsdbNodeOld.getNodeId().getValue());
@@ -255,7 +261,8 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                 isExternalIdsUpdated = true;
                 if (oldTepIp != null && newTepIp != null) {
                     isDpnBrChanged = true;
-                    LOG.trace("dpn-br-name is changed from {} to {} for TEP-IP: {}", oldDpnBridgeName, newDpnBridgeName, newTepIp);
+                    LOG.trace("dpn-br-name is changed from {} to {} for TEP-IP: {}",
+                            oldDpnBridgeName, newDpnBridgeName, newTepIp);
                 }
             }
 
@@ -265,7 +272,8 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             }
         }
 
-        String strOldDpnId = "", strNewDpnId = "";
+        String strOldDpnId = "";
+        String strNewDpnId = "";
         // handle TEP-remove in remove case, TZ change case, Bridge change case
         if (isExternalIdsDeleted || isTepIpRemoved || isTzChanged || isDpnBrChanged) {
             // check if defTzEnabled flag is false in config file,

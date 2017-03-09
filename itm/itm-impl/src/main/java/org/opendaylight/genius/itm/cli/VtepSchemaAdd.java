@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -17,8 +17,6 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.config.rev151102.vtep.config.schemas.VtepConfigSchema;
 
 /**
  * The Class which implements karaf command "vtep:schema-add".
@@ -50,7 +48,8 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
 
     /** The subnet mask. */
     @Option(name = SUBNET_CIDR, aliases = {
-            "-sc" }, description = "Subnet Mask in CIDR-notation string, e.g. 10.0.0.0/24", required = true, multiValued = false)
+            "-sc" }, description = "Subnet Mask in CIDR-notation string, e.g. 10.0.0.0/24",
+            required = true, multiValued = false)
     private String subnetCIDR;
 
     /** The transport zone. */
@@ -60,7 +59,8 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
 
     /** The dpn ids. */
     @Option(name = DPN_IDS, aliases = {
-            "-d" }, description = "DPN ID's in comma separated values. e.g: 2,3,10", required = false, multiValued = false)
+            "-d" }, description = "DPN ID's in comma separated values. e.g: 2,3,10",
+            required = false, multiValued = false)
     private String dpnIds;
 
     /** The gateway ip. */
@@ -70,12 +70,15 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
 
     /** The tunnel type. */
     @Option(name = TUNNEL_TYPE, aliases = {
-            "-t" }, description = "Tunnel type. Value: VXLAN | GRE. Default: VXLAN", required = false, multiValued = false)
+            "-t" }, description = "Tunnel type. Value: VXLAN | GRE. Default: VXLAN",
+            required = false, multiValued = false)
     private String tunnelType;
 
     /** The exclude ip filter. */
     @Option(name = EXCLUDE_IP_FILTER, aliases = {
-            "-ex" }, description = "IP Addresses which needs to be excluded from the specified subnet. IP address range or comma separated IP addresses can to be specified. e.g: 10.0.0.1-10.0.0.20,10.0.0.30,10.0.0.35", required = false, multiValued = false)
+            "-ex" }, description = "IP Addresses which needs to be excluded from the specified subnet. "
+            + "IP address range or comma separated IP addresses can to be specified. "
+            + "e.g: 10.0.0.1-10.0.0.20,10.0.0.30,10.0.0.35", required = false, multiValued = false)
     private String excludeIpFilter;
 
     /** The Constant logger. */
@@ -99,14 +102,15 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
      */
     private void usage() {
         session.getConsole().println(String.format(
-                "usage: vtep:schema-add [%s schema-name] [%s port-name] [%s vlan-id] [%s subnet-cidr] [%s transport-zone] [%s dpn-ids] [%s gateway-ip] [%s tunnel-type] [%s exclude-ip-filter]",
+                "usage: vtep:schema-add [%s schema-name] [%s port-name] [%s vlan-id] [%s subnet-cidr] "
+                + "[%s transport-zone] [%s dpn-ids] [%s gateway-ip] [%s tunnel-type] [%s exclude-ip-filter]",
                 SCHEMA_NAME, PORT_NAME, VLAN_ID, SUBNET_CIDR, TRANSPORT_ZONE, DPN_IDS, GATEWAY_IP, TUNNEL_TYPE,
                 EXCLUDE_IP_FILTER));
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.karaf.shell.console.AbstractAction#doExecute()
      */
     @Override
@@ -117,10 +121,11 @@ public class VtepSchemaAdd extends OsgiCommandSupport {
                 usage();
                 return null;
             }
-            LOG.debug("Executing vtep:schema-add command\t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {}", schemaName,
-                    portName, vlanId, subnetCIDR, gatewayIp, transportZone, tunnelType, dpnIds, excludeIpFilter);
+            LOG.debug("Executing vtep:schema-add command\t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {} \t {}",
+                    schemaName, portName, vlanId, subnetCIDR, gatewayIp, transportZone, tunnelType,
+                    dpnIds, excludeIpFilter);
 
-            if( null == tunnelType) {
+            if (null == tunnelType) {
                 tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
             }
             VtepConfigSchema schema = ItmUtils.constructVtepConfigSchema(schemaName, portName, vlanId, subnetCIDR,

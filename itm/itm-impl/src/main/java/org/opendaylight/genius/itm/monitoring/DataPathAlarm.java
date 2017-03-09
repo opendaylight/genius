@@ -20,6 +20,7 @@ import javax.management.NotificationBroadcasterSupport;
  *
  */
 public class DataPathAlarm extends NotificationBroadcasterSupport implements DataPathAlarmMBean {
+
     private long sequenceNumber = 1;
 
     private List<String> raiseAlarmObject = new ArrayList<>();

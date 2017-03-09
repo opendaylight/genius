@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -100,10 +100,10 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker,final IdManagerService idManagerService,
-                                final IMdsalApiManager iMdsalApiManager) {
+                                final IMdsalApiManager mdsalManager) {
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
-        this.mdsalManager = iMdsalApiManager;
+        this.mdsalManager = mdsalManager;
     }
 
     @PostConstruct
@@ -127,17 +127,15 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         Optional<InternalTunnel> tnl = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
-        if( tnl != null && tnl.isPresent())
-        {
+        if  (tnl != null && tnl.isPresent()) {
             InternalTunnel tunnel = tnl.get();
             GetTunnelInterfaceNameOutputBuilder output = new GetTunnelInterfaceNameOutputBuilder() ;
             output.setInterfaceName(tunnel.getTunnelInterfaceName()) ;
             resultBld = RpcResultBuilder.success();
             resultBld.withResult(output.build()) ;
-        }else {
+        } else {
             resultBld = RpcResultBuilder.failed();
         }
-
         return Futures.immediateFuture(resultBld.build());
     }
 
@@ -148,20 +146,22 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,meshedDpnList , input.getDestinationIp(), input.getTunnelType());
-        InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        t.delete(LogicalDatastoreType.CONFIGURATION, extPath);
-        ListenableFuture<Void> futureCheck = t.submit();
+        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,meshedDpnList,
+                input.getDestinationIp(), input.getTunnelType());
+        InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
+                .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        transaction.delete(LogicalDatastoreType.CONFIGURATION, extPath);
+        ListenableFuture<Void> futureCheck = transaction.submit();
         Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
-            @Override public void onSuccess(Void aVoid) {
+            @Override public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<Void>success().build());
             }
 
             @Override public void onFailure(Throwable error) {
-                String msg =
-                        "Unable to delete DcGatewayIp " + input.getDestinationIp() + " in datastore and tunnel type " + input.getTunnelType();
+                String msg = "Unable to delete DcGatewayIp " + input.getDestinationIp()
+                        + " in datastore and tunnel type " + input.getTunnelType();
                 LOG.error(msg);
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
@@ -175,8 +175,9 @@ public class ItmManagerRpcService implements ItmRpcService {
             RemoveExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDPNTEPListFromDPNId(dataBroker, input.getDpnId()) ;
-        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService, cfgDpnList, input.getDestinationIp(), input.getTunnelType());
+        List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dataBroker, input.getDpnId()) ;
+        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService, cfgDpnList,
+                input.getDestinationIp(), input.getTunnelType());
         result.set(RpcResultBuilder.<Void>success().build());
         return result;
     }
@@ -186,12 +187,14 @@ public class ItmManagerRpcService implements ItmRpcService {
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, idManagerService,input.getDpnId(), input.getDestinationIp(), input.getTunnelType());
+        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker
+                .buildTunnelsFromDpnToExternalEndPoint(dataBroker, idManagerService,input.getDpnId(),
+                        input.getDestinationIp(), input.getTunnelType());
         for (ListenableFuture<Void> extTunnelResult : extTunnelResultList) {
-            Futures.addCallback(extTunnelResult, new FutureCallback<Void>(){
+            Futures.addCallback(extTunnelResult, new FutureCallback<Void>() {
 
                 @Override
-                public void onSuccess(Void aVoid) {
+                public void onSuccess(Void voidInstance) {
                     result.set(RpcResultBuilder.<Void>success().build());
                 }
 
@@ -199,7 +202,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                 public void onFailure(Throwable error) {
                     String msg = "Unable to create ext tunnel";
                     LOG.error("create ext tunnel failed. {}. {}", msg, error);
-                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                    result.set(RpcResultBuilder.<Void>failed()
+                            .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                 }
             });
         }
@@ -214,20 +218,26 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList, input.getDestinationIp(), input.getTunnelType()) ;InstanceIdentifier<DcGatewayIp> extPath= InstanceIdentifier.builder(DcGatewayIpList.class).child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
-        DcGatewayIp dcGatewayIp = new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp()).setTunnnelType(input.getTunnelType()).build();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        t.put(LogicalDatastoreType.CONFIGURATION, extPath,dcGatewayIp, true);
-        ListenableFuture<Void> futureCheck = t.submit();
+        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,meshedDpnList,
+                input.getDestinationIp(), input.getTunnelType()) ;
+        InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
+                .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+        DcGatewayIp dcGatewayIp =
+                new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp())
+                        .setTunnnelType(input.getTunnelType()).build();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, extPath,dcGatewayIp, true);
+        ListenableFuture<Void> futureCheck = writeTransaction.submit();
         Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
-            @Override public void onSuccess(Void aVoid) {
+            @Override public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<Void>success().build());
             }
 
             @Override public void onFailure(Throwable error) {
                 String msg =
-                        "Unable to create DcGatewayIp {} in datastore for ip "+ input.getDestinationIp() + "and tunnel type " + input.getTunnelType();
+                        "Unable to create DcGatewayIp {} in datastore for ip " + input.getDestinationIp() + "and "
+                                + "tunnel type " + input.getTunnelType();
                 LOG.error(msg);
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
@@ -249,14 +259,13 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
-        if( ext != null && ext.isPresent())
-        {
+        if (ext != null && ext.isPresent()) {
             ExternalTunnel exTunnel = ext.get();
             GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder() ;
             output.setInterfaceName(exTunnel.getTunnelInterfaceName()) ;
             resultBld = RpcResultBuilder.success();
             resultBld.withResult(output.build()) ;
-        }else {
+        } else {
             resultBld = RpcResultBuilder.failed();
         }
 
@@ -264,15 +273,17 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<java.lang.Void>> createTerminatingServiceActions(final CreateTerminatingServiceActionsInput input) {
-        LOG.info("create terminatingServiceAction on DpnId = {} for service id {} and instructions {}", input.getDpnId() , input.getServiceId(), input.getInstruction());
+    public Future<RpcResult<java.lang.Void>>
+        createTerminatingServiceActions(final CreateTerminatingServiceActionsInput input) {
+        LOG.info("create terminatingServiceAction on DpnId = {} for service id {} and instructions {}",
+                input.getDpnId() , input.getServiceId(), input.getInstruction());
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         int serviceId = input.getServiceId() ;
-        List<MatchInfo> mkMatches = getTunnelMatchesForServiceId(serviceId);
+        final List<MatchInfo> mkMatches = getTunnelMatchesForServiceId(serviceId);
         byte[] vxLANHeader = new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         // Flags Byte
-        byte Flags = (byte) 0x08;
-        vxLANHeader[0] = Flags;
+        byte flags = (byte) 0x08;
+        vxLANHeader[0] = flags;
 
         // Extract the serviceId details and imprint on the VxLAN Header
         vxLANHeader[4] = (byte) (serviceId >> 16);
@@ -285,14 +296,16 @@ public class ItmManagerRpcService implements ItmRpcService {
 //                MetaDataUtil.METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID }));
 
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
-                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,serviceId), 5, String.format("%s:%d","ITM Flow Entry ",serviceId),
-                0, 0, ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(serviceId)),mkMatches, input.getInstruction());
+                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,serviceId), 5,
+                String.format("%s:%d","ITM Flow Entry ",serviceId), 0, 0,
+                ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(serviceId)),mkMatches, input.getInstruction());
 
-        ListenableFuture<Void> installFlowResult = mdsalManager.installFlow(input.getDpnId(), terminatingServiceTableFlow);
-        Futures.addCallback(installFlowResult, new FutureCallback<Void>(){
+        ListenableFuture<Void> installFlowResult =
+                mdsalManager.installFlow(input.getDpnId(), terminatingServiceTableFlow);
+        Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
 
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<Void>success().build());
             }
 
@@ -300,7 +313,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             public void onFailure(Throwable error) {
                 String msg = String.format("Unable to install terminating service flow for %s", input.getDpnId());
                 LOG.error("create terminating service actions failed. {}. {}", msg, error);
-                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
+                        .build());
             }
         });
         // result.set(RpcResultBuilder.<Void>success().build());
@@ -308,18 +322,23 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<java.lang.Void>> removeTerminatingServiceActions(final RemoveTerminatingServiceActionsInput input) {
-        LOG.info("remove terminatingServiceActions called with DpnId = {} and serviceId = {}", input.getDpnId(), input.getServiceId());
+    public Future<RpcResult<java.lang.Void>>
+        removeTerminatingServiceActions(final RemoveTerminatingServiceActionsInput input) {
+        LOG.info("remove terminatingServiceActions called with DpnId = {} and serviceId = {}",
+                input.getDpnId(), input.getServiceId());
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
-                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,input.getServiceId()), 5, String.format("%s:%d","ITM Flow Entry ",input.getServiceId()),
-                0, 0, ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(input.getServiceId())),getTunnelMatchesForServiceId(input.getServiceId()), null );
+                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,input.getServiceId()), 5,
+                String.format("%s:%d","ITM Flow Entry ",input.getServiceId()), 0, 0,
+                ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(input.getServiceId())),
+                getTunnelMatchesForServiceId(input.getServiceId()), null);
 
-        ListenableFuture<Void> installFlowResult = mdsalManager.removeFlow(input.getDpnId(), terminatingServiceTableFlow);
-        Futures.addCallback(installFlowResult, new FutureCallback<Void>(){
+        ListenableFuture<Void> installFlowResult =
+                mdsalManager.removeFlow(input.getDpnId(), terminatingServiceTableFlow);
+        Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
 
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<Void>success().build());
             }
 
@@ -327,7 +346,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             public void onFailure(Throwable error) {
                 String msg = String.format("Unable to remove terminating service flow for %s", input.getDpnId());
                 LOG.error("remove terminating service actions failed. {}. {}", msg, error);
-                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
+                        .build());
             }
         });
         //result.set(RpcResultBuilder.<Void>success().build());
@@ -337,12 +357,12 @@ public class ItmManagerRpcService implements ItmRpcService {
 
 
     public List<MatchInfo> getTunnelMatchesForServiceId(int serviceId) {
-        List<MatchInfo> mkMatches = new ArrayList<>();
+        final List<MatchInfo> mkMatches = new ArrayList<>();
         byte[] vxLANHeader = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
         // Flags Byte
-        byte Flags = (byte) 0x08;
-        vxLANHeader[0] = Flags;
+        byte flag = (byte) 0x08;
+        vxLANHeader[0] = flag;
 
         // Extract the serviceId details and imprint on the VxLAN Header
         vxLANHeader[4] = (byte) (serviceId >> 16);
@@ -366,21 +386,22 @@ public class ItmManagerRpcService implements ItmRpcService {
         BigInteger srcDpn = input.getSourceDpid() ;
         srcDpn.toString();
         IpAddress dstIp = input.getDestinationIp() ;
-        InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(
-                ExternalTunnelList.class)
-                .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(dstIp), srcDpn.toString(), TunnelTypeMplsOverGre.class));
+        InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
+                .child(ExternalTunnel.class,
+                        new ExternalTunnelKey(String.valueOf(dstIp), srcDpn.toString(), TunnelTypeMplsOverGre.class));
 
         Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path1, dataBroker);
 
-        if( ext != null && ext.isPresent())
-        {
+        if (ext != null && ext.isPresent()) {
             ExternalTunnel extTunnel = ext.get();
-            GetInternalOrExternalInterfaceNameOutputBuilder output = new GetInternalOrExternalInterfaceNameOutputBuilder().setInterfaceName(extTunnel.getTunnelInterfaceName() );
+            GetInternalOrExternalInterfaceNameOutputBuilder output =
+                    new GetInternalOrExternalInterfaceNameOutputBuilder()
+                            .setInterfaceName(extTunnel.getTunnelInterfaceName());
             resultBld = RpcResultBuilder.success();
             resultBld.withResult(output.build()) ;
         } else {
             List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker);
-            if(meshedDpnList == null){
+            if (meshedDpnList == null) {
                 LOG.error("There are no tunnel mesh info in config DS");
                 return Futures.immediateFuture(resultBld.build());
             }
@@ -388,21 +409,20 @@ public class ItmManagerRpcService implements ItmRpcService {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
-                    InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(
-                            TunnelList.class)
-                            .child(InternalTunnel.class, new InternalTunnelKey(teps.getDPNID(), srcDpn, input.getTunnelType()));
+                    InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
+                            .child(InternalTunnel.class,
+                                    new InternalTunnelKey(teps.getDPNID(), srcDpn, input.getTunnelType()));
 
                     Optional<InternalTunnel> tnl = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
                     if (tnl != null && tnl.isPresent()) {
                         InternalTunnel tunnel = tnl.get();
-                        GetInternalOrExternalInterfaceNameOutputBuilder
-                                output =
+                        GetInternalOrExternalInterfaceNameOutputBuilder output =
                                 new GetInternalOrExternalInterfaceNameOutputBuilder()
                                         .setInterfaceName(tunnel.getTunnelInterfaceName());
                         resultBld = RpcResultBuilder.success();
                         resultBld.withResult(output.build());
                         break;
-                    }else{
+                    } else {
                         LOG.error("Tunnel not found for source DPN {} ans destination IP {}", srcDpn, dstIp);
                     }
                 }
@@ -417,19 +437,22 @@ public class ItmManagerRpcService implements ItmRpcService {
         boolean foundVxlanTzone = false;
         try {
             final IpAddress hwIp = input.getIpAddress();
-            final String node_id = input.getNodeId();
+            final String nodeId = input.getNodeId();
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, containerPath, dataBroker);
-            if (tZonesOptional.isPresent()) {
-                TransportZones tZones = tZonesOptional.get();
-                if (tZones.getTransportZone() == null || tZones.getTransportZone().isEmpty()) {
+            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                    containerPath, dataBroker);
+            if (transportZonesOptional.isPresent()) {
+                TransportZones transportZones = transportZonesOptional.get();
+                if (transportZones.getTransportZone() == null || transportZones.getTransportZone().isEmpty()) {
                     LOG.error("No teps configured");
-                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
+                    result.set(RpcResultBuilder.<Void>failed()
+                            .withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
                     return result;
                 }
-                for (TransportZone tzone : tZones.getTransportZone()) {
-                    if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class)))
+                for (TransportZone tzone : transportZones.getTransportZone()) {
+                    if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class))) {
                         continue;
+                    }
                     foundVxlanTzone = true;
                     String transportZone = tzone.getZoneName();
                     if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
@@ -438,34 +461,33 @@ public class ItmManagerRpcService implements ItmRpcService {
                         return result;
                     }
                     SubnetsKey subnetsKey = tzone.getSubnets().get(0).getKey();
-                    DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, node_id);
+                    DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
                             .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
                             .build();
-                    WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                     //TO DO: add retry if it fails
 
-                    t.delete(LogicalDatastoreType.CONFIGURATION, path);
+                    transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
 
-                    ListenableFuture<Void> futureCheck = t.submit();
+                    ListenableFuture<Void> futureCheck = transaction.submit();
                     Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
-                        @Override public void onSuccess(Void aVoid) {
+                        @Override public void onSuccess(Void voidInstance) {
                             result.set(RpcResultBuilder.<Void>success().build());
                         }
 
                         @Override public void onFailure(Throwable error) {
-                            String msg = String.format("Unable to delete HwVtep {} from datastore", node_id);
-                            LOG.error("Unable to delete HwVtep {}, {} from datastore", node_id, hwIp);
+                            String msg = String.format("Unable to delete HwVtep {} from datastore", nodeId);
+                            LOG.error("Unable to delete HwVtep {}, {} from datastore", nodeId, hwIp);
                             result.set(RpcResultBuilder.<Void>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                         }
                     });
 
                 }
-            }
-            else {
+            } else {
                 result.set(RpcResultBuilder.<Void>failed()
                         .withError(RpcError.ErrorType.APPLICATION, "No TransportZones configured").build());
                 return result;
@@ -479,8 +501,8 @@ public class ItmManagerRpcService implements ItmRpcService {
 
             return result;
         } catch (Exception e) {
-            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed().
-                    withError(RpcError.ErrorType.APPLICATION, "Deleting l2 Gateway to DS Failed", e);
+            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed()
+                    .withError(RpcError.ErrorType.APPLICATION, "Deleting l2 Gateway to DS Failed", e);
             return Futures.immediateFuture(resultBuilder.build());
         }
     }
@@ -492,59 +514,60 @@ public class ItmManagerRpcService implements ItmRpcService {
         boolean foundVxlanTzone = false;
         try {
             final IpAddress hwIp = input.getIpAddress();
-            final String node_id = input.getNodeId();
+            final String nodeId = input.getNodeId();
             //iterate through all transport zones and put TORs under vxlan
             //if no vxlan tzone is cnfigured, return an error.
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, containerPath,
-                    dataBroker);
-            if (tZonesOptional.isPresent()) {
-                TransportZones tZones = tZonesOptional.get();
-                if (tZones.getTransportZone() == null || tZones.getTransportZone().isEmpty()) {
+            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                    containerPath, dataBroker);
+            if (transportZonesOptional.isPresent()) {
+                TransportZones transportZones = transportZonesOptional.get();
+                if (transportZones.getTransportZone() == null || transportZones.getTransportZone().isEmpty()) {
                     LOG.error("No transportZone configured");
                     result.set(RpcResultBuilder.<Void>failed()
                             .withError(RpcError.ErrorType.APPLICATION, "No transportZone Configured").build());
                     return result;
                 }
-                for (TransportZone tzone : tZones.getTransportZone()) {
-                    if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class)))
+                for (TransportZone tzone : transportZones.getTransportZone()) {
+                    if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class))) {
                         continue;
+                    }
                     String transportZone = tzone.getZoneName();
                     if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
                         continue;
                     }
                     foundVxlanTzone = true;
                     SubnetsKey subnetsKey = tzone.getSubnets().get(0).getKey();
-                    DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, node_id);
+                    DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
                             .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
                             .build();
                     DeviceVteps deviceVtep = new DeviceVtepsBuilder().setKey(deviceVtepKey).setIpAddress(hwIp)
-                            .setNodeId(node_id).setTopologyId(input.getTopologyId()).build();
-                    WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                            .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
+                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                     //TO DO: add retry if it fails
-                    t.put(LogicalDatastoreType.CONFIGURATION, path, deviceVtep, true);
+                    transaction.put(LogicalDatastoreType.CONFIGURATION, path, deviceVtep, true);
 
-                    ListenableFuture<Void> futureCheck = t.submit();
+                    ListenableFuture<Void> futureCheck = transaction.submit();
                     Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
-                        @Override public void onSuccess(Void aVoid) {
+                        @Override public void onSuccess(Void voidInstance) {
                             result.set(RpcResultBuilder.<Void>success().build());
                         }
 
                         @Override public void onFailure(Throwable error) {
-                            String msg = String.format("Unable to write HwVtep {} to datastore", node_id);
-                            LOG.error("Unable to write HwVtep {}, {} to datastore", node_id, hwIp);
+                            String msg = String.format("Unable to write HwVtep {} to datastore", nodeId);
+                            LOG.error("Unable to write HwVtep {}, {} to datastore", nodeId, hwIp);
                             result.set(RpcResultBuilder.<Void>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                         }
                     });
 
                 }
-            }
-            else {
-                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, "No TransportZones configured").build());
+            } else {
+                result.set(RpcResultBuilder.<Void>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, "No TransportZones configured").build());
                 return result;
             }
 
@@ -556,141 +579,154 @@ public class ItmManagerRpcService implements ItmRpcService {
 
             return result;
         } catch (Exception e) {
-            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed().
-                    withError(RpcError.ErrorType.APPLICATION, "Adding l2 Gateway to DS Failed", e);
+            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed()
+                    .withError(RpcError.ErrorType.APPLICATION, "Adding l2 Gateway to DS Failed", e);
             return Futures.immediateFuture(resultBuilder.build());
         }
     }
 
     @Override
-    public Future<RpcResult<java.lang.Void>> addL2GwMlagDevice(AddL2GwMlagDeviceInput input)
-    {
+    public Future<RpcResult<java.lang.Void>> addL2GwMlagDevice(AddL2GwMlagDeviceInput input) {
 
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         try {
             final IpAddress hwIp = input.getIpAddress();
-            final List<String> node_id = input.getNodeId();
+            final List<String> nodeId = input.getNodeId();
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, containerPath, dataBroker);
-            if (tZonesOptional.isPresent()) {
-                TransportZones tZones = tZonesOptional.get();
-                if (tZones.getTransportZone() == null || tZones.getTransportZone().isEmpty()) {
+            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                    containerPath, dataBroker);
+            if (transportZonesOptional.isPresent()) {
+                TransportZones transportZones = transportZonesOptional.get();
+                if (transportZones.getTransportZone() == null || transportZones.getTransportZone().isEmpty()) {
                     LOG.error("No teps configured");
-                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
+                    result.set(RpcResultBuilder.<Void>failed()
+                            .withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
                     return result;
                 }
-                String transportZone = tZones.getTransportZone().get(0).getZoneName();
-                if (tZones.getTransportZone().get(0).getSubnets() == null || tZones.getTransportZone().get(0).getSubnets().isEmpty()) {
-                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
+                String transportZone = transportZones.getTransportZone().get(0).getZoneName();
+                if (transportZones.getTransportZone().get(0).getSubnets() == null
+                        || transportZones.getTransportZone().get(0).getSubnets().isEmpty()) {
+                    result.set(RpcResultBuilder.<Void>failed()
+                            .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                     return result;
                 }
-                SubnetsKey subnetsKey = tZones.getTransportZone().get(0).getSubnets().get(0).getKey();
-                DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, node_id.get(0));
+                SubnetsKey subnetsKey = transportZones.getTransportZone().get(0).getSubnets().get(0).getKey();
+                DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
                 InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
                                 .child(TransportZone.class, new TransportZoneKey(transportZone))
                                 .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey).build();
-                DeviceVteps deviceVtep = new DeviceVtepsBuilder().setKey(deviceVtepKey).setIpAddress(hwIp).setNodeId(node_id.get(0)).setTopologyId(input.getTopologyId()).build();
-                WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                DeviceVteps deviceVtep = new DeviceVtepsBuilder().setKey(deviceVtepKey).setIpAddress(hwIp)
+                        .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
+                WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
                 //TO DO: add retry if it fails
                 LOG.trace("writing hWvtep{}",deviceVtep);
-                t.put(LogicalDatastoreType.CONFIGURATION, path, deviceVtep, true);
+                writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, deviceVtep, true);
 
-                if(node_id.size() == 2) {
-                    LOG.trace("second node-id {}",node_id.get(1));
-                    DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, node_id.get(1));
+                if (nodeId.size() == 2) {
+                    LOG.trace("second node-id {}",nodeId.get(1));
+                    DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
                     InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
                             .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey2).build();
-                    DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().setKey(deviceVtepKey2).setIpAddress(hwIp).setNodeId(node_id.get(1))
+                    DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().setKey(deviceVtepKey2).setIpAddress(hwIp)
+                            .setNodeId(nodeId.get(1))
                             .setTopologyId(input.getTopologyId()).build();
                     //TO DO: add retry if it fails
                     LOG.trace("writing {}",deviceVtep2);
-                    t.put(LogicalDatastoreType.CONFIGURATION, path2, deviceVtep2, true);
-                }ListenableFuture<Void> futureCheck = t.submit();
+                    writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path2, deviceVtep2, true);
+                }
+                ListenableFuture<Void> futureCheck = writeTransaction.submit();
                 Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onSuccess(Void voidInstance) {
                         result.set(RpcResultBuilder.<Void>success().build());
                     }
 
                     @Override
                     public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to write HwVtep {} to datastore", node_id);
-                        LOG.error("Unable to write HwVtep {}, {} to datastore", node_id , hwIp);
-                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                        String msg = String.format("Unable to write HwVtep {} to datastore", nodeId);
+                        LOG.error("Unable to write HwVtep {}, {} to datastore", nodeId , hwIp);
+                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
+                                .build());
                     }
                 });
             }
             return result;
         } catch (Exception e) {
-            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed().
-                    withError(RpcError.ErrorType.APPLICATION, "Adding l2 Gateway to DS Failed", e);
+            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed()
+                    .withError(RpcError.ErrorType.APPLICATION, "Adding l2 Gateway to DS Failed", e);
             return Futures.immediateFuture(resultBuilder.build());
         }
     }
+
     @Override
     public Future<RpcResult<Void>> deleteL2GwMlagDevice(DeleteL2GwMlagDeviceInput input) {
 
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         try {
             final IpAddress hwIp = input.getIpAddress();
-            final List<String> node_id = input.getNodeId();
+            final List<String> nodeId = input.getNodeId();
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, containerPath, dataBroker);
-            if (tZonesOptional.isPresent()) {
-                TransportZones tZones = tZonesOptional.get();
-                if (tZones.getTransportZone() == null || tZones.getTransportZone().isEmpty()) {
+            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                    containerPath, dataBroker);
+            if (transportZonesOptional.isPresent()) {
+                TransportZones tzones = transportZonesOptional.get();
+                if (tzones.getTransportZone() == null || tzones.getTransportZone().isEmpty()) {
                     LOG.error("No teps configured");
-                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
+                    result.set(RpcResultBuilder.<Void>failed()
+                            .withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
                     return result;
                 }
-                String transportZone = tZones.getTransportZone().get(0).getZoneName();
-                if (tZones.getTransportZone().get(0).getSubnets() == null || tZones.getTransportZone().get(0).getSubnets().isEmpty()) {
-                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
+                String transportZone = tzones.getTransportZone().get(0).getZoneName();
+                if (tzones.getTransportZone().get(0).getSubnets() == null || tzones.getTransportZone()
+                        .get(0).getSubnets().isEmpty()) {
+                    result.set(RpcResultBuilder.<Void>failed()
+                            .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                     return result;
                 }
-                SubnetsKey subnetsKey = tZones.getTransportZone().get(0).getSubnets().get(0).getKey();
-                DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, node_id.get(0));
+                SubnetsKey subnetsKey = tzones.getTransportZone().get(0).getSubnets().get(0).getKey();
+                DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
                 InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
                                 .child(TransportZone.class, new TransportZoneKey(transportZone))
                                 .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
                                 deviceVtepKey).build();
-                WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+                WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                 //TO DO: add retry if it fails
-                t.delete(LogicalDatastoreType.CONFIGURATION, path);
+                transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
 
-                DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, node_id.get(1));
+                DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
                 InstanceIdentifier<DeviceVteps> path2 =
                         InstanceIdentifier.builder(TransportZones.class)
                                 .child(TransportZone.class, new TransportZoneKey(transportZone))
                                 .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
                                 deviceVtepKey2).build();
                 //TO DO: add retry if it fails
-                t.delete(LogicalDatastoreType.CONFIGURATION, path2);
+                transaction.delete(LogicalDatastoreType.CONFIGURATION, path2);
 
-                ListenableFuture<Void> futureCheck = t.submit();
+                ListenableFuture<Void> futureCheck = transaction.submit();
                 Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onSuccess(Void voidInstance) {
                         result.set(RpcResultBuilder.<Void>success().build());
                     }
 
                     @Override
                     public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to write HwVtep {} to datastore", node_id);
-                        LOG.error("Unable to write HwVtep {}, {} to datastore", node_id , hwIp);
-                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                        String msg = String.format("Unable to write HwVtep {} to datastore", nodeId);
+                        LOG.error("Unable to write HwVtep {}, {} to datastore", nodeId , hwIp);
+                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
+                                .build());
                     }
                 });
             }
             return result;
         } catch (Exception e) {
-            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed().
-                    withError(RpcError.ErrorType.APPLICATION, "Deleting l2 Gateway to DS Failed", e);
+            RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed()
+                    .withError(RpcError.ErrorType.APPLICATION, "Deleting l2 Gateway to DS Failed", e);
             return Futures.immediateFuture(resultBuilder.build());
         }
     }
@@ -701,9 +737,10 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<IsTunnelInternalOrExternalOutput> resultBld;
         String tunIfName = input.getTunnelInterfaceName();
         long tunVal = 0;
-        IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder().setTunnelType(tunVal);
+        IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder()
+                        .setTunnelType(tunVal);
 
-        if(ItmUtils.itmCache.getInternalTunnel(tunIfName) != null) {
+        if (ItmUtils.itmCache.getInternalTunnel(tunIfName) != null) {
             tunVal = 1;
         } else if (ItmUtils.itmCache.getExternalTunnel(tunIfName) != null) {
             tunVal = 2;
@@ -723,9 +760,9 @@ public class ItmManagerRpcService implements ItmRpcService {
         IpAddress dcgwIpAddr = new IpAddress(dcgwIpStr.toCharArray());
         long retVal;
 
-        if((dcGatewayIpList != null) &&
-                (!dcGatewayIpList.isEmpty()) &&
-                (dcGatewayIpList.contains(dcgwIpAddr))) {
+        if ((dcGatewayIpList != null)
+                && (!dcGatewayIpList.isEmpty())
+                && (dcGatewayIpList.contains(dcgwIpAddr))) {
             //Match found
             retVal = 1;
             IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);

@@ -24,24 +24,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListenerBase<StateTunnelList,StateTunnelListListener> implements AutoCloseable{
+public class StateTunnelListListener
+        extends AsyncClusteredDataTreeChangeListenerBase<StateTunnelList,StateTunnelListListener>
+        implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(StateTunnelListListener.class);
     private final DataBroker broker;
 
     /**
-     * Responsible for listening to tunnel interface state change
+     * Responsible for listening to tunnel interface state change.
      *
      */
     @Inject
-     public StateTunnelListListener(final DataBroker dataBroker) {
-         super(StateTunnelList.class, StateTunnelListListener.class);
-         DataStoreCache.create(ITMConstants.TUNNEL_STATE_CACHE_NAME);
-             this.broker = dataBroker;
-         try {
-             registerListener(LogicalDatastoreType.OPERATIONAL, this.broker);
-          } catch (final Exception e) {
-             LOG.error("StateTunnelListListener DataChange listener registration fail!", e);
-         }
+    public StateTunnelListListener(final DataBroker dataBroker) {
+        super(StateTunnelList.class, StateTunnelListListener.class);
+        DataStoreCache.create(ITMConstants.TUNNEL_STATE_CACHE_NAME);
+        this.broker = dataBroker;
+        try {
+            registerListener(LogicalDatastoreType.OPERATIONAL, this.broker);
+        } catch (final Exception e) {
+            LOG.error("StateTunnelListListener DataChange listener registration fail!", e);
+        }
     }
 
     @PostConstruct
@@ -62,7 +64,7 @@ public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected void update(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList original,
-    StateTunnelList update) {
+                          StateTunnelList update) {
         DataStoreCache.add(ITMConstants.TUNNEL_STATE_CACHE_NAME, update.getTunnelInterfaceName(), update);
     }
 
@@ -78,8 +80,8 @@ public class StateTunnelListListener extends AsyncClusteredDataTreeChangeListene
 
     @Override
     protected InstanceIdentifier<StateTunnelList> getWildCardPath() {
-        return InstanceIdentifier.builder(TunnelsState.class).
-                child(StateTunnelList.class).build();
+        return InstanceIdentifier.builder(TunnelsState.class)
+                .child(StateTunnelList.class).build();
     }
 
 }

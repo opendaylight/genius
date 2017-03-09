@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.tests;
 
+import static org.mockito.Mockito.mock;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.idmanager.IdManager;
@@ -28,10 +30,9 @@ import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManag
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
-import static org.mockito.Mockito.mock;
 
 /**
  * Dependency Injection Wiring for {@link ItmTest}.
