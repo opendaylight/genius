@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_9334ac4a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-10T04:41:47Z",
+      "side": 1,
+      "message": "nit: provide space after if and }",
+      "revId": "f5fe401072b4588d9cfad44834add26cfe68a6e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d34114aa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-10T04:41:47Z",
+      "side": 1,
+      "message": "why can\u0027t you change the argument as Optional\u003cWriteTransaction\u003e for createInterfaceChildEntry ?",
+      "revId": "f5fe401072b4588d9cfad44834add26cfe68a6e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f34258a9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigAddHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-10T04:41:47Z",
+      "side": 1,
+      "message": "nit: move comma to above line.",
+      "revId": "f5fe401072b4588d9cfad44834add26cfe68a6e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5315249a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-10T04:41:47Z",
+      "side": 1,
+      "message": "space after ,",
+      "revId": "f5fe401072b4588d9cfad44834add26cfe68a6e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
