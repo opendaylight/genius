@@ -163,16 +163,16 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         idLocalPool.setAvailableIds(availableIdHolder);
         idLocalPool.setReleasedIds(releasedIdHolder);
         localPool.put(parentPoolName, idLocalPool);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Populating cache for {} with {}", idLocalPool.getPoolName(), idLocalPool);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Populating cache for {} with {}", idLocalPool.getPoolName(), idLocalPool);
         }
         return true;
     }
 
     @Override
     public Future<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("createIdPool called with input {}", input);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("createIdPool called with input {}", input);
         }
         String poolName = input.getPoolName();
         long low = input.getLow();
@@ -207,8 +207,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Override
     public Future<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("AllocateId called with input {}", input);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("AllocateId called with input {}", input);
         }
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
@@ -232,8 +232,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Override
     public Future<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("AllocateIdRange called with input {}", input);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("AllocateIdRange called with input {}", input);
         }
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
@@ -258,8 +258,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Override
     public Future<RpcResult<Void>> deleteIdPool(DeleteIdPoolInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("DeleteIdPool called with input {}", input);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("DeleteIdPool called with input {}", input);
         }
         String poolName = input.getPoolName();
         Future<RpcResult<Void>> futureResult;
@@ -273,8 +273,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     childPoolList.parallelStream().forEach(childPool -> deletePool(childPool.getChildPoolName()));
                 }
                 singleTxDB.syncDelete(CONFIGURATION, idPoolToBeDeleted);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Deleted id pool {}", poolName);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Deleted id pool {}", poolName);
                 }
             }
             futureResult = RpcResultBuilder.<Void>success().buildFuture();
@@ -310,8 +310,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
             String idKey, long size) throws OperationFailedException, IdManagerException {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
                     idKey);
         }
         List<Long> newIdValuesList = new ArrayList<>();
@@ -336,8 +336,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         Optional<IdEntries> existingIdEntry = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
         if (existingIdEntry.isPresent()) {
             newIdValuesList = existingIdEntry.get().getIdValue();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Existing ids {} for the key {} ", newIdValuesList, idKey);
             }
             // Inform other waiting threads about this new value.
             futureIdValues.complete(newIdValuesList);
@@ -366,8 +366,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 idUtils.unlockPool(lockManager, parentPoolName);
             }
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Got pool {}", localIdPool);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Got pool {}", localIdPool);
         }
         if (size == 1) {
             newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
@@ -385,8 +385,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     try {
                         newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
                     } catch (OperationFailedException e) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Releasing IDs to pool {}", localPoolName);
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info("Releasing IDs to pool {}", localPoolName);
                         }
                         // Releasing the IDs added in newIdValuesList since a null list would be returned now, as the
                         // requested size of list IDs exceeds the number of available IDs.
@@ -399,8 +399,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
             }
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
         }
         idUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
@@ -439,8 +439,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             long idCount = getIdBlockFromParentPool(parentPoolName, localIdPool);
             if (idCount <= 0) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unable to allocate Id block from global pool");
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Unable to allocate Id block from global pool");
                 }
                 throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
             }
@@ -452,8 +452,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
      */
     private long getIdBlockFromParentPool(String parentPoolName, IdLocalPool localIdPool)
             throws OperationFailedException, IdManagerException {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocating block of id from parent pool {}", parentPoolName);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Allocating block of id from parent pool {}", parentPoolName);
         }
         InstanceIdentifier<IdPool> idPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         parentPoolName = parentPoolName.intern();
@@ -494,8 +494,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             idCount = getIdsFromOtherChildPools(releasedIdsBuilderParent, parentIdPool);
             if (idCount <= 0) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unable to allocate Id block from global pool");
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Unable to allocate Id block from global pool");
                 }
                 throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentIdPool.getPoolName()));
             }
@@ -552,8 +552,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool,
             ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool, WriteTransaction tx) {
         if (releasedIdsBuilderParent.getAvailableIdCount() == 0) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Ids unavailable in releasedIds of parent pool {}", parentIdPool);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Ids unavailable in releasedIds of parent pool {}", parentIdPool);
             }
             return 0;
         }
@@ -577,8 +577,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(parentIdPool.getPoolName())).child(ReleasedIdsHolder.class).build();
         releasedIdsBuilderParent.setAvailableIdCount(releasedIdsBuilderParent.getAvailableIdCount() - idCount);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
         }
         tx.merge(CONFIGURATION, releasedIdsHolderInstanceIdentifier,
                 releasedIdsBuilderParent.build(), true);
@@ -592,8 +592,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         long end = availableIdsBuilderParent.getEnd();
         long cur = availableIdsBuilderParent.getCursor();
         if (!idUtils.isIdAvailable(availableIdsBuilderParent)) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Ids exhausted in parent pool {}", parentIdPool);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Ids exhausted in parent pool {}", parentIdPool);
             }
             return idCount;
         }
@@ -606,8 +606,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(parentIdPool.getPoolName())).child(AvailableIdsHolder.class).build();
         availableIdsBuilderParent.setCursor(cur + idCount);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocated {} ids from availableIds of global pool {}", idCount, parentIdPool);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Allocated {} ids from availableIds of global pool {}", idCount, parentIdPool);
         }
         tx.merge(CONFIGURATION, availableIdsHolderInstanceIdentifier,
                 availableIdsBuilderParent.build(), true);
@@ -617,9 +617,12 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
             throws ReadFailedException, IdManagerException {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Releasing ID {} from pool {}", idKey, localPoolName);
+        }
         java.util.Optional.ofNullable(idUtils.releaseIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
             try {
-                latch.await(5, TimeUnit.SECONDS);
+                latch.await(10, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
                 LOG.warn("Thread interrupted while releasing id {} from id pool {}", idKey, parentPoolName);
             } finally {
@@ -644,16 +647,16 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<Long> idValuesList = existingIdEntry.getIdValue();
         IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
         boolean isRemoved = newIdEntries.remove(existingIdEntry);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("The entry {} is removed {}", existingIdEntry, isRemoved);
         }
         updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
         IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), broker,
                 idUtils);
         DataStoreJobCoordinator.getInstance().enqueueJob(localPoolName, poolSyncJob, IdUtils.RETRY_COUNT);
         scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
         }
         // Updating id entries in the parent pool. This will be used for restart scenario
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker, idUtils);
@@ -680,15 +683,15 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         InstanceIdentifier<IdPool> idPoolInstanceIdentifier = idUtils.getIdPoolInstance(poolName);
         Optional<IdPool> existingIdPool = singleTxDB.syncReadOptional(CONFIGURATION, idPoolInstanceIdentifier);
         if (!existingIdPool.isPresent()) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Creating new global pool {}", poolName);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Creating new global pool {}", poolName);
             }
             idPool = idUtils.createGlobalPool(poolName, low, high, blockSize);
             tx.put(CONFIGURATION, idPoolInstanceIdentifier, idPool, true);
         } else {
             idPool = existingIdPool.get();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("GlobalPool exists {}", idPool);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("GlobalPool exists {}", idPool);
             }
         }
         return idPool;

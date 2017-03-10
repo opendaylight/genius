@@ -20,9 +20,12 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateIdEntryJob.class);
     private final String parentPoolName;
     private final String localPoolName;
     private final String idKey;
@@ -51,6 +54,9 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
         tx.submit().checkedGet();
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
+        }
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
             .ifPresent(latch -> latch.countDown());
