@@ -128,6 +128,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
+    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
+            FlowEntity flowEntity) {
+        installFlow(flowEntity);
+        return Futures.immediateCheckedFuture(null);
+    }
+
+    @Override
     public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
             FlowEntity flowEntity) {
         getOrNewFlows().remove(flowEntity);
