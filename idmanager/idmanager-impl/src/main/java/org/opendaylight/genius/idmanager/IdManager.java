@@ -587,9 +587,12 @@ public class IdManager implements IdManagerService, AutoCloseable {
 
     private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey) {
         String idLatchKey = IdUtils.getUniqueKey(parentPoolName, idKey);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
+        }
         java.util.Optional.ofNullable(IdUtils.releaseIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
             try {
-                latch.await(5, TimeUnit.SECONDS);
+                latch.await(10, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
                 LOG.warn("Thread interrupted while releasing id {} from id pool {}", idKey, parentPoolName);
             } finally {
@@ -607,7 +610,10 @@ public class IdManager implements IdManagerService, AutoCloseable {
         InstanceIdentifier<IdEntries> existingId = IdUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
         Optional<IdEntries> existingIdEntryObject = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, existingId);
         if (!existingIdEntryObject.isPresent()) {
-            throw new RuntimeException(String.format("Specified Id key %s does not exist in id pool %s", idKey, parentPoolName));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
+            }
+            return;
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
         List<Long> idValuesList = existingIdEntry.getIdValue();

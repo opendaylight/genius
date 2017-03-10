@@ -19,18 +19,21 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
 public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateIdEntryJob.class);
     String parentPoolName;
     String localPoolName;
     String idKey;
     List<Long> newIdValues;
     DataBroker broker;
 
-    public UpdateIdEntryJob(String parentPoolName, String localPoolName,
+     public UpdateIdEntryJob(String parentPoolName, String localPoolName,
             String idKey, List<Long> newIdValues, DataBroker broker) {
         super();
         this.parentPoolName = parentPoolName;
@@ -52,7 +55,11 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             tx.delete(LogicalDatastoreType.CONFIGURATION, IdUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
         tx.submit().checkedGet();
-        String uniqueIdKey = IdUtils.getUniqueKey(parentPoolName, idKey);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
+        }
+		String uniqueIdKey = IdUtils.getUniqueKey(parentPoolName, idKey);
         Optional.ofNullable(IdUtils.releaseIdLatchMap.get(uniqueIdKey))
             .ifPresent(latch -> latch.countDown());
         // Once the id is written to DS, removing the id value from map.
