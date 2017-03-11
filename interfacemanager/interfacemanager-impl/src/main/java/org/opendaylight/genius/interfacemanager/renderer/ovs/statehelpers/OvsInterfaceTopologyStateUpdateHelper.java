@@ -85,7 +85,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                 }
                 return futures;
             });
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
         return null;
     }
 

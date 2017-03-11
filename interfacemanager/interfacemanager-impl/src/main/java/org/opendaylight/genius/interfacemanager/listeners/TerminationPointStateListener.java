@@ -104,7 +104,7 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
                         tpNew.getName(), newInterfaceName, parentRefName);
                 interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
             }
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
