@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2015, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,14 +19,14 @@ public class IdLocalPool {
     public IdLocalPool(IdUtils idUtils, String poolName, long low, long high) {
         this.poolName = poolName;
         this.idUtils = idUtils;
-        availableIds = new AvailableIdHolder(idUtils, low, high);
-        releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
+        this.availableIds = new AvailableIdHolder(idUtils, low, high);
+        this.releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
     }
 
     public IdLocalPool(IdUtils idUtils, String poolName) {
         this.poolName = poolName;
         this.idUtils = idUtils;
-        releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
+        this.releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
     }
 
     @Override
@@ -41,8 +41,8 @@ public class IdLocalPool {
 
     @Override
     public String toString() {
-        return "IdLocalPool [poolName=" + poolName + ", availableIds="
-                + availableIds + ", releasedIds=" + releasedIds + "]";
+        return "IdLocalPool [poolName=" + poolName + ", availableIds=" + availableIds + ", releasedIds=" + releasedIds
+                + "]";
     }
 
     @Override
@@ -108,16 +108,14 @@ public class IdLocalPool {
 
         AvailableIdHolder newAvailableIds = new AvailableIdHolder(idUtils, tempAvailableIdHolder.getLow(),
                 tempAvailableIdHolder.getHigh());
-        ((AvailableIdHolder) newAvailableIds).setCur(tempAvailableIdHolder.getCur().longValue());
+        newAvailableIds.setCur(tempAvailableIdHolder.getCur().longValue());
         clonedIdPool.setAvailableIds(newAvailableIds);
 
         ReleasedIdHolder newReleasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
-        ((ReleasedIdHolder) newReleasedIds).setAvailableIdCount(tempReleaseIdHolder.getAvailableIdCount());
-        ((ReleasedIdHolder) newReleasedIds).setDelayedEntries(new CopyOnWriteArrayList<>(tempReleaseIdHolder
-                .getDelayedEntries()));
+        newReleasedIds.setAvailableIdCount(tempReleaseIdHolder.getAvailableIdCount());
+        newReleasedIds.setDelayedEntries(new CopyOnWriteArrayList<>(tempReleaseIdHolder.getDelayedEntries()));
         clonedIdPool.setReleasedIds(newReleasedIds);
 
         return clonedIdPool;
     }
-
 }
