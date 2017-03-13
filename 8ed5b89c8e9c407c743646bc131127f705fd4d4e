@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_558501cd",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 770,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-03-13T10:47:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_f50195af",
+      "revId": "8ed5b89c8e9c407c743646bc131127f705fd4d4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_15d9b956",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-13T09:47:31Z",
       "side": 1,
       "message": "same here.",
+      "revId": "8ed5b89c8e9c407c743646bc131127f705fd4d4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b56f0d2a",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 776,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-03-13T10:47:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_15d9b956",
       "revId": "8ed5b89c8e9c407c743646bc131127f705fd4d4e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
