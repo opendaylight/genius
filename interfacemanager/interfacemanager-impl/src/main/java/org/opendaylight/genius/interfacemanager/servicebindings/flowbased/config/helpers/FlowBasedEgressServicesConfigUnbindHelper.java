@@ -83,20 +83,18 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
         }
         List<BoundServices> boundServices = servicesInfo.getBoundServices();
 
-        // Split based on type of interface....
-        if (L2vlan.class.equals(ifState.getType())) {
-            return unbindServiceOnVlan(boundServiceOld, boundServices, ifState, dataBroker);
-        } else if (Tunnel.class.equals(ifState.getType())) {
-            return unbindServiceOnTunnel(boundServiceOld, boundServices, ifState, dataBroker);
+        if (L2vlan.class.equals(ifState.getType())
+            || Tunnel.class.equals(ifState.getType())) {
+            unbindService(boundServiceOld, boundServices, ifState, dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
+    private static List<ListenableFuture<Void>> unbindService(BoundServices boundServiceOld,
             List<BoundServices> boundServices,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
             .Interface ifaceState, DataBroker dataBroker) {
-        LOG.info("unbinding egress service {} for vlan port: {}", boundServiceOld.getServiceName(), ifaceState
+        LOG.info("unbinding egress service {} for interface: {}", boundServiceOld.getServiceName(), ifaceState
             .getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();

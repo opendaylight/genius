@@ -71,9 +71,11 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+        if (interfaceStateOld.getType() == null
+            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
+
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
@@ -89,7 +91,8 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+        if (interfaceStateNew.getType() == null
+            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
