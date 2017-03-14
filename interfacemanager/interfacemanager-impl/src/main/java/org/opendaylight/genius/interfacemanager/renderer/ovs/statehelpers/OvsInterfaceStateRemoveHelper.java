@@ -89,6 +89,7 @@ public class OvsInterfaceStateRemoveHelper {
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
                 interfaceName, -1, NwConstants.DEL_FLOW);
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
         futures.add(transaction.submit());
         AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
     }

@@ -316,6 +316,25 @@ public class IfmUtil {
                                                                     int ifIndex) {
         List<ActionInfo> result = new ArrayList<>();
         switch (ifaceType) {
+            case MPLS_OVER_GRE:
+            case VXLAN_TRUNK_INTERFACE:
+            case GRE_TRUNK_INTERFACE:
+                if(!isDefaultEgress) {
+                    //TODO tunnel_id to encode GRE key, once it is supported
+                    // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
+                    if (tunnelKey == null) {
+                        tunnelKey = 0L;
+                    }
+                    result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
+
+                    IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+                    if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
+                        result.add(new ActionSetTunnelDestinationIp(actionKeyStart++, ifTunnel.getTunnelDestination()));
+                    }
+                    if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
+                        result.add(new ActionSetTunnelSourceIp(actionKeyStart++, ifTunnel.getTunnelSource()));
+                    }
+                }
             case VLAN_INTERFACE:
                 if(isDefaultEgress) {
                     IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
@@ -338,26 +357,6 @@ public class IfmUtil {
                     result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
                 }
                 break;
-            case MPLS_OVER_GRE:
-            case VXLAN_TRUNK_INTERFACE:
-            case GRE_TRUNK_INTERFACE:
-                //TODO tunnel_id to encode GRE key, once it is supported
-                // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
-                if (tunnelKey == null) {
-                    tunnelKey = 0L;
-                }
-                result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
-
-                IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
-                if(BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
-                    result.add(new ActionSetTunnelDestinationIp(actionKeyStart++, ifTunnel.getTunnelDestination()));
-                }
-                if(BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
-                    result.add(new ActionSetTunnelSourceIp(actionKeyStart++, ifTunnel.getTunnelSource()));
-                }
-                result.add(new ActionOutput(actionKeyStart++, new Uri(portNo)));
-                break;
-
             default:
                 LOG.warn("Interface Type {} not handled yet", ifaceType);
                 break;
