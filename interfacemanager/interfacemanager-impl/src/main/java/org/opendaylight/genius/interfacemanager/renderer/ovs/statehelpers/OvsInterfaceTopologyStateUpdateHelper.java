@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
@@ -87,7 +86,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                 }
                 return futures;
             });
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
         return null;
     }
 

@@ -11,7 +11,6 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -84,7 +83,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
                         parentRefs.getDatapathNodeIdentifier().toString() : parentRefs.getParentInterface();
                 coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
             }
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
@@ -107,7 +106,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
                         interfaceOld.getName() : parentRefs.getParentInterface();
                 coordinator.enqueueJob(synchronizationKey, worker, IfmConstants.JOB_MAX_RETRIES);
             }
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
                         interfaceNew.getName() : parentRefs.getParentInterface();
                 coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
             }
-        });
+        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
 
     private static ParentRefs updateParentInterface(boolean isTunnelInterface, ParentRefs parentRefs) {
