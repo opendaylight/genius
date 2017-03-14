@@ -71,6 +71,9 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
+        if(interfaceStateOld.getType() == null) {
+            return;
+        }
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -88,6 +91,9 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
+        if(interfaceStateNew.getType() == null) {
+            return;
+        }
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();

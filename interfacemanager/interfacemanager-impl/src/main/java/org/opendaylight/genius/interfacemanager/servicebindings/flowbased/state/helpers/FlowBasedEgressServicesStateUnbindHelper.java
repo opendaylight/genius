@@ -56,9 +56,6 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         return flowBasedServicesStateRemovable;
     }
     public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
-        if(ifaceState.getType() == null) {
-            return null;
-        }
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("unbinding services on interface {}", ifaceState.getName());
 
@@ -75,27 +72,17 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
             return futures;
         }
 
-        if (L2vlan.class.equals(ifaceState.getType())) {
-            return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        } else if (Tunnel.class.equals(ifaceState.getType())){
-            return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
+        if (L2vlan.class.equals(ifaceState.getType())
+            || Tunnel.class.equals(ifaceState.getType())) {
+            return unbindServices(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(
-            List<BoundServices> allServices,
-            Interface iface,
-            Integer ifIndex, DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        //FIXME : not supported yet
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(
+    private static List<ListenableFuture<Void>> unbindServices(
             List<BoundServices> allServices, Interface ifaceState,
             Integer ifIndex, DataBroker dataBroker) {
-        LOG.info("unbind all egress services for vlan port: {}", ifaceState.getName());
+        LOG.info("unbind all egress services for interface: {}", ifaceState.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction t = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();

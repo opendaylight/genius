@@ -86,28 +86,20 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
             return futures;
         }
 
-        // Split based on type of interface....
-        if (L2vlan.class.equals(ifState.getType())) {
-            return bindServiceOnVlan(boundServiceNew, allServices, ifState, dataBroker);
-        } else if (Tunnel.class.equals(ifState.getType())) {
-            return bindServiceOnTunnel(boundServiceNew, allServices, ifState, dataBroker);
+        if (L2vlan.class.equals(ifState.getType())
+            || Tunnel.class.equals(ifState.getType())) {
+            bindService(boundServiceNew, allServices, ifState, dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnTunnel(BoundServices boundServiceNew, List<BoundServices> allServices,
-                                                                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState, DataBroker dataBroker) {
-        // TODO - binding egress services on tunnels is not supported currently
-        return null;
-    }
-
-    private static List<ListenableFuture<Void>> bindServiceOnVlan(BoundServices boundServiceNew, List<BoundServices> allServices,
+    private static List<ListenableFuture<Void>> bindService(BoundServices boundServiceNew, List<BoundServices> allServices,
                                                                   org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifState);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
-        LOG.info("binding egress service {} for vlan port: {}", boundServiceNew.getServiceName(), ifState.getName());
+        LOG.info("binding egress service {} for interface: {}", boundServiceNew.getServiceName(), ifState.getName());
         if (allServices.size() == 1) {
             //calling LportDispatcherTableForService with current service index as 0 and next service index as
             // some value since this is the only service bound.

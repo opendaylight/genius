@@ -58,9 +58,6 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
     }
 
     public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState) {
-        if(ifaceState.getType() == null) {
-            return null;
-        }
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("binding services on interface {}", ifaceState.getName());
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
@@ -76,25 +73,17 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
             return futures;
         }
 
-        if (L2vlan.class.equals(ifaceState.getType())) {
-            return bindServiceOnVlan(allServices, ifaceState, dataBroker);
-        } else if (Tunnel.class.equals(ifaceState.getType())){
-            return bindServiceOnTunnel(allServices, ifaceState, dataBroker);
+        if (L2vlan.class.equals(ifaceState.getType())
+            || Tunnel.class.equals(ifaceState.getType())) {
+            return bindServices(allServices, ifaceState, dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnTunnel(
-            List<BoundServices> allServices, Interface ifState, DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        // FIXME : not supported yet
-        return futures;
-    }
-
-    private static List<ListenableFuture<Void>> bindServiceOnVlan(
+    private static List<ListenableFuture<Void>> bindServices(
             List<BoundServices> allServices,
             Interface ifState, DataBroker dataBroker) {
-        LOG.info("bind all egress services for vlan port: {}", ifState.getName());
+        LOG.info("bind all egress services for interface: {}", ifState.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
