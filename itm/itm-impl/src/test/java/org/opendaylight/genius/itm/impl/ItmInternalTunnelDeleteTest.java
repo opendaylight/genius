@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -32,7 +30,6 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -96,25 +93,28 @@ public class ItmInternalTunnelDeleteTest {
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListVxlanNew = new ArrayList<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
-    TunnelMonitorParams TunnelMonitorParams = null;
+    TunnelMonitorParams tunnelMonitorParams = null;
     TunnelMonitorInterval tunnelMonitorInterval = null;
     InternalTunnel internalTunnel = new InternalTunnelBuilder().build();
-    InstanceIdentifier<TunnelMonitorParams> TunnelMonitorParamsIdentifier = InstanceIdentifier.create(TunnelMonitorParams.class);
-    InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier = InstanceIdentifier.create(TunnelMonitorInterval.class);
+    InstanceIdentifier<TunnelMonitorParams> tunnelMonitorParamsInstanceIdentifier =
+            InstanceIdentifier.create(TunnelMonitorParams.class);
+    InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier =
+            InstanceIdentifier.create(TunnelMonitorInterval.class);
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = TunnelMonitoringTypeBfd.class;
-    InstanceIdentifier<InternalTunnel> internalTunnelIdentifier = InstanceIdentifier.builder(TunnelList.class).
-            child(InternalTunnel.class, new InternalTunnelKey(new BigInteger("1"), new BigInteger("2"), tunnelType1)).build();
+    InstanceIdentifier<InternalTunnel> internalTunnelIdentifier = InstanceIdentifier.builder(TunnelList.class)
+            .child(InternalTunnel.class, new InternalTunnelKey(new BigInteger("1"),
+                    new BigInteger("2"), tunnelType1)).build();
 
     @Mock DataBroker dataBroker;
     @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
-    @Mock IMdsalApiManager iMdsalApiManager;
+    @Mock IMdsalApiManager mdsalApiManager;
 
     ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker();
 
-    Optional<TunnelMonitorParams> TunnelMonitorParamsOptional ;
+    Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
     Optional<InternalTunnel> internalTunnelOptional ;
 
@@ -129,15 +129,18 @@ public class ItmInternalTunnelDeleteTest {
         setupMocks();
         DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
 
-        TunnelMonitorParamsOptional = Optional.of(TunnelMonitorParams);
+        tunnelMonitorParamsOptional = Optional.of(tunnelMonitorParams);
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
         internalTunnelOptional = Optional.of(internalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(TunnelMonitorParamsOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-            TunnelMonitorParamsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
+        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,
+                        tunnelMonitorParamsInstanceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,
                 tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier);
+        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier);
 
     }
 
@@ -145,29 +148,31 @@ public class ItmInternalTunnelDeleteTest {
     public void cleanUp() {
     }
 
-    private void setupMocks(){
+    private void setupMocks() {
 
         ipAddress1 = IpAddressBuilder.getDefaultInstance(tepIp1);
         ipAddress2 = IpAddressBuilder.getDefaultInstance(tepIp2);
         ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
         gtwyIp1 = IpAddressBuilder.getDefaultInstance(gwyIp1);
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
-        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1).setIpAddress
-                (ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName).setTzMembership
-                (ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1).setSubnetMask
-                (ipPrefixTest).setKey(new TunnelEndPointsKey
-                (ipAddress1,portName1,tunnelType1,vlanId)).build();
-        tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName2).setIpAddress
-                (ipAddress2).setGwIpAddress(gtwyIp2).setInterfaceName(parentInterfaceName).setTzMembership
-                (ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1).setSubnetMask
-                (ipPrefixTest).build();
+        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
+                .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
+                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
+                .setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest)
+                .setKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
+        tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName2)
+                .setIpAddress(ipAddress2).setGwIpAddress(gtwyIp2).setInterfaceName(parentInterfaceName)
+                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).setKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
-                .setTunnelEndPoints(tunnelEndPointsListVxlanNew).setTunnelEndPoints(tunnelEndPointsListVxlanNew).build();
-        TunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).setMonitorProtocol(monitorProtocol).build();
+                .setTunnelEndPoints(tunnelEndPointsListVxlanNew).setTunnelEndPoints(tunnelEndPointsListVxlanNew)
+                .build();
+        tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).setMonitorProtocol(monitorProtocol)
+                .build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         meshDpnListVxlan.add(dpntePsInfoVxlan);
@@ -181,26 +186,25 @@ public class ItmInternalTunnelDeleteTest {
 
     // Since all the unit test cases will be written to the new way, this should be taken care then.
     @Test
-    public void testDeleteTunnels(){
+    public void testDeleteTunnels() {
 
         InstanceIdentifier<TunnelEndPoints> tunnelEndPointsIdentifier =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, dpntePsInfoVxlan.getKey())
-                        .child(TunnelEndPoints.class,tunnelEndPointsVxlan.getKey() ).build();
+                        .child(TunnelEndPoints.class,tunnelEndPointsVxlan.getKey()).build();
         InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier =
                 InstanceIdentifier.builder(DpnEndpoints.class).build();
-        InstanceIdentifier<DPNTEPsInfo> dpntePsInfoIdentifier =
-                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, dpntePsInfoVxlan.getKey()).build();
+        final InstanceIdentifier<DPNTEPsInfo> dpntePsInfoIdentifier = InstanceIdentifier.builder(DpnEndpoints.class)
+                .child(DPNTEPsInfo.class, dpntePsInfoVxlan.getKey()).build();
 
         Optional<DpnEndpoints> dpnEndpointsOptional = Optional.of(dpnEndpoints);
 
         doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,dpnEndpointsIdentifier);
 
-        itmInternalTunnelDeleteWorker.deleteTunnels(dataBroker,idManagerService,iMdsalApiManager,cfgdDpnListVxlan,
+        itmInternalTunnelDeleteWorker.deleteTunnels(dataBroker,idManagerService, mdsalApiManager,cfgdDpnListVxlan,
                 meshDpnListVxlan);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,dpntePsInfoIdentifier);
-
     }
 }

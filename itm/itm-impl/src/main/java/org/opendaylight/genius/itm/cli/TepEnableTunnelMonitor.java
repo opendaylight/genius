@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -17,11 +17,13 @@ import org.slf4j.LoggerFactory;
 @Command(scope = "tep", name = "enable-tunnel-monitor", description = "switch ON/OFF supervision of VxLAN tunnels")
 public class TepEnableTunnelMonitor extends OsgiCommandSupport {
 
-    private static final Logger logger = LoggerFactory.getLogger(TepEnableTunnelMonitor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TepEnableTunnelMonitor.class);
 
-    @Argument(index = 0, name = "true|false", description = "true|false to enable/disable Tunnel Monitoring", required = true, multiValued = false)
+    @Argument(index = 0, name = "true|false", description = "true|false to enable/disable Tunnel Monitoring",
+            required = true, multiValued = false)
     private Boolean enableTunnelMonitor;
-    @Argument(index = 1, name = "monitorProtocol", description = "monitorProtocol", required = false, multiValued = false)
+    @Argument(index = 1, name = "monitorProtocol", description = "monitorProtocol",
+            required = false, multiValued = false)
     private String monitorProtocol;
 
     private IITMProvider itmProvider;
@@ -30,10 +32,11 @@ public class TepEnableTunnelMonitor extends OsgiCommandSupport {
         this.itmProvider = itmProvider;
     }
 
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     @Override
     protected Object doExecute() {
         try {
-            logger.debug("Executing Enable Tunnel Monitor command");
+            LOG.debug("Executing Enable Tunnel Monitor command");
             itmProvider.configureTunnelMonitorParams(enableTunnelMonitor, monitorProtocol);
         } catch (NullPointerException e) {
             e.printStackTrace();

@@ -14,21 +14,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
 class ExpectedExternalTunnelObjects {
+
     static def newExternalTunnelForRpcTest() {
         new ExternalTunnelBuilder >> [
               destinationDevice = "IpAddress [_ipv4Address=Ipv4Address [_value=192.168.56.101]]"
               sourceDevice = ItmTestConstants.DPID_STR_ONE
               transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
-              tunnelInterfaceName = ItmTestConstants.extTunnelInterfaceName
+              tunnelInterfaceName = ItmTestConstants.EXT_TUNNEL_INTERFACE_NAME
         ]
     }
 
     static def newExternalTunnel2ForRpcTest() {
          new ExternalTunnelBuilder >> [
-              destinationDevice = ItmTestConstants.destinationDevice
-              sourceDevice = ItmTestConstants.sourceDevice
+              destinationDevice = ItmTestConstants.DESTINATION_DEVICE
+              sourceDevice = ItmTestConstants.SOURCE_DEVICE
               transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
-              tunnelInterfaceName = ItmTestConstants.parentInterfaceName
+              tunnelInterfaceName = ItmTestConstants.PARENT_INTERFACE_NAME
          ]
     }
 }

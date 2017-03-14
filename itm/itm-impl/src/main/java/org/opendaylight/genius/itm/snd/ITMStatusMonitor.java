@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 public class ITMStatusMonitor implements ITMStatusMonitorMBean {
 
     private String serviceStatus;
-
     private static ITMStatusMonitor itmStatusMonitor = new ITMStatusMonitor();
     private static final String JMX_ITM_OBJ_NAME = "com.ericsson.sdncp.services.status:type=SvcItmService";
     private static final Logger LOG = LoggerFactory.getLogger(ITMStatusMonitor.class);
@@ -57,5 +56,4 @@ public class ITMStatusMonitor implements ITMStatusMonitorMBean {
     public void reportStatus(String serviceStatus) {
         this.serviceStatus = serviceStatus;
     }
-
 }
