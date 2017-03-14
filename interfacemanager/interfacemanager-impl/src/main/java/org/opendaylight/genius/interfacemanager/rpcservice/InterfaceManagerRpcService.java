@@ -151,7 +151,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private RpcResultBuilder<GetDpidFromInterfaceOutput> getRpcErrorResultForGetDpnIdRpc(String interfaceName,
             String errMsg) {
         errMsg = String.format("Retrieval of datapath id for the key {%s} failed due to %s", interfaceName, errMsg);
-        LOG.error(errMsg);
+        LOG.debug(errMsg);
         RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder
                 .<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
         return rpcResultBuilder;
@@ -294,7 +294,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of egress instructions for the key {} failed due to {}", input.getIntfName(),
+            LOG.debug("Retrieval of egress instructions for the key {} failed due to {}", input.getIntfName(),
                     e.getMessage());
             rpcResultBuilder = RpcResultBuilder.failed();
         }
@@ -373,7 +373,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of egress actions for the key {} failed due to {}", input.getIntfName(),
+            LOG.debug("Retrieval of egress actions for the key {} failed due to {}", input.getIntfName(),
                     e.getMessage());
             rpcResultBuilder = RpcResultBuilder.failed();
         }
