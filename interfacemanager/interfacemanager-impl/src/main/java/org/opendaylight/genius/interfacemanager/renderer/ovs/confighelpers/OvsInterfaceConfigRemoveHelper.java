@@ -182,6 +182,8 @@ public class OvsInterfaceConfigRemoveHelper {
             long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
             InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
                     interfaceName, -1, NwConstants.DEL_FLOW);
+            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
+
         }
     }
 
