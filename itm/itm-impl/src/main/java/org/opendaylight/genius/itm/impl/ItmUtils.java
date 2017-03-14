@@ -1006,11 +1006,11 @@ public class ItmUtils {
     }
     public static String convertTunnelTypetoString(Class<? extends TunnelTypeBase> tunType ) {
         String tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
-        if( tunType.equals(TunnelTypeVxlan.class)) {
+        if (tunType.equals(TunnelTypeVxlan.class)) {
             tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN ;
-        } else if( tunType.equals(TunnelTypeGre.class) ) {
+        } else if (tunType.equals(TunnelTypeGre.class)) {
             tunnelType = ITMConstants.TUNNEL_TYPE_GRE ;
-        } else if (tunnelType.equals(TunnelTypeMplsOverGre.class)) {
+        } else if (tunType.equals(TunnelTypeMplsOverGre.class)) {
             tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
         }
         return tunnelType ;

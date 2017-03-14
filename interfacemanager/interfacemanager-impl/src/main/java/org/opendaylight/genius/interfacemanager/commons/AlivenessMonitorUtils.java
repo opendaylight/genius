@@ -166,7 +166,7 @@ public class AlivenessMonitorUtils {
 
             // Delete old profile from Aliveness Manager
             IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
-            if (ifTunnelNew.getMonitorInterval() != ifTunnelOld.getMonitorInterval()) {
+            if (!ifTunnelNew.getMonitorInterval().equals(ifTunnelOld.getMonitorInterval())) {
                 LOG.debug("deleting older monitor profile for interface {}", interfaceName);
                 long profileId = allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD,
                         ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp);

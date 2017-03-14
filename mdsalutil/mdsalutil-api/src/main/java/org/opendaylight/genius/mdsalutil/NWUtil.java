@@ -64,22 +64,6 @@ public class NWUtil {
         return Ints.fromByteArray(subnetAddress.getAddress());
     }
 
-    public static byte[] parseIpAddress(String ipAddress) {
-        // TODO: Make IpV6 compatible
-        byte cur;
-
-        String[] addressPart = ipAddress.split(NwConstants.IPV4_SEP);
-        int size = addressPart.length;
-
-        byte[] part = new byte[size];
-        for (int i = 0; i < size; i++) {
-            cur = UnsignedBytes.parseUnsignedByte(addressPart[i], 16);
-            part[i] = cur;
-        }
-
-        return part;
-    }
-
     public static byte[] parseMacAddress(String macAddress) {
         byte cur;
 
