@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_a77238e1",
+        "filename": "arputil/arputil-api/src/main/yang/odl-arputil.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-03-14T10:17:10Z",
+      "side": 1,
+      "message": "nit: spaces",
+      "revId": "8a1909b2cd18c7fd8c2239b0a50e8b054291de2d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
