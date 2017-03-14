@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -38,9 +38,9 @@ public class ITMManager implements AutoCloseable {
     List<DPNTEPsInfo> meshedDpnList;
 
     @Inject
-    public ITMManager(final DataBroker dataBroker,final IMdsalApiManager iMdsalApiManager) {
+    public ITMManager(final DataBroker dataBroker,final IMdsalApiManager mdsalManager) {
         this.broker = dataBroker;
-        this.mdsalManager = iMdsalApiManager;
+        this.mdsalManager = mdsalManager;
     }
 
     @PostConstruct
@@ -54,24 +54,30 @@ public class ITMManager implements AutoCloseable {
         LOG.info("ITMManager Closed");
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     protected void initTunnelMonitorDataInConfigDS() {
         new Thread() {
             public void run() {
                 boolean readSucceeded = false;
-                InstanceIdentifier<TunnelMonitorParams> monitorPath = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+                InstanceIdentifier<TunnelMonitorParams> monitorPath =
+                        InstanceIdentifier.builder(TunnelMonitorParams.class).build();
                 while (!readSucceeded) {
                     try {
-                        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, monitorPath, broker);
+                        Optional<TunnelMonitorParams> storedTunnelMonitor =
+                                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, monitorPath, broker);
                         // Store default values only when tunnel monitor data is not initialized
                         if (!storedTunnelMonitor.isPresent()) {
-                            TunnelMonitorParams monitorEnabled =
-                                    new TunnelMonitorParamsBuilder().setEnabled(ITMConstants.DEFAULT_MONITOR_ENABLED).build();
-                            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, monitorPath, monitorEnabled, broker, ItmUtils.DEFAULT_CALLBACK);
+                            TunnelMonitorParams monitorEnabled = new TunnelMonitorParamsBuilder()
+                                    .setEnabled(ITMConstants.DEFAULT_MONITOR_ENABLED).build();
+                            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, monitorPath, monitorEnabled,
+                                    broker, ItmUtils.DEFAULT_CALLBACK);
 
-                            InstanceIdentifier<TunnelMonitorInterval> intervalPath = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-                            TunnelMonitorInterval monitorInteval =
-                                    new TunnelMonitorIntervalBuilder().setInterval(ITMConstants.DEFAULT_MONITOR_INTERVAL).build();
-                            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, intervalPath, monitorInteval, broker, ItmUtils.DEFAULT_CALLBACK);
+                            InstanceIdentifier<TunnelMonitorInterval> intervalPath =
+                                    InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
+                            TunnelMonitorInterval monitorInteval = new TunnelMonitorIntervalBuilder()
+                                    .setInterval(ITMConstants.DEFAULT_MONITOR_INTERVAL).build();
+                            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, intervalPath, monitorInteval,
+                                    broker, ItmUtils.DEFAULT_CALLBACK);
                         }
                         readSucceeded = true;
                     } catch (Exception e) {
@@ -89,15 +95,16 @@ public class ITMManager implements AutoCloseable {
 
     protected boolean getTunnelMonitorEnabledFromConfigDS() {
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker).transform(
-                TunnelMonitorParams::isEnabled).or(true);
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker)
+                .transform(TunnelMonitorParams::isEnabled).or(true);
     }
 
     protected Class<? extends TunnelMonitoringTypeBase> getTunnelMonitorTypeFromConfigDS() {
 
         Class<? extends TunnelMonitoringTypeBase> tunnelMonitorType = TunnelMonitoringTypeBfd.class;
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
+        Optional<TunnelMonitorParams> storedTunnelMonitor =
+                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol() != null) {
             tunnelMonitorType = storedTunnelMonitor.get().getMonitorProtocol();
         }
@@ -105,7 +112,8 @@ public class ITMManager implements AutoCloseable {
     }
 
     protected int getTunnelMonitorIntervalFromConfigDS() {
-        InstanceIdentifier<TunnelMonitorInterval> path = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
+        InstanceIdentifier<TunnelMonitorInterval> path =
+                InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker).transform(
                 TunnelMonitorInterval::getInterval).or(ITMConstants.DEFAULT_MONITOR_INTERVAL);
     }

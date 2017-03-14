@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -40,7 +40,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener> implements AutoCloseable {
+public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener>
+        implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
     private final DataBroker broker;
@@ -63,6 +65,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         LOG.info("Interface state listener Closed");
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void registerListener(final DataBroker db) {
         try {
             registerListener(LogicalDatastoreType.OPERATIONAL,db);
@@ -119,6 +122,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         }
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void updateItmState(Interface iface) {
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, iface.getName());
@@ -141,7 +145,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
             default:
                 tunnelOperStatus = TunnelOperStatus.Ignore;
         }
-        if(tunnelsState.isPresent()) {
+        if (tunnelsState.isPresent()) {
             tunnelStateList = tunnelsState.get();
             stlBuilder = new StateTunnelListBuilder(tunnelStateList);
             stlBuilder.setTunnelState(tunnelState);
@@ -167,10 +171,11 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
     }
 
 
-    private StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state, TunnelOperStatus tunOpStatus) {
+    private StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state,
+                                                 TunnelOperStatus tunOpStatus) {
         StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = ItmUtils
-                .getInterface(name, broker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
+                ItmUtils.getInterface(name, broker);
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
         if (ifTunnel == null && parentRefs == null) {

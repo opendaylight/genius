@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -31,12 +31,14 @@ public class VtepSchemaUpdate extends OsgiCommandSupport {
 
     /** The dpn ids for add. */
     @Option(name = AD, aliases = {
-            "-ad" }, description = "DPN ID's to be added to schema in a comma separated value format. e.g: 2,3,10", required = false, multiValued = false)
+            "-ad" }, description = "DPN ID's to be added to schema in a comma separated value format. e.g: 2,3,10",
+            required = false, multiValued = false)
     private String dpnIdsForAdd;
 
     /** The dpn ids for delete. */
     @Option(name = DD, aliases = {
-            "-dd" }, description = "DPN ID's to be deleted from schema in a comma separated value format. e.g: 2,3,10", required = false, multiValued = false)
+            "-dd" }, description = "DPN ID's to be deleted from schema in a comma separated value format. e.g: 2,3,10",
+            required = false, multiValued = false)
     private String dpnIdsForDelete;
 
     /** The Constant logger. */
@@ -66,14 +68,16 @@ public class VtepSchemaUpdate extends OsgiCommandSupport {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.karaf.shell.console.AbstractAction#doExecute()
      */
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     protected Object doExecute() {
         try {
             if (this.dpnIdsForAdd == null && this.dpnIdsForDelete == null) {
-                session.getConsole().println(String.format("Atleast one of the parameters [%s or %s] is mandatory", AD, DD));
+                session.getConsole().println(String.format("Atleast one of the parameters [%s or %s] is mandatory",
+                        AD, DD));
                 usage();
                 return null;
             }

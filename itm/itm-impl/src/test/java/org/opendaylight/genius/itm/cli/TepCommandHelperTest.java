@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -49,11 +49,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
@@ -145,19 +145,25 @@ public class TepCommandHelperTest {
     java.lang.Class<? extends TunnelTypeBase> tunnelType2 = TunnelTypeGre.class;
 
     InstanceIdentifier<TransportZone> transportZoneIdentifier = InstanceIdentifier.builder(TransportZones.class)
-            .child(TransportZone.class, new TransportZoneKey(transportZone1)).build();
-    InstanceIdentifier<TransportZones> transportZonesIdentifier = InstanceIdentifier.builder(TransportZones.class).build();
-    InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-    InstanceIdentifier<TunnelMonitorParams> tunnelMonitorParamsIdentifier = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-    InstanceIdentifier<Vteps> vtepsIdentifier = InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class, new
-            TransportZoneKey(transportZone1))
-            .child(Subnets.class, new SubnetsKey(ipPrefixTest)).child(Vteps.class, new VtepsKey(dpId1,portName1)).build();
-    InstanceIdentifier<Vteps> vtepsIdentifierNew = InstanceIdentifier.builder(TransportZones.class).child(TransportZone
-            .class, new TransportZoneKey(transportZone1))
-            .child(Subnets.class, new SubnetsKey(ipPrefixTest)).child(Vteps.class, new VtepsKey(dpId2,portName1)).build();
+                    .child(TransportZone.class, new TransportZoneKey(transportZone1)).build();
+    InstanceIdentifier<TransportZones> transportZonesIdentifier =
+            InstanceIdentifier.builder(TransportZones.class).build();
+    InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier =
+            InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
+    InstanceIdentifier<TunnelMonitorParams> tunnelMonitorParamsIdentifier =
+            InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+    InstanceIdentifier<Vteps> vtepsIdentifier = InstanceIdentifier.builder(TransportZones.class)
+                    .child(TransportZone.class, new TransportZoneKey(transportZone1))
+                    .child(Subnets.class, new SubnetsKey(ipPrefixTest))
+                    .child(Vteps.class, new VtepsKey(dpId1,portName1)).build();
+    InstanceIdentifier<Vteps> vtepsIdentifierNew = InstanceIdentifier.builder(TransportZones.class)
+                    .child(TransportZone
+                    .class, new TransportZoneKey(transportZone1))
+                    .child(Subnets.class, new SubnetsKey(ipPrefixTest))
+                    .child(Vteps.class, new VtepsKey(dpId2,portName1)).build();
     InstanceIdentifier<Subnets> subnetsIdentifier = InstanceIdentifier.builder(TransportZones.class)
-            .child(TransportZone.class, new TransportZoneKey(transportZone1)).child(Subnets.class,
-                    new SubnetsKey(ipPrefixTest)).build();
+                    .child(TransportZone.class, new TransportZoneKey(transportZone1))
+                    .child(Subnets.class, new SubnetsKey(ipPrefixTest)).build();
     InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
             .state.Interface> interfaceIdentifier = ItmUtils.buildStateInterfaceId(tunnelInterfaceName);
     InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
@@ -168,7 +174,7 @@ public class TepCommandHelperTest {
     @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
-    @Mock Map<String, Map<SubnetObject, List<Vteps>>> tZones;
+    @Mock Map<String, Map<SubnetObject, List<Vteps>>> tzones;
 
     Optional<TransportZone> optionalTransportZone;
     Optional<TransportZones> optionalTransportZones;
@@ -206,18 +212,18 @@ public class TepCommandHelperTest {
                 .CONFIGURATION,transportZoneIdentifier);
         doReturn(Futures.immediateCheckedFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalTunnelMonitorInterval)).when(mockReadTx).read
-                (LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalTunnelMonitorParams)).when(mockReadTx).read
-                (LogicalDatastoreType.CONFIGURATION,tunnelMonitorParamsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalVteps)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,vtepsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalSubnets)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,subnetsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(ifStateOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .OPERATIONAL,interfaceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,interfaceIdentifierNew);
+        doReturn(Futures.immediateCheckedFuture(optionalTunnelMonitorInterval)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
+        doReturn(Futures.immediateCheckedFuture(optionalTunnelMonitorParams)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorParamsIdentifier);
+        doReturn(Futures.immediateCheckedFuture(optionalVteps)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,vtepsIdentifier);
+        doReturn(Futures.immediateCheckedFuture(optionalSubnets)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,subnetsIdentifier);
+        doReturn(Futures.immediateCheckedFuture(ifStateOptional)).when(mockReadTx)
+                .read(LogicalDatastoreType.OPERATIONAL,interfaceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION,interfaceIdentifierNew);
 
         tepCommandHelper = new TepCommandHelper(dataBroker, itmConfig);
 
@@ -233,10 +239,11 @@ public class TepCommandHelperTest {
         instanceIdentifierList.add(transportZoneIdentifier);
         instanceIdentifierList.add(vtepsIdentifier);
         instanceIdentifierList.add(subnetsIdentifier);
-        deviceVteps = new DeviceVtepsBuilder().setIpAddress(ipAddress1).setKey(new DeviceVtepsKey(ipAddress1,sourceDevice))
+        deviceVteps = new DeviceVtepsBuilder().setIpAddress(ipAddress1)
+                .setKey(new DeviceVtepsKey(ipAddress1,sourceDevice))
                 .setNodeId(sourceDevice).setTopologyId(destinationDevice).build();
-        vteps = new VtepsBuilder().setPortname(portName1).setDpnId(dpId2).setIpAddress(ipAddress1).setKey(new
-                VtepsKey(dpId2,portName1)).build();
+        vteps = new VtepsBuilder().setPortname(portName1).setDpnId(dpId2)
+                .setIpAddress(ipAddress1).setKey(new VtepsKey(dpId2,portName1)).build();
         vtepsNew = new VtepsBuilder().setPortname(portName1).setDpnId(dpId1).setIpAddress(ipAddress1).setKey(new
                 VtepsKey(dpId1,portName1)).build();
         vtepsTest = new VtepsBuilder().build();
@@ -258,26 +265,31 @@ public class TepCommandHelperTest {
                 .setTunnelInterfaceName(tunnelInterfaceName).setKey(new InternalTunnelKey(dpId1,dpId2,tunnelType1))
                 .setTransportType(tunnelType1).build();
         internalTunnelList.add(internalTunnelTest);
-        stateTunnelListTest = new StateTunnelListBuilder().setTunnelInterfaceName(tunnelInterfaceName).setOperState(TunnelOperStatus.Up).build();
+        stateTunnelListTest = new StateTunnelListBuilder().setTunnelInterfaceName(tunnelInterfaceName)
+                .setOperState(TunnelOperStatus.Up).build();
         stateTunnelList.add(stateTunnelListTest);
         tunnelList = new TunnelListBuilder().setInternalTunnel(internalTunnelList).build();
         tunnelListTest = new TunnelListBuilder().build();
         lowerLayerIfList.add(dpId1.toString());
-        interfaceTest = new InterfaceBuilder().setOperStatus(Interface.OperStatus.Up).setAdminStatus
-                (org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up)
-                .setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA"))
+        interfaceTest = new InterfaceBuilder().setOperStatus(Interface.OperStatus.Up)
+                .setAdminStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                        .interfaces.state.Interface.AdminStatus.Up)
+                .setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715
+                        .PhysAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA"))
                 .setIfIndex(100).setLowerLayerIf(lowerLayerIfList).setType(L2vlan.class).build();
         interfaceTestNew = ItmUtils.buildTunnelInterface(dpId1, tunnelInterfaceName, destinationDevice, enabled,
-                TunnelTypeVxlan.class, ipAddress1, ipAddress2, gtwyIp1, vlanId, true, enabled,monitorProtocol, interval, false);
+                TunnelTypeVxlan.class, ipAddress1, ipAddress2, gtwyIp1, vlanId, true, enabled,monitorProtocol,
+                interval, false);
         interfaceTestNewCase = ItmUtils.buildTunnelInterface(dpId1, tunnelInterfaceName, destinationDevice, enabled,
-                TunnelTypeGre.class, ipAddress1, ipAddress2, gtwyIp1, vlanId, true, enabled, monitorProtocol, interval, false);
+                TunnelTypeGre.class, ipAddress1, ipAddress2, gtwyIp1, vlanId, true, enabled, monitorProtocol,
+                interval, false);
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
     }
 
     @Test
-    public void testCreateLocalCacheTzonesEmpty(){
+    public void testCreateLocalCacheTzonesEmpty() {
 
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
@@ -290,7 +302,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testCreateLocalCacheWithoutcheckExistingSubnet(){
+    public void testCreateLocalCacheWithoutcheckExistingSubnet() {
 
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpPrefix subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
@@ -343,41 +355,39 @@ public class TepCommandHelperTest {
 
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
     public void testCreateLocalCacheInvalidIp() {
 
         String output = null;
         try {
-            tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp3, subnetMask, gwyIp1, transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp3, subnetMask, gwyIp1,
+                    transportZone1, null);
         } catch (Exception e) {
             output = e.getMessage() + newline;
         }
-
         assertEquals("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255" + newline,output);
-
     }
 
     @Test
-    public void testCreateLocalCacheGtwyIpNull(){
+    public void testCreateLocalCacheGtwyIpNull() {
 
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,null,transportZone1, null);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
-
         LOG.debug("gateway is null");
-
     }
 
     @Test
-    public void testCreateLocalCacheInvalidSubnetMask(){
+    public void testCreateLocalCacheInvalidSubnetMask() {
 
         String output = null;
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,tepIp2,gwyIp1,transportZone1, null);
         } catch (TepException e) {
-            output = e.getMessage()+newline;
+            output = e.getMessage() + newline;
         }
 
         String newline = System.getProperty("line.separator");
@@ -390,17 +400,16 @@ public class TepCommandHelperTest {
 
         String output = null;
         try {
-            tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp4, subnetMask, gwyIp1, transportZone1, null);
+            tepCommandHelper.createLocalCache(dpId1, portName1, vlanId, tepIp4, subnetMask, gwyIp1,
+                    transportZone1, null);
         } catch (TepException e) {
             output = e.getMessage() + newline;
         }
-
         assertEquals("IpAddress and gateWayIp should belong to the subnet provided" + newline,output);
-
     }
 
     @Test
-    public void testConfigureTunnelType(){
+    public void testConfigureTunnelType() {
 
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
@@ -409,35 +418,35 @@ public class TepCommandHelperTest {
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
         verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZones,true);
-
     }
 
     @Test
-    public void testConfigureTunnelMonitorInterval(){
+    public void testConfigureTunnelMonitorInterval() {
 
         TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
         tepCommandHelper.configureTunnelMonitorInterval(interval);
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier,tunnelMonitor,true);
-
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier,
+                tunnelMonitor,true);
     }
 
     @Test
-    public void testConfigureTunnelMonitorParams(){
+    public void testConfigureTunnelMonitorParams() {
 
-        TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
+        TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(enabled)
+                .setMonitorProtocol(monitorProtocol).build();
 
         tepCommandHelper.configureTunnelMonitorParams(enabled, "BFD");
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorParamsIdentifier);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,tunnelMonitorParamsIdentifier,tunnelMonitor,true);
-
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
-    public void testDeleteVtep(){
+    public void testDeleteVtep() {
 
         try {
             tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp1, subnetMask, gwyIp1, transportZone1, null);
@@ -451,13 +460,13 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testDeleteVtepInvalidIp(){
+    public void testDeleteVtepInvalidIp() {
 
         String output = null;
         try {
             tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp3, subnetMask, gwyIp1, transportZone1, null);
-        }catch (TepException e) {
-            output = e.getMessage() +newline;
+        } catch (TepException e) {
+            output = e.getMessage() + newline;
         }
 
         String newline = System.getProperty("line.separator");
@@ -466,7 +475,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testDeleteVtepInvalidSubnetMask(){
+    public void testDeleteVtepInvalidSubnetMask() {
 
         String output = null;
         try {
@@ -479,8 +488,9 @@ public class TepCommandHelperTest {
 
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
-    public void testDeleteVtepGatewayIpNull(){
+    public void testDeleteVtepGatewayIpNull() {
 
         try {
             tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp1, subnetMask, null, transportZone1, null);
@@ -492,14 +502,15 @@ public class TepCommandHelperTest {
 
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Test
-    public void testDeleteVtepIpSubnetMismatch(){
+    public void testDeleteVtepIpSubnetMismatch() {
 
         String output = null;
         try {
             tepCommandHelper.deleteVtep(dpId1, portName1, vlanId, tepIp4, subnetMask, gwyIp1, transportZone1, null);
         } catch (Exception e) {
-            output = e.getMessage()+ newline;
+            output = e.getMessage() + newline;
         }
 
         assertEquals("IpAddress and gateWayIp should belong to the subnet provided" + newline,output);
@@ -507,7 +518,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testBuildTepsTunnelTypeVxlan(){
+    public void testBuildTepsTunnelTypeVxlan() {
 
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
@@ -522,7 +533,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testBuildTepsTunnelTypeGre(){
+    public void testBuildTepsTunnelTypeGre() {
 
         optionalTransportZone = Optional.of(transportZoneNew);
 
@@ -559,11 +570,11 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testShowTepsWithTransportZone(){
+    public void testShowTepsWithTransportZone() {
 
         try {
             tepCommandHelper.showTeps(enabled, interval, null);
-        } catch (TepException e){
+        } catch (TepException e) {
             LOG.error(e.getMessage());
         }
 
@@ -572,7 +583,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testShowTepsWithoutTransportZone(){
+    public void testShowTepsWithoutTransportZone() {
 
         optionalTransportZones = Optional.of(transportZonesNew);
 
@@ -592,7 +603,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testDeleteOnCommit(){
+    public void testDeleteOnCommit() {
 
         transportZoneList.add(transportZone);
         transportZoneList.add(transportZoneNew);
@@ -619,7 +630,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testGetTransportZone(){
+    public void testGetTransportZone() {
 
         tepCommandHelper.getTransportZone(transportZone1);
 
@@ -627,7 +638,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testIsInCache(){
+    public void testIsInCache() {
 
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
@@ -641,7 +652,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testValidateForDuplicates(){
+    public void testValidateForDuplicates() {
 
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);
@@ -655,7 +666,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testCheckTepPerTzPerDpn(){
+    public void testCheckTepPerTzPerDpn() {
 
         try {
             tepCommandHelper.createLocalCache(dpId1,portName1,vlanId,tepIp1,subnetMask,gwyIp1,transportZone1, null);

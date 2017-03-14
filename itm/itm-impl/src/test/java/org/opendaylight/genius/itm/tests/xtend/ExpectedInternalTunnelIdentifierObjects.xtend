@@ -17,10 +17,10 @@ class ExpectedInternalTunnelIdentifierObjects {
 
     static def newInternalTunnelObjVxLanOneToTwo() {
         new InternalTunnelBuilder >> [
-            destinationDPN = ItmTestConstants.dpId2
-            sourceDPN = ItmTestConstants.dpId1
+            destinationDPN = ItmTestConstants.DP_ID_2
+            sourceDPN = ItmTestConstants.DP_ID_1
             transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
-            tunnelInterfaceName = ItmTestConstants.parentInterfaceName
+            tunnelInterfaceName = ItmTestConstants.PARENT_INTERFACE_NAME
         ]
     }
 }

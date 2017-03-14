@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -34,16 +34,18 @@ public class AddExternalEndpoint extends OsgiCommandSupport {
         this.itmProvider = itmProvider;
     }
 
+    @SuppressWarnings({"checkstyle:IllegalCatch", "checkstyle:RegexpSinglelineJava"})
     @Override
     protected Object doExecute() {
+
         try {
             LOG.debug("AddExternalEndpoint: destinationIP {} with tunnelType {}", destinationIp, tunnelType);
             Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-            if( tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_VXLAN))
-                tunType = TunnelTypeVxlan.class ;
-            else if( tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_GRE) )
-                tunType = TunnelTypeGre.class ;
-            else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
+            if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
+                tunType = TunnelTypeVxlan.class;
+            } else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_GRE)) {
+                tunType = TunnelTypeGre.class;
+            } else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
                 tunType = TunnelTypeMplsOverGre.class;
             } else {
                 System.out.println("Invalid tunnel-type " + tunnelType);
@@ -64,5 +66,6 @@ public class AddExternalEndpoint extends OsgiCommandSupport {
             LOG.error("Exception occurred during execution of command \"tep:configure-tunnelType\": ", e);
         }
         return null;
+        //CHECKSTYLE:ON
     }
 }

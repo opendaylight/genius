@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -24,9 +24,13 @@ public class OvsdbExternalIdsInfo {
         return tzName;
     }
 
-    public String getDpnBrName() { return dpnBrName; }
+    public String getDpnBrName() {
+        return dpnBrName;
+    }
 
-    public boolean getOfTunnel() { return ofTunnel; }
+    public boolean getOfTunnel() {
+        return ofTunnel;
+    }
 
     // set methods
     public void setTepIp(String tepIp) {
@@ -47,8 +51,7 @@ public class OvsdbExternalIdsInfo {
 
     @Override
     public String toString() {
-        return "OvsdbExternalIdsInfo  { " +
-            "Ovsdb node External Ids Info list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName +
-            "  DPN bridge name: " + dpnBrName +  " of-tunnel flag: " + ofTunnel + " }" ;
+        return "OvsdbExternalIdsInfo { Ovsdb node External Ids Info list TEP parameters: TEP IP: " + tepIp
+                + "  TZ name:" + tzName + "  DPN bridge name: " + dpnBrName +  " of-tunnel flag: " + ofTunnel + " }" ;
     }
 }

@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.tests;
 
+import java.math.BigInteger;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -16,26 +17,25 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 
-import java.math.BigInteger;
-
 public interface ItmTestConstants {
-    String extTunnelInterfaceName = "tunfdeecc7cb4d";
-    BigInteger dpId1 = BigInteger.valueOf(1);
-    BigInteger dpId2 = BigInteger.valueOf(2);
-    int vlanId = 100 ;
-    String portName1 = "phy0";
-    String parentInterfaceName = "1:phy0:100";
-    String tepIp3 = "192.168.56.101";
-    String gwyIp1 = "0.0.0.0";
+
+    String EXT_TUNNEL_INTERFACE_NAME = "tunfdeecc7cb4d";
+    BigInteger DP_ID_1 = BigInteger.valueOf(1);
+    BigInteger DP_ID_2 = BigInteger.valueOf(2);
+    int VLAN_ID = 100 ;
+    String PORT_NAME_1 = "phy0";
+    String PARENT_INTERFACE_NAME = "1:phy0:100";
+    String TEP_IP_3 = "192.168.56.101";
+    String GWY_IP_1 = "0.0.0.0";
     String TZ_NAME = "TZA" ;
-    String subnetIp = "10.1.1.24";
-    String sourceDevice = "abc";
-    String sourceDevice2 = "def";
-    String destinationDevice = "xyz";
-    IpPrefix ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
-    IpAddress  ipAddress3 = IpAddressBuilder.getDefaultInstance(tepIp3);
-    IpAddress gtwyIp1 = IpAddressBuilder.getDefaultInstance(gwyIp1);
+    String SUBNET_IP = "10.1.1.24";
+    String SOURCE_DEVICE = "abc";
+    String SOURCE_DEVICE_2 = "def";
+    String DESTINATION_DEVICE = "xyz";
+    IpPrefix IP_PREFIX_TEST = IpPrefixBuilder.getDefaultInstance(SUBNET_IP + "/24");
+    IpAddress IP_ADDRESS_3 = IpAddressBuilder.getDefaultInstance(TEP_IP_3);
+    IpAddress GTWY_IP_1 = IpAddressBuilder.getDefaultInstance(GWY_IP_1);
     Class<? extends TunnelTypeBase> TUNNEL_TYPE_VXLAN = TunnelTypeVxlan.class;
-    Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-    String  DPID_STR_ONE="1";
+    Class<? extends TunnelMonitoringTypeBase> MONITOR_PROTOCOL = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
+    String  DPID_STR_ONE = "1";
 }
