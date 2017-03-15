@@ -22,6 +22,30 @@
       "revId": "3661921b35a99f08ddf4a23b7721742cff37e7c5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4d4e0a98",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-15T06:41:24Z",
+      "side": 1,
+      "message": "It\u0027s not intentional. the idea was to be the last service in the egress chain just before the default egress service (index\u003d7)\nit can overlap with ACL service since the policy service will be bounded only for logical tunnels while the ACL is bounded only to VM ports but if these services will need to coexist on the same interface inthe future, ACL index would need to be changed to some lower value.",
+      "parentUuid": "fafc7978_997b1c7b",
+      "range": {
+        "startLine": 80,
+        "startChar": 60,
+        "endLine": 80,
+        "endChar": 61
+      },
+      "revId": "3661921b35a99f08ddf4a23b7721742cff37e7c5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
