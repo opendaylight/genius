@@ -9,18 +9,8 @@
 package org.opendaylight.genius.interfacemanager.rpcservice;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -54,40 +44,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.CreateTerminatingServiceActionsInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -95,6 +52,15 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Singleton
 public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
@@ -155,105 +121,6 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder
                 .<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
         return rpcResultBuilder;
-    }
-
-    @Override
-    public Future<RpcResult<Void>> createTerminatingServiceActions(final CreateTerminatingServiceActionsInput input) {
-        final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        try {
-            LOG.info("create terminatingServiceAction on DpnId = {} for tunnel-key {}", input.getDpid(),
-                    input.getTunnelKey());
-            Interface interfaceInfo = InterfaceManagerCommonUtils
-                    .getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()), dataBroker);
-            IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
-            if (tunnelInfo != null) {
-                ListenableFuture<Void> installFlowResult = tunnelInfo.getTunnelInterfaceType()
-                        .isAssignableFrom(TunnelTypeMplsOverGre.class)
-                                ? makeLFIBFlow(input.getDpid(), input.getTunnelKey(), input.getInstruction(),
-                                        NwConstants.ADD_FLOW)
-                                : makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(),
-                                        input.getInstruction(), NwConstants.ADD_FLOW);
-                Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
-
-                    @Override
-                    public void onSuccess(Void theVoid) {
-                        result.set(RpcResultBuilder.<Void>success().build());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to install terminating service flow for %s",
-                                input.getInterfaceName());
-                        LOG.error("create terminating service actions failed. {}. {}", msg, error);
-                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
-                                .build());
-                    }
-                });
-                result.set(RpcResultBuilder.<Void>success().build());
-            } else {
-                String msg = String.format(
-                        "Terminating Service Actions cannot be created for a non-tunnel interface %s",
-                        input.getInterfaceName());
-                LOG.error(msg);
-                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg).build());
-            }
-        } catch (Exception e) {
-            String msg = String.format("create Terminating Service Actions for %s failed", input.getInterfaceName());
-            LOG.error("create Terminating Service Actions for {} failed due to {}", input.getDpid(), e);
-            result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, e.getMessage())
-                    .build());
-        }
-        return result;
-    }
-
-    @Override
-    public Future<RpcResult<Void>> removeTerminatingServiceActions(final RemoveTerminatingServiceActionsInput input) {
-        final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        try {
-            dataBroker.newWriteOnlyTransaction();
-            LOG.info("remove terminatingServiceAction on DpnId = {} for tunnel-key {}", input.getDpid(),
-                    input.getTunnelKey());
-
-            Interface interfaceInfo = InterfaceManagerCommonUtils
-                    .getInterfaceFromConfigDS(new InterfaceKey(input.getInterfaceName()), dataBroker);
-            IfTunnel tunnelInfo = interfaceInfo.getAugmentation(IfTunnel.class);
-            if (tunnelInfo != null) {
-                ListenableFuture<Void> removeFlowResult = tunnelInfo.getTunnelInterfaceType()
-                        .isAssignableFrom(TunnelTypeMplsOverGre.class)
-                                ? makeLFIBFlow(input.getDpid(), input.getTunnelKey(), null, NwConstants.DEL_FLOW)
-                                : makeTerminatingServiceFlow(tunnelInfo, input.getDpid(), input.getTunnelKey(), null,
-                                        NwConstants.DEL_FLOW);
-                Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
-
-                    @Override
-                    public void onSuccess(Void theVoid) {
-                        result.set(RpcResultBuilder.<Void>success().build());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to install terminating service flow %s",
-                                input.getInterfaceName());
-                        LOG.error("create terminating service actions failed. {}. {}", msg, error);
-                        result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
-                                .build());
-                    }
-                });
-                result.set(RpcResultBuilder.<Void>success().build());
-            } else {
-                String msg = String.format(
-                        "Terminating Service Actions cannot be removed for a non-tunnel interface %s",
-                        input.getInterfaceName());
-                LOG.error(msg);
-                result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg).build());
-            }
-        } catch (Exception e) {
-            LOG.error("Remove Terminating Service Actions for {} failed due to {}", input.getDpid(), e);
-            String msg = String.format("Remove Terminating Service Actions for %d failed.", input.getDpid());
-            result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, e.getMessage())
-                    .build());
-        }
-        return result;
     }
 
     @Override

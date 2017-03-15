@@ -49,13 +49,6 @@ module odl-interface {
         reference "MPLS interface";
     }
 
-    /* Tunnel (GRE, VxLAN) logical port */
-    identity l3tunnel {
-        status deprecated;
-        base if:interface-type;
-        reference "l3 tunnel interface";
-    }
-
     identity tunnel-type-base {
         description "Base identity for all tunnel-types";
     }
@@ -155,16 +148,6 @@ module odl-interface {
             type boolean;
             default "false";
             description "represents whether to override OVS split horizon protection on this port.";
-        }
-    }
-
-    /* base/common properties */
-    augment "/if:interfaces/if:interface" {
-        status deprecated;
-        ext:augment-identifier "base-ids";
-        leaf of-port-id {
-            type inv:node-connector-id;
-            description "can be a physical switch port or virtual switch port e.g. neutron port";
         }
     }
 
@@ -287,33 +270,6 @@ module odl-interface {
 
         uses tunnel-optional-params;
         uses monitor-params;
-    }
-
-    augment "/if:interfaces/if:interface" {
-        status deprecated;
-        ext:augment-identifier "if-l3tunnel";
-        when "if:type = 'ianaift:l3tunnel'";
-
-        leaf tunnel-type {
-            type identityref {
-                base tunnel-type-base;
-            }
-        }
-
-        leaf local-ip {
-            type inet:ip-address;
-            description "Local Endpoint IP address";
-        }
-
-        leaf remote-ip {
-            type inet:ip-address;
-            description "Remote Endpoint IP address";
-        }
-
-        leaf gateway-ip {
-            type inet:ip-address;
-            description "gateway IP address";
-        }
     }
 
     /* MPLS logical port */
