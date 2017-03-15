@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil.instructions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.GoToTableCase;
@@ -19,9 +20,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionGotoTable}.
  */
 public class InstructionGotoTableTest {
+
+    private static final InstructionGotoTable INSTRUCTION_INFO = new InstructionGotoTable((short) 1);
+
     @Test
     public void newInstruction() {
-        verifyInstructionInfo(new InstructionGotoTable((short) 1));
+        verifyInstructionInfo(INSTRUCTION_INFO);
     }
 
     private void verifyInstructionInfo(InstructionInfo instructionInfo) {
@@ -30,5 +34,11 @@ public class InstructionGotoTableTest {
         assertTrue(instruction.getInstruction() instanceof GoToTableCase);
         GoToTableCase goToTableCase = (GoToTableCase) instruction.getInstruction();
         assertEquals((short) 1, goToTableCase.getGoToTable().getTableId().shortValue());
+    }
+
+    @Test
+    public void xtendBeanGenerator() {
+        XtendBeanGenerator generator = new XtendBeanGenerator();
+        assertEquals("new InstructionGotoTable(1 as short)", generator.getExpression(INSTRUCTION_INFO));
     }
 }

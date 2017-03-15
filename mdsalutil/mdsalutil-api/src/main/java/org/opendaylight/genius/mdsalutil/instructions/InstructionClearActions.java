@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Clear actions instruction.
  */
 public class InstructionClearActions implements InstructionInfo {
+
     @Override
     public Instruction buildInstruction(int instructionKey) {
         return new InstructionBuilder()

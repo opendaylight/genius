@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil.instructions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -21,9 +22,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionWriteMetadata}.
  */
 public class InstructionWriteMetadataTest {
+
+    private static final InstructionWriteMetadata INSTRUCTION_INFO
+        = new InstructionWriteMetadata(BigInteger.ONE, BigInteger.TEN);
+
     @Test
     public void newInstruction() {
-        verifyInstructionInfo(new InstructionWriteMetadata(BigInteger.ONE, BigInteger.TEN));
+        verifyInstructionInfo(INSTRUCTION_INFO);
     }
 
     private void verifyInstructionInfo(InstructionInfo instructionInfo) {
@@ -34,5 +39,11 @@ public class InstructionWriteMetadataTest {
         WriteMetadata writeMetadata = writeMetadataCase.getWriteMetadata();
         assertEquals(BigInteger.ONE, writeMetadata.getMetadata());
         assertEquals(BigInteger.TEN, writeMetadata.getMetadataMask());
+    }
+
+    @Test
+    public void xtendBeanGenerator() {
+        XtendBeanGenerator generator = new XtendBeanGenerator();
+        assertEquals("new InstructionWriteMetadata(1bi, 10bi)", generator.getExpression(INSTRUCTION_INFO));
     }
 }

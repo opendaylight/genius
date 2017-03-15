@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Write actions instruction.
  */
 public class InstructionWriteActions implements InstructionInfo {
+
     private final ActionInfoList actions;
 
     public InstructionWriteActions(List<ActionInfo> actionInfos) {
@@ -40,4 +41,9 @@ public class InstructionWriteActions implements InstructionInfo {
                 .setKey(new InstructionKey(instructionKey))
                 .build();
     }
+
+    public List<ActionInfo> getActionInfos() {
+        return actions.getActionInfos();
+    }
+
 }

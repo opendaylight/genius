@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * @author Michael Vorburger
  */
 public class ActionInfoList {
+
     private final List<ActionInfo> actionInfos = new ArrayList<>();
 
     public ActionInfoList(List<ActionInfo> actionInfos) {
