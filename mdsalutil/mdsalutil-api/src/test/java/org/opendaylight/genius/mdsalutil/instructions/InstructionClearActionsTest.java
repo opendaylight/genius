@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil.instructions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ClearActionsCase;
@@ -19,9 +20,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Test for {@link InstructionClearActions}.
  */
 public class InstructionClearActionsTest {
+
+    private static final InstructionClearActions INSTRUCTION_INFO = new InstructionClearActions();
+
     @Test
     public void newInstruction() {
-        verifyInstructionInfo(new InstructionClearActions());
+        verifyInstructionInfo(INSTRUCTION_INFO);
     }
 
     private void verifyInstructionInfo(InstructionInfo instructionInfo) {
@@ -29,4 +33,11 @@ public class InstructionClearActionsTest {
         assertEquals(2, instruction.getKey().getOrder().intValue());
         assertTrue(instruction.getInstruction() instanceof ClearActionsCase);
     }
+
+    @Test
+    public void xtendBeanGenerator() {
+        XtendBeanGenerator generator = new XtendBeanGenerator();
+        assertEquals("new InstructionClearActions", generator.getExpression(INSTRUCTION_INFO));
+    }
+
 }

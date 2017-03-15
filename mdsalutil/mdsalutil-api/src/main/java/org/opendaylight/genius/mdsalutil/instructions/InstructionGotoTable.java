@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Goto table instruction.
  */
 public class InstructionGotoTable implements InstructionInfo {
+
     private final short tableId;
 
     public InstructionGotoTable(short tableId) {
@@ -36,6 +37,10 @@ public class InstructionGotoTable implements InstructionInfo {
                 )
                 .setKey(new InstructionKey(instructionKey))
                 .build();
+    }
+
+    public short getTableId() {
+        return tableId;
     }
 
     @Override

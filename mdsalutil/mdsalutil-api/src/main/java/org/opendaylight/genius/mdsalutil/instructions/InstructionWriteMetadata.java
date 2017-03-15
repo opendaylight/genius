@@ -19,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Write metadata instruction.
  */
 public class InstructionWriteMetadata implements InstructionInfo {
+
     private final BigInteger metadata;
     private final BigInteger mask;
 
@@ -40,6 +41,14 @@ public class InstructionWriteMetadata implements InstructionInfo {
                 )
                 .setKey(new InstructionKey(instructionKey))
                 .build();
+    }
+
+    public BigInteger getMetadata() {
+        return metadata;
+    }
+
+    public BigInteger getMask() {
+        return mask;
     }
 
     @Override

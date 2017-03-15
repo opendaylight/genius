@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Apply actions instruction.
  */
 public class InstructionApplyActions implements InstructionInfo {
+
     private final ActionInfoList actions;
 
     public InstructionApplyActions(List<ActionInfo> actionsInfos) {
