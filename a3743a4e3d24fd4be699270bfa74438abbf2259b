@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_03ffb1ab",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/instructions/InstructionWriteActionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-15T09:59:31Z",
+      "side": 1,
+      "message": "ActionGroupBuilder is no longer necessary; is there a way to migrate away from it without breaking all the related XtendBeanGenerator tests?",
+      "revId": "a3743a4e3d24fd4be699270bfa74438abbf2259b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
