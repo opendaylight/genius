@@ -16,6 +16,24 @@
       "revId": "a3743a4e3d24fd4be699270bfa74438abbf2259b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c33ac933",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/instructions/InstructionWriteActionsTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-15T10:32:51Z",
+      "side": 1,
+      "message": "if we were to remove the ActionGroupBuilder class, then the XtendBeanGenerator would just use new ActionGroup(1) instead of new ActionGroupBuilder \u003d\u003e [ groupId \u003d 1L ] .. in a test such as this line here, the String would have to be adapted. In any Xtend code, and Java for that matter, using new ActionGroupBuilder (not inside a String but as real code), it would have to be replaced by new ActionGroup.  This seems perfectly normal to me.. (Perhaps let\u0027s discuss further on private email, so as to not confuse Slava on this change?)",
+      "parentUuid": "fafc7978_03ffb1ab",
+      "revId": "a3743a4e3d24fd4be699270bfa74438abbf2259b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
