@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e3f42ad1",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-15T14:59:38Z",
+      "side": 1,
+      "message": "add a @Singleton here",
+      "revId": "9b1625479ea01fc2e427a2995e462174e734ac3d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c30e46e5",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-15T14:59:38Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "9b1625479ea01fc2e427a2995e462174e734ac3d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_03f84ec3",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-15T14:59:38Z",
+      "side": 1,
+      "message": "remove this .. if you make this static method, then it will be harder to change this to be non-static later.  Just make it non-static, so a test using this can do @Inject TestableJobCoordinatorEventsWaiter and use awaitsEventsConsumption().  When the implementation of awaitEventsConsumption() changes to later use a @Inject JobCoordinator here, instead of the static DataStoreJobCoordinator.getInstance(), then tests using this don\u0027t have to be changed again..",
+      "revId": "9b1625479ea01fc2e427a2995e462174e734ac3d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
