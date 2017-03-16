@@ -9,7 +9,10 @@ package org.opendaylight.genius.itm.tests;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
+import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.genius.idmanager.IdManager;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
@@ -61,9 +64,11 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(ItmTunnelEventListener.class);
 
         // Bindings for external services to "real" implementations
+        bind(EntityOwnershipService.class).toInstance(mock(EntityOwnershipService.class));
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManager.class);
         bind(DataBroker.class).toInstance(DataBrokerTestModule.dataBroker());
+        bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 
         // Bindings to test infra (fakes & mocks)
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();

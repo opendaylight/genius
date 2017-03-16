@@ -19,6 +19,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="iMdsalApiManager"
                interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
 
+    <reference id="iInterfaceManager"
+               interface="org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager" />
+
     <odl:rpc-implementation ref="itmManagerRpcService" />
 
     <odl:clustered-app-config id="itmConfig"
