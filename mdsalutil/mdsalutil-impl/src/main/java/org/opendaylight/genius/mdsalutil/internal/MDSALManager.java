@@ -8,9 +8,11 @@
 
 package org.opendaylight.genius.mdsalutil.internal;
 
+import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +20,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker.DataChangeScope;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
@@ -44,7 +50,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.BucketId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.Buckets;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.BucketKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -75,6 +85,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final SingleTransactionDataBroker singleTxDb;
 
     /**
      * Writes the flows and Groups to the MD SAL DataStore which will be sent to
@@ -91,6 +102,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     public MDSALManager(DataBroker db, PacketProcessingService pktProcService) {
         this.dataBroker = db;
         this.packetProcessingService = pktProcService;
+        singleTxDb = new SingleTransactionDataBroker(dataBroker);
         LOG.info("MDSAL Manager Initialized ");
     }
 
@@ -243,9 +255,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
 
-        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getGroupId(), nodeDpn);
 
         tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
     }
@@ -254,9 +264,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue();
-        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Group.class, new GroupKey(new GroupId(groupId))).build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
 
         tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
     }
@@ -265,9 +273,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue();
-        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Group.class, new GroupKey(new GroupId(groupId))).build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
 
         tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
     }
@@ -362,9 +368,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     public void removeGroupEntityInternal(GroupEntity groupEntity, WriteTransaction tx) {
         Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
-        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Group.class, new GroupKey(new GroupId(groupEntity.getGroupId()))).build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getGroupId(), nodeDpn);
 
         tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
     }
@@ -453,10 +457,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         BigInteger dpId = groupEntity.getDpnId();
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = groupEntity.getGroupId();
-        GroupKey groupKey = new GroupKey(new GroupId(groupId));
-        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class).child(Group.class, groupKey)
-                .build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getGroupId(), nodeDpn);
         if (isRemove) {
             MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
@@ -468,10 +469,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         LOG.trace("syncSetUpGroup for group {} ", group);
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue();
-        GroupKey groupKey = new GroupKey(new GroupId(groupId));
-        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class).child(Group.class, groupKey)
-                .build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
         if (isRemove) {
             MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
@@ -720,5 +718,68 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @Override
     public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
         batchedRemoveFlowInternal(dpId, flowEntity.getFlowBuilder().build());
+    }
+
+    @Override
+    public void addBucketToTx(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
+        addBucket(dpId, groupId, bucket, tx);
+    }
+
+    @Override
+    public void removeBucketToTx(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
+        deleteBucket(dpId, groupId, bucketId, tx);
+    }
+
+    public void deleteBucket(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
+
+        Node nodeDpn = buildDpnNode(dpId);
+        InstanceIdentifier<Bucket> bucketInstanceId =
+                buildBucketInstanceIdentifier(groupId, bucketId, nodeDpn);
+        Optional<Bucket> bucketOptional = Optional.absent();
+        try {
+            bucketOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
+        } catch (ReadFailedException e) {
+            LOG.warn("Exception while reading bucketId {} for dpnId {} and group {}", bucketId, dpId, groupId);
+            return;
+        }
+        if (bucketOptional.isPresent()) {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
+        }
+    }
+
+    public void addBucket(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
+
+        Node nodeDpn = buildDpnNode(dpId);
+        InstanceIdentifier<Bucket> bucketInstanceId =
+                buildBucketInstanceIdentifier(groupId, bucket.getBucketId().getValue(), nodeDpn);
+
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
+        Optional<Group> groupOptional = Optional.absent();
+        try {
+            groupOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        } catch (ReadFailedException e) {
+            LOG.warn("Exception while reading group {} for dpnId {}", dpId, groupId);
+            return;
+        }
+        if (groupOptional.isPresent()) {
+            tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
+        }
+    }
+
+    private InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {
+        InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupId))).build();
+        return groupInstanceId;
+    }
+
+    private InstanceIdentifier<Bucket> buildBucketInstanceIdentifier(long groupId, long bucketId,
+            Node nodeDpn) {
+        InstanceIdentifier<Bucket> bucketInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Group.class, new GroupKey(new GroupId(groupId)))
+                .child(Buckets.class)
+                .child(Bucket.class, new BucketKey(new BucketId(bucketId))).build();
+        return bucketInstanceId;
     }
 }
