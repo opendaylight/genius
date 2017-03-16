@@ -137,12 +137,12 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
+    public synchronized void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
         getOrNewFlows().add(flowEntity);
     }
 
     @Override
-    public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
+    public synchronized void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
         getOrNewFlows().remove(flowEntity);
     }
 
