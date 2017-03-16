@@ -16,6 +16,24 @@
       "revId": "7f61e2ec50bce67af90835896b89a735f6000a87",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_40d7e1ed",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-03-16T19:01:35Z",
+      "side": 0,
+      "message": "yeah, it had a similar bug but it was unused so I just removed it\nhttps://github.com/opendaylight/sfc/search?utf8\u003d%E2%9C%93\u0026q\u003dparseIpAddress",
+      "parentUuid": "fafc7978_cad5b2ba",
+      "revId": "7f61e2ec50bce67af90835896b89a735f6000a87",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
