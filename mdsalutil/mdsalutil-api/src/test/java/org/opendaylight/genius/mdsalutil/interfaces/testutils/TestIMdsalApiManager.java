@@ -108,13 +108,15 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         try {
             assertThat(flows).containsExactlyElementsIn(expectedFlowsAsNewArrayList);
         } catch (AssertionError e) {
+            // We LOG the AssertionError just for clarity why containsExactlyElementsIn() failed
+            LOG.warn("assert containsExactlyElementsIn() failed", e);
             // We LOG the expected and actual flow in case of a failed assertion
             // because, even though that is typically just a HUGE String that's
             // hard to read (the diff printed subsequently by assertEqualBeans
             // is, much, more readable), there are cases when looking more closely
             // at the full toString() output of the flows is still useful, so:
-            LOG.warn("assert fail; expected flows: {}", expectedFlowsAsNewArrayList);
-            LOG.warn("assert fail; actual flows  : {}", flows);
+            LOG.warn("assert failed; expected flows: {}", expectedFlowsAsNewArrayList);
+            LOG.warn("assert failed; actual flows  : {}", flows);
             // The point of this is basically just that our assertEqualBeans output,
             // in case of a comparison failure, is *A LOT* more clearly readable
             // than what G Truth (or Hamcrest) can do based on toString.
