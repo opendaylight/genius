@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * MPLS label match.
  */
 public class MatchMplsLabel extends MatchInfoHelper<ProtocolMatchFields, ProtocolMatchFieldsBuilder> {
+
     private final long label;
 
     public MatchMplsLabel(long label) {
@@ -58,4 +59,10 @@ public class MatchMplsLabel extends MatchInfoHelper<ProtocolMatchFields, Protoco
         result = 31 * result + (int) (label ^ label >>> 32);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchMplsLabel[" + label + "]";
+    }
+
 }

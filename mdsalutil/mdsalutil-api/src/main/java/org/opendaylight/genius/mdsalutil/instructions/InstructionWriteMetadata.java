@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.instructions;
 
 import java.math.BigInteger;
-import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
@@ -18,7 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 /**
  * Write metadata instruction.
  */
-public class InstructionWriteMetadata implements InstructionInfo {
+public class InstructionWriteMetadata extends AbstractInstructionInfoImpl {
 
     private final BigInteger metadata;
     private final BigInteger mask;
@@ -52,7 +51,7 @@ public class InstructionWriteMetadata implements InstructionInfo {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals2(Object other) {
         if (this == other) {
             return true;
         }
@@ -69,9 +68,14 @@ public class InstructionWriteMetadata implements InstructionInfo {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode2() {
         int result = metadata != null ? metadata.hashCode() : 0;
         result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    protected String toString2() {
+        return "InstructionWriteMetadata[metadata=" + metadata + ", mask=" + mask + "]";
     }
 }

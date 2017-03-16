@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * TCP flags match.
  */
 public class MatchTcpFlags extends MatchInfoHelper<TcpFlagsMatch, TcpFlagsMatchBuilder> {
+
     public static final MatchTcpFlags SYN = new MatchTcpFlags(1 << 1);
     public static final MatchTcpFlags ACK = new MatchTcpFlags(1 << 4);
     public static final MatchTcpFlags SYN_ACK = new MatchTcpFlags((1 << 1) + (1 << 4));
@@ -62,4 +63,10 @@ public class MatchTcpFlags extends MatchInfoHelper<TcpFlagsMatch, TcpFlagsMatchB
         result = 31 * result + flags;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchTcpFlags[" + flags + "]";
+    }
+
 }

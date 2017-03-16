@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IPv6 ND target match.
  */
 public class MatchIpv6NdTarget extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuilder> {
+
     private final Ipv6Address address;
 
     public MatchIpv6NdTarget(Ipv6Address address) {
@@ -59,4 +60,10 @@ public class MatchIpv6NdTarget extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuild
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchIpv6NdTarget[" + address + "]";
+    }
+
 }

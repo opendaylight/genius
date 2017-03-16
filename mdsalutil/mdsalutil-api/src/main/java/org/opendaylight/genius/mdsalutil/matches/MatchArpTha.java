@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ARP target hardware address match.
  */
 public class MatchArpTha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+
     private final MacAddress address;
 
     public MatchArpTha(MacAddress address) {
@@ -60,4 +61,10 @@ public class MatchArpTha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchArpTha[" + address + "]";
+    }
+
 }

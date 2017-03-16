@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * TCP destination port match.
  */
 public class MatchTcpDestinationPort extends MatchInfoHelper<TcpMatch, TcpMatchBuilder> {
+
     private final int port;
 
     public MatchTcpDestinationPort(int port) {
@@ -59,4 +60,10 @@ public class MatchTcpDestinationPort extends MatchInfoHelper<TcpMatch, TcpMatchB
         result = 31 * result + port;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchTcpDestinationPort[" + port + "]";
+    }
+
 }

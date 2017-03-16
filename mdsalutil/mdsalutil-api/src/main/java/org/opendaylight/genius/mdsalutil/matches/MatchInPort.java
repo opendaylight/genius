@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
  * In port match.
  */
 public class MatchInPort extends MatchInfo {
+
     private final BigInteger dpId;
     private final long portNumber;
 
@@ -71,5 +72,10 @@ public class MatchInPort extends MatchInfo {
         result = 31 * result + (dpId != null ? dpId.hashCode() : 0);
         result = 31 * result + (int) (portNumber ^ portNumber >>> 32);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MatchInPort[dpId=" + dpId + ", portNumber=" + portNumber + "]";
     }
 }

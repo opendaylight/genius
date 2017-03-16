@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Metadata match.
  */
 public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
+
     private final BigInteger metadata;
     private final BigInteger mask;
 
@@ -69,4 +70,10 @@ public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
         result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchMetadata[metadata=" + metadata + ", mask=" + mask + "]";
+    }
+
 }

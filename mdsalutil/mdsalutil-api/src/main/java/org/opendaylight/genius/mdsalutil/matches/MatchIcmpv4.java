@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ICMPv4 match.
  */
 public class MatchIcmpv4 extends MatchInfoHelper<Icmpv4Match, Icmpv4MatchBuilder> {
+
     private final short type;
     private final short code;
 
@@ -68,4 +69,10 @@ public class MatchIcmpv4 extends MatchInfoHelper<Icmpv4Match, Icmpv4MatchBuilder
         result = 31 * result + code;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchIcmpv4[type=" + type + ", code=" + code + "]";
+    }
+
 }

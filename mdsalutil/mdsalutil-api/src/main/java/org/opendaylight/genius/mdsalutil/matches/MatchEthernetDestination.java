@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Ethernet destination match.
  */
 public class MatchEthernetDestination extends MatchInfoHelper<EthernetMatch, EthernetMatchBuilder> {
+
     private final MacAddress address;
     private final MacAddress mask;
 
@@ -77,5 +78,10 @@ public class MatchEthernetDestination extends MatchInfoHelper<EthernetMatch, Eth
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MatchEthernetDestination[address=" + address + ", mask=" + mask + "]";
     }
 }

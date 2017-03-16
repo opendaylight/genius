@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * TCP source port match.
  */
 public class MatchTcpSourcePort extends MatchInfoHelper<TcpMatch, TcpMatchBuilder> {
+
     private final int port;
 
     public MatchTcpSourcePort(int port) {
@@ -59,4 +60,10 @@ public class MatchTcpSourcePort extends MatchInfoHelper<TcpMatch, TcpMatchBuilde
         result = 31 * result + port;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchTcpSourcePort[" + port + "]";
+    }
+
 }

@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.instructions;
 
-import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.GoToTableCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.go.to.table._case.GoToTableBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
@@ -17,7 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 /**
  * Goto table instruction.
  */
-public class InstructionGotoTable implements InstructionInfo {
+public class InstructionGotoTable extends AbstractInstructionInfoImpl {
 
     private final short tableId;
 
@@ -44,7 +43,7 @@ public class InstructionGotoTable implements InstructionInfo {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals2(Object other) {
         if (this == other) {
             return true;
         }
@@ -58,7 +57,12 @@ public class InstructionGotoTable implements InstructionInfo {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode2() {
         return tableId;
+    }
+
+    @Override
+    protected String toString2() {
+        return "InstructionGotoTable[" + tableId + "]";
     }
 }
