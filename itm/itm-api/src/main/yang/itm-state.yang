@@ -133,7 +133,7 @@ module itm-state {
 
                      /* logical-group interface id */
 
-                     leaf tunnel-interface-name {
+                     leaf-list tunnel-interface-names {
                           type string;
                      }
                    }
