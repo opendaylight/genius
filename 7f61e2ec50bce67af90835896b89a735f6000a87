@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_cad5b2ba",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-16T14:44:42Z",
+      "side": 0,
+      "message": "are you sure this is not used by anyone else? since SFC is also dependant on genius, just in case :)",
+      "revId": "7f61e2ec50bce67af90835896b89a735f6000a87",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
