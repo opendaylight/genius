@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_159b6073",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-16T10:41:06Z",
+      "side": 1,
+      "message": "connected-flow-capable-switch-count",
+      "revId": "381648ae0ece2f859d989629ebfc50c5b3a1358f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f5933c5a",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-16T10:41:06Z",
+      "side": 1,
+      "message": "since you have used flow-count late below, we can use route-count and port-count respectively in Line 45 and Line 53",
+      "revId": "381648ae0ece2f859d989629ebfc50c5b3a1358f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
