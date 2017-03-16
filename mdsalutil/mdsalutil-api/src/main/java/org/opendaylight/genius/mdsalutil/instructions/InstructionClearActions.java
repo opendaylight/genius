@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.instructions;
 
-import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ClearActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
@@ -16,7 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 /**
  * Clear actions instruction.
  */
-public class InstructionClearActions implements InstructionInfo {
+public class InstructionClearActions extends AbstractInstructionInfoImpl {
 
     @Override
     public Instruction buildInstruction(int instructionKey) {
@@ -24,5 +23,26 @@ public class InstructionClearActions implements InstructionInfo {
                 .setInstruction(new ClearActionsCaseBuilder().build())
                 .setKey(new InstructionKey(instructionKey))
                 .build();
+    }
+
+    @Override
+    public boolean equals2(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode2() {
+        return 17;
+    }
+
+    @Override
+    protected String toString2() {
+        return "InstructionClearActions";
     }
 }
