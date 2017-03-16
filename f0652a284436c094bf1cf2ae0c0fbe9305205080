@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_2ffbb348",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-16T07:35:31Z",
+      "side": 1,
+      "message": "That\u0027s the requirement of this counter. It only wants the number of switches connected to the controller node.",
+      "parentUuid": "fafc7978_0f450fb3",
+      "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6f113baf",
         "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8fa3bf4e",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-16T07:35:31Z",
+      "side": 1,
+      "message": "This counter represents for a rd ,how many number of routes presents. Fixed the naming to \"no_of_routes\".",
+      "parentUuid": "fafc7978_6f113baf",
+      "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_4f16f7a8",
         "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
         "patchSetId": 4
@@ -47,6 +83,24 @@
       "writtenOn": "2017-03-16T07:20:06Z",
       "side": 1,
       "message": "is this to hold no_of_ports (i.e, port_count)",
+      "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ef87ebb4",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-03-16T07:35:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_4f16f7a8",
       "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
