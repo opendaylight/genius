@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IPv6 destination match.
  */
 public class MatchIpv6Destination extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuilder> {
+
     private final Ipv6Prefix prefix;
 
     public MatchIpv6Destination(String address) {
@@ -63,4 +64,10 @@ public class MatchIpv6Destination extends MatchInfoHelper<Ipv6Match, Ipv6MatchBu
         result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchIpv6Destination[" + prefix + "]";
+    }
+
 }

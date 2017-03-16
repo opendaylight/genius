@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * PBB ISID match.
  */
 public class MatchPbbIsid extends MatchInfoHelper<ProtocolMatchFields, ProtocolMatchFieldsBuilder> {
+
     private final long isid;
 
     public MatchPbbIsid(long isid) {
@@ -59,4 +60,10 @@ public class MatchPbbIsid extends MatchInfoHelper<ProtocolMatchFields, ProtocolM
         result = 31 * result + (int) (isid ^ isid >>> 32);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchPbbIsid[" + isid + "]";
+    }
+
 }

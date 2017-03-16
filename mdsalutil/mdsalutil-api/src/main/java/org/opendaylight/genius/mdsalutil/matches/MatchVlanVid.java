@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * VLAN identifier match.
  */
 public class MatchVlanVid extends MatchInfoHelper<VlanMatch, VlanMatchBuilder> {
+
     private final int vlanId;
 
     public MatchVlanVid(int vlanId) {
@@ -63,4 +64,10 @@ public class MatchVlanVid extends MatchInfoHelper<VlanMatch, VlanMatchBuilder> {
         result = 31 * result + vlanId;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchVlanVid[" + vlanId + "]";
+    }
+
 }

@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IPv4 destination match.
  */
 public class MatchIpv4Destination extends MatchInfoHelper<Ipv4Match, Ipv4MatchBuilder> {
+
     private final Ipv4Prefix prefix;
 
     public MatchIpv4Destination(Ipv4Prefix prefix) {
@@ -68,4 +69,10 @@ public class MatchIpv4Destination extends MatchInfoHelper<Ipv4Match, Ipv4MatchBu
         result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchIpv4Destination[" + prefix + "]";
+    }
+
 }

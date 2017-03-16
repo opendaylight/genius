@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * UDP destination port match.
  */
 public class MatchUdpDestinationPort extends MatchInfoHelper<UdpMatch, UdpMatchBuilder> {
+
     private final int port;
 
     public MatchUdpDestinationPort(int port) {
@@ -59,4 +60,10 @@ public class MatchUdpDestinationPort extends MatchInfoHelper<UdpMatch, UdpMatchB
         result = 31 * result + port;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchUdpDestinationPort[" + port + "]";
+    }
+
 }

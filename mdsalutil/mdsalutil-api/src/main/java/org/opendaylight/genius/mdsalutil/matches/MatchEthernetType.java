@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Ethernet type match.
  */
 public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMatchBuilder> {
+
     public static final MatchEthernetType IPV4 = new MatchEthernetType(0x0800L);
     public static final MatchEthernetType ARP = new MatchEthernetType(0x0806L);
     public static final MatchEthernetType RARP = new MatchEthernetType(0x8035L);
@@ -66,5 +67,10 @@ public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMa
         int result = super.hashCode();
         result = 31 * result + (int) (type ^ type >>> 32);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MatchEthernetType[" + type + "]";
     }
 }

@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ARP source hardware address match.
  */
 public class MatchArpSha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+
     private final MacAddress address;
 
     public MatchArpSha(MacAddress address) {
@@ -59,5 +60,10 @@ public class MatchArpSha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
         int result = super.hashCode();
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MatchArpSha[" + address + "]";
     }
 }

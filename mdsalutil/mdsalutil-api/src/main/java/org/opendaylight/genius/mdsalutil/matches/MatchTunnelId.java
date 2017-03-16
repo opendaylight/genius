@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Tunnel identifier match.
  */
 public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
+
     private final BigInteger tunnelId;
     private final BigInteger tunnelMask;
 
@@ -77,4 +78,10 @@ public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
         result = 31 * result + (tunnelMask != null ? tunnelMask.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchTunnelId[tunnelId=" + tunnelId + ", tunnelMask=" + tunnelMask + "]";
+    }
+
 }

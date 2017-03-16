@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IP protocol match.
  */
 public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
+
     public static final MatchIpProtocol TCP = new MatchIpProtocol(IPProtocols.TCP.shortValue());
     public static final MatchIpProtocol UDP = new MatchIpProtocol(IPProtocols.UDP.shortValue());
     public static final MatchIpProtocol ICMP = new MatchIpProtocol(IPProtocols.ICMP.shortValue());
@@ -64,4 +65,10 @@ public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
         result = 31 * result + protocol;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchIpProtocol[" + protocol + "]";
+    }
+
 }

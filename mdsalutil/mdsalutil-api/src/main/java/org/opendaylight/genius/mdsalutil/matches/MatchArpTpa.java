@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ARP target transport address match.
  */
 public class MatchArpTpa extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+
     private final Ipv4Prefix address;
 
     public MatchArpTpa(Ipv4Prefix address) {
@@ -68,4 +69,10 @@ public class MatchArpTpa extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "MatchArpTpa[" + address + "]";
+    }
+
 }
