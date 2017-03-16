@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_3d476a4d",
+        "filename": "fcapsmanager/counterframework/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-16T15:25:10Z",
+      "side": 1,
+      "message": "typically put this after \u003cversion\u003e",
+      "revId": "13eebac2cf1becea54f7c88942af825e8c415b96",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5d4a2e56",
+        "filename": "fcapsmanager/counterframework/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-16T15:25:10Z",
+      "side": 1,
+      "message": "typically but this as the first line right after \u003cproject\u003e",
+      "range": {
+        "startLine": 20,
+        "startChar": 20,
+        "endLine": 20,
+        "endChar": 38
+      },
+      "revId": "13eebac2cf1becea54f7c88942af825e8c415b96",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9d73f6b3",
+        "filename": "fcapsmanager/counterframework/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-16T15:25:10Z",
+      "side": 1,
+      "message": "I\u0027m just curious why this is needed here?",
+      "revId": "13eebac2cf1becea54f7c88942af825e8c415b96",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
