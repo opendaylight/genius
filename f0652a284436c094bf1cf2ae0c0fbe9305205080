@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0f450fb3",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-16T07:20:06Z",
+      "side": 1,
+      "message": "if multiple switches are attached to the same controller-host-name, how will this be able to capture all the information if key is just hte controller-host-name..\n\notherwise, connected-flow-capable-switches must be a leaf-list.\n\nOr does that just represent how many switches are connected to that PL?  If its only a count, it may not help :)",
+      "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6f113baf",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-16T07:20:06Z",
+      "side": 1,
+      "message": "an rd can have multiple routes, how again routes is a leaf?\n\nOr is this number of routers.  If its number of routes, lets name it as no_of_routes (or) route_count ?",
+      "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4f16f7a8",
+        "filename": "fcapsmanager/counterframework/src/main/yang/counter-service.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-16T07:20:06Z",
+      "side": 1,
+      "message": "is this to hold no_of_ports (i.e, port_count)",
+      "revId": "f0652a284436c094bf1cf2ae0c0fbe9305205080",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
