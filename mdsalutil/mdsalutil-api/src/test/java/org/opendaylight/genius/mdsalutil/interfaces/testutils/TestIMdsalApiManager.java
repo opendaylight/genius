@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -19,6 +20,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -89,6 +91,9 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         // TODO Support Iterable <-> List directly within XtendBeanGenerator
         List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
 
+        List<FlowEntity> sortedFlows = sortFlows(flows);
+        List<FlowEntity> sortedExpectedFlows = sortFlows(expectedFlowsAsNewArrayList);
+
         // FYI: This containsExactlyElementsIn() assumes that FlowEntity, and everything in it,
         // has correctly working equals() implementations.  assertEqualBeans() does not assume
         // that, and would work even without equals, because it only uses property reflection.
@@ -106,7 +111,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         // is not a good idea (different instances can have same hashCode), and e.g. on
         // System#identityHashCode even less so.
         try {
-            assertThat(flows).containsExactlyElementsIn(expectedFlowsAsNewArrayList);
+            assertThat(sortedFlows).containsExactlyElementsIn(sortedExpectedFlows);
         } catch (AssertionError e) {
             // We LOG the AssertionError just for clarity why containsExactlyElementsIn() failed
             LOG.warn("assert containsExactlyElementsIn() failed", e);
@@ -115,13 +120,24 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             // hard to read (the diff printed subsequently by assertEqualBeans
             // is, much, more readable), there are cases when looking more closely
             // at the full toString() output of the flows is still useful, so:
-            LOG.warn("assert failed [order ignored!]; expected flows: {}", expectedFlowsAsNewArrayList);
-            LOG.warn("assert failed [order ignored!]; actual flows  : {}", flows);
+            LOG.warn("assert failed [order ignored!]; expected flows: {}", sortedExpectedFlows);
+            LOG.warn("assert failed [order ignored!]; actual flows  : {}", sortedFlows);
             // The point of this is basically just that our assertEqualBeans output,
             // in case of a comparison failure, is *A LOT* more clearly readable
             // than what G Truth (or Hamcrest) can do based on toString.
-            assertEqualBeans(expectedFlowsAsNewArrayList, flows);
+            assertEqualBeans(sortedExpectedFlows, sortedFlows);
         }
+    }
+
+    private List<FlowEntity> sortFlows(Iterable<FlowEntity> flowsToSort) {
+        List<FlowEntity> sortedFlows = Lists.newArrayList(flowsToSort);
+        Collections.sort(sortedFlows,
+            (flow1, flow2) -> ComparisonChain.start()
+                .compare(flow1.getTableId(),  flow2.getTableId())
+                .compare(flow1.getPriority(), flow2.getPriority())
+                .compare(flow1.getFlowId(),   flow2.getFlowId())
+                .result());
+        return sortedFlows;
     }
 
     @Override
