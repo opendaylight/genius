@@ -34,6 +34,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.listeners.cache.ExternalTunnelCache;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -189,6 +190,7 @@ public class ItmManagerRpcServiceTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
+    @Mock ExternalTunnelCache elExternalTunnelCache;
 
     ItmManagerRpcService itmManagerRpcService ;
 
@@ -225,7 +227,8 @@ public class ItmManagerRpcServiceTest {
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        itmManagerRpcService = new ItmManagerRpcService(dataBroker,idManagerService, mdsalApiManager);
+        itmManagerRpcService =
+                new ItmManagerRpcService(dataBroker, idManagerService, mdsalApiManager, elExternalTunnelCache);
     }
 
     @After
