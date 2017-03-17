@@ -51,7 +51,7 @@ public class InstructionWriteMetadata extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    public boolean equals2(Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
@@ -68,14 +68,14 @@ public class InstructionWriteMetadata extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    public int hashCode2() {
+    public int hashCode() {
         int result = metadata != null ? metadata.hashCode() : 0;
         result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
     }
 
     @Override
-    protected String toString2() {
+    public String toString() {
         return "InstructionWriteMetadata[metadata=" + metadata + ", mask=" + mask + "]";
     }
 }
