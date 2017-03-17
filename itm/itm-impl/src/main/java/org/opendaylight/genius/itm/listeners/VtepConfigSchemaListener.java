@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -256,7 +257,7 @@ public class VtepConfigSchemaListener extends AbstractDataChangeListener<VtepCon
         boolean delnAddRequired = false;
         if (!StringUtils.equalsIgnoreCase(original.getPortName(), updated.getPortName())) {
             delnAddRequired = true;
-        } else if (original.getVlanId() != updated.getVlanId()) {
+        } else if (!Objects.equals(original.getVlanId(), updated.getVlanId())) {
             delnAddRequired = true;
         } else if (original.getSubnet() != null && !original.getSubnet().equals(updated.getSubnet())) {
             delnAddRequired = true;
