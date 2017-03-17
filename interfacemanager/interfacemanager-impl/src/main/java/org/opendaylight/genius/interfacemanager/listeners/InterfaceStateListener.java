@@ -8,6 +8,8 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -21,12 +23,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class InterfaceStateListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
+public class InterfaceStateListener
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
     public InterfaceStateListener(DataBroker dataBroker) {
         super(Interface.class, InterfaceStateListener.class);
@@ -50,7 +50,7 @@ public class InterfaceStateListener extends AsyncClusteredDataTreeChangeListener
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if(!Tunnel.class.equals(interfaceStateNew.getType())){
+        if (!Tunnel.class.equals(interfaceStateNew.getType())) {
             return;
         }
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
@@ -58,10 +58,12 @@ public class InterfaceStateListener extends AsyncClusteredDataTreeChangeListener
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             coordinator.enqueueJob(interfaceStateNew.getName(), () -> {
                 final List<ListenableFuture<Void>> futures = new ArrayList<>();
-                Interface.OperStatus bfdState = InterfaceManagerCommonUtils.getBfdStateFromCache(interfaceStateNew.getName());
-                if (bfdState != null && bfdState != interfaceStateNew.getOperStatus() &&
-                        interfaceStateNew.getOperStatus() != Interface.OperStatus.Unknown) {
-                    // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
+                Interface.OperStatus bfdState = InterfaceManagerCommonUtils
+                        .getBfdStateFromCache(interfaceStateNew.getName());
+                if (bfdState != null && bfdState != interfaceStateNew.getOperStatus()
+                        && interfaceStateNew.getOperStatus() != Interface.OperStatus.Unknown) {
+                    // update opstate of interface if TEP has gone down/up as a
+                    // result of BFD monitoring
                     LOG.debug("updating tunnel state for interface {}", interfaceStateNew.getName());
                     WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                     InterfaceManagerCommonUtils.updateOpState(transaction, interfaceStateNew.getName(), bfdState);
