@@ -14,8 +14,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.mockito.Mockito;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 
 /**
  * Fake IMdsalApiManager useful for tests.
@@ -53,6 +57,14 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     public void installFlow(FlowEntity flowEntity) {
         getFlows().add(flowEntity);
     }
+
+    @Override
+    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
+            FlowEntity flowEntity) {
+        installFlow(flowEntity);
+        return Futures.immediateCheckedFuture(null);
+    }
+
     @Override
     public void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity){
         getFlows().add(flowEntity);
