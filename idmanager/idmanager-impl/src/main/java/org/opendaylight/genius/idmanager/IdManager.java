@@ -196,11 +196,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         } catch (OperationFailedException | IdManagerException e) {
             futureResult = buildFailedRpcResultFuture("createIdPool failed: " + input.toString(), e);
         } finally {
-            try {
-                idUtils.unlockPool(lockManager, poolName);
-            } catch (IdManagerException e) {
-                futureResult = buildFailedRpcResultFuture("createIdPool unlockPool() failed: " + input.toString(), e);
-            }
+            idUtils.unlockPool(lockManager, poolName);
         }
         return futureResult;
     }
@@ -216,7 +212,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         long newIdValue = -1;
         AllocateIdOutputBuilder output = new AllocateIdOutputBuilder();
         Future<RpcResult<AllocateIdOutput>> futureResult;
+        String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
+            idUtils.lockPool(lockManager, uniqueKey);
             //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
             newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
             output.setIdValue(newIdValue);
@@ -226,6 +224,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey)))
                     .ifPresent(futureId -> futureId.completeExceptionally(e));
             futureResult = buildFailedRpcResultFuture("allocateId failed: " + input.toString(), e);
+            idUtils.unlockPool(lockManager, uniqueKey);
         }
         return futureResult;
     }
@@ -242,7 +241,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<Long> newIdValuesList = new ArrayList<>();
         AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
         Future<RpcResult<AllocateIdRangeOutput>> futureResult;
+        String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
+            idUtils.lockPool(lockManager, uniqueKey);
             newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
             Collections.sort(newIdValuesList);
             output.setIdValues(newIdValuesList);
@@ -252,6 +253,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey)))
                     .ifPresent(futureId -> futureId.completeExceptionally(e));
             futureResult = buildFailedRpcResultFuture("allocateIdRange failed: " + input.toString(), e);
+            idUtils.unlockPool(lockManager, uniqueKey);
         }
         return futureResult;
     }
@@ -289,11 +291,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
         Future<RpcResult<Void>> futureResult;
+        String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
+            idUtils.lockPool(lockManager, uniqueKey);
             releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
             futureResult = RpcResultBuilder.<Void>success().buildFuture();
         } catch (ReadFailedException | IdManagerException e) {
             futureResult = buildFailedRpcResultFuture("releaseId failed: " + input.toString(), e);
+            idUtils.unlockPool(lockManager, uniqueKey);
         }
         return futureResult;
     }
@@ -346,6 +351,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             if (existingFutureIdValue == null) {
                 idUtils.allocatedIdMap.remove(uniqueIdKey);
             }
+            idUtils.unlockPool(lockManager, uniqueIdKey);
             return newIdValuesList;
         }
         //This get will not help in concurrent reads. Hence the same read needs to be done again.
@@ -404,7 +410,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         }
         idUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
-                idUtils);
+                idUtils, lockManager);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
         futureIdValues.complete(newIdValuesList);
         return newIdValuesList;
@@ -643,6 +649,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
             }
+            idUtils.unlockPool(lockManager, idLatchKey);
             return;
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
@@ -661,7 +668,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
         }
         // Updating id entries in the parent pool. This will be used for restart scenario
-        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker, idUtils);
+        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker, idUtils,
+                        lockManager);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
     }
 
