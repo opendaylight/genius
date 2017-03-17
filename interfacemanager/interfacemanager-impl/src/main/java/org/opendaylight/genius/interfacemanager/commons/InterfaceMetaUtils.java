@@ -136,15 +136,15 @@ public class InterfaceMetaUtils {
         return bridgeEntry;
     }
 
-    private static BridgeEntry readBridgeEntryFromConfigDS(
-            InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier,                                                         DataBroker dataBroker) {
-        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, dataBroker).orNull();
-    }
-
     public static BridgeEntry getBridgeEntryFromConfigDS(InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier,
             DataBroker dataBroker) {
         BigInteger dpnId = bridgeEntryInstanceIdentifier.firstKeyOf(BridgeEntry.class).getDpid();
         return getBridgeEntryFromConfigDS(dpnId, dataBroker);
+    }
+
+    private static BridgeEntry readBridgeEntryFromConfigDS(
+            InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier, DataBroker dataBroker) {
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, dataBroker).orNull();
     }
 
     public static InstanceIdentifier<BridgeInterfaceEntry> getBridgeInterfaceEntryIdentifier(

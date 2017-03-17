@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -10,8 +10,8 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collection;
 import javax.annotation.PreDestroy;
-import javax.inject.Singleton;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -27,31 +27,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class listens for bridgeEntry creation/removal/update in Configuration DS
- * and update the bridgeEntryCache as per changes in DS.
+ * This class listens for bridgeEntry creation/removal/update in Configuration
+ * DS and update the bridgeEntryCache as per changes in DS.
  *
  */
 @Singleton
-public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry>{
+public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheBridgeEntryConfigListener.class);
-    private ListenerRegistration<CacheBridgeEntryConfigListener> registration;
-    private final DataTreeIdentifier<BridgeEntry> treeId =
-            new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
+    private final ListenerRegistration<CacheBridgeEntryConfigListener> registration;
+    private final DataTreeIdentifier<BridgeEntry> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION,
+            getWildcardPath());
 
     @Inject
     public CacheBridgeEntryConfigListener(final DataBroker dataBroker) {
-        try {
-            LOG.trace("Registering on path: {}", treeId);
-            registration = dataBroker.registerDataTreeChangeListener(treeId, CacheBridgeEntryConfigListener.this);
-        } catch (final Exception e) {
-            LOG.warn("CacheBridgeEntryConfigListener registration failed", e);
-        }
+        LOG.trace("Registering on path: {}", treeId);
+        registration = dataBroker.registerDataTreeChangeListener(treeId, CacheBridgeEntryConfigListener.this);
     }
 
     @PreDestroy
-    public void close() throws Exception {
-        if(registration != null) {
+    public void close() {
+        if (registration != null) {
             registration.close();
         }
     }
@@ -63,19 +59,18 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
     @Override
     public void onDataTreeChanged(Collection<DataTreeModification<BridgeEntry>> changes) {
         for (DataTreeModification<BridgeEntry> change : changes) {
-        final DataObjectModification<BridgeEntry> mod = change.getRootNode();
+            final DataObjectModification<BridgeEntry> mod = change.getRootNode();
             switch (mod.getModificationType()) {
-            case DELETE:
-                InterfaceMetaUtils.removeFromBridgeEntryCache(mod.getDataBefore());
-                break;
-            case SUBTREE_MODIFIED:
-            case WRITE:
-                InterfaceMetaUtils.addBridgeEntryToCache(mod.getDataAfter());
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
+                case DELETE:
+                    InterfaceMetaUtils.removeFromBridgeEntryCache(mod.getDataBefore());
+                    break;
+                case SUBTREE_MODIFIED:
+                case WRITE:
+                    InterfaceMetaUtils.addBridgeEntryToCache(mod.getDataAfter());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
             }
         }
     }
-
 }

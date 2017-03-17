@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -52,24 +52,31 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlivenessMonitorUtils {
+public final class AlivenessMonitorUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorUtils.class);
     private static final long FAILURE_THRESHOLD = 4;
     private static final long MONITORING_INTERVAL = 10000;
     private static final long MONITORING_WINDOW = 4;
 
+    private AlivenessMonitorUtils() {
+    }
+
     public static void startLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                           IfTunnel ifTunnel, String trunkInterfaceName) {
+            IfTunnel ifTunnel, String trunkInterfaceName) {
         // LLDP monitoring for the tunnel interface
         if (lldpMonitoringEnabled(ifTunnel)) {
-            MonitorStartInput lldpMonitorInput = new MonitorStartInputBuilder().setConfig(new ConfigBuilder()
-                    .setSource(new SourceBuilder().setEndpointType(getInterfaceForMonitoring(trunkInterfaceName,
-                            ifTunnel.getTunnelSource())).build())
-                    .setMode(MonitoringMode.OneOne)
-                    .setProfileId(allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD,
-                            ifTunnel.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp))
-                    .build()).build();
+            MonitorStartInput lldpMonitorInput = new MonitorStartInputBuilder()
+                    .setConfig(new ConfigBuilder()
+                            .setSource(new SourceBuilder()
+                                    .setEndpointType(
+                                            getInterfaceForMonitoring(trunkInterfaceName, ifTunnel.getTunnelSource()))
+                                    .build())
+                            .setMode(MonitoringMode.OneOne)
+                            .setProfileId(allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD,
+                                    ifTunnel.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp))
+                            .build())
+                    .build();
             try {
                 Future<RpcResult<MonitorStartOutput>> result = alivenessMonitorService.monitorStart(lldpMonitorInput);
                 RpcResult<MonitorStartOutput> rpcResult = result.get();
@@ -89,7 +96,7 @@ public class AlivenessMonitorUtils {
     }
 
     public static void stopLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-                                          IfTunnel ifTunnel, String trunkInterface) {
+            IfTunnel ifTunnel, String trunkInterface) {
         if (!lldpMonitoringEnabled(ifTunnel)) {
             return;
         }
@@ -114,8 +121,8 @@ public class AlivenessMonitorUtils {
     public static String getInterfaceFromMonitorId(DataBroker broker, Long monitorId) {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).transform(
-                MonitorIdInterface::getInterfaceName).orNull();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker)
+                .transform(MonitorIdInterface::getInterfaceName).orNull();
     }
 
     private static void removeMonitorIdInterfaceMap(DataBroker broker, long monitorId) {
@@ -144,11 +151,14 @@ public class AlivenessMonitorUtils {
         }
     }
 
-    private static org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411
-        .endpoint.endpoint.type.Interface getInterfaceForMonitoring(String interfaceName,
+    private static org.opendaylight.yang.gen.v1
+        .urn.opendaylight.genius.alivenessmonitor
+        .rev160411.endpoint.endpoint.type.Interface getInterfaceForMonitoring(
+            String interfaceName,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress ipAddress) {
-        return new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint
-                .endpoint.type.InterfaceBuilder().setInterfaceIp(ipAddress).setInterfaceName(interfaceName).build();
+        return new org.opendaylight.yang.gen.v1.urn.opendaylight
+                .genius.alivenessmonitor.rev160411.endpoint.endpoint.type.InterfaceBuilder()
+                .setInterfaceIp(ipAddress).setInterfaceName(interfaceName).build();
     }
 
     public static void handleTunnelMonitorUpdates(AlivenessMonitorService alivenessMonitorService,
@@ -176,7 +186,6 @@ public class AlivenessMonitorUtils {
             }
         }
     }
-
 
     public static void createOrUpdateInterfaceMonitorIdMap(DataBroker broker, String infName, long monitorId) {
         InterfaceMonitorId interfaceMonitorIdInstance;
@@ -206,7 +215,7 @@ public class AlivenessMonitorUtils {
         }
     }
 
-    public static void createOrUpdateMonitorIdInterfaceMap(DataBroker broker,String infName,  long monitorId) {
+    public static void createOrUpdateMonitorIdInterfaceMap(DataBroker broker, String infName, long monitorId) {
         MonitorIdInterface monitorIdInterfaceInstance;
         String existinginterfaceName;
         MonitorIdInterfaceBuilder monitorIdInterfaceBuilder = new MonitorIdInterfaceBuilder();
@@ -231,8 +240,8 @@ public class AlivenessMonitorUtils {
     public static List<Long> getMonitorIdForInterface(DataBroker broker, String infName) {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).transform(
-                InterfaceMonitorId::getMonitorId).orNull();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).transform(InterfaceMonitorId::getMonitorId)
+                .orNull();
     }
 
     public static long createMonitorProfile(AlivenessMonitorService alivenessMonitor,
@@ -246,33 +255,30 @@ public class AlivenessMonitorUtils {
             } else {
                 LOG.warn("RPC Call to Get Profile Id Id returned with Errors {}.. Trying to fetch existing profile ID",
                         rpcResult.getErrors());
-                try {
-                    Profile createProfile = monitorProfileCreateInput.getProfile();
-                    Future<RpcResult<MonitorProfileGetOutput>> existingProfile = alivenessMonitor.monitorProfileGet(
-                            buildMonitorGetProfile(createProfile.getMonitorInterval(), createProfile.getMonitorWindow(),
-                                    createProfile.getFailureThreshold(), createProfile.getProtocolType()));
-                    RpcResult<MonitorProfileGetOutput> rpcGetResult = existingProfile.get();
-                    if (rpcGetResult.isSuccessful()) {
-                        return rpcGetResult.getResult().getProfileId();
-                    } else {
-                        LOG.warn("RPC Call to Get Existing Profile Id returned with Errors {}",
-                                rpcGetResult.getErrors());
-                    }
-                } catch (Exception e) {
-                    LOG.warn("Exception when getting existing profile",e);
+                Profile createProfile = monitorProfileCreateInput.getProfile();
+                Future<RpcResult<MonitorProfileGetOutput>> existingProfile = alivenessMonitor.monitorProfileGet(
+                        buildMonitorGetProfile(createProfile.getMonitorInterval(), createProfile.getMonitorWindow(),
+                                createProfile.getFailureThreshold(), createProfile.getProtocolType()));
+                RpcResult<MonitorProfileGetOutput> rpcGetResult = existingProfile.get();
+                if (rpcGetResult.isSuccessful()) {
+                    return rpcGetResult.getResult().getProfileId();
+                } else {
+                    LOG.warn("RPC Call to Get Existing Profile Id returned with Errors {}", rpcGetResult.getErrors());
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Exception when allocating profile Id",e);
+            LOG.warn("Exception when allocating profile Id", e);
         }
         return 0;
     }
 
     private static MonitorProfileGetInput buildMonitorGetProfile(long monitorInterval, long monitorWindow,
             long failureThreshold, EtherTypes protocolType) {
-        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile
-            .get.input.ProfileBuilder profileBuilder = new org.opendaylight.yang.gen.v1.urn.opendaylight.genius
-            .alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
+        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor
+            .rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder =
+            new org.opendaylight.yang.gen.v1.urn.opendaylight
+            .genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
+
         profileBuilder.setFailureThreshold(failureThreshold);
         profileBuilder.setMonitorInterval(monitorInterval);
         profileBuilder.setMonitorWindow(monitorWindow);
@@ -299,8 +305,8 @@ public class AlivenessMonitorUtils {
     public static Profile getDefaultMonitorProfile(EtherTypes etherType) {
         ProfileBuilder profileBuilder = new ProfileBuilder();
         profileBuilder.setProtocolType(etherType);
-        profileBuilder.setFailureThreshold(FAILURE_THRESHOLD)
-                .setMonitorInterval(MONITORING_INTERVAL).setMonitorWindow(MONITORING_WINDOW).setProtocolType(etherType);
+        profileBuilder.setFailureThreshold(FAILURE_THRESHOLD).setMonitorInterval(MONITORING_INTERVAL)
+                .setMonitorWindow(MONITORING_WINDOW).setProtocolType(etherType);
         return profileBuilder.build();
     }
 }

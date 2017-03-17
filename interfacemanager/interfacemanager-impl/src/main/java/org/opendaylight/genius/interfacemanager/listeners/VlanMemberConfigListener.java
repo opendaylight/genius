@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -41,8 +41,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
     @Inject
     public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-                                    final IMdsalApiManager iMdsalApiManager,
-                                    final AlivenessMonitorService alivenessMonitorService) {
+            final IMdsalApiManager iMdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
         super(Interface.class, VlanMemberConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -91,13 +90,13 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
             return;
         }
         IfL2vlan ifL2vlanOld = interfaceOld.getAugmentation(IfL2vlan.class);
-        if (IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanNew.getL2vlanMode() &&
-                        IfL2vlan.L2vlanMode.Trunk == ifL2vlanOld.getL2vlanMode()) {
+        if (IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanNew.getL2vlanMode()
+                && IfL2vlan.L2vlanMode.Trunk == ifL2vlanOld.getL2vlanMode()) {
             // Trunk subport add use case
             addVlanMember(key, interfaceNew);
             return;
-        } else if (IfL2vlan.L2vlanMode.Trunk == ifL2vlanNew.getL2vlanMode() &&
-                        IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanOld.getL2vlanMode()) {
+        } else if (IfL2vlan.L2vlanMode.Trunk == ifL2vlanNew.getL2vlanMode()
+                && IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanOld.getL2vlanMode()) {
             // Trunk subport remove use case
             removeVlanMember(key, interfaceOld);
         } else if (IfL2vlan.L2vlanMode.TrunkMember != ifL2vlanNew.getL2vlanMode()) {
@@ -106,15 +105,16 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         ParentRefs parentRefsNew = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefsNew == null) {
-            LOG.error("Configuration Error. Attempt to update Vlan Trunk-Member {} without a " +
-                    "parent interface", interfaceNew);
+            LOG.error("Configuration Error. Attempt to update Vlan Trunk-Member {} without a " + "parent interface",
+                    interfaceNew);
             return;
         }
 
         String lowerLayerIf = parentRefsNew.getParentInterface();
         if (lowerLayerIf.equals(interfaceNew.getName())) {
-            LOG.error("Configuration Error. Attempt to update Vlan Trunk-Member {} with same parent " +
-                    "interface name.", interfaceNew);
+            LOG.error(
+                    "Configuration Error. Attempt to update Vlan Trunk-Member {} with same parent " + "interface name.",
+                    interfaceNew);
             return;
         }
 
@@ -162,8 +162,8 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         IfL2vlan ifL2vlan;
         ParentRefs parentRefs;
 
-        public RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew,
-                                       ParentRefs parentRefs, IfL2vlan ifL2vlan) {
+        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, ParentRefs parentRefs,
+                IfL2vlan ifL2vlan) {
             this.key = key;
             this.interfaceNew = interfaceNew;
             this.ifL2vlan = ifL2vlan;
@@ -172,10 +172,11 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew,
-                    ifL2vlan, idManager);
+            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, ifL2vlan,
+                    idManager);
         }
     }
 
@@ -186,8 +187,8 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         IfL2vlan ifL2vlanNew;
         ParentRefs parentRefsNew;
 
-        public RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceNew,
-                                          Interface interfaceOld, ParentRefs parentRefsNew, IfL2vlan ifL2vlanNew) {
+        RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, Interface interfaceOld,
+                ParentRefs parentRefsNew, IfL2vlan ifL2vlanNew) {
             this.key = key;
             this.interfaceNew = interfaceNew;
             this.interfaceOld = interfaceOld;
@@ -197,7 +198,8 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
             return OvsVlanMemberConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService,
                     parentRefsNew, interfaceOld, ifL2vlanNew, interfaceNew, idManager, mdsalApiManager);
@@ -210,8 +212,8 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
         IfL2vlan ifL2vlan;
         ParentRefs parentRefs;
 
-        public RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld,
-                                          ParentRefs parentRefs, IfL2vlan ifL2vlan) {
+        RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld, ParentRefs parentRefs,
+                IfL2vlan ifL2vlan) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.ifL2vlan = ifL2vlan;
@@ -220,10 +222,11 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld,
-                    ifL2vlan, idManager);
+            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld, ifL2vlan,
+                    idManager);
         }
     }
 }
