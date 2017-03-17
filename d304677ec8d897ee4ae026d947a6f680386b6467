@@ -16,6 +16,24 @@
       "revId": "d304677ec8d897ee4ae026d947a6f680386b6467",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6ccbfe1e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 2039
+      },
+      "writtenOn": "2017-03-17T11:20:45Z",
+      "side": 1,
+      "message": "I\u0027ll change the egress service index in the next patch set.\nThe ingress service index priorities are discussed in the New Netvirt SFC classifier blueprint, referenced in this gerrit comment.",
+      "parentUuid": "fafc7978_cc0b0a7c",
+      "revId": "d304677ec8d897ee4ae026d947a6f680386b6467",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
