@@ -27,6 +27,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.listeners.cache.ExternalTunnelCache;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -103,14 +104,17 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final IMdsalApiManager mdsalManager;
     private final IdManagerService idManagerService;
     private final ItmConfig itmConfig;
+    private final ExternalTunnelCache externalTunnelCache;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker,final IdManagerService idManagerService,
-                                final IMdsalApiManager mdsalManager, final ItmConfig itmConfig) {
+                                final IMdsalApiManager mdsalManager, final ItmConfig itmConfig ,
+                                final ExternalTunnelCache externalTunnelCache) {
         this.dataBroker = dataBroker;
         this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
+        this.externalTunnelCache = externalTunnelCache;
     }
 
     @PostConstruct
@@ -270,18 +274,22 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetExternalTunnelInterfaceNameOutput> resultBld;
         String sourceNode = input.getSourceNode();
         String dstNode = input.getDestinationNode();
+        ExternalTunnelKey externalTunnelKey = new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType());
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
                 ExternalTunnelList.class)
-                .child(ExternalTunnel.class, new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType()));
-
-        Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-
-        if (ext != null && ext.isPresent()) {
-            ExternalTunnel exTunnel = ext.get();
-            GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder() ;
-            output.setInterfaceName(exTunnel.getTunnelInterfaceName()) ;
+                .child(ExternalTunnel.class, externalTunnelKey);
+        ExternalTunnel exTunnel = externalTunnelCache.get(externalTunnelKey);
+        if (exTunnel == null) {
+            Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+            if (ext != null && ext.isPresent()) {
+                exTunnel = ext.get();
+            }
+        }
+        if (exTunnel != null) {
+            GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder();
+            output.setInterfaceName(exTunnel.getTunnelInterfaceName());
             resultBld = RpcResultBuilder.success();
-            resultBld.withResult(output.build()) ;
+            resultBld.withResult(output.build());
         } else {
             resultBld = RpcResultBuilder.failed();
         }

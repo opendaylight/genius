@@ -25,6 +25,7 @@ import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
+import org.opendaylight.genius.itm.listeners.cache.ExternalTunnelCache;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
 import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
 import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
@@ -69,6 +70,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(VtepConfigSchemaListener.class);
         bind(TunnelMonitorChangeListener.class);
         bind(ItmTunnelEventListener.class);
+        bind(ExternalTunnelCache.class);
 
         // Bindings for external services to "real" implementations
         bind(EntityOwnershipService.class).toInstance(mock(EntityOwnershipService.class));
