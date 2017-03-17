@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -33,24 +33,19 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class CacheInterfaceStateListener implements ClusteredDataTreeChangeListener<Interface> {
     private static final Logger LOG = LoggerFactory.getLogger(CacheInterfaceStateListener.class);
-    private ListenerRegistration<CacheInterfaceStateListener> registration;
-    private final DataTreeIdentifier<Interface> treeId =
-            new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL, getWildcardPath());
+    private final ListenerRegistration<CacheInterfaceStateListener> registration;
+    private final DataTreeIdentifier<Interface> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
+            getWildcardPath());
 
     @Inject
     public CacheInterfaceStateListener(final DataBroker dataBroker) {
-        try {
-            LOG.trace("Registering on path: {}", treeId);
-            registration = dataBroker.registerDataTreeChangeListener(treeId, CacheInterfaceStateListener.this);
-        } catch (final Exception e) {
-            LOG.warn("CacheInterfaceConfigListener registration failed", e);
-        }
-
+        LOG.trace("Registering on path: {}", treeId);
+        registration = dataBroker.registerDataTreeChangeListener(treeId, CacheInterfaceStateListener.this);
     }
 
     @PreDestroy
-    public void close() throws Exception {
-        if(registration != null) {
+    public void close() {
+        if (registration != null) {
             registration.close();
         }
     }
@@ -62,20 +57,18 @@ public class CacheInterfaceStateListener implements ClusteredDataTreeChangeListe
     @Override
     public void onDataTreeChanged(Collection<DataTreeModification<Interface>> changes) {
         for (DataTreeModification<Interface> change : changes) {
-        final InstanceIdentifier<Interface> key = change.getRootPath().getRootIdentifier();
-        final DataObjectModification<Interface> mod = change.getRootNode();
+            final DataObjectModification<Interface> mod = change.getRootNode();
             switch (mod.getModificationType()) {
-            case DELETE:
-                InterfaceManagerCommonUtils.removeFromInterfaceStateCache(mod.getDataBefore());
-                break;
-            case SUBTREE_MODIFIED:
-            case WRITE:
-                InterfaceManagerCommonUtils.addInterfaceStateToCache(mod.getDataAfter());
-                break;
-            default:
-                throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
+                case DELETE:
+                    InterfaceManagerCommonUtils.removeFromInterfaceStateCache(mod.getDataBefore());
+                    break;
+                case SUBTREE_MODIFIED:
+                case WRITE:
+                    InterfaceManagerCommonUtils.addInterfaceStateToCache(mod.getDataAfter());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
             }
         }
     }
-
 }

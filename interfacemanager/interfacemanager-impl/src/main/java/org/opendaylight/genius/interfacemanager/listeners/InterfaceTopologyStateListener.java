@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -30,7 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
+public class InterfaceTopologyStateListener
+        extends AsyncDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
     private final DataBroker dataBroker;
 
@@ -43,8 +44,8 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
 
     @Override
     protected InstanceIdentifier<OvsdbBridgeAugmentation> getWildCardPath() {
-        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class)
-                .child(Node.class).augmentation(OvsdbBridgeAugmentation.class).build();
+        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
+                .augmentation(OvsdbBridgeAugmentation.class).build();
     }
 
     @Override
@@ -54,57 +55,62 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
 
     @Override
     protected void remove(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeOld) {
-        LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
-                identifier, bridgeOld);
+        LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}", identifier,
+                bridgeOld);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
-        jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker,
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void update(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeOld,
-                          OvsdbBridgeAugmentation bridgeNew) {
-        LOG.debug("Received Update DataChange Notification for identifier: {}, ovsdbBridgeAugmentation old: {}, new: {}.",
+            OvsdbBridgeAugmentation bridgeNew) {
+        LOG.debug(
+                "Received Update DataChange Notification for identifier: {}, ovsdbBridgeAugmentation old: {}, new: {}.",
                 identifier, bridgeOld, bridgeNew);
         DatapathId oldDpid = bridgeOld.getDatapathId();
         DatapathId newDpid = bridgeNew.getDatapathId();
-        if(oldDpid == null && newDpid != null){
+        if (oldDpid == null && newDpid != null) {
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
-        } else if(oldDpid != null && !oldDpid.equals(newDpid)){
+            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                    IfmConstants.JOB_MAX_RETRIES);
+        } else if (oldDpid != null && !oldDpid.equals(newDpid)) {
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew,
+                    bridgeOld);
+            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                    IfmConstants.JOB_MAX_RETRIES);
         }
     }
 
     @Override
     protected void add(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeNew) {
-        LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
-                identifier, bridgeNew);
+        LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}", identifier,
+                bridgeNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+        jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
 
-
-        public RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                      OvsdbBridgeAugmentation bridgeNew) {
+        RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                OvsdbBridgeAugmentation bridgeNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier,
-                    bridgeNew, dataBroker);
+            return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier, bridgeNew, dataBroker);
         }
     }
 
@@ -112,29 +118,29 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
 
-
-        public RendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                         OvsdbBridgeAugmentation bridgeNew) {
+        RendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                OvsdbBridgeAugmentation bridgeNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceTopologyStateRemoveHelper.removePortFromBridge(instanceIdentifier,
-                    bridgeNew, dataBroker);
+            return OvsInterfaceTopologyStateRemoveHelper.removePortFromBridge(instanceIdentifier, bridgeNew,
+                    dataBroker);
         }
     }
+
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
         OvsdbBridgeAugmentation bridgeOld;
 
-
-        public RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                         OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
+        RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
             this.bridgeOld = bridgeOld;
@@ -142,10 +148,11 @@ public class InterfaceTopologyStateListener extends AsyncDataTreeChangeListenerB
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier,
-                    bridgeNew, bridgeOld, dataBroker);
+            return OvsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld,
+                    dataBroker);
         }
     }
 }

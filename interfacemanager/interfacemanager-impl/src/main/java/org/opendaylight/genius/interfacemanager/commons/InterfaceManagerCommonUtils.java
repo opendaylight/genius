@@ -72,11 +72,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfaceManagerCommonUtils {
+public final class InterfaceManagerCommonUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerCommonUtils.class);
     private static ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateMap = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
+    private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf
+        .params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceStateMap =
+        new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
             new ConcurrentHashMap<>();
 
     private static final String NOVA_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}";
@@ -87,6 +90,8 @@ public class InterfaceManagerCommonUtils {
     private static final Pattern TUNNEL_PORT_PATTERN = Pattern.compile(TUNNEL_PORT_REGEX);
     private static final Pattern NOVA_PORT_PATTERN = Pattern.compile(NOVA_PORT_REGEX);
 
+    private InterfaceManagerCommonUtils() {
+    }
 
     public static NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId,
             DataBroker dataBroker) {
@@ -185,8 +190,8 @@ public class InterfaceManagerCommonUtils {
             return ifState;
         }
         Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface>  ifStateOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, IfmUtil
-            .buildStateInterfaceId( interfaceName), dataBroker);
+                .Interface> ifStateOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                        IfmUtil.buildStateInterfaceId(interfaceName), dataBroker);
         if (ifStateOptional.isPresent()) {
             ifState = ifStateOptional.get();
             interfaceStateMap.put(ifState.getName(), ifState);
@@ -195,8 +200,10 @@ public class InterfaceManagerCommonUtils {
     }
 
     @Deprecated
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId,
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId,
             DataBroker dataBroker) {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orNull();
     }
@@ -243,13 +250,17 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void setOpStateForInterface(DataBroker broker, String interfaceName,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opStatus) {
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceId = IfmUtil
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opStatus) {
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder()
-                .setKey(new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
+                .setKey(new org.opendaylight.yang.gen.v1.urn
+                            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
                         interfaceName));
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface interfaceData = ifaceBuilder
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface interfaceData = ifaceBuilder
                 .setOperStatus(opStatus).build();
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
@@ -262,7 +273,7 @@ public class InterfaceManagerCommonUtils {
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface);
-        if(!txOptional.isPresent()) {
+        if (!txOptional.isPresent()) {
             BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
         } else {
             txOptional.get().put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
@@ -277,12 +288,16 @@ public class InterfaceManagerCommonUtils {
         BatchingUtils.delete(intfId, BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus updateStateEntry(
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus updateStateEntry(
             Interface interfaceNew, DataBroker dataBroker, WriteTransaction transaction,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus;
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus;
         if (!interfaceNew.isEnabled()) {
-            operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
+            operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                    .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
         } else {
             String ncStr = ifState.getLowerLayerIf().get(0);
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ncStr);
@@ -292,12 +307,15 @@ public class InterfaceManagerCommonUtils {
                     .getAugmentation(FlowCapableNodeConnector.class);
             // State state = flowCapableNodeConnector.getState();
             operStatus = flowCapableNodeConnector == null
-                    ? org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down
-                    : org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up;
+                    ? org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down
+                    : org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                    .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up;
         }
 
         String ifName = interfaceNew.getName();
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceNew.getName());
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         ifaceBuilder.setOperStatus(operStatus);
@@ -307,10 +325,12 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void updateOperStatus(String interfaceName,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
             WriteTransaction transaction) {
         LOG.debug("updating operational status for interface {}", interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder();
         ifaceBuilderChild.setOperStatus(operStatus);
@@ -320,15 +340,18 @@ public class InterfaceManagerCommonUtils {
 
     public static void addStateEntry(String interfaceName, DataBroker dataBroker,
                                      IdManagerService idManager, List<ListenableFuture<Void>> futures,
-                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                                     .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         WriteTransaction interfaceOperShardTransaction = dataBroker.newWriteOnlyTransaction();
         addStateEntry(interfaceName, dataBroker, interfaceOperShardTransaction, idManager, futures, ifState);
         futures.add(interfaceOperShardTransaction.submit());
     }
 
-    public static void addStateEntry(String interfaceName, DataBroker dataBroker, WriteTransaction interfaceOperShardTransaction,
-                                     IdManagerService idManager, List<ListenableFuture<Void>> futures,
-                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+    public static void addStateEntry(String interfaceName, DataBroker dataBroker,
+            WriteTransaction interfaceOperShardTransaction,
+            IdManagerService idManager, List<ListenableFuture<Void>> futures,
+                                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                                     .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         // allocate lport tag and create interface-if-index map.
         // This is done even if interface-state is not present, so that there is
         // no throttling
@@ -341,22 +364,24 @@ public class InterfaceManagerCommonUtils {
             return;
         }
         LOG.debug("adding interface state for {}", interfaceName);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = ifState
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = ifState
                 .getOperStatus();
         PhysAddress physAddress = ifState.getPhysAddress();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus = ifState
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus = ifState
                 .getAdminStatus();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ifState.getLowerLayerIf().get(0));
         InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface interfaceInfo = InterfaceManagerCommonUtils
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
         if (interfaceInfo != null && !interfaceInfo.isEnabled()) {
-            operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
+            operStatus = org.opendaylight.yang.gen.v1.urn
+                    .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
         }
 
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                .buildStateInterfaceId(interfaceName);
         List<String> childLowerLayerIfList = new ArrayList<>();
         childLowerLayerIfList.add(0, nodeConnectorId.getValue());
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setAdminStatus(adminStatus).setOperStatus(operStatus)
@@ -367,28 +392,28 @@ public class InterfaceManagerCommonUtils {
             ifaceBuilder.setType(interfaceInfo.getType());
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+            .buildStateInterfaceId(interfaceName);
         interfaceOperShardTransaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
 
         // install ingress flow
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         if (interfaceInfo != null && interfaceInfo.isEnabled() && ifState
-                .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
+                .getOperStatus() == org.opendaylight.yang.gen.v1.urn
+                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
             FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, dataBroker, ifIndex);
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures,
+                        interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
         }
 
         // Update the DpnToInterfaceList OpDS
         createOrUpdateDpnToInterface(dpId, interfaceName,interfaceOperShardTransaction);
     }
 
-    public static boolean checkIfBfdStateIsDown(String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = InterfaceManagerCommonUtils
-                .getBfdStateFromCache(interfaceName);
-        return operStatus == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
-    }
-
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
             Interface interfaceInfo, String interfaceName, WriteTransaction transaction, IdManagerService idManager,
             PhysAddress physAddress, OperStatus operStatus, AdminStatus adminStatus, NodeConnectorId nodeConnectorId) {
         LOG.debug("adding interface state for {}", interfaceName);
@@ -404,18 +429,20 @@ public class InterfaceManagerCommonUtils {
             ifaceBuilder.setIfIndex(ifIndex);
             InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
         }
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         List<String> childLowerLayerIfList = new ArrayList<>();
         childLowerLayerIfList.add(0, nodeConnectorId.getValue());
         ifaceBuilder.setAdminStatus(adminStatus).setOperStatus(operStatus).setPhysAddress(physAddress)
                 .setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
                 .build();
-        if(InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)){
+        if (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)) {
             BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        }else {
+        } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
 
@@ -423,11 +450,22 @@ public class InterfaceManagerCommonUtils {
         // Update the DpnToInterfaceList OpDS
         createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
         return ifState;
+}
+
+
+    public static boolean checkIfBfdStateIsDown(String interfaceName) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = InterfaceManagerCommonUtils
+                .getBfdStateFromCache(interfaceName);
+        return operStatus == org.opendaylight.yang.gen.v1.urn
+                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
     }
+
 
     public static void deleteStateEntry(String interfaceName, WriteTransaction transaction) {
         LOG.debug("removing interface state entry for {}", interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
     }
@@ -435,7 +473,8 @@ public class InterfaceManagerCommonUtils {
     public static void deleteInterfaceStateInformation(String interfaceName, WriteTransaction transaction,
             IdManagerService idManagerService) {
         LOG.debug("removing interface state information for {}", interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
         InterfaceMetaUtils.removeLportTagInterfaceMap(idManagerService, transaction, interfaceName);
@@ -465,8 +504,9 @@ public class InterfaceManagerCommonUtils {
                     String curChildInterface = interfaceChildEntry.getChildInterface();
                     Interface iface = getInterfaceFromConfigDS(curChildInterface, dataBroker);
                     if (isTrunkInterface(iface)) {
-                        LOG.error("Trying to bind child interface {} of type Trunk to parent interface {}," +
-                                        "but it is already bound to a trunk interface {}",
+                        LOG.error(
+                                "Trying to bind child interface {} of type Trunk to parent interface {},"
+                                        + "but it is already bound to a trunk interface {}",
                                 childInterface, parentInterface, curChildInterface);
                         return false;
                     }
@@ -476,7 +516,7 @@ public class InterfaceManagerCommonUtils {
 
         LOG.info("Creating child interface {} of type {} bound on parent-interface {}",
                 childInterface, l2vlanMode, parentInterface);
-        createInterfaceChildEntry(parentInterface, childInterface, Optional.of(tx) );
+        createInterfaceChildEntry(parentInterface, childInterface, Optional.of(tx));
         return true;
     }
 
@@ -505,8 +545,10 @@ public class InterfaceManagerCommonUtils {
      * monitoring
      */
     public static void updateOpState(WriteTransaction transaction, String interfaceName,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(operStatus);
@@ -532,25 +574,30 @@ public class InterfaceManagerCommonUtils {
     }
 
     public static void addInterfaceStateToCache(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface iface) {
         interfaceStateMap.put(iface.getName(), iface);
     }
 
     public static void removeFromInterfaceStateCache(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface iface) {
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface iface) {
         interfaceStateMap.remove(iface.getName());
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus getBfdStateFromCache(String interfaceName) {
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus getBfdStateFromCache(String interfaceName) {
         return bfdStateMap.get(interfaceName);
     }
 
     public static void addBfdStateToCache(String interfaceName,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
         bfdStateMap.put(interfaceName, operStatus);
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(
             String interfaceName) {
         return bfdStateMap.remove(interfaceName);
     }
@@ -577,15 +624,18 @@ public class InterfaceManagerCommonUtils {
                                                         .child(DpnToInterface.class, dpnToInterfaceKey)
                                                         .child(InterfaceNameEntry.class, interfaceNameEntryKey)
                                                         .build();
-        InterfaceNameEntryBuilder entryBuilder = new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
+        InterfaceNameEntryBuilder entryBuilder =
+                new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
         BatchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
-    public static void deleteDpnToInterface(DataBroker dataBroker, BigInteger dpId, String infName, WriteTransaction transaction) {
+    public static void deleteDpnToInterface(DataBroker dataBroker,
+            BigInteger dpId, String infName, WriteTransaction transaction) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InstanceIdentifier<DpnToInterface> dpnToInterfaceId = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, dpnToInterfaceKey).build();
-        Optional<DpnToInterface> dpnToInterfaceOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId, dataBroker);
+        Optional<DpnToInterface> dpnToInterfaceOptional =
+                IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId, dataBroker);
         if (!dpnToInterfaceOptional.isPresent()) {
             LOG.debug("DPN {} is already removed from the Operational DS", dpId);
             return;

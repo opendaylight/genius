@@ -9,7 +9,6 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
@@ -40,7 +39,8 @@ import org.slf4j.LoggerFactory;
  * This is used to handle interfaces for base of-ports.
  */
 @Singleton
-public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
+public class InterfaceConfigListener
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
@@ -50,9 +50,8 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
     @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
-                                   final IMdsalApiManager mdsalApiManager,
-                                   final InterfacemgrProvider interfaceMgrProvider,
-                                   final AlivenessMonitorService alivenessMonitorService) {
+            final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
+            final AlivenessMonitorService alivenessMonitorService) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
@@ -92,16 +91,17 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
             LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
             String ifName = interfaceOld.getName();
             ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            if (parentRefs == null
+                    || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
                 LOG.warn("parent refs not specified for {}", interfaceOld.getName());
                 return;
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigRemoveWorker configWorker =
-                    new RendererConfigRemoveWorker(key, interfaceOld, interfaceOld.getName(), parentRefs);
-            String synchronizationKey = isTunnelInterface ?
-                    parentRefs.getDatapathNodeIdentifier().toString() : parentRefs.getParentInterface();
+            RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
+                    interfaceOld.getName(), parentRefs);
+            String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
+                    : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
         }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
@@ -112,22 +112,23 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs == null || parentRefs.getParentInterface() == null) {
-                // If parentRefs are missing, try to find a matching parent and update - this will trigger another DCN
+                // If parentRefs are missing, try to find a matching parent and
+                // update - this will trigger another DCN
                 updateInterfaceParentRefs(interfaceNew);
             }
 
             String ifNameNew = interfaceNew.getName();
-            if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            if (parentRefs == null
+                    || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
                 LOG.debug("parent refs not specified for {}, or parentRefs {} missing DPN/parentInterface",
                         interfaceNew.getName(), parentRefs);
                 return;
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigUpdateWorker configWorker =
-                    new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew, interfaceNew.getName());
-            String synchronizationKey = isTunnelInterface ?
-                    interfaceOld.getName() : parentRefs.getParentInterface();
+            RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew,
+                    interfaceNew.getName());
+            String synchronizationKey = isTunnelInterface ? interfaceOld.getName() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
 
         }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
@@ -139,21 +140,22 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs == null || parentRefs.getParentInterface() == null) {
-                // If parentRefs are missing, try to find a matching parent and update - this will trigger another DCN
+                // If parentRefs are missing, try to find a matching parent and
+                // update - this will trigger another DCN
                 updateInterfaceParentRefs(interfaceNew);
             }
 
             String ifName = interfaceNew.getName();
-            if (parentRefs == null || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            if (parentRefs == null
+                    || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
                 LOG.warn("parent refs not specified for {}", interfaceNew.getName());
                 return;
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigAddWorker configWorker =
-                    new RendererConfigAddWorker(key, interfaceNew, parentRefs, interfaceNew.getName());
-            String synchronizationKey = isTunnelInterface ?
-                    interfaceNew.getName() : parentRefs.getParentInterface();
+            RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs,
+                    interfaceNew.getName());
+            String synchronizationKey = isTunnelInterface ? interfaceNew.getName() : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
         }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }
@@ -164,8 +166,8 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
         String portName;
         ParentRefs parentRefs;
 
-        public RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew,
-                                       ParentRefs parentRefs, String portName) {
+        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, ParentRefs parentRefs,
+                String portName) {
             this.key = key;
             this.interfaceNew = interfaceNew;
             this.portName = portName;
@@ -174,33 +176,28 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew,
-                    idManager, alivenessMonitorService, mdsalApiManager);
+            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, idManager,
+                    alivenessMonitorService, mdsalApiManager);
         }
 
         @Override
         public String toString() {
-            return "RendererConfigAddWorker{" +
-                    "key=" + key +
-                    ", interfaceNew=" + interfaceNew +
-                    ", portName='" + portName + '\'' +
-                    '}';
+            return "RendererConfigAddWorker{" + "key=" + key + ", interfaceNew=" + interfaceNew + ", portName='"
+                    + portName + '\'' + '}';
         }
     }
 
-    /**
-     *
-     */
     private class RendererConfigUpdateWorker implements Callable {
         InstanceIdentifier<Interface> key;
         Interface interfaceOld;
         Interface interfaceNew;
         String portNameNew;
 
-        public RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceOld,
-                                          Interface interfaceNew, String portNameNew) {
+        RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceOld,
+                Interface interfaceNew, String portNameNew) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.interfaceNew = interfaceNew;
@@ -209,7 +206,8 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
             return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService, idManager,
                     mdsalApiManager, interfaceNew, interfaceOld);
@@ -217,26 +215,19 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
         @Override
         public String toString() {
-            return "RendererConfigUpdateWorker{" +
-                    "key=" + key +
-                    ", interfaceOld=" + interfaceOld +
-                    ", interfaceNew=" + interfaceNew +
-                    ", portNameNew='" + portNameNew + '\'' +
-                    '}';
+            return "RendererConfigUpdateWorker{" + "key=" + key + ", interfaceOld=" + interfaceOld + ", interfaceNew="
+                    + interfaceNew + ", portNameNew='" + portNameNew + '\'' + '}';
         }
     }
 
-    /**
-     *
-     */
     private class RendererConfigRemoveWorker implements Callable {
         InstanceIdentifier<Interface> key;
         Interface interfaceOld;
         String portName;
         ParentRefs parentRefs;
 
-        public RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld, String portName,
-                                          ParentRefs parentRefs) {
+        RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld, String portName,
+                ParentRefs parentRefs) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.portName = portName;
@@ -245,19 +236,17 @@ public class InterfaceConfigListener extends AsyncClusteredDataTreeChangeListene
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService,
-                    interfaceOld, idManager, mdsalApiManager, parentRefs);
+            return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService, interfaceOld,
+                    idManager, mdsalApiManager, parentRefs);
         }
 
         @Override
         public String toString() {
-            return "RendererConfigRemoveWorker{" +
-                    "key=" + key +
-                    ", interfaceOld=" + interfaceOld +
-                    ", portName='" + portName + '\'' +
-                    '}';
+            return "RendererConfigRemoveWorker{" + "key=" + key + ", interfaceOld=" + interfaceOld + ", portName='"
+                    + portName + '\'' + '}';
         }
     }
 }

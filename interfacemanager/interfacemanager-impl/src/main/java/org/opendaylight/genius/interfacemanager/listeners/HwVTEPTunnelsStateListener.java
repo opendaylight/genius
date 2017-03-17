@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -29,7 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
+public class HwVTEPTunnelsStateListener
+        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
     private final DataBroker dataBroker;
 
@@ -42,8 +43,8 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
 
     @Override
     protected InstanceIdentifier<Tunnels> getWildCardPath() {
-        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class)
-                .child(Node.class).augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class).build();
+        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
+                .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class).build();
     }
 
     @Override
@@ -57,25 +58,27 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
                 identifier, tunnel);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, tunnel);
-        jobCoordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        jobCoordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker,
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld,
-                          Tunnels tunnelNew) {
+    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld, Tunnels tunnelNew) {
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelNew, tunnelOld);
-        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
+        RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelNew,
+                tunnelOld);
+        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker,
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelNew) {
-        LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}",
-                identifier, tunnelNew);
+        LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}", identifier, tunnelNew);
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, tunnelNew);
-        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker,
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
@@ -83,8 +86,8 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
         Tunnels tunnelsNew;
         Tunnels tunnelsOld;
 
-        public RendererStateUpdateWorker(InstanceIdentifier<Tunnels> instanceIdentifier,
-                                         Tunnels tunnelsNew, Tunnels tunnelsOld) {
+        RendererStateUpdateWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnelsNew,
+                Tunnels tunnelsOld) {
             this.instanceIdentifier = instanceIdentifier;
             this.tunnelsNew = tunnelsNew;
             this.tunnelsOld = tunnelsOld;
@@ -92,10 +95,11 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
-            return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(dataBroker,
-                    instanceIdentifier, tunnelsOld, tunnelsNew);
+            return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(dataBroker, instanceIdentifier, tunnelsOld,
+                    tunnelsNew);
         }
     }
 
@@ -103,15 +107,15 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
         InstanceIdentifier<Tunnels> instanceIdentifier;
         Tunnels tunnelsNew;
 
-        public RendererStateAddWorker(InstanceIdentifier<Tunnels> instanceIdentifier,
-                                      Tunnels tunnelsNew) {
+        RendererStateAddWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnelsNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.tunnelsNew = tunnelsNew;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
             return HwVTEPInterfaceStateUpdateHelper.startBfdMonitoring(dataBroker, instanceIdentifier, tunnelsNew);
         }
@@ -121,15 +125,15 @@ public class HwVTEPTunnelsStateListener extends HwvtepAbstractDataTreeChangeList
         InstanceIdentifier<Tunnels> instanceIdentifier;
         Tunnels tunnel;
 
-        public RendererStateRemoveWorker(InstanceIdentifier<Tunnels> instanceIdentifier,
-                                         Tunnels tunnel) {
+        RendererStateRemoveWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnel) {
             this.instanceIdentifier = instanceIdentifier;
             this.tunnel = tunnel;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // If another renderer(for eg : CSS) needs to be supported, check
+            // can be performed here
             // to call the respective helpers.
             return HwVTEPInterfaceStateRemoveHelper.removeExternalTunnel(dataBroker, instanceIdentifier);
         }
