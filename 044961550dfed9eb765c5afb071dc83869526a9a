@@ -34,6 +34,24 @@
       "revId": "044961550dfed9eb765c5afb071dc83869526a9a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_94ac688e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 3972
+      },
+      "writtenOn": "2017-03-17T17:41:27Z",
+      "side": 1,
+      "message": "Ok.  I didn\u0027t notice that the letters were transposed and they are actually two different definitions.",
+      "parentUuid": "fafc7978_f4869412",
+      "revId": "044961550dfed9eb765c5afb071dc83869526a9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
