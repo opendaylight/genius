@@ -26,7 +26,7 @@ public class InstructionClearActions extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    public boolean equals2(Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
@@ -37,12 +37,12 @@ public class InstructionClearActions extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    public int hashCode2() {
+    public int hashCode() {
         return 17;
     }
 
     @Override
-    protected String toString2() {
+    public String toString() {
         return "InstructionClearActions";
     }
 }
