@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_cc0b0a7c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-17T11:06:04Z",
+      "side": 1,
+      "message": "egress service index can remain as 7..\nNot sure, whether ingress service index priority changes are already agreed upon",
+      "revId": "d304677ec8d897ee4ae026d947a6f680386b6467",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
