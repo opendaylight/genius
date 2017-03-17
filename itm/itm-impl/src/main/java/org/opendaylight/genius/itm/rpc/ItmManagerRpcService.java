@@ -32,6 +32,7 @@ import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -249,20 +250,24 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetExternalTunnelInterfaceNameOutput> resultBld;
         String sourceNode = input.getSourceNode();
         String dstNode = input.getDestinationNode();
+        ExternalTunnelKey externalTunnelKey = new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType());
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
                 ExternalTunnelList.class)
-                .child(ExternalTunnel.class, new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType()));
+                .child(ExternalTunnel.class, externalTunnelKey);
+        ExternalTunnel exTunnel = (ExternalTunnel) DataStoreCache.get(ITMConstants.EXTRERNAL_TUNNEL_CACHE_NAME, externalTunnelKey);
+        if (exTunnel == null) {
+            Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+            if (ext != null && ext.isPresent()) {
+                exTunnel = ext.get();
+            }
+        }
+        if (exTunnel != null) {
+            GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder();
+            output.setInterfaceName(exTunnel.getTunnelInterfaceName());
 
-        Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-
-        if( ext != null && ext.isPresent())
-        {
-            ExternalTunnel exTunnel = ext.get();
-            GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder() ;
-            output.setInterfaceName(exTunnel.getTunnelInterfaceName()) ;
             resultBld = RpcResultBuilder.success();
-            resultBld.withResult(output.build()) ;
-        }else {
+            resultBld.withResult(output.build());
+        } else {
             resultBld = RpcResultBuilder.failed();
         }
 
