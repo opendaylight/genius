@@ -229,7 +229,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 checkNotNull(portResult);
                 dpnId = portResult.getDpid();
                 Long portid = portResult.getPortno();
-                checkArgument(null != dpnId && BigInteger.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);
+                checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId), DPN_NOT_FOUND_ERROR, interfaceName);
 
                 NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
                 checkNotNull(ref, NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
@@ -328,7 +328,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             dpnId = portResult.getDpid();
             Long portid = portResult.getPortno();
             NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
-            checkArgument(null != dpnId && BigInteger.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);
+            checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId), DPN_NOT_FOUND_ERROR, interfaceName);
             checkNotNull(ref, NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
 
             LOG.trace("sendArpRequest received dpnId {} out interface {}", dpnId, interfaceName);

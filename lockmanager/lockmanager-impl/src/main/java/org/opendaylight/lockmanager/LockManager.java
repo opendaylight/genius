@@ -11,6 +11,7 @@ package org.opendaylight.lockmanager;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -186,6 +187,6 @@ public class LockManager implements LockManagerService {
             futures.get();
             return true;
         }
-        return result.get().getLockOwner() == Thread.currentThread().getName();
+        return Objects.equals(result.get().getLockOwner(), Thread.currentThread().getName());
     }
 }
