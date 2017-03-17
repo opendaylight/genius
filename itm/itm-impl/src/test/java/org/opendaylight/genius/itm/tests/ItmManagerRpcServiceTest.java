@@ -25,11 +25,13 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedExternalTunnelObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedInternalTunnelIdentifierObjects;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -228,6 +230,7 @@ public class ItmManagerRpcServiceTest {
         // commit TZ into config DS
         ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, transportZonesIdentifier,
             transportZones, dataBroker);
+        DataStoreCache.create(ITMConstants.EXTRERNAL_TUNNEL_CACHE_NAME);
     }
 
     @Test
