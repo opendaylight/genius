@@ -41,6 +41,7 @@ public class ITMConstants {
             = TunnelMonitoringTypeBfd.class;
     public static final String ITM_MONIRORING_PARAMS_CACHE_NAME = "ItmMonitoringParamsCache";
     public static final String TUNNEL_STATE_CACHE_NAME = "ItmTunnelStateCache";
+    public static final String EXTRERNAL_TUNNEL_CACHE_NAME = "externamTunnelCache";
     // FIXME: the following annotation should be removed once the itm-impl
     // changes the name
     @SuppressWarnings("checkstyle:ConstantName")
