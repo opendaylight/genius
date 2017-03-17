@@ -68,24 +68,26 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         final String interfaceName = terminationPointNew.getName();
         InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            jobCoordinator.enqueueJob(interfaceName, () -> {
-                // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
-                final List<ListenableFuture<Void>> futures = new ArrayList<>();
-                final Interface interfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(
-                    terminationPointNew.getName(), dataBroker);
-                if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown &&
-                    interfaceState.getOperStatus() != interfaceBfdStatus) {
-                    LOG.debug("updating tunnel state for interface {}", interfaceName);
-                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                    InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName,
-                        interfaceBfdStatus);
-                    futures.add(transaction.submit());
-                }
-                return futures;
-            });
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            return null;
+        }
+
+        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
+        jobCoordinator.enqueueJob(interfaceName, () -> {
+            // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
+            final List<ListenableFuture<Void>> futures = new ArrayList<>();
+            final Interface interfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(
+                terminationPointNew.getName(), dataBroker);
+            if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown &&
+                interfaceState.getOperStatus() != interfaceBfdStatus) {
+                LOG.debug("updating tunnel state for interface {}", interfaceName);
+                WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName,
+                    interfaceBfdStatus);
+                futures.add(transaction.submit());
+            }
+            return futures;
+        });
         return null;
     }
 

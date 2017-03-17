@@ -50,7 +50,8 @@ public class InterfaceStateListener
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if (!Tunnel.class.equals(interfaceStateNew.getType())) {
+        if (!Tunnel.class.equals(interfaceStateNew.getType())
+            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
