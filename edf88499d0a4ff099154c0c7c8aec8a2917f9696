@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d48ef026",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2046
+      },
+      "writtenOn": "2017-03-17T17:36:22Z",
+      "side": 1,
+      "message": "There has to be a better word for this, which would be both short and commonly used enough (industry standard).\n\nPrettify? Qualitize? Neatize?\n\nI am afraid the generic Improve would end up being the best.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "edf88499d0a4ff099154c0c7c8aec8a2917f9696",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
