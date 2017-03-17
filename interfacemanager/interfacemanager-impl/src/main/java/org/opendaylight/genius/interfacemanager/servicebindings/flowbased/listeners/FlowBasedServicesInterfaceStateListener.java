@@ -8,8 +8,7 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -32,7 +31,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
+public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataTreeChangeListenerBase<Interface,
+    FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
     private InterfacemgrProvider interfacemgrProvider;
 
@@ -55,14 +55,15 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
-                coordinator.enqueueJob(interfaceStateOld.getName(), new RendererStateInterfaceUnbindWorker
-                    (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
-                        .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld), IfmConstants.JOB_MAX_RETRIES));
-        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+            coordinator.enqueueJob(interfaceStateOld.getName(), new RendererStateInterfaceUnbindWorker
+                (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                    .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld), IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override
@@ -72,14 +73,15 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncDataTreeChange
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
-                coordinator.enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker
-                    (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
-                        .getFlowBasedServicesStateAddRenderer(), interfaceStateNew), IfmConstants.JOB_MAX_RETRIES));
-        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+            coordinator.enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker
+                (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                    .getFlowBasedServicesStateAddRenderer(), interfaceStateNew), IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override
