@@ -43,7 +43,7 @@ public class InstructionGotoTable extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    public boolean equals2(Object other) {
+    public boolean equals(Object other) {
         if (this == other) {
             return true;
         }
@@ -57,12 +57,12 @@ public class InstructionGotoTable extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    public int hashCode2() {
+    public int hashCode() {
         return tableId;
     }
 
     @Override
-    protected String toString2() {
+    public String toString() {
         return "InstructionGotoTable[" + tableId + "]";
     }
 }

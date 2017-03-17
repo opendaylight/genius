@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.instructions;
 
 import java.util.List;
-import java.util.Objects;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfoList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ApplyActionsCaseBuilder;
@@ -16,7 +15,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
-import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 /**
  * Apply actions instruction.
@@ -48,18 +46,26 @@ public class InstructionApplyActions extends AbstractInstructionInfoImpl {
     }
 
     @Override
-    protected boolean equals2(Object obj) {
-        return EvenMoreObjects.equalsHelper(this, obj,
-            (self, other) -> Objects.equals(self.actions, other.actions));
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        InstructionApplyActions that = (InstructionApplyActions) other;
+
+        return actions.equals(that.actions);
     }
 
     @Override
-    protected int hashCode2() {
-        return Objects.hash(actions);
+    public int hashCode() {
+        return actions.hashCode();
     }
 
     @Override
-    protected String toString2() {
+    public String toString() {
         return "InstructionApplyActions[" + actions + "]";
     }
 }

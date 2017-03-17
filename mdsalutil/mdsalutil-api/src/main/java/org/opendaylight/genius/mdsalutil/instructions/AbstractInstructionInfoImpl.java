@@ -11,31 +11,18 @@ import org.opendaylight.genius.mdsalutil.InstructionInfo;
 
 /**
  * Abstract base class for InstructionInfo implementations, to enforce
- * implementation of equals(), hashCode() and toString.
- *
- * @author Michael Vorburger.ch
+ * implementation of equals(), hashCode() and toString().
  */
 /* can remain package local instead of public (unless there are InstructionInfo impls elsewhere?) */
 abstract class AbstractInstructionInfoImpl implements InstructionInfo {
 
     @Override
-    public final boolean equals(Object obj) {
-        return equals2(obj);
-    }
+    public abstract boolean equals(Object other);
 
     @Override
-    public final int hashCode() {
-        return hashCode2();
-    }
+    public abstract int hashCode();
 
     @Override
-    public String toString() {
-        return toString2();
-    }
+    public abstract String toString();
 
-    protected abstract boolean equals2(Object other);
-
-    protected abstract int hashCode2();
-
-    protected abstract String toString2();
 }
