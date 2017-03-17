@@ -9,6 +9,7 @@
 package org.opendaylight.genius.idmanager.jobs;
 
 import java.util.ArrayList;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,15 +34,17 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     String idKey;
     List<Long> newIdValues;
     DataBroker broker;
+    private final LockManagerService lockManager;
 
     public UpdateIdEntryJob(String parentPoolName, String localPoolName,
-            String idKey, List<Long> newIdValues, DataBroker broker) {
+            String idKey, List<Long> newIdValues, DataBroker broker, LockManagerService lockManager) {
         super();
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
         this.idKey = idKey;
         this.newIdValues = newIdValues;
         this.broker = broker;
+        this.lockManager = lockManager;
     }
 
     @Override
@@ -62,6 +66,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         String uniqueIdKey = IdUtils.getUniqueKey(parentPoolName, idKey);
         Optional.ofNullable(IdUtils.releaseIdLatchMap.get(uniqueIdKey))
             .ifPresent(latch -> latch.countDown());
+        IdUtils.unlockPool(lockManager, uniqueIdKey);
         // Once the id is written to DS, removing the id value from map.
         IdUtils.allocatedIdMap.remove(uniqueIdKey);
         return Collections.emptyList();

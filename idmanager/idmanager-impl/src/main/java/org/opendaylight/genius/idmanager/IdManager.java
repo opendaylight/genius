@@ -193,8 +193,9 @@ public class IdManager implements IdManagerService, AutoCloseable {
         RpcResultBuilder<AllocateIdOutput> allocateIdRpcBuilder;
         long newIdValue = -1;
         AllocateIdOutputBuilder output = new AllocateIdOutputBuilder();
+        String uniqueKey = IdUtils.getUniqueKey(poolName, idKey);
         try {
-            //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtatined by get(0)
+            IdUtils.lockPool(lockManager, uniqueKey);
             newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
             output.setIdValue(newIdValue);
             allocateIdRpcBuilder = RpcResultBuilder.success();
@@ -206,6 +207,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             LOG.error("Allocate id in pool {} failed due to {}", poolName, ex);
             allocateIdRpcBuilder = RpcResultBuilder.failed();
             allocateIdRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
+            IdUtils.unlockPool(lockManager, uniqueKey);
         }
         return Futures.immediateFuture(allocateIdRpcBuilder.build());
     }
@@ -222,19 +224,14 @@ public class IdManager implements IdManagerService, AutoCloseable {
         RpcResultBuilder<AllocateIdRangeOutput> allocateIdRangeRpcBuilder;
         List<Long> newIdValuesList = new ArrayList<>();
         AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
+        String uniqueKey = IdUtils.getUniqueKey(poolName, idKey);
         try {
+            IdUtils.lockPool(lockManager, uniqueKey);
             newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
             Collections.sort(newIdValuesList);
             output.setIdValues(newIdValuesList);
             allocateIdRangeRpcBuilder = RpcResultBuilder.success();
             allocateIdRangeRpcBuilder.withResult(output.build());
-        } catch (NullPointerException e){
-            java.util.Optional.ofNullable(
-                    IdUtils.allocatedIdMap.remove(IdUtils.getUniqueKey(poolName, idKey)))
-                    .ifPresent(futureId -> futureId.completeExceptionally(e));
-            LOG.error("Not enough Ids available in the pool {} for requested size {}", poolName, size);
-            allocateIdRangeRpcBuilder = RpcResultBuilder.failed();
-            allocateIdRangeRpcBuilder.withError(ErrorType.APPLICATION, e.getMessage());
         } catch (Exception ex) {
             java.util.Optional.ofNullable(
                     IdUtils.allocatedIdMap.remove(IdUtils.getUniqueKey(poolName, idKey)))
@@ -242,6 +239,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             LOG.error("Allocate id range in pool {} failed due to {}", poolName, ex);
             allocateIdRangeRpcBuilder = RpcResultBuilder.failed();
             allocateIdRangeRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
+            IdUtils.unlockPool(lockManager, uniqueKey);
         }
         return Futures.immediateFuture(allocateIdRangeRpcBuilder.build());
     }
@@ -282,6 +280,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
         RpcResultBuilder<Void> releaseIdRpcBuilder;
+        String uniqueKey = IdUtils.getUniqueKey(poolName, idKey);
         try {
             releaseIdFromLocalPool(poolName, IdUtils.getLocalPoolName(poolName), idKey);
             releaseIdRpcBuilder = RpcResultBuilder.success();
@@ -289,6 +288,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             LOG.error("Release id {} from pool {} failed due to {}", idKey, poolName, ex);
             releaseIdRpcBuilder = RpcResultBuilder.failed();
             releaseIdRpcBuilder.withError(ErrorType.APPLICATION, ex.getMessage());
+            IdUtils.unlockPool(lockManager, uniqueKey);
         }
         return Futures.immediateFuture(releaseIdRpcBuilder.build());
     }
@@ -329,6 +329,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             if (existingFutureIdValue == null) {
                 IdUtils.allocatedIdMap.remove(uniqueIdKey);
             }
+            IdUtils.unlockPool(lockManager, uniqueIdKey);
             return newIdValuesList;
         }
         //This get will not help in concurrent reads. Hence the same read needs to be done again.
@@ -385,7 +386,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
         }
         IdUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
-        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker);
+        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker, lockManager);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
         futureIdValues.complete(newIdValuesList);
         return newIdValuesList;
@@ -613,6 +614,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
             }
+            IdUtils.unlockPool(lockManager, idLatchKey);
             return;
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
@@ -630,7 +632,7 @@ public class IdManager implements IdManagerService, AutoCloseable {
             LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
         }
         //Updating id entries in the parent pool. This will be used for restart scenario
-        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker);
+        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker, lockManager);
         DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
     }
 
