@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7472a44a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/AlivenessMonitorListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-17T17:39:04Z",
+      "side": 1,
+      "message": "not part of this activity..but can we import OperStatus and just use OperStatus.Up instead of the fully qualified name?",
+      "revId": "21d9b08a01e2dc389523c0b4e9a37e0d6589e27f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1499986e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-17T17:39:04Z",
+      "side": 1,
+      "message": "copyright?",
+      "revId": "21d9b08a01e2dc389523c0b4e9a37e0d6589e27f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
