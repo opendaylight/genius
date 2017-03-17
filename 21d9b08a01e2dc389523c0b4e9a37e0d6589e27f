@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b72a4e7c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/AlivenessMonitorListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-17T19:02:15Z",
+      "side": 1,
+      "message": "I\u0027d like to, but in many cases there are reasons for having the FQN, i.e. same names in different packages. I can give a try anyway.",
+      "parentUuid": "fafc7978_7472a44a",
+      "revId": "21d9b08a01e2dc389523c0b4e9a37e0d6589e27f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1499986e",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-17T17:39:04Z",
       "side": 1,
       "message": "copyright?",
+      "revId": "21d9b08a01e2dc389523c0b4e9a37e0d6589e27f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_77190679",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-17T19:02:15Z",
+      "side": 1,
+      "message": "I should have changed the date by 2016, 2017",
+      "parentUuid": "fafc7978_1499986e",
       "revId": "21d9b08a01e2dc389523c0b4e9a37e0d6589e27f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
