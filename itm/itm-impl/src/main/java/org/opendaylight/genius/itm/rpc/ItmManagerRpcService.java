@@ -270,18 +270,17 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetExternalTunnelInterfaceNameOutput> resultBld;
         String sourceNode = input.getSourceNode();
         String dstNode = input.getDestinationNode();
+        ExternalTunnelKey externalTunnelKey = new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType());
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
                 ExternalTunnelList.class)
-                .child(ExternalTunnel.class, new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType()));
-
-        Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-
-        if (ext != null && ext.isPresent()) {
-            ExternalTunnel exTunnel = ext.get();
-            GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder() ;
-            output.setInterfaceName(exTunnel.getTunnelInterfaceName()) ;
+                .child(ExternalTunnel.class, externalTunnelKey);
+        ExternalTunnel exTunnel =
+                ItmUtils.getExternalTunnelbyExternalTunnelKey(externalTunnelKey, path, this.dataBroker);
+        if (exTunnel != null) {
+            GetExternalTunnelInterfaceNameOutputBuilder output = new GetExternalTunnelInterfaceNameOutputBuilder();
+            output.setInterfaceName(exTunnel.getTunnelInterfaceName());
             resultBld = RpcResultBuilder.success();
-            resultBld.withResult(output.build()) ;
+            resultBld.withResult(output.build());
         } else {
             resultBld = RpcResultBuilder.failed();
         }

@@ -1590,4 +1590,18 @@ public class ItmUtils {
         }
         return tunOptions;
     }
+
+    public static ExternalTunnel getExternalTunnelbyExternalTunnelKey(ExternalTunnelKey externalTunnelKey,
+                                             InstanceIdentifier<ExternalTunnel> path,
+                                             DataBroker dataBroker) {
+        ExternalTunnel exTunnel = itmCache.getExternalTunnelKeyToExternalTunnels().get(externalTunnelKey);
+        if (exTunnel == null) {
+            Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+            if (ext != null && ext.isPresent()) {
+                exTunnel = ext.get();
+            }
+        }
+        return exTunnel;
+    }
+
 }
