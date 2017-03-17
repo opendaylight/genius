@@ -468,7 +468,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                         }
 
                         @Override public void onFailure(Throwable error) {
-                            String msg = String.format("Unable to delete HwVtep {} from datastore", node_id);
+                            String msg = String.format("Unable to delete HwVtep %s from datastore", node_id);
                             LOG.error("Unable to delete HwVtep {}, {} from datastore", node_id, hwIp);
                             result.set(RpcResultBuilder.<Void>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
@@ -546,7 +546,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                         }
 
                         @Override public void onFailure(Throwable error) {
-                            String msg = String.format("Unable to write HwVtep {} to datastore", node_id);
+                            String msg = String.format("Unable to write HwVtep %s to datastore", node_id);
                             LOG.error("Unable to write HwVtep {}, {} to datastore", node_id, hwIp);
                             result.set(RpcResultBuilder.<Void>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
@@ -629,7 +629,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
                     @Override
                     public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to write HwVtep {} to datastore", node_id);
+                        String msg = String.format("Unable to write HwVtep %s to datastore", node_id);
                         LOG.error("Unable to write HwVtep {}, {} to datastore", node_id , hwIp);
                         result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                     }
@@ -693,7 +693,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
                     @Override
                     public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to write HwVtep {} to datastore", node_id);
+                        String msg = String.format("Unable to write HwVtep %s to datastore", node_id);
                         LOG.error("Unable to write HwVtep {}, {} to datastore", node_id , hwIp);
                         result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                     }
