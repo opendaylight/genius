@@ -62,6 +62,28 @@ public class ClusteringUtils {
         return checkNodeEntityfuture;
     }
 
+    public static Boolean isEntityOwner(EntityOwnershipService entityOwnershipService,
+                                        Entity entity, long sleepBetweenRetries,
+                                        int retries) {
+        while (retries-- > 0) {
+            Optional<EntityOwnershipState> entityState = entityOwnershipService.getOwnershipState(entity);
+            if (entityState.isPresent()) {
+                EntityOwnershipState entityOwnershipState = entityState.get();
+                if (entityOwnershipState.hasOwner()) {
+                    return entityOwnershipState.isOwner();
+                }
+            }
+            LOG.trace("EntityOwnershipState for entity type {} is not yet available. {} retries left",
+                entity.getType(), retries);
+            try {
+                Thread.sleep(sleepBetweenRetries);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+        return false;
+    }
+
     private static class CheckEntityOwnerTask implements Callable<List<ListenableFuture<Void>>> {
         EntityOwnershipService entityOwnershipService;
         Entity entity;
