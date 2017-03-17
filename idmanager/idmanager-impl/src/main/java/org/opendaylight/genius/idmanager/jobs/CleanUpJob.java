@@ -65,7 +65,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
             InstanceIdentifier<ReleasedIdsHolder> releasedIdInstanceIdentifier = IdUtils.getReleasedIdsHolderInstance(parentPoolName);
             // We need lock manager because maybe one cluster tries to read the available ids from the global pool while the other is writing. We cannot rely on DSJC
             // because that is not cluster-aware
-            IdUtils.lockPool(lockManager, parentPoolName);
+            IdUtils.lock(lockManager, parentPoolName);
             try {
                 Optional<ReleasedIdsHolder> releasedIdsHolder = MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier);
                 ReleasedIdsHolderBuilder releasedIdsParent;
@@ -83,7 +83,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                 DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
                 MDSALUtil.syncWrite(broker, LogicalDatastoreType.CONFIGURATION, releasedIdInstanceIdentifier, releasedIdsParent.build());
             } finally {
-                IdUtils.unlockPool(lockManager, parentPoolName);
+                IdUtils.unlock(lockManager, parentPoolName);
             }
         }
     }
