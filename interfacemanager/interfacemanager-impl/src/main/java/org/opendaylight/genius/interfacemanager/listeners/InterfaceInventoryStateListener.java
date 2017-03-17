@@ -82,56 +82,59 @@ public class InterfaceInventoryStateListener extends AsyncClusteredDataTreeChang
     @Override
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, flowCapableNodeConnectorOld.getName());
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, flowCapableNodeConnectorOld.getName());
 
-            remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
 
     @Override
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
                           FlowCapableNodeConnector fcNodeConnectorNew) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
-            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, fcNodeConnectorNew.getName());
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, fcNodeConnectorNew.getName());
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
-            InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
-                    fcNodeConnectorNew, portName);
-            coordinator.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
+            fcNodeConnectorNew, portName);
+        coordinator.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, fcNodeConnectorNew.getName());
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId, fcNodeConnectorNew.getName());
 
-            //VM Migration: Delete existing interface entry for older DPN
-            if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
-                NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
-                if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
-                    LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
-                    remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
-                    //Adding a delay of 10sec for VM migration, so applications can process remove and add events
-                    try {
-                        Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
-                    } catch (InterruptedException e) {
-                        LOG.error("Error while waiting for the vm migration remove events to get processed");
-                    }
+        //VM Migration: Delete existing interface entry for older DPN
+        if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
+            NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
+            if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+                LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName, nodeConnectorId, nodeConnectorIdOld);
+                remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
+                //Adding a delay of 10sec for VM migration, so applications can process remove and add events
+                try {
+                    Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
+                } catch (InterruptedException e) {
+                    LOG.error("Error while waiting for the vm migration remove events to get processed");
                 }
             }
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
-                    fcNodeConnectorNew, portName);
-            coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        }
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
+            fcNodeConnectorNew, portName);
+        coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,

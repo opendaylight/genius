@@ -71,14 +71,15 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
-                coordinator.enqueueJob(interfaceStateOld.getName(), new RendererStateInterfaceUnbindWorker
-                    (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
-                        .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld), IfmConstants.JOB_MAX_RETRIES));
-        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+            coordinator.enqueueJob(interfaceStateOld.getName(), new RendererStateInterfaceUnbindWorker
+                (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                    .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld), IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override
@@ -88,14 +89,15 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
-                coordinator.enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker
-                    (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
-                        .getFlowBasedServicesStateAddRenderer(), interfaceStateNew), IfmConstants.JOB_MAX_RETRIES));
-        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
+            coordinator.enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker
+                (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
+                    .getFlowBasedServicesStateAddRenderer(), interfaceStateNew), IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override

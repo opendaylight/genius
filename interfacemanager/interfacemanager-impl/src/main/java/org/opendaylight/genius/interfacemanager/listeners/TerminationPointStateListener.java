@@ -89,22 +89,23 @@ public class TerminationPointStateListener extends AsyncClusteredDataTreeChangeL
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
 
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
-            String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
-            if (newInterfaceName != null && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
-                InstanceIdentifier<Node> nodeInstanceId = identifier.firstIdentifierOf(Node.class);
-                String dpnId = southboundUtils.getDatapathIdFromNodeInstanceId(nodeInstanceId);
-                if (dpnId == null) {
-                    return;
-                }
-                String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
-                LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
-                        + "of that interface ID to this termination point's interface-state name {}",
-                        tpNew.getName(), newInterfaceName, parentRefName);
-                interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
+        if(!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+        String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
+        if (newInterfaceName != null && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
+            InstanceIdentifier<Node> nodeInstanceId = identifier.firstIdentifierOf(Node.class);
+            String dpnId = southboundUtils.getDatapathIdFromNodeInstanceId(nodeInstanceId);
+            if (dpnId == null) {
+                return;
             }
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+            String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
+            LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
+                    + "of that interface ID to this termination point's interface-state name {}",
+                tpNew.getName(), newInterfaceName, parentRefName);
+            interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
+        }
     }
 
     @Override

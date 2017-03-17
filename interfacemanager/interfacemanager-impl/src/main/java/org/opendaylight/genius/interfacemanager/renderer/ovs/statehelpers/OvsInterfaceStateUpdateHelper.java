@@ -63,11 +63,10 @@ public class OvsInterfaceStateUpdateHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
 
-        // For tunnels, derive the final opstate based on the bfd tunnel monitoring status
-        if (modifyTunnel(iface, opstateModified)
-                && InterfaceManagerCommonUtils.checkIfBfdStateIsDown(iface.getName())) {
-            operStatusNew = Interface.OperStatus.Down;
-            opstateModified = operStatusNew.equals(operStatusOld);
+        // For monitoring enabled tunnels, skip opstate updation
+        if(isTunnelInterface(iface) && !modifyTunnelOpState(iface, opstateModified)){
+            LOG.debug("skip interface-state updation for monitoring enabled tunnel interface {}", interfaceName);
+            opstateModified = false;
         }
 
         if (!opstateModified && !hardwareAddressModified) {
@@ -85,7 +84,7 @@ public class OvsInterfaceStateUpdateHelper {
                 flowCapableNodeConnectorNew.getName(), operStatusNew);
 
         // start/stop monitoring based on opState
-        if (modifyTunnel(iface, opstateModified)) {
+        if (isTunnelInterface(iface) && opstateModified) {
             handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
                     iface.getName(), operStatusNew);
         }
@@ -153,9 +152,17 @@ public class OvsInterfaceStateUpdateHelper {
         return opStateModified && (iface == null || iface != null && iface.isEnabled());
     }
 
-    public static boolean modifyTunnel(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface,
-            boolean opStateModified) {
-        return modifyOpState(iface, opStateModified) && iface != null && iface.getAugmentation(IfTunnel.class) != null;
+    public static boolean isTunnelInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
+                                                .rev140508.interfaces.Interface iface) {
+        return iface != null && iface.getAugmentation(IfTunnel.class) != null;
+    }
+
+    public static boolean modifyTunnelOpState(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
+                                                  .rev140508.interfaces.Interface iface,
+                                              boolean opStateModified){
+        if (!iface.getAugmentation(IfTunnel.class).isMonitorEnabled()) {
+            return modifyOpState(iface, opStateModified);
+        }
+        return false;
     }
 }
