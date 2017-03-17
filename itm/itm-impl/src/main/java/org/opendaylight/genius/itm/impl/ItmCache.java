@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class ItmCache {
     private final ConcurrentHashMap<String, Interface> interfaces;
     private final ConcurrentHashMap<String, ExternalTunnel> externalTunnels;
     private final ConcurrentHashMap<String, InternalTunnel> internalTunnels;
+    private final ConcurrentHashMap<ExternalTunnelKey, ExternalTunnel> externalTunnelKeyToExternalTunnels;
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmCache.class);
 
@@ -31,6 +33,7 @@ public class ItmCache {
         this.interfaces = new ConcurrentHashMap<>();
         this.internalTunnels = new ConcurrentHashMap<>();
         this.externalTunnels = new ConcurrentHashMap<>();
+        this.externalTunnelKeyToExternalTunnels = new ConcurrentHashMap<>();
     }
 
     public void addInterface(Interface iface) {
@@ -95,10 +98,23 @@ public class ItmCache {
         return this.externalTunnels.keySet();
     }
 
+    public ConcurrentHashMap<ExternalTunnelKey, ExternalTunnel> getExternalTunnelKeyToExternalTunnels() {
+        return externalTunnelKeyToExternalTunnels;
+    }
+
+    public void addExternalTunnelKeyToExternalTunnelCache(ExternalTunnel externalTunnel) {
+        this.externalTunnelKeyToExternalTunnels.put(externalTunnel.getKey(), externalTunnel);
+    }
+
+    public void removeExternalTunnelfromExternalTunnelKeyCache(ExternalTunnelKey key) {
+        this.externalTunnelKeyToExternalTunnels.remove(key);
+    }
+
     // non-public package local method for use only in ItmTestUtils
     void clear() {
         interfaces.clear();
         externalTunnels.clear();
         internalTunnels.clear();
+        externalTunnelKeyToExternalTunnels.clear();
     }
 }
