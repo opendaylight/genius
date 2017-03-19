@@ -198,10 +198,11 @@ public class ItmInternalTunnelAddWorker {
         logger.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {}, destination IP - {} gateway IP - {}",
                 trunkInterfaceName, srcte.getInterfaceName(), srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress ) ;
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false : monitorEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
-                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName);
+                isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName);
         logger.debug(" Trunk Interface builder - {} ", iface);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         logger.debug(  " Trunk Interface Identifier - {} ", trunkIdentifier ) ;
@@ -280,8 +281,11 @@ public class ItmInternalTunnelAddWorker {
                 createInternalTunnel(srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName, Optional.of(tx));
 
                 futures.add(tx.submit());
+
+                ItmTunnelAggregationHelper.createLogicalTunnelSelectGroup(srcDpnId, logicTunnelGroupName);
+
             } else {
-                logger.debug("MULTIPLE_VxLAN_TUNNELS: not first tunnel on srcDpnId {} dstDpnId {}",srcDpnId, dstDpnId);
+                logger.debug("MULTIPLE_VxLAN_TUNNELS: not first tunnel on srcDpnId {} dstDpnId {}", srcDpnId, dstDpnId);
             }
             return futures;
         }
