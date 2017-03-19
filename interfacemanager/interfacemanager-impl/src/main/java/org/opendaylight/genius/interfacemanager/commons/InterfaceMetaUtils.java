@@ -227,7 +227,7 @@ public class InterfaceMetaUtils {
         BatchingUtils.write(id, ifIndexInterface, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
-    public static void removeLportTagInterfaceMap(IdManagerService idManager, WriteTransaction tx, String infName) {
+    public static int removeLportTagInterfaceMap(IdManagerService idManager, WriteTransaction tx, String infName) {
         // workaround to get the id to remove from lport tag interface map
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, infName);
         IfmUtil.releaseId(idManager, IfmConstants.IFM_IDPOOL_NAME, infName);
@@ -235,6 +235,7 @@ public class InterfaceMetaUtils {
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         tx.delete(LogicalDatastoreType.OPERATIONAL, id);
+        return ifIndex;
     }
 
     public static void addBridgeRefToBridgeInterfaceEntry(BigInteger dpId, OvsdbBridgeRef ovsdbBridgeRef,
