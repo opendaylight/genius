@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_e836b3b3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-03-19T12:39:18Z",
+      "side": 1,
+      "message": "nit: spacing after if, will fail checkstyle, same comment across entire review",
+      "revId": "70297bea51698c5f362b8cfe1d40f6b9659188e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e85d13ee",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/IfmClusterUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-03-19T12:39:18Z",
+      "side": 1,
+      "message": "Should we deprecate this?\nWhat continues to use it?",
+      "revId": "70297bea51698c5f362b8cfe1d40f6b9659188e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8851e7da",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/ClusteringUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-03-19T12:39:18Z",
+      "side": 1,
+      "message": "Doesn\u0027t this add a sleep() on the listening thread?\nI don\u0027t think that\u0027s a very good idea..",
+      "revId": "70297bea51698c5f362b8cfe1d40f6b9659188e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
