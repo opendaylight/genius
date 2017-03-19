@@ -25,6 +25,8 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -116,12 +118,11 @@ public class OvsInterfaceConfigAddHelper {
             return;
         }
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
+        if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class)
+                || ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlan.class)) {
 
-        if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class) ||
-            ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlan.class)) {
-
-            addMultipleVxLANtunnelsConfiguration(dataBroker, interfaceNew, idManager,
-                                                 ifTunnel, itmProvider, defaultOperShardTransaction);
+            addMultipleVxLANtunnelsConfiguration(dataBroker, interfaceNew, idManager, ifTunnel,
+                                                 itmProvider, defaultOperShardTransaction, futures);
         }
         boolean createTunnelPort = true;
         String tunnelName = interfaceNew.getName();
@@ -212,21 +213,28 @@ public class OvsInterfaceConfigAddHelper {
     private static void addMultipleVxLANtunnelsConfiguration(DataBroker dataBroker, Interface itfNew,
                                                       IdManagerService idManager, IfTunnel ifTunnel,
                                                       IITMProvider itmProvider,
-                                                      WriteTransaction defaultOperShardTransaction) {
+                                                      WriteTransaction defaultOperShardTransaction,
+                                                      List<ListenableFuture<Void>> futures) {
         if (dataBroker == null || itfNew == null || idManager == null || ifTunnel == null || itmProvider == null) {
-            LOG.warn("MULTIPLE_VxLAN_TUNNELS: addMultipleVxLANtunnelsConfiguration - not full input info recieved");
+            LOG.debug("MULTIPLE_VxLAN_TUNNELS: addMultipleVxLANtunnelsConfiguration - not full input info recieved");
             return;
         }
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class)) {
-
-            LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", itfNew.getName());
-            InterfaceManagerCommonUtils.addStateEntry(itfNew, itfNew.getName(), defaultOperShardTransaction,
-                                                      idManager, null /*physAddress*/,
-                                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                                                      .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
-                                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                                                      .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
-                                                      null /*nodeConnectorId*/);
+            String ifaceName = itfNew.getName();
+            LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+                    InterfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, defaultOperShardTransaction,
+                            idManager, null /*physAddress*/,
+                            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                            .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
+                            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                            .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
+                            null /*nodeConnectorId*/);
+            Long groupId = itmProvider.getLogicalTunnelGroupId(ifaceName);
+            if (groupId != MDSALUtil.WATCH_GROUP) {
+                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, itfNew,
+                        Long.toString(groupId), ifaceName, ifState.getIfIndex());
+            }
             return;
         }
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlan.class)) {

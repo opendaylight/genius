@@ -92,4 +92,6 @@ public interface IITMProvider {
     InternalTunnel getInternalTunnel(String name);
 
     Collection<InternalTunnel> getAllInternalTunnels();
+
+    Long getLogicalTunnelGroupId(String ifaceName);
 }

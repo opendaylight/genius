@@ -26,6 +26,7 @@ import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
 import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
@@ -353,4 +354,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     public Collection<InternalTunnel> getAllInternalTunnels() {
         return ItmUtils.itmCache.getAllInternalTunnel();
     }
+
+    public Long getLogicalTunnelGroupId(String ifaceName) {
+        return ItmTunnelAggregationHelper.getLogicalTunnelSelectGroupId(ifaceName);
+    }
+
 }

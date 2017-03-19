@@ -155,7 +155,7 @@ public final class InterfaceManagerCommonUtils {
     public static List<Interface> getAllLogicTunnelInterfacesFromCache() {
         return interfaceConfigMap.values().stream()
                 .filter(iface -> iface.getAugmentation(IfTunnel.class) != null
-                    && iface.getAugmentation(IfTunnel.class).getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class))
+                    && iface.getAugmentation(IfTunnel.class).getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class))
                 .collect(Collectors.toList());
     }
 
@@ -219,6 +219,10 @@ public final class InterfaceManagerCommonUtils {
 
     public static void makeTunnelIngressFlow(List<ListenableFuture<Void>> futures, IMdsalApiManager mdsalApiManager,
             IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
+
+        if (tunnel != null && tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+            return;
+        }
         LOG.debug("make tunnel ingress flow for {}", interfaceName);
         String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
                 NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
