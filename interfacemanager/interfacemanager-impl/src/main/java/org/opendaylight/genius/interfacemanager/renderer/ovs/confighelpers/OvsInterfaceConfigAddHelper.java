@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
@@ -117,7 +118,7 @@ public class OvsInterfaceConfigAddHelper {
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
 
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            addLogicalTunnelGroup(interfaceNew, idManager, defaultOperShardTransaction);
+            addLogicalTunnelGroup(interfaceNew, idManager, dataBroker, defaultOperShardTransaction, futures);
             return;
         }
         boolean createTunnelPort = true;
@@ -218,14 +219,25 @@ public class OvsInterfaceConfigAddHelper {
         }
     }
 
-    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager, WriteTransaction tx) {
-        LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", itfNew.getName());
-        InterfaceManagerCommonUtils.addStateEntry(itfNew, itfNew.getName(), tx,
-                                                  idManager, null /*physAddress*/,
-                                                  org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                                                  .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
-                                                  org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                                                  .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
-                                                  null /*nodeConnectorId*/);
+    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager, DataBroker broker,
+                                              WriteTransaction tx, List<ListenableFuture<Void>> futures) {
+        String ifaceName = itfNew.getName();
+        LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface ifState = InterfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, tx,
+                    idManager, null /*physAddress*/,
+                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                    .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
+                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                    .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
+                    null /*nodeConnectorId*/);
+        Integer groupId = IfmUtil.allocateId(idManager,
+                org.opendaylight.genius.interfacemanager.globals.IfmConstants.VXLAN_GROUP_POOL_NAME, ifaceName);
+        if (groupId != 0) {
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(broker, futures, itfNew,
+                    ifaceName, ifState.getIfIndex(), groupId);
+        } else {
+            LOG.debug("MULTIPLE_VxLAN_TUNNELS: wrong group id - binding not done");
+        }
     }
 }

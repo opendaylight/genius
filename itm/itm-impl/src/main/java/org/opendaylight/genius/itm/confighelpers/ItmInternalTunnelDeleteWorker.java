@@ -228,7 +228,6 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(srcTep.getIpAddress().getValue()),
                 dstTep.getTunnelType().getName());
         removeLogicalGroupTunnel(dstDpnId, srcDpnId, dataBroker);
-
     }
 
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId,
@@ -298,6 +297,8 @@ public class ItmInternalTunnelDeleteWorker {
                                 new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
                 tx.delete(LogicalDatastoreType.CONFIGURATION, path);
                 ItmUtils.itmCache.removeInternalTunnel(logicTunnelName);
+
+                ItmTunnelAggregationHelper.removeLogicalTunnelSelectGroup(srcDpnId, logicTunnelName);
                 futures.add(tx.submit());
             } else if (!emptyTunnelGroup) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not last tunnel in logical tunnel group {}", logicTunnelName);
