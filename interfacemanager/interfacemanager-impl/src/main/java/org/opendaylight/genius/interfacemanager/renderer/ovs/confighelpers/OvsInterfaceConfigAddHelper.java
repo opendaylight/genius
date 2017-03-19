@@ -24,6 +24,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -116,8 +117,8 @@ public class OvsInterfaceConfigAddHelper {
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
 
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeLogicalGroup.class)) {
-            addLogicalTunnelGroup(interfaceNew, idManager, defaultOperShardTransaction);
-
+            addLogicalTunnelGroup(interfaceNew, idManager, itmProvider, dataBroker,
+                                  defaultOperShardTransaction, futures);
         } else if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlan.class)) {
             addMultipleVxlanTunnelsConfiguration(interfaceNew, itmProvider, defaultOperShardTransaction);
         }
@@ -209,15 +210,23 @@ public class OvsInterfaceConfigAddHelper {
         }
     }
 
-    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager, WriteTransaction tx) {
-        LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", itfNew.getName());
-        InterfaceManagerCommonUtils.addStateEntry(itfNew, itfNew.getName(), tx,
+    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager,
+            IITMProvider itmProvider, DataBroker broker, WriteTransaction tx, List<ListenableFuture<Void>> futures) {
+        String ifaceName = itfNew.getName();
+        LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+                InterfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, tx,
                                                   idManager, null /*physAddress*/,
                                                   org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                                                   .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
                                                   org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                                                   .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
                                                   null /*nodeConnectorId*/);
+        Long groupId = itmProvider.getLogicalTunnelGroupId(ifaceName);
+        if (groupId != 0) {
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(broker, futures, itfNew,
+                    Long.toString(groupId), ifaceName, ifState.getIfIndex());
+        }
     }
 
     private static void addMultipleVxlanTunnelsConfiguration(Interface itfNew, IITMProvider itmProvider,

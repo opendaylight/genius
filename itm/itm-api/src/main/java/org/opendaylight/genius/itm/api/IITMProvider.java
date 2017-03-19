@@ -94,4 +94,6 @@ public interface IITMProvider {
     Collection<InternalTunnel> getAllInternalTunnels();
 
     String getLogicalTunnelGroupName(BigInteger srcDpnId, BigInteger destDpnId);
+
+    Long getLogicalTunnelGroupId(String ifaceName);
 }

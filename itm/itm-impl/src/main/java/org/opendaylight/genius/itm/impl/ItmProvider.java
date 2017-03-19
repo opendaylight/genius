@@ -362,4 +362,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         return ItmUtils.getLogicalTunnelGroupName(srcDpnId, destDpnId);
     }
 
+    public Long getLogicalTunnelGroupId(String ifaceName) {
+        return ItmTunnelAggregationHelper.getLogicalTunnelSelectGroupId(ifaceName);
+    }
+
 }
