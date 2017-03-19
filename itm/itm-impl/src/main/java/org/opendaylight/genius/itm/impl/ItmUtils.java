@@ -309,7 +309,8 @@ public class ItmUtils {
             IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(new VlanId(vlanId)).build();
             builder.addAugmentation(IfL2vlan.class, l2vlan);
         }
-        LOG.debug("buildTunnelInterface: monitorProtocol = {} and monitorInterval = {}", monitorProtocol.getName(), monitorInterval);
+        LOG.debug("buildTunnelInterface: ifName {} parentIfaceName {} monitorProtocol = {} and monitorInterval = {}",
+                   ifName, parentIfaceName, monitorProtocol.getName(), monitorInterval);
 
         if (monitorInterval != null) {
             monitoringInterval = monitorInterval.longValue();

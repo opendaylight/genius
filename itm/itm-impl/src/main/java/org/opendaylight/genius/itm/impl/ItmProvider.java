@@ -41,6 +41,7 @@ import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;

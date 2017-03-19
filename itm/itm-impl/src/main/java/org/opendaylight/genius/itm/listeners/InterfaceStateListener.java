@@ -23,6 +23,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateUpdateHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -86,6 +87,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelAddWorker itmTunnelAddWorker = new ItmTunnelAddWorker(iface);
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelAddWorker);
+            ItmTunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.ADD_TUNNEL, broker);
         }
     }
 
@@ -97,6 +99,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelRemoveWorker itmTunnelRemoveWorker = new ItmTunnelRemoveWorker(iface);
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelRemoveWorker);
+            ItmTunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.DEL_TUNNEL, broker);
         }
     }
 
@@ -115,6 +118,8 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
                 ItmTunnelUpdateWorker itmTunnelUpdateWorker = new ItmTunnelUpdateWorker(original, update);
                 jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + original.getName(), itmTunnelUpdateWorker);
             }
+            ItmTunnelAggregationHelper.updateLogicalTunnelState(original, update,
+                                                                ItmTunnelAggregationHelper.MOD_TUNNEL, broker);
         }
     }
 
