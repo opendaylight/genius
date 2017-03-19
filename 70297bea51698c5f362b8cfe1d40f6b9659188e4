@@ -50,6 +50,24 @@
       "revId": "70297bea51698c5f362b8cfe1d40f6b9659188e4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_082b3731",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/ClusteringUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-19T12:55:14Z",
+      "side": 1,
+      "message": "In normal scenarios, the first try itself will return successfully.\nIf we hand over the retry to a different thread, the same out of order processing issue will occur, which is predominant in case of first trial resulting in error..any other options?",
+      "parentUuid": "fafc7978_8851e7da",
+      "revId": "70297bea51698c5f362b8cfe1d40f6b9659188e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
