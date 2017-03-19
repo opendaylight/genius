@@ -35,6 +35,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
@@ -220,11 +221,13 @@ public class IfmUtil {
     }
 
     public static List<Instruction> getEgressInstructionsForInterface(Interface interfaceInfo, String portNo,
-            Long tunnelKey, boolean isDefaultEgress, int ifIndex) {
+                                                                      Long tunnelKey, boolean isDefaultEgress,
+                                                                      int ifIndex, long groupId) {
         List<Instruction> instructions = new ArrayList<>();
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
-        List<Action> actionList = MDSALUtil.buildActions(getEgressActionInfosForInterface(interfaceInfo, portNo,
-                ifaceType, tunnelKey, 0, isDefaultEgress, ifIndex));
+        List<Action> actionList = MDSALUtil.buildActions(
+                getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, 0,
+                                                 isDefaultEgress, ifIndex, groupId));
         instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
         return instructions;
     }
@@ -267,7 +270,7 @@ public class IfmUtil {
 
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
         return getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, actionKeyStart,
-                isDefaultEgress, ifState.getIfIndex());
+                isDefaultEgress, ifState.getIfIndex(), 0);
     }
 
     /**
@@ -286,7 +289,7 @@ public class IfmUtil {
     @SuppressWarnings("fallthrough")
     public static List<ActionInfo> getEgressActionInfosForInterface(Interface interfaceInfo, String portNo,
             InterfaceInfo.InterfaceType ifaceType, Long tunnelKey, int actionKeyStart, boolean isDefaultEgress,
-            int ifIndex) {
+            int ifIndex, long groupId) {
         List<ActionInfo> result = new ArrayList<>();
         switch (ifaceType) {
             case MPLS_OVER_GRE:
@@ -340,11 +343,12 @@ public class IfmUtil {
                 break;
             case LOGICAL_GROUP_INTERFACE:
                 if (isDefaultEgress) {
-                    LOG.debug("MULTIPLE_VxLAN_TUNNELS: default egress action treatment will be added later");
+                    result.add(new ActionGroup(groupId));
                 } else {
                     addEgressActionInfosForInterface(ifIndex, actionKeyStart, result);
                 }
                 break;
+
             default:
                 LOG.warn("Interface Type {} not handled yet", ifaceType);
                 break;
@@ -450,7 +454,8 @@ public class IfmUtil {
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight
                     .genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel
                     .getTunnelInterfaceType();
-            interfaceType = TUNNEL_TYPE_MAP.get(tunnelType);
+            interfaceType = tunnelType.isAssignableFrom(TunnelTypeLogicalGroup.class)
+                    ? InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE :  TUNNEL_TYPE_MAP.get(tunnelType);
         }
         return interfaceType;
     }

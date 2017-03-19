@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateUpdateHelper;
@@ -41,13 +42,16 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
     private final DataBroker broker;
     private final IInterfaceManager ifaceManager;
+    private final ItmTunnelAggregationHelper tunnelAggregationHelper;
 
     @Inject
-    public InterfaceStateListener(final DataBroker dataBroker,IInterfaceManager iinterfacemanager) {
+    public InterfaceStateListener(final DataBroker dataBroker,IInterfaceManager iinterfacemanager,
+            final ItmTunnelAggregationHelper tunnelAggregation) {
 
         super(Interface.class, InterfaceStateListener.class);
         this.broker = dataBroker;
         this.ifaceManager = iinterfacemanager;
+        this.tunnelAggregationHelper = tunnelAggregation;
     }
 
     @PostConstruct
@@ -93,6 +97,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelAddWorker itmTunnelAddWorker = new ItmTunnelAddWorker(iface);
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelAddWorker);
+            if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
+                tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.ADD_TUNNEL, broker);
+            }
         }
     }
 
@@ -105,6 +112,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelRemoveWorker itmTunnelRemoveWorker = new ItmTunnelRemoveWorker(iface);
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelRemoveWorker);
+            if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
+                tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.DEL_TUNNEL, broker);
+            }
         }
     }
 
@@ -122,6 +132,10 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
                 DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
                 ItmTunnelUpdateWorker itmTunnelUpdateWorker = new ItmTunnelUpdateWorker(original, update);
                 jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + original.getName(), itmTunnelUpdateWorker);
+            }
+            if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
+                tunnelAggregationHelper.updateLogicalTunnelState(original, update,
+                                                                 ItmTunnelAggregationHelper.MOD_TUNNEL, broker);
             }
         }
     }

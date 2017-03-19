@@ -28,7 +28,6 @@ public class IfmConstants {
     public static final long IFM_ID_POOL_END = 65535;
 
     public static final long VXLAN_GROUPID_MIN = 300000L;
-
     // Group Prefix
     public static final long VLAN_GROUP_START = 1000;
     public static final long TRUNK_GROUP_START = 20000;
