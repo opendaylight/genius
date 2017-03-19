@@ -228,7 +228,6 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(srcTep.getIpAddress().getValue()),
                 dstTep.getTunnelType().getName());
         removeLogicalGroupTunnel(dstDpnId, srcDpnId, dataBroker);
-
     }
 
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId,
