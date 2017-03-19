@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
@@ -34,6 +35,7 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
@@ -72,6 +74,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
@@ -256,11 +259,13 @@ public class IfmUtil {
     }
 
     public static List<Instruction> getEgressInstructionsForInterface(Interface interfaceInfo, String portNo,
-                                                                      Long tunnelKey, boolean isDefaultEgress, int ifIndex) {
+                                                                      Long tunnelKey, boolean isDefaultEgress,
+                                                                      int ifIndex, int groupId) {
         List<Instruction> instructions = new ArrayList<>();
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
         List<Action> actionList = MDSALUtil.buildActions(
-                getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, 0, isDefaultEgress, ifIndex));
+                getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, 0,
+                                                 isDefaultEgress, ifIndex, groupId));
         instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
         return  instructions;
     }
@@ -303,7 +308,7 @@ public class IfmUtil {
 
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
         return getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, actionKeyStart,
-                isDefaultEgress, ifState.getIfIndex());
+                isDefaultEgress, ifState.getIfIndex(), 0);
     }
 
 
@@ -313,7 +318,7 @@ public class IfmUtil {
                                                                     Long       tunnelKey,
                                                                     int        actionKeyStart,
                                                                     boolean isDefaultEgress,
-                                                                    int ifIndex) {
+                                                                    int ifIndex, int groupId) {
         List<ActionInfo> result = new ArrayList<>();
         switch (ifaceType) {
             case MPLS_OVER_GRE:
@@ -354,6 +359,16 @@ public class IfmUtil {
                     long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
                     result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
                             IfmConstants.REG6_END_INDEX, regValue));
+                    result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
+                }
+                break;
+            case LOGICAL_GROUP_INTERFACE:
+                if (isDefaultEgress) {
+                    result.add(new ActionGroup(groupId));
+                } else {
+                    BigInteger regValue = MetaDataUtil.getLportTagForReg6(ifIndex);
+                    result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
+                                                 IfmConstants.REG6_END_INDEX, regValue.longValue()));
                     result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
                 }
                 break;
@@ -462,7 +477,8 @@ public class IfmUtil {
             IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel
                     .getTunnelInterfaceType();
-            interfaceType = TUNNEL_TYPE_MAP.get(tunnelType);
+            interfaceType = tunnelType.isAssignableFrom(TunnelTypeLogicalGroup.class) ?
+                    InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE :  TUNNEL_TYPE_MAP.get(tunnelType);
         }
         return interfaceType;
     }

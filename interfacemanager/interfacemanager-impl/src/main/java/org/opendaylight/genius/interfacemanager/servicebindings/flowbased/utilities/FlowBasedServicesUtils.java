@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -398,9 +399,22 @@ public class FlowBasedServicesUtils {
     public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
                                                           Interface interfaceInfo, String portNo,
                                                           String interfaceName, int ifIndex) {
+        List<Instruction> instructions =
+                IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex, 0);
+        bindDefaultEgressDispatcherService(dataBroker, futures, interfaceName, instructions);
+    }
+
+    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
+            Interface interfaceInfo, String interfaceName, int ifIndex, int groupId) {
+        List<Instruction> instructions =
+                IfmUtil.getEgressInstructionsForInterface(interfaceInfo, StringUtils.EMPTY, null, true, ifIndex, groupId);
+        bindDefaultEgressDispatcherService(dataBroker, futures, interfaceName, instructions);
+    }
+
+    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
+            String interfaceName, List<Instruction> instructions) {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
-        List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex);
         BoundServices
                 serviceInfo =
                 getBoundServices(String.format("%s.%s", "default", interfaceName),

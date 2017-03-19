@@ -20,10 +20,11 @@ public class ITMConstants {
     public static final long ITM_IDPOOL_START = 1L;
     public static final String ITM_IDPOOL_SIZE = "100000";
 
-    public static final String VXLAN_GROUP_POOL_NAME = "vxlangroup";
     public static final long VXLAN_GROUP_POOL_START = 300000L;
     public static final long VXLAN_GROUP_POOL_END = 310000L;
     public static final long DELAY_TIME_IN_MILLISECOND = 5000;
+    public static final int REG6_START_INDEX = 0;
+    public static final int REG6_END_INDEX = 31;
 
     public static final int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring
