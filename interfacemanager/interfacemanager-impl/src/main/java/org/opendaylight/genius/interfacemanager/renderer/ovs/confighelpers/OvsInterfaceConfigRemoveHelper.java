@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -22,6 +23,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -37,6 +39,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -159,7 +163,8 @@ public class OvsInterfaceConfigRemoveHelper {
         // delete bridge to tunnel interface mappings
         InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
                 defaultConfigShardTransaction, interfaceName);
-        InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);
+        int lportTag = InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction,
+                                                                     interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, dataBroker,
                 defaultOperationalShardTransaction, idManager);
         // stop LLDP monitoring for the tunnel interface
@@ -169,7 +174,8 @@ public class OvsInterfaceConfigRemoveHelper {
             removeMultipleVxlanTunnelsConfiguration(interfaceName, parentRefs);
 
         } else if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            removeLogicalTunnelGroup(interfaceName, idManager, dataBroker, defaultOperationalShardTransaction);
+            removeLogicalTunnelGroup(dpId, interfaceName, lportTag, idManager, mdsalApiManager, dataBroker,
+                                     defaultOperationalShardTransaction);
         }
     }
 
@@ -256,12 +262,23 @@ public class OvsInterfaceConfigRemoveHelper {
         }
     }
 
-    private static void removeLogicalTunnelGroup(String ifaceName, IdManagerService idManager,
-                                                 DataBroker dataBroker, WriteTransaction tx) {
+    private static void removeLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag,
+                                                       IMdsalApiManager mdsalManager) {
+        long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
+        Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
+                                           MDSALUtil.buildBucketLists(Collections.emptyList()));
+        LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} removed for {} srcDpnId {}",
+                group.getGroupId().getValue(), interfaceName, srcDpnId);
+        mdsalManager.syncRemoveGroup(srcDpnId, group);
+    }
+
+    private static void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag,
+            IdManagerService idManager, IMdsalApiManager mdsalApiManager, DataBroker dataBroker, WriteTransaction tx) {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
         FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceName);
         InterfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, tx, idManager);
         InterfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);
+        removeLogicalTunnelSelectGroup(dpnId, ifaceName, lportTag, mdsalApiManager);
     }
 
     private static void removeMultipleVxlanTunnelsConfiguration(String ifaceName, ParentRefs parentRef) {

@@ -21,6 +21,8 @@ public class ITMConstants {
     public static final String ITM_IDPOOL_SIZE = "100000";
 
     public static final long DELAY_TIME_IN_MILLISECOND = 5000;
+    public static final int REG6_START_INDEX = 0;
+    public static final int REG6_END_INDEX = 31;
 
     public static final int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring

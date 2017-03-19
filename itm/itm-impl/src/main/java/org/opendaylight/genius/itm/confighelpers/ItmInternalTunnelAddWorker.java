@@ -207,11 +207,13 @@ public class ItmInternalTunnelAddWorker {
                 + "source IP - {}, destination IP - {} gateway IP - {}",
                 trunkInterfaceName, srcte.getInterfaceName(), srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress);
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
+        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false : monitorEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
-                monitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
+                isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug(" Trunk Interface builder - {} ", iface);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
