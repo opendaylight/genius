@@ -225,7 +225,7 @@ public class IdUtils {
         return 0;
     }
 
-    public void lockPool(LockManagerService lockManager, String poolName) throws IdManagerException {
+    public void lock(LockManagerService lockManager, String poolName) throws IdManagerException {
         LockInput input = new LockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.lock(input);
         try {
@@ -242,7 +242,7 @@ public class IdUtils {
         }
     }
 
-    public void unlockPool(LockManagerService lockManager, String poolName) throws IdManagerException {
+    public void unlock(LockManagerService lockManager, String poolName) {
         UnlockInput input = new UnlockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
@@ -257,7 +257,7 @@ public class IdUtils {
             }
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.error("Unable to unlock for pool {}", poolName, e);
-            throw new IdManagerException(String.format("Unable to unlock pool %s", poolName), e);
+            throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e);
         }
     }
 

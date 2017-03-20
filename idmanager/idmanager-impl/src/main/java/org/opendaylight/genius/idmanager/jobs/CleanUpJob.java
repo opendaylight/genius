@@ -76,7 +76,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
             // available ids from the global pool while the other is writing. We
             // cannot rely on DSJC because that is not cluster-aware
             try {
-                idUtils.lockPool(lockManager, parentPoolNameIntern);
+                idUtils.lock(lockManager, parentPoolNameIntern);
                 Optional<ReleasedIdsHolder> releasedIdsHolder = SingleTransactionDataBroker.syncReadOptional(broker,
                         CONFIGURATION, releasedIdInstanceIdentifier);
                 if (!releasedIdsHolder.isPresent()) {
@@ -94,7 +94,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                 SingleTransactionDataBroker.syncWrite(broker, LogicalDatastoreType.CONFIGURATION,
                         releasedIdInstanceIdentifier, releasedIdsParent.build());
             } finally {
-                idUtils.unlockPool(lockManager, parentPoolNameIntern);
+                idUtils.unlock(lockManager, parentPoolNameIntern);
             }
         }
     }
