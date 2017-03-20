@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.test.xtend
 
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 
@@ -17,13 +16,13 @@ import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExt
 
 class ExpectedInterfaceState {
 
-    static def newInterfaceState() {
+    static def newInterfaceState(Integer lportTag, String interfaceName) {
         new InterfaceBuilder >> [
-            ifIndex = 1
+            ifIndex = lportTag
             lowerLayerIf = #[
                 "openflow:1:2"
             ]
-            name = "23701c04-7e58-4c65-9425-78a80d49a218"
+            name = interfaceName
             operStatus = OperStatus.Up
             physAddress = new PhysAddress("AA:AA:AA:AA:AA:AA")
             type = L2vlan

@@ -45,7 +45,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class InterfaceManagerTestUtil {
     public static final String parentInterface = "tap23701c04-7e";
     public static final String interfaceName = "23701c04-7e58-4c65-9425-78a80d49a218";
+    public static final String trunkMemberinterfaceName = "23701c04-7e58-4c65-9425-78a80d49a219";
     public static final String tunnelInterfaceName = "tun414a856a7a4";
+    public static final String DPN_ID_1 = "1";
+    public static final String PORT_NO_1 = "2";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
     public static final NodeKey nodeKey = new NodeKey(new NodeId("openflow:1"));
 
@@ -62,6 +65,7 @@ public class InterfaceManagerTestUtil {
         if(phyAddress != null) {
             ifaceBuilder.setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress.getDefaultInstance(phyAddress));
         }
+        ifaceBuilder.setIfIndex(1);
         return ifaceBuilder.build();
     }
 
@@ -74,15 +78,19 @@ public class InterfaceManagerTestUtil {
     }
 
     public static Interface buildInterface(String ifName, String desc, boolean enabled, Object ifType,
-                                           String parentInterface) {
+                                           String parentInterface, IfL2vlan.L2vlanMode l2vlanMode ) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
         if(ifType.equals(L2vlan.class)){
-            IfL2vlan l2vlan = new IfL2vlanBuilder().setVlanId(VlanId.getDefaultInstance("0"))
-                    .setL2vlanMode(IfL2vlan.L2vlanMode.Trunk).build();
-            builder.addAugmentation(IfL2vlan.class, l2vlan);
+            IfL2vlanBuilder ifL2vlanBuilder = new IfL2vlanBuilder().setL2vlanMode(l2vlanMode);
+            if(IfL2vlan.L2vlanMode.TrunkMember.equals(l2vlanMode)){
+                ifL2vlanBuilder.setVlanId(new VlanId(100));
+            } else {
+                ifL2vlanBuilder.setVlanId(VlanId.getDefaultInstance("0"));
+            }
+            builder.addAugmentation(IfL2vlan.class, ifL2vlanBuilder.build());
         }else if(ifType.equals(IfTunnel.class)){
             IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null).setTunnelSource(null)
                     .setTunnelInterfaceType(null).build();
@@ -124,7 +132,7 @@ public class InterfaceManagerTestUtil {
         Interface interfaceInfo;
         if(!Tunnel.class.equals(ifType)) {
             interfaceInfo = InterfaceManagerTestUtil.buildInterface(
-                    ifaceName, ifaceName, true, ifType, parentRefs.getParentInterface());
+                    ifaceName, ifaceName, true, ifType, parentRefs.getParentInterface(), IfL2vlan.L2vlanMode.Trunk);
         }else{
             interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier(),ifaceName, ifaceName, true, TunnelTypeVxlan.class,
                     "1.1.1.1", "2.2.2.2");
@@ -136,9 +144,21 @@ public class InterfaceManagerTestUtil {
         tx.submit();
     }
 
+    public static void putVlanInterfaceConfig(DataBroker dataBroker, String ifaceName, String parentRefs,
+                                              IfL2vlan.L2vlanMode l2vlanMode){
+        Interface interfaceInfo = InterfaceManagerTestUtil.buildInterface(
+            ifaceName, ifaceName, true, L2vlan.class, parentRefs, l2vlanMode);
+        InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(
+            ifaceName);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
+        tx.submit();
+    }
+
     public static void putInterfaceState(DataBroker dataBroker, String interfaceName, Class<? extends InterfaceType> ifType){
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState =
-                InterfaceManagerTestUtil.buildStateInterface(interfaceName, "1", "2", "AA:AA:AA:AA:AA:AA", ifType);
+                InterfaceManagerTestUtil.buildStateInterface(interfaceName, DPN_ID_1, PORT_NO_1,
+                    "AA:AA:AA:AA:AA:AA", ifType);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(OPERATIONAL, IfmUtil.buildStateInterfaceId(interfaceName), ifaceState, true);
         tx.submit();
