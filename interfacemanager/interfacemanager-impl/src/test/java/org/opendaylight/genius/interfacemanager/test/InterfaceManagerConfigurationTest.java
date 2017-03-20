@@ -18,6 +18,7 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 
 import com.google.common.base.Optional;
 import java.math.BigInteger;
+import java.util.concurrent.Future;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
@@ -30,12 +31,22 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.EgressActionsForInterfaceOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.EgressInstructionsForInterfaceOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.EndPointIpFromDpn;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedFlowEntries;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceChildEntry;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceState;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedServicesInfo;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedTerminationPoint;
+import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceFromIfIndexOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceMeta;
+import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceTypeOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.NodeconnectorIdFromInterfaceOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.PortFromInterfaceOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -59,6 +70,37 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
@@ -69,6 +111,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.RpcResult;
 
 /**
  * Component tests for interface manager.
@@ -88,8 +131,8 @@ public class InterfaceManagerConfigurationTest {
 
     private static final BigInteger DPN_ID = BigInteger.valueOf(1);
 
-    @Inject
-    DataBroker dataBroker;
+    @Inject DataBroker dataBroker;
+    @Inject OdlInterfaceRpcService odlInterfaceRpcService;
 
     @Before
     public void start() throws InterruptedException {
@@ -146,17 +189,18 @@ public class InterfaceManagerConfigurationTest {
         InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryInstanceIdentifier = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(new InterfaceParentEntryKey(PARENT_INTERFACE),
                         new InterfaceChildEntryKey(INTERFACE_NAME));
-        assertEqualBeans(ExpectedInterfaceChildEntry.interfaceChildEntry(), dataBroker.newReadOnlyTransaction()
-                .read(CONFIGURATION, interfaceChildEntryInstanceIdentifier).checkedGet().get());
+        assertEqualBeans(ExpectedInterfaceChildEntry.interfaceChildEntry(INTERFACE_NAME),
+                dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
+                        interfaceChildEntryInstanceIdentifier).checkedGet().get());
 
         // Then
-        // a) check if operational/ietf-interfaces-state is populated for the
-        // vlan interface
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifaceState = dataBroker
-                .newReadOnlyTransaction().read(OPERATIONAL, IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet()
-                .get();
-        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(), ifaceState);
+        // a) check if operational/ietf-interfaces-state is populated for the vlan interface
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .interfaces.state.Interface ifaceState =
+                dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+                IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), INTERFACE_NAME), ifaceState);
+
 
         // b) check if lport-tag to interface mapping is created
         InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier
@@ -186,7 +230,11 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(ExpectedServicesInfo.newboundService(), dataBroker.newReadOnlyTransaction()
                 .read(CONFIGURATION, boundServicesInstanceIdentifier).checkedGet().get());
 
-        // Delete test
+
+        // Test all RPCs related to vlan-interfaces
+        checkVlanRpcs();
+
+        //Delete test
         // iii) vlan interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, INTERFACE_NAME);
         Thread.sleep(4000);
@@ -255,6 +303,9 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
 
+        // Test all RPCs related to tunnel interfaces
+        checkTunnelRpcs();
+
         // Delete test
         // iii) tunnel interface is deleted from config/ietf-interfaces
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, TUNNEL_INTERFACE_NAME);
@@ -268,5 +319,84 @@ public class InterfaceManagerConfigurationTest {
         // b) check if termination end point is deleted in
         // config/network-topology
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
+    }
+
+    private void checkVlanRpcs() throws Exception {
+        //1. Test dpn-id fetching from interface
+        GetDpidFromInterfaceInput dpidFromInterfaceInput = new GetDpidFromInterfaceInputBuilder()
+                .setIntfName(INTERFACE_NAME).build();
+        Future<RpcResult<GetDpidFromInterfaceOutput>> dpidFromInterfaceOutput =
+            odlInterfaceRpcService.getDpidFromInterface(dpidFromInterfaceInput);
+        Assert.assertEquals(DpnFromInterfaceOutput.newDpnFromInterfaceOutput(),
+                dpidFromInterfaceOutput.get().getResult());
+
+        //2. Test interface list fetching from dpnId
+        GetDpnInterfaceListInput dpnInterfaceListInput = new GetDpnInterfaceListInputBuilder()
+                .setDpid(DPN_ID).build();
+        Future<RpcResult<GetDpnInterfaceListOutput>> dpnInterfaceListOutput = odlInterfaceRpcService
+            .getDpnInterfaceList(dpnInterfaceListInput);
+        assertEqualBeans(DpnInterfaceListOutput.newDpnInterfaceListOutput(), dpnInterfaceListOutput.get().getResult());
+
+        //3. Test egress actions fetching for interface
+        GetEgressActionsForInterfaceInput egressActionsForInterfaceInput = new
+            GetEgressActionsForInterfaceInputBuilder().setIntfName(INTERFACE_NAME).build();
+        Future<RpcResult<GetEgressActionsForInterfaceOutput>> egressActionsForInterfaceOutput =
+            odlInterfaceRpcService.getEgressActionsForInterface(egressActionsForInterfaceInput);
+        assertEqualBeans(EgressActionsForInterfaceOutput.newEgressActionsForInterfaceOutput(),
+            egressActionsForInterfaceOutput.get().getResult());
+
+        //4. Test egress instructions fetching for interface
+        GetEgressInstructionsForInterfaceInput egressInstructionsForInterfaceInput = new
+            GetEgressInstructionsForInterfaceInputBuilder().setIntfName(INTERFACE_NAME).build();
+        Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> egressInstructionsForInterfaceOutput =
+            odlInterfaceRpcService.getEgressInstructionsForInterface(egressInstructionsForInterfaceInput);
+        assertEqualBeans(EgressInstructionsForInterfaceOutput.newEgressInstructionsForInterfaceOutput(),
+            egressInstructionsForInterfaceOutput.get().getResult());
+
+
+        //5. Test interface fetching from if-index
+        GetInterfaceFromIfIndexInput interfaceFromIfIndexInput = new GetInterfaceFromIfIndexInputBuilder()
+                .setIfIndex(1).build();
+        Future<RpcResult<GetInterfaceFromIfIndexOutput>> interfaceFromIfIndexOutput = odlInterfaceRpcService
+            .getInterfaceFromIfIndex(interfaceFromIfIndexInput);
+        assertEqualBeans(InterfaceFromIfIndexOutput.newInterfaceFromIfIndexOutput(),
+                interfaceFromIfIndexOutput.get().getResult());
+
+        //6. Test interface type fetching from interface-name
+        GetInterfaceTypeInput interfaceTypeInput = new GetInterfaceTypeInputBuilder().setIntfName(INTERFACE_NAME)
+            .build();
+        Future<RpcResult<GetInterfaceTypeOutput>> interfaceTypeOutput =
+                odlInterfaceRpcService.getInterfaceType(interfaceTypeInput);
+        assertEqualBeans(InterfaceTypeOutput.newInterfaceTypeOutput(), interfaceTypeOutput.get().getResult());
+
+        //7. Test get nodeconnector-id from interface-name
+        GetNodeconnectorIdFromInterfaceInput nodeconnectorIdFromInterfaceInput = new
+            GetNodeconnectorIdFromInterfaceInputBuilder().setIntfName(INTERFACE_NAME).build();
+        Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> nodeconnectorIdFromInterfaceOutput =
+            odlInterfaceRpcService.getNodeconnectorIdFromInterface(nodeconnectorIdFromInterfaceInput);
+        assertEqualBeans(NodeconnectorIdFromInterfaceOutput.newNodeconnectorIdFromInterfaceOutput(),
+            nodeconnectorIdFromInterfaceOutput.get().getResult());
+
+        //8. Test get port details from interface-name
+        GetPortFromInterfaceInput portFromInterfaceInput =
+                new GetPortFromInterfaceInputBuilder().setIntfName(INTERFACE_NAME).build();
+        Future<RpcResult<GetPortFromInterfaceOutput>> portFromInterfaceOutput = odlInterfaceRpcService
+            .getPortFromInterface(portFromInterfaceInput);
+        assertEqualBeans(PortFromInterfaceOutput.newPortFromInterfaceOutput(),
+                portFromInterfaceOutput.get().getResult());
+    }
+
+    private void checkTunnelRpcs() throws Exception {
+        //1. Test endpoint ip fetching for dpn-id
+        GetEndpointIpForDpnInput endpointIpForDpnInput = new GetEndpointIpForDpnInputBuilder().setDpid(DPN_ID).build();
+        Future<RpcResult<GetEndpointIpForDpnOutput>> endpointIpForDpnOutput = odlInterfaceRpcService
+                .getEndpointIpForDpn(endpointIpForDpnInput);
+        assertEqualBeans(EndPointIpFromDpn.newEndPointIpFromDpn(), endpointIpForDpnOutput.get().getResult());
+
+
+        //2. fetch tunnel type from interface-name
+        GetTunnelTypeInput tunnelTypeInput = new GetTunnelTypeInputBuilder().setIntfName(TUNNEL_INTERFACE_NAME).build();
+        Future<RpcResult<GetTunnelTypeOutput>> tunnelTypeOutput = odlInterfaceRpcService.getTunnelType(tunnelTypeInput);
+        assertEqualBeans(TunnelTypeOutput.newTunnelTypeOutput(), tunnelTypeOutput.get().getResult());
     }
 }
