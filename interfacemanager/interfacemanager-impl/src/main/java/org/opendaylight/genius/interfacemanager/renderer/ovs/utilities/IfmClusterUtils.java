@@ -11,8 +11,10 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.common.api.clustering.CandidateAlreadyRegisteredException;
+import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.utils.SystemPropertyReader;
 import org.opendaylight.genius.utils.clustering.ClusteringUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnerUtils;
 import org.slf4j.Logger;
@@ -61,5 +63,14 @@ public class IfmClusterUtils {
                 LOG.error("Failed to identify owner for entity {} due to {}", INTERFACE_CONFIG_ENTITY, error);
             }
         });
+    }
+
+    /*
+     * For cases where the EOS check needs to be run on the same thread.
+     */
+    public static Boolean isEntityOwner(String entity) {
+        return ClusteringUtils.isEntityOwner(ifaceServiceProvider.getEntityOwnershipService(), new Entity(entity,
+                entity),
+            SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
     }
 }
