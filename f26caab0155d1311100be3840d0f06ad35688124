@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_eb086a2a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-03-20T11:41:05Z",
+      "side": 1,
+      "message": "not sure where this one is used, this is using LPORT_TAG space, should be changed",
+      "range": {
+        "startLine": 26,
+        "startChar": 88,
+        "endLine": 26,
+        "endChar": 94
+      },
+      "revId": "f26caab0155d1311100be3840d0f06ad35688124",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
