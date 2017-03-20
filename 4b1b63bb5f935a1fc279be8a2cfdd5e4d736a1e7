@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_431c0014",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-20T03:07:42Z",
+      "side": 1,
+      "message": "this unlock() is hanging around with a hidden lock made by the caller.  Cna\u0027t we place this unlock in the caller of this method itself?",
+      "revId": "4b1b63bb5f935a1fc279be8a2cfdd5e4d736a1e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a3196c24",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 652,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-20T03:07:42Z",
+      "side": 1,
+      "message": "ditto comment here.",
+      "revId": "4b1b63bb5f935a1fc279be8a2cfdd5e4d736a1e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8316e8ef",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/UpdateIdEntryJob.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-20T03:07:42Z",
+      "side": 1,
+      "message": "ditto comment as in first file here.",
+      "revId": "4b1b63bb5f935a1fc279be8a2cfdd5e4d736a1e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
