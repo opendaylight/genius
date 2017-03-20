@@ -8,25 +8,22 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger LOG = LoggerFactory.getLogger(ItmTepsNotHostedRemoveWorker.class );
-    final private  IpAddress tepIpAddress;
-    final private  String tzName;
-    final private  BigInteger dpnId;
-    final private  DataBroker dataBroker;
+    private static final Logger LOG = LoggerFactory.getLogger(ItmTepsNotHostedRemoveWorker.class);
+    private final IpAddress tepIpAddress;
+    private final String tzName;
+    private final BigInteger dpnId;
+    private final DataBroker dataBroker;
 
 
     public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress,

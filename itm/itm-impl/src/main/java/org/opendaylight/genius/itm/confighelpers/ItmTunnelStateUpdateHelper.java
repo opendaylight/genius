@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -22,16 +24,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItmTunnelStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateTunnel(Interface original, Interface updated, IInterfaceManager ifaceManager, DataBroker broker) throws Exception {
+    public static List<ListenableFuture<Void>> updateTunnel(Interface original, Interface updated,
+                                                            IInterfaceManager ifaceManager,
+                                                            DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
+        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+        final WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
 
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(updated);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, updated.getName());
@@ -39,7 +40,7 @@ public class ItmTunnelStateUpdateHelper {
         StateTunnelList tunnelsState = ItmUtils.getTunnelState(broker, updated.getName(), stListId);
         StateTunnelListBuilder stlBuilder;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = (updated.getOperStatus().equals(Interface.OperStatus.Up)) ? (true):(false);
+        boolean tunnelState = (updated.getOperStatus().equals(Interface.OperStatus.Up)) ? (true) : (false);
         switch (updated.getOperStatus()) {
             case Up:
                 tunnelOperStatus = TunnelOperStatus.Up;
@@ -53,7 +54,7 @@ public class ItmTunnelStateUpdateHelper {
             default:
                 tunnelOperStatus = TunnelOperStatus.Ignore;
         }
-        if(tunnelsState != null) {
+        if (tunnelsState != null) {
             stlBuilder = new StateTunnelListBuilder(tunnelsState);
             stlBuilder.setTunnelState(tunnelState);
             stlBuilder.setOperState(tunnelOperStatus);
