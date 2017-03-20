@@ -1,0 +1,210 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_15ca2f6e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "nit: Vxlan",
+      "range": {
+        "startLine": 123,
+        "startChar": 23,
+        "endLine": 123,
+        "endChar": 28
+      },
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d5a9c7e0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "I don\u0027t see any reason to unify both cases (vxlan/logical-group) into a single method since non of the code should be shared here",
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3595b388",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "there is no way to figure out what went wrong when seeing such a log.\nneed to separate these cases\n1. services like dataBroker, idManager - if passed as null let it fly like any other unhandled exception and print the complete stack and not just a warn\n2. ifTunnel is null - we wouldn\u0027t get here since the calling method will throw in line #120\nI doubt if it\u0027s possible to call addTunnelConfiguration with ifTunnel null but if it is not verified in the methods calling addTunnelConfiguration, you need to validate it in line #120\n3. itfNew is null - would throw in line #118 check if there is a null check in the methods calling addTunnelConfiguration",
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_75e61b46",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "I am definitely missing something here...\nhow could it be that when adding tunnel config the state is already there?",
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_35c3f38b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "why is this lookup needed? isn\u0027t it possible to simply calculate the name of the parent based on tunnelNew src and dst DPNs? this would also work even if the logical tunnel is not part of the InternalTunnel DS yet",
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9530df9f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "try to keep the argument types unified across methods\nsome new methods use Optional\u003cWriteTransaction\u003e and some only WriteTransaction",
+      "range": {
+        "startLine": 220,
+        "startChar": 72,
+        "endLine": 220,
+        "endChar": 109
+      },
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_35713378",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "this is very annoying log to see for each tunnel going up\nprint this only once on bundle startup",
+      "range": {
+        "startLine": 239,
+        "startChar": 77,
+        "endLine": 239,
+        "endChar": 102
+      },
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_55edd7ee",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "final for both args",
+      "range": {
+        "startLine": 49,
+        "startChar": 37,
+        "endLine": 49,
+        "endChar": 38
+      },
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_35e65317",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "better doing this in @PostConstruct to make sure all dependencies have been satisfied",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 47
+      },
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b5d24332",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-20T08:08:10Z",
+      "side": 1,
+      "message": "you can use Collections.emptyList() rather than allocating from the heap",
+      "range": {
+        "startLine": 81,
+        "startChar": 70,
+        "endLine": 81,
+        "endChar": 81
+      },
+      "revId": "2eba4671fad2039f7246b40e9afcf063c6c7d687",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
