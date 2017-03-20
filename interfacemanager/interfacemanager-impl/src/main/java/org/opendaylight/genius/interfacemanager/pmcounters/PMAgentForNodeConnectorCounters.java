@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -9,10 +9,13 @@ package org.opendaylight.genius.interfacemanager.pmcounters;
 
 import java.lang.management.ManagementFactory;
 import java.util.Map;
+import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
+import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import org.slf4j.Logger;
@@ -20,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 public class PMAgentForNodeConnectorCounters {
 
-    private static Logger logger = LoggerFactory.getLogger(PMAgentForNodeConnectorCounters.class);
     private MBeanServer mbServer = null;
     private ObjectName mbeanForOFPortDuration = null;
     private ObjectName mbeanForOFPortReceiveDrop = null;
@@ -30,6 +32,8 @@ public class PMAgentForNodeConnectorCounters {
     private ObjectName mbeanForOFPortBytesSent = null;
     private ObjectName mbeanForOFPortBytesReceive = null;
     private ObjectName mbeanForEntriesPerOFTable = null;
+    private static final String REGISTERED_MBEAN_SUCCESSFULLY = "Registered Mbean {} successfully";
+
     private static final String BEANNAMEFOROFPORTDURATION = "SDNC.PM:type=CounterForOFPortDuration";
     private static final String BEANNAMEFOROFPORTREVEIVEDROP = "SDNC.PM:type=CounterForOFPortReceiveDrop";
     private static final String BEANNAMEFOROFPORTREVEIVEERROR = "SDNC.PM:type=CounterForOFPortReceiveError";
@@ -47,6 +51,8 @@ public class PMAgentForNodeConnectorCounters {
     private static CounterForOFPortBytesReceive counterForOFPortBytesReceive = new CounterForOFPortBytesReceive();
     private static CounterForEntriesPerOFTable counterForEntriesPerOFTable = new CounterForEntriesPerOFTable();
 
+    private static final Logger LOG = LoggerFactory.getLogger(PMAgentForNodeConnectorCounters.class);
+
     public PMAgentForNodeConnectorCounters() {
         // Get the platform MBeanServer
         mbServer = ManagementFactory.getPlatformMBeanServer();
@@ -60,81 +66,90 @@ public class PMAgentForNodeConnectorCounters {
             mbeanForOFPortBytesReceive = new ObjectName(BEANNAMEFOROFPORTBYTESRECEIVE);
             mbeanForEntriesPerOFTable = new ObjectName(BEANNAMEFORENTRIESPEROFTABLE);
         } catch (MalformedObjectNameException e) {
-            logger.error("ObjectName instance creation failed with exception {}", e);
+            LOG.error("ObjectName instance creation failed with exception {}", e);
 
         }
     }
 
     public void registerMbean() {
         try {
-            // Uniquely identify the MBeans and register them with the platform MBeanServer
-            if(!mbServer.isRegistered(mbeanForOFPortDuration)) {
+            // Uniquely identify the MBeans and register them with the platform
+            // MBeanServer
+            if (!mbServer.isRegistered(mbeanForOFPortDuration)) {
                 mbServer.registerMBean(counterForOFPortDurationBean, mbeanForOFPortDuration);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortDuration);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortDuration);
             }
-            if(!mbServer.isRegistered(mbeanForOFPortReceiveDrop)) {
+            if (!mbServer.isRegistered(mbeanForOFPortReceiveDrop)) {
                 mbServer.registerMBean(counterForOFPortReceiveDropBean, mbeanForOFPortReceiveDrop);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortReceiveDrop);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortReceiveDrop);
             }
-            if(!mbServer.isRegistered(mbeanForOFPortReceiveError)) {
+            if (!mbServer.isRegistered(mbeanForOFPortReceiveError)) {
                 mbServer.registerMBean(counterForOFPortReceiveErrorBean, mbeanForOFPortReceiveError);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortReceiveError);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortReceiveError);
             }
-            if(!mbServer.isRegistered(mbeanForOFPortPacketSent)) {
+            if (!mbServer.isRegistered(mbeanForOFPortPacketSent)) {
                 mbServer.registerMBean(counterForOFPortPacketSent, mbeanForOFPortPacketSent);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortPacketSent);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortPacketSent);
             }
-            if(!mbServer.isRegistered(mbeanForOFPortPacketReceive)) {
+            if (!mbServer.isRegistered(mbeanForOFPortPacketReceive)) {
                 mbServer.registerMBean(counterForOFPortPacketReceive, mbeanForOFPortPacketReceive);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortPacketReceive);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortPacketReceive);
             }
-            if(!mbServer.isRegistered(mbeanForOFPortBytesSent)) {
+            if (!mbServer.isRegistered(mbeanForOFPortBytesSent)) {
                 mbServer.registerMBean(counterForOFPortBytesSent, mbeanForOFPortBytesSent);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortBytesSent);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortBytesSent);
             }
-            if(!mbServer.isRegistered(mbeanForOFPortBytesReceive)) {
+            if (!mbServer.isRegistered(mbeanForOFPortBytesReceive)) {
                 mbServer.registerMBean(counterForOFPortBytesReceive, mbeanForOFPortBytesReceive);
-                logger.info("Registered Mbean {} successfully", mbeanForOFPortBytesReceive);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForOFPortBytesReceive);
             }
-            if(!mbServer.isRegistered(mbeanForEntriesPerOFTable)) {
+            if (!mbServer.isRegistered(mbeanForEntriesPerOFTable)) {
                 mbServer.registerMBean(counterForEntriesPerOFTable, mbeanForEntriesPerOFTable);
-                logger.info("Registered Mbean {} successfully", mbeanForEntriesPerOFTable);
+                LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForEntriesPerOFTable);
             }
-        } catch(Exception e) {
-            logger.error("Registeration failed with exception {}", e);
+        } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
+            LOG.error("Registeration failed with exception {}", e);
         }
     }
 
-
-    public synchronized void connectToPMAgent(Map<String, String> ofPortDurationCounter, Map<String, String> ofPortReceiveDropCounter,
-                                              Map<String, String> ofPortReceiveErrorCounter, Map<String, String> ofPortPacketSent, Map<String, String> ofPortPacketReceive,
-                                              Map<String, String> ofPortBytesSent, Map<String, String> ofPortBytesReceive) {
+    public synchronized void connectToPMAgent(Map<String, String> ofPortDurationCounter,
+            Map<String, String> ofPortReceiveDropCounter, Map<String, String> ofPortReceiveErrorCounter,
+            Map<String, String> ofPortPacketSent, Map<String, String> ofPortPacketReceive,
+            Map<String, String> ofPortBytesSent, Map<String, String> ofPortBytesReceive) {
         try {
-                mbServer.invoke(mbeanForOFPortDuration, "invokePMManagedObjects", new Object[]{ofPortDurationCounter}, new String[]{Map.class.getName()});
-                mbServer.invoke(mbeanForOFPortReceiveDrop, "invokePMManagedObjects", new Object[]{ofPortReceiveDropCounter}, new String[]{Map.class.getName()});
-                mbServer.invoke(mbeanForOFPortReceiveError, "invokePMManagedObjects", new Object[]{ofPortReceiveErrorCounter}, new String[]{Map.class.getName()});
-                mbServer.invoke(mbeanForOFPortPacketSent, "invokePMManagedObjects", new Object[]{ofPortPacketSent}, new String[]{Map.class.getName()});
-                mbServer.invoke(mbeanForOFPortPacketReceive, "invokePMManagedObjects", new Object[]{ofPortPacketReceive}, new String[]{Map.class.getName()});
-                mbServer.invoke(mbeanForOFPortBytesSent, "invokePMManagedObjects", new Object[]{ofPortBytesSent}, new String[]{Map.class.getName()});
-                mbServer.invoke(mbeanForOFPortBytesReceive, "invokePMManagedObjects", new Object[]{ofPortBytesReceive}, new String[]{Map.class.getName()});
-        } catch (InstanceNotFoundException e ) {
-            logger.error(" InstanceNotFoundException ", e);
+            mbServer.invoke(mbeanForOFPortDuration, "invokePMManagedObjects", new Object[] { ofPortDurationCounter },
+                    new String[] { Map.class.getName() });
+            mbServer.invoke(mbeanForOFPortReceiveDrop, "invokePMManagedObjects",
+                    new Object[] { ofPortReceiveDropCounter }, new String[] { Map.class.getName() });
+            mbServer.invoke(mbeanForOFPortReceiveError, "invokePMManagedObjects",
+                    new Object[] { ofPortReceiveErrorCounter }, new String[] { Map.class.getName() });
+            mbServer.invoke(mbeanForOFPortPacketSent, "invokePMManagedObjects", new Object[] { ofPortPacketSent },
+                    new String[] { Map.class.getName() });
+            mbServer.invoke(mbeanForOFPortPacketReceive, "invokePMManagedObjects", new Object[] { ofPortPacketReceive },
+                    new String[] { Map.class.getName() });
+            mbServer.invoke(mbeanForOFPortBytesSent, "invokePMManagedObjects", new Object[] { ofPortBytesSent },
+                    new String[] { Map.class.getName() });
+            mbServer.invoke(mbeanForOFPortBytesReceive, "invokePMManagedObjects", new Object[] { ofPortBytesReceive },
+                    new String[] { Map.class.getName() });
+        } catch (InstanceNotFoundException e) {
+            LOG.error(" InstanceNotFoundException ", e);
         } catch (MBeanException e) {
-            logger.error(" MBeanException ", e);
+            LOG.error(" MBeanException ", e);
         } catch (ReflectionException e) {
-            logger.error(" ReflectionException ", e);
+            LOG.error(" ReflectionException ", e);
         }
     }
 
     public synchronized void connectToPMAgentAndInvokeEntriesPerOFTable(Map<String, String> entriesPerOFTable) {
         try {
-                mbServer.invoke(mbeanForEntriesPerOFTable, "invokePMManagedObjects", new Object[]{entriesPerOFTable}, new String[]{Map.class.getName()});
-        } catch (InstanceNotFoundException e ) {
-            logger.error(" InstanceNotFoundException ", e);
+            mbServer.invoke(mbeanForEntriesPerOFTable, "invokePMManagedObjects", new Object[] { entriesPerOFTable },
+                    new String[] { Map.class.getName() });
+        } catch (InstanceNotFoundException e) {
+            LOG.error(" InstanceNotFoundException ", e);
         } catch (MBeanException e) {
-            logger.error(" MBeanException ", e);
+            LOG.error(" MBeanException ", e);
         } catch (ReflectionException e) {
-            logger.error(" ReflectionException ", e);
+            LOG.error(" ReflectionException ", e);
         }
     }
 }
