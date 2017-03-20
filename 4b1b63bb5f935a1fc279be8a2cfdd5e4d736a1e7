@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_c32f50f5",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-20T05:51:03Z",
+      "side": 1,
+      "message": "change the method name from lockPool to lock since this method is used for locking pool and idKey now.",
+      "revId": "4b1b63bb5f935a1fc279be8a2cfdd5e4d736a1e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_431c0014",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 3
@@ -13,6 +30,24 @@
       "writtenOn": "2017-03-20T03:07:42Z",
       "side": 1,
       "message": "this unlock() is hanging around with a hidden lock made by the caller.  Cna\u0027t we place this unlock in the caller of this method itself?",
+      "revId": "4b1b63bb5f935a1fc279be8a2cfdd5e4d736a1e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_433b6038",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-20T05:51:03Z",
+      "side": 1,
+      "message": "It is needed here to unlock the key when id already exists in the pool. This can\u0027t be done in allocateId method itself, otherwise unlocking on idKey in UpdateIdEntryJob doesn\u0027t make any sense (i.e. unlock the idKey only after writing id-entries).",
+      "parentUuid": "fafc7978_431c0014",
       "revId": "4b1b63bb5f935a1fc279be8a2cfdd5e4d736a1e7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
