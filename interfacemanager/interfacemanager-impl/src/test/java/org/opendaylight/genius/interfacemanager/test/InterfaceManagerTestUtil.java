@@ -46,6 +46,8 @@ public class InterfaceManagerTestUtil {
     public static final String parentInterface = "tap23701c04-7e";
     public static final String interfaceName = "23701c04-7e58-4c65-9425-78a80d49a218";
     public static final String tunnelInterfaceName = "tun414a856a7a4";
+    public static final String DPN_ID_1 = "1";
+    public static final String PORT_NO_1 = "2";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
     public static final NodeKey nodeKey = new NodeKey(new NodeId("openflow:1"));
 
@@ -62,6 +64,7 @@ public class InterfaceManagerTestUtil {
         if(phyAddress != null) {
             ifaceBuilder.setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress.getDefaultInstance(phyAddress));
         }
+        ifaceBuilder.setIfIndex(1);
         return ifaceBuilder.build();
     }
 
@@ -138,7 +141,8 @@ public class InterfaceManagerTestUtil {
 
     public static void putInterfaceState(DataBroker dataBroker, String interfaceName, Class<? extends InterfaceType> ifType){
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifaceState =
-                InterfaceManagerTestUtil.buildStateInterface(interfaceName, "1", "2", "AA:AA:AA:AA:AA:AA", ifType);
+                InterfaceManagerTestUtil.buildStateInterface(interfaceName, DPN_ID_1, PORT_NO_1,
+                    "AA:AA:AA:AA:AA:AA", ifType);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(OPERATIONAL, IfmUtil.buildStateInterfaceId(interfaceName), ifaceState, true);
         tx.submit();

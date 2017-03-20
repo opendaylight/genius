@@ -7,17 +7,17 @@
  */
 package org.opendaylight.genius.interfacemanager.test.xtend
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryBuilder;
+
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
-class InterfaceMeta {
+class NodeconnectorIdFromInterfaceOutput {
 
-    static def newBridgeInterface() {
-        new BridgeInterfaceEntryBuilder >> [
-            interfaceName = "tun414a856a7a4"
+    static def newNodeconnectorIdFromInterfaceOutput() {
+        new GetNodeconnectorIdFromInterfaceOutputBuilder >> [
+            nodeconnectorId = new NodeConnectorId("openflow:1:2")
         ]
     }
-
 }
