@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_0b5a0e50",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 362,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-20T13:24:38Z",
+      "side": 1,
+      "message": "it will be treated in the next \u0027egress service\u0027 review.",
+      "parentUuid": "fafc7978_dbe746ab",
+      "revId": "acd24e302c2ec3347c05f53bfa0c8ce5d001cb6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_95a57fb7",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_2b01d239",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-20T13:24:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_95a57fb7",
+      "revId": "acd24e302c2ec3347c05f53bfa0c8ce5d001cb6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7bf29a70",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2017-03-20T08:09:39Z",
       "side": 1,
       "message": "extract lines #144-#1148, #151-154, #425-#428, #432-#435 to method or better yet - is it possible to use ItmCache to get the tunnel?",
+      "revId": "acd24e302c2ec3347c05f53bfa0c8ce5d001cb6e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0bfe8e38",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-20T13:24:38Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_7bf29a70",
       "revId": "acd24e302c2ec3347c05f53bfa0c8ce5d001cb6e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
