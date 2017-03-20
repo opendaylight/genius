@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -20,13 +22,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeTunnel(Interface iface, IInterfaceManager ifaceManager, DataBroker broker) throws Exception {
+    public static List<ListenableFuture<Void>> removeTunnel(Interface iface, IInterfaceManager ifaceManager,
+                                                            DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateRemoveHelper for Interface {} ", iface);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();

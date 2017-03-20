@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,21 +8,23 @@
 
 package org.opendaylight.genius.itm.listeners;
 
-import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateUpdateHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -30,25 +32,27 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Callable;
+
 @Singleton
-public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener> implements AutoCloseable {
+public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener>
+        implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
     private final DataBroker broker;
     private final IInterfaceManager ifaceManager;
 
     @Inject
-    public InterfaceStateListener(final DataBroker dataBroker,IInterfaceManager iInterfaceManager) {
+    public InterfaceStateListener(final DataBroker dataBroker,IInterfaceManager iinterfacemanager) {
+
         super(Interface.class, InterfaceStateListener.class);
         this.broker = dataBroker;
-        this.ifaceManager = iInterfaceManager;
+        this.ifaceManager = iinterfacemanager;
     }
 
     @PostConstruct
     public void start() {
+
         registerListener(this.broker);
         LOG.info("Interface state listener Started");
     }
@@ -59,7 +63,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         LOG.info("Interface state listener Closed");
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     private void registerListener(final DataBroker db) {
+
         try {
             registerListener(LogicalDatastoreType.OPERATIONAL,db);
         } catch (final Exception e) {
@@ -80,6 +86,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
     @Override
     protected void add(InstanceIdentifier<Interface> identifier, Interface iface) {
+
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
@@ -91,6 +98,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
     @Override
     protected void remove(InstanceIdentifier<Interface> identifier, Interface iface) {
+
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
@@ -121,9 +129,10 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
     private class ItmTunnelAddWorker implements Callable<List<ListenableFuture<Void>>> {
         private Interface iface;
 
-        public ItmTunnelAddWorker(Interface iface) {
+        ItmTunnelAddWorker(Interface iface) {
             this.iface = iface;
         }
+
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
             return ItmTunnelStateAddHelper.addTunnel(iface,ifaceManager, broker);
@@ -134,9 +143,10 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
     private class ItmTunnelRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private Interface iface;
 
-        public ItmTunnelRemoveWorker(Interface iface) {
+        ItmTunnelRemoveWorker(Interface iface) {
             this.iface = iface;
         }
+
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
             return ItmTunnelStateRemoveHelper.removeTunnel(iface,ifaceManager, broker);
@@ -148,7 +158,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
         private Interface updatedIface;
         private Interface originalIface;
 
-        public ItmTunnelUpdateWorker(Interface originalIface, Interface updatedIface) {
+        ItmTunnelUpdateWorker(Interface originalIface, Interface updatedIface) {
             this.updatedIface = updatedIface;
             this.originalIface = updatedIface;
         }
