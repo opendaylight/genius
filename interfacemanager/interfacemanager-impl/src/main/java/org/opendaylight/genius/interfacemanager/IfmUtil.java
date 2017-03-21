@@ -317,7 +317,6 @@ public class IfmUtil {
         List<ActionInfo> result = new ArrayList<>();
         switch (ifaceType) {
             case MPLS_OVER_GRE:
-            case VXLAN_TRUNK_INTERFACE:
             case GRE_TRUNK_INTERFACE:
                 if(!isDefaultEgress) {
                     //TODO tunnel_id to encode GRE key, once it is supported
@@ -325,7 +324,12 @@ public class IfmUtil {
                     if (tunnelKey == null) {
                         tunnelKey = 0L;
                     }
-                    result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
+                }
+            case VXLAN_TRUNK_INTERFACE:
+                if(!isDefaultEgress) {
+                    if (tunnelKey != null) {
+                        result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
+                    }
 
                     IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
                     if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
