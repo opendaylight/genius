@@ -252,29 +252,28 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     public void writeGroupEntityInternal(GroupEntity groupEntity, WriteTransaction tx) {
         Group group = groupEntity.getGroupBuilder().build();
-
-        Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
-
-        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getGroupId(), nodeDpn);
-
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getDpnId(), group);
         tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
     }
 
     public void writeGroupInternal(BigInteger dpId, Group group, WriteTransaction tx) {
-
-        Node nodeDpn = buildDpnNode(dpId);
-        long groupId = group.getGroupId().getValue();
-        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(dpId, group);
         tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
     }
 
+    public void updateGroupEntityInternal(GroupEntity groupEntity, WriteTransaction tx) {
+        Group group = groupEntity.getGroupBuilder().build();
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getDpnId(), group);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
+    }
+
+    public void updateGroupInternal(BigInteger dpId, Group group, WriteTransaction tx) {
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(dpId, group);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
+    }
+
     public void deleteGroupInternal(BigInteger dpId, Group group, WriteTransaction tx) {
-
-        Node nodeDpn = buildDpnNode(dpId);
-        long groupId = group.getGroupId().getValue();
-        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(dpId, group);
         tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
     }
 
@@ -467,9 +466,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     public void syncSetUpGroupInternal(BigInteger dpId, Group group, long delayTime, boolean isRemove) {
         LOG.trace("syncSetUpGroup for group {} ", group);
-        Node nodeDpn = buildDpnNode(dpId);
-        long groupId = group.getGroupId().getValue();
-        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(dpId, group);
         if (isRemove) {
             MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
@@ -701,6 +698,16 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
+    public void modifyGroupToTx(GroupEntity groupEntity, WriteTransaction tx) {
+        updateGroupEntityInternal(groupEntity, tx);
+    }
+
+    @Override
+    public void modifyGroupToTx(BigInteger dpId, Group group, WriteTransaction tx) {
+        updateGroupInternal(dpId, group, tx);
+    }
+
+    @Override
     public void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx) {
         removeGroupEntityInternal(groupEntity, tx);
     }
@@ -764,6 +771,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         if (groupOptional.isPresent()) {
             tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
         }
+    }
+
+    private InstanceIdentifier<Group> buildGroupInstanceIdentifier(BigInteger dpId, Group group) {
+        Node nodeDpn = buildDpnNode(dpId);
+        long groupId = group.getGroupId().getValue();
+        return buildGroupInstanceIdentifier(groupId, nodeDpn);
     }
 
     private InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {

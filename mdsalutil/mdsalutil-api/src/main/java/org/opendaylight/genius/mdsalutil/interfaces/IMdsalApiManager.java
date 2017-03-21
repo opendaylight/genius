@@ -113,6 +113,30 @@ public interface IMdsalApiManager {
      */
     void addGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
+    /**
+     * Modify a Group using batched transaction. This is used to batch multiple
+     * ConfigDS changes in a single transaction
+     *
+     * @param groupEntity
+     *            group being modified
+     * @param tx
+     *            batched transaction
+     */
+    void modifyGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
+
+    /**
+     * Modify a Group using batched transaction This is used to batch multiple
+     * ConfigDS changes in a single transaction and programming on specific DPN.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param group
+     *            group being modified
+     * @param tx
+     *            batched transaction
+     */
+    void modifyGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
+
     void modifyGroup(GroupEntity groupEntity);
 
     void removeGroup(GroupEntity groupEntity);
