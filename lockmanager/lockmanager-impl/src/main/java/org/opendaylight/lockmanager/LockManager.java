@@ -141,7 +141,7 @@ public class LockManager implements LockManagerService {
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    LOG.debug("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    LOG.info("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
                 }
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock, try {}", retry, e);
@@ -179,14 +179,17 @@ public class LockManager implements LockManagerService {
      */
     private boolean readWriteLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException, ExecutionException {
-        ReadWriteTransaction tx = broker.newReadWriteTransaction();
-        Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
-        if (!result.isPresent()) {
-            tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
-            CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-            futures.get();
-            return true;
+        synchronized (lockData.getLockName().intern()) {
+            ReadWriteTransaction tx = broker.newReadWriteTransaction();
+            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+            if (!result.isPresent()) {
+                LOG.info("Writing lock lockData {}", lockData);
+                tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
+                CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+                futures.get();
+                return true;
+            }
+            return Objects.equals(result.get().getLockOwner(), Thread.currentThread().getName());
         }
-        return Objects.equals(result.get().getLockOwner(), Thread.currentThread().getName());
     }
 }
