@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_bf1699ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-21T13:20:08Z",
+      "side": 1,
+      "message": "you need to consider a state where this list is null or empty\nadditionally, the keys to InternalTunnel are source-DPN,   destination-DPN and transport-type so you will likely to have one entry of type vxlan and one entry of type logical group.\nyou need to look at the one of type vxlan and make sure it\u0027s null or empty when deciding to delete",
+      "range": {
+        "startLine": 256,
+        "startChar": 28,
+        "endLine": 256,
+        "endChar": 58
+      },
+      "revId": "da9ed47cb61e82d2906bb9028ab6ed6000371c4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
