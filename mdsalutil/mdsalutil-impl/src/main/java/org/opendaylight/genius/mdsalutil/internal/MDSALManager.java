@@ -731,39 +731,39 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     public void deleteBucket(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
-
         Node nodeDpn = buildDpnNode(dpId);
-        InstanceIdentifier<Bucket> bucketInstanceId =
-                buildBucketInstanceIdentifier(groupId, bucketId, nodeDpn);
-        Optional<Bucket> bucketOptional = Optional.absent();
-        try {
-            bucketOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
-        } catch (ReadFailedException e) {
-            LOG.warn("Exception while reading bucketId {} for dpnId {} and group {}", bucketId, dpId, groupId);
-            return;
-        }
-        if (bucketOptional.isPresent()) {
+        InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId, bucketId, nodeDpn);
+
+        if (groupExists(nodeDpn, groupId)) {
             tx.delete(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
         }
     }
 
     public void addBucket(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
-
         Node nodeDpn = buildDpnNode(dpId);
-        InstanceIdentifier<Bucket> bucketInstanceId =
-                buildBucketInstanceIdentifier(groupId, bucket.getBucketId().getValue(), nodeDpn);
+        InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
+                bucket.getBucketId().getValue(), nodeDpn);
 
-        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-        Optional<Group> groupOptional = Optional.absent();
-        try {
-            groupOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
-        } catch (ReadFailedException e) {
-            LOG.warn("Exception while reading group {} for dpnId {}", dpId, groupId);
-            return;
-        }
-        if (groupOptional.isPresent()) {
+        if (groupExists(nodeDpn, groupId)) {
             tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
         }
+    }
+
+    @Override
+    public boolean groupExists(BigInteger dpId, long groupId) {
+        return groupExists(buildDpnNode(dpId), groupId);
+    }
+
+    private  boolean groupExists(Node nodeDpn, long groupId) {
+        InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
+        try {
+            Optional<Group> groupOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
+                    groupInstanceId);
+            return groupOptional.isPresent();
+        } catch (ReadFailedException e) {
+            LOG.warn("Exception while reading group {} for Node {}", nodeDpn.getKey(), groupId);
+        }
+        return false;
     }
 
     private InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {
