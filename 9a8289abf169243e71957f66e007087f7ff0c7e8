@@ -22,6 +22,30 @@
       "revId": "9a8289abf169243e71957f66e007087f7ff0c7e8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3c5c7725",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-21T10:07:20Z",
+      "side": 1,
+      "message": "no changed it only for cases where back to back toggling southbound events can come",
+      "parentUuid": "fafc7978_ba17ca53",
+      "range": {
+        "startLine": 91,
+        "startChar": 8,
+        "endLine": 91,
+        "endChar": 46
+      },
+      "revId": "9a8289abf169243e71957f66e007087f7ff0c7e8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
