@@ -35,6 +35,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -162,6 +164,13 @@ public class OvsInterfaceConfigRemoveHelper {
                 defaultOperationalShardTransaction, idManager);
         // stop LLDP monitoring for the tunnel interface
         AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+
+        if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
+            removeMultipleVxlanTunnelsConfiguration(interfaceName, parentRefs);
+
+        } else if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+            removeLogicalTunnelGroup(interfaceName, idManager, dataBroker, defaultOperationalShardTransaction);
+        }
     }
 
     private static boolean canDeleteTunnelPort(List<BridgeInterfaceEntry> bridgeInterfaceEntries, BigInteger dpId,
@@ -245,5 +254,24 @@ public class OvsInterfaceConfigRemoveHelper {
             return "VlanMemberStateRemoveWorker [dpId=" + dpId + ", interfaceName=" + interfaceName
                     + ", interfaceParentEntry=" + interfaceParentEntry + "]";
         }
+    }
+
+    private static void removeLogicalTunnelGroup(String ifaceName, IdManagerService idManager,
+                                                 DataBroker dataBroker, WriteTransaction tx) {
+        LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceName);
+        InterfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, tx, idManager);
+        InterfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);
+    }
+
+    private static void removeMultipleVxlanTunnelsConfiguration(String ifaceName, ParentRefs parentRef) {
+        //Remove the individual tunnel from interface-child-info model of the tunnel group members
+        String parentInterface = parentRef.getParentInterface();
+        if (parentInterface == null) {
+            return;
+        }
+        LOG.debug("MULTIPLE_VxLAN_TUNNELS: removeMultipleVxlanTunnelsConfiguration for {} in logical group {}",
+                    ifaceName, parentInterface);
+        InterfaceManagerCommonUtils.deleteInterfaceChildEntry(parentInterface, ifaceName);
     }
 }
