@@ -171,9 +171,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Override
     public Future<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("createIdPool called with input {}", input);
-        }
+        LOG.info("createIdPool called with input {}", input);
         String poolName = input.getPoolName();
         long low = input.getLow();
         long high = input.getHigh();
@@ -203,9 +201,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Override
     public Future<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("AllocateId called with input {}", input);
-        }
+        LOG.info("AllocateId called with input {}", input);
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         String localPoolName = idUtils.getLocalPoolName(poolName);
@@ -290,6 +286,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     public Future<RpcResult<Void>> releaseId(ReleaseIdInput input) {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
+        LOG.info("Releasing ID {} from pool {}", idKey, poolName);
         Future<RpcResult<Void>> futureResult;
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
@@ -315,10 +312,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
             String idKey, long size) throws OperationFailedException, IdManagerException {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
+        LOG.info("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
                     idKey);
-        }
         List<Long> newIdValuesList = new ArrayList<>();
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
@@ -341,9 +336,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         Optional<IdEntries> existingIdEntry = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
         if (existingIdEntry.isPresent()) {
             newIdValuesList = existingIdEntry.get().getIdValue();
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
-            }
+            LOG.info("Existing ids {} for the key {} ", newIdValuesList, idKey);
             // Inform other waiting threads about this new value.
             futureIdValues.complete(newIdValuesList);
             // This is to avoid stale entries in the map. If this thread had populated the map,
@@ -372,9 +365,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 idUtils.unlock(lockManager, parentPoolName);
             }
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Got pool {}", localIdPool);
-        }
+        LOG.info("Got pool {}", localIdPool);
         if (size == 1) {
             newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
             newIdValuesList.add(newIdValue);
@@ -405,9 +396,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
             }
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
-        }
+        LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
         idUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
                 idUtils, lockManager);
@@ -558,9 +547,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool,
             ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool, WriteTransaction tx) {
         if (releasedIdsBuilderParent.getAvailableIdCount() == 0) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Ids unavailable in releasedIds of parent pool {}", parentIdPool);
-            }
+            LOG.debug("Ids unavailable in releasedIds of parent pool {}", parentIdPool);
             return 0;
         }
         List<DelayedIdEntries> delayedIdEntriesParent = releasedIdsBuilderParent.getDelayedIdEntries();
@@ -583,9 +570,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(parentIdPool.getPoolName())).child(ReleasedIdsHolder.class).build();
         releasedIdsBuilderParent.setAvailableIdCount(releasedIdsBuilderParent.getAvailableIdCount() - idCount);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
-        }
+        LOG.info("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
         tx.merge(CONFIGURATION, releasedIdsHolderInstanceIdentifier,
                 releasedIdsBuilderParent.build(), true);
         return idCount;
@@ -623,9 +608,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
             throws ReadFailedException, IdManagerException {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
-        }
+        LOG.info("Releasing ID {} from pool {}", idKey, localPoolName);
         java.util.Optional.ofNullable(idUtils.releaseIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
             try {
                 latch.await(10, TimeUnit.SECONDS);
@@ -646,9 +629,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
         Optional<IdEntries> existingIdEntryObject = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
         if (!existingIdEntryObject.isPresent()) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
-            }
+            LOG.info("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
             idUtils.unlock(lockManager, idLatchKey);
             return;
         }
@@ -656,17 +637,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<Long> idValuesList = existingIdEntry.getIdValue();
         IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
         boolean isRemoved = newIdEntries.remove(existingIdEntry);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
-        }
+        LOG.info("The entry {} is removed {}", existingIdEntry, isRemoved);
         updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
         IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), broker,
                 idUtils);
         DataStoreJobCoordinator.getInstance().enqueueJob(localPoolName, poolSyncJob, IdUtils.RETRY_COUNT);
         scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
-        }
+        LOG.info("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
         // Updating id entries in the parent pool. This will be used for restart scenario
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker, idUtils,
                         lockManager);
