@@ -60,8 +60,8 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
         }
         tx.submit().checkedGet();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
         }
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
