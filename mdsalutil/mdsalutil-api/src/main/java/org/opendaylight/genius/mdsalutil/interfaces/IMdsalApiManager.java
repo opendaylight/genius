@@ -141,6 +141,17 @@ public interface IMdsalApiManager {
      */
     void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
+    /**
+     * Check if OF group exist on DPN.
+     *
+     * @param dpId
+     *            dpn id
+     * @param groupId
+     *            OF group id
+     * @return true if group exists and false otherwise
+     */
+    boolean groupExists(BigInteger dpId, long groupId);
+
     void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload);
 
     void sendPacketOutWithActions(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos);
