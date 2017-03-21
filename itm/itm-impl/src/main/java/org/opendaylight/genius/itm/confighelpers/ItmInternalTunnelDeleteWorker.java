@@ -11,10 +11,14 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -22,6 +26,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -199,6 +205,7 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
+        removeLogicalGroupTunnel(srcDpnId, dstDpnId, dataBroker);
 
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
                         new String(dstTep.getIpAddress().getValue()),
@@ -220,6 +227,8 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(dstTep.getIpAddress().getValue()),
                 new String(srcTep.getIpAddress().getValue()),
                 dstTep.getTunnelType().getName());
+        removeLogicalGroupTunnel(dstDpnId, srcDpnId, dataBroker);
+
     }
 
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId,
@@ -227,5 +236,73 @@ public class ItmInternalTunnelDeleteWorker {
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
+    }
+
+    private static void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
+                                                 DataBroker dataBroker) {
+        boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
+        if (!tunnelAggregationEnabled) {
+            return;
+        }
+        String logicTunnelName = ItmUtils.getLogicalTunnelGroupName(srcDpnId, dstDpnId);
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        ItmTunnelAggregationDeleteWorker addWorker =
+                new ItmTunnelAggregationDeleteWorker(logicTunnelName, srcDpnId, dstDpnId, dataBroker);
+        coordinator.enqueueJob(logicTunnelName, addWorker);
+    }
+
+    private static class ItmTunnelAggregationDeleteWorker implements Callable<List<ListenableFuture<Void>>> {
+
+        private final String logicTunnelName;
+        private final BigInteger srcDpnId;
+        private final BigInteger dstDpnId;
+        private final DataBroker dataBroker;
+
+        ItmTunnelAggregationDeleteWorker(String groupName, BigInteger srcDpnId, BigInteger dstDpnId, DataBroker db) {
+            this.logicTunnelName = groupName;
+            this.srcDpnId = srcDpnId;
+            this.dstDpnId = dstDpnId;
+            this.dataBroker = db;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            Collection<InternalTunnel> tunnels = ItmUtils.itmCache.getAllInternalTunnel();
+            if (tunnels == null) {
+                return futures;
+            }
+            //The logical tunnel interface be removed only when the last tunnel interface on each OVS is deleted
+            boolean emptyTunnelGroup = true;
+            boolean foundLogicGroupIface = false;
+            for (InternalTunnel tunl : tunnels) {
+                if (tunl.getSourceDPN().equals(srcDpnId) && tunl.getDestinationDPN().equals(dstDpnId)) {
+                    if (tunl.getTransportType().isAssignableFrom(TunnelTypeVxlan.class)
+                            && tunl.getTunnelInterfaceNames() != null && !tunl.getTunnelInterfaceNames().isEmpty()) {
+                        emptyTunnelGroup = false;
+                        break;
+                    } else if (tunl.getTransportType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+                        foundLogicGroupIface = true;
+                    }
+                }
+            }
+            if (emptyTunnelGroup && foundLogicGroupIface) {
+                WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+                LOG.debug("MULTIPLE_VxLAN_TUNNELS: remove the logical tunnel group {} because a last tunnel"
+                    + " interface on srcDpnId {} dstDpnId {} is removed", logicTunnelName, srcDpnId, dstDpnId);
+                InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(logicTunnelName);
+                tx.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
+                ItmUtils.itmCache.removeInterface(logicTunnelName);
+                InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
+                        .child(InternalTunnel.class,
+                                new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
+                tx.delete(LogicalDatastoreType.CONFIGURATION, path);
+                ItmUtils.itmCache.removeInternalTunnel(logicTunnelName);
+                futures.add(tx.submit());
+            } else if (!emptyTunnelGroup) {
+                LOG.debug("MULTIPLE_VxLAN_TUNNELS: not last tunnel in logical tunnel group {}", logicTunnelName);
+            }
+            return futures;
+        }
     }
 }
