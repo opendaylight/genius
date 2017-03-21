@@ -92,6 +92,88 @@ module odl-interface {
         base tunnel-monitoring-type-base;
     }
 
+    identity interface-device-type-base {
+        description "Base identity for all interface-device-types";
+    }
+
+    identity interface-device-type-compute {
+        description "compute device";
+        base interface-device-type-base;
+    }
+
+    identity interface-device-type-dhcp {
+        description "dhcp device e.g. neutron dhcp agent";
+        base interface-device-type-base;
+    }
+
+    identity interface-device-type-router {
+        description "e.g. neutron router";
+        base interface-device-type-base;
+    }
+
+    identity interface-vnic-type-base {
+        description "Base identity for all interface-vnic-types";
+    }
+
+    identity interface-vnic-type-normal {
+        description "virtual nic";
+        base interface-vnic-type-base;
+    }
+
+    identity interface-vnic-type-direct {
+        description "direct pci passthrough without macvtap";
+        base interface-vnic-type-base;
+    }
+
+    identity interface-vnic-type-macvtap {
+        description "pci passthrough with macvtap (virtual interface with a tap-like software interface)";
+        base interface-vnic-type-base;
+    }
+
+    identity interface-vnic-type-baremetal {
+        description "baremetal";
+        base interface-vnic-type-base;
+    }
+
+    identity interface-vif-type-base {
+        description "Base identity for all interface-vif-types. Determines which vif_driver to use to attach a VM";
+    }
+
+    identity interface-vif-type-unbound {
+        description "unbound";
+        base interface-vif-type-base;
+    }
+
+    identity interface-vif-type-vhostuser {
+        description "vhost-user interface type is standard virtio interface provided by qemu 2.1+";
+        base interface-vif-type-base;
+    }
+
+    identity interface-vif-type-ovs {
+        description "ovs";
+        base interface-vif-type-base;
+    }
+
+    identity interface-vif-type-macvtap {
+        description "macvtap vif_driver should be used to create a vif";
+        base interface-vif-type-base;
+    }
+
+    identity interface-vif-type-hwveb {
+        description "sr-iov vif type hw_veb";
+        base interface-vif-type-base;
+    }
+
+    identity interface-vif-type-hostdev-phy {
+        description "sr-iov vif type hostdev_physical";
+        base interface-vif-type-base;
+    }
+
+    identity interface-vif-type-other {
+        description "other";
+        base interface-vif-type-base;
+    }
+
     grouping tunnel-optional-params {
         leaf tunnel-source-ip-flow {
             description "Use local_ip=flow for this tunnel";
@@ -152,6 +234,41 @@ module odl-interface {
         }
     }
 
+    grouping interface-vif-params {
+        leaf device-owner {
+            type identityref {
+                base interface-device-type-base;
+            }
+            description "type of device being attached to this interface. e.g. compute, dhcp";
+        }
+
+        leaf vnic-type {
+            type identityref {
+                base interface-vnic-type-base;
+            }
+            default interface-vnic-type-normal;
+            description "type of vnic being associated to this interface";
+        }
+
+        leaf vif-type {
+            type identityref {
+                base interface-vif-type-base;
+            }
+            default interface-vif-type-unbound;
+            description "type of vif_driver used/to be used to attach a VM to the network";
+        }
+
+        list vif-details {
+            key "vif-details-key";
+            leaf vif-details-key {
+                type string;
+            }
+            leaf vif-details-value {
+                type string;
+            }
+        }
+    }
+
     /* Overridding of OVS Split-Horizon Protection */
     augment "/if:interfaces/if:interface" {
         ext:augment-identifier "split-horizon";
@@ -176,16 +293,18 @@ module odl-interface {
 
         list node-identifier {
             key "topology-id";
-            description "an identifier of the dependant underlying configuration protocol";
+            description "an identifier of the dependent underlying configuration protocol";
             leaf "topology-id" {
                 type string;
-                description "can be ovsdb configuration protocol";
+                description "can be ovsdb configuration protocol or netconf/vpp";
             }
             leaf "node-id" {
                 type string;
                 description "can be hwvtep configuration protocol";
             }
         }
+
+        uses interface-vif-params;
     }
 
     /* interface type specific properties */
