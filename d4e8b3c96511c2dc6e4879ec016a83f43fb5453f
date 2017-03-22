@@ -22,6 +22,30 @@
       "revId": "d4e8b3c96511c2dc6e4879ec016a83f43fb5453f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c3757f33",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-22T11:56:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_e32a437d",
+      "range": {
+        "startLine": 255,
+        "startChar": 20,
+        "endLine": 255,
+        "endChar": 36
+      },
+      "revId": "d4e8b3c96511c2dc6e4879ec016a83f43fb5453f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
