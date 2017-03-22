@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_6b78ef2b",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-22T02:49:36Z",
+      "side": 1,
+      "message": "This should match the topic branch name of this spec and all subsequent patches for this change.",
+      "range": {
+        "startLine": 8,
+        "startChar": 59,
+        "endLine": 8,
+        "endChar": 62
+      },
+      "revId": "bbe9923de163c2a00188eb3758e1f8935bff0f7c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cbac7b8f",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-22T02:49:36Z",
+      "side": 1,
+      "message": "If the order of install matters, better make this a numbered list.",
+      "range": {
+        "startLine": 115,
+        "startChar": 0,
+        "endLine": 116,
+        "endChar": 20
+      },
+      "revId": "bbe9923de163c2a00188eb3758e1f8935bff0f7c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0b8fa324",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-22T02:49:36Z",
+      "side": 1,
+      "message": "Call out any specific version of OVS needed. This mainly means the minimum OVS version required for this.",
+      "revId": "bbe9923de163c2a00188eb3758e1f8935bff0f7c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2b9ee756",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-22T02:49:36Z",
+      "side": 1,
+      "message": "Please don\u0027t leave testing section empty. Either give high level tests cases or refer/link to existing test cases that can cover this, in unimgr?",
+      "revId": "bbe9923de163c2a00188eb3758e1f8935bff0f7c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
