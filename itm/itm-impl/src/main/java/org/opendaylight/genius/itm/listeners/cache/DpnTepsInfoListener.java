@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -22,16 +22,17 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Created by ehemgop on 18-08-2016.
  */
 @Singleton
-public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBase<DPNTEPsInfo,DpnTepsInfoListener> implements AutoCloseable{
+public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBase<DPNTEPsInfo,DpnTepsInfoListener>
+        implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(DpnTepsInfoListener.class);
     private final DataBroker broker;
 
     /**
-     * Responsible for listening to DPNTEPsInfo change
+     * Responsible for listening to DPNTEPsInfo change.
      *
      */
     @Inject
@@ -55,20 +56,23 @@ public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBas
 
     @Override
     protected void remove(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo del) {
-        LOG.debug(" Remove from cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj " + del.getDPNID() + " String ver " + del.getDPNID().toString());
+        LOG.debug(" Remove from cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
+                + del.getDPNID() + " String ver " + del.getDPNID().toString());
         DataStoreCache.remove(ITMConstants.DPN_TEPs_Info_CACHE_NAME, del.getDPNID()) ;
     }
 
     @Override
     protected void update(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo original,
                           DPNTEPsInfo update) {
-        LOG.debug(" Update to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj " + update.getDPNID() ) ;
+        LOG.debug(" Update to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
+                + update.getDPNID()) ;
         DataStoreCache.add(ITMConstants.DPN_TEPs_Info_CACHE_NAME, update.getDPNID(), update);
     }
 
     @Override
     protected void add(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo add) {
-        LOG.debug(" Add to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj " + add.getDPNID() ) ;
+        LOG.debug(" Add to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
+                + add.getDPNID()) ;
         DataStoreCache.add(ITMConstants.DPN_TEPs_Info_CACHE_NAME, add.getDPNID(), add);
     }
 
@@ -79,8 +83,8 @@ public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBas
 
     @Override
     protected InstanceIdentifier<DPNTEPsInfo> getWildCardPath() {
-        return InstanceIdentifier.builder(DpnEndpoints.class).
-                child(DPNTEPsInfo.class).build();
+        return InstanceIdentifier.builder(DpnEndpoints.class)
+                .child(DPNTEPsInfo.class).build();
     }
 
 }

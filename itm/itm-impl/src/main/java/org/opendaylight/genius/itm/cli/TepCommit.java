@@ -17,23 +17,23 @@ import org.slf4j.LoggerFactory;
 @Command(scope = "tep", name = "commit",
     description = "commits the configuration so that actual tunnel-building happens")
 public class TepCommit extends OsgiCommandSupport {
-  private static final Logger logger = LoggerFactory.getLogger(TepCommit.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TepCommit.class);
 
-  private IITMProvider itmProvider;
+    private IITMProvider itmProvider;
 
-  public void setItmProvider(IITMProvider itmProvider) {
-    this.itmProvider = itmProvider;
-  }
-
-  @Override
-  protected Object doExecute() {
-
-    try {
-      itmProvider.commitTeps();
-      logger.debug("Executing commit TEP command");
-    } catch (NullPointerException e) {
-      e.printStackTrace();
+    public void setItmProvider(IITMProvider itmProvider) {
+        this.itmProvider = itmProvider;
     }
-    return null;
-  }
+
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
+    @Override
+    protected Object doExecute() {
+        try {
+            itmProvider.commitTeps();
+            LOG.debug("Executing commit TEP command");
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
