@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_ab9bf770",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-22T02:40:45Z",
+      "side": 1,
+      "message": "ovs-queue-number or ovs-queue-index to imply from name that this is a number/index. Just service-queue can be a ref, index, name. Prefix ovs-queue over service-queue for consistency in naming.",
+      "range": {
+        "startLine": 358,
+        "startChar": 13,
+        "endLine": 358,
+        "endChar": 26
+      },
+      "revId": "90f135128d7a00bc5127b978408aaccb1e4f629d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
