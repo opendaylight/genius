@@ -153,19 +153,19 @@ public class LockManager implements LockManagerService {
      * @throws ExecutionException
      */
     private boolean readWriteLock (final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData) throws InterruptedException, ExecutionException {
-        ReadWriteTransaction tx = broker.newReadWriteTransaction();
-        Optional<Lock> result = Optional.absent();
-        result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
-        if (!result.isPresent()) {
-            tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
-            CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-            futures.get();
-            return true;
+        String lockName = lockData.getLockName();
+        synchronized (lockName.intern()) {
+            ReadWriteTransaction tx = broker.newReadWriteTransaction();
+            Optional<Lock> result = Optional.absent();
+            result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+            if (!result.isPresent()) {
+                tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
+                CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+                futures.get();
+                return true;
+            }
+            return false;
         }
-        if (result.get().getLockOwner() == Thread.currentThread().getName()) {
-            return true;
-        }
-        return false;
     }
 
     private void unlock(final String lockName, final InstanceIdentifier<Lock> lockInstanceIdentifier) {
