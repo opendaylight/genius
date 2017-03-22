@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -14,7 +14,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
 import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
-import org.opendaylight.genius.utils.batching.ResourceHandler;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -31,10 +30,8 @@ public class BatchingUtils {
     private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
     private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
 
-    public enum EntityType  {
-        DEFAULT_CONFIG,
-        DEFAULT_OPERATIONAL,
-        TOPOLOGY_CONFIG
+    public enum EntityType {
+        DEFAULT_CONFIG, DEFAULT_OPERATIONAL, TOPOLOGY_CONFIG
     }
 
     public static DataBroker getBroker() {
@@ -56,9 +53,12 @@ public class BatchingUtils {
             batchInterval = Integer.getInteger("batch.wait.time");
         }
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-TOPOLOGY-CONFIG", topologyConfigShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-CONFIG", defaultConfigShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ, new InterfaceBatchHandler(LogicalDatastoreType.OPERATIONAL));
+        resBatchingManager.registerBatchableResource("INTERFACEMGR-TOPOLOGY-CONFIG", topologyConfigShardBufferQ,
+                new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
+        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-CONFIG", defaultConfigShardBufferQ,
+                new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
+        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ,
+                new InterfaceBatchHandler(LogicalDatastoreType.OPERATIONAL));
     }
 
     static <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,7 +11,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -25,21 +24,21 @@ import org.slf4j.LoggerFactory;
 
 public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
+
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-                                                                Interface interfaceNew, IfL2vlan ifL2vlan,
-                                                                IdManagerService idManager) {
-        LOG.debug("add vlan member configuration {}",interfaceNew.getName());
+            Interface interfaceNew, IfL2vlan ifL2vlan, IdManagerService idManager) {
+        LOG.debug("add vlan member configuration {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(),
-            interfaceNew.getName(), Optional.of(writeTransaction));
+        InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName(),
+                Optional.of(writeTransaction));
         futures.add(writeTransaction.submit());
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
         if (ifaceParent == null) {
-            LOG.info("Parent Interface: {} not found when adding child interface: {}",
-                    parentRefs.getParentInterface(), interfaceNew.getName());
+            LOG.info("Parent Interface: {} not found when adding child interface: {}", parentRefs.getParentInterface(),
+                    interfaceNew.getName());
             return futures;
         }
 
@@ -49,9 +48,11 @@ public class OvsVlanMemberConfigAddHelper {
             return futures;
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
-        LOG.debug("add interface state info for vlan member {}, with ifState for parent {}",interfaceNew.getName(), ifState);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
+        LOG.debug("add interface state info for vlan member {}, with ifState for parent {}", interfaceNew.getName(),
+                ifState);
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures, ifState);
         return futures;
     }

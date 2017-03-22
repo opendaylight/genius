@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -34,36 +34,41 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsInterfaceConfigUpdateHelper{
+public class OvsInterfaceConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,  AlivenessMonitorService alivenessMonitorService,
-                                                                   IdManagerService idManager, IMdsalApiManager mdsalApiManager,
-                                                                   Interface interfaceNew, Interface interfaceOld) {
+    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
+            AlivenessMonitorService alivenessMonitorService, IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager, Interface interfaceNew, Interface interfaceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        LOG.info("updating configuration for interface {}",interfaceNew.getName());
-        // If any of the port attributes are modified, treat it as a delete and recreate scenario
-        if(portAttributesModified(interfaceOld, interfaceNew)) {
-            futures.addAll(OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService, interfaceOld, idManager,
-                    mdsalApiManager, interfaceOld.getAugmentation(ParentRefs.class)));
+        LOG.info("updating configuration for interface {}", interfaceNew.getName());
+        // If any of the port attributes are modified, treat it as a delete and
+        // recreate scenario
+        if (portAttributesModified(interfaceOld, interfaceNew)) {
+            futures.addAll(OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService,
+                    interfaceOld, idManager, mdsalApiManager, interfaceOld.getAugmentation(ParentRefs.class)));
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager,alivenessMonitorService,mdsalApiManager));
+                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
+                    mdsalApiManager));
             return futures;
         }
 
-        // If there is no operational state entry for the interface, treat it as create
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
+        // If there is no operational state entry for the interface, treat it as
+        // create
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
         if (ifState == null) {
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService, mdsalApiManager));
+                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
+                    mdsalApiManager));
             return futures;
         }
 
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        if(tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)){
-            handleTunnelMonitorUpdates(futures, transaction, alivenessMonitorService, interfaceNew,
-                    interfaceOld, dataBroker);
+        if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
+            handleTunnelMonitorUpdates(futures, transaction, alivenessMonitorService, interfaceNew, interfaceOld,
+                    dataBroker);
             return futures;
         }
 
@@ -90,11 +95,11 @@ public class OvsInterfaceConfigUpdateHelper{
 
         IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
         IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
-        if (checkAugmentations(ifTunnelOld,ifTunnelNew)) {
-            if(!ifTunnelNew.getTunnelDestination().equals(ifTunnelOld.getTunnelDestination()) ||
-                    !ifTunnelNew.getTunnelSource().equals(ifTunnelOld.getTunnelSource()) ||
-                    ifTunnelNew.getTunnelGateway() !=null && ifTunnelOld.getTunnelGateway() !=null &&
-                            !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway())) {
+        if (checkAugmentations(ifTunnelOld, ifTunnelNew)) {
+            if (!ifTunnelNew.getTunnelDestination().equals(ifTunnelOld.getTunnelDestination())
+                    || !ifTunnelNew.getTunnelSource().equals(ifTunnelOld.getTunnelSource())
+                    || ifTunnelNew.getTunnelGateway() != null && ifTunnelOld.getTunnelGateway() != null
+                            && !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway())) {
                 return true;
             }
         }
@@ -109,41 +114,46 @@ public class OvsInterfaceConfigUpdateHelper{
     }
 
     /*
-     * if the tunnel monitoring attributes have changed, handle it based on the tunnel type.
-     * As of now internal vxlan tunnels use LLDP monitoring and external tunnels use BFD monitoring.
+     * if the tunnel monitoring attributes have changed, handle it based on the
+     * tunnel type. As of now internal vxlan tunnels use LLDP monitoring and
+     * external tunnels use BFD monitoring.
      */
     private static void handleTunnelMonitorUpdates(List<ListenableFuture<Void>> futures, WriteTransaction transaction,
             AlivenessMonitorService alivenessMonitorService, Interface interfaceNew, Interface interfaceOld,
             DataBroker dataBroker) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
         // update termination point on switch, if switch is connected
-        BridgeRefEntry bridgeRefEntry =
-                InterfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew, dataBroker);
+        BridgeRefEntry bridgeRefEntry = InterfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew, dataBroker);
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
-        if(SouthboundUtils.isMonitorProtocolBfd(ifTunnel) && InterfaceMetaUtils.bridgeExists(bridgeRefEntry, dataBroker)) {
+        if (SouthboundUtils.isMonitorProtocolBfd(ifTunnel)
+                && InterfaceMetaUtils.bridgeExists(bridgeRefEntry, dataBroker)) {
             SouthboundUtils.updateBfdParamtersForTerminationPoint(bridgeRefEntry.getBridgeReference().getValue(),
-                    interfaceNew.getAugmentation(IfTunnel.class),
-                    interfaceNew.getName(), transaction);
-        }else {
-            // update lldp tunnel monitoring attributes for an internal vxlan tunnel interface
-            AlivenessMonitorUtils.handleTunnelMonitorUpdates(alivenessMonitorService, dataBroker, interfaceOld, interfaceNew);
+                    interfaceNew.getAugmentation(IfTunnel.class), interfaceNew.getName(), transaction);
+        } else {
+            // update lldp tunnel monitoring attributes for an internal vxlan
+            // tunnel interface
+            AlivenessMonitorUtils.handleTunnelMonitorUpdates(alivenessMonitorService, dataBroker, interfaceOld,
+                    interfaceNew);
         }
         futures.add(transaction.submit());
     }
 
-    private static void handleInterfaceAdminStateUpdates(List<ListenableFuture<Void>> futures, WriteTransaction transaction,
-                                                         Interface interfaceNew, DataBroker dataBroker,
-                                                         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState){
-        OperStatus operStatus = InterfaceManagerCommonUtils.updateStateEntry(interfaceNew, dataBroker, transaction, ifState);
+    private static void handleInterfaceAdminStateUpdates(List<ListenableFuture<Void>> futures,
+            WriteTransaction transaction, Interface interfaceNew, DataBroker dataBroker,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        OperStatus operStatus = InterfaceManagerCommonUtils.updateStateEntry(interfaceNew, dataBroker, transaction,
+                ifState);
 
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
-        if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
+        if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
+                && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
-        InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
+        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
         if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
             return;
         }
@@ -155,8 +165,7 @@ public class OvsInterfaceConfigUpdateHelper{
     }
 
     private static <T> boolean checkAugmentations(T oldAug, T newAug) {
-        if (oldAug != null && newAug == null
-                || oldAug == null && newAug != null) {
+        if (oldAug != null && newAug == null || oldAug == null && newAug != null) {
             return true;
         }
 
@@ -196,4 +205,3 @@ public class OvsInterfaceConfigUpdateHelper{
         }
     }
 }
-

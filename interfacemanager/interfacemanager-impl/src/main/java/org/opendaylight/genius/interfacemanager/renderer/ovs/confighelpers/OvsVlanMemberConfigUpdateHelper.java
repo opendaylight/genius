@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -42,16 +42,16 @@ public class OvsVlanMemberConfigUpdateHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         ParentRefs parentRefsOld = interfaceOld.getAugmentation(ParentRefs.class);
 
-        InterfaceParentEntryKey interfaceParentEntryKey =
-                new InterfaceParentEntryKey(parentRefsOld.getParentInterface());
+        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(
+                parentRefsOld.getParentInterface());
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
-        InterfaceChildEntry interfaceChildEntry =
-                InterfaceMetaUtils.getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey,
-                        dataBroker);
+        InterfaceChildEntry interfaceChildEntry = InterfaceMetaUtils
+                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey, dataBroker);
 
         if (interfaceChildEntry == null) {
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService, mdsalApiManager));
+                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
+                    mdsalApiManager));
             return futures;
         }
 
@@ -63,7 +63,7 @@ public class OvsVlanMemberConfigUpdateHelper {
         }
 
         if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId())
-                 || !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
+                || !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
             futures.addAll(OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefsOld, interfaceOld,
                     ifL2vlanOld, idManager));
             futures.addAll(OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefsNew, interfaceNew,
@@ -75,8 +75,9 @@ public class OvsVlanMemberConfigUpdateHelper {
             return futures;
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface pifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefsNew.getParentInterface(), dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .interfaces.rev140508.interfaces.state.Interface pifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(parentRefsNew.getParentInterface(), dataBroker);
         if (pifState != null) {
             OperStatus operStatus = OperStatus.Down;
             if (interfaceNew.isEnabled()) {
@@ -84,8 +85,9 @@ public class OvsVlanMemberConfigUpdateHelper {
             }
 
             WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
-                    IfmUtil.buildStateInterfaceId(interfaceNew.getName());
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+                    .buildStateInterfaceId(interfaceNew.getName());
             InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
             ifaceBuilder.setOperStatus(operStatus);
             ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
@@ -98,8 +100,7 @@ public class OvsVlanMemberConfigUpdateHelper {
     }
 
     public static boolean vlanIdModified(VlanId vlanIdOld, VlanId vlanIdNew) {
-        if (vlanIdOld != null && vlanIdNew == null
-                || vlanIdOld == null && vlanIdOld != null) {
+        if (vlanIdOld != null && vlanIdNew == null || vlanIdOld == null && vlanIdOld != null) {
             return true;
         }
 

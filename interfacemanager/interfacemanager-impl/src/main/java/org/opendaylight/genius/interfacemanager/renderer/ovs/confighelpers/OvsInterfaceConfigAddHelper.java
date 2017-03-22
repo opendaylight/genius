@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -46,9 +46,8 @@ public class OvsInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigAddHelper.class);
 
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-                                                                Interface interfaceNew, IdManagerService idManager,
-                                                                AlivenessMonitorService alivenessMonitorService,
-                                                                IMdsalApiManager mdsalApiManager) {
+            Interface interfaceNew, IdManagerService idManager, AlivenessMonitorService alivenessMonitorService,
+            IMdsalApiManager mdsalApiManager) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
@@ -56,7 +55,7 @@ public class OvsInterfaceConfigAddHelper {
         if (ifTunnel != null) {
             addTunnelConfiguration(dataBroker, parentRefs, interfaceNew, idManager, alivenessMonitorService, ifTunnel,
                     mdsalApiManager, futures);
-        }else {
+        } else {
             addVlanConfiguration(interfaceNew, parentRefs, dataBroker, idManager, defaultConfigShardTransaction,
                     defaultOperShardTransaction, futures);
         }
@@ -65,20 +64,23 @@ public class OvsInterfaceConfigAddHelper {
         return futures;
     }
 
-    private static void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs, DataBroker dataBroker, IdManagerService idManager,
-                                             WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
-                                             List<ListenableFuture<Void>> futures) {
+    private static void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs, DataBroker dataBroker,
+            IdManagerService idManager, WriteTransaction defaultConfigShardTransaction,
+            WriteTransaction defaultOperShardTransaction, List<ListenableFuture<Void>> futures) {
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
-        if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode() && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
+        if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
+                && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
-        if (!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker, defaultConfigShardTransaction,
-                parentRefs.getParentInterface(), interfaceNew.getName(), ifL2vlan.getL2vlanMode())) {
+        if (!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker,
+                defaultConfigShardTransaction, parentRefs.getParentInterface(), interfaceNew.getName(),
+                ifL2vlan.getL2vlanMode())) {
             return;
         }
-        LOG.info("adding vlan configuration for interface {}",interfaceNew.getName());
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
+        LOG.info("adding vlan configuration for interface {}", interfaceNew.getName());
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
 
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, defaultOperShardTransaction,
                 idManager, futures, ifState);
@@ -89,77 +91,80 @@ public class OvsInterfaceConfigAddHelper {
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-                                               Interface interfaceNew, IdManagerService idManager,
-                                               AlivenessMonitorService alivenessMonitorService,
-                                               IfTunnel ifTunnel, IMdsalApiManager mdsalApiManager,
-                                               List<ListenableFuture<Void>> futures) {
+    private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs, Interface interfaceNew,
+            IdManagerService idManager, AlivenessMonitorService alivenessMonitorService, IfTunnel ifTunnel,
+            IMdsalApiManager mdsalApiManager, List<ListenableFuture<Void>> futures) {
         if (parentRefs == null) {
-            LOG.warn("ParentRefs for interface: {} Not Found. " +
-                    "Creation of Tunnel OF-Port not supported when dpid not provided.", interfaceNew.getName());
+            LOG.warn(
+                    "ParentRefs for interface: {} Not Found. "
+                            + "Creation of Tunnel OF-Port not supported when dpid not provided.",
+                    interfaceNew.getName());
             return;
         }
 
         BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
         if (dpId == null) {
-            LOG.warn("dpid for interface: {} Not Found. No DPID provided. " +
-                    "Creation of OF-Port not supported.", interfaceNew.getName());
+            LOG.warn("dpid for interface: {} Not Found. No DPID provided. " + "Creation of OF-Port not supported.",
+                    interfaceNew.getName());
             return;
         }
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
         boolean createTunnelPort = true;
         String tunnelName = interfaceNew.getName();
-        if(SouthboundUtils.isOfTunnel(ifTunnel)) {
+        if (SouthboundUtils.isOfTunnel(ifTunnel)) {
             BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpId, dataBroker);
-            createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ?
-                    true : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
+            createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ? true
+                    : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(), Optional.absent());
+            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
+                    Optional.absent());
         }
 
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
 
         // create bridge on switch, if switch is connected
-        BridgeRefEntry bridgeRefEntry =
-                InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
-        if(bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
+        BridgeRefEntry bridgeRefEntry = InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
+        if (bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
             LOG.debug("creating bridge interface on dpn {}", dpId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
-                    (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getBridgeReference().getValue();
-            if(createTunnelPort) {
+                    (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry
+                    .getBridgeReference().getValue();
+            if (createTunnelPort) {
                 SouthboundUtils.addPortToBridge(bridgeIid, interfaceNew, tunnelName, dataBroker, futures);
             }
 
-            // if TEP is already configured on switch, start LLDP monitoring and program tunnel ingress flow
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                    InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
-            if(ifState != null){
+            // if TEP is already configured on switch, start LLDP monitoring and
+            // program tunnel ingress flow
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                    .getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
+            if (ifState != null) {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
-                if(ncId != null) {
+                if (ncId != null) {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-                    InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel,
-                            dpId, portNo, interfaceNew.getName(),
-                            ifState.getIfIndex(), NwConstants.ADD_FLOW);
+                    InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
+                            interfaceNew.getName(), ifState.getIfIndex(), NwConstants.ADD_FLOW);
                     FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceNew,
-                        Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
+                            Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
                     // start LLDP monitoring for the tunnel interface
-                    AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
-                            ifTunnel, interfaceNew.getName());
+                    AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel,
+                            interfaceNew.getName());
                 }
             }
         }
     }
 
     private static class VlanMemberStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
-
         private final DataBroker dataBroker;
         private final IdManagerService idManager;
         private final String interfaceName;
-        private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState;
+        private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState;
 
-        public VlanMemberStateAddWorker(DataBroker dataBroker, IdManagerService idManager, String interfaceName,
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        VlanMemberStateAddWorker(DataBroker dataBroker, IdManagerService idManager, String interfaceName,
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
             this.dataBroker = dataBroker;
             this.idManager = idManager;
             this.interfaceName = interfaceName;

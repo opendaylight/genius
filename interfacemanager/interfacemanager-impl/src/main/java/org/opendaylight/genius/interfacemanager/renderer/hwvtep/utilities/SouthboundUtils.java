@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -17,6 +17,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepPhysicalLocatorAugmentationBuilder;
@@ -61,7 +63,7 @@ public class SouthboundUtils {
     static final String BFD_CONFIG_BFD_DST_MAC = "bfd_dst_mac";
     static final String BFD_CONFIG_BFD_DST_IP = "bfd_dst_ip";
 
-    // bfd params
+    // BFD parameters
     private static final String BFD_MIN_RX_VAL = "1000";
     private static final String BFD_MIN_TX_VAL = "100";
     private static final String BFD_DECAY_MIN_RX_VAL = "200";
@@ -71,70 +73,70 @@ public class SouthboundUtils {
 
     public static InstanceIdentifier<Node> createPhysicalSwitchInstanceIdentifier(String psNodeIdString) {
         NodeId physicalSwitchNodeId = new NodeId(psNodeIdString);
-        InstanceIdentifier<Node> psNodeId = InstanceIdentifier
-                .create(NetworkTopology.class)
+        InstanceIdentifier<Node> psNodeId = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
-                .child(Node.class,new NodeKey(physicalSwitchNodeId));
+                .child(Node.class, new NodeKey(physicalSwitchNodeId));
         return psNodeId;
     }
 
-    public static InstanceIdentifier<Node> createGlobalNodeInstanceIdentifier(DataBroker dataBroker, String physicalSwitchNodeId) {
-        InstanceIdentifier<Node> psNodeId = InstanceIdentifier
-                .create(NetworkTopology.class)
+    public static InstanceIdentifier<Node> createGlobalNodeInstanceIdentifier(DataBroker dataBroker,
+            String physicalSwitchNodeId) {
+        InstanceIdentifier<Node> psNodeId = InstanceIdentifier.create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
-                .child(Node.class,new NodeKey(new NodeId(physicalSwitchNodeId)));
-        Optional<Node> physicalSwitchOptional =
-                IfmUtil.read(LogicalDatastoreType.OPERATIONAL, psNodeId, dataBroker);
+                .child(Node.class, new NodeKey(new NodeId(physicalSwitchNodeId)));
+        Optional<Node> physicalSwitchOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, psNodeId, dataBroker);
         if (!physicalSwitchOptional.isPresent()) {
             LOG.debug("physical switch is not present for {}", physicalSwitchNodeId);
             return null;
         }
         Node physicalSwitch = physicalSwitchOptional.get();
-        PhysicalSwitchAugmentation physicalSwitchAugmentation = physicalSwitch.getAugmentation(PhysicalSwitchAugmentation.class);
+        PhysicalSwitchAugmentation physicalSwitchAugmentation = physicalSwitch
+                .getAugmentation(PhysicalSwitchAugmentation.class);
         return (InstanceIdentifier<Node>) physicalSwitchAugmentation.getManagedBy().getValue();
     }
 
-    public static InstanceIdentifier<TerminationPoint> createTEPInstanceIdentifier
-            (InstanceIdentifier<Node> nodeIid,  IpAddress ipAddress) {
+    public static InstanceIdentifier<TerminationPoint> createTEPInstanceIdentifier(InstanceIdentifier<Node> nodeIid,
+            IpAddress ipAddress) {
         TerminationPointKey localTEP = SouthboundUtils.getTerminationPointKey(ipAddress.getIpv4Address().getValue());
         return createInstanceIdentifier(nodeIid, localTEP);
     }
 
     public static InstanceIdentifier<TerminationPoint> createInstanceIdentifier(InstanceIdentifier<Node> nodeIid,
-                                                                                TerminationPointKey tpKey) {
+            TerminationPointKey tpKey) {
         return nodeIid.child(TerminationPoint.class, tpKey);
     }
 
-    public static InstanceIdentifier<Tunnels> createTunnelsInstanceIdentifier(InstanceIdentifier<Node> nodeId, IpAddress localIP, IpAddress remoteIp) {
-        InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier =
-                createTEPInstanceIdentifier(nodeId, localIP);
-        InstanceIdentifier<TerminationPoint> remoteTEPInstanceIdentifier =
-                createTEPInstanceIdentifier(nodeId, remoteIp);
+    public static InstanceIdentifier<Tunnels> createTunnelsInstanceIdentifier(InstanceIdentifier<Node> nodeId,
+            IpAddress localIP, IpAddress remoteIp) {
+        InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier = createTEPInstanceIdentifier(nodeId, localIP);
+        InstanceIdentifier<TerminationPoint> remoteTEPInstanceIdentifier = createTEPInstanceIdentifier(nodeId,
+                remoteIp);
 
         TunnelsKey tunnelsKey = new TunnelsKey(new HwvtepPhysicalLocatorRef(localTEPInstanceIdentifier),
                 new HwvtepPhysicalLocatorRef(remoteTEPInstanceIdentifier));
-        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
-                .child(Node.class, new NodeKey(nodeId.firstKeyOf(Node.class))).augmentation(PhysicalSwitchAugmentation.class)
-                .child(Tunnels.class, tunnelsKey).build();
+        return InstanceIdentifier.builder(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
+                .child(Node.class, new NodeKey(nodeId.firstKeyOf(Node.class)))
+                .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class, tunnelsKey).build();
     }
 
     public static InstanceIdentifier<Tunnels> createTunnelsInstanceIdentifier(InstanceIdentifier<Node> nodeId,
-                                                                              InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier,
-                                                                              InstanceIdentifier<TerminationPoint> remoteTEPInstanceIdentifier) {
+            InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier,
+            InstanceIdentifier<TerminationPoint> remoteTEPInstanceIdentifier) {
         TunnelsKey tunnelsKey = new TunnelsKey(new HwvtepPhysicalLocatorRef(localTEPInstanceIdentifier),
                 new HwvtepPhysicalLocatorRef(remoteTEPInstanceIdentifier));
 
-        InstanceIdentifier<Tunnels> tunnelInstanceId = InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
-                .child(Node.class, new NodeKey(nodeId.firstKeyOf(Node.class))).augmentation(PhysicalSwitchAugmentation.class)
-                .child(Tunnels.class, tunnelsKey).build();
+        InstanceIdentifier<Tunnels> tunnelInstanceId = InstanceIdentifier.builder(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
+                .child(Node.class, new NodeKey(nodeId.firstKeyOf(Node.class)))
+                .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class, tunnelsKey).build();
         return tunnelInstanceId;
     }
 
     public static String getTerminationPointKeyString(String ipAddress) {
         String tpKeyStr = null;
-        if(ipAddress != null) {
-            tpKeyStr = TEP_PREFIX +
-                    ipAddress;
+        if (ipAddress != null) {
+            tpKeyStr = TEP_PREFIX + ipAddress;
         }
         return tpKeyStr;
     }
@@ -142,7 +144,7 @@ public class SouthboundUtils {
     public static TerminationPointKey getTerminationPointKey(String ipAddress) {
         TerminationPointKey tpKey = null;
         String tpKeyStr = getTerminationPointKeyString(ipAddress);
-        if(tpKeyStr != null) {
+        if (tpKeyStr != null) {
             tpKey = new TerminationPointKey(new TpId(tpKeyStr));
         }
         return tpKey;
@@ -153,34 +155,33 @@ public class SouthboundUtils {
         tpAugmentationBuilder.setDstIp(ip);
     }
 
-    public static void addStateEntry(Interface interfaceInfo,  IfTunnel ifTunnel, WriteTransaction transaction) {
+    public static void addStateEntry(Interface interfaceInfo, IfTunnel ifTunnel, WriteTransaction transaction) {
         LOG.debug("adding tep interface state for {}", interfaceInfo.getName());
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus =
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up;
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus adminStatus =
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up;
+        OperStatus operStatus = OperStatus.Up;
+        AdminStatus adminStatus = AdminStatus.Up;
         if (interfaceInfo != null && !interfaceInfo.isEnabled()) {
-            operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
+            operStatus = OperStatus.Down;
         }
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
-                IfmUtil.buildStateInterfaceId(interfaceInfo.getName());
         List<String> childLowerLayerIfList = new ArrayList<>();
-        childLowerLayerIfList.add(0, SouthboundUtils.getTerminationPointKeyString(ifTunnel.getTunnelDestination().getIpv4Address().getValue()));
-        InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setAdminStatus(adminStatus)
-                .setOperStatus(operStatus).setLowerLayerIf(childLowerLayerIfList);
+        childLowerLayerIfList.add(0, SouthboundUtils
+                .getTerminationPointKeyString(ifTunnel.getTunnelDestination().getIpv4Address().getValue()));
+        InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setAdminStatus(adminStatus).setOperStatus(operStatus)
+                .setLowerLayerIf(childLowerLayerIfList);
 
-
-        if(interfaceInfo != null){
+        if (interfaceInfo != null) {
             ifaceBuilder.setType(interfaceInfo.getType());
         }
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+            .buildStateInterfaceId(interfaceInfo.getName());
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
-        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId,ifaceBuilder.build() , true);
+        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
     }
 
     public static void fillBfdParameters(List<BfdParams> bfdParams, IfTunnel ifTunnel) {
-        setBfdParamForEnable(bfdParams, ifTunnel != null ? ifTunnel.isMonitorEnabled() :true);
-        bfdParams.add(getBfdParams(BFD_PARAM_MIN_TX, ifTunnel != null ?
-                ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        setBfdParamForEnable(bfdParams, ifTunnel != null ? ifTunnel.isMonitorEnabled() : true);
+        bfdParams.add(getBfdParams(BFD_PARAM_MIN_TX,
+                ifTunnel != null ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
         bfdParams.add(getBfdParams(BFD_PARAM_MIN_RX, BFD_MIN_RX_VAL));
         bfdParams.add(getBfdParams(BFD_PARAM_DECAY_MIN_RX, BFD_DECAY_MIN_RX_VAL));
         bfdParams.add(getBfdParams(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
@@ -193,7 +194,6 @@ public class SouthboundUtils {
     }
 
     public static BfdParams getBfdParams(String key, String value) {
-        return new BfdParamsBuilder().setBfdParamKey(key).setKey(new BfdParamsKey(key))
-                .setBfdParamValue(value).build();
+        return new BfdParamsBuilder().setBfdParamKey(key).setKey(new BfdParamsKey(key)).setBfdParamValue(value).build();
     }
 }

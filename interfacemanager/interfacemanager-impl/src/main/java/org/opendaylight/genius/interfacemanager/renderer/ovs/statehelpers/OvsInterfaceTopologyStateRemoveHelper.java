@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -24,8 +24,9 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceTopologyStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removePortFromBridge(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                                                    OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker) {
+    public static List<ListenableFuture<Void>> removePortFromBridge(
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeOld,
+            DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         BigInteger dpnId = IfmUtil.getDpnId(bridgeOld.getDatapathId());
@@ -35,11 +36,13 @@ public class OvsInterfaceTopologyStateRemoveHelper {
             return futures;
         }
 
-        //delete bridge reference entry in interface meta operational DS
+        // delete bridge reference entry in interface meta operational DS
         InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, transaction);
 
-        // the bridge reference is copied to dpn-tunnel interfaces map, so that whenever a northbound delete
-        // happens when bridge is not connected, we need the bridge reference to clean up the topology config DS
+        // the bridge reference is copied to dpn-tunnel interfaces map, so that
+        // whenever a northbound delete
+        // happens when bridge is not connected, we need the bridge reference to
+        // clean up the topology config DS
         InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(bridgeIid), transaction);
 
         futures.add(transaction.submit());

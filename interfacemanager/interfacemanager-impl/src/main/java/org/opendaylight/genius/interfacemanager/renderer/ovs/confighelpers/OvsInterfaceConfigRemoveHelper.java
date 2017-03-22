@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -78,7 +78,8 @@ public class OvsInterfaceConfigRemoveHelper {
         InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, defaultOperationalShardTransaction,
                 idManagerService);
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceStateFromOperDS(interfaceName, dataBroker);
 
         if (ifState == null) {
@@ -183,19 +184,21 @@ public class OvsInterfaceConfigRemoveHelper {
             InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
                     interfaceName, -1, NwConstants.DEL_FLOW);
             FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
-
         }
     }
 
     // if the node is shutdown, there will be stale interface state entries,
     // with unknown op-state, clear them.
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
             String interfaceName, ParentRefs parentRefs, IfTunnel ifTunnel, DataBroker dataBroker,
             WriteTransaction transaction, IdManagerService idManagerService) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState != null && ifState
-                .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown) {
+                .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown) {
             String staleInterface = ifTunnel != null ? interfaceName : parentRefs.getParentInterface();
             LOG.debug("cleaning up parent-interface for {}, since the oper-status is UNKNOWN", interfaceName);
             InterfaceManagerCommonUtils.deleteInterfaceStateInformation(staleInterface, transaction, idManagerService);
@@ -204,7 +207,6 @@ public class OvsInterfaceConfigRemoveHelper {
     }
 
     private static class VlanMemberStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-
         private final DataBroker dataBroker;
         private final IdManagerService idManager;
         private final BigInteger dpId;
@@ -234,7 +236,6 @@ public class OvsInterfaceConfigRemoveHelper {
                 FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker,
                         futures);
             }
-
             futures.add(operShardTransaction.submit());
             return futures;
         }

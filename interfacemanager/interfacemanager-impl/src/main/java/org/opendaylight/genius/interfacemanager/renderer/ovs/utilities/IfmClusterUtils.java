@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -25,7 +25,7 @@ public class IfmClusterUtils {
     public static final String INTERFACE_CONFIG_ENTITY = "interface_config";
     public static final String INTERFACE_SERVICE_BINDING_ENTITY = "interface_service_binding";
 
-    private  static InterfacemgrProvider ifaceServiceProvider = null;
+    private static InterfacemgrProvider ifaceServiceProvider = null;
 
     public static void setIfaceServiceProvider(InterfacemgrProvider provider) {
         ifaceServiceProvider = provider;
@@ -36,17 +36,17 @@ public class IfmClusterUtils {
         setIfaceServiceProvider(provider);
         try {
             EntityOwnerUtils.registerEntityCandidateForOwnerShip(entityOwnershipService, INTERFACE_CONFIG_ENTITY,
-                INTERFACE_CONFIG_ENTITY, null/*listener*/);
-            EntityOwnerUtils.registerEntityCandidateForOwnerShip(entityOwnershipService, INTERFACE_SERVICE_BINDING_ENTITY,
-                INTERFACE_SERVICE_BINDING_ENTITY, null/*listener*/);
+                    INTERFACE_CONFIG_ENTITY, null/* listener */);
+            EntityOwnerUtils.registerEntityCandidateForOwnerShip(entityOwnershipService,
+                    INTERFACE_SERVICE_BINDING_ENTITY, INTERFACE_SERVICE_BINDING_ENTITY, null/* listener */);
         } catch (CandidateAlreadyRegisteredException e) {
             LOG.error("failed to register entity {} for entity-owenership-service", e.getEntity());
         }
     }
 
     public static void runOnlyInLeaderNode(final Runnable job, String entity) {
-        ListenableFuture<Boolean> checkEntityOwnerFuture = ClusteringUtils.checkNodeEntityOwner(
-            ifaceServiceProvider.getEntityOwnershipService(), entity, entity);
+        ListenableFuture<Boolean> checkEntityOwnerFuture = ClusteringUtils
+                .checkNodeEntityOwner(ifaceServiceProvider.getEntityOwnershipService(), entity, entity);
         Futures.addCallback(checkEntityOwnerFuture, new FutureCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean isOwner) {
@@ -69,8 +69,8 @@ public class IfmClusterUtils {
      * For cases where the EOS check needs to be run on the same thread.
      */
     public static Boolean isEntityOwner(String entity) {
-        return ClusteringUtils.isEntityOwner(ifaceServiceProvider.getEntityOwnershipService(), new Entity(entity,
-                entity),
-            SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(), SystemPropertyReader.Cluster.getMaxRetries());
+        return ClusteringUtils.isEntityOwner(ifaceServiceProvider.getEntityOwnershipService(),
+                new Entity(entity, entity), SystemPropertyReader.Cluster.getSleepTimeBetweenRetries(),
+                SystemPropertyReader.Cluster.getMaxRetries());
     }
 }
