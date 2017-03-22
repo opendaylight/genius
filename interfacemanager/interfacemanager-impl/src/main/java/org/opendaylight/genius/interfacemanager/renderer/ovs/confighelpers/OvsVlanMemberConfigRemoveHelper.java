@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -32,42 +32,44 @@ import org.slf4j.LoggerFactory;
 
 public class OvsVlanMemberConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigRemoveHelper.class);
+
     public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-                                                                   Interface interfaceOld, IfL2vlan ifL2vlan,
-                                                                   IdManagerService idManager) {
-        LOG.debug("remove vlan member configuration {}",interfaceOld.getName());
+            Interface interfaceOld, IfL2vlan ifL2vlan, IdManagerService idManager) {
+        LOG.debug("remove vlan member configuration {}", interfaceOld.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentRefs.getParentInterface());
-        InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid =
-                InterfaceMetaUtils.getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        InterfaceParentEntry interfaceParentEntry =
-                InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceParentEntryIid, dataBroker);
+        InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid = InterfaceMetaUtils
+                .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
+        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIid, dataBroker);
 
-        if(interfaceParentEntry == null){
+        if (interfaceParentEntry == null) {
             return futures;
         }
 
-        //Delete the interface child information
+        // Delete the interface child information
         List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
-        InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid =
-                InterfaceMetaUtils.getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
+        InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
+                .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         defaultConfigShardTransaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
-        //If this is the last child, remove the interface parent info as well.
+        // If this is the last child, remove the interface parent info as well.
         if (interfaceChildEntries.size() <= 1) {
             defaultConfigShardTransaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
         if (ifState != null) {
-            LOG.debug("delete vlan member interface state {}",interfaceOld.getName());
+            LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId =
-                    IfmUtil.buildStateInterfaceId(interfaceOld.getName());
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+                    .buildStateInterfaceId(interfaceOld.getName());
             defaultOperShardTransaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
             FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, dataBroker, futures);
         }

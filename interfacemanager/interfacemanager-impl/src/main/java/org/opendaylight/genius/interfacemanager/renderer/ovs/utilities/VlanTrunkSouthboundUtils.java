@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -14,9 +14,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbPortInterfaceAttributes;
@@ -41,24 +40,23 @@ public class VlanTrunkSouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(VlanTrunkSouthboundUtils.class);
 
     public static void addVlanPortToBridge(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan,
-                                           OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName,
-                                           String parentInterface, DataBroker dataBroker, WriteTransaction tx) {
+            OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String parentInterface,
+            DataBroker dataBroker, WriteTransaction tx) {
         LOG.info("Vlan Interface creation not supported yet. please visit later.");
         int vlanId = ifL2vlan.getVlanId().getValue();
         addTrunkTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, parentInterface, vlanId, dataBroker, tx);
     }
 
     public static void updateVlanMemberInTrunk(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan,
-                                               OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName,
-                                               String parentInterface, DataBroker dataBroker, WriteTransaction tx) {
+            OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String parentInterface,
+            DataBroker dataBroker, WriteTransaction tx) {
         LOG.info("Vlan Interface creation not supported yet. please visit later.");
         int vlanId = ifL2vlan.getVlanId().getValue();
         updateTerminationPoint(bridgeIid, bridgeAugmentation, bridgeName, parentInterface, vlanId, dataBroker, tx);
     }
 
     private static void addTrunkTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
-                                                 String bridgeName, String parentInterface, int vlanId,
-                                                 DataBroker dataBroker, WriteTransaction tx) {
+            String bridgeName, String parentInterface, int vlanId, DataBroker dataBroker, WriteTransaction tx) {
         if (vlanId == 0) {
             LOG.error("Found vlanid 0 for bridge: {}, interface: {}", bridgeName, parentInterface);
             return;
@@ -70,8 +68,8 @@ public class VlanTrunkSouthboundUtils {
         tpAugmentationBuilder.setName(parentInterface);
         tpAugmentationBuilder.setVlanMode(OvsdbPortInterfaceAttributes.VlanMode.Trunk);
         OvsdbTerminationPointAugmentation terminationPointAugmentation = null;
-        Optional<TerminationPoint> terminationPointOptional =
-                IfmUtil.read(LogicalDatastoreType.OPERATIONAL, tpIid, dataBroker);
+        Optional<TerminationPoint> terminationPointOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, tpIid,
+                dataBroker);
         if (terminationPointOptional.isPresent()) {
             TerminationPoint terminationPoint = terminationPointOptional.get();
             terminationPointAugmentation = terminationPoint.getAugmentation(OvsdbTerminationPointAugmentation.class);
@@ -98,15 +96,15 @@ public class VlanTrunkSouthboundUtils {
     }
 
     public static void addTerminationPointWithTrunks(InstanceIdentifier<?> bridgeIid, List<Trunks> trunks,
-                                                     String parentInterface, WriteTransaction tx) {
-        InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
-                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), parentInterface);
+            String parentInterface, WriteTransaction tx) {
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
         tpAugmentationBuilder.setName(parentInterface);
         tpAugmentationBuilder.setVlanMode(OvsdbPortInterfaceAttributes.VlanMode.Trunk);
         tpAugmentationBuilder.setTrunks(trunks);
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
+                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), parentInterface);
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
@@ -114,8 +112,7 @@ public class VlanTrunkSouthboundUtils {
     }
 
     private static void updateTerminationPoint(InstanceIdentifier<?> bridgeIid, OvsdbBridgeAugmentation bridgeNode,
-                                               String bridgeName, String parentInterface, int vlanId,
-                                               DataBroker dataBroker, WriteTransaction tx) {
+            String bridgeName, String parentInterface, int vlanId, DataBroker dataBroker, WriteTransaction tx) {
         if (vlanId == 0) {
             LOG.error("Found vlanid 0 for bridge: {}, interface: {}", bridgeName, parentInterface);
             return;
@@ -127,8 +124,8 @@ public class VlanTrunkSouthboundUtils {
         tpAugmentationBuilder.setName(parentInterface);
         tpAugmentationBuilder.setVlanMode(OvsdbPortInterfaceAttributes.VlanMode.Trunk);
         OvsdbTerminationPointAugmentation terminationPointAugmentation = null;
-        Optional<TerminationPoint> terminationPointOptional =
-                IfmUtil.read(LogicalDatastoreType.OPERATIONAL, tpIid, dataBroker);
+        Optional<TerminationPoint> terminationPointOptional = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, tpIid,
+                dataBroker);
         if (terminationPointOptional.isPresent()) {
             TerminationPoint terminationPoint = terminationPointOptional.get();
             terminationPointAugmentation = terminationPoint.getAugmentation(OvsdbTerminationPointAugmentation.class);
@@ -149,11 +146,9 @@ public class VlanTrunkSouthboundUtils {
     }
 
     private static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodekey,
-                                                                                                 String portName) {
-        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier
-                .create(NetworkTopology.class)
-                .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID))
-                .child(Node.class,nodekey)
+            String portName) {
+        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier.create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID)).child(Node.class, nodekey)
                 .child(TerminationPoint.class, new TerminationPointKey(new TpId(portName)));
 
         LOG.debug("Termination point InstanceIdentifier generated : {}", terminationPointPath);

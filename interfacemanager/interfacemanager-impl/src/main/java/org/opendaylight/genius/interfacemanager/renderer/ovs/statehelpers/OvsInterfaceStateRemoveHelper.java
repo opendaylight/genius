@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -49,7 +49,7 @@ public class OvsInterfaceStateRemoveHelper {
         //VM Migration: Update the interface state to unknown only if remove event received for same switch
         if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
-            // Hence, dont remove the interface but set the status as "unknown"
+            // Hence, don't remove the interface but set the status as "unknown"
             OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
                     dataBroker, alivenessMonitorService, defaultOperationalShardTransaction);
         } else {
@@ -58,7 +58,7 @@ public class OvsInterfaceStateRemoveHelper {
                 .Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
 
             if (iface != null) {
-                // If this interface is a tunnel interface, remove the tunnel ingress flow and stop lldp monitoring
+                // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP monitoring
                 if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
                     InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction,
                             interfaceName);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -32,20 +32,20 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
 
     /*
-     *  This code is used to handle only a dpnId change scenario for a particular change,
-     * which is not expected to happen in usual cases.
+     * This code is used to handle only a dpnId change scenario for a particular
+     * change, which is not expected to happen in usual cases.
      */
-    public static List<ListenableFuture<Void>> updateBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                                                    OvsdbBridgeAugmentation bridgeNew,
-                                                                    OvsdbBridgeAugmentation bridgeOld,
-                                                                    DataBroker dataBroker) {
+    public static List<ListenableFuture<Void>> updateBridgeRefEntry(
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
+            OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
         BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
         BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
-        //delete bridge reference entry for the old dpn in interface meta operational DS
+        // delete bridge reference entry for the old dpn in interface meta
+        // operational DS
         InterfaceMetaUtils.deleteBridgeRefEntry(dpnIdOld, writeTransaction);
 
         // create bridge reference entry in interface meta operational DS
@@ -64,7 +64,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     }
 
     public static List<ListenableFuture<Void>> updateTunnelState(final DataBroker dataBroker,
-                                                                 OvsdbTerminationPointAugmentation terminationPointNew) {
+            OvsdbTerminationPointAugmentation terminationPointNew) {
         final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         final String interfaceName = terminationPointNew.getName();
         InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
@@ -74,16 +74,16 @@ public class OvsInterfaceTopologyStateUpdateHelper {
 
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         jobCoordinator.enqueueJob(interfaceName, () -> {
-            // update opstate of interface if TEP has gone down/up as a result of BFD monitoring
+            // update opstate of interface if TEP has gone down/up as a result
+            // of BFD monitoring
             final List<ListenableFuture<Void>> futures = new ArrayList<>();
-            final Interface interfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(
-                terminationPointNew.getName(), dataBroker);
-            if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown &&
-                interfaceState.getOperStatus() != interfaceBfdStatus) {
+            final Interface interfaceState = InterfaceManagerCommonUtils
+                    .getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
+            if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
+                    && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {}", interfaceName);
                 WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName,
-                    interfaceBfdStatus);
+                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName, interfaceBfdStatus);
                 futures.add(transaction.submit());
             }
             return futures;
@@ -97,8 +97,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
                 if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
                     String bfdOpState = bfdState.getBfdStatusValue();
-                    livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ?
-                         Interface.OperStatus.Up : Interface.OperStatus.Down;
+                    livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ? Interface.OperStatus.Up
+                            : Interface.OperStatus.Down;
                     break;
                 }
             }

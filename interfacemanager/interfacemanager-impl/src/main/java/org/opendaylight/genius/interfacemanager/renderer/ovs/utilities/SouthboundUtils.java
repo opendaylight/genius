@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -22,7 +22,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
@@ -51,7 +50,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
@@ -107,14 +105,14 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
-    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP =
-            new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
-                {
-                    put(TunnelTypeGre.class, InterfaceTypeGre.class);
-                    put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
-                    put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
-                }
-            };
+    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
+        TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
+            {
+                put(TunnelTypeGre.class, InterfaceTypeGre.class);
+                put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
+                put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
+            }
+        };
 
     public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName,
             DataBroker dataBroker, List<ListenableFuture<Void>> futures) {
@@ -156,8 +154,8 @@ public class SouthboundUtils {
     }
 
     /*
-     * delete all tunnels ports corresponding to the bridge to the topology config
-     * DS
+     * delete all tunnels ports corresponding to the bridge to the topology
+     * config DS
      *
      * FIXME: This is not being called from anywhere.
      */
@@ -278,8 +276,6 @@ public class SouthboundUtils {
 
     private static void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
             Class<? extends InterfaceTypeBase> type, Map<String, String> options, IfTunnel ifTunnel) {
-        InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
-                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
 
         tpAugmentationBuilder.setName(portName);
@@ -313,21 +309,22 @@ public class SouthboundUtils {
                 tpAugmentationBuilder.setInterfaceBfd(bfdParams);
             }
         }
-
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
+                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         BatchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
-
     }
 
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
         List<InterfaceBfd> bfdParams = new ArrayList<>();
         bfdParams.add(
                 getIfBfdObj(BFD_PARAM_ENABLE, ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() : "false"));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null && ifTunnel.getMonitorInterval() != null
-                ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX,
+                ifTunnel != null && ifTunnel.getMonitorInterval() != null ? ifTunnel.getMonitorInterval().toString()
+                        : BFD_MIN_TX_VAL));
         bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
         return bfdParams;
     }
@@ -348,8 +345,8 @@ public class SouthboundUtils {
         return terminationPointPath;
     }
 
-    public static void removeTerminationEndPoint(DataBroker dataBroker,
-            InstanceIdentifier<?> bridgeIid, String interfaceName) {
+    public static void removeTerminationEndPoint(DataBroker dataBroker, InstanceIdentifier<?> bridgeIid,
+            String interfaceName) {
         LOG.debug("removing termination point for {}", interfaceName);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
@@ -387,5 +384,4 @@ public class SouthboundUtils {
         }
         return false;
     }
-
 }

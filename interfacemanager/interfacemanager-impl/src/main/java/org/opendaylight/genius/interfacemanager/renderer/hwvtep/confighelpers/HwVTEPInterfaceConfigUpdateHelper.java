@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -30,18 +30,18 @@ import org.slf4j.LoggerFactory;
 public class HwVTEPInterfaceConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceConfigUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker, InstanceIdentifier<Node> physicalSwitchNodeId,
-                                                                   InstanceIdentifier<Node> globalNodeId,
-                                                                   Interface interfaceNew, IfTunnel ifTunnel) {
+    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
+            InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
+            Interface interfaceNew, IfTunnel ifTunnel) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
-        // create hwvtep through ovsdb plugin
+        // Create hwvtep through OVSDB plugin
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        if(globalNodeId != null) {
+        if (globalNodeId != null) {
             updateBfdMonitoring(dataBroker, globalNodeId, physicalSwitchNodeId, ifTunnel);
 
-        }else{
+        } else {
             LOG.debug("specified physical switch is not connected {}", physicalSwitchNodeId);
         }
         futures.add(transaction.submit());
@@ -49,27 +49,28 @@ public class HwVTEPInterfaceConfigUpdateHelper {
     }
 
     /*
-     * bfd monitoring interval and enable/disbale attributes can be modified
+     * BFD monitoring interval and enable/disable attributes can be modified
      */
-    public static List<ListenableFuture<Void>> updateBfdMonitoring(DataBroker dataBroker, InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchId,
-                                                                   IfTunnel ifTunnel) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        TunnelsBuilder tBuilder = new TunnelsBuilder();
-        InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier =
-                SouthboundUtils.createTEPInstanceIdentifier(globalNodeId, ifTunnel.getTunnelSource());
-        InstanceIdentifier<TerminationPoint> remoteTEPInstanceIdentifier =
-                SouthboundUtils.createTEPInstanceIdentifier(globalNodeId, ifTunnel.getTunnelDestination());
-        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = SouthboundUtils.
-                createTunnelsInstanceIdentifier(physicalSwitchId, localTEPInstanceIdentifier, remoteTEPInstanceIdentifier);
+    public static List<ListenableFuture<Void>> updateBfdMonitoring(DataBroker dataBroker,
+            InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchId, IfTunnel ifTunnel) {
+        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+
+        TunnelsBuilder tunnelsBuilder = new TunnelsBuilder();
+        InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier = SouthboundUtils
+                .createTEPInstanceIdentifier(globalNodeId, ifTunnel.getTunnelSource());
+        InstanceIdentifier<TerminationPoint> remoteTEPInstanceIdentifier = SouthboundUtils
+                .createTEPInstanceIdentifier(globalNodeId, ifTunnel.getTunnelDestination());
+        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = SouthboundUtils.createTunnelsInstanceIdentifier(
+                physicalSwitchId, localTEPInstanceIdentifier, remoteTEPInstanceIdentifier);
 
         LOG.debug("updating bfd monitoring parameters for the hwvtep {}", tunnelsInstanceIdentifier);
-        tBuilder.setKey(new TunnelsKey(new HwvtepPhysicalLocatorRef(localTEPInstanceIdentifier),
+        tunnelsBuilder.setKey(new TunnelsKey(new HwvtepPhysicalLocatorRef(localTEPInstanceIdentifier),
                 new HwvtepPhysicalLocatorRef(remoteTEPInstanceIdentifier)));
         List<BfdParams> bfdParams = new ArrayList<>();
         SouthboundUtils.fillBfdParameters(bfdParams, ifTunnel);
-        tBuilder.setBfdParams(bfdParams);
-        transaction.merge(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier,tBuilder.build(), true);
+        tunnelsBuilder.setBfdParams(bfdParams);
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        transaction.merge(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier, tunnelsBuilder.build(), true);
         futures.add(transaction.submit());
         return futures;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -22,7 +22,7 @@ public class HwVTEPInterfaceStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceStateRemoveHelper.class);
 
     public static List<ListenableFuture<Void>> removeExternalTunnel(DataBroker dataBroker,
-                                                                    InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier) {
+            InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("Removing HwVTEP tunnel entries for tunnel: {}", tunnelsInstanceIdentifier);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();

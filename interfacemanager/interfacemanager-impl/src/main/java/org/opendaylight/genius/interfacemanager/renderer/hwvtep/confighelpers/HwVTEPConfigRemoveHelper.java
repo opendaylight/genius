@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -30,14 +30,14 @@ public class HwVTEPConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPConfigRemoveHelper.class);
 
     public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, Interface interfaceOld,
-                                                                   InstanceIdentifier<Node> globalNodeId,
-                                                                   InstanceIdentifier<Node> physicalSwitchNodeId) {
+            InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchNodeId) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("removing hwvtep configuration for {}", interfaceOld.getName());
-        if(globalNodeId != null) {
+        if (globalNodeId != null) {
             IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
-            //removeTunnelTableEntry(transaction, ifTunnel, physicalSwitchNodeId);
+            // removeTunnelTableEntry(transaction, ifTunnel,
+            // physicalSwitchNodeId);
             removeTerminationEndPoint(transaction, ifTunnel, globalNodeId);
             InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), transaction);
             InterfaceMetaUtils.removeTunnelToInterfaceMap(physicalSwitchNodeId, transaction, ifTunnel);
@@ -47,20 +47,19 @@ public class HwVTEPConfigRemoveHelper {
     }
 
     private static void removeTerminationEndPoint(WriteTransaction transaction, IfTunnel ifTunnel,
-                                                  InstanceIdentifier<Node> globalNodeId) {
+            InstanceIdentifier<Node> globalNodeId) {
         LOG.info("removing remote termination end point {}", ifTunnel.getTunnelDestination());
-        TerminationPointKey tpKey = SouthboundUtils.getTerminationPointKey(ifTunnel.getTunnelDestination().
-                getIpv4Address().getValue());
-        InstanceIdentifier<TerminationPoint> tpPath = SouthboundUtils.createInstanceIdentifier
-                (globalNodeId, tpKey);
-        transaction.delete(LogicalDatastoreType.CONFIGURATION,  tpPath);
+        TerminationPointKey tpKey = SouthboundUtils
+                .getTerminationPointKey(ifTunnel.getTunnelDestination().getIpv4Address().getValue());
+        InstanceIdentifier<TerminationPoint> tpPath = SouthboundUtils.createInstanceIdentifier(globalNodeId, tpKey);
+        transaction.delete(LogicalDatastoreType.CONFIGURATION, tpPath);
     }
 
     private static void removeTunnelTableEntry(WriteTransaction transaction, IfTunnel ifTunnel,
-                                               InstanceIdentifier<Node> physicalSwitchNodeId) {
+            InstanceIdentifier<Node> physicalSwitchNodeId) {
         LOG.info("removing tunnel table entry for {}", ifTunnel.getTunnelDestination());
-        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = SouthboundUtils.createTunnelsInstanceIdentifier(physicalSwitchNodeId,
-                ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
+        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = SouthboundUtils.createTunnelsInstanceIdentifier(
+                physicalSwitchNodeId, ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
         transaction.delete(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier);
     }
 }
