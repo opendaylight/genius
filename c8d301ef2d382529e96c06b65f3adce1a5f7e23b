@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_713620e9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-03-22T08:47:28Z",
+      "side": 1,
+      "message": "Heads up - I think this name might be confusing with the upcoming SFC Classifier",
+      "range": {
+        "startLine": 18,
+        "startChar": 35,
+        "endLine": 18,
+        "endChar": 61
+      },
+      "revId": "c8d301ef2d382529e96c06b65f3adce1a5f7e23b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
