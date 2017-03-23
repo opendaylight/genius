@@ -8,18 +8,20 @@
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serializable;
+import com.google.common.collect.ComparisonChain;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
+import org.opendaylight.genius.infra.ArrayComparator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 /**
- *  This class defines the nicira extension matches.
+ * This class defines the nicira extension matches.
  */
-public class NxMatchInfo implements Serializable, MatchInfoBase {
+public class NxMatchInfo extends MatchInfo {
 
     private static final long serialVersionUID = 1L;
 
@@ -102,6 +104,21 @@ public class NxMatchInfo implements Serializable, MatchInfoBase {
                           && Arrays.equals(self.alMatchValues, other.alMatchValues)
                           && Arrays.equals(self.bigIntValues, other.bigIntValues)
                           && Arrays.equals(self.asMatchValues, other.asMatchValues));
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<NxMatchInfo>() {
+            @Override
+            public int compare(NxMatchInfo left, NxMatchInfo right) {
+                return ComparisonChain.start()
+                  .compare(left.matchField,       right.matchField)
+                  .compare(left.alMatchValues,    right.alMatchValues, ArrayComparator.LONG)
+                  .compare(left.bigIntValues,     right.bigIntValues,  new ArrayComparator<>())
+                  .compare(left.asMatchValues,    right.asMatchValues, new ArrayComparator<>())
+                  .result();
+            }
+        });
     }
 
 }

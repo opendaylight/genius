@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtStateKey;
@@ -17,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension CT state match.
  */
 public class NxMatchCtState extends NxMatchInfoHelper<NxmNxCtState, NxmNxCtStateBuilder> {
+
     private final long state;
     private final long mask;
 
@@ -72,4 +76,18 @@ public class NxMatchCtState extends NxMatchInfoHelper<NxmNxCtState, NxmNxCtState
         result = 31 * result + (int) (mask ^ (mask >>> 32));
         return result;
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<NxMatchCtState>() {
+            @Override
+            public int compare(NxMatchCtState left, NxMatchCtState right) {
+                return ComparisonChain.start()
+                  .compare(left.state, right.state)
+                  .compare(left.mask,  right.mask)
+                  .result();
+            }
+        });
+    }
+
 }
