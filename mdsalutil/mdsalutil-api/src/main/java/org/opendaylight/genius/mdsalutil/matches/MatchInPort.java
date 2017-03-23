@@ -7,9 +7,12 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
 import java.math.BigInteger;
+import java.util.Comparator;
 import java.util.Map;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 
@@ -78,4 +81,17 @@ public class MatchInPort extends MatchInfo {
     public String toString() {
         return "MatchInPort[dpId=" + dpId + ", portNumber=" + portNumber + "]";
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchInPort>() {
+            @Override
+            public int compare(MatchInPort left, MatchInPort right) {
+                return ComparisonChain.start()
+                  .compare(left.dpId,       right.dpId)
+                  .compare(left.portNumber, right.portNumber).result();
+            }
+        });
+    }
+
 }

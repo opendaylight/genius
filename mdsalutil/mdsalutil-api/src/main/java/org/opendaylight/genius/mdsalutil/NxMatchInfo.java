@@ -17,9 +17,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.M
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 /**
- *  This class defines the nicira extension matches.
+ * This class defines the nicira extension matches.
  */
-public class NxMatchInfo implements Serializable, MatchInfoBase {
+public class NxMatchInfo extends MatchInfo {
 
     private static final long serialVersionUID = 1L;
 

@@ -21,6 +21,8 @@ import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -40,13 +42,13 @@ import org.slf4j.LoggerFactory;
  * manually implement a bunch of methods we're not yet interested in.  Create instances
  * of it using it's static {@link #newInstance()} method.
  *
- * @author Michael Vorburger
+ * @author Michael Vorburger.ch
  */
 public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestIMdsalApiManager.class);
 
-    private List<FlowEntity> flows;
+    private UniqList<FlowEntity> flows;
 
     public static TestIMdsalApiManager newInstance() {
         return Mockito.mock(TestIMdsalApiManager.class, realOrException());
@@ -54,23 +56,30 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     /**
      * Get list of installed flows.
-     * Prefer the {@link #assertFlows(Iterable)} instead of using this and checking yourself.
+     * @deprecated Prefer the {@link #assertFlowsInAnyOrder(Iterable)} instead of using this and checking yourself.
      * @return immutable copy of list of flows
      */
+    @Deprecated
     public synchronized List<FlowEntity> getFlows() {
-        return ImmutableList.copyOf(getOrNewFlows());
+        return ImmutableList.copyOf(getOrNewFlows().asList());
     }
 
-    private synchronized List<FlowEntity> getOrNewFlows() {
+    private synchronized UniqList<FlowEntity> getOrNewFlows() {
         if (flows == null) {
-            flows = new ArrayList<>();
+            flows = new UniqList<>(FlowEntityComparator.INSTANCE);
         }
         return flows;
     }
 
+    /**
+     * Assert flows. In most test cases, you probably want to use the
+     * {@link #assertFlowsInAnyOrder(Iterable)} variant instead of this. TODO
+     * Evaluate whether there are cases when this instead of in any order make
+     * sense? If not, then deprecate / remove this variant.
+     */
     public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
         checkNonEmptyFlows(expectedFlows);
-        List<FlowEntity> nonNullFlows = getOrNewFlows();
+        List<FlowEntity> nonNullFlows = getOrNewFlows().asList();
         if (!Iterables.isEmpty(expectedFlows)) {
             assertTrue("No Flows created (bean wiring may be broken?)", !nonNullFlows.isEmpty());
         }
@@ -91,7 +100,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         // TODO Support Iterable <-> List directly within XtendBeanGenerator
         List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
 
-        List<FlowEntity> sortedFlows = sortFlows(flows);
+        List<FlowEntity> sortedFlows = sortFlows(flows.asList());
         List<FlowEntity> sortedExpectedFlows = sortFlows(expectedFlowsAsNewArrayList);
 
         // FYI: This containsExactlyElementsIn() assumes that FlowEntity, and everything in it,
@@ -129,17 +138,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         }
     }
 
-    private List<FlowEntity> sortFlows(Iterable<FlowEntity> flowsToSort) {
-        List<FlowEntity> sortedFlows = Lists.newArrayList(flowsToSort);
-        Collections.sort(sortedFlows,
-            (flow1, flow2) -> ComparisonChain.start()
-                .compare(flow1.getTableId(),  flow2.getTableId())
-                .compare(flow1.getPriority(), flow2.getPriority())
-                .compare(flow1.getFlowId(),   flow2.getFlowId())
-                .result());
-        return sortedFlows;
-    }
-
     @Override
     public synchronized void installFlow(FlowEntity flowEntity) {
         getOrNewFlows().add(flowEntity);
@@ -169,4 +167,105 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         getOrNewFlows().remove(flowEntity);
     }
 
+    private List<FlowEntity> sortFlows(Iterable<FlowEntity> flowsToSort) {
+        List<FlowEntity> sortedFlows = Lists.newArrayList(flowsToSort);
+        Collections.sort(sortedFlows, FlowEntityComparator.INSTANCE);
+        return sortedFlows;
+    }
+
+    // TODO ListComparator<T extends Comparable<T>> implements Comparator<List<T>> {
+    private static final class ListComparator implements Comparator<List<?>> {
+        @Override
+        // TODO public int compare(List<T> lefts, List<T> rights) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        public int compare(List lefts, List rights) {
+            if (lefts.size() != rights.size()) {
+                return lefts.size() < rights.size() ? -1 : 1;
+            } else {
+                List/*<T>*/ sortedLefts = Lists.newArrayList(lefts);
+                Collections.sort(sortedLefts);
+                List/*<T>*/ sortedRights = Lists.newArrayList(rights);
+                Collections.sort(sortedRights);
+                for (Iterator/*<T>*/<Comparable> leftIterator = sortedLefts.iterator(),
+                                 rightIterator = sortedRights.iterator(); leftIterator.hasNext();) {
+                    Comparable/*T*/ left = leftIterator.next();
+                    Comparable/*T*/ right = rightIterator.next();
+                    int compare = left.compareTo(right);
+                    if (compare != 0) {
+                        return compare;
+                    }
+                }
+            }
+            return 0;
+        }
+    }
+
+    // NB: We do not want to make FlowEntity implements Comparator like this directly
+    // because this Comparator is (intentionally) inconsistent with FlowEntity's equals
+    private static final class FlowEntityComparator implements Comparator<FlowEntity>, EqualsStrategy<FlowEntity> {
+        private FlowEntityComparator() { }
+
+        static final FlowEntityComparator INSTANCE = new FlowEntityComparator();
+
+        @Override
+        public int compare(FlowEntity left, FlowEntity right) {
+            return ComparisonChain.start()
+                    .compare(left.getDpnId(),    right.getDpnId())
+                    .compare(left.getTableId(),  right.getTableId())
+                    // see OpenFlow specification: "A flow table entry is identified by its
+                    // match fields and priority: the match fields and priority taken together
+                    // identify a unique flow entry in the flow table."
+                    .compare(left.getPriority(), right.getPriority())
+                    .compare(left.getMatchInfoList(), right.getMatchInfoList(),
+                            new ListComparator/*<List<MatchInfoBase>>*/())
+                    .result();
+        }
+
+        @Override
+        public boolean equals(FlowEntity left, FlowEntity right) {
+            return compare(left, right) == 0;
+        }
+    }
+
+    private interface EqualsStrategy<T> {
+        boolean equals(T left, T right);
+    }
+
+    // somewhat like a java.util.TreeSet with custom Comparator,
+    // but without "guaranteeing consistency with [natural] equals"
+    private static class UniqList<E> {
+
+        private final List<E> list = new ArrayList<>();
+        private final EqualsStrategy<E> equalsStrategy;
+
+        UniqList(EqualsStrategy<E> equalsStrategy) {
+            this.equalsStrategy = equalsStrategy;
+        }
+
+        boolean add(E element) {
+            for (int i = 0; i < list.size(); i++) {
+                E inList = list.get(i);
+                if (equalsStrategy.equals(element, inList)) {
+                    LOG.warn("adding an element that already has a (functionally) equivalent entry in list; replacing!"
+                            + " (old: {}, new: {})", inList, element);
+                    list.set(i, element);
+                    return true;
+                }
+            }
+            return list.add(element);
+        }
+
+        public boolean remove(E element) {
+            return list.remove(element);
+        }
+
+        List<E> asList() {
+            return ImmutableList.copyOf(list);
+        }
+
+        boolean isEmpty() {
+            return list.isEmpty();
+        }
+
+    }
 }
