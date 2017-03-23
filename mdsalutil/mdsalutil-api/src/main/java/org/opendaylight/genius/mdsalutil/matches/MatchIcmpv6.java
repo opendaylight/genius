@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv6Match;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Icmpv6MatchBuilder;
@@ -73,6 +76,18 @@ public class MatchIcmpv6 extends MatchInfoHelper<Icmpv6Match, Icmpv6MatchBuilder
     @Override
     public String toString() {
         return "MatchIcmpv6[type=" + type + ", code=" + code + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchIcmpv6>() {
+            @Override
+            public int compare(MatchIcmpv6 left, MatchIcmpv6 right) {
+                return ComparisonChain.start()
+                  .compare(left.type, right.type)
+                  .compare(left.code, right.code).result();
+            }
+        });
     }
 
 }

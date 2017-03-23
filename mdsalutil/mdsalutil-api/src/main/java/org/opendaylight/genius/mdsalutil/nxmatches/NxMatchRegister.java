@@ -7,8 +7,11 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableBiMap;
+import java.util.Comparator;
 import java.util.Map;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg4;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg5;
@@ -97,4 +100,18 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
         result = 31 * result + (int) (value ^ (value >>> 32));
         return result;
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<NxMatchRegister>() {
+            @Override
+            public int compare(NxMatchRegister left, NxMatchRegister right) {
+                return ComparisonChain.start()
+                  .compare(left.register.getName(), right.register.getName())
+                  .compare(left.value, right.value)
+                  .result();
+            }
+        });
+    }
+
 }

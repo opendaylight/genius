@@ -18,6 +18,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * Helper for matches (this is designed to be absorbed into MatchInfo once we've cleaned up downstream users).
  */
 public abstract class MatchInfoHelper<T extends DataObject, B extends Builder<T>> extends MatchInfo {
+
     private final Class<B> builderClass;
 
     MatchInfoHelper() {
