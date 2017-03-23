@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxCtZoneKey;
@@ -17,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension CT zone match.
  */
 public class NxMatchCtZone extends NxMatchInfoHelper<NxmNxCtZone, NxmNxCtZoneBuilder> {
+
     private final int zone;
 
     public NxMatchCtZone(int zone) {
@@ -61,4 +65,17 @@ public class NxMatchCtZone extends NxMatchInfoHelper<NxmNxCtZone, NxmNxCtZoneBui
         result = 31 * result + zone;
         return result;
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<NxMatchCtZone>() {
+            @Override
+            public int compare(NxMatchCtZone left, NxMatchCtZone right) {
+                return ComparisonChain.start()
+                  .compare(left.zone, right.zone)
+                  .result();
+            }
+        });
+    }
+
 }

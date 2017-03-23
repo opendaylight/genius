@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
@@ -18,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension TCP source port match.
  */
 public class NxMatchTcpSourcePort extends NxMatchInfoHelper<NxmOfTcpSrc, NxmOfTcpSrcBuilder> {
+
     private final int port;
     private final int mask;
 
@@ -73,4 +77,18 @@ public class NxMatchTcpSourcePort extends NxMatchInfoHelper<NxmOfTcpSrc, NxmOfTc
         result = 31 * result + mask;
         return result;
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<NxMatchTcpSourcePort>() {
+            @Override
+            public int compare(NxMatchTcpSourcePort left, NxMatchTcpSourcePort right) {
+                return ComparisonChain.start()
+                  .compare(left.port, right.port)
+                  .compare(left.mask, right.mask)
+                  .result();
+            }
+        });
+    }
+
 }

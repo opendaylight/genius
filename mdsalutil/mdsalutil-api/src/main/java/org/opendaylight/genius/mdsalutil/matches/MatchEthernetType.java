@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.EtherType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetTypeBuilder;
@@ -73,4 +76,15 @@ public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMa
     public String toString() {
         return "MatchEthernetType[" + type + "]";
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchEthernetType>() {
+            @Override
+            public int compare(MatchEthernetType left, MatchEthernetType right) {
+                return ComparisonChain.start().compare(left.type, right.type).result();
+            }
+        });
+    }
+
 }

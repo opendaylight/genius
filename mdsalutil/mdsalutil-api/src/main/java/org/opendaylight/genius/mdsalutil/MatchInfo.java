@@ -8,7 +8,21 @@
 package org.opendaylight.genius.mdsalutil;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public abstract class MatchInfo implements Serializable, MatchInfoBase {
     private static final long serialVersionUID = 1L;
+
+    @SuppressWarnings("unchecked")
+    protected final <T> int compareTo(MatchInfoBase other, Comparator<T> comparator) {
+        if (this.getClass().equals(other.getClass())) {
+            if (this.equals(other)) {
+                return 0 ;
+            } else {
+                return comparator.compare((T) this, (T) other);
+            }
+        } else {
+            return this.getClass().getName().compareTo(other.getClass().getName());
+        }
+    }
 }

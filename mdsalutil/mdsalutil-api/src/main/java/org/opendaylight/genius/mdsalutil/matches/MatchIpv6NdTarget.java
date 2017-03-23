@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv6Match;
@@ -64,6 +67,17 @@ public class MatchIpv6NdTarget extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuild
     @Override
     public String toString() {
         return "MatchIpv6NdTarget[" + address + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchIpv6NdTarget>() {
+            @Override
+            public int compare(MatchIpv6NdTarget left, MatchIpv6NdTarget right) {
+                return ComparisonChain.start()
+                  .compare(left.address.getValue(), right.address.getValue()).result();
+            }
+        });
     }
 
 }

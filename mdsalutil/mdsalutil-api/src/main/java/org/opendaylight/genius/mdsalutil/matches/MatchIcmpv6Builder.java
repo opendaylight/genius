@@ -11,6 +11,7 @@ package org.opendaylight.genius.mdsalutil.matches;
  * {@link MatchIcmpv6} builder for XtendBeanGenerator.
  */
 public class MatchIcmpv6Builder {
+
     private short code;
     private short type;
 

@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.packet.IPProtocols;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatch;
@@ -69,6 +72,17 @@ public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
     @Override
     public String toString() {
         return "MatchIpProtocol[" + protocol + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchIpProtocol>() {
+            @Override
+            public int compare(MatchIpProtocol left, MatchIpProtocol right) {
+                return ComparisonChain.start()
+                  .compare(left.protocol, right.protocol).result();
+            }
+        });
     }
 
 }

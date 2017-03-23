@@ -7,6 +7,10 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetSourceBuilder;
@@ -25,7 +29,7 @@ public class MatchEthernetSource extends MatchInfoHelper<EthernetMatch, Ethernet
         this(address, null);
     }
 
-    public MatchEthernetSource(MacAddress address, MacAddress mask) {
+    public MatchEthernetSource(MacAddress address, @Nullable MacAddress mask) {
         this.address = address;
         this.mask = mask;
     }
@@ -83,6 +87,19 @@ public class MatchEthernetSource extends MatchInfoHelper<EthernetMatch, Ethernet
     @Override
     public String toString() {
         return "MatchEthernetSource[address=" + address + ", mask=" + mask + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchEthernetSource>() {
+            @Override
+            public int compare(MatchEthernetSource left, MatchEthernetSource right) {
+                return ComparisonChain.start()
+                  .compare(left.address, right.address, MacAddressComparator.INSTANCE)
+                  .compare(left.mask,    right.mask,    MacAddressComparator.INSTANCE)
+                  .result();
+            }
+        });
     }
 
 }

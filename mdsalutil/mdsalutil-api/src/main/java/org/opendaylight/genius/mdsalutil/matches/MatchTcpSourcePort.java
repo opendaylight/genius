@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._4.match.TcpMatch;
@@ -64,6 +67,16 @@ public class MatchTcpSourcePort extends MatchInfoHelper<TcpMatch, TcpMatchBuilde
     @Override
     public String toString() {
         return "MatchTcpSourcePort[" + port + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchTcpSourcePort>() {
+            @Override
+            public int compare(MatchTcpSourcePort left, MatchTcpSourcePort right) {
+                return ComparisonChain.start().compare(left.port, right.port).result();
+            }
+        });
     }
 
 }
