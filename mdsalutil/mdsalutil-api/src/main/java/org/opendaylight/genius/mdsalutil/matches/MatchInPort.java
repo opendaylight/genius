@@ -54,9 +54,6 @@ public class MatchInPort extends MatchInfo {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        if (!super.equals(other)) {
-            return false;
-        }
 
         MatchInPort that = (MatchInPort) other;
 
@@ -68,9 +65,10 @@ public class MatchInPort extends MatchInfo {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (dpId != null ? dpId.hashCode() : 0);
-        result = 31 * result + (int) (portNumber ^ portNumber >>> 32);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (dpId == null ? 0 : dpId.hashCode());
+        result = prime * result + (int) (portNumber ^ portNumber >>> 32);
         return result;
     }
 
