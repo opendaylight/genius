@@ -27,6 +27,15 @@ import org.opendaylight.genius.infra.ThreadFactoryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * DataStoreJobCoordinator.
+ *
+ * @deprecated Use org.opendaylight.infrautils.jobcoordinator.JobCoordinator
+ *             instead of this. Please note that in its new reincarnation its no
+ *             longer a static singleton but now an OSGi service which can
+ *             (must) {@literal @}Inject into your class using it.
+ */
+@Deprecated
 public class DataStoreJobCoordinator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataStoreJobCoordinator.class);
