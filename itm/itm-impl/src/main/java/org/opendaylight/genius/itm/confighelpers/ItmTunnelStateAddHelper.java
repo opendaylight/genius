@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -21,22 +23,21 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItmTunnelStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateAddHelper.class);
 
-    public static List<ListenableFuture<Void>> addTunnel(Interface iface, IInterfaceManager ifaceManager, DataBroker broker) throws Exception {
-        LOG.debug( "Invoking ItmTunnelStateAddHelper for Interface {} ", iface);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public static List<ListenableFuture<Void>> addTunnel(Interface iface, IInterfaceManager ifaceManager,
+                                                         DataBroker broker) throws Exception {
+        LOG.debug("Invoking ItmTunnelStateAddHelper for Interface {} ", iface);
+        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+        final WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, iface.getName());
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
         StateTunnelList tunnelStateList;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = (iface.getOperStatus().equals(Interface.OperStatus.Up)) ? (true):(false);
+        boolean tunnelState = (iface.getOperStatus().equals(Interface.OperStatus.Up)) ? (true) : (false);
         switch (iface.getOperStatus()) {
             case Up:
                 tunnelOperStatus = TunnelOperStatus.Up;
@@ -57,7 +58,8 @@ public class ItmTunnelStateAddHelper {
              * FIXME: A defensive try-catch to find issues without
              * disrupting existing behavior.
              */
-            tunnelStateList = ItmUtils.buildStateTunnelList(tlKey, iface.getName(), tunnelState, tunnelOperStatus, ifaceManager, broker);
+            tunnelStateList = ItmUtils.buildStateTunnelList(tlKey, iface.getName(), tunnelState, tunnelOperStatus,
+                    ifaceManager, broker);
             LOG.trace("Batching the Creation of tunnel_state: {} for Id: {}", tunnelStateList, stListId);
             ITMBatchingUtils.write(stListId, tunnelStateList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         } catch (Exception e) {

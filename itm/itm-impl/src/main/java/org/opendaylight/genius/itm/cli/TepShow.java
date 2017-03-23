@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 @Command(scope = "tep", name = "show", description = "view the configured tunnel endpoints")
 public class TepShow extends OsgiCommandSupport {
-    private static final Logger logger = LoggerFactory.getLogger(TepShow.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TepShow.class);
     private IITMProvider itmProvider;
 
     public void setItmProvider(IITMProvider itmProvider) {
@@ -24,8 +24,8 @@ public class TepShow extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() {
-        logger.debug("Executing show TEP command");
-            itmProvider.showTeps(session);
+        LOG.debug("Executing show TEP command");
+        itmProvider.showTeps(session);
         return null;
     }
 
