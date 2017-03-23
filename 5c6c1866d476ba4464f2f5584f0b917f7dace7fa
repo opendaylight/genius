@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_4ad6bb28",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 11
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-23T14:28:31Z",
+      "side": 1,
+      "message": "why is interface-manager depending on ITM?",
+      "revId": "5c6c1866d476ba4464f2f5584f0b917f7dace7fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
