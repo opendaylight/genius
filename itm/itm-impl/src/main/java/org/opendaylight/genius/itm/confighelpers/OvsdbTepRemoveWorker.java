@@ -21,13 +21,13 @@ import java.util.concurrent.Callable;
 public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepRemoveWorker.class ) ;
     private String tepIp;
-    private String strDpnId;
+    private String strDpid;
     private String tzName;
     private DataBroker dataBroker;
 
-    public OvsdbTepRemoveWorker(String tepIp, String strDpnId, String tzName, DataBroker broker) {
+    public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName, DataBroker broker) {
         this.tepIp = tepIp;
-        this.strDpnId = strDpnId;
+        this.strDpid = strDpid;
         this.tzName = tzName;
         this.dataBroker = broker ;
     }
@@ -40,7 +40,7 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
         LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
 
         // remove TEP received from southbound OVSDB from ITM config DS.
-        OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, wrTx);
+        OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, wrTx);
 
         futures.add(wrTx.submit());
         return futures;

@@ -21,15 +21,15 @@ import java.util.concurrent.Callable;
 public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddWorker.class ) ;
     private String tepIp;
-    private String strDpnId;
+    private String strDpid;
     private String tzName;
     private boolean ofTunnel;
     private DataBroker dataBroker;
 
-    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel,
+    public OvsdbTepAddWorker(String tepIp, String strDpid, String tzName,  boolean ofTunnel,
         DataBroker broker) {
         this.tepIp = tepIp;
-        this.strDpnId = strDpnId;
+        this.strDpid = strDpid;
         this.tzName = tzName;
         this.ofTunnel = ofTunnel;
         this.dataBroker = broker;
@@ -43,7 +43,7 @@ public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>>
         LOG.trace("Add TEP task is picked from DataStoreJobCoordinator for execution.");
 
         // add TEP received from southbound OVSDB into ITM config DS.
-        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel,
+        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpid, tzName, ofTunnel,
             dataBroker, wrTx);
 
         futures.add(wrTx.submit());
