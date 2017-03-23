@@ -146,7 +146,8 @@ public final class NwConstants {
     public static final short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     public static final short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
     public static final short EGRESS_SFC_CLASSIFIER_FILTER_TABLE = 110;
-    public static final short EGRESS_SFC_CLASSIFIER_ACL_TABLE = 111;
+    public static final short EGRESS_SFC_CLASSIFIER_NEXTHOP_TABLE = 111;
+    public static final short EGRESS_SFC_CLASSIFIER_EGRESS_TABLE = 112;
     public static final short INGRESS_ACL_TABLE = 211;
     public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 212;
     public static final short INGRESS_ACL_FILTER_TABLE = 213;
