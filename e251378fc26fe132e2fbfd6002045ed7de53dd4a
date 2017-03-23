@@ -16,6 +16,24 @@
       "revId": "e251378fc26fe132e2fbfd6002045ed7de53dd4a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ea94cf45",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-23T14:15:03Z",
+      "side": 1,
+      "message": "No actual real bugs (bugzilla) fixed, this is just better code quality, see diff.",
+      "parentUuid": "fafc7978_299f1a52",
+      "revId": "e251378fc26fe132e2fbfd6002045ed7de53dd4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
