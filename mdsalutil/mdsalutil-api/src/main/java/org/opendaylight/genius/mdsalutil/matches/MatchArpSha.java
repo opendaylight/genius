@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.arp.match.fields.ArpSourceHardwareAddressBuilder;
@@ -66,4 +69,16 @@ public class MatchArpSha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
     public String toString() {
         return "MatchArpSha[" + address + "]";
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchArpSha>() {
+            @Override
+            public int compare(MatchArpSha left, MatchArpSha right) {
+                return ComparisonChain.start()
+                  .compare(left.address.getValue(), right.address.getValue()).result();
+            }
+        });
+    }
+
 }

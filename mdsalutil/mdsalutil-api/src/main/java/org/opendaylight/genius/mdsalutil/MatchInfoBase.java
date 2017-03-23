@@ -13,11 +13,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.M
 /**
  *  This interface helps in creating the openflow matches.
  */
-
-public interface MatchInfoBase {
+public interface MatchInfoBase extends Comparable<MatchInfoBase> {
 
     /**
-     * Creater the inner match object.
+     * Create the inner match object.
      *
      * @param mapMatchBuilder the map which holds the matches.
      */

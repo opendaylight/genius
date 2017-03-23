@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.ethernet.match.fields.EthernetDestinationBuilder;
@@ -84,4 +87,17 @@ public class MatchEthernetDestination extends MatchInfoHelper<EthernetMatch, Eth
     public String toString() {
         return "MatchEthernetDestination[address=" + address + ", mask=" + mask + "]";
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchEthernetDestination>() {
+            @Override
+            public int compare(MatchEthernetDestination left, MatchEthernetDestination right) {
+                return ComparisonChain.start()
+                  .compare(left.address.getValue(), right.address.getValue())
+                  .compare(left.mask.getValue(),    right.mask.getValue()).result();
+            }
+        });
+    }
+
 }

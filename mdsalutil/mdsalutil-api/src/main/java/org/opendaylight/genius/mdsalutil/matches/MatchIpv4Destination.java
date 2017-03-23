@@ -7,7 +7,10 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.Ipv4Match;
@@ -73,6 +76,17 @@ public class MatchIpv4Destination extends MatchInfoHelper<Ipv4Match, Ipv4MatchBu
     @Override
     public String toString() {
         return "MatchIpv4Destination[" + prefix + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchIpv4Destination>() {
+            @Override
+            public int compare(MatchIpv4Destination left, MatchIpv4Destination right) {
+                return ComparisonChain.start()
+                  .compare(left.prefix.getValue(), right.prefix.getValue()).result();
+            }
+        });
     }
 
 }
