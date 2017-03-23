@@ -7,7 +7,10 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
 import java.math.BigInteger;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
@@ -82,6 +85,19 @@ public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
     @Override
     public String toString() {
         return "MatchTunnelId[tunnelId=" + tunnelId + ", tunnelMask=" + tunnelMask + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchTunnelId>() {
+            @Override
+            public int compare(MatchTunnelId left, MatchTunnelId right) {
+                return ComparisonChain.start()
+                  .compare(left.tunnelId,   right.tunnelId)
+                  .compare(left.tunnelMask, right.tunnelMask)
+                  .result();
+            }
+        });
     }
 
 }

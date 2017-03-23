@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatch;
@@ -68,6 +71,17 @@ public class MatchVlanVid extends MatchInfoHelper<VlanMatch, VlanMatchBuilder> {
     @Override
     public String toString() {
         return "MatchVlanVid[" + vlanId + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchVlanVid>() {
+            @Override
+            public int compare(MatchVlanVid left, MatchVlanVid right) {
+                return ComparisonChain.start()
+                  .compare(left.vlanId, right.vlanId).result();
+            }
+        });
     }
 
 }

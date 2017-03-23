@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.layer._3.match.ArpMatch;
@@ -68,4 +71,16 @@ public class MatchArpOp extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
     public String toString() {
         return "MatchArpOp[" + op + "]";
     }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchArpOp>() {
+            @Override
+            public int compare(MatchArpOp left, MatchArpOp right) {
+                return ComparisonChain.start()
+                  .compare(left.op, right.op).result();
+            }
+        });
+    }
+
 }

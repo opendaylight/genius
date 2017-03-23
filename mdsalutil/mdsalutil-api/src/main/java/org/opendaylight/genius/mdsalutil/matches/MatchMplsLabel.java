@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFields;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.ProtocolMatchFieldsBuilder;
@@ -63,6 +66,16 @@ public class MatchMplsLabel extends MatchInfoHelper<ProtocolMatchFields, Protoco
     @Override
     public String toString() {
         return "MatchMplsLabel[" + label + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchMplsLabel>() {
+            @Override
+            public int compare(MatchMplsLabel left, MatchMplsLabel right) {
+                return ComparisonChain.start().compare(left.label, right.label).result();
+            }
+        });
     }
 
 }

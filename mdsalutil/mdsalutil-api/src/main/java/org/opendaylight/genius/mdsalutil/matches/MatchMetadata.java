@@ -7,7 +7,10 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
+import com.google.common.collect.ComparisonChain;
 import java.math.BigInteger;
+import java.util.Comparator;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Metadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
@@ -74,6 +77,19 @@ public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
     @Override
     public String toString() {
         return "MatchMetadata[metadata=" + metadata + ", mask=" + mask + "]";
+    }
+
+    @Override
+    public int compareTo(MatchInfoBase other) {
+        return compareTo(other, new Comparator<MatchMetadata>() {
+            @Override
+            public int compare(MatchMetadata left, MatchMetadata right) {
+                return ComparisonChain.start()
+                  .compare(left.metadata, right.metadata)
+                  .compare(left.mask,     right.mask)
+                  .result();
+            }
+        });
     }
 
 }
