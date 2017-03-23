@@ -17,17 +17,17 @@ class ExpectedDeviceVtepsObjects {
 
     static def newDeviceVtepsObject() {
         new DeviceVtepsBuilder >> [
-            ipAddress = ItmTestConstants.ipAddress3
-            nodeId = ItmTestConstants.sourceDevice
-            topologyId = ItmTestConstants.destinationDevice
+            ipAddress = ItmTestConstants.IP_ADDRESS_3
+            nodeId = ItmTestConstants.SOURCE_DEVICE
+            topologyId = ItmTestConstants.DESTINATION_DEVICE
         ]
     }
 
     static def newDeviceVtepsObject2() {
         new DeviceVtepsBuilder >> [
-            ipAddress = ItmTestConstants.ipAddress3
-            nodeId = ItmTestConstants.sourceDevice2
-            topologyId = ItmTestConstants.destinationDevice
+            ipAddress = ItmTestConstants.IP_ADDRESS_3
+            nodeId = ItmTestConstants.SOURCE_DEVICE_2
+            topologyId = ItmTestConstants.DESTINATION_DEVICE
         ]
     }
 }
