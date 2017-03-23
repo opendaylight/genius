@@ -1,0 +1,158 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_b776b504",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "Line length should be 80-100 characters.",
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_77256d09",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "these are not formatted correctly, please check generated doc and I couldn\u0027t figure out what is being attempted here.",
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_375ac583",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "What about Tunked ports? We have couple of use cases where a parentVlan inteface can have multiple child interfaces. Can QoS be applied to subports also or only parent?",
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f75f9d73",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "Single space is enough.",
+      "range": {
+        "startLine": 45,
+        "startChar": 103,
+        "endLine": 45,
+        "endChar": 106
+      },
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9773b114",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 108,
+        "startChar": 161,
+        "endLine": 108,
+        "endChar": 163
+      },
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d77d39e9",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "There should be blank like above it, is messing up the formatting.",
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3783e5cd",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 115,
+        "startChar": 20,
+        "endLine": 115,
+        "endChar": 22
+      },
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_776c4d37",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-23T06:57:04Z",
+      "side": 1,
+      "message": "this is not needed.",
+      "revId": "4dadcc88c928eb78ec024576310a62793470cd92",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
