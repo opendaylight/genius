@@ -34,6 +34,24 @@
       "revId": "e251378fc26fe132e2fbfd6002045ed7de53dd4a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6add7f14",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-23T14:28:06Z",
+      "side": 1,
+      "message": "A commit message is supposed to explain what the commit does; this commit enables FindBugs and fixes issues that FB revealed, and the latter should IMO be described (because they are valid issues that need fixing, whether or not FB flagged them is irrelevant):\n\n* Remove unused private methods.\n* Use Optional instead of returning null.\n* Add a type parameter to AlivenessProtocolHandler and its implementations.\n* Add missing null-checks.\n* Remove unnecessary variable initialisations.\n* Specify the charset in AlivenessProtocolHandlerLLDP instead of relying on the system default.\n* AlivenessMonitor.FutureCallbackImpl doesn\u0027t need any state from its parent, make it static.\n* AlivenessProtocolHandler.handlePacketIn() can return null, mark it @Nullable.",
+      "parentUuid": "fafc7978_ea94cf45",
+      "revId": "e251378fc26fe132e2fbfd6002045ed7de53dd4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
