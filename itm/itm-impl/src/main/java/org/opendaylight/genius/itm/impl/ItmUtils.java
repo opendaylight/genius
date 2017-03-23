@@ -47,7 +47,6 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -1294,11 +1293,7 @@ public class ItmUtils {
                 .child(TransportZone.class,
                     new TransportZoneKey(tzName)).build();
             LOG.debug("Removing {} transport-zone from config DS.", tzName);
-            try {
-                SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, path);
-            } catch (TransactionCommitFailedException e) {
-                LOG.error("deleteTransportZoneFromConfigDS failed. {} could not be deleted.", tzName, e);
-            }
+            ItmUtils.asyncDelete(LogicalDatastoreType.CONFIGURATION, path, dataBroker, ItmUtils.DEFAULT_CALLBACK);
         }
     }
 
