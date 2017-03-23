@@ -220,7 +220,7 @@ public class IdUtils {
         return 0;
     }
 
-    public static void lockPool(LockManagerService lockManager, String poolName) {
+    public static void lock(LockManagerService lockManager, String poolName) {
          LockInput input = new LockInputBuilder().setLockName(poolName).build();
          Future<RpcResult<Void>> result = lockManager.lock(input);
          try {
@@ -237,7 +237,7 @@ public class IdUtils {
          }
     }
 
-    public static void unlockPool(LockManagerService lockManager, String poolName) {
+    public static void unlock(LockManagerService lockManager, String poolName) {
         UnlockInput input = new UnlockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
