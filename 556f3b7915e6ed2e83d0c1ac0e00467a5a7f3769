@@ -51,6 +51,24 @@
       "revId": "556f3b7915e6ed2e83d0c1ac0e00467a5a7f3769",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_576e6997",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-03-23T05:32:25Z",
+      "side": 1,
+      "message": "Vivek, I thought of keeping this info logs for some more time for debugging purpose for any csit failures. So let us keep it for few days till csit stabilizes.\nKency is addressing Sam\u0027s comment and raise another PS.",
+      "parentUuid": "fafc7978_d7d41949",
+      "revId": "556f3b7915e6ed2e83d0c1ac0e00467a5a7f3769",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
