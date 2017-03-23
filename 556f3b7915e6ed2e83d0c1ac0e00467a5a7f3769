@@ -33,6 +33,24 @@
       "revId": "556f3b7915e6ed2e83d0c1ac0e00467a5a7f3769",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d7d41949",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-03-23T05:10:55Z",
+      "side": 1,
+      "message": "Sam,\n\nTheses were added for purely debugging purpose.  Before the merge, we should probably retain them as debug instead of Info.\n\nPeri, WDYT?",
+      "parentUuid": "fafc7978_999bea71",
+      "revId": "556f3b7915e6ed2e83d0c1ac0e00467a5a7f3769",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
