@@ -13,7 +13,7 @@ public class MetaDataUtil {
     public static final BigInteger METADATA_MASK_LPORT_TAG =     new BigInteger("0FFFFF0000000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE =       new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
-    public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("00000000FFFFFFFE", 16);
+    public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADATA_MASK_REMOTE_ACL_ID = new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID
         = new BigInteger("08000000FFFFFF00", 16);
@@ -22,8 +22,8 @@ public class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SERVICE_SH_FLAG = new BigInteger("000000FFFF000001", 16);
     public static final BigInteger METADATA_MASK_LPORT_TAG_SH_FLAG =     new BigInteger("0FFFFF0000000001", 16);
     public static final BigInteger METADATA_MASK_SH_FLAG = new BigInteger("0000000000000001", 16);
-    public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("0000FFFF00000000", 16);
-    public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("0000FFFFFFFFFFFE", 16);
+    public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("000000FFFF000000", 16);
+    public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("000000FFFFFFFFFE", 16);
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
         return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag));
