@@ -9,6 +9,7 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class FlowBasedServicesConfigListener extends AsyncDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
+public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
     private InterfacemgrProvider interfacemgrProvider;
 
