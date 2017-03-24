@@ -81,7 +81,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                     .getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
-                LOG.debug("updating tunnel state for interface {}", interfaceName);
+                LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
                 WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                 InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName, interfaceBfdStatus);
                 futures.add(transaction.submit());
