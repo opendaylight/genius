@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Command(scope = "tep", name = "deleteDatastore", description = "view the configured tunnel endpoints")
+@Command(scope = "tep", name = "deleteDatastore", description = "deleting all tep data from datastore")
 public class TepDeleteDatastore<T extends DataObject>  extends OsgiCommandSupport {
     private static final Logger LOG = LoggerFactory.getLogger(TepDeleteDatastore.class);
     private IITMProvider itmProvider;
