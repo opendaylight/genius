@@ -16,6 +16,24 @@
       "revId": "89a9c6ef8bc92dd4f746733d16aeef40fa4c97ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9fb9ff7b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-24T14:05:15Z",
+      "side": 1,
+      "message": "Done, how about worded like this, OK for you?",
+      "parentUuid": "fafc7978_eda22999",
+      "revId": "89a9c6ef8bc92dd4f746733d16aeef40fa4c97ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
