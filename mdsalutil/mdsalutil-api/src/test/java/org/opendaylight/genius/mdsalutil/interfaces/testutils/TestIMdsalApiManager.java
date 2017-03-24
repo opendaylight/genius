@@ -141,20 +141,22 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public synchronized void installFlow(FlowEntity flowEntity) {
+    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
         getOrNewFlows().add(flowEntity);
+        return Futures.immediateCheckedFuture(null);
     }
 
     @Override
     public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
             FlowEntity flowEntity) {
-        installFlow(flowEntity);
-        return Futures.immediateCheckedFuture(null);
+        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
+        return installFlow(flowEntity);
     }
 
     @Override
     public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
             FlowEntity flowEntity) {
+        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         getOrNewFlows().remove(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }

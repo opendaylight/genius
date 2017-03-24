@@ -562,8 +562,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void installFlow(FlowEntity flowEntity) {
-        installFlowInternal(flowEntity);
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
+        return installFlowInternal(flowEntity);
     }
 
     @Override
@@ -587,8 +587,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void removeFlow(FlowEntity flowEntity) {
-        removeFlowInternal(flowEntity);
+    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(FlowEntity flowEntity) {
+        return removeFlowInternal(flowEntity);
     }
 
     @Override
