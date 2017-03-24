@@ -16,6 +16,24 @@
       "revId": "db334434e0403db7bc0779fc99d4b95f27389d71",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ff764bd7",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-24T14:12:30Z",
+      "side": 1,
+      "message": "I see .. let me propose to do something about that in another change, so that this one can stay simple and focused on the installFlow return CheckedFuture, only.",
+      "parentUuid": "fafc7978_f9f82bc6",
+      "revId": "db334434e0403db7bc0779fc99d4b95f27389d71",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
