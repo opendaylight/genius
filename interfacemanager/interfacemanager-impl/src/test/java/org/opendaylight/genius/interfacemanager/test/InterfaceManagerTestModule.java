@@ -16,17 +16,7 @@ import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipS
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
-import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.CacheInterfaceStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.HwVTEPTunnelsStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.InterfaceConfigListener;
-import org.opendaylight.genius.interfacemanager.listeners.InterfaceInventoryStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
-import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
+import org.opendaylight.genius.interfacemanager.listeners.*;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
@@ -106,5 +96,6 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(InterfaceTopologyStateListener.class);
         bind(TerminationPointStateListener.class);
         bind(VlanMemberConfigListener.class);
+        bind(InterfaceStateListener.class);
     }
 }
