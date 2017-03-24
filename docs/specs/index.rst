@@ -11,8 +11,7 @@ Contents:
    :maxdepth: 1
 
    Design Specification Template <specs-template>
-   counter-framework
-   itm-tunnel-auto-config
    of-tunnels
+   itm-tunnel-auto-config
    service-binding-on-tunnels
    Load balancing and high availability of multiple VxLAN tunnels <multiple-vxlan-tunnels>
