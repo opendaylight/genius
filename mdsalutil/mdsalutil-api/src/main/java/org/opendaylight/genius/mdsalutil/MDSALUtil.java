@@ -114,19 +114,19 @@ public class MDSALUtil {
             String flowName, int idleTimeOut, int hardTimeOut, BigInteger cookie,
             List<? extends MatchInfoBase> listMatchInfoBase, List<InstructionInfo> listInstructionInfo) {
 
-        FlowEntity flowEntity = new FlowEntity(dpnId);
+        return new FlowEntityBuilder()
+            .dpnId(dpnId)
+            .tableId(tableId)
+            .flowId(flowId)
+            .priority(priority)
+            .flowName(flowName)
+            .idleTimeOut(idleTimeOut)
+            .hardTimeOut(hardTimeOut)
+            .cookie(cookie)
+            .addAllMatchInfoList(listMatchInfoBase)
+            .addAllInstructionInfoList(listInstructionInfo)
 
-        flowEntity.setTableId(tableId);
-        flowEntity.setFlowId(flowId);
-        flowEntity.setPriority(priority);
-        flowEntity.setFlowName(flowName);
-        flowEntity.setIdleTimeOut(idleTimeOut);
-        flowEntity.setHardTimeOut(hardTimeOut);
-        flowEntity.setCookie(cookie);
-        flowEntity.setMatchInfoList(listMatchInfoBase);
-        flowEntity.setInstructionInfoList(listInstructionInfo);
-
-        return flowEntity;
+            .build();
     }
 
     // TODO: CHECK IF THIS IS USED
