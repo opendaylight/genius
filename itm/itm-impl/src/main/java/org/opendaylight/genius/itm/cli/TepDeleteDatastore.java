@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 //import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.op.rev150701.TunnelsState;
 //import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.itm.op.rev150701.tunnels_state.StateTunnelList;
 
-@Command(scope = "tep", name = "deleteDatastore", description = "view the configured tunnel endpoints")
+@Command(scope = "tep", name = "deleteDatastore", description = "deleting all tep data from datastore")
 public class TepDeleteDatastore <T extends DataObject>  extends OsgiCommandSupport {
     private static final Logger logger = LoggerFactory.getLogger(TepDeleteDatastore.class);
     private IITMProvider itmProvider;
