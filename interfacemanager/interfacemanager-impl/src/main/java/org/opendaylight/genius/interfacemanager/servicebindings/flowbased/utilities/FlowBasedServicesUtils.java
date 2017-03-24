@@ -310,9 +310,9 @@ public class FlowBasedServicesUtils {
         List<Instruction> instructions = new ArrayList<>();
         if(boundService.getServicePriority() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
             BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
-            BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex, metadataValues[0]);
-            BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
-            instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize));
+            BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForEgressDispatcherTable();
+            instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadataValues[0], metadataMask,
+                ++instructionSize));
             instructions.add(MDSALUtil.buildAndGetSetReg6ActionInstruction(0, ++instructionSize, 0, 31,
                     MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, nextServiceIndex)));
         }

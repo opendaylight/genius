@@ -109,6 +109,10 @@ public class MetaDataUtil {
         return new BigInteger("FFFFFFFFFFFFFFFE", 16);
     }
 
+    public static BigInteger getWriteMetaDataMaskForEgressDispatcherTable() {
+        return new BigInteger("000000FFFFFFFFFE", 16);
+    }
+
     public static BigInteger getLportTagForReg6(int lportTag) {
         return new BigInteger("FFFFF", 16).and(BigInteger.valueOf(lportTag)).shiftLeft(8);
     }
