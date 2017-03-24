@@ -24,6 +24,7 @@ import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPTunnelsStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceInventoryStateListener;
+import org.opendaylight.genius.interfacemanager.listeners.InterfaceStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
@@ -36,8 +37,8 @@ import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManag
 import org.opendaylight.infrautils.inject.ModuleSetupRuntimeException;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.lockmanager.LockManager;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.*;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
@@ -106,5 +107,6 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(InterfaceTopologyStateListener.class);
         bind(TerminationPointStateListener.class);
         bind(VlanMemberConfigListener.class);
+        bind(InterfaceStateListener.class);
     }
 }
