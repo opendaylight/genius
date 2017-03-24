@@ -174,10 +174,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     public void writeFlowEntityInternal(FlowEntity flowEntity, WriteTransaction tx) {
-        if (flowEntity.getCookie() == null) {
-            flowEntity.setCookie(new BigInteger("0110000", 16));
-        }
-
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
 
         FlowBuilder flowbld = flowEntity.getFlowBuilder();
@@ -428,9 +424,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     public void syncSetUpFlowInternal(FlowEntity flowEntity, long delay, boolean isRemove) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
-        }
-        if (flowEntity.getCookie() == null) {
-            flowEntity.setCookie(new BigInteger("0110000", 16));
         }
         Flow flow = flowEntity.getFlowBuilder().build();
         String flowId = flowEntity.getFlowId();
