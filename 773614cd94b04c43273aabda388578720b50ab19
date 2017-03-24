@@ -16,6 +16,24 @@
       "revId": "773614cd94b04c43273aabda388578720b50ab19",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d1209b9d",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-24T14:53:40Z",
+      "side": 1,
+      "message": "yeah I had considered that... ;-) So we theoretically COULD but practically IMHO never SHOULD do that - and that\u0027s why I went for this approach.. I\u0027d argue that it would be (very) \"wrong\" to do that, because these data structures really are \"just value objects\" (Java 10...), like any other, and thus giving them \"special\" hashCode/equals which disregard some of their attributes is dangerous / possibly extremely confusing.. Some reasons: It makes it more difficult to adopt e.g. Bean code gen. by YANG or Immutables as in c/53763, or use libraries such as xtendbeans, or any other, or even a simple JUnit assertEquals could get very confusing, all of which make the assumption of \"sane\" [normal] hashCode/equals.  What we\u0027re \"functionally\" really saying here is that FlowEntity has a higher level concept of \"logical\" equivalence, and that is fine, and can be expressed with external comparator / equals functions, as done here - but the underlying technical data structure should still not take that into account.  If you are particularly interested and think it could be useful (but I don\u0027t think we currently need it..), then these higher level concept of \"logical\" equivalence function could even be exposed directly by a method such as boolean isLogicallySameFlow(FlowEntity entity) on FlowEntity - but never by changing equals(), IMHO.  HTH?",
+      "parentUuid": "fafc7978_9e5d857c",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
