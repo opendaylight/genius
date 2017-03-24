@@ -10,13 +10,13 @@ package org.opendaylight.genius.itm.cli;
 
 public class TepException extends Exception {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  /**
-   * Constructor.
-   * @param message the error message text, which must include the Tep Exceptions
-   */
-  public TepException(String message) {
-    super(message);
-  }
+    /**
+     * Constructor.
+     * @param message the error message text, which must include the Tep Exceptions
+     */
+    public TepException(String message) {
+      super(message);
+    }
 }

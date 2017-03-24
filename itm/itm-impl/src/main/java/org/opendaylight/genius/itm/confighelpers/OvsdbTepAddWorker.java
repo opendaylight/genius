@@ -8,28 +8,26 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddWorker.class ) ;
+    private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddWorker.class) ;
     private String tepIp;
     private String strDpid;
     private String tzName;
     private boolean ofTunnel;
     private DataBroker dataBroker;
 
-    public OvsdbTepAddWorker(String tepIp, String strDpid, String tzName,  boolean ofTunnel,
-        DataBroker broker) {
+    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel,
+                             DataBroker broker) {
         this.tepIp = tepIp;
-        this.strDpid = strDpid;
+        this.strDpid = strDpnId;
         this.tzName = tzName;
         this.ofTunnel = ofTunnel;
         this.dataBroker = broker;

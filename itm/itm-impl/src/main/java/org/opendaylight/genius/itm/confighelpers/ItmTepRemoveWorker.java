@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger logger = LoggerFactory.getLogger(ItmTepRemoveWorker.class ) ;
+    private static final Logger LOG = LoggerFactory.getLogger(ItmTepRemoveWorker.class);
     private DataBroker dataBroker;
     private List<DPNTEPsInfo> delDpnList ;
     private List<DPNTEPsInfo> meshedDpnList ;
@@ -33,48 +33,52 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private TransportZone originalTZone;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
-            DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
+                              DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
         this.delDpnList = delDpnList;
         this.dataBroker = broker;
         this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
         this.originalTZone = originalTZone;
-        logger.trace("ItmTepRemoveWorker initialized with  DpnList {}",delDpnList );
-        logger.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}",delHwList );
+        LOG.trace("ItmTepRemoveWorker initialized with  DpnList {}", delDpnList);
+        LOG.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}", delHwList);
     }
 
     @Override
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        futures.addAll( ItmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService, mdsalManager, delDpnList, meshedDpnList));
-        logger.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",delDpnList, meshedDpnList );
+        futures.addAll(ItmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService, mdsalManager,
+                delDpnList, meshedDpnList));
+        LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",
+                delDpnList, meshedDpnList);
         // IF EXTERNAL TUNNELS NEEDS TO BE DELETED, DO IT HERE, IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
-        if(dcGatewayIpList != null && !dcGatewayIpList.isEmpty()){
+        if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
             List<DPNTEPsInfo>  dpnDeleteList = new ArrayList<>();
-            for( DPNTEPsInfo dpnTEPInfo : delDpnList){
+            for (DPNTEPsInfo dpnTEPInfo : delDpnList) {
                 List<TunnelEndPoints> tunnelEndPointsList = dpnTEPInfo.getTunnelEndPoints();
-                if(tunnelEndPointsList.size() == 1){
+                if (tunnelEndPointsList.size() == 1) {
                     dpnDeleteList.add(dpnTEPInfo);
-                }
-                else{
-                    logger.error("DPNTEPInfo not available in data store for dpnId" + dpnTEPInfo.getDPNID() + ". Unable to delete external tunnel for dpn ");
+                } else {
+                    LOG.error("DPNTEPInfo not available in data store for dpnId" + dpnTEPInfo.getDPNID()
+                            + ". Unable to delete external tunnel for dpn ");
                 }
             }
-            for(DcGatewayIp dcGatewayIp : dcGatewayIpList){
-                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,  dpnDeleteList, meshedDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+            for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
+                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,
+                        dpnDeleteList , meshedDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
             }
         }
 
-        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService,delDpnList,cfgdHwVteps, this.originalTZone));
+        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService,delDpnList,
+                cfgdHwVteps, this.originalTZone));
         return futures ;
     }
 
     @Override
     public String toString() {
-        return "ItmTepRemoveWorker  { " +
-        "Delete Dpn List : " + delDpnList + " }" ;
+        return "ItmTepRemoveWorker  { "
+                + "Delete Dpn List : " + delDpnList + " }" ;
     }
 }

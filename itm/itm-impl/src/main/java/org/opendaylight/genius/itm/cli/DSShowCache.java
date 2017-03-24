@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class DSShowCache extends OsgiCommandSupport {
     @Argument(index = 0, name = "CacheName", description = "CacheName", required = true, multiValued = false)
     private String cacheName;
-    private static final Logger logger = LoggerFactory.getLogger(DSShowCache.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DSShowCache.class);
     private IITMProvider itmProvider;
 
     public void setItmProvider(IITMProvider itmProvider) {
@@ -27,7 +27,7 @@ public class DSShowCache extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() {
-        logger.debug("Executing show Cache command");
+        LOG.debug("Executing show Cache command");
         itmProvider.showCache(cacheName);
         return null;
     }
