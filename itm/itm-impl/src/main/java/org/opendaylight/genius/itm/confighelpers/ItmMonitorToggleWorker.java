@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -29,53 +29,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger logger = LoggerFactory.getLogger(ItmMonitorToggleWorker.class) ;
+    private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorToggleWorker.class) ;
     private DataBroker dataBroker;
     private String tzone;
     private boolean enabled;
     private Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
-    public  ItmMonitorToggleWorker(String tzone,boolean enabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker){
+    public  ItmMonitorToggleWorker(String tzone,boolean enabled,
+                                   Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.enabled = enabled;
         this.monitorProtocol = monitorProtocol;
-        logger.trace("ItmMonitorToggleWorker initialized with  tzone {} and toggleBoolean {}",tzone,enabled );
-        logger.debug("TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
+        LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and toggleBoolean {}",tzone,enabled);
+        LOG.debug("TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
     }
 
     @Override public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        logger.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled );
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(enabled,tzone,t);
-        futures.add(t.submit());
+        LOG.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled);
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        toggleTunnelMonitoring(enabled,tzone,transaction);
+        futures.add(transaction.submit());
         return futures;
     }
 
-    private void toggleTunnelMonitoring(Boolean enabled, String tzone, WriteTransaction t) {
-        List<String> TunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
-        logger.debug("toggleTunnelMonitoring: TunnelList size {}", TunnelList.size());
+    private void toggleTunnelMonitoring(Boolean enabled, String tzone, WriteTransaction transaction) {
+        List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+        LOG.debug("toggleTunnelMonitoring: TunnelList size {}", tunnelList.size());
         InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder().setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
-        logger.debug("toggleTunnelMonitoring: Updating Operational DS");
-        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
-        if(TunnelList !=null &&!TunnelList.isEmpty()) {
-            for (String tunnel : TunnelList) {
-                toggle(tunnel, enabled, t);
+        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder()
+                .setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
+        LOG.debug("toggleTunnelMonitoring: Updating Operational DS");
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder,
+                dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        if (tunnelList != null && !tunnelList.isEmpty()) {
+            for (String tunnel : tunnelList) {
+                toggle(tunnel, enabled, transaction);
             }
         }
     }
 
-    private void toggle(String tunnelInterfaceName, boolean enabled, WriteTransaction t) {
-        if(tunnelInterfaceName!=null) {
+    private void toggle(String tunnelInterfaceName, boolean enabled, WriteTransaction transaction) {
+        if (tunnelInterfaceName != null) {
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
-            logger.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {},  monitorEnable = {} ",tunnelInterfaceName, monitorProtocol, enabled);
-            IfTunnel tunnel = new IfTunnelBuilder().setMonitorEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
+            LOG.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {},  "
+                    + "monitorEnable = {} ",tunnelInterfaceName, monitorProtocol, enabled);
+            IfTunnel tunnel = new IfTunnelBuilder().setMonitorEnabled(enabled)
+                    .setMonitorProtocol(monitorProtocol).build();
             InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
                     .addAugmentation(IfTunnel.class, tunnel);
-            t.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
-       }
+            transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
+        }
     }
 }
 

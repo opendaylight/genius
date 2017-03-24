@@ -17,6 +17,7 @@ import java.util.List;
  *
  */
 public interface DataPathAlarmMBean {
+
     void setRaiseAlarmObject(List<String> raiseAlarmObject);
 
     List<String> getRaiseAlarmObject();
