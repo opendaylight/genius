@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
+import org.opendaylight.genius.mdsalutil.FlowEntityBuilder;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 
@@ -22,13 +23,19 @@ public class ActionInfoImmutableTest {
 
     @Test
     public void actionInfoActionKeyDoesNotMagicallyChangeOnFlowEntityGetFlowBuilder() {
-        FlowEntity flowEntity = new FlowEntity(BigInteger.valueOf(123L));
-        flowEntity.setFlowId("TEST");
-        flowEntity.setCookie(BigInteger.valueOf(110100480L));
+        FlowEntityBuilder flowEntityBuilder = new FlowEntityBuilder()
+            .setDpnId(BigInteger.valueOf(123L))
+            .setTableId((short) 1)
+            .setPriority(2)
+            .setFlowName("TEST-NAME")
+            .setFlowId("TEST-ID")
+            .setCookie(BigInteger.valueOf(110100480L));
         ActionInfo actionInfo = new ActionNxConntrack(27, 1, 0, 0, (short) 255);
         List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(actionInfo);
-        flowEntity.getInstructionInfoList().add(new InstructionApplyActions(actionInfos));
+        flowEntityBuilder.addInstructionInfoList(new InstructionApplyActions(actionInfos));
+        FlowEntity flowEntity = flowEntityBuilder.build();
+
         assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
                 0).getActionKey());
 
@@ -38,6 +45,16 @@ public class ActionInfoImmutableTest {
         flowEntity.getFlowBuilder();
         assertEquals(27, ((InstructionApplyActions) flowEntity.getInstructionInfoList().get(0)).getActionInfos().get(
                 0).getActionKey());
+    }
+
+    @Test
+    public void testDefaultCookie() {
+        assertEquals(new BigInteger("0110000", 16), new FlowEntityBuilder()
+                .setDpnId(BigInteger.valueOf(123L))
+                .setTableId((short) 1)
+                .setPriority(2)
+                .setFlowName("TEST-NAME")
+                .setFlowId("TEST-ID").build().getCookie());
     }
 
 }
