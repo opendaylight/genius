@@ -65,7 +65,7 @@ public class InterfaceStateListener
                         && interfaceStateNew.getOperStatus() != Interface.OperStatus.Unknown) {
                     // update opstate of interface if TEP has gone down/up as a
                     // result of BFD monitoring
-                    LOG.debug("updating tunnel state for interface {}", interfaceStateNew.getName());
+                    LOG.debug("updating tunnel state for interface {} as {}", interfaceStateNew.getName(), bfdState);
                     WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                     InterfaceManagerCommonUtils.updateOpState(transaction, interfaceStateNew.getName(), bfdState);
                     futures.add(transaction.submit());
