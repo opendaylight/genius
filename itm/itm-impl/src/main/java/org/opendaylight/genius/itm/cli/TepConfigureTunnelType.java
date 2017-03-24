@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -20,8 +20,9 @@ import org.slf4j.LoggerFactory;
         description = "configuring the tunnel type for a transport zone")
 public class TepConfigureTunnelType extends OsgiCommandSupport {
 
-    @Argument(index = 0, name = "TransportZoneName", description = "TransportZoneName", required = true, multiValued = false)
-    private String tZoneName;
+    @Argument(index = 0, name = "TransportZoneName", description = "TransportZoneName", required = true,
+            multiValued = false)
+    private String tzoneName;
     @Argument(index = 1, name = "TunnelType", description = "Tunnel-Type", required = true, multiValued = false)
     private String tunnelType;
 
@@ -34,11 +35,12 @@ public class TepConfigureTunnelType extends OsgiCommandSupport {
         this.itmProvider = itmProvider;
     }
 
+    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
     protected Object doExecute() {
         try {
-            LOG.debug("TepConfigureTunnelType: configureTunnelType {} for transportZone {}", tunnelType, tZoneName);
-            itmProvider.configureTunnelType(tZoneName, tunnelType);
+            LOG.debug("TepConfigureTunnelType: configureTunnelType {} for transportZone {}", tunnelType, tzoneName);
+            itmProvider.configureTunnelType(tzoneName, tunnelType);
         } catch (Exception e) {
             throw e;
         }

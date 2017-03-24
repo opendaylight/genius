@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.impl;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
@@ -17,9 +19,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ITMBatchingUtils {
     private static final Logger LOG = LoggerFactory.getLogger((Class)ITMBatchingUtils.class);
@@ -56,8 +55,10 @@ public class ITMBatchingUtils {
             batchInterval = Integer.getInteger("batch.wait.time");
         }
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ, new DefaultBatchHandler(dataBroker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
-        resBatchingManager.registerBatchableResource("ITM-DEFAULT-CONFIG", defaultConfigShardBufferQ, new DefaultBatchHandler(dataBroker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
+        resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ,
+                new DefaultBatchHandler(dataBroker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
+        resBatchingManager.registerBatchableResource("ITM-DEFAULT-CONFIG", defaultConfigShardBufferQ,
+                new DefaultBatchHandler(dataBroker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
     }
 
 
@@ -79,12 +80,15 @@ public class ITMBatchingUtils {
         getQueue(entityType).add(actResource);
     }
 
-    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType){
-       switch (entityType){
-           case DEFAULT_OPERATIONAL:return defaultOperationalShardBufferQ;
-           case DEFAULT_CONFIG: return defaultConfigShardBufferQ;
-       }
-       return null;
+    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
+        switch (entityType) {
+            case DEFAULT_OPERATIONAL : return defaultOperationalShardBufferQ;
+            case DEFAULT_CONFIG : return defaultConfigShardBufferQ;
+            default : {
+                LOG.debug("entity type is neither operational or config, getQueue operation failed");
+                return null;
+            }
+        }
     }
 
     public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
