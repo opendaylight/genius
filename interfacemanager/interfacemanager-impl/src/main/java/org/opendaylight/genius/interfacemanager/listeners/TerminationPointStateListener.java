@@ -23,6 +23,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.ovsdb.utils.mdsal.utils.MdsalUtils;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -82,8 +83,15 @@ public class TerminationPointStateListener extends
                 && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
             LOG.trace("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.", identifier,
                     tpOld, tpNew);
+
+            // update the bfd-state cache
+            final Interface.OperStatus interfaceBfdStatus =
+                org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils.getTunnelOpState(
+                    tpNew.getInterfaceBfdStatus());
+            InterfaceManagerCommonUtils.addBfdStateToCache(tpNew.getName(), interfaceBfdStatus);
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
+            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew,
+                interfaceBfdStatus);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
 
@@ -117,11 +125,13 @@ public class TerminationPointStateListener extends
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<OvsdbTerminationPointAugmentation> instanceIdentifier;
         OvsdbTerminationPointAugmentation terminationPointNew;
+        Interface.OperStatus interfaceBfdStatus;
 
         RendererStateUpdateWorker(InstanceIdentifier<OvsdbTerminationPointAugmentation> instanceIdentifier,
-                OvsdbTerminationPointAugmentation tpNew) {
+                OvsdbTerminationPointAugmentation tpNew, Interface.OperStatus interfaceBfdStatus) {
             this.instanceIdentifier = instanceIdentifier;
             this.terminationPointNew = tpNew;
+            this.interfaceBfdStatus = interfaceBfdStatus;
         }
 
         @Override
@@ -129,7 +139,8 @@ public class TerminationPointStateListener extends
             // If another renderer(for eg : CSS) needs to be supported, check
             // can be performed here
             // to call the respective helpers.
-            return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, terminationPointNew);
+            return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, terminationPointNew,
+                interfaceBfdStatus);
         }
     }
 

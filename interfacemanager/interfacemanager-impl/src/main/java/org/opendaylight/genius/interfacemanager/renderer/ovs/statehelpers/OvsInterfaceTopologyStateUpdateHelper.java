@@ -64,16 +64,13 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     }
 
     public static List<ListenableFuture<Void>> updateTunnelState(final DataBroker dataBroker,
-            OvsdbTerminationPointAugmentation terminationPointNew) {
-        final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
-        final String interfaceName = terminationPointNew.getName();
-        InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
+           OvsdbTerminationPointAugmentation terminationPointNew, Interface.OperStatus interfaceBfdStatus) {
         if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
             return null;
         }
 
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        jobCoordinator.enqueueJob(interfaceName, () -> {
+        jobCoordinator.enqueueJob(terminationPointNew.getName(), () -> {
             // update opstate of interface if TEP has gone down/up as a result
             // of BFD monitoring
             final List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -81,28 +78,15 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                     .getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
-                LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
+                LOG.debug("updating tunnel state for interface {} as {}", terminationPointNew.getName(),
+                    interfaceBfdStatus);
                 WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName, interfaceBfdStatus);
+                InterfaceManagerCommonUtils.updateOpState(transaction, terminationPointNew.getName(),
+                    interfaceBfdStatus);
                 futures.add(transaction.submit());
             }
             return futures;
         });
         return null;
-    }
-
-    private static Interface.OperStatus getTunnelOpState(List<InterfaceBfdStatus> tunnelBfdStatus) {
-        Interface.OperStatus livenessState = Interface.OperStatus.Down;
-        if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
-            for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
-                if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
-                    String bfdOpState = bfdState.getBfdStatusValue();
-                    livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ? Interface.OperStatus.Up
-                            : Interface.OperStatus.Down;
-                    break;
-                }
-            }
-        }
-        return livenessState;
     }
 }
