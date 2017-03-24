@@ -23,11 +23,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+
 public class InterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
     private final DataBroker dataBroker;
 
+    @Inject
     public InterfaceStateListener(DataBroker dataBroker) {
         super(Interface.class, InterfaceStateListener.class);
         this.dataBroker = dataBroker;
