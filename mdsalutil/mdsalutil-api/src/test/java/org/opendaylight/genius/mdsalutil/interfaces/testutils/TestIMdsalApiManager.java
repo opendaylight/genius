@@ -141,13 +141,14 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public synchronized void installFlow(FlowEntity flowEntity) {
-        getOrNewFlows().add(flowEntity);
+    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
+        return installFlow(flowEntity.getDpnId(), flowEntity);
     }
 
     @Override
     public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
             FlowEntity flowEntity) {
+        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         installFlow(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }
@@ -155,6 +156,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     @Override
     public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
             FlowEntity flowEntity) {
+        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         getOrNewFlows().remove(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }
