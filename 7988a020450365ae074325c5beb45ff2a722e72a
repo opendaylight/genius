@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f91f8b07",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-24T09:17:08Z",
+      "side": 1,
+      "message": "The issue here is that calling the super methods was necessary in the past (when MatchInfo had them), but became incorrect when they were removed from MatchInfo. The methods aren\u0027t hand-written, they\u0027re IDE-generated.\n\nThe *real* problem is the lack of unit tests, mea culpa.",
+      "revId": "7988a020450365ae074325c5beb45ff2a722e72a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
