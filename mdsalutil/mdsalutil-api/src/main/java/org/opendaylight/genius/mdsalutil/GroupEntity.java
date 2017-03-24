@@ -17,8 +17,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
 public class GroupEntity extends AbstractSwitchEntity {
-    private static final long serialVersionUID = 1L;
 
+    private final BigInteger dpnId;
     private long groupId;
     private String groupName;
     private GroupTypes groupType;
@@ -27,11 +27,16 @@ public class GroupEntity extends AbstractSwitchEntity {
     private transient GroupBuilder groupBuilder;
 
     public GroupEntity(BigInteger dpnId) {
-        super(dpnId);
+        this.dpnId = dpnId;
     }
 
     public GroupEntity(long dpnId) {
         this(BigInteger.valueOf(dpnId));
+    }
+
+    @Override
+    public BigInteger getDpnId() {
+        return dpnId;
     }
 
     @Override
