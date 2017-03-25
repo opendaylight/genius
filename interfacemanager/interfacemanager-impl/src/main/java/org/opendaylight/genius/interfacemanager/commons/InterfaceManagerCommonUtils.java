@@ -286,39 +286,14 @@ public final class InterfaceManagerCommonUtils {
         BatchingUtils.delete(intfId, BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-        .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus updateStateEntry(
-            Interface interfaceNew, DataBroker dataBroker, WriteTransaction transaction,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus;
+    public static OperStatus updateStateEntry(Interface interfaceNew, DataBroker dataBroker,
+           WriteTransaction transaction, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
+                                                  .rev140508.interfaces.state.Interface ifState) {
+        OperStatus operStatus = ifState.getOperStatus();
         if (!interfaceNew.isEnabled()) {
-            operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                    .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
-        } else {
-            String ncStr = ifState.getLowerLayerIf().get(0);
-            NodeConnectorId nodeConnectorId = new NodeConnectorId(ncStr);
-            NodeConnector nodeConnector = InterfaceManagerCommonUtils
-                    .getNodeConnectorFromInventoryOperDS(nodeConnectorId, dataBroker);
-            FlowCapableNodeConnector flowCapableNodeConnector = nodeConnector
-                    .getAugmentation(FlowCapableNodeConnector.class);
-            // State state = flowCapableNodeConnector.getState();
-            operStatus = flowCapableNodeConnector == null
-                    ? org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down
-                    : org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                    .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up;
+            operStatus = OperStatus.Down;
+            updateOperStatus(interfaceNew.getName(), operStatus, transaction);
         }
-
-        String ifName = interfaceNew.getName();
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
-            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                .buildStateInterfaceId(interfaceNew.getName());
-        InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
-        ifaceBuilder.setOperStatus(operStatus);
-        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(ifName));
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
         return operStatus;
     }
 
