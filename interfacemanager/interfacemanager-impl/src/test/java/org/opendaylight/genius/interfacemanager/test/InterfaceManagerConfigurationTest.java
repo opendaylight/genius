@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -25,6 +24,7 @@ import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.Table;
@@ -84,12 +84,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
@@ -154,7 +158,7 @@ public class InterfaceManagerConfigurationTest {
     public void vlanInterfaceTests() throws Exception {
         // 1. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
-        InterfaceManagerTestUtil.putInterfaceState(dataBroker, parentInterface, null);
+        InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, parentInterface, null);
         Thread.sleep(1000);
         // ii) Vlan interface written to config/ietf-interfaces DS and corresponding parent-interface is not present
         //     in operational/ietf-interface-state
@@ -178,7 +182,8 @@ public class InterfaceManagerConfigurationTest {
             .interfaces.state.Interface ifaceState =
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(interfaceName)).checkedGet().get();
-        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), interfaceName), ifaceState);
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
+            interfaceName, Interface.OperStatus.Up, L2vlan.class), ifaceState);
 
         // b) check if lport-tag to interface mapping is created
         InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(
@@ -210,6 +215,23 @@ public class InterfaceManagerConfigurationTest {
         // Test all RPCs related to vlan-interfaces
         testVlanRpcs();
 
+        //Update test
+        // i) vlan interface admin-state updated
+        InterfaceManagerTestUtil.updateInterfaceAdminState(dataBroker, interfaceName, false);
+
+        Thread.sleep(1000);
+        // Then
+        // a) check if operational/ietf-interfaces-state is updated for vlan interface
+        ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(interfaceName)).checkedGet().get();
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), interfaceName, Interface
+            .OperStatus.Down, L2vlan.class), ifaceState);
+
+
+        // Restore the opState back to UP for proceeding with further tests
+        InterfaceManagerTestUtil.updateInterfaceAdminState(dataBroker, interfaceName, true);
+
+        Thread.sleep(2000);
         testVlanMemberInterface();
 
         //Delete test
@@ -246,10 +268,6 @@ public class InterfaceManagerConfigurationTest {
         // TODO use TestDataStoreJobCoordinator.waitForAllJobs() when https://git.opendaylight.org/gerrit/#/c/48061/ is merged
         Thread.sleep(1000);
 
-        // iii) tunnel interface comes up in operational/ietf-interfaces-state
-        InterfaceManagerTestUtil.putInterfaceState(dataBroker, tunnelInterfaceName, Tunnel.class);
-        Thread.sleep(1000);
-
         // 3. Then
         // a) check expected bridge-interface mapping in odl-interface-meta/config/bridge-interface-info was created
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpnId);
@@ -270,8 +288,30 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
 
+        // When termination end point is populated in network-topology
+        OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, tunnelInterfaceName, InterfaceTypeVxlan.class);
+        InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, tunnelInterfaceName, Tunnel.class);
+        Thread.sleep(1000);
+
+        // Then
+        // a) check if operational/ietf-interfaces-state is populated for the tunnel interface
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .interfaces.state.Interface ifaceState =
+            dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+                IfmUtil.buildStateInterfaceId(tunnelInterfaceName)).checkedGet().get();
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
+            tunnelInterfaceName, Interface.OperStatus.Up, Tunnel.class), ifaceState);
+
         // Test all RPCs related to tunnel interfaces
         testTunnelRpcs();
+
+        // Update test
+        // i) Enable Tunnel Monitoring
+        InterfaceManagerTestUtil.updateTunnelMonitoringAttributes(dataBroker, tunnelInterfaceName);
+        Thread.sleep(1000);
+        // Then verify if bfd attributes are updated in topology config DS
+        assertEqualBeans(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(),
+           dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
 
         // Delete test
         // iii) tunnel interface is deleted from config/ietf-interfaces
@@ -301,7 +341,12 @@ public class InterfaceManagerConfigurationTest {
             (dpnId).build();
         Future<RpcResult<GetDpnInterfaceListOutput>> dpnInterfaceListOutput = odlInterfaceRpcService
             .getDpnInterfaceList(dpnInterfaceListInput);
-        assertEqualBeans(DpnInterfaceListOutput.newDpnInterfaceListOutput(), dpnInterfaceListOutput.get().getResult());
+        List expectedDpnInterfaceList = new ArrayList(DpnInterfaceListOutput.newDpnInterfaceListOutput()
+            .getInterfacesList());
+        List actualDpnInterfaceList = dpnInterfaceListOutput.get().getResult().getInterfacesList();
+        Collections.sort(expectedDpnInterfaceList);
+        Collections.sort(actualDpnInterfaceList);
+        assertEqualBeans(expectedDpnInterfaceList, actualDpnInterfaceList);
 
         //3. Test egress actions fetching for interface
         GetEgressActionsForInterfaceInput egressActionsForInterfaceInput = new
@@ -382,7 +427,8 @@ public class InterfaceManagerConfigurationTest {
             .interfaces.state.Interface ifaceState =
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(trunkMemberinterfaceName)).checkedGet().get();
-        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), trunkMemberinterfaceName), ifaceState);
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), trunkMemberinterfaceName,
+            Interface.OperStatus.Up, L2vlan.class), ifaceState);
 
         // b) check if lport-tag to interface mapping is created
         InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(
@@ -392,12 +438,25 @@ public class InterfaceManagerConfigurationTest {
             ifIndexInterfaceInstanceIdentifier).checkedGet().get().getInterfaceName());
 
         // d) check if default egress service is bound on the interface
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier =
-            InstanceIdentifier.builder(ServiceBindings.class)
-                .child(ServicesInfo.class, new ServicesInfoKey(trunkMemberinterfaceName, ServiceModeEgress.class))
-                .child(BoundServices.class, new BoundServicesKey(DEFAULT_EGRESS_SERVICE_INDEX)).build();
+        //InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier =
+        //    InstanceIdentifier.builder(ServiceBindings.class)
+        //        .child(ServicesInfo.class, new ServicesInfoKey(trunkMemberinterfaceName, ServiceModeEgress.class))
+        //        .child(BoundServices.class, new BoundServicesKey(DEFAULT_EGRESS_SERVICE_INDEX)).build();
         //assertEqualBeans(ExpectedServicesInfo.newboundService(), dataBroker.newReadOnlyTransaction()
         //    .read(CONFIGURATION, boundServicesInstanceIdentifier).checkedGet().get());
+
+        //Update test
+        // i) vlan member interface admin-state updated
+        InterfaceManagerTestUtil.updateInterfaceAdminState(dataBroker, trunkMemberinterfaceName, false);
+
+        Thread.sleep(1000);
+
+        //Then
+        // a) check if operational/ietf-interfaces-state is updated for vlan interface
+        ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(trunkMemberinterfaceName)).checkedGet().get();
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), trunkMemberinterfaceName,
+            Interface.OperStatus.Down, L2vlan.class), ifaceState);
 
         deleteInterfaceConfig(dataBroker, trunkMemberinterfaceName);
         Thread.sleep(2000);
@@ -411,8 +470,9 @@ public class InterfaceManagerConfigurationTest {
             IfmUtil.buildStateInterfaceId(trunkMemberinterfaceName)).get());
 
         // c) check if lport-tag to interface mapping is deleted
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            ifIndexInterfaceInstanceIdentifier).get());
+        // TODO need to uncomment once https://git.opendaylight.org/gerrit/#/c/53823/ is merged
+        //Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        //    ifIndexInterfaceInstanceIdentifier).get());
 
     }
 }
