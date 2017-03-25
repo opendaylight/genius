@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,10 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
-
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +36,6 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingU
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils.ServiceMode;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.ovsdb.utils.mdsal.utils.MdsalUtils;
@@ -52,10 +49,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -74,7 +67,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
@@ -93,7 +85,7 @@ import org.slf4j.LoggerFactory;
 public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
-    private static final InterfaceStatusMonitor interfaceStatusMonitor = InterfaceStatusMonitor.getInstance();
+    private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
@@ -103,8 +95,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-                                final IdManagerService idManager,
-                                final InterfaceManagerRpcService interfaceManagerRpcService){
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
         this.dataBroker = dataBroker;
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
@@ -117,13 +108,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() throws Exception {
         try {
-            interfaceStatusMonitor.registerMbean();
+            INTERFACE_STATUS_MONITOR.registerMbean();
             createIdPool();
             IfmClusterUtils.registerEntityForOwnership(this, this.entityOwnershipService);
-            BatchingUtils.registerWithBatchManager( this.dataBroker);
-            interfaceStatusMonitor.reportStatus("OPERATIONAL");
+            BatchingUtils.registerWithBatchManager(this.dataBroker);
+            INTERFACE_STATUS_MONITOR.reportStatus("OPERATIONAL");
         } catch (Exception e) {
-            interfaceStatusMonitor.reportStatus("ERROR");
+            INTERFACE_STATUS_MONITOR.reportStatus("ERROR");
             throw e;
         }
         LOG.info("InterfacemgrProvider Started");
@@ -139,17 +130,14 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return entityOwnershipService;
     }
 
-    public DataBroker getDataBroker(){
+    public DataBroker getDataBroker() {
         return this.dataBroker;
     }
 
     private void createIdPool() {
-        CreateIdPoolInput createPool = new CreateIdPoolInputBuilder()
-                .setPoolName(IfmConstants.IFM_IDPOOL_NAME)
-                .setLow(IfmConstants.IFM_ID_POOL_START)
-                .setHigh(IfmConstants.IFM_ID_POOL_END)
-                .build();
-        //TODO: Error handling
+        CreateIdPoolInput createPool = new CreateIdPoolInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setLow(IfmConstants.IFM_ID_POOL_START).setHigh(IfmConstants.IFM_ID_POOL_END).build();
+        // TODO: Error handling
         Future<RpcResult<Void>> result = idManager.createIdPool(createPool);
         try {
             if (result != null && result.get().isSuccessful()) {
@@ -193,16 +181,17 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public InterfaceInfo getInterfaceInfo(String interfaceName) {
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-                ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
 
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;
         }
 
-        Integer lportTag = ifState.getIfIndex();
-        Interface intf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
+        Interface intf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
+                dataBroker);
         if (intf == null) {
             LOG.error("Interface {} doesn't exist in config datastore", interfaceName);
             return null;
@@ -219,32 +208,29 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
             interfaceInfo = IfmUtil.getVlanInterfaceInfo(interfaceName, intf, dpId);
-        } else if (interfaceType == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE ||
-                interfaceType == InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE) {
-            // TODO : since there is no logical grouping for tunnel interfaces, there is no need
+        } else if (interfaceType == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
+                || interfaceType == InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE) {
+            // TODO : since there is no logical grouping for tunnel interfaces,
+            // there is no need
             // for this code as of now. will be revisited once the support comes
 
         } else {
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
         }
-        InterfaceInfo.InterfaceOpState opState ;
-        if(ifState.getOperStatus() == OperStatus.Up)
-        {
+        InterfaceInfo.InterfaceOpState opState;
+        if (ifState.getOperStatus() == OperStatus.Up) {
             opState = InterfaceInfo.InterfaceOpState.UP;
-        }
-        else if (ifState.getOperStatus() == OperStatus.Down)
-        {
+        } else if (ifState.getOperStatus() == OperStatus.Down) {
             opState = InterfaceInfo.InterfaceOpState.DOWN;
-        }
-        else
-        {
+        } else {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
         interfaceInfo.setDpId(dpId);
         interfaceInfo.setPortNo(portNo);
         interfaceInfo.setAdminState(intf.isEnabled() ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
+        Integer lportTag = ifState.getIfIndex();
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
@@ -253,41 +239,37 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
         }
-
         return interfaceInfo;
-
     }
 
     @Override
-    public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName, InterfaceInfo.InterfaceType interfaceType) {
+    public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName,
+            InterfaceInfo.InterfaceType interfaceType) {
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;
         }
-        Integer lportTag = ifState.getIfIndex();
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
-        InterfaceInfo.InterfaceOpState opState ;
-        if(ifState.getOperStatus() == OperStatus.Up)
-        {
+        InterfaceInfo.InterfaceOpState opState;
+        if (ifState.getOperStatus() == OperStatus.Up) {
             opState = InterfaceInfo.InterfaceOpState.UP;
-        }
-        else if (ifState.getOperStatus() == OperStatus.Down)
-        {
+        } else if (ifState.getOperStatus() == OperStatus.Down) {
             opState = InterfaceInfo.InterfaceOpState.DOWN;
-        }
-        else
-        {
+        } else {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
-        interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
+        interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
+                : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
+        Integer lportTag = ifState.getIfIndex();
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
@@ -296,26 +278,24 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
         }
-
         return interfaceInfo;
     }
 
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;
         }
-
         return populateInterfaceInfo(interfaceName, ifState);
     }
 
-
-    public InterfaceInfo populateInterfaceInfo(String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml
-        .ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        Integer lportTag = ifState.getIfIndex();
+    public InterfaceInfo populateInterfaceInfo(String interfaceName,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
@@ -329,7 +309,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
-        InterfaceInfo.InterfaceOpState opState ;
+        InterfaceInfo.InterfaceOpState opState;
         if (ifState.getOperStatus() == OperStatus.Up) {
             opState = InterfaceInfo.InterfaceOpState.UP;
         } else if (ifState.getOperStatus() == OperStatus.Down) {
@@ -337,9 +317,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         } else {
             opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
         }
-        interfaceInfo.setAdminState((ifState.getAdminStatus() == AdminStatus.Up) ? InterfaceAdminState.ENABLED
-            : InterfaceAdminState.DISABLED);
+        interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
+                : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
+        Integer lportTag = ifState.getIfIndex();
         if (lportTag != null) {
             interfaceInfo.setInterfaceTag(lportTag);
         }
@@ -351,11 +332,11 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return interfaceInfo;
     }
 
-
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromCache(interfaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromCache(interfaceName);
         if (ifState == null) {
             LOG.warn("Interface {} is not present", interfaceName);
             return null;
@@ -365,22 +346,25 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public Interface getInterfaceInfoFromConfigDataStore(String interfaceName) {
-        Interface intf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
+        Interface intf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
+                dataBroker);
         return intf;
     }
 
     @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
-                                    String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
+            String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
         createVLANInterface(interfaceName, portName, dpId, vlanId, description, l2vlanMode, false);
     }
+
     @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
-                                    String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException {
+            String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal)
+            throws InterfaceAlreadyExistsException {
 
         LOG.info("Create VLAN interface : {}", interfaceName);
-        InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils.getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        Interface interfaceOptional = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
+        Interface interfaceOptional = InterfaceManagerCommonUtils
+                .getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
         if (interfaceOptional != null) {
             LOG.debug("VLAN interface is already exist", interfaceOptional.getDescription());
             throw new InterfaceAlreadyExistsException(interfaceOptional.getName());
@@ -390,25 +374,27 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             l2vlanBuilder.setVlanId(new VlanId(vlanId));
         }
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(portName).build();
-        InterfaceBuilder interfaceBuilder = new InterfaceBuilder().setEnabled(true).setName(interfaceName).setType(L2vlan.class).
-                addAugmentation(IfL2vlan.class, l2vlanBuilder.build()).addAugmentation(ParentRefs.class, parentRefs).
-                setDescription(description);
+        InterfaceBuilder interfaceBuilder = new InterfaceBuilder().setEnabled(true).setName(interfaceName)
+                .setType(L2vlan.class).addAugmentation(IfL2vlan.class, l2vlanBuilder.build())
+                .addAugmentation(ParentRefs.class, parentRefs).setDescription(description);
         if (isExternal) {
             interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
         }
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        t.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(), true);
-        t.submit();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils
+                .getInterfaceIdentifier(new InterfaceKey(interfaceName));
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
+                true);
+        writeTransaction.submit();
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
-                                              Class<? extends ServiceModeBase> serviceMode) {
-        InstanceIdentifier<BoundServices> boundServicesIId =
-            IfmUtil.buildBoundServicesIId(servicePriority, interfaceName, serviceMode);
+            Class<? extends ServiceModeBase> serviceMode) {
+        InstanceIdentifier<BoundServices> boundServicesIId = IfmUtil.buildBoundServicesIId(servicePriority,
+                interfaceName, serviceMode);
         try {
-            return SingleTransactionDataBroker.syncReadOptional(dataBroker,
-                                                                LogicalDatastoreType.CONFIGURATION, boundServicesIId)
-                                              .isPresent();
+            return SingleTransactionDataBroker
+                    .syncReadOptional(dataBroker, LogicalDatastoreType.CONFIGURATION, boundServicesIId).isPresent();
         } catch (ReadFailedException e) {
             LOG.warn("Error while reading [{}]", boundServicesIId, e);
             return false;
@@ -427,24 +413,30 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
-                            BoundServices serviceInfo) {
-        bindService(interfaceName, serviceMode, serviceInfo, /*WriteTransaction*/ null);
+            BoundServices serviceInfo) {
+        bindService(interfaceName, serviceMode, serviceInfo, /* WriteTransaction */ null);
     }
 
     @Override
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
-                            BoundServices serviceInfo, WriteTransaction tx) {
-        WriteTransaction t = (tx != null) ? tx : dataBroker.newWriteOnlyTransaction();
-        IfmUtil.bindService(t, interfaceName, serviceInfo, serviceMode);
+            BoundServices serviceInfo, WriteTransaction tx) {
+        WriteTransaction writeTransaction = tx != null ? tx : dataBroker.newWriteOnlyTransaction();
+        IfmUtil.bindService(writeTransaction, interfaceName, serviceInfo, serviceMode);
         if (tx == null) {
-            t.submit();
+            writeTransaction.submit();
         }
     }
 
     @Override
-    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo) {
+    public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
+            BoundServices serviceInfo) {
         IfmUtil.unbindService(dataBroker, interfaceName,
                 FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
+    }
+
+    @Override
+    public BigInteger getDpnForInterface(Interface intrf) {
+        return getDpnForInterface(intrf.getName());
     }
 
     @Override
@@ -486,11 +478,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public BigInteger getDpnForInterface(Interface intrf) {
-        return getDpnForInterface(intrf.getName());
-    }
-
-    @Override
     public List<Interface> getVlanInterfaces() {
         return InterfaceManagerCommonUtils.getAllVlanInterfacesFromCache();
     }
@@ -528,8 +515,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public String getParentRefNameForInterface(String interfaceName) {
         String parentRefName = null;
 
-        // FIXME Note this utility isn't very good for scale/performance as it traverses all nodes,
-        // probably need to use a cache instead of these (iface_name->dpnId+tpName).
+        // FIXME Note this utility isn't very good for scale/performance as it
+        // traverses all nodes,
+        // probably need to use a cache instead of these
+        // (iface_name->dpnId+tpName).
         Node node = southboundUtils.getNodeByTerminationPointExternalId(interfaceName);
         if (node != null) {
             String dpnId = southboundUtils.getDataPathIdStr(node);
@@ -558,20 +547,23 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public void updateInterfaceParentRef(String interfaceName, String parentInterface) {
-        // This should generally be called by EOS Owner for INTERFACE_CONFIG_ENTITY - runOnlyInLeaderNode()
+        // This should generally be called by EOS Owner for
+        // INTERFACE_CONFIG_ENTITY - runOnlyInLeaderNode()
         updateInterfaceParentRef(interfaceName, parentInterface, true);
     }
 
     @Override
-    public void updateInterfaceParentRef(String interfaceName, String parentInterface, boolean readInterfaceBeforeWrite) {
-        // This should generally be called by EOS Owner for INTERFACE_CONFIG_ENTITY - runOnlyInLeaderNode()
+    public void updateInterfaceParentRef(String interfaceName, String parentInterface,
+            boolean readInterfaceBeforeWrite) {
+        // This should generally be called by EOS Owner for
+        // INTERFACE_CONFIG_ENTITY - runOnlyInLeaderNode()
         if (interfaceName == null) {
             return;
         }
 
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        ParentRefUpdateWorker parentRefUpdateWorker =
-                new ParentRefUpdateWorker(interfaceName, parentInterface, readInterfaceBeforeWrite);
+        ParentRefUpdateWorker parentRefUpdateWorker = new ParentRefUpdateWorker(interfaceName, parentInterface,
+                readInterfaceBeforeWrite);
         jobCoordinator.enqueueJob(interfaceName, parentRefUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -580,7 +572,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         String parentInterfaceName;
         Boolean readInterfaceBeforeWrite;
 
-        public ParentRefUpdateWorker(String interfaceName, String parentInterfaceName, boolean readInterfaceBeforeWrite) {
+        public ParentRefUpdateWorker(String interfaceName, String parentInterfaceName,
+                boolean readInterfaceBeforeWrite) {
             this.interfaceName = interfaceName;
             this.parentInterfaceName = parentInterfaceName;
             this.readInterfaceBeforeWrite = readInterfaceBeforeWrite;
@@ -595,13 +588,12 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                     return null;
                 }
             }
-            WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-            IfmUtil.updateInterfaceParentRef(t, interfaceName, parentInterfaceName);
-            CheckedFuture<Void, TransactionCommitFailedException> submitFuture = t.submit();
+            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+            IfmUtil.updateInterfaceParentRef(writeTransaction, interfaceName, parentInterfaceName);
+            CheckedFuture<Void, TransactionCommitFailedException> submitFuture = writeTransaction.submit();
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             futures.add(submitFuture);
             return futures;
         }
     }
-
 }

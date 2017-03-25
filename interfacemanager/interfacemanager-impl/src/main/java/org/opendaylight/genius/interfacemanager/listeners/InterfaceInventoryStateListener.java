@@ -192,7 +192,7 @@ public class InterfaceInventoryStateListener
         @Override
         public String toString() {
             return "InterfaceStateAddWorker{" + "nodeConnectorId=" + nodeConnectorId + ", fcNodeConnectorNew="
-                    + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
+                    + fcNodeConnectorNew + ", interfaceManager='" + interfaceName + '\'' + '}';
         }
     }
 
