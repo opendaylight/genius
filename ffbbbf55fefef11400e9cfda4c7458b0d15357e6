@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_6a8bb41e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-25T09:53:06Z",
+      "side": 1,
+      "message": "do we need these debug logs, since we are not ignoring the event",
+      "revId": "ffbbbf55fefef11400e9cfda4c7458b0d15357e6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8a889823",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-25T09:53:06Z",
+      "side": 1,
+      "message": "this log has been changed as part of the rebase",
+      "revId": "ffbbbf55fefef11400e9cfda4c7458b0d15357e6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
