@@ -38,10 +38,10 @@ public class OvsInterfaceStateUpdateHelper {
         LOG.debug("Update of Interface State for port: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
-        Interface.OperStatus operStatusNew = getOpState(flowCapableNodeConnectorNew);
+        Interface.OperStatus operStatusNew = InterfaceManagerCommonUtils.getOpState(flowCapableNodeConnectorNew);
         MacAddress macAddressNew = flowCapableNodeConnectorNew.getHardwareAddress();
 
-        Interface.OperStatus operStatusOld = getOpState(flowCapableNodeConnectorOld);
+        Interface.OperStatus operStatusOld = InterfaceManagerCommonUtils.getOpState(flowCapableNodeConnectorOld);
         MacAddress macAddressOld = flowCapableNodeConnectorOld.getHardwareAddress();
 
         boolean opstateModified = false;
@@ -108,13 +108,6 @@ public class OvsInterfaceStateUpdateHelper {
             handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
                     interfaceName, Interface.OperStatus.Unknown);
         }
-    }
-
-    public static Interface.OperStatus getOpState(FlowCapableNodeConnector flowCapableNodeConnector) {
-        Interface.OperStatus operStatus = flowCapableNodeConnector.getState().isLive()
-                && !flowCapableNodeConnector.getConfiguration().isPORTDOWN() ? Interface.OperStatus.Up
-                        : Interface.OperStatus.Down;
-        return operStatus;
     }
 
     public static void handleInterfaceStateUpdates(
