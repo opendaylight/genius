@@ -34,7 +34,7 @@ public abstract class AbstractTestableListener implements AsyncEventsWaiter {
 
     @Override
     public boolean awaitEventsConsumption() {
-        return awaitEventsConsumption(Duration.ofSeconds(3));
+        return awaitEventsConsumption(Duration.ofSeconds(30));
     }
 
     public boolean awaitEventsConsumption(Duration timeout) {
@@ -50,6 +50,10 @@ public abstract class AbstractTestableListener implements AsyncEventsWaiter {
         try {
             Awaitility.await("TestableListener").atMost(timeout, unit)
                 .pollDelay(0, MILLISECONDS)
+                .conditionEvaluationListener(condition -> LOG.info(
+                    "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; numberOfConsumedEvents: {}",
+                        condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
+                        condition.getValue()))
                 // could be optimized to fail fast and terminate if ever negative
                 .untilAtomic(numberOfConsumedEvents, Matchers.equalTo(0));
             LOG.info("... awaitEventsConsumption() completed OK");
