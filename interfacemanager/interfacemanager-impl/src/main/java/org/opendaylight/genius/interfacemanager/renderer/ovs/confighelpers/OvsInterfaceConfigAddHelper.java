@@ -196,7 +196,7 @@ public class OvsInterfaceConfigAddHelper {
 
         @Override
         public String toString() {
-            return "VlanMemberStateAddWorker [interfaceName=" + interfaceName + ", ifState=" + ifState + "]";
+            return "VlanMemberStateAddWorker [INTERFACE_NAME=" + interfaceName + ", ifState=" + ifState + "]";
         }
     }
 }

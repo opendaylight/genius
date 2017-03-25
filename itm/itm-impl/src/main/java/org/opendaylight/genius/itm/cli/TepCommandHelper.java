@@ -693,7 +693,7 @@ public class TepCommandHelper {
            // Display only the internal tunnels
             if (tunnelInst.getDstInfo().getTepDeviceType().equals(TepTypeInternal.class)) {
                 String tunnelInterfaceName = tunnelInst.getTunnelInterfaceName();
-                LOG.trace("tunnelInterfaceName::: {}", tunnelInterfaceName);
+                LOG.trace("TUNNEL_INTERFACE_NAME::: {}", tunnelInterfaceName);
                 String tunnelState = ITMConstants.TUNNEL_STATE_UNKNOWN;
                 if (tunnelInst.getOperState() == TunnelOperStatus.Up) {
                     tunnelState = ITMConstants.TUNNEL_STATE_UP;

@@ -120,7 +120,7 @@ public class InterfaceConfigListener
             String ifNameNew = interfaceNew.getName();
             if (parentRefs == null
                     || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.debug("parent refs not specified for {}, or parentRefs {} missing DPN/parentInterface",
+                LOG.debug("parent refs not specified for {}, or parentRefs {} missing DPN/PARENT_INTERFACE",
                         interfaceNew.getName(), parentRefs);
                 return;
             }

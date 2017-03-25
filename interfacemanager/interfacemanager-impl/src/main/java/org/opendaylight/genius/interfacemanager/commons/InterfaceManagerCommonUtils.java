@@ -152,7 +152,7 @@ public final class InterfaceManagerCommonUtils {
 
     /**
      * Searches for an interface by its name.
-     * @param interfaceName name of the interface to search for
+     * @param INTERFACE_NAME name of the interface to search for
      * @param dataBroker data tree store to start searching for the interface
      * @return the Interface object
      */
@@ -448,8 +448,7 @@ public final class InterfaceManagerCommonUtils {
         // Update the DpnToInterfaceList OpDS
         createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
         return ifState;
-}
-
+    }
 
     public static boolean checkIfBfdStateIsDown(String interfaceName) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
