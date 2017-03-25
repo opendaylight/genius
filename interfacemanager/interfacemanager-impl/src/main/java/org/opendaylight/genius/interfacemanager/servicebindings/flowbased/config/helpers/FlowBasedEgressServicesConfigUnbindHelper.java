@@ -21,7 +21,6 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -127,9 +126,10 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
                         : low.getServicePriority() + 1);
-                LOG.trace("Installing new egress dispatcher table entry for lower service {}, match service index {}," +
-                        " update service index {}",
-                    low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                LOG.trace(
+                        "Installing new egress dispatcher table entry for lower service {}, match service index {},"
+                                + " update service index {}",
+                        low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, ifaceState.getName(), tx,
                         ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
             }

@@ -192,7 +192,7 @@ public class InterfaceInventoryStateListener
         @Override
         public String toString() {
             return "InterfaceStateAddWorker{" + "nodeConnectorId=" + nodeConnectorId + ", fcNodeConnectorNew="
-                    + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
+                    + fcNodeConnectorNew + ", INTERFACE_NAME='" + interfaceName + '\'' + '}';
         }
     }
 
@@ -230,7 +230,7 @@ public class InterfaceInventoryStateListener
         @Override
         public String toString() {
             return "InterfaceStateUpdateWorker{" + "key=" + key + ", fcNodeConnectorOld=" + fcNodeConnectorOld
-                    + ", fcNodeConnectorNew=" + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
+                    + ", fcNodeConnectorNew=" + fcNodeConnectorNew + ", INTERFACE_NAME='" + interfaceName + '\'' + '}';
         }
     }
 
@@ -296,7 +296,7 @@ public class InterfaceInventoryStateListener
         @Override
         public String toString() {
             return "InterfaceStateRemoveWorker{" + "nodeConnectorIdNew=" + nodeConnectorIdNew + ", nodeConnectorIdOld="
-                    + nodeConnectorIdOld + ", fcNodeConnectorOld=" + fcNodeConnectorOld + ", interfaceName='"
+                    + nodeConnectorIdOld + ", fcNodeConnectorOld=" + fcNodeConnectorOld + ", INTERFACE_NAME='"
                     + interfaceName + '\'' + '}';
         }
     }

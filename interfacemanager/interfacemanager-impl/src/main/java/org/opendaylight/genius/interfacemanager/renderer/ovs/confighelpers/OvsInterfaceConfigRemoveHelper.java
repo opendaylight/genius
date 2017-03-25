@@ -242,7 +242,7 @@ public class OvsInterfaceConfigRemoveHelper {
 
         @Override
         public String toString() {
-            return "VlanMemberStateRemoveWorker [dpId=" + dpId + ", interfaceName=" + interfaceName
+            return "VlanMemberStateRemoveWorker [dpId=" + dpId + ", INTERFACE_NAME=" + interfaceName
                     + ", interfaceParentEntry=" + interfaceParentEntry + "]";
         }
     }

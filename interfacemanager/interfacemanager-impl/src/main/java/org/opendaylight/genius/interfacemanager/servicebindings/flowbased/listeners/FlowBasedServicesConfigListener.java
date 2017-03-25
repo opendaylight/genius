@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -38,11 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
+public class FlowBasedServicesConfigListener
+        extends AsyncClusteredDataTreeChangeListenerBase<BoundServices, FlowBasedServicesConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
 
     @Inject
-    public FlowBasedServicesConfigListener(final DataBroker dataBroker, final InterfacemgrProvider interfacemgrProvider) {
+    public FlowBasedServicesConfigListener(final DataBroker dataBroker,
+            final InterfacemgrProvider interfacemgrProvider) {
         super(BoundServices.class, FlowBasedServicesConfigListener.class);
         initializeFlowBasedServiceHelpers(interfacemgrProvider);
         registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
@@ -60,8 +61,7 @@ public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChang
 
     @Override
     protected InstanceIdentifier<BoundServices> getWildCardPath() {
-        return InstanceIdentifier.create(ServiceBindings.class).child(ServicesInfo.class)
-                .child(BoundServices.class);
+        return InstanceIdentifier.create(ServiceBindings.class).child(ServicesInfo.class).child(BoundServices.class);
     }
 
     @Override
@@ -69,13 +69,13 @@ public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChang
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             ServicesInfoKey serviceKey = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class));
             LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
-                boundServiceOld);
-            FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable =
-                FlowBasedServicesRendererFactory.getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
+                    boundServiceOld);
+            FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
+                    .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
                     .getFlowBasedServicesRemoveRenderer();
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigRemoveWorker configWorker =
-                new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable, key, boundServiceOld);
+            RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(flowBasedServicesConfigRemovable,
+                    key, boundServiceOld);
             coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
         }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
     }
@@ -95,13 +95,12 @@ public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChang
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             ServicesInfoKey serviceKey = InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class));
             LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
-                boundServicesNew);
-            FlowBasedServicesConfigAddable flowBasedServicesAddable =
-                FlowBasedServicesRendererFactory.getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
-                    .getFlowBasedServicesAddRenderer();
+                    boundServicesNew);
+            FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
+                    .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesAddRenderer();
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigAddWorker configWorker =
-                new RendererConfigAddWorker(flowBasedServicesAddable, key, boundServicesNew);
+            RendererConfigAddWorker configWorker = new RendererConfigAddWorker(flowBasedServicesAddable, key,
+                    boundServicesNew);
             coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
         }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
     }
@@ -125,8 +124,7 @@ public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChang
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return flowBasedServicesAddable.bindService(instanceIdentifier,
-                    boundServicesNew);
+            return flowBasedServicesAddable.bindService(instanceIdentifier, boundServicesNew);
         }
     }
 
@@ -136,8 +134,7 @@ public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChang
         BoundServices boundServicesNew;
 
         RendererConfigRemoveWorker(FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable,
-                                          InstanceIdentifier<BoundServices> instanceIdentifier,
-                                          BoundServices boundServicesNew) {
+                InstanceIdentifier<BoundServices> instanceIdentifier, BoundServices boundServicesNew) {
             this.flowBasedServicesConfigRemovable = flowBasedServicesConfigRemovable;
             this.instanceIdentifier = instanceIdentifier;
             this.boundServicesNew = boundServicesNew;
@@ -145,8 +142,7 @@ public class FlowBasedServicesConfigListener extends AsyncClusteredDataTreeChang
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return flowBasedServicesConfigRemovable.unbindService(instanceIdentifier,
-                    boundServicesNew);
+            return flowBasedServicesConfigRemovable.unbindService(instanceIdentifier, boundServicesNew);
         }
     }
 }
