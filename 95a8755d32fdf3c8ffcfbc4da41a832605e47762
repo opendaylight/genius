@@ -1,0 +1,556 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_6abf3461",
+        "filename": "docs/ITM-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "White space.",
+      "range": {
+        "startLine": 11,
+        "startChar": 47,
+        "endLine": 11,
+        "endChar": 48
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0ab0288a",
+        "filename": "docs/ITM-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white spaces.",
+      "range": {
+        "startLine": 79,
+        "startChar": 0,
+        "endLine": 79,
+        "endChar": 3
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_eaaa0419",
+        "filename": "docs/ITM-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 82,
+        "startChar": 64,
+        "endLine": 82,
+        "endChar": 65
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4aaa301a",
+        "filename": "docs/ITM-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 84,
+        "startChar": 61,
+        "endLine": 84,
+        "endChar": 62
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8a637819",
+        "filename": "docs/genius-design-doc.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 5,
+        "startChar": 73,
+        "endLine": 5,
+        "endChar": 74
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6a66142b",
+        "filename": "docs/genius-design-doc.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 23,
+        "startChar": 60,
+        "endLine": 23,
+        "endChar": 61
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ca6d8006",
+        "filename": "docs/genius-design-doc.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 24,
+        "startChar": 69,
+        "endLine": 24,
+        "endChar": 70
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aa70fcdc",
+        "filename": "docs/genius-design-doc.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 25,
+        "startChar": 69,
+        "endLine": 25,
+        "endChar": 70
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0a7788d5",
+        "filename": "docs/genius-design-doc.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 3
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ea7164df",
+        "filename": "docs/genius-design-doc.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 3
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2a7c0cb5",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "OpenDayliht",
+      "range": {
+        "startLine": 8,
+        "startChar": 6,
+        "endLine": 8,
+        "endChar": 18
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4a81908e",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 18,
+        "startChar": 62,
+        "endLine": 18,
+        "endChar": 63
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8a4a5881",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 19,
+        "startChar": 71,
+        "endLine": 19,
+        "endChar": 72
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6a4d7499",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 34,
+        "startChar": 63,
+        "endLine": 34,
+        "endChar": 64
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aa475c76",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 71,
+        "startChar": 74,
+        "endLine": 71,
+        "endChar": 75
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ca446076",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 97,
+        "startChar": 79,
+        "endLine": 97,
+        "endChar": 80
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0a5e6845",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 100,
+        "startChar": 64,
+        "endLine": 100,
+        "endChar": 65
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ea584459",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white space.",
+      "range": {
+        "startLine": 115,
+        "startChar": 41,
+        "endLine": 115,
+        "endChar": 42
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4a587056",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "Several trailing spaces.",
+      "range": {
+        "startLine": 185,
+        "startChar": 0,
+        "endLine": 196,
+        "endChar": 58
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2a536c3a",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white spaces.",
+      "range": {
+        "startLine": 260,
+        "startChar": 60,
+        "endLine": 260,
+        "endChar": 61
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8a31b80d",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white spaces.",
+      "range": {
+        "startLine": 263,
+        "startChar": 75,
+        "endLine": 263,
+        "endChar": 76
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6a3454fb",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white spaces.",
+      "range": {
+        "startLine": 291,
+        "startChar": 26,
+        "endLine": 291,
+        "endChar": 27
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ca3bc0e9",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white spaces.",
+      "range": {
+        "startLine": 316,
+        "startChar": 0,
+        "endLine": 316,
+        "endChar": 3
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aa3e3cd8",
+        "filename": "docs/interface-manager-design.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 388,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-25T18:55:29Z",
+      "side": 1,
+      "message": "white spaces.",
+      "range": {
+        "startLine": 388,
+        "startChar": 1,
+        "endLine": 388,
+        "endChar": 2
+      },
+      "revId": "95a8755d32fdf3c8ffcfbc4da41a832605e47762",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
