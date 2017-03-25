@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.is;
 
 import javax.inject.Singleton;
@@ -14,13 +16,24 @@ import javax.inject.Singleton;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsWaiter {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TestableJobCoordinatorEventsWaiter.class);
+
     @Override
     public boolean awaitEventsConsumption() throws ConditionTimeoutException {
-        Awaitility.await().until(() -> DataStoreJobCoordinator.getInstance().getIncompleteTaskCount(), is(0L));
+        Awaitility.await("TestableJobCoordinatorEventsWaiter")
+            .atMost(30, SECONDS)
+            .pollDelay(0, MILLISECONDS)
+            .conditionEvaluationListener(condition -> LOG.info(
+                    "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; incompleteTaskCount: {}",
+                        condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
+                        condition.getValue()))
+            .until(() -> DataStoreJobCoordinator.getInstance().getIncompleteTaskCount(), is(0L));
         return true;
     }
 
