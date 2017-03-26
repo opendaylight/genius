@@ -180,8 +180,8 @@ public class ItmInternalTunnelDeleteWorker {
                                              List<ListenableFuture<Void>> futures) {
         String trunkfwdIfName =
                 ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
-                        srcTep.getIpAddress().getIpv4Address().getValue(),
-                        dstTep.getIpAddress().getIpv4Address().getValue(),
+                        new String(srcTep.getIpAddress().getValue()),
+                        new String(dstTep.getIpAddress().getValue()),
                         srcTep.getTunnelType().getName());
         LOG.trace("Removing forward Trunk Interface " + trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
@@ -196,13 +196,13 @@ public class ItmInternalTunnelDeleteWorker {
         ItmUtils.itmCache.removeInternalTunnel(trunkfwdIfName);
         // Release the Ids for the forward trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(idManagerService,srcTep.getInterfaceName(),
-                srcTep.getIpAddress().getIpv4Address().getValue(),
-                dstTep.getIpAddress().getIpv4Address().getValue(),
+                new String(srcTep.getIpAddress().getValue()),
+                new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
 
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
-                        dstTep.getIpAddress().getIpv4Address().getValue(),
-                        srcTep.getIpAddress().getIpv4Address().getValue(),
+                        new String(dstTep.getIpAddress().getValue()),
+                        new String(srcTep.getIpAddress().getValue()),
                         srcTep.getTunnelType().getName());
         LOG.trace("Removing Reverse Trunk Interface " + trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
@@ -217,8 +217,8 @@ public class ItmInternalTunnelDeleteWorker {
 
         // Release the Ids for the reverse trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
-                dstTep.getIpAddress().getIpv4Address().getValue(),
-                srcTep.getIpAddress().getIpv4Address().getValue(),
+                new String(dstTep.getIpAddress().getValue()),
+                new String(srcTep.getIpAddress().getValue()),
                 dstTep.getTunnelType().getName());
     }
 

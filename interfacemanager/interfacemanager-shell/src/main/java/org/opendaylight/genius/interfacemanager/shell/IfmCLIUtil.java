@@ -52,14 +52,14 @@ public class IfmCLIUtil {
                 iface.getName()));
         sb.setLength(0);
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT,
-                "", (ifaceInfo == null) ? UNSET : ifaceInfo.getDpId(),
-                (ifaceInfo == null) ? UNSET : ifaceInfo.getPortName(), vlanId));
+                "", ifaceInfo == null ? UNSET : ifaceInfo.getDpId(),
+                ifaceInfo == null ? UNSET : ifaceInfo.getPortName(), vlanId));
         sb.setLength(0);
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT,
-                (ifaceInfo == null) ? UNSET : ifaceInfo.getInterfaceTag(),
-                (ifaceInfo == null) ? UNSET  : ifaceInfo.getPortNo(),
-                (ifaceInfo == null) ? UNSET : ifaceInfo.getAdminState(),
-                (ifaceInfo == null) ? UNSET : ifaceInfo.getOpState()));
+                ifaceInfo == null ? UNSET : ifaceInfo.getInterfaceTag(),
+                ifaceInfo == null ? UNSET  : ifaceInfo.getPortNo(),
+                ifaceInfo == null ? UNSET : ifaceInfo.getAdminState(),
+                ifaceInfo == null ? UNSET : ifaceInfo.getOpState()));
         sb.setLength(0);
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT + "\n",
                 iface.getDescription(), "", "", ""));
@@ -93,17 +93,17 @@ public class IfmCLIUtil {
         sb.setLength(0);
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT,
-                ifTunnel.getTunnelSource().getIpv4Address().getValue(),
-                ifTunnel.getTunnelDestination().getIpv4Address().getValue(),
-                ifTunnel.getTunnelGateway() == null ? UNSET : ifTunnel.getTunnelGateway().getIpv4Address().getValue(),
-                (interfaceInfo == null) ? InterfaceInfo.InterfaceAdminState.DISABLED : interfaceInfo.getAdminState()));
+                new String(ifTunnel.getTunnelSource().getValue()),
+                new String(ifTunnel.getTunnelDestination().getValue()),
+                ifTunnel.getTunnelGateway() == null ? UNSET : new String(ifTunnel.getTunnelGateway().getValue()),
+                interfaceInfo == null ? InterfaceInfo.InterfaceAdminState.DISABLED : interfaceInfo.getAdminState()));
         sb.setLength(0);
         ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
         session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT + "\n",
-                (interfaceInfo == null) ? InterfaceOpState.DOWN : interfaceInfo.getOpState(),
+                interfaceInfo == null ? InterfaceOpState.DOWN : interfaceInfo.getOpState(),
                 String.format("%s/%s", parentRefs.getDatapathNodeIdentifier(),
                         iface.getName()),
-                (interfaceInfo == null) ? UNSET : interfaceInfo.getInterfaceTag(), ""));
+                interfaceInfo == null ? UNSET : interfaceInfo.getInterfaceTag(), ""));
         fmt.close();
     }
 }
