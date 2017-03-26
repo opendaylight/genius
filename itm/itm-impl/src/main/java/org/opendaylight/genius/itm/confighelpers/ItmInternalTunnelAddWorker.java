@@ -165,10 +165,11 @@ public class ItmInternalTunnelAddWorker {
         String tunTypeStr = srcte.getTunnelType().getName();
         // Form the trunk Interface Name
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName,
-                srcte.getIpAddress().getIpv4Address().getValue(),
-                dstte.getIpAddress().getIpv4Address().getValue(),
-                tunTypeStr) ;
-        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+                new String(srcte.getIpAddress().getValue()),
+                new String(dstte.getIpAddress().getValue()),
+                tunTypeStr);
+        String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
+        IpAddress gatewayIpObj = new IpAddress(gateway.toCharArray());
         IpAddress gwyIpAddress =
                 srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
         LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, "

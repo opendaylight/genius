@@ -180,8 +180,8 @@ public class ItmInternalTunnelDeleteWorker {
                                              List<ListenableFuture<Void>> futures) {
         String trunkfwdIfName =
                 ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
-                        srcTep.getIpAddress().getIpv4Address().getValue(),
-                        dstTep.getIpAddress().getIpv4Address().getValue(),
+                        new String(srcTep.getIpAddress().getValue()),
+                        new String(dstTep.getIpAddress().getValue()),
                         srcTep.getTunnelType().getName());
         LOG.trace("Removing forward Trunk Interface " + trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
