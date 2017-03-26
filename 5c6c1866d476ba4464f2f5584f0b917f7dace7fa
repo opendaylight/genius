@@ -16,6 +16,24 @@
       "revId": "5c6c1866d476ba4464f2f5584f0b917f7dace7fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c53e11da",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 11
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-26T08:48:26Z",
+      "side": 1,
+      "message": "This is dependency on itm-api only. \nWe need this api to pull out some config information about tunnels in order to create/update a logical tunnel group info in operational ds accordingly. \nThanks.",
+      "parentUuid": "fafc7978_4ad6bb28",
+      "revId": "5c6c1866d476ba4464f2f5584f0b917f7dace7fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
