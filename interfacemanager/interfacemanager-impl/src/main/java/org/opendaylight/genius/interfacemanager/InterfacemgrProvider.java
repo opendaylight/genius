@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +31,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
@@ -59,6 +61,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -498,6 +502,37 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public List<Interface> getVxlanInterfaces() {
         return InterfaceManagerCommonUtils.getAllTunnelInterfacesFromCache();
+    }
+
+    @Override
+    public List<Interface> getChildInterfaces(String parentInterface) {
+        InterfaceParentEntry parentEntry = InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(parentInterface,
+                dataBroker);
+        if (parentEntry == null) {
+            LOG.debug("No parent entry found for {}", parentInterface);
+            return Collections.emptyList();
+        }
+
+        List<InterfaceChildEntry> childEntries = parentEntry.getInterfaceChildEntry();
+        if (childEntries == null || childEntries.isEmpty()) {
+            LOG.debug("No child entries found for parent {}", parentInterface);
+            return Collections.emptyList();
+        }
+
+        List<Interface> childInterfaces = new ArrayList<>();
+        for (InterfaceChildEntry childEntry : childEntries) {
+            String interfaceName = childEntry.getChildInterface();
+            Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+            if (iface != null) {
+                childInterfaces.add(iface);
+            } else {
+                LOG.debug("Child interface {} not found in config DS for parent interface {}", interfaceName,
+                        parentInterface);
+            }
+        }
+
+        LOG.trace("Found child interfaces {} for parent {}", childInterfaces, parentInterface);
+        return childInterfaces;
     }
 
     @Override
