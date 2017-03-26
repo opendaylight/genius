@@ -9,6 +9,8 @@ package org.opendaylight.genius.mdsalutil.nxmatches;
 
 import com.google.common.collect.ImmutableBiMap;
 import java.util.Map;
+import java.util.Objects;
+
 import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg4;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg5;
@@ -33,22 +35,30 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
                     NxmNxReg6.class, NxmNxReg6Key.class
                     );
 
-    private final Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match
-            .rev140421.NxmNxReg> register;
+    private final Class<
+            ? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg> register;
     private final long value;
+    private final Long mask;
 
     public NxMatchRegister(
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg>
-                    register,
-            long value) {
-        super(KEYS.get(register), register.equals(NxmNxReg4.class) ? NxMatchFieldType.nxm_reg_4
+            register, long value) {
+        this(register, value, null);
+    }
+
+    public NxMatchRegister(
+            Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg>
+            register, long value, Long mask) {
+        super(KEYS.get(register),
+                register.equals(NxmNxReg4.class) ? NxMatchFieldType.nxm_reg_4
                         : register.equals(NxmNxReg5.class) ? NxMatchFieldType.nxm_reg_5 : NxMatchFieldType.nxm_reg_6,
-                new long[] {value});
+                new long[] { value });
         if (!KEYS.containsKey(register)) {
             throw new IllegalArgumentException("Unknown NXM register " + register);
         }
         this.register = register;
         this.value = value;
+        this.mask = mask;
     }
 
     @Override
@@ -58,7 +68,7 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
 
     @Override
     protected void populateBuilder(NxmNxRegBuilder builder) {
-        builder.setReg(register).setValue(value);
+        builder.setReg(register).setValue(value).setMask(mask);
     }
 
     public Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg>
@@ -68,6 +78,10 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
 
     public long getValue() {
         return value;
+    }
+
+    public Long getMask() {
+        return mask;
     }
 
     @Override
@@ -81,10 +95,12 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
         if (!super.equals(other)) {
             return false;
         }
-
         NxMatchRegister that = (NxMatchRegister) other;
 
         if (value != that.value) {
+            return false;
+        }
+        if (!Objects.equals(mask, that.mask)) {
             return false;
         }
         return register != null ? register.equals(that.register) : that.register == null;
@@ -94,6 +110,7 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (register != null ? register.hashCode() : 0);
+        result = 31 * result + (mask != null ? mask.hashCode() : 0);
         result = 31 * result + (int) (value ^ (value >>> 32));
         return result;
     }
