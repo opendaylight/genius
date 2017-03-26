@@ -76,7 +76,7 @@ public class TepCommandHelper {
     final Map<String, Map<SubnetObject, List<Vteps>>> transportZonesHashMap = new HashMap<>();
     private List<Subnets> subnetList = new ArrayList<>();
     private List<TransportZone> transportZoneArrayList = new ArrayList<>();
-    private List<Vteps> vtepDelCommitList = new ArrayList<>();
+    private final List<Vteps> vtepDelCommitList = new ArrayList<>();
 
     // private List<InstanceIdentifier<? extends DataObject>> vtepPaths = new
     // ArrayList<>();
@@ -188,7 +188,7 @@ public class TepCommandHelper {
 
     private boolean validateIPs(String ipAddress, String subnetMask, String gatewayIp) {
         SubnetUtils utils = new SubnetUtils(subnetMask);
-        if ((utils.getInfo().isInRange(ipAddress)) && ((gatewayIp == null) || (utils.getInfo().isInRange(gatewayIp)))) {
+        if (utils.getInfo().isInRange(ipAddress) && (gatewayIp == null || utils.getInfo().isInRange(gatewayIp))) {
             return true;
         } else {
             LOG.trace("InValid IP");
@@ -282,7 +282,7 @@ public class TepCommandHelper {
          * StringUtils.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE,
          * tzone.getTunnelType())) { return true; }
          */
-        return (tzone != null) && (tzone.getTunnelType()).equals(TunnelTypeGre.class);
+        return tzone != null && tzone.getTunnelType().equals(TunnelTypeGre.class);
     }
 
     /**
@@ -311,10 +311,10 @@ public class TepCommandHelper {
     public boolean checkExistingSubnet(Map<SubnetObject, List<Vteps>> subVtepMapTemp, SubnetObject subObCli) {
         for (SubnetObject subOb : subVtepMapTemp.keySet()) {
             if (subOb.get_key().equals(subObCli.get_key())) {
-                if (!(subOb.get_vlanId().equals(subObCli.get_vlanId()))) {
+                if (!subOb.get_vlanId().equals(subObCli.get_vlanId())) {
                     return true;
                 }
-                if (!(subOb.get_gatewayIp().equals(subObCli.get_gatewayIp()))) {
+                if (!subOb.get_gatewayIp().equals(subObCli.get_gatewayIp())) {
                     return true;
                 }
             }
@@ -392,12 +392,12 @@ public class TepCommandHelper {
                         TransportZone tzoneFromDs = transportZoneOptional.get();
                         LOG.debug("read tzone container" + tzoneFromDs.toString());
                         if (tzoneFromDs.getTunnelType() == null
-                                || (tzoneFromDs.getTunnelType()).equals(TunnelTypeVxlan.class)) {
+                                || tzoneFromDs.getTunnelType().equals(TunnelTypeVxlan.class)) {
                             transportZone =
                                     new TransportZoneBuilder().setKey(new TransportZoneKey(tz))
                                             .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList)
                                             .setZoneName(tz).build();
-                        } else if ((tzoneFromDs.getTunnelType()).equals(TunnelTypeGre.class)) {
+                        } else if (tzoneFromDs.getTunnelType().equals(TunnelTypeGre.class)) {
                             transportZone =
                                     new TransportZoneBuilder().setKey(new TransportZoneKey(tz))
                                             .setTunnelType(TunnelTypeGre.class).setSubnets(subnetList)
@@ -443,7 +443,7 @@ public class TepCommandHelper {
                 return;
             }
             List<String> result = new ArrayList<>();
-            result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", (monitorEnabled ? "On" : "Off")));
+            result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", monitorEnabled ? "On" : "Off"));
             result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval));
             result.add(System.lineSeparator());
             result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", "TransportZone",
@@ -463,15 +463,15 @@ public class TepCommandHelper {
                     for (Vteps vtep : sub.getVteps()) {
                         flag = true;
                         String strTunnelType ;
-                        if ((tz.getTunnelType()).equals(TunnelTypeGre.class)) {
+                        if (tz.getTunnelType().equals(TunnelTypeGre.class)) {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_GRE;
                         } else {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
                         }
                         result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s",
-                                tz.getZoneName(), strTunnelType, sub.getPrefix().getIpv4Prefix().getValue(),
-                                sub.getGatewayIp().getIpv4Address().getValue(), sub.getVlanId().toString(),
-                                vtep.getDpnId().toString(), vtep.getIpAddress().getIpv4Address().getValue(),
+                                tz.getZoneName(), strTunnelType, new String(sub.getPrefix().getValue()),
+                                new String(sub.getGatewayIp().getValue()), sub.getVlanId().toString(),
+                                vtep.getDpnId().toString(), new String(vtep.getIpAddress().getValue()),
                                 vtep.getPortname()));
                     }
                 }
@@ -711,8 +711,8 @@ public class TepCommandHelper {
                 }
                 System.out.println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(),
                         tunnelInst.getSrcInfo().getTepDeviceId(), tunnelInst.getDstInfo().getTepDeviceId(),
-                        tunnelInst.getSrcInfo().getTepIp().getIpv4Address().getValue(),
-                        tunnelInst.getDstInfo().getTepIp().getIpv4Address().getValue(), tunnelState, tunnelType));
+                        new String(tunnelInst.getSrcInfo().getTepIp().getValue()),
+                        new String(tunnelInst.getDstInfo().getTepIp().getValue()), tunnelState, tunnelType));
             }
         }
     }
@@ -835,7 +835,7 @@ public class TepCommandHelper {
         // TransportZone tZone = getTransportZone(tZoneName);
         // if (tZone != null) {
         if (tzoneFromConfigDs != null) {
-            if ((!tzoneFromConfigDs.getTunnelType().equals(tunType))  && ItmUtils.isNotEmpty(tzoneFromConfigDs
+            if (!tzoneFromConfigDs.getTunnelType().equals(tunType)  && ItmUtils.isNotEmpty(tzoneFromConfigDs
                     .getSubnets())) {
                 // for default-TZ, such error message is not needed to be thrown.
                 // it needs to be handled in different way, by deleting default-TZ

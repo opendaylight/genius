@@ -79,8 +79,8 @@ public class ItmExternalTunnelAddWorker {
                 String interfaceName = firstEndPt.getInterfaceName();
                 String tunTypeStr = tunType.getName();
                 String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName,
-                        firstEndPt.getIpAddress().getIpv4Address().getValue(),
-                        extIp.getIpv4Address().getValue(), tunTypeStr);
+                        new String(firstEndPt.getIpAddress().getValue()),
+                        new String(extIp.getValue()), tunTypeStr);
                 char[] subnetMaskArray = firstEndPt.getSubnetMask().getValue();
                 boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
                 String subnetMaskStr = String.valueOf(subnetMaskArray);
@@ -303,7 +303,7 @@ public class ItmExternalTunnelAddWorker {
         String parentIf =  ItmUtils.getHwParentIf(topoId, srcNodeid);
         String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
-                srcIp.getIpv4Address().getValue(), dstIp.getIpv4Address().getValue(), tunTypeStr);
+                new String(srcIp.getValue()), new String(dstIp.getValue()), tunTypeStr);
         LOG.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
@@ -338,7 +338,7 @@ public class ItmExternalTunnelAddWorker {
         String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);
         String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
-                srcIp.getIpv4Address().getValue(), dstIp.getIpv4Address().getValue(), tunTypeStr);
+                new String(srcIp.getValue()), new String(dstIp.getValue()), tunTypeStr);
         LOG.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
