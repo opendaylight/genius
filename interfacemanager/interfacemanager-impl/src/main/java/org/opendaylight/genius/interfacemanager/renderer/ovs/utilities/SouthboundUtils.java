@@ -153,47 +153,6 @@ public class SouthboundUtils {
         }
     }
 
-    /*
-     * delete all tunnels ports corresponding to the bridge to the topology
-     * config DS
-     *
-     * FIXME: This is not being called from anywhere.
-     */
-    public static void removeAllPortsFromBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
-            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew) {
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        String bridgeName = bridgeNew.getBridgeName().getValue();
-        LOG.debug("removing all ports from bridge: {}", bridgeName);
-        List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
-        if (bridgeInterfaceEntries != null) {
-            for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
-                String portName = bridgeInterfaceEntry.getInterfaceName();
-                InterfaceKey interfaceKey = new InterfaceKey(portName);
-                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
-                if (iface != null) {
-                    IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-                    if (ifTunnel != null) {
-                        removeTerminationEndPoint(dataBroker, bridgeIid, iface.getName());
-                    }
-                    if (SouthboundUtils.isOfTunnel(ifTunnel)) {
-                        LOG.debug("Using OFTunnel. Only one tunnel port to be removed");
-                        return;
-                    }
-                } else {
-                    LOG.debug("Interface {} not found in config DS", portName);
-                }
-            }
-        }
-    }
-
-    private static void addVlanPortToBridge(InstanceIdentifier<?> bridgeIid, IfL2vlan ifL2vlan, IfTunnel ifTunnel,
-            OvsdbBridgeAugmentation bridgeAugmentation, String bridgeName, String portName, DataBroker dataBroker,
-            WriteTransaction tx) {
-        if (ifL2vlan.getVlanId() != null) {
-            addTerminationPoint(bridgeIid, portName, ifL2vlan.getVlanId().getValue(), null, null, ifTunnel);
-        }
-    }
-
     private static void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
             String portName, DataBroker dataBroker) {
         LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);

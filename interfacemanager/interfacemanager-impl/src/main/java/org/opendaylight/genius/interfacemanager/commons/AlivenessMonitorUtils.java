@@ -301,12 +301,4 @@ public final class AlivenessMonitorUtils {
         return ifTunnel.isInternal() && ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeLldp.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
-
-    public static Profile getDefaultMonitorProfile(EtherTypes etherType) {
-        ProfileBuilder profileBuilder = new ProfileBuilder();
-        profileBuilder.setProtocolType(etherType);
-        profileBuilder.setFailureThreshold(FAILURE_THRESHOLD).setMonitorInterval(MONITORING_INTERVAL)
-                .setMonitorWindow(MONITORING_WINDOW).setProtocolType(etherType);
-        return profileBuilder.build();
-    }
 }

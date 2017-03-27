@@ -225,18 +225,6 @@ public class FlowBasedServicesUtils {
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
     }
 
-    public static void removeFlow(String flowRef, BigInteger dpId, WriteTransaction writeTransaction) {
-        LOG.debug("Removing Ingress Flows");
-        FlowKey flowKey = new FlowKey(new FlowId(flowRef));
-        Node nodeDpn = buildInventoryDpnNode(dpId);
-        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, flowKey)
-                .build();
-
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-    }
-
     private static Node buildInventoryDpnNode(BigInteger dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
         Node nodeDpn = new NodeBuilder().setId(nodeId).setKey(new NodeKey(nodeId)).build();
