@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -31,17 +31,18 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
+public class FlowBasedServicesInterfaceStateListener
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
     @Inject
-    public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider, DataBroker dataBroker) {
+    public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider,
+            DataBroker dataBroker) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
@@ -53,17 +54,21 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
         LOG.info("FlowBasedServicesInterfaceStateListener started");
     }
 
+    @Override
     @PreDestroy
-    public void close(){
+    public void close() {
         LOG.info("FlowBasedServicesInterfaceStateListener closed");
     }
 
     private void initializeFlowBasedServiceStateBindHelpers(InterfacemgrProvider interfaceMgrProvider) {
         FlowBasedIngressServicesStateBindHelper.intitializeFlowBasedIngressServicesStateAddHelper(interfaceMgrProvider);
-        FlowBasedIngressServicesStateUnbindHelper.intitializeFlowBasedIngressServicesStateRemoveHelper(interfaceMgrProvider);
+        FlowBasedIngressServicesStateUnbindHelper
+                .intitializeFlowBasedIngressServicesStateRemoveHelper(interfaceMgrProvider);
         FlowBasedEgressServicesStateBindHelper.intitializeFlowBasedEgressServicesStateBindHelper(interfaceMgrProvider);
-        FlowBasedEgressServicesStateUnbindHelper.intitializeFlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
+        FlowBasedEgressServicesStateUnbindHelper
+                .intitializeFlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
     }
+
     @Override
     protected InstanceIdentifier<Interface> getWildCardPath() {
         return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
@@ -72,16 +77,18 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
         if (interfaceStateOld.getType() == null
-            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+                || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
-            coordinator.enqueueJob(interfaceStateOld.getName(), new RendererStateInterfaceUnbindWorker
-                (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
-                    .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld), IfmConstants.JOB_MAX_RETRIES));
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
+                .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
+                        new RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRendererFactory
+                                .getFlowBasedServicesStateRendererFactory(serviceMode)
+                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld),
+                        IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override
@@ -92,15 +99,17 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
         if (interfaceStateNew.getType() == null
-            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+                || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode ->
-            coordinator.enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker
-                (FlowBasedServicesStateRendererFactory.getFlowBasedServicesStateRendererFactory(serviceMode)
-                    .getFlowBasedServicesStateAddRenderer(), interfaceStateNew), IfmConstants.JOB_MAX_RETRIES));
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
+                interfaceStateNew.getName(),
+                new RendererStateInterfaceBindWorker(FlowBasedServicesStateRendererFactory
+                        .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer(),
+                        interfaceStateNew),
+                IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override
@@ -112,8 +121,8 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
         Interface iface;
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
 
-        public RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable,
-                                                Interface iface) {
+        RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable,
+                Interface iface) {
             this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
             this.iface = iface;
         }
@@ -128,8 +137,8 @@ public class FlowBasedServicesInterfaceStateListener extends AsyncClusteredDataT
         Interface iface;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
-        public RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
-                                                  Interface iface) {
+        RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
+                Interface iface) {
             this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
             this.iface = iface;
         }
