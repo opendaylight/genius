@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9b7109e1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T12:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_5b2321a7",
+      "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9b3469e0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-27T10:21:33Z",
       "side": 1,
       "message": "Don\u0027t drop the try-with-resources.",
+      "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5b47a177",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T12:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_9b3469e0",
       "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1b34f9f9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T12:20:16Z",
+      "side": 1,
+      "message": "That\u0027s why I put the TODO, because I think those missing \"breaks\" are bugs, but you are right, I\u0027ll remove them and leave just the TODOs, can someone confirm if those are bugs?",
+      "parentUuid": "fafc7978_7b570503",
+      "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5b5a012b",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-03-27T10:21:33Z",
       "side": 1,
       "message": "Please put the comment on its own line instead.",
+      "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7b3b85eb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T12:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_5b5a012b",
       "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5b3e81db",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T12:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_bb404d36",
+      "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9b3bc9c7",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2017-03-27T10:21:33Z",
       "side": 1,
       "message": "And again...",
+      "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9b1f4970",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 565,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T12:20:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_9b3bc9c7",
       "revId": "95a4229b821819edf8f8e2f092994b2df87d745e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
