@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_01c4863e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T16:16:54Z",
+      "side": 1,
+      "message": "Whoa.. hang on - really? You sure?? Really sure??? ;)",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_81e7d6e3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T16:16:54Z",
+      "side": 1,
+      "message": "yeah.. nobody will ever read and react to this TODO.  Let me -1 this change as is due to this as-is; others with a better functional understanding than I have (e.g. Faseela?) should look at this and either (a) confirm that this unusal \"switch fall through\" really is intentional, if that is the case, then could they please add some // inline doc explaining why this is like this?  (b) fix this, perhaps in a separate Gerrit, so that the @SuppressWarnings above can be removed from this Gerrit.",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
