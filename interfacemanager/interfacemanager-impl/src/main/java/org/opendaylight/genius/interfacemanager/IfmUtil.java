@@ -82,11 +82,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -122,21 +117,6 @@ public class IfmUtil {
             return getDpnFromNodeConnectorId(ncId);
         }
         return null;
-    }
-
-    public static String getPortNoFromInterfaceName(String ifaceName, DataBroker broker) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(ifaceName, broker);
-
-        if (ifState == null) {
-            throw new NullPointerException("Interface information not present in oper DS for " + ifaceName);
-        }
-        String lowerLayerIf = ifState.getLowerLayerIf().get(0);
-        NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
-        String portNo = IfmUtil.getPortNoFromNodeConnectorId(nodeConnectorId);
-
-        return portNo;
     }
 
     public static String getPortNoFromNodeConnectorId(NodeConnectorId portId) {
@@ -199,16 +179,6 @@ public class IfmUtil {
         return InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName)).build();
     }
 
-    public static List<String> getPortNameAndSuffixFromInterfaceName(String intfName) {
-        List<String> strList = new ArrayList<>(2);
-        int index = intfName.indexOf(":");
-        if (index != -1) {
-            strList.add(0, intfName.substring(0, index));
-            strList.add(1, intfName.substring(index));
-        }
-        return strList;
-    }
-
     public static long getGroupId(long ifIndex, InterfaceInfo.InterfaceType infType) {
         if (infType == InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE) {
             return ifIndex + IfmConstants.LOGICAL_GROUP_START;
@@ -217,23 +187,6 @@ public class IfmUtil {
         } else {
             return ifIndex + IfmConstants.TRUNK_GROUP_START;
         }
-    }
-
-    public static List<String> getDpIdPortNameAndSuffixFromInterfaceName(String intfName) {
-        List<String> strList = new ArrayList<>(3);
-        int index1 = intfName.indexOf(":");
-        if (index1 != -1) {
-            int index2 = intfName.indexOf(":", index1 + 1);
-            strList.add(0, intfName.substring(0, index1));
-            if (index2 != -1) {
-                strList.add(1, intfName.substring(index1, index2));
-                strList.add(2, intfName.substring(index2));
-            } else {
-                strList.add(1, intfName.substring(index1));
-                strList.add(2, "");
-            }
-        }
-        return strList;
     }
 
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
@@ -468,14 +421,6 @@ public class IfmUtil {
             return new NodeConnectorId(ofportIds.get(0));
         }
         return null;
-    }
-
-    public static String getPortName(DataBroker dataBroker, NodeConnectorId ncId) {
-        InstanceIdentifier<NodeConnector> ncIdentifier = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, new NodeKey(getNodeIdFromNodeConnectorId(ncId)))
-                .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
-        return read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker)
-                .transform(nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
     }
 
     public static InterfaceInfo.InterfaceType getInterfaceType(Interface iface) {

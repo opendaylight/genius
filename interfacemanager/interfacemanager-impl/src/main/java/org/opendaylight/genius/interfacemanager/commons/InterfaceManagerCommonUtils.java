@@ -116,27 +116,6 @@ public final class InterfaceManagerCommonUtils {
         return interfaceInstanceIdentifierBuilder.build();
     }
 
-    public static List<Interface> getAllTunnelInterfaces(DataBroker dataBroker,
-            InterfaceInfo.InterfaceType interfaceType) {
-        List<Interface> vxlanList = new ArrayList<>();
-        InstanceIdentifier<Interfaces> interfacesInstanceIdentifier = InstanceIdentifier.builder(Interfaces.class)
-                .build();
-        Optional<Interfaces> interfacesOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION,
-                interfacesInstanceIdentifier, dataBroker);
-        if (!interfacesOptional.isPresent()) {
-            return vxlanList;
-        }
-        Interfaces interfaces = interfacesOptional.get();
-        List<Interface> interfacesList = interfaces.getInterface();
-        for (Interface iface : interfacesList) {
-            if (IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
-                    && iface.getAugmentation(IfTunnel.class).isInternal()) {
-                vxlanList.add(iface);
-            }
-        }
-        return vxlanList;
-    }
-
     public static List<Interface> getAllTunnelInterfacesFromCache() {
         return interfaceConfigMap.values().stream()
                 .filter(iface -> IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
@@ -451,14 +430,6 @@ public final class InterfaceManagerCommonUtils {
         // Update the DpnToInterfaceList OpDS
         createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
         return ifState;
-    }
-
-    public static boolean checkIfBfdStateIsDown(String interfaceName) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = InterfaceManagerCommonUtils
-                .getBfdStateFromCache(interfaceName);
-        return operStatus == org.opendaylight.yang.gen.v1.urn
-                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
     }
 
 
