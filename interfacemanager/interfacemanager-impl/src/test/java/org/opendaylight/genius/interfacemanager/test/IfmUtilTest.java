@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -21,7 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 
 public class IfmUtilTest {
 
-    @Mock NodeConnectorId ncId;
+    @Mock
+    NodeConnectorId ncId;
 
     @Before
     public void setUp() {
@@ -30,9 +31,9 @@ public class IfmUtilTest {
 
     @Test
     public void testDpnConversions() {
-        String NodeId = IfmUtil.buildDpnNodeId(BigInteger.valueOf(101)).getValue();
-        assertEquals("openflow:101", NodeId);
+        String nodeId = IfmUtil.buildDpnNodeId(BigInteger.valueOf(101)).getValue();
+        assertEquals("openflow:101", nodeId);
         when(ncId.getValue()).thenReturn("openflow:101:11");
-        assertEquals(new BigInteger("101"),IfmUtil.getDpnFromNodeConnectorId(ncId));
+        assertEquals(new BigInteger("101"), IfmUtil.getDpnFromNodeConnectorId(ncId));
     }
 }

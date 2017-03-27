@@ -94,13 +94,13 @@ public class TerminationPointStateListener extends
         }
         String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName,
                         identifier.firstIdentifierOf(Node.class));
-        if (dpnId != null && newInterfaceName != null &&
-            (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
+        if (dpnId != null && newInterfaceName != null
+                && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
             String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
             LOG.debug(
-                "Detected update to termination point {} with external ID {}, updating parent ref "
-                    + "of that interface ID to this termination point's interface-state name {}",
-                tpNew.getName(), newInterfaceName, parentRefName);
+                    "Detected update to termination point {} with external ID {}, updating parent ref "
+                            + "of that interface ID to this termination point's interface-state name {}",
+                    tpNew.getName(), newInterfaceName, parentRefName);
             interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
         }
     }

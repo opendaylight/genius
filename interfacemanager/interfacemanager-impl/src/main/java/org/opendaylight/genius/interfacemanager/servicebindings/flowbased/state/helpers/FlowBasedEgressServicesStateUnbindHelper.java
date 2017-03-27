@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -29,10 +29,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
+public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateUnbindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
+    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
     private FlowBasedEgressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -43,7 +43,8 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         if (flowBasedServicesStateRemovable == null) {
             synchronized (FlowBasedEgressServicesStateUnbindHelper.class) {
                 if (flowBasedServicesStateRemovable == null) {
-                    flowBasedServicesStateRemovable = new FlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
+                    flowBasedServicesStateRemovable = new FlowBasedEgressServicesStateUnbindHelper(
+                            interfaceMgrProvider);
                 }
             }
         }
@@ -55,12 +56,15 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
         }
         return flowBasedServicesStateRemovable;
     }
+
+    @Override
     public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("unbinding services on interface {}", ifaceState.getName());
 
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
+                ServiceModeEgress.class, dataBroker);
         if (servicesInfo == null) {
             LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;
@@ -72,37 +76,37 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
             return futures;
         }
 
-        if (L2vlan.class.equals(ifaceState.getType())
-            || Tunnel.class.equals(ifaceState.getType())) {
+        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
             return unbindServices(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServices(
-            List<BoundServices> allServices, Interface ifaceState,
+    private static List<ListenableFuture<Void>> unbindServices(List<BoundServices> allServices, Interface ifaceState,
             Integer ifIndex, DataBroker dataBroker) {
         LOG.info("unbind all egress services for interface: {}", ifaceState.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if(nodeConnectorId == null){
+        if (nodeConnectorId == null) {
             return futures;
         }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        Collections.sort(allServices,
-                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
         BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
+        FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), highestPriority,
+                writeTransaction, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundService,
+                    writeTransaction, boundService.getServicePriority());
         }
-        futures.add(t.submit());
-        // remove the default egress service bound on the interface, once all flows are removed
+        futures.add(writeTransaction.submit());
+        // remove the default egress service bound on the interface, once all
+        // flows are removed
         FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceState.getName());
         return futures;
 
     }
-
 }
