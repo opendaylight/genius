@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -25,7 +25,6 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -69,12 +68,12 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
 
     @Override
     public List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-                                                             BoundServices boundServiceOld) {
+            BoundServices boundServiceOld) {
 
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        String interfaceName =
-                InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getInterfaceName();
+        String interfaceName = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class))
+                .getInterfaceName();
         Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
                 .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
 
@@ -86,8 +85,9 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             return futures;
         }
 
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
-            ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
             return futures;
@@ -105,10 +105,11 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
 
     private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
             List<BoundServices> boundServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifaceState, DataBroker dataBroker) {
-        LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(), ifaceState
-            .getName());
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifaceState,
+            DataBroker dataBroker) {
+        LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
+                ifaceState.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifaceState);
@@ -131,7 +132,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, tx,
                     NwConstants.DEFAULT_SERVICE_INDEX);
             if (low != null) {
-                //delete the lower services flow entry.
+                // delete the lower services flow entry.
                 LOG.trace("Deleting ingress dispatcher table entry for lower service {}, match service index {}", low,
                         low.getServicePriority());
                 FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), low, tx,
@@ -139,8 +140,9 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
                         : low.getServicePriority() + 1);
-                LOG.trace("Installing new ingress dispatcher table entry for lower service {}, match service index " +
-                        "{}, update service index {}",
+                LOG.trace(
+                        "Installing new ingress dispatcher table entry for lower service {}, match service index "
+                                + "{}, update service index {}",
                         low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, ifaceState.getName(), tx,
                         ifaceState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
@@ -171,14 +173,14 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
 
     private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
             List<BoundServices> boundServices,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifState, DataBroker dataBroker) {
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState,
+            DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
-        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
-        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
         if (boundServices.isEmpty()) {
@@ -208,13 +210,16 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             return futures;
         }
 
-        List<MatchInfo> matches = null;
+        List<MatchInfo> matches;
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
 
         BoundServices toBeMoved = tmpServicesMap.get(highestPriority);
+        Interface iface =
+                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         FlowBasedServicesUtils.removeIngressFlow(iface.getName(), boundServiceOld, dpId, tx);
-        FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, toBeMoved, tx,
-                matches, ifState.getIfIndex(), NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
+        FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, toBeMoved, tx, matches, ifState.getIfIndex(),
+                NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
         FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), toBeMoved, tx,
                 toBeMoved.getServicePriority());
 
@@ -223,5 +228,4 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         }
         return futures;
     }
-
 }
