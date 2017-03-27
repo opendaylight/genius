@@ -51,6 +51,24 @@
       "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ac949144",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T18:54:26Z",
+      "side": 1,
+      "message": "I disagree - let\u0027s first see if we can get a reaction to whether through Checkstyle we\u0027ve uncovered a bad bug here, or at least a written statement from someone knowing this code better than the 3 of us looking it so far that this is perfectly OK (and why) - to me, this looks very suspicious, and I\u0027d rather keep this change hanging in the air to force a brief discussion about this. YMMV.",
+      "parentUuid": "fafc7978_6138f23d",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
