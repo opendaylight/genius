@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3672b511",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T07:24:05Z",
+      "side": 1,
+      "message": "Sure. I think this is due to a massive change in a variable name that went too far.",
+      "parentUuid": "fafc7978_1695f13f",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_b6aea596",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-27T06:54:02Z",
       "side": 1,
       "message": "is this needed? when nodeConnectorId and all looks the same.. for me interfaceName looks better",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76639d41",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T07:24:05Z",
+      "side": 1,
+      "message": "Sure. I think this is due to a massive change in a variable name that went too far.",
+      "parentUuid": "fafc7978_b6aea596",
       "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b65d057c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T07:24:05Z",
+      "side": 1,
+      "message": "Sure. I think this is due to a massive change in a variable name that went too far.",
+      "parentUuid": "fafc7978_f68f8d2c",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_569f795f",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2017-03-27T06:54:02Z",
       "side": 1,
       "message": "interfaceName",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1654d152",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T07:24:05Z",
+      "side": 1,
+      "message": "Sure. I think this is due to a massive change in a variable name that went too far.",
+      "parentUuid": "fafc7978_569f795f",
       "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_364915b8",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/OvsdbSouthboundTestUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T07:24:05Z",
+      "side": 1,
+      "message": "OK.",
+      "parentUuid": "fafc7978_167cd11f",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_76927d4c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2017-03-27T06:54:02Z",
       "side": 1,
       "message": "is this itm file needed along with this patch? :)",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d6d1a9ce",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-27T07:24:05Z",
+      "side": 1,
+      "message": "Sure. I think this is due to a massive change in a variable name that went too far. I will leave it as it was.",
+      "parentUuid": "fafc7978_76927d4c",
       "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
