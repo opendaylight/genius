@@ -364,8 +364,8 @@ public class SouthboundUtils {
     }
 
     public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
-        String sourceKey = new String (ifTunnel.getTunnelSource().getValue());
-        String remoteKey = new String (ifTunnel.getTunnelDestination().getValue());
+        String sourceKey = new String(ifTunnel.getTunnelSource().getValue());
+        String remoteKey = new String(ifTunnel.getTunnelDestination().getValue());
         if (ifTunnel.isTunnelSourceIpFlow() != null) {
             sourceKey = "flow";
         }

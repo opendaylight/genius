@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -30,10 +30,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServicesStateAddable{
+public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServicesStateAddable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateBindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
+    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateAddable flowBasedServicesStateAddable;
 
     private FlowBasedEgressServicesStateBindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -57,11 +57,13 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
         return flowBasedServicesStateAddable;
     }
 
+    @Override
     public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("binding services on interface {}", ifaceState.getName());
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeEgress.class, dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
+                ServiceModeEgress.class, dataBroker);
         if (servicesInfo == null) {
             LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;
@@ -73,40 +75,44 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
             return futures;
         }
 
-        if (L2vlan.class.equals(ifaceState.getType())
-            || Tunnel.class.equals(ifaceState.getType())) {
+        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
             return bindServices(allServices, ifaceState, dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServices(
-            List<BoundServices> allServices,
-            Interface ifState, DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> bindServices(List<BoundServices> allServices, Interface ifState,
+            DataBroker dataBroker) {
         LOG.info("bind all egress services for interface: {}", ifState.getName());
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-        Collections.sort(allServices,
-                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
         BoundServices highestPriority = allServices.remove(0);
-        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority() : highestPriority.getServicePriority() + 1);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
-        FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), t, ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
+        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
+                : highestPriority.getServicePriority() + 1);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
+                .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
+        FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), writeTransaction,
+                ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
         BoundServices prev = null;
         for (BoundServices boundService : allServices) {
-            if (prev!=null) {
-                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority(), iface);
+            if (prev != null) {
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), writeTransaction,
+                        ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority(), iface);
             }
             prev = boundService;
         }
-        if (prev!=null) {
-            FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), t, ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority()+1), iface);
+        if (prev != null) {
+            FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), writeTransaction,
+                    ifState.getIfIndex(),
+                    prev.getServicePriority(), (short) (prev.getServicePriority() + 1), iface);
         }
-        futures.add(t.submit());
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        futures.add(writeTransaction.submit());
         return futures;
-
     }
-
 }

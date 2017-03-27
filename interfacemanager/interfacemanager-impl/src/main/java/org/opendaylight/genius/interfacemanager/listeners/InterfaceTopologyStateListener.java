@@ -32,7 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class InterfaceTopologyStateListener extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
+public class InterfaceTopologyStateListener
+        extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
     private final DataBroker dataBroker;
     private final InterfacemgrProvider interfaceMgrProvider;
@@ -86,16 +87,17 @@ public class InterfaceTopologyStateListener extends AsyncClusteredDataTreeChange
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             DatapathId oldDpid = bridgeOld.getDatapathId();
             DatapathId newDpid = bridgeNew.getDatapathId();
-            if(oldDpid == null && newDpid != null){
+            if (oldDpid == null && newDpid != null) {
                 DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
                 RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
                 jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
-                    IfmConstants.JOB_MAX_RETRIES);
-            } else if(oldDpid != null && !oldDpid.equals(newDpid)){
+                        IfmConstants.JOB_MAX_RETRIES);
+            } else if (oldDpid != null && !oldDpid.equals(newDpid)) {
                 DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-                RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
+                RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew,
+                        bridgeOld);
                 jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
-                    IfmConstants.JOB_MAX_RETRIES);
+                        IfmConstants.JOB_MAX_RETRIES);
             }
         }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -48,7 +48,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -101,13 +100,11 @@ public class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final int INVALID_ID = 0;
 
-    private static final ImmutableMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType> TUNNEL_TYPE_MAP =
-            new ImmutableMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
-                    .put(TunnelTypeGre.class, GRE_TRUNK_INTERFACE)
-                    .put(TunnelTypeMplsOverGre.class, MPLS_OVER_GRE)
-                    .put(TunnelTypeVxlan.class, VXLAN_TRUNK_INTERFACE)
-                    .put(TunnelTypeVxlanGpe.class, VXLAN_TRUNK_INTERFACE)
-                    .build();
+    private static final ImmutableMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>
+        TUNNEL_TYPE_MAP = new ImmutableMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
+            .put(TunnelTypeGre.class, GRE_TRUNK_INTERFACE).put(TunnelTypeMplsOverGre.class, MPLS_OVER_GRE)
+            .put(TunnelTypeVxlan.class, VXLAN_TRUNK_INTERFACE).put(TunnelTypeVxlanGpe.class, VXLAN_TRUNK_INTERFACE)
+            .build();
 
     public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
         /*
@@ -117,19 +114,23 @@ public class IfmUtil {
         return new BigInteger(split[1]);
     }
 
-    public static BigInteger getDpnFromInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState){
+    public static BigInteger getDpnFromInterface(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         NodeConnectorId ncId = getNodeConnectorIdFromInterface(ifState);
-        if(ncId != null){
+        if (ncId != null) {
             return getDpnFromNodeConnectorId(ncId);
         }
         return null;
     }
-    public static String getPortNoFromInterfaceName(String ifaceName, DataBroker broker) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(ifaceName, broker);
 
-        if(ifState == null){
-            throw new NullPointerException("Interface information not present in oper DS for " +ifaceName);
+    public static String getPortNoFromInterfaceName(String ifaceName, DataBroker broker) {
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(ifaceName, broker);
+
+        if (ifState == null) {
+            throw new NullPointerException("Interface information not present in oper DS for " + ifaceName);
         }
         String lowerLayerIf = ifState.getLowerLayerIf().get(0);
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -148,9 +149,9 @@ public class IfmUtil {
 
     public static Long getPortNumberFromNodeConnectorId(NodeConnectorId portId) {
         String portNo = getPortNoFromNodeConnectorId(portId);
-        try{
+        try {
             return Long.valueOf(portNo);
-        }catch(NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             LOG.trace("Unable to retrieve port number from nodeconnector id for {}", portId);
         }
         return IfmConstants.INVALID_PORT_NO;
@@ -161,32 +162,41 @@ public class IfmUtil {
     }
 
     public static InstanceIdentifier<Interface> buildId(String interfaceName) {
-        //TODO Make this generic and move to AbstractDataChangeListener or Utils.
-        InstanceIdentifierBuilder<Interface> idBuilder =
-                InstanceIdentifier.builder(Interfaces.class).child(Interface.class, new InterfaceKey(interfaceName));
-        InstanceIdentifier<Interface> id = idBuilder.build();
+        // TODO Make this generic and move to AbstractDataChangeListener or
+        // Utils.
+        InstanceIdentifierBuilder<Interface> idBuilder = InstanceIdentifier.builder(Interfaces.class)
+                .child(Interface.class, new InterfaceKey(interfaceName));
+        return idBuilder.build();
+    }
+
+    public static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+        .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> buildStateInterfaceId(
+            String interfaceName) {
+        InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                .interfaces.state.Interface> idBuilder = InstanceIdentifier
+                .builder(InterfacesState.class)
+                .child(org.opendaylight.yang.gen.v1.urn
+                        .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
+                        new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                            .ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
+                                interfaceName));
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder
+                .build();
         return id;
     }
 
-    public static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> buildStateInterfaceId(String interfaceName) {
-        InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> idBuilder =
-                InstanceIdentifier.builder(InterfacesState.class)
-                        .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
-                                new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(interfaceName));
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder.build();
-        return id;
-    }
-
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey getStateInterfaceKeyFromName(
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.InterfaceKey getStateInterfaceKeyFromName(
             String name) {
-        return new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(name);
+        return new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
+                name);
     }
 
-    public static InstanceIdentifier<IdPool> getPoolId(String poolName){
-        InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idBuilder =
-                InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName));
-        InstanceIdentifier<IdPool> id = idBuilder.build();
-        return id;
+    public static InstanceIdentifier<IdPool> getPoolId(String poolName) {
+        return InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName)).build();
     }
 
     public static List<String> getPortNameAndSuffixFromInterfaceName(String intfName) {
@@ -202,8 +212,7 @@ public class IfmUtil {
     public static long getGroupId(long ifIndex, InterfaceInfo.InterfaceType infType) {
         if (infType == InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE) {
             return ifIndex + IfmConstants.LOGICAL_GROUP_START;
-        }
-        else if (infType == VLAN_INTERFACE) {
+        } else if (infType == VLAN_INTERFACE) {
             return ifIndex + IfmConstants.VLAN_GROUP_START;
         } else {
             return ifIndex + IfmConstants.TRUNK_GROUP_START;
@@ -214,7 +223,7 @@ public class IfmUtil {
         List<String> strList = new ArrayList<>(3);
         int index1 = intfName.indexOf(":");
         if (index1 != -1) {
-            int index2 = intfName.indexOf(":", index1 + 1 );
+            int index2 = intfName.indexOf(":", index1 + 1);
             strList.add(0, intfName.substring(0, index1));
             if (index2 != -1) {
                 strList.add(1, intfName.substring(index1, index2));
@@ -228,17 +237,19 @@ public class IfmUtil {
     }
 
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, DataBroker broker) {
+            InstanceIdentifier<T> path, DataBroker broker) {
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Cannot read identifier", e);
             throw new RuntimeException(e);
         }
     }
 
     public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey, Integer actionKey,
-                                                            DataBroker dataBroker, Boolean isDefaultEgress) {
-        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey, actionKey==null?0:actionKey, dataBroker, isDefaultEgress);
+            DataBroker dataBroker, Boolean isDefaultEgress) {
+        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey,
+                actionKey == null ? 0 : actionKey, dataBroker, isDefaultEgress);
         List<Action> actionsList = new ArrayList<>();
         for (ActionInfo actionInfo : listActionInfo) {
             actionsList.add(actionInfo.buildAction());
@@ -247,55 +258,55 @@ public class IfmUtil {
     }
 
     public static List<Instruction> getEgressInstructionsForInterface(String interfaceName, Long tunnelKey,
-                                                                      DataBroker dataBroker, Boolean isDefaultEgress) {
+            DataBroker dataBroker, Boolean isDefaultEgress) {
         List<Instruction> instructions = new ArrayList<>();
-        List<Action> actionList = MDSALUtil.buildActions(getEgressActionInfosForInterface(
-                interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress));
+        List<Action> actionList = MDSALUtil.buildActions(
+                getEgressActionInfosForInterface(interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress));
         instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
-        return  instructions;
+        return instructions;
     }
 
     public static List<Instruction> getEgressInstructionsForInterface(Interface interfaceInfo, String portNo,
-                                                                      Long tunnelKey, boolean isDefaultEgress, int ifIndex) {
+            Long tunnelKey, boolean isDefaultEgress, int ifIndex) {
         List<Instruction> instructions = new ArrayList<>();
         InterfaceInfo.InterfaceType ifaceType = getInterfaceType(interfaceInfo);
-        List<Action> actionList = MDSALUtil.buildActions(
-                getEgressActionInfosForInterface(interfaceInfo, portNo, ifaceType, tunnelKey, 0, isDefaultEgress, ifIndex));
+        List<Action> actionList = MDSALUtil.buildActions(getEgressActionInfosForInterface(interfaceInfo, portNo,
+                ifaceType, tunnelKey, 0, isDefaultEgress, ifIndex));
         instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
-        return  instructions;
+        return instructions;
     }
 
-
-    public static List<ActionInfo> getEgressActionInfosForInterface(String     interfaceName,
-                                                                    int        actionKeyStart,
-                                                                    DataBroker dataBroker,
-                                                                    Boolean isDefaultEgress) {
+    public static List<ActionInfo> getEgressActionInfosForInterface(String interfaceName, int actionKeyStart,
+            DataBroker dataBroker, Boolean isDefaultEgress) {
         return getEgressActionInfosForInterface(interfaceName, null, actionKeyStart, dataBroker, isDefaultEgress);
     }
 
     /**
-     * Returns a list of Actions to be taken when sending a packet over an interface
+     * Returns a list of Actions to be taken when sending a packet over an
+     * interface.
      *
      * @param interfaceName
-     * @param tunnelKey Optional.
+     *            name of the interface
+     * @param tunnelKey
+     *            Optional.
      * @param actionKeyStart
+     *            action key
      * @param dataBroker
-     * @return
+     *            databroker
+     * @return list of actions
      */
-    public static List<ActionInfo> getEgressActionInfosForInterface(String     interfaceName,
-                                                                    Long       tunnelKey,
-                                                                    int        actionKeyStart,
-                                                                    DataBroker dataBroker,
-                                                                    Boolean isDefaultEgress) {
+    public static List<ActionInfo> getEgressActionInfosForInterface(String interfaceName, Long tunnelKey,
+            int actionKeyStart, DataBroker dataBroker, Boolean isDefaultEgress) {
         Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
                 dataBroker);
-        if(interfaceInfo == null){
-            throw new NullPointerException("Interface information not present in config DS for " +interfaceName);
+        if (interfaceInfo == null) {
+            throw new NullPointerException("Interface information not present in config DS for " + interfaceName);
         }
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
-        if(ifState == null){
-            throw new NullPointerException("Interface information not present in oper DS for " +interfaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+        if (ifState == null) {
+            throw new NullPointerException("Interface information not present in oper DS for " + interfaceName);
         }
         String lowerLayerIf = ifState.getLowerLayerIf().get(0);
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -306,27 +317,38 @@ public class IfmUtil {
                 isDefaultEgress, ifState.getIfIndex());
     }
 
-
-    public static List<ActionInfo> getEgressActionInfosForInterface(Interface interfaceInfo,
-                                                                    String portNo,
-                                                                    InterfaceInfo.InterfaceType ifaceType,
-                                                                    Long       tunnelKey,
-                                                                    int        actionKeyStart,
-                                                                    boolean isDefaultEgress,
-                                                                    int ifIndex) {
+    /**
+     * Returns the list of egress actions for a given interface.
+     *
+     * @param interfaceInfo the interface to look up
+     * @param portNo port number
+     * @param ifaceType the type of the interface
+     * @param tunnelKey the tunnel key
+     * @param actionKeyStart the start for the first key assigned for the new actions
+     * @param isDefaultEgress if it is the default egress
+     * @param ifIndex interface index
+     * @return list of actions for the interface
+     */
+    @SuppressWarnings("fallthrough")
+    public static List<ActionInfo> getEgressActionInfosForInterface(Interface interfaceInfo, String portNo,
+            InterfaceInfo.InterfaceType ifaceType, Long tunnelKey, int actionKeyStart, boolean isDefaultEgress,
+            int ifIndex) {
         List<ActionInfo> result = new ArrayList<>();
         switch (ifaceType) {
             case MPLS_OVER_GRE:
+                // fall through
             case GRE_TRUNK_INTERFACE:
-                if(!isDefaultEgress) {
-                    //TODO tunnel_id to encode GRE key, once it is supported
-                    // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
+                if (!isDefaultEgress) {
+                    // TODO tunnel_id to encode GRE key, once it is supported
+                    // Until then, tunnel_id should be "cleaned", otherwise it
+                    // stores the value coming from a VXLAN tunnel
                     if (tunnelKey == null) {
                         tunnelKey = 0L;
                     }
                 }
+                // fall through
             case VXLAN_TRUNK_INTERFACE:
-                if(!isDefaultEgress) {
+                if (!isDefaultEgress) {
                     if (tunnelKey != null) {
                         result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
                     }
@@ -339,8 +361,9 @@ public class IfmUtil {
                         result.add(new ActionSetTunnelSourceIp(actionKeyStart++, ifTunnel.getTunnelSource()));
                     }
                 }
+                // fall through
             case VLAN_INTERFACE:
-                if(isDefaultEgress) {
+                if (isDefaultEgress) {
                     IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
                     LOG.trace("L2Vlan: {}", vlanIface);
                     boolean isVlanTransparent = false;
@@ -354,8 +377,9 @@ public class IfmUtil {
                         result.add(new ActionSetFieldVlanVid(actionKeyStart++, vlanVid));
                     }
                     result.add(new ActionOutput(actionKeyStart++, new Uri(portNo)));
-                }else{
-                    long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
+                } else {
+                    long regValue =
+                        MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
                     result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
                             IfmConstants.REG6_END_INDEX, regValue));
                     result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
@@ -369,7 +393,7 @@ public class IfmUtil {
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
-        return new NodeId(ncId.getValue().substring(0,ncId.getValue().lastIndexOf(":")));
+        return new NodeId(ncId.getValue().substring(0, ncId.getValue().lastIndexOf(":")));
     }
 
     public static BigInteger[] mergeOpenflowMetadataWriteInstructions(List<Instruction> instructions) {
@@ -378,9 +402,11 @@ public class IfmUtil {
         if (instructions != null && !instructions.isEmpty()) {
             // check if metadata write instruction is present
             for (Instruction instruction : instructions) {
-                org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.Instruction actualInstruction = instruction.getInstruction();
+                org.opendaylight.yang.gen.v1.urn.opendaylight.flow
+                    .types.rev131026.instruction.Instruction actualInstruction = instruction
+                        .getInstruction();
                 if (actualInstruction instanceof WriteMetadataCase) {
-                    WriteMetadataCase writeMetaDataInstruction = (WriteMetadataCase) actualInstruction ;
+                    WriteMetadataCase writeMetaDataInstruction = (WriteMetadataCase) actualInstruction;
                     WriteMetadata availableMetaData = writeMetaDataInstruction.getWriteMetadata();
                     metadata = metadata.or(availableMetaData.getMetadata());
                     metadataMask = metadataMask.or(availableMetaData.getMetadataMask());
@@ -391,45 +417,40 @@ public class IfmUtil {
     }
 
     public static Integer allocateId(IdManagerService idManager, String poolName, String idKey) {
-        AllocateIdInput getIdInput = new AllocateIdInputBuilder()
-                .setPoolName(poolName)
-                .setIdKey(idKey).build();
+        AllocateIdInput getIdInput = new AllocateIdInputBuilder().setPoolName(poolName).setIdKey(idKey).build();
         try {
             Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(getIdInput);
             RpcResult<AllocateIdOutput> rpcResult = result.get();
-            if(rpcResult.isSuccessful()) {
+            if (rpcResult.isSuccessful()) {
                 return rpcResult.getResult().getIdValue().intValue();
             } else {
                 LOG.warn("RPC Call to Get Unique Id returned with Errors {}", rpcResult.getErrors());
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Exception when getting Unique Id",e);
+            LOG.warn("Exception when getting Unique Id", e);
         }
         return INVALID_ID;
     }
 
     public static void releaseId(IdManagerService idManager, String poolName, String idKey) {
-        ReleaseIdInput idInput = new ReleaseIdInputBuilder()
-                .setPoolName(poolName)
-                .setIdKey(idKey).build();
+        ReleaseIdInput idInput = new ReleaseIdInputBuilder().setPoolName(poolName).setIdKey(idKey).build();
         try {
             Future<RpcResult<Void>> result = idManager.releaseId(idInput);
             RpcResult<Void> rpcResult = result.get();
-            if(!rpcResult.isSuccessful()) {
-                LOG.warn("RPC Call to release Id {} with Key {} returned with Errors {}",
-                        idKey, rpcResult.getErrors());
+            if (!rpcResult.isSuccessful()) {
+                LOG.warn("RPC Call to release Id {} with Key {} returned with Errors {}", idKey, rpcResult.getErrors());
             }
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Exception when releasing Id for key {}", idKey, e);
         }
     }
 
-    public static BigInteger getDpnId(DatapathId datapathId){
+    public static BigInteger getDpnId(DatapathId datapathId) {
         if (datapathId != null) {
-            // Adding logs for a random issue spotted during datapath id conversion
+            // Adding logs for a random issue spotted during datapath id
+            // conversion
             String dpIdStr = datapathId.getValue().replace(":", "");
-            BigInteger dpnId =  new BigInteger(dpIdStr, 16);
-            return dpnId;
+            return new BigInteger(dpIdStr, 16);
         }
         return null;
     }
@@ -438,33 +459,37 @@ public class IfmUtil {
         return FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
     }
 
-    public static String getPortName(DataBroker dataBroker, NodeConnectorId ncId){
-        InstanceIdentifier<NodeConnector> ncIdentifier =
-                InstanceIdentifier.builder(Nodes.class)
-                        .child(Node.class, new NodeKey(getNodeIdFromNodeConnectorId(ncId)))
-                        .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
-        return read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker).transform(
-                nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
-    }
-
-    public static NodeConnectorId getNodeConnectorIdFromInterface(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState){
-        if(ifState != null) {
+    public static NodeConnectorId getNodeConnectorIdFromInterface(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
             return new NodeConnectorId(ofportIds.get(0));
         }
         return null;
     }
 
+    public static String getPortName(DataBroker dataBroker, NodeConnectorId ncId) {
+        InstanceIdentifier<NodeConnector> ncIdentifier = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, new NodeKey(getNodeIdFromNodeConnectorId(ncId)))
+                .child(NodeConnector.class, new NodeConnectorKey(ncId)).build();
+        return read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker)
+                .transform(nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
+    }
+
     public static InterfaceInfo.InterfaceType getInterfaceType(Interface iface) {
-        InterfaceInfo.InterfaceType interfaceType = org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
-        Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType> ifType = iface
+        InterfaceInfo.InterfaceType interfaceType = org.opendaylight
+                .genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
+        Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.InterfaceType> ifType = iface
                 .getType();
 
         if (ifType.isAssignableFrom(L2vlan.class)) {
             interfaceType = VLAN_INTERFACE;
         } else if (ifType.isAssignableFrom(Tunnel.class)) {
             IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-            Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel
+            Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight
+                    .genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel
                     .getTunnelInterfaceType();
             interfaceType = TUNNEL_TYPE_MAP.get(tunnelType);
         }
@@ -472,14 +497,13 @@ public class IfmUtil {
     }
 
     public static VlanInterfaceInfo getVlanInterfaceInfo(String interfaceName, Interface iface, BigInteger dpId) {
-
         short vlanId = 0;
         String portName = null;
         IfL2vlan vlanIface = iface.getAugmentation(IfL2vlan.class);
         ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
         if (parentRefs != null && parentRefs.getParentInterface() != null) {
             portName = parentRefs.getParentInterface();
-        }else {
+        } else {
             LOG.warn("Portname set to null since parentRef is Null");
         }
         VlanInterfaceInfo vlanInterfaceInfo = new VlanInterfaceInfo(dpId, portName, vlanId);
@@ -508,58 +532,59 @@ public class IfmUtil {
         return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portNumber));
     }
 
-    public static String generateMacAddress(long portNo){
+    public static String generateMacAddress(long portNo) {
         String unformattedMAC = getDeadBeefBytesForMac().or(fillPortNumberToMac(portNo)).toString(16);
-        return unformattedMAC.replaceAll("(.{2})", "$1"+IfmConstants.MAC_SEPARATOR).
-                substring(0, IfmConstants.MAC_STRING_LENGTH);
+        return unformattedMAC.replaceAll("(.{2})", "$1" + IfmConstants.MAC_SEPARATOR).substring(0,
+                IfmConstants.MAC_STRING_LENGTH);
     }
 
-    public static PhysAddress getPhyAddress(long portNo, FlowCapableNodeConnector flowCapableNodeConnector){
+    public static PhysAddress getPhyAddress(long portNo, FlowCapableNodeConnector flowCapableNodeConnector) {
         String southboundMacAddress = flowCapableNodeConnector.getHardwareAddress().getValue();
-        if(IfmConstants.INVALID_MAC.equals(southboundMacAddress)){
-            LOG.debug("Invalid MAC Address received for {}, generating MAC Address", flowCapableNodeConnector.getName());
+        if (IfmConstants.INVALID_MAC.equals(southboundMacAddress)) {
+            LOG.debug("Invalid MAC Address received for {}, generating MAC Address",
+                    flowCapableNodeConnector.getName());
             southboundMacAddress = generateMacAddress(portNo);
         }
         return new PhysAddress(southboundMacAddress);
     }
 
-    public static void updateInterfaceParentRef(WriteTransaction t, String interfaceName, String parentInterface) {
+    public static void updateInterfaceParentRef(WriteTransaction writeTransaction, String interfaceName,
+            String parentInterface) {
         InstanceIdentifier<ParentRefs> parentRefIdentifier = InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(interfaceName)).augmentation(ParentRefs.class).build();
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
-        t.merge(LogicalDatastoreType.CONFIGURATION, parentRefIdentifier, parentRefs);
-        LOG.debug("Updating parentRefInterface for interfaceName {}. interfaceKey {}, with parentRef augmentation pointing to {}",
+        writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, parentRefIdentifier, parentRefs);
+        LOG.debug(
+                "Updating parentRefInterface for interfaceName {}. "
+                        + "interfaceKey {}, with parentRef augmentation pointing to {}",
                 interfaceName, new InterfaceKey(interfaceName), parentInterface);
     }
 
     public static InstanceIdentifier<BoundServices> buildBoundServicesIId(short servicePriority, String interfaceName,
-                                                                          Class<? extends ServiceModeBase> serviceMode) {
+            Class<? extends ServiceModeBase> serviceMode) {
         return InstanceIdentifier.builder(ServiceBindings.class)
-                                 .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
-                                 .child(BoundServices.class, new BoundServicesKey(servicePriority))
-                                 .build();
+                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
+                .child(BoundServices.class, new BoundServicesKey(servicePriority)).build();
     }
 
-    public static void bindService(WriteTransaction t, String interfaceName, BoundServices serviceInfo,
-                                   Class<? extends ServiceModeBase> serviceMode) {
+    public static void bindService(WriteTransaction writeTransaction, String interfaceName, BoundServices serviceInfo,
+            Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier =
-            buildBoundServicesIId(serviceInfo.getServicePriority(), interfaceName, serviceMode);
-        t.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
+                serviceInfo.getServicePriority(), interfaceName, serviceMode);
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
     }
 
-    public static void unbindService(DataBroker dataBroker, String interfaceName, InstanceIdentifier<BoundServices>
-            boundServicesInstanceIdentifier){
+    public static void unbindService(DataBroker dataBroker, String interfaceName,
+            InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         LOG.info("Unbinding Service from : {}", interfaceName);
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
-        dataStoreJobCoordinator.enqueueJob(interfaceName,
-                () -> {
-                    WriteTransaction t = dataBroker.newWriteOnlyTransaction();
-                    t.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-                    List<ListenableFuture<Void>> futures = new ArrayList<>();
-                    futures.add(t.submit());
-                    return futures;
-                }
-        );
+        dataStoreJobCoordinator.enqueueJob(interfaceName, () -> {
+            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+            writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            futures.add(writeTransaction.submit());
+            return futures;
+        });
     }
 }
