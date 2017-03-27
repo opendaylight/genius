@@ -41,11 +41,11 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
     @Inject
     public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-            final IMdsalApiManager iMdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
+            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
         super(Interface.class, VlanMemberConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
-        this.mdsalApiManager = iMdsalApiManager;
+        this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }

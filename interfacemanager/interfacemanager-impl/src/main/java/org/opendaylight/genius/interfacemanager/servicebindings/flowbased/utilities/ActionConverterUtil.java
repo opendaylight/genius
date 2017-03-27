@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -54,97 +54,122 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActionConverterUtil {
-  private static final Logger LOG = LoggerFactory.getLogger(ActionConverterUtil.class);
-  private static final Map<Class<? extends Action>, Class<?>> serviceActionToOfActionMap = new HashMap();
-  private static final String buildMethod = "build";
-  private static final String augmentationMethod = "getAugmentation";
-  private static final String getImplMethod = "getImplementedInterface";
 
-  static {
-    serviceActionToOfActionMap.put(ServiceBindingNxActionConntrackApplyActionsCase.class, NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionLearnApplyActionsCase.class, NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionMultipathApplyActionsCase.class, NxActionMultipathNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionOutputRegApplyActionsCase.class, NxActionOutputRegNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionPopNshApplyActionsCase.class, NxActionPopNshNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionPushNshApplyActionsCase.class, NxActionPushNshNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionRegLoadApplyActionsCase.class, NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionRegMoveApplyActionsCase.class, NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionResubmitApplyActionsCase.class, NxActionResubmitNodesNodeTableFlowApplyActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionConntrackWriteActionsCase.class, NxActionConntrackNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionLearnWriteActionsCase.class, NxActionLearnNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionMultipathWriteActionsCase.class, NxActionMultipathNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionOutputRegWriteActionsCase.class, NxActionOutputRegNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionPopNshWriteActionsCase.class, NxActionPopNshNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionPushNshWriteActionsCase.class, NxActionPushNshNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionRegLoadWriteActionsCase.class, NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionRegMoveWriteActionsCase.class, NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder.class);
-    serviceActionToOfActionMap.put(ServiceBindingNxActionResubmitWriteActionsCase.class, NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder.class);
-  }
+    private static final Logger LOG = LoggerFactory.getLogger(ActionConverterUtil.class);
+    private static final Map<Class<? extends Action>, Class<?>> SERVICE_ACTION_TO_OF_ACTION_MAP = new HashMap<>();
+    private static final String BUILD_METHOD = "build";
+    private static final String AUGMENTATION_METHOD = "getAugmentation";
+    private static final String GET_IMPL_METHOD = "getImplementedInterface";
 
-  public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action> convertServiceActionToFlowAction
-      (List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action> inActionList) {
-    List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action> outActionList = new ArrayList<>();
-    if (inActionList != null) {
-      for (org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action inAction : inActionList) {
-        outActionList.add(
-            new org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder()
-                .setAction(convertServiceActionToFlowAction(inAction.getAction()))
-                .setKey(inAction.getKey())
-                .build());
-      }
+    static {
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionConntrackApplyActionsCase.class,
+                NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionLearnApplyActionsCase.class,
+                NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionMultipathApplyActionsCase.class,
+                NxActionMultipathNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionOutputRegApplyActionsCase.class,
+                NxActionOutputRegNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPopNshApplyActionsCase.class,
+                NxActionPopNshNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPushNshApplyActionsCase.class,
+                NxActionPushNshNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegLoadApplyActionsCase.class,
+                NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegMoveApplyActionsCase.class,
+                NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitApplyActionsCase.class,
+                NxActionResubmitNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionConntrackWriteActionsCase.class,
+                NxActionConntrackNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionLearnWriteActionsCase.class,
+                NxActionLearnNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionMultipathWriteActionsCase.class,
+                NxActionMultipathNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionOutputRegWriteActionsCase.class,
+                NxActionOutputRegNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPopNshWriteActionsCase.class,
+                NxActionPopNshNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPushNshWriteActionsCase.class,
+                NxActionPushNshNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegLoadWriteActionsCase.class,
+                NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegMoveWriteActionsCase.class,
+                NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitWriteActionsCase.class,
+                NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder.class);
     }
-    return outActionList;
-  }
 
-  public static Action convertServiceActionToFlowAction(Action inAction) {
-    Class ofActionClass = serviceActionToOfActionMap.get(inAction.getImplementedInterface());
-    if (ofActionClass != null) {
-      try {
-        Method build = ofActionClass.getDeclaredMethod(buildMethod);
-        Object ofActionObj = ofActionClass.newInstance();
-        ofActionObj = build.invoke(copy(inAction, ofActionObj));
-        LOG.info("Converted {} action to {} action", inAction.getImplementedInterface(),
-                 ((Action)ofActionObj).getImplementedInterface());
-        inAction = (Action)ofActionObj;
-      } catch (InstantiationException e) {
-        LOG.error("Failed to instantiate OF action class {}", ofActionClass);
-      } catch (IllegalAccessException e) {
-        LOG.error("Cannot access some fields in {}", ofActionClass);
-      } catch (NoSuchMethodException e) {
-        LOG.error("Method build does not exist in {}", ofActionClass);
-      } catch (InvocationTargetException e) {
-        LOG.error("Method build invocation failed in {}", ofActionClass);
-      }
-    }
-    return inAction;
-  }
-
-  private static Object copy(Object src, Object dest) {
-    Method[] gettersAndSetters = src.getClass().getDeclaredMethods();
-    for (int i = 0; i < gettersAndSetters.length; i++) {
-      String methodName = gettersAndSetters[i].getName();
-      gettersAndSetters[i].setAccessible(true);
-      try{
-        if(methodName.equals(augmentationMethod) || methodName.equals(getImplMethod)) {
-          continue;
+    public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action
+        .types.rev131112.action.list.Action> convertServiceActionToFlowAction(
+            List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
+                .action.list.Action> inActionList) {
+        List<org.opendaylight.yang.gen.v1.urn.opendaylight
+            .action.types.rev131112.action.list.Action> outActionList = new ArrayList<>();
+        if (inActionList != null) {
+            for (org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
+                     .action.list.Action inAction : inActionList) {
+                outActionList.add(
+                        new org.opendaylight.yang.gen.v1.urn.opendaylight
+                        .action.types.rev131112.action.list.ActionBuilder()
+                                .setAction(convertServiceActionToFlowAction(inAction.getAction()))
+                                .setKey(inAction.getKey()).build());
+            }
         }
-        if(methodName.startsWith("get")){
-          dest = dest.getClass().getMethod(methodName.replaceFirst("get", "set"), gettersAndSetters[i].getReturnType())
-                                .invoke(dest, gettersAndSetters[i].invoke(src, null));
-        }else if(methodName.startsWith("is") ){
-          dest = dest.getClass().getMethod(methodName.replaceFirst("is", "set"), gettersAndSetters[i].getReturnType())
-                                .invoke(dest, gettersAndSetters[i].invoke(src, null));
-        }
-      }catch (NoSuchMethodException e) {
-        LOG.error("Method {} does not exist in {}", methodName, src.getClass(), e);
-      }catch (IllegalArgumentException e) {
-        LOG.error("Method {} invocation failed in {} due to illegal argument.", methodName, dest.getClass(), e);
-      } catch (InvocationTargetException e) {
-        LOG.error("Method {} invocation failed in {}", methodName, dest.getClass(), e);
-      } catch (IllegalAccessException e) {
-        LOG.error("Cannot access method {} in {}", methodName, dest.getClass(), e);
-      }
+        return outActionList;
     }
-    return dest;
-  }
+
+    public static Action convertServiceActionToFlowAction(Action inAction) {
+        Class ofActionClass = SERVICE_ACTION_TO_OF_ACTION_MAP.get(inAction.getImplementedInterface());
+        if (ofActionClass != null) {
+            try {
+                Method build = ofActionClass.getDeclaredMethod(BUILD_METHOD);
+                Object ofActionObj = ofActionClass.newInstance();
+                ofActionObj = build.invoke(copy(inAction, ofActionObj));
+                LOG.info("Converted {} action to {} action", inAction.getImplementedInterface(),
+                        ((Action) ofActionObj).getImplementedInterface());
+                inAction = (Action) ofActionObj;
+            } catch (InstantiationException e) {
+                LOG.error("Failed to instantiate OF action class {}", ofActionClass);
+            } catch (IllegalAccessException e) {
+                LOG.error("Cannot access some fields in {}", ofActionClass);
+            } catch (NoSuchMethodException e) {
+                LOG.error("Method build does not exist in {}", ofActionClass);
+            } catch (InvocationTargetException e) {
+                LOG.error("Method build invocation failed in {}", ofActionClass);
+            }
+        }
+        return inAction;
+    }
+
+    private static Object copy(Object src, Object dest) {
+        Method[] gettersAndSetters = src.getClass().getDeclaredMethods();
+        for (Method gettersAndSetter : gettersAndSetters) {
+            String methodName = gettersAndSetter.getName();
+            gettersAndSetter.setAccessible(true);
+            try {
+                if (methodName.equals(AUGMENTATION_METHOD) || methodName.equals(GET_IMPL_METHOD)) {
+                    continue;
+                }
+                if (methodName.startsWith("get")) {
+                    dest = dest.getClass()
+                            .getMethod(methodName.replaceFirst("get", "set"), gettersAndSetter.getReturnType())
+                            .invoke(dest, gettersAndSetter.invoke(src, null));
+                } else if (methodName.startsWith("is")) {
+                    dest = dest.getClass()
+                            .getMethod(methodName.replaceFirst("is", "set"), gettersAndSetter.getReturnType())
+                            .invoke(dest, gettersAndSetter.invoke(src, null));
+                }
+            } catch (NoSuchMethodException e) {
+                LOG.error("Method {} does not exist in {}", methodName, src.getClass(), e);
+            } catch (IllegalArgumentException e) {
+                LOG.error("Method {} invocation failed in {} due to illegal argument.", methodName, dest.getClass(), e);
+            } catch (InvocationTargetException e) {
+                LOG.error("Method {} invocation failed in {}", methodName, dest.getClass(), e);
+            } catch (IllegalAccessException e) {
+                LOG.error("Cannot access method {} in {}", methodName, dest.getClass(), e);
+            }
+        }
+        return dest;
+    }
 }
