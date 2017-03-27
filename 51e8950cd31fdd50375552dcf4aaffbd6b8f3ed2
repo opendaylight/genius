@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d6ca49a0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-27T05:59:06Z",
+      "side": 1,
+      "message": "Is this the only method from ITM needed by IFM? This again goes against design put forth by Alon where we no longer need to guesstimate parentInterfaceName from interface parameters. This looks like a use case where ITM should configure parent/child information, instead of IFM. e.g. in case of Vlan Trunks the code that creates interfaces [Netvirt] povides parent information for child interfaces. Similar design should be used here.",
+      "range": {
+        "startLine": 237,
+        "startChar": 33,
+        "endLine": 237,
+        "endChar": 70
+      },
+      "revId": "51e8950cd31fdd50375552dcf4aaffbd6b8f3ed2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
