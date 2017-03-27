@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_1695f13f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-27T06:54:02Z",
+      "side": 1,
+      "message": "parentInterface looks better",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b6aea596",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-27T06:54:02Z",
+      "side": 1,
+      "message": "is this needed? when nodeConnectorId and all looks the same.. for me interfaceName looks better",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f68f8d2c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-27T06:54:02Z",
+      "side": 1,
+      "message": "needed?",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_569f795f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-27T06:54:02Z",
+      "side": 1,
+      "message": "interfaceName",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_167cd11f",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/OvsdbSouthboundTestUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-27T06:54:02Z",
+      "side": 1,
+      "message": "make it 2017",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76927d4c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 696,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-27T06:54:02Z",
+      "side": 1,
+      "message": "is this itm file needed along with this patch? :)",
+      "revId": "0f0abfcfb5f193702d39dd513a3244bf82795367",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
