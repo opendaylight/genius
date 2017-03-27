@@ -18,7 +18,6 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
@@ -53,13 +52,5 @@ public class HwVTEPConfigRemoveHelper {
                 .getTerminationPointKey(ifTunnel.getTunnelDestination().getIpv4Address().getValue());
         InstanceIdentifier<TerminationPoint> tpPath = SouthboundUtils.createInstanceIdentifier(globalNodeId, tpKey);
         transaction.delete(LogicalDatastoreType.CONFIGURATION, tpPath);
-    }
-
-    private static void removeTunnelTableEntry(WriteTransaction transaction, IfTunnel ifTunnel,
-            InstanceIdentifier<Node> physicalSwitchNodeId) {
-        LOG.info("removing tunnel table entry for {}", ifTunnel.getTunnelDestination());
-        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = SouthboundUtils.createTunnelsInstanceIdentifier(
-                physicalSwitchNodeId, ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
-        transaction.delete(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier);
     }
 }
