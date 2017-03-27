@@ -34,6 +34,24 @@
       "revId": "5c6c1866d476ba4464f2f5584f0b917f7dace7fa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_36e2b52f",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 11
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-27T05:59:06Z",
+      "side": 1,
+      "message": "Could you explain what exactly you need to pull from config and how you use it to update? This is not good design. ITM is a service that uses IFM, adding dependency in IFM to ITM is a big no-no. API/IMPL is more of a maven dependency, the issue here is feature dependency. Also, even an API dependency means an actual implementation is required at runtime, reason why you made it optional in blueprint. From our experience this causes undeterministic failures on bringup/restart.\n\nIFM shouldn\u0027t need to depend on ITM. Any information that it needs, should be provided to it as part of interface configuration or through API/RPC calls.",
+      "parentUuid": "fafc7978_c53e11da",
+      "revId": "5c6c1866d476ba4464f2f5584f0b917f7dace7fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
