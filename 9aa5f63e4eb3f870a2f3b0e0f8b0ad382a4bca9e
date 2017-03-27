@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0162c6d7",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "you can probably save this particular Thread.sleep() by doing InterfaceManagerTestUtil.updateInterfaceAdminState().get()",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_21770aa1",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "just an idea, no sure: you may be able to save this particular thread sleep() by doing get() if its just to wait for a direct DB write (not more async stuff) ?",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e15ce21b",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_419b2ec9",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "+1, as discussed in private email exchange",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_81a51606",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 429,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "as above, maybe",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_61a8f2db",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "as above, pretty sure in this particular case",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a1a93adf",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "again, may be able to simply get() to await()",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_41820e53",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "as per similar comment in c/53631 - return CheckedFuture instead",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c1671ee9",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_21854a59",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_817cf673",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/OvsdbSouthboundTestUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:33:11Z",
+      "side": 1,
+      "message": "again",
+      "revId": "9aa5f63e4eb3f870a2f3b0e0f8b0ad382a4bca9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
