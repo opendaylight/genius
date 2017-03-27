@@ -33,6 +33,24 @@
       "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6138f23d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T16:26:29Z",
+      "side": 1,
+      "message": "I\u0027ve filed https://bugs.opendaylight.org/show_bug.cgi?id\u003d8089 so we don\u0027t lose track of this. IMO with this we can +1 the patch since in any case the solution doesn\u0027t belong here.",
+      "parentUuid": "fafc7978_81e7d6e3",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
