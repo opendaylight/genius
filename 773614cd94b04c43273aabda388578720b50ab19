@@ -2,6 +2,125 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_1e298789",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/SortingListComparator.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "new ArrayList\u003c\u003e(lefts);",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7e20939b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/SortingListComparator.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "new ArrayList\u003c\u003e(rights);",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1e506709",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MatchInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "Extra space.",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9e3bb7c7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "An NxMatchInfo isn\u0027t a MatchInfo (I ran into issues in Netvirt trying to simplify this).",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fe4ac353",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxMatchInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "Urgh... Could this wait until the Nx cleanup patches go in?",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5e714fa7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/matches/MatchArpOp.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "I\u0027m torn between consistency with the chain, and the simplicity of Integer.compare() ;-).",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_feb8032c",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/infra/tests/ListComparatorTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "These assertions are too strict: the contract is that compare() returns a positive or negative integer depending on the order for non-equal values, so specifying 1 or -1 exactly limits the implementation.",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9e5d857c",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
         "patchSetId": 7
@@ -49,6 +168,24 @@
       "side": 1,
       "message": "I hope we can make use of equals method to check two objects are logically equal. So as long as we override both hashCode/equals methods with important fields such as dpId, tableId, priority and listMatchInfo, then we are good.\nBecause FlowEntity is not a yang generated code.",
       "parentUuid": "fafc7978_d1209b9d",
+      "revId": "773614cd94b04c43273aabda388578720b50ab19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3eff2b03",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-27T12:52:30Z",
+      "side": 1,
+      "message": "Until you add them to a map or a set... IME making equals() implement \"logical equivalence\" leads to problems down the road. If you want a logical equivalence, it\u0027s better to add a separate method.",
+      "parentUuid": "fafc7978_fb577524",
       "revId": "773614cd94b04c43273aabda388578720b50ab19",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
