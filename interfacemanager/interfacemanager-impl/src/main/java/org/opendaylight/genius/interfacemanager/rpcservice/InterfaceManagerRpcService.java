@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,6 +11,14 @@ package org.opendaylight.genius.interfacemanager.rpcservice;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -44,7 +52,37 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressInstructionsForInterfaceOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEndpointIpForDpnOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceTypeOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetNodeconnectorIdFromInterfaceOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetPortFromInterfaceOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -52,15 +90,6 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 @Singleton
 public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
@@ -71,17 +100,18 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private final IMdsalApiManager mdsalMgr;
 
     @Inject
-    public InterfaceManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager iMdsalApiManager) {
+    public InterfaceManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalApiManager) {
         this.dataBroker = dataBroker;
-        this.mdsalMgr = iMdsalApiManager;
+        this.mdsalMgr = mdsalApiManager;
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetDpidFromInterfaceOutput>> getDpidFromInterface(GetDpidFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder;
         try {
-            BigInteger dpId = null;
+            BigInteger dpId;
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
@@ -93,9 +123,9 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
                 dpId = parentRefs.getDatapathNodeIdentifier();
             } else {
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-                    .Interface ifState
-                        = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                    .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                        .getInterfaceStateFromOperDS(interfaceName, dataBroker);
                 if (ifState != null) {
                     String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -124,6 +154,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEndpointIpForDpnOutput>> getEndpointIpForDpn(GetEndpointIpForDpnInput input) {
         RpcResultBuilder<GetEndpointIpForDpnOutput> rpcResultBuilder;
         try {
@@ -138,6 +169,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             InterfaceKey interfaceKey = new InterfaceKey(bridgeInterfaceEntry.getInterfaceName());
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             IfTunnel tunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+
             GetEndpointIpForDpnOutputBuilder endpointIpForDpnOutput = new GetEndpointIpForDpnOutputBuilder()
                     .setLocalIps(Collections.singletonList(tunnel.getTunnelSource()));
             rpcResultBuilder = RpcResultBuilder.success();
@@ -150,6 +182,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder;
@@ -161,16 +194,17 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
-            String errMsg = String.format("Retrieval of egress instructions for the key {%s} failed due to %s", input.getIntfName(),
-                e.getMessage());
+            String errMsg = String.format("Retrieval of egress instructions for the key {%s} failed due to %s",
+                    input.getIntfName(), e.getMessage());
             LOG.debug(errMsg);
-            rpcResultBuilder = RpcResultBuilder
-                .<GetEgressInstructionsForInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+            rpcResultBuilder = RpcResultBuilder.<GetEgressInstructionsForInterfaceOutput>failed()
+                    .withError(RpcError.ErrorType.APPLICATION, errMsg);
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetInterfaceTypeOutput>> getInterfaceType(GetInterfaceTypeInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetInterfaceTypeOutput> rpcResultBuilder;
@@ -197,6 +231,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetTunnelTypeOutput> rpcResultBuilder;
@@ -230,6 +265,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEgressActionsForInterfaceOutput>> getEgressActionsForInterface(
             GetEgressActionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressActionsForInterfaceOutput> rpcResultBuilder;
@@ -243,24 +279,25 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder.withResult(output.build());
         } catch (Exception e) {
             String errMsg = String.format("Retrieval of egress actions for {%s} failed due to %s", input.getIntfName(),
-                e.getMessage());
+                    e.getMessage());
             LOG.debug(errMsg);
-            rpcResultBuilder = RpcResultBuilder
-                .<GetEgressActionsForInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
+            rpcResultBuilder = RpcResultBuilder.<GetEgressActionsForInterfaceOutput>failed()
+                    .withError(RpcError.ErrorType.APPLICATION, errMsg);
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
         RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder;
         String interfaceName = input.getIntfName();
         try {
             BigInteger dpId = null;
             long portNo = 0;
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-                    .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName,
-                            dataBroker);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                    .getInterfaceStateFromOperDS(interfaceName, dataBroker);
             if (ifState != null) {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -291,13 +328,15 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> getNodeconnectorIdFromInterface(
             GetNodeconnectorIdFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetNodeconnectorIdFromInterfaceOutput> rpcResultBuilder;
         try {
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-                .Interface ifState = InterfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName, dataBroker);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                    .getInterfaceStateFromOperDS(interfaceName, dataBroker);
             String lowerLayerIf = ifState.getLowerLayerIf().get(0);
             NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
 
@@ -313,6 +352,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(
             GetInterfaceFromIfIndexInput input) {
         Integer ifIndex = input.getIfIndex();
@@ -337,6 +377,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         BigInteger dpnid = input.getDpid();
         RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = null;
@@ -373,7 +414,6 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             }
             return instructions;
         }
-
         return null;
     }
 
