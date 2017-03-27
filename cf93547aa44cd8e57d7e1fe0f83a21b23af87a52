@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_9e061720",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:22:29Z",
+      "side": 1,
+      "message": "I would call this method e.g. private checkVlanRpcs() of public testVlanRpcs() because it\u0027s not a @Test - you\u0027re calling it from the @After end(.",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fe05a314",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:22:29Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_011da666",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:22:29Z",
+      "side": 1,
+      "message": "private instead public perhaps?",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c1127e57",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-27T15:22:29Z",
+      "side": 1,
+      "message": "this looks suspicious - are you sure you don\u0027t mean to return  tx.submit(); and use CheckedFuture instead of void as return type from this method, and then probably get() from that CheckedFuture() to block on it where you\u0027re calling this from in your test?  It MAY even allow you to save a sleep(), if there is one where is called?",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
