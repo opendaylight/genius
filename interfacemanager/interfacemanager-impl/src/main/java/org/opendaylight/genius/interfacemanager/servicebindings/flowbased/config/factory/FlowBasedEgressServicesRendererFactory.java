@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,8 +12,8 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 
 public class FlowBasedEgressServicesRendererFactory extends FlowBasedServicesRendererFactory {
 
-    private static final FlowBasedEgressServicesRendererFactory EGRESS_SERVICES_RENDERER_FACTORY
-        = new FlowBasedEgressServicesRendererFactory();
+    private static final FlowBasedEgressServicesRendererFactory
+        EGRESS_SERVICES_RENDERER_FACTORY = new FlowBasedEgressServicesRendererFactory();
 
     @Override
     public FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer() {
@@ -28,5 +28,4 @@ public class FlowBasedEgressServicesRendererFactory extends FlowBasedServicesRen
     public static FlowBasedServicesRendererFactory getFlowBasedServicesRendererFactory() {
         return EGRESS_SERVICES_RENDERER_FACTORY;
     }
-
 }

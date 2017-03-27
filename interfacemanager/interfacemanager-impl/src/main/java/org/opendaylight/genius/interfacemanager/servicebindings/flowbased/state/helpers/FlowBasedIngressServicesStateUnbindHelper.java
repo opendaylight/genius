@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -29,10 +29,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable{
+public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateUnbindHelper.class);
 
-    private InterfacemgrProvider interfaceMgrProvider;
+    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateRemovable flowBasedIngressServicesStateRemovable;
 
     private FlowBasedIngressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -43,7 +43,8 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         if (flowBasedIngressServicesStateRemovable == null) {
             synchronized (FlowBasedIngressServicesStateUnbindHelper.class) {
                 if (flowBasedIngressServicesStateRemovable == null) {
-                    flowBasedIngressServicesStateRemovable = new FlowBasedIngressServicesStateUnbindHelper(interfaceMgrProvider);
+                    flowBasedIngressServicesStateRemovable = new FlowBasedIngressServicesStateUnbindHelper(
+                            interfaceMgrProvider);
                 }
             }
         }
@@ -60,15 +61,17 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         flowBasedIngressServicesStateRemovable = null;
     }
 
+    @Override
     public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
-        if(ifaceState.getType() == null) {
+        if (ifaceState.getType() == null) {
             return null;
         }
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("unbind all ingress services on interface {}", ifaceState.getName());
 
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(), ServiceModeIngress.class, dataBroker);
+        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
+                ServiceModeIngress.class, dataBroker);
         if (servicesInfo == null) {
             LOG.trace("service info is null for interface {}", ifaceState.getName());
             return futures;
@@ -82,60 +85,58 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
 
         if (L2vlan.class.equals(ifaceState.getType())) {
             return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        } else if (Tunnel.class.equals(ifaceState.getType())){
+        } else if (Tunnel.class.equals(ifaceState.getType())) {
             return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
         }
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(
-            List<BoundServices> allServices,
-            Interface iface,
+    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(List<BoundServices> allServices, Interface iface,
             Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
         List<String> ofportIds = iface.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if(nodeConnectorId == null){
+        if (nodeConnectorId == null) {
             return futures;
         }
         BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
 
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, t);
+        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, writeTransaction);
 
         for (BoundServices boundService : allServices) {
             if (!boundService.equals(highestPriorityBoundService)) {
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), boundService, t, boundService.getServicePriority());
+                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), boundService, writeTransaction,
+                        boundService.getServicePriority());
             }
         }
 
-        futures.add(t.submit());
+        futures.add(writeTransaction.submit());
         return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(
-            List<BoundServices> allServices, Interface ifaceState,
-            Integer ifIndex, DataBroker dataBroker) {
+    private static List<ListenableFuture<Void>> unbindServiceOnVlan(List<BoundServices> allServices,
+            Interface ifaceState, Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if(nodeConnectorId == null){
+        if (nodeConnectorId == null) {
             return futures;
         }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        Collections.sort(allServices,
-                (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority().compareTo(serviceInfo2.getServicePriority()));
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
         BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, t, NwConstants.DEFAULT_SERVICE_INDEX);
+        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, writeTransaction,
+                NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, t, boundService.getServicePriority());
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, writeTransaction,
+                    boundService.getServicePriority());
         }
-        futures.add(t.submit());
+        futures.add(writeTransaction.submit());
         return futures;
-
     }
-
 }

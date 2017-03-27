@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Red Hat, Inc. and others. All rights reserved.
+ * Copyright (c) 2016, 2017 Red Hat, Inc. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -45,13 +45,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTest}.
  *
- * <p>This class looks a little bit more complicated than it could and later will be
- * just because interfacemanager is still using CSS instead of BP with @Inject.
+ * <p>
+ * This class looks a little bit more complicated than it could and later will
+ * be just because interfacemanager is still using CSS instead of BP
+ * with @Inject.
  *
- * <p>Please DO NOT copy/paste this class as-is into other projects; this is intended
- * to be temporary, until interfacemanager is switch from CSS to BP.
+ * <p>
+ * Please DO NOT copy/paste this class as-is into other projects; this is
+ * intended to be temporary, until interfacemanager is switch from CSS to BP.
  *
- * <p>For "proper" *Module examples, please see the AclServiceModule and
+ * <p>
+ * For "proper" *Module examples, please see the AclServiceModule and
  * AclServiceTestModule or ElanServiceTestModule instead.
  *
  * @author Michael Vorburger
@@ -62,7 +66,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
     protected void configureBindings() throws UnknownHostException {
-        // TODO Ordering as below.. hard to do currently, because of interdeps. due to CSS
+        // TODO Ordering as below.. hard to do currently, because of interdeps.
+        // due to CSS
         // Bindings for services from this project
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
