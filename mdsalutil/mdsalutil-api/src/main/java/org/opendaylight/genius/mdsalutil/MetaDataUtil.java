@@ -129,4 +129,8 @@ public class MetaDataUtil {
         return getServiceIndexForReg6(serviceIndex).or(getLportTagForReg6(lportTag)).longValue();
     }
 
+    public static long getLportTagMaskForReg6() {
+        return METADATA_MASK_LPORT_TAG.shiftRight(32).longValue();
+    }
+
 }
