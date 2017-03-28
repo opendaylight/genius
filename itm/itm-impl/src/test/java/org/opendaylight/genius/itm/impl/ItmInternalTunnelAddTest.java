@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.verify;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
@@ -257,12 +258,8 @@ public class ItmInternalTunnelAddTest {
         addWorker.build_all_tunnels(dataBroker,idManagerService,mdsalApiManager,cfgdDpnListVxlan,meshDpnListVxlan);
 
         //Add some verifications
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(internalTunnelIdentifierVxlan1,internalTunnel1,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(internalTunnelIdentifierVxlan2,internalTunnel2,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1, internalTunnel1,true);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2, internalTunnel2,true);
         PowerMockito.verifyStatic(Mockito.times(1));
         ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
                 ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
@@ -290,12 +287,9 @@ public class ItmInternalTunnelAddTest {
 
         addWorker.build_all_tunnels(dataBroker,idManagerService, mdsalApiManager,cfgdDpnListGre,meshDpnListGre);
 
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(internalTunnelIdentifierGre1,internalTunnel1,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(internalTunnelIdentifierGre2,internalTunnel2,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1, internalTunnel1,true);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2, internalTunnel2,true);
+
         PowerMockito.verifyStatic(Mockito.times(1));
         ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsGre,
                 ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
@@ -323,12 +317,8 @@ public class ItmInternalTunnelAddTest {
 
         addWorker.build_all_tunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan,meshDpnListGre);
 
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(internalTunnelIdentifierVxlan1,internalTunnel1,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(internalTunnelIdentifierGre2,internalTunnel2,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1, internalTunnel1,true);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2, internalTunnel2,true);
         PowerMockito.verifyStatic(Mockito.times(1));
         ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
                 ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
