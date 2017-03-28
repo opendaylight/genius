@@ -84,6 +84,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -109,16 +110,14 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetDpidFromInterfaceOutput>> getDpidFromInterface(GetDpidFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
-        RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder;
         LOG.debug("Get dpid for interface {}", input.getIntfName());
         try {
             BigInteger dpId;
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
-                rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName,
-                        "missing Interface in Config DataStore");
-                return Futures.immediateFuture(rpcResultBuilder.build());
+                return newRpcErrorResultFutureWithoutLogging(
+                        getDpidFromInterfaceErrorMessage(interfaceName, "missing Interface in Config DataStore"));
             }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
@@ -132,33 +131,60 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
                     dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 } else {
-                    rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, "missing Interface-state");
-                    return Futures.immediateFuture(rpcResultBuilder.build());
+                    return newRpcErrorResultFutureWithoutLogging(
+                            getDpidFromInterfaceErrorMessage(interfaceName, "missing Interface-state"));
                 }
             }
             GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(dpId);
+            // TODO build a similar abstraction for successful immediate Future RpcResult as for failures (below)
+            RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder;
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
             LOG.debug("Dpid for interface {} is {}", input.getIntfName(), dpId);
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, e.getMessage());
+            return newRpcErrorResultFutureWithoutLogging(
+                    getDpidFromInterfaceErrorMessage(interfaceName, e.getMessage()), e);
         }
+    }
+
+    private String getDpidFromInterfaceErrorMessage(final String interfaceName, final String dueTo) {
+        return String.format("Retrieval of datapath id for the key {%s} failed due to %s",
+                interfaceName, dueTo);
+    }
+
+    // TODO move the following helper methods to somewhere else, to be shared with other projects
+    private <T extends DataObject> Future<RpcResult<T>> newRpcErrorResultFutureWithoutLogging(String message) {
+        RpcResultBuilder<T> rpcResultBuilder = RpcResultBuilder
+                .<T>failed().withError(RpcError.ErrorType.APPLICATION, message);
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
-    private RpcResultBuilder<GetDpidFromInterfaceOutput> getRpcErrorResultForGetDpnIdRpc(String interfaceName,
-            String errMsg) {
-        errMsg = String.format("Retrieval of datapath id for the key {%s} failed due to %s", interfaceName, errMsg);
-        LOG.debug(errMsg);
-        RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder
-                .<GetDpidFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
-        return rpcResultBuilder;
+    private <T extends DataObject> Future<RpcResult<T>> newRpcErrorResultFutureWithoutLogging(String message,
+            Throwable cause) {
+        RpcResultBuilder<T> rpcResultBuilder = RpcResultBuilder
+                .<T>failed().withError(RpcError.ErrorType.APPLICATION, message, cause);
+        return Futures.immediateFuture(rpcResultBuilder.build());
+    }
+
+    private <T extends DataObject> Future<RpcResult<T>> newRpcErrorResultWithErrorLog(String message) {
+        LOG.error(message);
+        return newRpcErrorResultFutureWithoutLogging(message);
+    }
+
+    private <T extends DataObject> Future<RpcResult<T>> newRpcErrorResultWithErrorLog(String message, Throwable cause) {
+        LOG.error(message, cause);
+        return newRpcErrorResultFutureWithoutLogging(message, cause);
+    }
+
+    private <T extends DataObject> Future<RpcResult<T>> newRpcErrorResultWithDebugLog(String message, Throwable cause) {
+        LOG.debug(message, cause);
+        return newRpcErrorResultFutureWithoutLogging(message, cause);
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEndpointIpForDpnOutput>> getEndpointIpForDpn(GetEndpointIpForDpnInput input) {
-        RpcResultBuilder<GetEndpointIpForDpnOutput> rpcResultBuilder;
         LOG.debug("Get endpoint ip for dpn {}", input.getDpid());
         try {
             BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(input.getDpid());
@@ -175,74 +201,68 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
 
             GetEndpointIpForDpnOutputBuilder endpointIpForDpnOutput = new GetEndpointIpForDpnOutputBuilder()
                     .setLocalIps(Collections.singletonList(tunnel.getTunnelSource()));
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetEndpointIpForDpnOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(endpointIpForDpnOutput.build());
             LOG.debug("Endpoint ip for dpn {} is {}", input.getDpid(), tunnel.getTunnelSource());
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of endpoint of for dpn {} failed due to", input.getDpid(), e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            return newRpcErrorResultWithErrorLog(
+                    "getEndpointIpForDpn() Retrieval of endpoint for dpn " + input.getDpid() + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
-        RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder;
         LOG.debug("Get Egress Instructions for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
         try {
             List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
                     input.getTunnelKey(), dataBroker, false);
             GetEgressInstructionsForInterfaceOutputBuilder output = new GetEgressInstructionsForInterfaceOutputBuilder()
                     .setInstruction(instructions);
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
             LOG.debug("Egress Instructions for interface {} is {}", input.getIntfName(), instructions);
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            String errMsg = String.format("Retrieval of egress instructions for the key {%s} failed due to %s",
-                    input.getIntfName(), e.getMessage());
-            LOG.debug(errMsg);
-            rpcResultBuilder = RpcResultBuilder.<GetEgressInstructionsForInterfaceOutput>failed()
-                    .withError(RpcError.ErrorType.APPLICATION, errMsg);
+            return newRpcErrorResultWithDebugLog("getEgressInstructionsForInterface() Retrieval of egress "
+                    + "instructions for the key " + input.getIntfName() + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetInterfaceTypeOutput>> getInterfaceType(GetInterfaceTypeInput input) {
         String interfaceName = input.getIntfName();
-        RpcResultBuilder<GetInterfaceTypeOutput> rpcResultBuilder;
         LOG.debug("Get interface type for interface {}", input.getIntfName());
         try {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
-                String errMsg = String.format("Retrieval of Interface Type for the key {%s} failed due to "
-                        + "missing Interface in Config DataStore", interfaceName);
-                LOG.error(errMsg);
-                rpcResultBuilder = RpcResultBuilder.<GetInterfaceTypeOutput>failed()
-                        .withError(RpcError.ErrorType.APPLICATION, errMsg);
-                return Futures.immediateFuture(rpcResultBuilder.build());
+                String errMsg = String.format("getInterfaceType() Retrieval of Interface Type for the key {%s} failed "
+                        + "due to missing Interface in Config DataStore", interfaceName);
+                return newRpcErrorResultFutureWithoutLogging(errMsg);
             }
             GetInterfaceTypeOutputBuilder output = new GetInterfaceTypeOutputBuilder()
                     .setInterfaceType(interfaceInfo.getType());
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetInterfaceTypeOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
             LOG.debug("interface type for interface {} is {}", input.getIntfName(), interfaceInfo.getType());
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of interface type for the key {}", interfaceName, e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            return newRpcErrorResultWithErrorLog(
+                    "getInterfaceType() Retrieval of interface type for the key " + interfaceName + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
         String interfaceName = input.getIntfName();
-        RpcResultBuilder<GetTunnelTypeOutput> rpcResultBuilder;
         try {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
@@ -250,56 +270,50 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 String errMsg = String.format(
                         "Retrieval of Tunnel Type for the key {%s} failed due to missing Interface in Config DataStore",
                         interfaceName);
-                LOG.error(errMsg);
-                rpcResultBuilder = RpcResultBuilder.<GetTunnelTypeOutput>failed()
-                        .withError(RpcError.ErrorType.APPLICATION, errMsg);
-                return Futures.immediateFuture(rpcResultBuilder.build());
+                return newRpcErrorResultWithErrorLog(errMsg);
             }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
                 IfTunnel tnl = interfaceInfo.getAugmentation(IfTunnel.class);
                 Class<? extends TunnelTypeBase> tunType = tnl.getTunnelInterfaceType();
                 GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder().setTunnelType(tunType);
-                rpcResultBuilder = RpcResultBuilder.success();
+                // TODO as above, simplify the success case later, as we have the failure case below
+                RpcResultBuilder<GetTunnelTypeOutput> rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
+                return Futures.immediateFuture(rpcResultBuilder.build());
             } else {
-                LOG.error("Retrieval of interface type for the key {} failed", interfaceName);
-                rpcResultBuilder = RpcResultBuilder.failed();
+                return newRpcErrorResultWithErrorLog(
+                        "Retrieval of interface type for the key {} failed: " + interfaceName);
             }
         } catch (Exception e) {
-            LOG.error("Retrieval of interface type for the key {}", interfaceName, e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            return newRpcErrorResultWithErrorLog(
+                    "getTunnelType() Retrieval of interface type for the key " + interfaceName + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEgressActionsForInterfaceOutput>> getEgressActionsForInterface(
             GetEgressActionsForInterfaceInput input) {
-        RpcResultBuilder<GetEgressActionsForInterfaceOutput> rpcResultBuilder;
         try {
             LOG.debug("Get Egress Action for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
             List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(), input.getTunnelKey(),
                     input.getActionKey(), dataBroker, false);
             GetEgressActionsForInterfaceOutputBuilder output = new GetEgressActionsForInterfaceOutputBuilder()
                     .setAction(actionsList);
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetEgressActionsForInterfaceOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
             LOG.debug("Egress Actions for interface {} is {}", input.getIntfName(), actionsList);
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            String errMsg = String.format("Retrieval of egress actions for {%s} failed due to %s", input.getIntfName(),
-                    e.getMessage());
-            LOG.debug(errMsg);
-            rpcResultBuilder = RpcResultBuilder.<GetEgressActionsForInterfaceOutput>failed()
-                    .withError(RpcError.ErrorType.APPLICATION, errMsg);
+            return newRpcErrorResultWithDebugLog(
+                    "Retrieval of egress actions " + input.getIntfName() + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
-        RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder;
         String interfaceName = input.getIntfName();
         LOG.debug("Get port from interface {}", input.getIntfName());
         try {
@@ -317,25 +331,23 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 // FIXME Assuming portName and interfaceName are same
                 GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(dpId)
                         .setPortname(interfaceName).setPortno(portNo).setPhyAddress(phyAddress);
-                rpcResultBuilder = RpcResultBuilder.success();
+                // TODO as above, simplify the success case later, as we have the failure case below
+                RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
                 LOG.debug("port for interface {} is {}", input.getIntfName(), portNo);
+                return Futures.immediateFuture(rpcResultBuilder.build());
             } else {
-                rpcResultBuilder = getRpcErrorResultForGetPortRpc(interfaceName, "missing Interface state");
+                return newRpcErrorResultWithErrorLog(
+                        getPortFromInterfaceErrorMessage(interfaceName, "missing Interface state"));
             }
         } catch (Exception e) {
-            rpcResultBuilder = getRpcErrorResultForGetPortRpc(interfaceName, e.getMessage());
+            return newRpcErrorResultWithErrorLog(
+                    getPortFromInterfaceErrorMessage(interfaceName, e.getMessage()), e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
-    private RpcResultBuilder<GetPortFromInterfaceOutput> getRpcErrorResultForGetPortRpc(String interfaceName,
-            String errMsg) {
-        errMsg = String.format("Retrieval of Port for the key {%s} failed due to %s", interfaceName, errMsg);
-        LOG.error(errMsg);
-        RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder
-                .<GetPortFromInterfaceOutput>failed().withError(RpcError.ErrorType.APPLICATION, errMsg);
-        return rpcResultBuilder;
+    private String getPortFromInterfaceErrorMessage(final String interfaceName, final String errMsg) {
+        return String.format("Retrieval of Port for the key {%s} failed due to %s", interfaceName, errMsg);
     }
 
     @Override
@@ -343,7 +355,6 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> getNodeconnectorIdFromInterface(
             GetNodeconnectorIdFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
-        RpcResultBuilder<GetNodeconnectorIdFromInterfaceOutput> rpcResultBuilder;
         LOG.debug("Get nodeconnector id from interface {}", input.getIntfName());
         try {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -354,14 +365,15 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
 
             GetNodeconnectorIdFromInterfaceOutputBuilder output = new GetNodeconnectorIdFromInterfaceOutputBuilder()
                     .setNodeconnectorId(nodeConnectorId);
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetNodeconnectorIdFromInterfaceOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
             LOG.debug("nodeconnector id for interface {} is {}", input.getIntfName(), lowerLayerIf);
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of nodeconnector id for the key {}", interfaceName, e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            return newRpcErrorResultWithErrorLog("getNodeconnectorIdFromInterface() Retrieval of "
+                    + "nodeconnector id for the key " + interfaceName + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
@@ -369,7 +381,6 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(
             GetInterfaceFromIfIndexInput input) {
         Integer ifIndex = input.getIfIndex();
-        RpcResultBuilder<GetInterfaceFromIfIndexOutput> rpcResultBuilder = null;
         LOG.debug("Get interface from ifindex {}", input.getIfIndex());
         try {
             InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
@@ -385,21 +396,21 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             String interfaceName = ifIndexesInterface.get().getInterfaceName();
             GetInterfaceFromIfIndexOutput output =
                 new GetInterfaceFromIfIndexOutputBuilder().setInterfaceName(interfaceName).build();
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetInterfaceFromIfIndexOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output);
             LOG.debug("interface corresponding to ifindex {} is {}", input.getIfIndex(), interfaceName);
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of interfaceName for the key {}", ifIndex, e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            return newRpcErrorResultWithErrorLog(
+                    "getInterfaceFromIfIndex() Retrieval of interfaceName for the key " + ifIndex + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         BigInteger dpnid = input.getDpid();
-        RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = null;
         LOG.debug("Get interface list for dpn {}", input.getDpid());
         try {
             InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
@@ -419,14 +430,15 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .collect(Collectors.toList());
             GetDpnInterfaceListOutput output =
                 new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList).build();
-            rpcResultBuilder = RpcResultBuilder.success();
+            // TODO as above, simplify the success case later, as we have the failure case below
+            RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output);
             LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfaceList);
+            return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
-            LOG.error("Retrieval of interfaceNameList for the dpnId {}", dpnid, e);
-            rpcResultBuilder = RpcResultBuilder.failed();
+            return newRpcErrorResultWithErrorLog(
+                    "getDpnInterfaceList() Retrieval of interfaceNameList for the dpnId " + dpnid + " failed", e);
         }
-        return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
     protected Future<RpcResult<GetDpnInterfaceListOutput>> buildEmptyInterfaceListResult() {
