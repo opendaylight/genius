@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_62ee2d8d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T13:08:28Z",
+      "side": 1,
+      "message": "In patch set 5, you\u0027ve added the  \"// falls through\", but kept the @SuppressWarnings(\"checkstyle:FallThrough\") which wouldn\u0027t (shouldn\u0027t..) be needed anymore by CS now; so how about replacing the \u0027@SuppressWarnings(\"checkstyle:FallThrough\")\u0027 with \u0027@SuppressWarnings(\"fallthrough\") // javac, not Checkstyle\u0027 ?",
+      "parentUuid": "fafc7978_4277a99f",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_81e7d6e3",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
         "patchSetId": 3
