@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_adf76b8b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 508,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-28T08:58:31Z",
+      "side": 1,
+      "message": "I need this for multiple vxlan\nIt can also be used for the flat/vlan trunk delete bug since getInterfaceParentEntryFromConfigDS takes from cache before doing DS read and it should probably safe to assume interfaces in child-interface model should already be in cache",
+      "parentUuid": "fafc7978_2d37fbb1",
+      "range": {
+        "startLine": 508,
+        "startChar": 27,
+        "endLine": 508,
+        "endChar": 45
+      },
+      "revId": "9f7c179375083b62f1c3743c1875aa29f345778c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1207b682",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
