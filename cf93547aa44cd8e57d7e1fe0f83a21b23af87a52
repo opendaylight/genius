@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_bfe152fe",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T10:25:39Z",
+      "side": 1,
+      "message": "nope, you just made public testVlanRpcs() become private testVlanRpcs() not checkVlanRpcs() - my main point here was that\u0027s a bit confusing to see a method named testXYZ() which is not actually a @Test - that is called from a test, but is not standalone test method, like other ones named test*() in this class - therefore please don\u0027t name it test* but e.g. check*",
+      "parentUuid": "fafc7978_4d44ff1a",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_fe05a314",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 3
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_fe05a314",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1ff17ecd",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T10:25:39Z",
+      "side": 1,
+      "message": "nope, as above",
+      "parentUuid": "fafc7978_ad4acb24",
       "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
