@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_959f0d03",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T15:08:39Z",
+      "side": 1,
+      "message": "catch (NullPointerException) is normally a very bad idea, and just hides other problems .. I\u0027d remove this (and if you do hit any NPEs, rather fix their root cause instead)",
+      "revId": "e3dbec800f52483647e9a3dccb89e9aef530b2e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_75a2694c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T15:08:39Z",
+      "side": 1,
+      "message": "put a message here",
+      "revId": "e3dbec800f52483647e9a3dccb89e9aef530b2e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
