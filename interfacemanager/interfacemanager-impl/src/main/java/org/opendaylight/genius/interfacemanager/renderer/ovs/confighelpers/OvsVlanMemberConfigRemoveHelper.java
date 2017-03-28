@@ -67,10 +67,8 @@ public class OvsVlanMemberConfigRemoveHelper {
         if (ifState != null) {
             LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                    .buildStateInterfaceId(interfaceOld.getName());
-            defaultOperShardTransaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
+            InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(),
+                defaultOperShardTransaction,idManager);
             FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, dataBroker, futures);
         }
 
