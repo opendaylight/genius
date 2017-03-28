@@ -69,6 +69,24 @@
       "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2731da0b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-28T02:49:34Z",
+      "side": 1,
+      "message": "ACtually this is intentional..Basically for all interface-types, there is one common set of actions, and some specific.. Please suggest if there is a better way to put this.. This was over complicated recently with some new features coming in..",
+      "parentUuid": "fafc7978_ac949144",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
