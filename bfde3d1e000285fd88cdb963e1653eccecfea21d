@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_322bdaec",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-03-28T07:06:50Z",
+      "side": 1,
+      "message": "Why is this shiftRight required for mask? Already the METADATA_MASK_LPORT_TAG has 1\u0027s at the correct position right?\nI think only when retrieving the lport tag value we need to do shiftRight. Correct me if I\u0027m wrong :)",
+      "range": {
+        "startLine": 133,
+        "startChar": 39,
+        "endLine": 133,
+        "endChar": 49
+      },
+      "revId": "bfde3d1e000285fd88cdb963e1653eccecfea21d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
