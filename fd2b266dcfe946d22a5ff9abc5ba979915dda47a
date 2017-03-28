@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_752389a7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-28T13:43:42Z",
+      "side": 1,
+      "message": "Yes, you are right. Now it is done.",
+      "parentUuid": "fafc7978_62ee2d8d",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_81e7d6e3",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
         "patchSetId": 3
