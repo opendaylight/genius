@@ -174,8 +174,9 @@ public class ItmInternalTunnelAddWorker {
                 TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey( dstDpnId, srcDpnId, tunType));
         InternalTunnel tnl = ItmUtils.buildInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName);
-        //ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tnl, dataBroker, DEFAULT_CALLBACK);
-        ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+		// Switching to individual transaction submit as batching latencies is causing ELAN failures. Will revert when ELAN can handle this.
+        //ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+		t.merge(LogicalDatastoreType.CONFIGURATION,path, tnl, true) ;
         ItmUtils.itmCache.addInternalTunnel(tnl);
         return true;
     }
