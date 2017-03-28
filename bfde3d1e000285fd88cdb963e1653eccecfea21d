@@ -22,6 +22,30 @@
       "revId": "bfde3d1e000285fd88cdb963e1653eccecfea21d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f24832ce",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-28T07:11:34Z",
+      "side": 1,
+      "message": "reg6 is 4 bytes not 8 like metadata so only the most significant bytes of the metadata will be kept there (service index + lport-tag) mask for reg6 should reflect the same\nyou can see a usage example in https://git.opendaylight.org/gerrit/#/c/53872/",
+      "parentUuid": "fafc7978_322bdaec",
+      "range": {
+        "startLine": 133,
+        "startChar": 39,
+        "endLine": 133,
+        "endChar": 49
+      },
+      "revId": "bfde3d1e000285fd88cdb963e1653eccecfea21d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
