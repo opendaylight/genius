@@ -16,6 +16,24 @@
       "revId": "9f7c179375083b62f1c3743c1875aa29f345778c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9283a6a8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 525,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-28T07:38:06Z",
+      "side": 1,
+      "message": "I think maybe if interface config has just been removed but the corresponding child-interfaces model has not been updated.\nAlso added this check not to return list with null values",
+      "parentUuid": "fafc7978_1207b682",
+      "revId": "9f7c179375083b62f1c3743c1875aa29f345778c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
