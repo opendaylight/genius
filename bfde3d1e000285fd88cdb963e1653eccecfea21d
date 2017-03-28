@@ -46,6 +46,30 @@
       "revId": "bfde3d1e000285fd88cdb963e1653eccecfea21d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f2a95225",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-03-28T07:42:24Z",
+      "side": 1,
+      "message": "Ok, then this needs to be shifted by 4 bytes which is 32 bits. Thanks Tali for clearing it.",
+      "parentUuid": "fafc7978_f24832ce",
+      "range": {
+        "startLine": 133,
+        "startChar": 39,
+        "endLine": 133,
+        "endChar": 49
+      },
+      "revId": "bfde3d1e000285fd88cdb963e1653eccecfea21d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
