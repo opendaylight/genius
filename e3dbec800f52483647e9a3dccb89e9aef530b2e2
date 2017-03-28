@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9858e4fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-28T16:22:14Z",
+      "side": 1,
+      "message": "Done.\nThanks.",
+      "parentUuid": "fafc7978_959f0d03",
+      "revId": "e3dbec800f52483647e9a3dccb89e9aef530b2e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_75a2694c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
         "patchSetId": 16
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-28T15:08:39Z",
       "side": 1,
       "message": "put a message here",
+      "revId": "e3dbec800f52483647e9a3dccb89e9aef530b2e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_785b80f6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-28T16:22:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_75a2694c",
       "revId": "e3dbec800f52483647e9a3dccb89e9aef530b2e2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
