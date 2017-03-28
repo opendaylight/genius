@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c2fc3942",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T13:10:42Z",
+      "side": 1,
+      "message": "no, don\u0027t do this, not even in a test utility",
+      "revId": "951759f0e1a352398610f00a3da9051ba5d88b08",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
