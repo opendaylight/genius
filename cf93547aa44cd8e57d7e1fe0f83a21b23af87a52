@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_4d44ff1a",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-28T08:39:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_9e061720",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_fe05a314",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-27T15:22:29Z",
       "side": 1,
       "message": "as above",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ad4acb24",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-28T08:39:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_fe05a314",
       "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8d454717",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-28T08:39:36Z",
+      "side": 1,
+      "message": "made all util methods package-private",
+      "parentUuid": "fafc7978_011da666",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_c1127e57",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
         "patchSetId": 3
@@ -64,6 +118,24 @@
       "writtenOn": "2017-03-27T15:22:29Z",
       "side": 1,
       "message": "this looks suspicious - are you sure you don\u0027t mean to return  tx.submit(); and use CheckedFuture instead of void as return type from this method, and then probably get() from that CheckedFuture() to block on it where you\u0027re calling this from in your test?  It MAY even allow you to save a sleep(), if there is one where is called?",
+      "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6d58e3fa",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-28T08:39:36Z",
+      "side": 1,
+      "message": "this method is removed, as it was not used anywhere.. regarding the tx.submit() it was done like this in all previous TCs, with a hardcoded Thread.sleep()..will see in the subsequent patch how to remove the sleeps",
+      "parentUuid": "fafc7978_c1127e57",
       "revId": "cf93547aa44cd8e57d7e1fe0f83a21b23af87a52",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
