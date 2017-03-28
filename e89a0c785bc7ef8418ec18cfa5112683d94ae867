@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_53d01d53",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-03-28T18:50:08Z",
+      "side": 1,
+      "message": "do we need to specify \u0027ovs\u0027 here? having a generic name will make it extensible.",
+      "range": {
+        "startLine": 72,
+        "startChar": 32,
+        "endLine": 72,
+        "endChar": 35
+      },
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f3e1512b",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-03-28T18:50:08Z",
+      "side": 1,
+      "message": "same as previous comment.",
+      "range": {
+        "startLine": 75,
+        "startChar": 13,
+        "endLine": 75,
+        "endChar": 16
+      },
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
