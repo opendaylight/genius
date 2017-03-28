@@ -105,6 +105,24 @@
       "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7f5b6af6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-28T10:13:26Z",
+      "side": 1,
+      "message": "On looking at this code more closely now, I can actually see that the if/s in the case sort of cancel each other out.. it\u0027s confusing / non-obvious / hard to read code - but probably not a bug then, like it looks like a switch case fall through bug, but because of the nested if actually is not (which I didn\u0027t notice yesterday).  I\u0027m therefore removing my -1, but really think this should be refactored, under Bug 8089.",
+      "parentUuid": "fafc7978_126176a8",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
