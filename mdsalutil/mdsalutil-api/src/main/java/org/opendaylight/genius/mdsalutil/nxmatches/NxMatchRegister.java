@@ -9,14 +9,19 @@ package org.opendaylight.genius.mdsalutil.nxmatches;
 
 import com.google.common.collect.ImmutableBiMap;
 import java.util.Map;
+
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg3;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg4;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg5;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg7;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.ExtensionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg3Key;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg4Key;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg5Key;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg6Key;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxmNxReg7Key;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.reg.grouping.NxmNxReg;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.nxm.nx.reg.grouping.NxmNxRegBuilder;
 
@@ -27,9 +32,11 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
     private static final Map<Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match
             .rev140421.NxmNxReg>, Class<? extends ExtensionKey>> KEYS =
             ImmutableBiMap.of(
+                    NxmNxReg3.class, NxmNxReg3Key.class,
                     NxmNxReg4.class, NxmNxReg4Key.class,
                     NxmNxReg5.class, NxmNxReg5Key.class,
-                    NxmNxReg6.class, NxmNxReg6Key.class
+                    NxmNxReg6.class, NxmNxReg6Key.class,
+                    NxmNxReg7.class, NxmNxReg7Key.class
                     );
 
     private final Class<
