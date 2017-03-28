@@ -87,6 +87,24 @@
       "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_126176a8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-28T06:03:11Z",
+      "side": 1,
+      "message": "Thinking more on this, I feel the initial purpose of switch..case at the time when this code was added initially is no longer valid :) considering the current code, please feel free to refactor the best way",
+      "parentUuid": "fafc7978_2731da0b",
+      "revId": "fd2b266dcfe946d22a5ff9abc5ba979915dda47a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
