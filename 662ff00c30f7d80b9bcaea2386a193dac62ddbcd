@@ -22,6 +22,30 @@
       "revId": "662ff00c30f7d80b9bcaea2386a193dac62ddbcd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_46e9767f",
+        "filename": "itm/itm-api/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-29T15:01:05Z",
+      "side": 1,
+      "message": "What is the concern if we don\u0027t use scope? In most of our other usages we have not used scope and left the default runtime. We have not seen issues so far - that we know of.",
+      "parentUuid": "fafc7978_a906381f",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 17
+      },
+      "revId": "662ff00c30f7d80b9bcaea2386a193dac62ddbcd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
