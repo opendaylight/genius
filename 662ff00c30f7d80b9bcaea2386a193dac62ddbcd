@@ -46,6 +46,30 @@
       "revId": "662ff00c30f7d80b9bcaea2386a193dac62ddbcd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_06bdae68",
+        "filename": "itm/itm-api/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-29T15:04:16Z",
+      "side": 1,
+      "message": "Feedback from chat with Stephen on IRC: \"it doesn\u0027t leak into the generated features (I\u0027ve checked)\"",
+      "parentUuid": "fafc7978_46e9767f",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 17
+      },
+      "revId": "662ff00c30f7d80b9bcaea2386a193dac62ddbcd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
