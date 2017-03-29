@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_ae1abe15",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 6456
+      },
+      "writtenOn": "2017-03-29T06:08:05Z",
+      "side": 1,
+      "message": "It depends on ovs implementation of queue. We have same prefix in other schemas too.",
+      "parentUuid": "fafc7978_53d01d53",
+      "range": {
+        "startLine": 72,
+        "startChar": 32,
+        "endLine": 72,
+        "endChar": 35
+      },
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_f3e1512b",
         "filename": "docs/specs/qos-shaping.rst",
         "patchSetId": 5
