@@ -14,6 +14,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
@@ -109,5 +111,6 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(TerminationPointStateListener.class);
         bind(VlanMemberConfigListener.class);
         bind(InterfaceStateListener.class);
+        bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
     }
 }
