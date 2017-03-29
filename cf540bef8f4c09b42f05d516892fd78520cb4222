@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0fde6111",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-03-29T20:40:48Z",
+      "side": 1,
+      "message": "I noticed the method calling this \nhandleInterfaceAdminStateUpdates can later fail due to vlanMode/no child interfaces\nBetter to call this after all validations have been made",
+      "revId": "cf540bef8f4c09b42f05d516892fd78520cb4222",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
