@@ -70,6 +70,30 @@
       "revId": "662ff00c30f7d80b9bcaea2386a193dac62ddbcd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c91d7968",
+        "filename": "itm/itm-api/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-29T15:23:26Z",
+      "side": 1,
+      "message": "It\u0027s filtered out by single-feature-parent, so really we should mark the dep as scope provided, but we can fix that later.",
+      "parentUuid": "fafc7978_06bdae68",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 17
+      },
+      "revId": "662ff00c30f7d80b9bcaea2386a193dac62ddbcd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
