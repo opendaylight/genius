@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.interfacemanager.test;
 
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+
 import com.google.common.collect.ImmutableBiMap;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -45,6 +47,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeName;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.bridge.attributes.ControllerEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.bridge.attributes.ControllerEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfo;
@@ -59,6 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -176,14 +181,37 @@ public class OvsdbSouthboundTestUtil {
         return new NodeId(ovsdbNodeId.getValue() + "/" + BRIDGE_URI_PREFIX + "/" + bridgeName);
     }
 
-    public InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(Node node, String portName) {
-
-        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier.create(NetworkTopology.class)
-                .child(Topology.class, new TopologyKey(OVSDB_TOPOLOGY_ID)).child(Node.class, node.getKey())
+    public static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodeKey, String
+        portName) {
+        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier
+                .create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(OVSDB_TOPOLOGY_ID))
+                .child(Node.class,nodeKey)
                 .child(TerminationPoint.class, new TerminationPointKey(new TpId(portName)));
 
         LOG.debug("Termination point InstanceIdentifier generated : {}", terminationPointPath);
         return terminationPointPath;
+    }
+
+    public static void createTerminationPoint(DataBroker dataBroker, String interfaceName,
+                                              Class<? extends InterfaceTypeBase> type) {
+        final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
+        final InstanceIdentifier<Node> bridgeIid =
+            createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
+        InstanceIdentifier<TerminationPoint> tpId = createTerminationPointInstanceIdentifier(
+                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        tpBuilder.setKey(InstanceIdentifier.keyOf(tpId));
+        OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
+
+        tpAugmentationBuilder.setName(interfaceName);
+        if (type != null) {
+            tpAugmentationBuilder.setInterfaceType(type);
+        }
+        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.put(OPERATIONAL, tpId, tpBuilder.build(), true);
+        tx.submit();
     }
 
     public static NodeKey createNodeKey(String ip, Integer port) {

@@ -17,7 +17,8 @@ class DpnInterfaceListOutput {
     static def newDpnInterfaceListOutput() {
         new GetDpnInterfaceListOutputBuilder >> [
             interfacesList = #[
-                "23701c04-7e58-4c65-9425-78a80d49a218"
+                "23701c04-7e58-4c65-9425-78a80d49a218",
+                "tap23701c04-7e"
             ]
         ]
     }
