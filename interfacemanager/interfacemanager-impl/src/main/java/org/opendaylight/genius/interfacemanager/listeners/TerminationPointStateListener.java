@@ -65,6 +65,7 @@ public class TerminationPointStateListener extends
 
         String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
         interfaceMgrProvider.removeTerminationPointForInterface(oldInterfaceName);
+        interfaceMgrProvider.removeNodeIidForInterface(oldInterfaceName);
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
@@ -85,15 +86,16 @@ public class TerminationPointStateListener extends
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);
             jobCoordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
+        InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
         String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
-        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
         interfaceMgrProvider.addTerminationPointForInterface(newInterfaceName, tpNew);
+        interfaceMgrProvider.addNodeIidForInterface(newInterfaceName, nodeIid);
 
         if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
-        String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName,
-                        identifier.firstIdentifierOf(Node.class));
+        String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName, nodeIid);
+        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
         if (dpnId != null && newInterfaceName != null
                 && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
             String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
