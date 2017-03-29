@@ -19,48 +19,25 @@ public class MatchIcmpv6Test {
 
     @Test
     public void xtendBeanGeneratorTwoNonDefaultValues() {
-        assertEquals(
-            // with xtendbeans v1.2.3 instead of 1.2.2 it will finally correctly directly gen. this, if no Builder:
-                // "new MatchIcmpv6(1 as short, 2 as short)",
-            // in the mean time, it generates this (after fixing missing getters)
-                "(new MatchIcmpv6Builder => [\n"
-                + "    code = 2 as short\n"
-                + "    type = 1 as short\n"
-                + "]).build()",
+        assertEquals("new MatchIcmpv6(1 as short, 2 as short)",
                 generator.getExpression(new MatchIcmpv6((short) 1, (short)2)));
     }
 
     @Test
     public void xtendBeanGeneratorTwoDefaultValues() {
-        assertEquals(
-            // with xtendbeans v1.2.3 instead of 1.2.2 it will finally correctly directly gen. this, if no Builder:
-                // "new MatchIcmpv6(0 as short, 0 as short)",
-            // in the mean time, it generates this (after fixing missing getters)
-                "(new MatchIcmpv6Builder\n).build()",
+        assertEquals("new MatchIcmpv6(0 as short, 0 as short)",
                 generator.getExpression(new MatchIcmpv6((short) 0, (short)0)));
     }
 
     @Test
     public void xtendBeanGeneratorOneDefaultValue() {
-        assertEquals(
-            // with xtendbeans v1.2.3 instead of 1.2.2 it will finally correctly directly gen. this, if no Builder:
-                // "new MatchIcmpv6(0 as short, 3 as short)",
-            // in the mean time, it generates this (after fixing missing getters)
-                "(new MatchIcmpv6Builder => [\n"
-                + "    code = 3 as short\n"
-                + "]).build()",
+        assertEquals("new MatchIcmpv6(0 as short, 3 as short)",
                 generator.getExpression(new MatchIcmpv6((short) 0, (short)3)));
     }
 
     @Test
     public void xtendBeanGeneratorOtherDefaultValue() {
-        assertEquals(
-            // with xtendbeans v1.2.3 instead of 1.2.2 it will finally correctly directly gen. this, if no Builder:
-                // "new MatchIcmpv6(3 as short, 0 as short)",
-            // in the mean time, it generates this (after fixing missing getters)
-                "(new MatchIcmpv6Builder => [\n"
-                + "    type = 3 as short\n"
-                + "]).build()",
+        assertEquals("new MatchIcmpv6(3 as short, 0 as short)",
                 generator.getExpression(new MatchIcmpv6((short) 3, (short)0)));
     }
 
