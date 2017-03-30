@@ -306,12 +306,15 @@ public class IfmUtil {
                     if (tunnelKey != null) {
                         result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
                     }
-
+                } else {
+                    // For OF Tunnels default egress actions need to set tunnelIps
                     IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
-                    if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
+                    if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow()
+                            && ifTunnel.getTunnelDestination() != null)) {
                         result.add(new ActionSetTunnelDestinationIp(actionKeyStart++, ifTunnel.getTunnelDestination()));
                     }
-                    if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
+                    if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow()
+                            && ifTunnel.getTunnelSource() != null)) {
                         result.add(new ActionSetTunnelSourceIp(actionKeyStart++, ifTunnel.getTunnelSource()));
                     }
                 }
