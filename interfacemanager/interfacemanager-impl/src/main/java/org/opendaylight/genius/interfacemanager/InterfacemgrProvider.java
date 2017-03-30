@@ -38,6 +38,7 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceA
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
@@ -56,6 +57,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -704,4 +707,63 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return futures;
         }
     }
+
+    @Override
+    public OvsdbTerminationPointAugmentation getTerminationPointForInterface(String interfaceName) {
+        return getTerminationPoint(interfaceName);
+    }
+
+    @Override
+    public OvsdbBridgeAugmentation getOvsdbBridgeForInterface(String interfaceName) {
+        return getBridgeForInterface(interfaceName, null);
+    }
+
+    @Override
+    public OvsdbBridgeAugmentation getOvsdbBridgeForNodeIid(InstanceIdentifier<Node> nodeIid) {
+        return getBridgeForNodeIid(nodeIid);
+    }
+
+    private BridgeEntry getBridgeEntry(InstanceIdentifier<Node> nodeIid) {
+        List<OvsdbTerminationPointAugmentation> tpList = null;
+        OvsdbBridgeAugmentation bridge = getBridgeForNodeIid(nodeIid);
+        BigInteger dpnId = IfmUtil.getDpnId(bridge.getDatapathId());
+        if (dpnId != null) {
+            return InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
+        }
+        return null;
+    }
+
+    @Override
+    public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(InstanceIdentifier<Node> nodeIid) {
+        List<OvsdbTerminationPointAugmentation> tpList = null;
+        BridgeEntry bridgeEntry = getBridgeEntry(nodeIid);
+        if (bridgeEntry != null) {
+            tpList = new ArrayList<>();
+            for (BridgeInterfaceEntry ifaceEntry: bridgeEntry.getBridgeInterfaceEntry()) {
+                OvsdbTerminationPointAugmentation terminationPoint =
+                                getTerminationPointForInterface(ifaceEntry.getInterfaceName());
+                tpList.add(terminationPoint);
+            }
+        }
+        return tpList;
+    }
+
+    @Override
+    public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(InstanceIdentifier<Node> nodeIid) {
+        List<OvsdbTerminationPointAugmentation> tpList = null;
+        BridgeEntry bridgeEntry = getBridgeEntry(nodeIid);
+        if (bridgeEntry != null) {
+            tpList = new ArrayList<>();
+            for (BridgeInterfaceEntry ifaceEntry: bridgeEntry.getBridgeInterfaceEntry()) {
+                OvsdbTerminationPointAugmentation terminationPoint =
+                                getTerminationPointForInterface(ifaceEntry.getInterfaceName());
+                if (SouthboundUtils.isInterfaceTypeTunnel(terminationPoint.getInterfaceType())) {
+                    tpList.add(terminationPoint);
+                }
+            }
+        }
+        return tpList;
+    }
+
+
 }
