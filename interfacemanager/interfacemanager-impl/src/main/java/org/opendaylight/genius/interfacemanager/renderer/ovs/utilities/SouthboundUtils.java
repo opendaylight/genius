@@ -384,4 +384,9 @@ public class SouthboundUtils {
         }
         return false;
     }
+
+    public static boolean isInterfaceTypeTunnel(Class<? extends InterfaceTypeBase> interfaceType) {
+        return interfaceType.equals(InterfaceTypeGre.class) || interfaceType.equals(InterfaceTypeVxlan.class) ?
+                        true : false;
+    }
 }
