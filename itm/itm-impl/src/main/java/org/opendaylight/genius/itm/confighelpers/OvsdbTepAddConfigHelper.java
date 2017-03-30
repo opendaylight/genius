@@ -69,7 +69,7 @@ public class OvsdbTepAddConfigHelper {
         IpAddress tepIpAddress = new IpAddress(tepIp.toCharArray());
         TransportZone tzone = null;
 
-        // Case: TZ name is not given with CSS TEP.
+        // Case: TZ name is not given with OVS TEP.
         if (tzName == null) {
             tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
             // add TEP into default-TZ

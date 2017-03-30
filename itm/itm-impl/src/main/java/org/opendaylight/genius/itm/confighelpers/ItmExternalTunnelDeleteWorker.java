@@ -186,11 +186,11 @@ public class ItmExternalTunnelDeleteWorker {
                         }
                         if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
                             for (Vteps vtep : sub.getVteps()) {
-                                //TOR-CSS
+                                //TOR-OVS
                                 LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
                                 String parentIf =
                                         ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId());
-                                deleteTrunksCssTor(dataBroker, idManagerService, vtep.getDpnId(), parentIf,
+                                deleteTrunksOvsTor(dataBroker, idManagerService, vtep.getDpnId(), parentIf,
                                         vtep.getIpAddress(), hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(),
                                         originalTZone.getTunnelType(), writeTransaction, futures);
                             }
@@ -219,8 +219,8 @@ public class ItmExternalTunnelDeleteWorker {
                     if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
                         for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
                             String cssID = dpn.getDPNID().toString();
-                            //CSS-TOR-CSS
-                            deleteTrunksCssTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
+                            //OVS-TOR-OVS
+                            deleteTrunksOvsTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
                                     srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
                                     hwVtepDS.getIpAddress(), tzone.getTunnelType(), writeTransaction, futures);
 
@@ -230,7 +230,7 @@ public class ItmExternalTunnelDeleteWorker {
             }
             if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
                 for (HwVtep hwVtep : cfgdhwVteps) {
-                    deleteTrunksCssTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
+                    deleteTrunksOvsTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
                             srcTep.getIpAddress(), hwVtep.getTopo_id(), hwVtep.getNode_id(), hwVtep.getHwIp(),
                             TunnelTypeVxlan.class, writeTransaction, futures);
 
@@ -239,12 +239,12 @@ public class ItmExternalTunnelDeleteWorker {
         }
     }
 
-    private static void deleteTrunksCssTor(DataBroker dataBroker, IdManagerService idManagerService, BigInteger dpnid,
+    private static void deleteTrunksOvsTor(DataBroker dataBroker, IdManagerService idManagerService, BigInteger dpnid,
                                            String interfaceName, IpAddress cssIpAddress, String topologyId,
                                            String nodeId, IpAddress hwIpAddress,
                                            Class<? extends TunnelTypeBase> tunType, WriteTransaction transaction,
                                            List<ListenableFuture<Void>> futures) {
-        //CSS-TOR
+        //OVS-TOR
         if (trunkExists(dpnid.toString(), nodeId, tunType, dataBroker)) {
             LOG.trace("deleting tunnel from {} to {} ", dpnid.toString(), nodeId);
             String parentIf = interfaceName;
@@ -260,7 +260,7 @@ public class ItmExternalTunnelDeleteWorker {
         } else {
             LOG.trace(" trunk from {} to {} already deleted",dpnid.toString(), nodeId);
         }
-        //TOR-CSS
+        //TOR-OVS
         if (trunkExists(nodeId, dpnid.toString(), tunType, dataBroker)) {
             LOG.trace("deleting tunnel from {} to {} ",nodeId, dpnid.toString());
 

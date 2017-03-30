@@ -633,7 +633,7 @@ public final class HwvtepUtils {
      * @param logicalSwitchName
      *            the logical switch name
      * @param remoteVtepIp
-     *            VTEP's IP in this CSS used for the tunnel with external
+     *            VTEP's IP in this OVS used for the tunnel with external
      *            device.
      */
     public static ListenableFuture<Void> installUcastMacs(DataBroker broker,

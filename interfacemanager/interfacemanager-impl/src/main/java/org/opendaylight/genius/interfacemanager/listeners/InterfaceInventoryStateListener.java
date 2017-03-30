@@ -175,9 +175,6 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
                     mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName, fcNodeConnectorNew);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
@@ -213,9 +210,6 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(key,
                     alivenessMonitorService, dataBroker, interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
@@ -261,10 +255,6 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
-
             List<ListenableFuture<Void>> futures = null;
             // VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD
             // for same interface from Older DPN

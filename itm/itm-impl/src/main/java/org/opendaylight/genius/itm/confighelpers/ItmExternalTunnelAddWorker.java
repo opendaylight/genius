@@ -162,7 +162,7 @@ public class ItmExternalTunnelAddWorker {
             if (dpn.getTunnelEndPoints() != null && !dpn.getTunnelEndPoints().isEmpty()) {
                 for (TunnelEndPoints tep : dpn.getTunnelEndPoints()) {
                     for (TzMembership zone: tep.getTzMembership()) {
-                        createTunnelsFromCSSinTransportZone(zone.getZoneName(), dpn, tep, idManagerService,
+                        createTunnelsFromOVSinTransportZone(zone.getZoneName(), dpn, tep, idManagerService,
                                 futures, transaction, dataBroker);
                     }
                 }
@@ -170,7 +170,7 @@ public class ItmExternalTunnelAddWorker {
         }
     }
 
-    private static void createTunnelsFromCSSinTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints tep,
+    private static void createTunnelsFromOVSinTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints tep,
                                                             IdManagerService idManagerService,
                                                             List<ListenableFuture<Void>> futures,
                                                             WriteTransaction transaction, DataBroker dataBroker) {
@@ -185,7 +185,7 @@ public class ItmExternalTunnelAddWorker {
                 for (Subnets sub : transportZone.getSubnets()) {
                     if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
                         for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                            //dont mesh if hwVteps and CSS-tep have same ip-address
+                            //dont mesh if hwVteps and OVS-tep have same ip-address
                             if (hwVtepDS.getIpAddress().equals(tep.getIpAddress())) {
                                 continue;
                             }
@@ -201,7 +201,7 @@ public class ItmExternalTunnelAddWorker {
                                 LOG.error("Unable to build tunnel {} -- {}",
                                         tep.getIpAddress(), hwVtepDS.getIpAddress());
                             }
-                            //TOR-CSS
+                            //TOR-OVS
                             LOG.trace("wire up {} and {}", hwVtepDS,tep);
                             if (!wireUp(hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
                                     cssID, tep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(),
@@ -263,7 +263,7 @@ public class ItmExternalTunnelAddWorker {
                                 if (vtep.getIpAddress().equals(hwTep.getHwIp())) {
                                     continue;
                                 }
-                                //TOR-CSS
+                                //TOR-OVS
                                 String cssID = vtep.getDpnId().toString();
                                 LOG.trace("wire up {} and {}",hwTep, vtep);
                                 if (!wireUp(hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(), cssID,
@@ -273,7 +273,7 @@ public class ItmExternalTunnelAddWorker {
                                     LOG.error("Unable to build tunnel {} -- {}",
                                             hwTep.getHwIp(), vtep.getIpAddress());
                                 }
-                                //CSS-TOR
+                                //OVS-TOR
                                 LOG.trace("wire up {} and {}", vtep,hwTep);
                                 boolean useOfTunnel = ItmUtils.falseIfNull(vtep.isOptionOfTunnel());
                                 if (!wireUp(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId(), vtep.getIpAddress(),
@@ -326,7 +326,7 @@ public class ItmExternalTunnelAddWorker {
         return true;
     }
 
-    //for tunnels from CSS
+    //for tunnels from OVS
     private static boolean wireUp(BigInteger dpnId, String portname, Integer vlanId, IpAddress srcIp,
                                   Boolean remoteIpFlow, String dstNodeId, IpAddress dstIp, IpPrefix srcSubnet,
                                   IpAddress gwIp, IpPrefix dstSubnet, Class<? extends TunnelTypeBase> tunType,
