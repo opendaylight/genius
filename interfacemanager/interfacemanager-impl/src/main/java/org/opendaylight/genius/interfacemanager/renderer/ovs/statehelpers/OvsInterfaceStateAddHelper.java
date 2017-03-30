@@ -68,7 +68,7 @@ public class OvsInterfaceStateAddHelper {
                 .getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
         if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)) {
-            if (!validateTunnelPortAttributes(nodeConnectorId, iface)) {
+            if (!validateTunnelPortAttributes(nodeConnectorId, iface, interfaceName)) {
                 return futures;
             }
         }
@@ -119,7 +119,7 @@ public class OvsInterfaceStateAddHelper {
 
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface) {
+                .ietf.interfaces.rev140508.interfaces.Interface iface, String interfaceName) {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
             ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
@@ -131,7 +131,7 @@ public class OvsInterfaceStateAddHelper {
                 return false;
             }
         } else {
-            LOG.warn("Received tunnel state add notification for a tunnel which is not configured {}", iface.getName());
+            LOG.debug("Received tunnel state add notification for a tunnel which is not configured {}", interfaceName);
             return false;
         }
         return true;
