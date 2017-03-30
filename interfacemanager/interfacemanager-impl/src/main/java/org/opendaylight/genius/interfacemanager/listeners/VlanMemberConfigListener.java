@@ -172,9 +172,6 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, ifL2vlan,
                     idManager);
         }
@@ -198,9 +195,6 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsVlanMemberConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService,
                     parentRefsNew, interfaceOld, ifL2vlanNew, interfaceNew, idManager, mdsalApiManager);
         }
@@ -222,9 +216,6 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld, ifL2vlan,
                     idManager);
         }

@@ -179,9 +179,8 @@ public class InterfaceConfigListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
+            // If another renderer(for eg: another OpenFlow based switch) needs to be supported, check
+            // can be performed here to call the respective helpers.
             return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, idManager,
                     alivenessMonitorService, mdsalApiManager);
         }
@@ -209,9 +208,8 @@ public class InterfaceConfigListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
+            // If another renderer(for eg: another OpenFlow based switch) needs to be supported, check
+            // can be performed here to call the respective helpers.
             return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService, idManager,
                     mdsalApiManager, interfaceNew, interfaceOld);
         }
@@ -239,9 +237,8 @@ public class InterfaceConfigListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
+            // If another renderer(for eg: HWVTEP) needs to be supported, check
+            // can be performed here to call the respective helpers.
             return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService, interfaceOld,
                     idManager, mdsalApiManager, parentRefs);
         }

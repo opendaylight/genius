@@ -125,9 +125,6 @@ public class TerminationPointStateListener extends
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, terminationPointNew);
         }
     }
