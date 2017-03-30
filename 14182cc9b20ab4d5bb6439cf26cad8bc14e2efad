@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_3ab445d0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-30T02:07:33Z",
+      "side": 1,
+      "message": "may i know what is the difference between these set of actions with what is at 355.. also diff between lporttagForReg6 and getReg6ValueForLPortDispatcher.. if it just coz of the mask added? Can we remove any code duplication if possible..As Michael suggested, over the time, our switch case has finally become an if.. else now :)",
+      "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1abb41e6",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 9
