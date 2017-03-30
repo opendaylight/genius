@@ -704,4 +704,20 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return futures;
         }
     }
+
+    @Override
+    public OvsdbTerminationPointAugmentation getTerminationPointForInterface(String interfaceName) {
+        return getTerminationPoint(interfaceName);
+    }
+
+    @Override
+    public OvsdbBridgeAugmentation getOvsdbBridgeForInterface(String interfaceName) {
+        return getBridgeForInterface(interfaceName, null);
+    }
+
+    @Override
+    public OvsdbBridgeAugmentation getOvsdbBridgeForNodeIid(InstanceIdentifier<Node> nodeIid) {
+        return getBridgeForNodeIid(nodeIid);
+    }
+
 }
