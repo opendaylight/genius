@@ -14,4 +14,5 @@ Contents:
    :maxdepth: 1
 
    pipeline
+   genius-design-doc
    specs/index
