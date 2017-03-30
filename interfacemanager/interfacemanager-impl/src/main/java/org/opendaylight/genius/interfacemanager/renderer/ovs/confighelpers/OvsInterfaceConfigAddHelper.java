@@ -118,6 +118,11 @@ public class OvsInterfaceConfigAddHelper {
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
             InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
                     Optional.absent());
+
+            if (InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName) != null) {
+                InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures,
+                                InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName));
+            }
         }
 
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
