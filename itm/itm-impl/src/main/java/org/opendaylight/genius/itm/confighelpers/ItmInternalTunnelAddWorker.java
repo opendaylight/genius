@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -191,7 +192,10 @@ public class ItmInternalTunnelAddWorker {
                 TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
         InternalTunnel tnl = ItmUtils.buildInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName);
-        ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        // Switching to individual transaction submit as batching latencies is causing ELAN failures.
+        // Will revert when ELAN can handle this.
+        // ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        transaction.merge(LogicalDatastoreType.CONFIGURATION,path, tnl, true) ;
         ItmUtils.itmCache.addInternalTunnel(tnl);
         return true;
     }
