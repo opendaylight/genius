@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_3aeba5b1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-30T02:16:30Z",
+      "side": 1,
+      "message": "logical tunnel group has a parent-interface which will have a tunnel portnumber right? shouldn\u0027t we use that, just like how vlan trunk members do?",
+      "revId": "d92b59fe6d1ed657b0b4ab9e10bca86cf945ea7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5ae829b4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-30T02:16:30Z",
+      "side": 1,
+      "message": "One basic doubt here... we already have a southbound inventory listener, which iterates through the list of child interfaces for a parent-interface and populate interface-state for all children..will that help in this case? or is it like, the logical group interface for a tunnel will come far later in the picture than creating the actual tunnel port?",
+      "revId": "d92b59fe6d1ed657b0b4ab9e10bca86cf945ea7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
