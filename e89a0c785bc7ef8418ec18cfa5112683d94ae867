@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_5aa66911",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T00:22:32Z",
+      "side": 1,
+      "message": "nitpick whitespace",
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9aaf31e3",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T00:22:32Z",
+      "side": 1,
+      "message": "no need to make this a bullet",
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dab9b92f",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T00:22:32Z",
+      "side": 1,
+      "message": "Any value to add ovsdb southbound interactions or expected behavior?",
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_53d01d53",
         "filename": "docs/specs/qos-shaping.rst",
         "patchSetId": 5
@@ -66,6 +117,40 @@
         "endLine": 75,
         "endChar": 16
       },
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bab4b535",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T00:22:32Z",
+      "side": 1,
+      "message": "is this feature the only way to make use of the qos? Or does loading the genius feature get the functionality?",
+      "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7aaa4dd3",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T00:22:32Z",
+      "side": 1,
+      "message": "maybe add a reference to ovs qos info?",
       "revId": "e89a0c785bc7ef8418ec18cfa5112683d94ae867",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
