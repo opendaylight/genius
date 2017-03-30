@@ -71,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5b9aeb63",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T12:22:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_d5e50aa9",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d54b4a57",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 18
@@ -224,6 +242,24 @@
       "writtenOn": "2017-03-30T10:36:27Z",
       "side": 1,
       "message": "Should the bucket list be empty? The select group is created when one Vxlan tunnel is already created. So, why not add it now?\nAlso, won\u0027t we land in race conditions by just creating select group and then updating it.",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fb92bf49",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T12:22:15Z",
+      "side": 1,
+      "message": "We\u0027ll update the buckets list as the interface of each vxlan tunnel is up or when the child-info model is updated for the logical group (listen for InterfaceParentEntry changes). it seems to be enough to treat the race conditions when vxlan interface up before the logical tunnel and vice versa.",
+      "parentUuid": "fafc7978_d5fcea40",
       "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
