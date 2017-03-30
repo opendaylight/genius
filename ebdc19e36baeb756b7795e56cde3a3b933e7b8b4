@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_75f41ecf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 1529,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T06:31:59Z",
+      "side": 1,
+      "message": "Can you add a TODO for eliminating this read?",
+      "revId": "ebdc19e36baeb756b7795e56cde3a3b933e7b8b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_95f9c2ca",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 1532,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T06:31:59Z",
+      "side": 1,
+      "message": "nitpick: Aggregation",
+      "range": {
+        "startLine": 1532,
+        "startChar": 38,
+        "endLine": 1532,
+        "endChar": 39
+      },
+      "revId": "ebdc19e36baeb756b7795e56cde3a3b933e7b8b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b5fe86ac",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T06:31:59Z",
+      "side": 1,
+      "message": "nitpick: e",
+      "range": {
+        "startLine": 125,
+        "startChar": 33,
+        "endLine": 125,
+        "endChar": 34
+      },
+      "revId": "ebdc19e36baeb756b7795e56cde3a3b933e7b8b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d51a2a16",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T06:31:59Z",
+      "side": 1,
+      "message": "nitpick/stylistic: I prefer using prefix opt for optionals. good practice to have something like varXyz \u003d optVarXyz.get()",
+      "range": {
+        "startLine": 126,
+        "startChar": 12,
+        "endLine": 126,
+        "endChar": 15
+      },
+      "revId": "ebdc19e36baeb756b7795e56cde3a3b933e7b8b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
