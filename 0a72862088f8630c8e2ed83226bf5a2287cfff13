@@ -125,6 +125,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b5e04697",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T08:25:02Z",
+      "side": 1,
+      "message": "OK, I\u0027ll add. As well I have connected you to the email thread discussing the issues.\nThanks for the review and comments.",
+      "parentUuid": "fafc7978_d5206af9",
+      "range": {
+        "startLine": 216,
+        "startChar": 8,
+        "endLine": 220,
+        "endChar": 9
+      },
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9568a2bb",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 18
