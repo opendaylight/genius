@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_f53ace96",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T06:52:32Z",
+      "side": 1,
+      "message": "Agree. Done. Thanks.",
+      "parentUuid": "fafc7978_b5184676",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d54b4a57",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 18
@@ -47,6 +65,30 @@
       "writtenOn": "2017-03-30T05:55:22Z",
       "side": 1,
       "message": "why is this needed? Why not leverage batching? What is drawback of batching, or value add of not using batching here?",
+      "range": {
+        "startLine": 216,
+        "startChar": 8,
+        "endLine": 220,
+        "endChar": 9
+      },
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_75bffefc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T06:52:32Z",
+      "side": 1,
+      "message": "Last week I have investigated some issues, where InternalTunnel was missid in DS when interface listeners tried to read it. We must have this logical tunnel in config when InterfaceConfigListener get the events. Therefore I\u0027m using a single transaction for the logical tunnel related data.\nThanks.",
+      "parentUuid": "fafc7978_d54b4a57",
       "range": {
         "startLine": 216,
         "startChar": 8,
@@ -82,6 +124,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_d5b98a2f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T06:52:32Z",
+      "side": 1,
+      "message": "Removed. Thanks.",
+      "parentUuid": "fafc7978_9568a2bb",
+      "range": {
+        "startLine": 246,
+        "startChar": 15,
+        "endLine": 246,
+        "endChar": 26
+      },
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_159cb2bf",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 18
@@ -93,6 +159,24 @@
       "writtenOn": "2017-03-30T05:55:22Z",
       "side": 1,
       "message": "the spec says vxlan, but in theory this could work with GRE too if we take tunnelType as parameter to this. It will be a whole new spec though, so can probably address it if a use case comes up.\n\nAlso, what is the tunnel-type in tunnel-aggregation at http://docs.opendaylight.org/en/latest/submodules/genius/docs/specs/multiple-vxlan-tunnels.html#configuration-impact",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_55b59aec",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T06:52:32Z",
+      "side": 1,
+      "message": "Tunnel-type parameter is added by Tali for further usage. For now the possible config value is \"vxlan\" only.\nI\u0027ll discuss with Tali the option to integrate the tunnel type in the tunnel name later (she is OOO today) .\nThanks.",
+      "parentUuid": "fafc7978_159cb2bf",
       "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
