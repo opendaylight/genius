@@ -101,6 +101,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_d5206af9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T08:01:41Z",
+      "side": 1,
+      "message": "Thought so. This means we\u0027re unable to handle race condition(s) and this change is just reducing probability of the same at the cost of perf hit. I\u0027d prefer to understand and resolve the race itself. Can you at least add a TODO here? We can discuss the issue you faced and figure out a way to handle it gracefully later. Also, send across a mail or catch me in IRC that explains the issue, I\u0027ll see if I can come up with a solution in time.",
+      "parentUuid": "fafc7978_75bffefc",
+      "range": {
+        "startLine": 216,
+        "startChar": 8,
+        "endLine": 220,
+        "endChar": 9
+      },
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9568a2bb",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 18
