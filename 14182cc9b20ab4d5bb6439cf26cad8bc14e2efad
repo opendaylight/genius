@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_1abb41e6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 802,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-30T01:38:30Z",
+      "side": 1,
+      "message": "I think such methods are best implemented in ItmUtils class.",
+      "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1a898126",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-30T01:38:30Z",
+      "side": 1,
+      "message": "I think this should be implemented in ItmUtils so that it can be used from other classes if required, in future.",
+      "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
