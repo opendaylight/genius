@@ -18,9 +18,17 @@ public class MatchIcmpv4Builder {
         // Nothing to do
     }
 
+    public short getCode() {
+        return code;
+    }
+
     public MatchIcmpv4Builder setCode(short code) {
         this.code = code;
         return this;
+    }
+
+    public short getType() {
+        return type;
     }
 
     public MatchIcmpv4Builder setType(short type) {
