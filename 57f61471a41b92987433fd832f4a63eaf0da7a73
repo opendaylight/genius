@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_d0e075ce",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-03-30T15:14:18Z",
+      "side": 1,
+      "message": "i think if u can expose an API to read bridge-interface-info DS, won\u0027t that help Jaime?",
+      "revId": "57f61471a41b92987433fd832f4a63eaf0da7a73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
