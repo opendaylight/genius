@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_f031390c",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T16:04:12Z",
+      "side": 1,
+      "message": "still have a bunch of trailing whitespace in the file",
+      "revId": "69d63cf6a6c3f73e595629fbd1ba7447f1ad4fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_433cbdbf",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T16:04:12Z",
+      "side": 1,
+      "message": "this sentence is about the same as the first in the paragraph. What I was wondering about is QoS and Queue config has to be done a certain way and we always get questions about it so maybe some clarification on the different pieces involved and how they interact would be good to have.",
+      "revId": "69d63cf6a6c3f73e595629fbd1ba7447f1ad4fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6313c15c",
+        "filename": "docs/specs/qos-shaping.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-03-30T16:04:12Z",
+      "side": 1,
+      "message": "this is a unimgr feature, but the functionality is provided by genius, so it seems like there should be a genius feature listed here with a reference to uimgr using it.",
+      "revId": "69d63cf6a6c3f73e595629fbd1ba7447f1ad4fff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
