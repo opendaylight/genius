@@ -16,12 +16,14 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 
 public class IfmCLIUtil {
     private static final String VLAN_OUTPUT_FORMAT_LINE1 = "%-55s";
     private static final String VLAN_OUTPUT_FORMAT = "%-24s %-20s %-15s %-24s";
     private static final String VXLAN_OUTPUT_FORMAT = "%-24s %-24s %-18s %-5s";
     private static final String VXLAN_OUTPUT_FORMAT_LINE1 = "%-49s %-45s";
+    private static final String TP_OUTPUT_FORMAT_LINE1 = "%-49s %-45s";
     private static final String UNSET = "N/A";
 
     public static void showVlanHeaderOutput(CommandSession session) {
@@ -104,6 +106,27 @@ public class IfmCLIUtil {
                 String.format("%s/%s", parentRefs.getDatapathNodeIdentifier(),
                         iface.getName()),
                 interfaceInfo == null ? UNSET : interfaceInfo.getInterfaceTag(), ""));
+        fmt.close();
+    }
+
+    //TODO: Capture more information and cleaner display for TerminationPoint
+    public static void showInterfaceToTpHeader(CommandSession session) {
+        StringBuilder sb = new StringBuilder();
+        Formatter fmt = new Formatter(sb);
+        session.getConsole().println(fmt
+                .format(TP_OUTPUT_FORMAT_LINE1, "InterfaceName", "PortName"));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                .format("--------------------------------------------------------------------------------"));
+        fmt.close();
+    }
+
+    public static void showInterfaceToTpOutput(String ifName, OvsdbTerminationPointAugmentation port,
+                    CommandSession session) {
+        StringBuilder sb = new StringBuilder();
+        Formatter fmt = new Formatter(sb);
+        session.getConsole().println(fmt.format(TP_OUTPUT_FORMAT_LINE1, ifName, port.getName()));
+        sb.setLength(0);
         fmt.close();
     }
 }
