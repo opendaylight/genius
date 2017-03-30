@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.nxmatches;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.genius.mdsalutil.NxMatchFieldType;
 import org.opendaylight.genius.mdsalutil.NxMatchInfo;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
@@ -29,19 +28,12 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * Helper for Nicira extension matches (this is designed to be absorbed into MatchInfo once we've cleaned up
  * downstream users).
  */
-public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<T>> extends NxMatchInfo {
+public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<T>> implements NxMatchInfo {
     private final Class<B> builderClass;
     // The key class can't be a type parameter, it varies in some subclasses
     private final Class<? extends ExtensionKey> keyClass;
 
-    NxMatchInfoHelper(Class<? extends ExtensionKey> keyClass, NxMatchFieldType fieldType, long[] matchValues) {
-        super(fieldType, matchValues);
-        this.keyClass = keyClass;
-        builderClass = SuperTypeUtil.getTypeParameter(getClass(), 1);
-    }
-
-    NxMatchInfoHelper(Class<? extends ExtensionKey> keyClass, NxMatchFieldType fieldType, String[] matchValues) {
-        super(fieldType, matchValues);
+    protected NxMatchInfoHelper(Class<? extends ExtensionKey> keyClass) {
         this.keyClass = keyClass;
         builderClass = SuperTypeUtil.getTypeParameter(getClass(), 1);
     }
