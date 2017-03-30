@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.interfaces;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -19,6 +20,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface IInterfaceManager {
 
@@ -79,6 +84,18 @@ public interface IInterfaceManager {
     String getPortNameForInterface(String dpnId, String interfaceName);
 
     String getParentRefNameForInterface(String interfaceName);
+
+    Map<String, OvsdbTerminationPointAugmentation> getTerminationPointCache();
+
+    OvsdbTerminationPointAugmentation getTerminationPointForInterface(String interfaceName);
+
+    OvsdbBridgeAugmentation getOvsdbBridgeForInterface(String interfaceName);
+
+    OvsdbBridgeAugmentation getOvsdbBridgeForNodeIid(InstanceIdentifier<Node> nodeIid);
+
+    List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId);
+
+    List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId);
 
     void updateInterfaceParentRef(String interfaceName, String parentInterface);
 
