@@ -88,8 +88,13 @@ public class TerminationPointStateListener extends
         }
         InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
         String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
-        interfaceMgrProvider.addTerminationPointForInterface(newInterfaceName, tpNew);
-        interfaceMgrProvider.addNodeIidForInterface(newInterfaceName, nodeIid);
+        if (newInterfaceName == null && InterfaceManagerCommonUtils.isTunnelPort(tpNew.getName())) {
+            interfaceMgrProvider.addTerminationPointForInterface(tpNew.getName(), tpNew);
+            interfaceMgrProvider.addNodeIidForInterface(tpNew.getName(), nodeIid);
+        } else {
+            interfaceMgrProvider.addTerminationPointForInterface(newInterfaceName, tpNew);
+            interfaceMgrProvider.addNodeIidForInterface(newInterfaceName, nodeIid);
+        }
 
         if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
             return;
