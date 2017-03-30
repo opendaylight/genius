@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_a6adb78a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 751,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T19:44:23Z",
+      "side": 1,
+      "message": "I spent good hour or so debating how to best handle SFC use case and keep it generic enough. I didn\u0027t want to reuse getPortsOnbridge coz it would increase no. of iterations to get what we want in a scale setup where there can be lots of ports on a bridge.\n\nOne drawback of this one is that so far genius has abstracted underlying OVSDB constructs from all applications, returning TerminationPoint breaks it, but idea of these APIs is to give power to applications to use. TP gives information not available in any of Genius constructs.",
+      "revId": "f041179346d864a3f8d2eee6595cc156900205f1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
