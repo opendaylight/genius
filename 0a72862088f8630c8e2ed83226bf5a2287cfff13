@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_fa1bdd7d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T05:55:22Z",
+      "side": 1,
+      "message": "surprised we don\u0027t have util method for this already.",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b5184676",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T05:55:22Z",
+      "side": 1,
+      "message": "what will this code do for LogicalGroup? Dont we need to skip creation of tunnel port on bridge for this?",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d54b4a57",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T05:55:22Z",
+      "side": 1,
+      "message": "why is this needed? Why not leverage batching? What is drawback of batching, or value add of not using batching here?",
+      "range": {
+        "startLine": 216,
+        "startChar": 8,
+        "endLine": 220,
+        "endChar": 9
+      },
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9568a2bb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T05:55:22Z",
+      "side": 1,
+      "message": "what is this used for?",
+      "range": {
+        "startLine": 246,
+        "startChar": 15,
+        "endLine": 246,
+        "endChar": 26
+      },
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_159cb2bf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 268,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-30T05:55:22Z",
+      "side": 1,
+      "message": "the spec says vxlan, but in theory this could work with GRE too if we take tunnelType as parameter to this. It will be a whole new spec though, so can probably address it if a use case comes up.\n\nAlso, what is the tunnel-type in tunnel-aggregation at http://docs.opendaylight.org/en/latest/submodules/genius/docs/specs/multiple-vxlan-tunnels.html#configuration-impact",
+      "revId": "0a72862088f8630c8e2ed83226bf5a2287cfff13",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
