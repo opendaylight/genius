@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_d56cea9e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T06:52:32Z",
+      "side": 1,
+      "message": "Correct. Thanks, Vishal.",
+      "parentUuid": "fafc7978_fa347dfc",
+      "revId": "d92b59fe6d1ed657b0b4ab9e10bca86cf945ea7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5ae829b4",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 15
@@ -48,6 +66,24 @@
       "writtenOn": "2017-03-30T02:16:30Z",
       "side": 1,
       "message": "One basic doubt here... we already have a southbound inventory listener, which iterates through the list of child interfaces for a parent-interface and populate interface-state for all children..will that help in this case? or is it like, the logical group interface for a tunnel will come far later in the picture than creating the actual tunnel port?",
+      "revId": "d92b59fe6d1ed657b0b4ab9e10bca86cf945ea7e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_55de3a40",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T06:52:32Z",
+      "side": 1,
+      "message": "As I understand, InterfaceInventoryStateListener will never called for Logical tunnel because it doesn\u0027t have the OF port, it\u0027s NodeConnector doesn\u0027t exist.  Am I wrong?",
+      "parentUuid": "fafc7978_5ae829b4",
       "revId": "d92b59fe6d1ed657b0b4ab9e10bca86cf945ea7e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
