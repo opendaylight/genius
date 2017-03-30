@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_b01a1115",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-30T14:59:39Z",
+      "side": 1,
+      "message": "Do we ever want the builder to be used as a builder? Wouldn\u0027t it be better to return the RcpResult instead, and use \"return newRpcErrorResult(...);\" as a pattern?",
+      "revId": "0918a53a459ac121631ed9c014c961bd25f1d972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_102afd2b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 375,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-03-30T14:59:39Z",
+      "side": 1,
+      "message": "This should be removed.",
+      "revId": "0918a53a459ac121631ed9c014c961bd25f1d972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
