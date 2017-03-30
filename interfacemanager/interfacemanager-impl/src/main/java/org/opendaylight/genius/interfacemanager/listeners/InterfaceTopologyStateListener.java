@@ -130,9 +130,6 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier, bridgeNew, dataBroker);
         }
     }
@@ -149,9 +146,6 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsInterfaceTopologyStateRemoveHelper.removePortFromBridge(instanceIdentifier, bridgeNew,
                     dataBroker);
         }
@@ -171,9 +165,6 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // If another renderer(for eg : CSS) needs to be supported, check
-            // can be performed here
-            // to call the respective helpers.
             return OvsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld,
                     dataBroker);
         }
