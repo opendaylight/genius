@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b52fa687",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T05:44:59Z",
+      "side": 1,
+      "message": "Yes, you are right, it\u0027s same actions, but I can\u0027t integrate the Logical tunnel to the common actions of other types, since it\u0027s \u0027default action\u0027 will be different from VLAN and \u0027not default\u0027 is different from VXLAN (if I do this, then the switch-case looks not readable :) \nTherefore, if you don\u0027t mind, I just declare a function for the common code and use it for both: VLAN and Logical tunnel cases. \nThanks.",
+      "parentUuid": "fafc7978_3ab445d0",
+      "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1abb41e6",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 9
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5558fa31",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 802,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T05:44:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_1abb41e6",
+      "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_1a898126",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 9
@@ -47,6 +83,24 @@
       "writtenOn": "2017-03-30T01:38:30Z",
       "side": 1,
       "message": "I think this should be implemented in ItmUtils so that it can be used from other classes if required, in future.",
+      "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_355bb62f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 810,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-03-30T05:44:59Z",
+      "side": 1,
+      "message": "Done.\nThanks.",
+      "parentUuid": "fafc7978_1a898126",
       "revId": "14182cc9b20ab4d5bb6439cf26cad8bc14e2efad",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
