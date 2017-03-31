@@ -16,6 +16,24 @@
       "revId": "f26ccf44958c8d329819d18fa805e7cd403623d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7ce7e212",
+        "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/DumpIfmCache.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-03-31T06:47:47Z",
+      "side": 1,
+      "message": "That is the plan. For now I pushed just this so Brady could troubleshoot. But there is also counterargument of moving cache to infrautils and if we should wait for it and leverage it. Any idea what is status of that? Any spec for caching in InfraUtils?",
+      "parentUuid": "fafc7978_5c35bed9",
+      "revId": "f26ccf44958c8d329819d18fa805e7cd403623d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
