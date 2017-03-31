@@ -137,4 +137,11 @@ public class MetaDataUtil {
         return METADATA_MASK_LPORT_TAG.shiftRight(32).longValue();
     }
 
+    public static long getElanMaskForReg() {
+        return METADATA_MASK_SERVICE.shiftRight(24).longValue();
+    }
+
+    public static long getVpnIdMaskForReg() {
+        return METADATA_MASK_VRFID.shiftRight(1).longValue();
+    }
 }
