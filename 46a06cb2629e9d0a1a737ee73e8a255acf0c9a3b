@@ -51,6 +51,24 @@
       "revId": "46a06cb2629e9d0a1a737ee73e8a255acf0c9a3b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_c06768e9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-03T08:54:35Z",
+      "side": 1,
+      "message": "i meant we will have similar race conditions in Egress Service Binding as well, right?",
+      "parentUuid": "da01753e_85d1f2cf",
+      "revId": "46a06cb2629e9d0a1a737ee73e8a255acf0c9a3b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
