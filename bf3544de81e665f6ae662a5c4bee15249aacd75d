@@ -260,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "da01753e_06586855",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T20:35:36Z",
+      "side": 1,
+      "message": "I only answered half your question. Couldn\u0027t settle on a class to use as type. Should it be IfType as defined in ietf-interface, or InterfaceType as defined in OVSDB? ietf-interace only says IfL2Vlan or IfTunnel. what if we also want to distinguish Vxlan vs Gre? We can always go back and improve these. If brady is okay with all tunnels, irrespective of type, I can use the IfType as that is what IFM exposes to applications.",
+      "parentUuid": "da01753e_c63940da",
+      "range": {
+        "startLine": 753,
+        "startChar": 51,
+        "endLine": 753,
+        "endChar": 73
+      },
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_e647244a",
         "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/DumpIfmCache.java",
         "patchSetId": 8
