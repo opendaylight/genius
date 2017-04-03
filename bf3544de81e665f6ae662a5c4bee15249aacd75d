@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_66bb3473",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "This is needed in interfacemanager-shell. Unless we move CLI code back to -impl, this is needed.",
+      "parentUuid": "da01753e_665cd426",
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_a63d1cbe",
         "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_c6af802a",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "will do. in fact we will need javadocs for all these.",
+      "parentUuid": "da01753e_a63d1cbe",
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_eb2b6d92",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 8
@@ -47,6 +83,30 @@
       "writtenOn": "2017-04-03T12:31:35Z",
       "side": 1,
       "message": "Should this be public? Seems like the cache should be private and the methods public.",
+      "range": {
+        "startLine": 559,
+        "startChar": 58,
+        "endLine": 559,
+        "endChar": 82
+      },
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a6acfc36",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 559,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "It is so. That is why we\u0027re returning copy of cache, not original cache. At least that is my intention with this method as per what Stackoverflow told me.",
+      "parentUuid": "da01753e_eb2b6d92",
       "range": {
         "startLine": 559,
         "startChar": 58,
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "da01753e_06aa2819",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 734,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "Naming, I am not sure of. We d normally use portName for TerminationPoint as well as Port is what is used in OVSDB tables. Interface would\u0027ve confused further. Can rename to TerminationPoint.",
+      "parentUuid": "da01753e_26048c14",
+      "range": {
+        "startLine": 734,
+        "startChar": 51,
+        "endLine": 734,
+        "endChar": 67
+      },
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_2652cc13",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 8
@@ -93,6 +177,30 @@
       "writtenOn": "2017-04-03T12:31:35Z",
       "side": 1,
       "message": "Does the dpnId equate to dpid? Either way we should javadoc the api\u0027s and add usage notes.",
+      "range": {
+        "startLine": 736,
+        "startChar": 80,
+        "endLine": 736,
+        "endChar": 85
+      },
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a6735ce6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 736,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "yes, but format tends to be different. Common practice I\u0027ve seen in our code is dpnId refers to BigInteger version of DatapathId as used in NodeConnectorId [DataPathNodeId] and dpid to DataPathId in hex-string format in OVSDB.",
+      "parentUuid": "da01753e_2652cc13",
       "range": {
         "startLine": 736,
         "startChar": 80,
@@ -128,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "da01753e_464a7084",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 753,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "Yeah, I considered doing that, but this is more optimal. Else we will first get all ports and then cycle through them to find ones that match. Log(n) vs Log(n^2) if my mathematics is correct. May not make much of difference normally but grows in scale setup. Unless Java folks can suggest a better way to do it without duplication of code.",
+      "parentUuid": "da01753e_c63940da",
+      "range": {
+        "startLine": 753,
+        "startChar": 51,
+        "endLine": 753,
+        "endChar": 73
+      },
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_e647244a",
         "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/DumpIfmCache.java",
         "patchSetId": 8
@@ -139,6 +271,30 @@
       "writtenOn": "2017-04-03T12:31:35Z",
       "side": 1,
       "message": "2017",
+      "range": {
+        "startLine": 2,
+        "startChar": 17,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "bf3544de81e665f6ae662a5c4bee15249aacd75d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_264f6c94",
+        "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/DumpIfmCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-03T14:36:42Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "da01753e_e647244a",
       "range": {
         "startLine": 2,
         "startChar": 17,
