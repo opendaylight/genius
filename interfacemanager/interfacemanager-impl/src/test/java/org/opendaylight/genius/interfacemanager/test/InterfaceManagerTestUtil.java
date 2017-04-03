@@ -44,6 +44,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -65,7 +66,9 @@ public class InterfaceManagerTestUtil {
     public static final String PARENT_INTERFACE = "tap23701c04-7e";
     public static final String INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a218";
     public static final String TUNNEL_INTERFACE_NAME = "tun414a856a7a4";
+    public static final String HWVTEP_INTERFACE_NAME = "tun414a856a7a5";
     public static final String TRUNK_INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a219";
+
     public static final String DPN_ID_1 = "1";
     public static final String PORT_NO_1 = "2";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
@@ -180,8 +183,23 @@ public class InterfaceManagerTestUtil {
         return builder.build();
     }
 
-    static InstanceIdentifier<TerminationPoint> getTerminationPointId(InstanceIdentifier<?> bridgeIid,
-                                                                      String portName) {
+    public static Interface buildHWvTEPInterface(NodeIdentifier nodeId, String ifName, String desc, boolean enabled,
+                                                 Class<? extends TunnelTypeBase> tunType) {
+        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+            .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
+        ParentRefs parentRefs = new ParentRefsBuilder().setNodeIdentifier(Arrays.asList(nodeId)).build();
+        builder.addAugmentation(ParentRefs.class, parentRefs);
+        IpAddress remoteIp = new IpAddress(Ipv4Address.getDefaultInstance("1.1.1.1"));
+        IpAddress localIp =  new IpAddress(Ipv4Address.getDefaultInstance("2.2.2.2"));
+        IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(localIp)
+                .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(true)
+                .setMonitorEnabled(false).build();
+        builder.addAugmentation(IfTunnel.class, tunnel);
+        return builder.build();
+    }
+
+    public static InstanceIdentifier<TerminationPoint> getTerminationPointId(InstanceIdentifier<?> bridgeIid,
+                                                                             String portName) {
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
                         org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns
