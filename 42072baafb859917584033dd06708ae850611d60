@@ -1,0 +1,192 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_05e7c241",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "could you extract lines #387-#391 and #398-#401 to a method?",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_9a2151b7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "else log?",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_fa2e9da4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "can this be taken using getEgressActionsForInterface? this code has to be robust against changes in dispatcher table name, reg usage etc.",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_da2bd992",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "check non null",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a564f6e5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "if any of those are abnormal please add a log",
+      "range": {
+        "startLine": 267,
+        "startChar": 0,
+        "endLine": 273,
+        "endChar": 13
+      },
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_056222d8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "No need to call both since the second one is attempting to call from the cache first",
+      "range": {
+        "startLine": 274,
+        "startChar": 1,
+        "endLine": 277,
+        "endChar": 3
+      },
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_65aa0ed6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "Could you refactor this to ifm? a new method getting ifState and returning port number",
+      "range": {
+        "startLine": 313,
+        "startChar": 1,
+        "endLine": 316,
+        "endChar": 52
+      },
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a547d61c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 327,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "I think this method came up a bit complicated since you are trying to unify all cases into one logic.\nCould you start by calling logicalTunnelIfaceName.equals(ifaceState.getName()) and split it to smaller method?",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_45370ab1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "there is no null check before using this",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_65816e4a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-03T06:28:33Z",
+      "side": 1,
+      "message": "print the name of the logical group in all logs",
+      "revId": "42072baafb859917584033dd06708ae850611d60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
