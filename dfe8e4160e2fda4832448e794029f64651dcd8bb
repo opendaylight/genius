@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_60f83ce6",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 10
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-03T09:16:27Z",
+      "side": 1,
+      "message": "use \u003cversion\u003e${genius.version} instead of hard-coded 0.2.0-SNAPSHOT",
+      "revId": "dfe8e4160e2fda4832448e794029f64651dcd8bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4037f8b0",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-03T09:16:27Z",
+      "side": 1,
+      "message": "why null check?  This should never be null, and if it is null, then it is a bug which we would like to see by hitting an NPE, but my this silently not happening, I think; so I would not null check here..",
+      "revId": "dfe8e4160e2fda4832448e794029f64651dcd8bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_c0712879",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-03T09:16:27Z",
+      "side": 1,
+      "message": "why?  In a test, I would just let this \"bubble up\" via throws TransactionCommitFailedException ... or, if you have a big problem with having to add that \"throws\" everywhere (personally I think it\u0027s OK and the Right Thing to do), then you would have to rethrow it as some runtime exception, such as perhaps an IllegalStateException or even a AssertionError (but again, I would just not catch it at all and let it propagate by declaring \"throws TransactionCommitFailedException\")",
+      "revId": "dfe8e4160e2fda4832448e794029f64651dcd8bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
