@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_006210d8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-04-03T08:55:55Z",
+      "side": 1,
+      "message": "(in mdsal-binding-test-utils\u0027s dependencies)\n\notherwise it makes it hard to track the upstream change down :-(.",
+      "revId": "66850ac0072f7506e2c4529bc656d4d94aa36756",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
