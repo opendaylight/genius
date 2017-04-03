@@ -174,8 +174,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private boolean isTunnelInterfaceUp(StateTunnelList intf) {
-        boolean interfaceUp = (intf.getOperState().equals(Interface.OperStatus.Up)) ? true : false ;
-        return interfaceUp ;
+        return (intf.getOperState().equals(TunnelOperStatus.Up));
     }
 
     private String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
@@ -292,14 +291,14 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
                         isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
-                if (update.getOperState().equals(Interface.OperStatus.Unknown)) {
+                if (update.getOperState().equals(TunnelOperStatus.Unknown)) {
                     return null;
-                } else if (update.getOperState().equals(Interface.OperStatus.Up)) {
+                } else if (update.getOperState().equals(TunnelOperStatus.Up)) {
                     LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ",
                             srcDpId, dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-                } else if (update.getOperState().equals(Interface.OperStatus.Down)) {
+                } else if (update.getOperState().equals(TunnelOperStatus.Down)) {
                     LOG.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
