@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_e9d090f9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-04T16:25:58Z",
+      "side": 1,
+      "message": "this most probably not static either",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_49bb9cc4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-04T16:25:58Z",
+      "side": 1,
+      "message": "whoa - this definitely not \"static\" here, but \"final\" instead!",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_29dbb81c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-04T16:25:58Z",
+      "side": 1,
+      "message": "why is this method static?  You shouldn\u0027t have to.. just wherever you need to call this, you have to @Inject ItmTunnelAggregationHelper instance - then you can use isTunnelAggregationEnabled() as a non static",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_09d8741c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-04T16:25:58Z",
+      "side": 1,
+      "message": "as above, should not have to be static",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_6904a07e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-04T16:25:58Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a9fe8869",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-04T16:25:58Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
