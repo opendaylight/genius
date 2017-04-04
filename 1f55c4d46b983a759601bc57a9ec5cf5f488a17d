@@ -70,6 +70,30 @@
       "revId": "1f55c4d46b983a759601bc57a9ec5cf5f488a17d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_9341370e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-04T09:36:07Z",
+      "side": 1,
+      "message": "I think it should be\nif(!InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew) || parentRefs \u003d\u003d null || parentRefs.getParentInterface() \u003d\u003d null )",
+      "parentUuid": "da01753e_b3c0bb7d",
+      "range": {
+        "startLine": 116,
+        "startChar": 0,
+        "endLine": 117,
+        "endChar": 86
+      },
+      "revId": "1f55c4d46b983a759601bc57a9ec5cf5f488a17d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
