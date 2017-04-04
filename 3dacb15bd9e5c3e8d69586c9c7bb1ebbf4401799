@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_13770704",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-04T13:59:00Z",
+      "side": 1,
+      "message": "The lower-layer-if is important, because this is only parameter we cut out the dpn id from.",
+      "parentUuid": "da01753e_1376e73e",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_d3a29f99",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 21
@@ -30,6 +48,24 @@
       "writtenOn": "2017-04-04T11:06:44Z",
       "side": 1,
       "message": "same for physAddress",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_f3736313",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-04T13:59:00Z",
+      "side": 1,
+      "message": "it will be \u0027null\u0027 for the logical tunnel.",
+      "parentUuid": "da01753e_d3a29f99",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_eeaed6e6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-04T13:59:00Z",
+      "side": 1,
+      "message": "You are right. Fixed. Thanks.",
+      "parentUuid": "da01753e_93fe576a",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_b33b9b37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
         "patchSetId": 21
@@ -64,6 +118,24 @@
       "writtenOn": "2017-04-04T11:06:44Z",
       "side": 1,
       "message": "Shouldn\u0027t it be done in interface manager upon logical group interface creation ? It has some advantages.\n1. select group id can be derived from lport tag of logical group interface.\n2. select group buckets can be updated on vxlan tunnel member op status.",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4e30c256",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-04T13:59:00Z",
+      "side": 1,
+      "message": "We allocate the pool in certain range. Since we can\u0027t control the lport tag range, we can exceed the range allocated for the vxlan group and it will intersect with other applications pools.\n We create an empty group while its itm logical tunnel gets up, because ITM is responsible for all tunnels related staff. The group buckets list will be updated as the interface of each vxlan tunnel gets up or when the child-info model is updated for the logical tunnel group (we will listen for InterfaceParentEntry changes). \nPlease see the changes in the review c/53541.",
+      "parentUuid": "da01753e_b33b9b37",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
