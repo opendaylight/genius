@@ -22,6 +22,30 @@
       "revId": "1f55c4d46b983a759601bc57a9ec5cf5f488a17d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_b3c0bb7d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-04T09:34:25Z",
+      "side": 1,
+      "message": "It is more like if(cond1 || (cond2 \u0026\u0026 !cond3)) and that is the way I wrote it, but Eclipse/checkstyle expanded it. The second one it warns about unnecessary nesting.",
+      "parentUuid": "da01753e_d3673fe9",
+      "range": {
+        "startLine": 116,
+        "startChar": 0,
+        "endLine": 117,
+        "endChar": 86
+      },
+      "revId": "1f55c4d46b983a759601bc57a9ec5cf5f488a17d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
