@@ -39,35 +39,20 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTest}.
  *
  * <p>
- * This class looks a little bit more complicated than it could and later will
- * be just because interfacemanager is still using CSS instead of BP
- * with @Inject.
- *
- * <p>
- * Please DO NOT copy/paste this class as-is into other projects; this is
- * intended to be temporary, until interfacemanager is switch from CSS to BP.
- *
- * <p>
- * For "proper" *Module examples, please see the AclServiceModule and
+ * For other *Module examples, please see the AclServiceModule and
  * AclServiceTestModule or ElanServiceTestModule instead.
  *
  * @author Michael Vorburger
  */
 public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerTestModule.class);
-
     @Override
     protected void configureBindings() throws UnknownHostException {
-        // TODO Ordering as below.. hard to do currently, because of interdeps.
-        // due to CSS
         // Bindings for services from this project
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
