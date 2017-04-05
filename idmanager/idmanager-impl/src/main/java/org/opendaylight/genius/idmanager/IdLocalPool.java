@@ -15,6 +15,7 @@ public class IdLocalPool {
     private final IdUtils idUtils;
     private volatile IdHolder availableIds; // List of available IDs
     private volatile IdHolder releasedIds; // List of released IDs
+    private volatile IdHolder allocatedIds = null; // List of allocated IDs
 
     public IdLocalPool(IdUtils idUtils, String poolName, long low, long high) {
         this.poolName = poolName;
@@ -27,6 +28,15 @@ public class IdLocalPool {
         this.poolName = poolName;
         this.idUtils = idUtils;
         this.releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
+    }
+
+    public IdLocalPool(IdUtils idUtils, String poolName, boolean enhancedIdAllocation) {
+        this.poolName = poolName;
+        this.idUtils = idUtils;
+        this.releasedIds = new ReleasedIdHolder(idUtils, 0);
+        if (enhancedIdAllocation) {
+            this.allocatedIds = new AllocatedIdHolder(idUtils);
+        }
     }
 
     @Override
@@ -99,6 +109,14 @@ public class IdLocalPool {
 
     public void setReleasedIds(IdHolder releasedIds) {
         this.releasedIds = releasedIds;
+    }
+
+    public IdHolder getAllocatedIds() {
+        return allocatedIds;
+    }
+
+    public void setAllocatedIds(AllocatedIdHolder allocatedIds) {
+        this.allocatedIds = allocatedIds;
     }
 
     public IdLocalPool deepCopyOf() {

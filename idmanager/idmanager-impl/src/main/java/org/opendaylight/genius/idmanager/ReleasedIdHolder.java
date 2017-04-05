@@ -81,6 +81,12 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     }
 
     @Override
+    public Optional<String> allocateId(Long id, Long expirationTimeSec, String idKey) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public void addId(long id) {
         long curTimeSec = System.currentTimeMillis() / 1000;
         DelayedIdEntry entry = new DelayedIdEntry(id, curTimeSec + timeDelaySec);
@@ -89,6 +95,11 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
         }
         availableIdCount.incrementAndGet();
         delayedEntries.add(entry);
+    }
+
+    @Override
+    public void addId(Long id, Long expirationTimeSec, String idKey) {
+        // TODO Auto-generated method stub
     }
 
     @Override
@@ -104,6 +115,12 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     }
 
     @Override
+    public boolean isIdAvailable(Long id) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
     public long getAvailableIdCount() {
         long availableDelayedEntries = availableIdCount.get();
         int index = INITIAL_INDEX;
@@ -115,6 +132,11 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
             index++;
         }
         return index;
+    }
+
+    @Override
+    public void removeId(long id) {
+        // TODO Auto-generated method stub
     }
 
     public long getTimeDelaySec() {

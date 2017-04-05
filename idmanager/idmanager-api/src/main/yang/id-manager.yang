@@ -47,6 +47,9 @@ module id-manager {
         container released-ids-holder {
             uses released-ids;
         }
+        container allocated-ids-holder {
+            uses allocated-ids;
+        }
       }
     }
 
@@ -86,6 +89,21 @@ module id-manager {
         }
     }
 
+    grouping allocated-ids {
+        list allocated-id-entries {
+            key "id";
+            leaf id {
+                type uint32;
+            }
+            leaf expired-time-sec {
+                type uint32;
+            }
+            leaf id-key { 
+                type string;
+            }
+        }
+    }
+
     rpc createIdPool {
         input {
             leaf pool-name {
@@ -96,6 +114,9 @@ module id-manager {
             }
             leaf high {
                 type uint32;
+            }
+            leaf enhanced-id-allocation {
+                type boolean;
             }
         }
     }
@@ -116,6 +137,12 @@ module id-manager {
              leaf id-key {
                 type string;
              }
+			 leaf id-value {
+	             type uint32;
+	         }
+             leaf expiration-time-sec {
+	             type uint32;
+	         }
         }
         output {
             leaf id-value {
