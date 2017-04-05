@@ -40,7 +40,7 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
     public List<ListenableFuture<Void>> call() throws Exception {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
-        List<Subnets> subnetList = new ArrayList<Subnets>();
+        List<Subnets> subnetList = new ArrayList<>();
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
         IpAddress tepIpAddress = null;
         BigInteger dpnId = BigInteger.valueOf(0);

@@ -101,9 +101,9 @@ public class OvsdbTepAddConfigHelper {
 
         if (subnetList == null || subnetList.isEmpty()) {
             if (subnetList == null) {
-                subnetList = new ArrayList<Subnets>();
+                subnetList = new ArrayList<>();
             }
-            List<Vteps> vtepList = new ArrayList<Vteps>();
+            List<Vteps> vtepList = new ArrayList<>();
             LOG.trace("Add TEP in transport-zone when no subnet-list.");
             addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepList, tepIpAddress, tzName, dpnId,
                 portName, ofTunnel, wrTx);
@@ -123,7 +123,7 @@ public class OvsdbTepAddConfigHelper {
             if (vtepList == null || vtepList.isEmpty()) {
                 //  case: vtep list does not exist or it has no elements
                 if (vtepList == null) {
-                    vtepList = new ArrayList<Vteps>();
+                    vtepList = new ArrayList<>();
                 }
                 LOG.trace("Add TEP in transport-zone when no vtep-list for specific subnet.");
                 addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepList, tepIpAddress, tzName,
@@ -243,14 +243,14 @@ public class OvsdbTepAddConfigHelper {
             ItmUtils.getUnknownTransportZoneFromITMConfigDS(tzName, dataBroker);
         if (unknownTz == null) {
             LOG.trace("Unhosted TransportZone does not exist.");
-            vtepList = new ArrayList<UnknownVteps>();
+            vtepList = new ArrayList<>();
             addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpid, ofTunnel, wrTx);
         } else {
             vtepList = unknownTz.getUnknownVteps();
             if (vtepList == null || vtepList.isEmpty()) {
                 //  case: vtep list does not exist or it has no elements
                 if (vtepList == null) {
-                    vtepList = new ArrayList<UnknownVteps>();
+                    vtepList = new ArrayList<>();
                 }
                 LOG.trace("Add TEP in unhosted TZ ({}) when no vtep-list in the TZ.", tzName);
                 addVtepIntoTepsNotHosted(vtepList, tepIpAddress, tzName, dpid, ofTunnel, wrTx);
