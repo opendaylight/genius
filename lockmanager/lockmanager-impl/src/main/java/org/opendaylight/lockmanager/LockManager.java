@@ -144,7 +144,7 @@ public class LockManager implements LockManagerService {
                     LOG.debug("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock, try {}", retry, e);
+                LOG.error("Unable to acquire lock, try {}", retry);
             }
             Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
@@ -166,7 +166,7 @@ public class LockManager implements LockManagerService {
                             retryCount);
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock, try {} of {}", retry, retryCount, e);
+                LOG.error("Unable to acquire lock, try {} of {}", retry, retryCount);
             }
             Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
