@@ -17,15 +17,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddWorker.class) ;
-    private String tepIp;
-    private String strDpid;
-    private String tzName;
-    private boolean ofTunnel;
-    private DataBroker dataBroker;
 
-    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel,
-                             DataBroker broker) {
+    private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddWorker.class) ;
+
+    private final String tepIp;
+    private final String strDpid;
+    private final String tzName;
+    private final boolean ofTunnel;
+    private final DataBroker dataBroker;
+
+    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel, DataBroker broker) {
         this.tepIp = tepIp;
         this.strDpid = strDpnId;
         this.tzName = tzName;
