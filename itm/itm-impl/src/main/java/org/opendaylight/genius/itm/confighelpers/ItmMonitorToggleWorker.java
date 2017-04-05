@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
@@ -29,14 +28,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorToggleWorker.class) ;
-    private DataBroker dataBroker;
-    private String tzone;
-    private boolean enabled;
-    private Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
-    public  ItmMonitorToggleWorker(String tzone,boolean enabled,
-                                   Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker) {
+    private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorToggleWorker.class);
+
+    private final DataBroker dataBroker;
+    private final String tzone;
+    private final boolean enabled;
+    private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+
+    public ItmMonitorToggleWorker(String tzone, boolean enabled,
+            Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.enabled = enabled;
@@ -49,12 +50,12 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         LOG.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(enabled,tzone,transaction);
+        toggleTunnelMonitoring(transaction);
         futures.add(transaction.submit());
         return futures;
     }
 
-    private void toggleTunnelMonitoring(Boolean enabled, String tzone, WriteTransaction transaction) {
+    private void toggleTunnelMonitoring(WriteTransaction transaction) {
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
         LOG.debug("toggleTunnelMonitoring: TunnelList size {}", tunnelList.size());
         InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
@@ -65,12 +66,12 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
                 dataBroker, ItmUtils.DEFAULT_CALLBACK);
         if (tunnelList != null && !tunnelList.isEmpty()) {
             for (String tunnel : tunnelList) {
-                toggle(tunnel, enabled, transaction);
+                toggle(tunnel, transaction);
             }
         }
     }
 
-    private void toggle(String tunnelInterfaceName, boolean enabled, WriteTransaction transaction) {
+    private void toggle(String tunnelInterfaceName, WriteTransaction transaction) {
         if (tunnelInterfaceName != null) {
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
             LOG.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {},  "
@@ -83,7 +84,3 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         }
     }
 }
-
-
-
-

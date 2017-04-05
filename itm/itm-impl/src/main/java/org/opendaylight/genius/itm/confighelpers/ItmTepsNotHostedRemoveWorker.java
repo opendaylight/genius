@@ -19,16 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepsNotHostedRemoveWorker.class);
+
     private final IpAddress tepIpAddress;
     private final String tzName;
     private final BigInteger dpnId;
     private final DataBroker dataBroker;
 
-
-    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress,
-        BigInteger dpnId, DataBroker broker) {
-
+    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId, DataBroker broker) {
         this.tepIpAddress = tepIpAddress;
         this.tzName = tzName;
         this.dpnId = dpnId;
