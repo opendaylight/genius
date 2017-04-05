@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "da01753e_dfc3be88",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-05T05:39:55Z",
+      "side": 1,
+      "message": "why do you still use ipAddresses, monitor attributes etc. for creating createLogicalTunnelInterface ? Just fill the Interface with what is required for logical group interface with new method buildLogicalGroupInterface in ItmUtils.",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_e9d090f9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
         "patchSetId": 22
