@@ -23,14 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepRemoveWorker.class);
-    private DataBroker dataBroker;
-    private List<DPNTEPsInfo> delDpnList ;
+
+    private final DataBroker dataBroker;
+    private final List<DPNTEPsInfo> delDpnList ;
     private List<DPNTEPsInfo> meshedDpnList ;
-    private IdManagerService idManagerService;
-    private IMdsalApiManager mdsalManager;
-    private List<HwVtep> cfgdHwVteps;
-    private TransportZone originalTZone;
+    private final IdManagerService idManagerService;
+    private final IMdsalApiManager mdsalManager;
+    private final List<HwVtep> cfgdHwVteps;
+    private final TransportZone originalTZone;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
                               DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
