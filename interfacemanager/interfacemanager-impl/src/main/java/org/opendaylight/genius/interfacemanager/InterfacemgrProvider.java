@@ -653,11 +653,11 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 return null;
             }
             parentRefName = getPortNameForInterface(dpnId, ovsdbTp.getName());
-            LOG.debug("Building parent ref for neutron port {}, using parentRefName {} acquired by external ID",
+            LOG.debug("Building parent ref for interface {}, using parentRefName {} acquired by external ID",
                     interfaceName, parentRefName);
         } else {
-            LOG.debug("Skipping parent ref for neutron port {}, as there is no termination point that references "
-                    + "this neutron port yet.", interfaceName);
+            LOG.debug("Skipping parent ref for interface {}, as there is no termination point that references "
+                    + "this interface yet.", interfaceName);
         }
 
         return parentRefName;
