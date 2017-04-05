@@ -15,3 +15,4 @@ Contents:
    itm-tunnel-auto-config
    service-binding-on-tunnels
    Load balancing and high availability of multiple VxLAN tunnels <multiple-vxlan-tunnels>
+   Ehnanced Id allocation for id-manager pools <enhanced-id-allocation>
