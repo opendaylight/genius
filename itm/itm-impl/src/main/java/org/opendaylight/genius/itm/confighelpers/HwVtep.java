@@ -23,7 +23,7 @@ public class HwVtep {
     private int vlanID;
     private String topoId;
     private String nodeId;
-    IpAddress hwIp;
+    private IpAddress hwIp;
 
     @Override
     public boolean equals(Object obj) {
