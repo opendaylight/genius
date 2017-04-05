@@ -106,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_0525f4c1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-05T17:10:45Z",
+      "side": 1,
+      "message": "OK I can see now how some of those workers are already done all wrong, and cleaning that up should not part of this change, that seems \"fair\"... so let\u0027s forget about it here, and perhaps clean it up separately?  I\u0027ll try to make a start with a new Gerrit - there should be no static in all those workers, and then once that\u0027s done, this could be changed as well and cleanly @Inject\u0027ed, later, separately, sounds like a plan? No more -1 from me on this then, just a +0.5 - I\u0027ll let others with full functional understanding judge this change and +1 it...",
+      "parentUuid": "da01753e_5fd06e53",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_09d8741c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
         "patchSetId": 22
