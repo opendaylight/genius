@@ -17,11 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepRemoveWorker.class) ;
-    private String tepIp;
-    private String strDpid;
-    private String tzName;
-    private DataBroker dataBroker;
+
+    private final String tepIp;
+    private final String strDpid;
+    private final String tzName;
+    private final DataBroker dataBroker;
 
     public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName, DataBroker broker) {
         this.tepIp = tepIp;
