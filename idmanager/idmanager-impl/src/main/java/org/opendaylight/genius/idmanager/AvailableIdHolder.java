@@ -38,13 +38,35 @@ public class AvailableIdHolder implements IdHolder {
     }
 
     @Override
+    public Optional<String> allocateId(Long id, Long expirationTimeSec, String idKey) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
     public void addId(long id) {
         throw new UnsupportedOperationException("addId is not supported");
     }
 
     @Override
+    public void addId(Long id, Long expirationTimeSec, String idKey) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
     public boolean isIdAvailable(long curTimeSec) {
         return high > cur.get();
+    }
+
+    @Override
+    public boolean isIdAvailable(Long id) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void removeId(long id) {
+        // TODO Auto-generated method stub
     }
 
     public long getLow() {
@@ -77,5 +99,9 @@ public class AvailableIdHolder implements IdHolder {
     @Override
     public void refreshDataStore(IdPoolBuilder idPoolBuilder) {
         idUtils.syncAvailableIdHolder(this, idPoolBuilder);
+    }
+
+    public boolean isIdInRange(long id) {
+        return (low <= id && id <= high);
     }
 }

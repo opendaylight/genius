@@ -14,8 +14,10 @@ import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -27,11 +29,17 @@ import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.idmanager.AllocatedIdHolder.AllocatedEntry;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.allocated.ids.AllocatedIdEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.allocated.ids.AllocatedIdEntriesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.allocated.ids.AllocatedIdEntriesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AllocatedIdsHolder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AllocatedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AvailableIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AvailableIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPools;
@@ -92,14 +100,21 @@ public class IdUtils {
                 .setReadyTimeSec(delayTime).build();
     }
 
+    public AllocatedIdEntries createAllocatedIdEntry(long idValue, long expiredTime, String idKey) {
+        return new AllocatedIdEntriesBuilder().setKey(new AllocatedIdEntriesKey(idValue)).setId(idValue)
+                .setExpiredTimeSec(expiredTime).setIdKey(idKey).build();
+    }
+
     protected IdPool createGlobalPool(String poolName, long low, long high, long blockSize) {
         AvailableIdsHolder availableIdsHolder = createAvailableIdsHolder(low, high, low - 1);
         ReleasedIdsHolder releasedIdsHolder = createReleasedIdsHolder(DEFAULT_AVAILABLE_ID_COUNT, 0);
+        AllocatedIdsHolder allocatedIdsHolder = createAllocatedIdsHolder();
         int size = (int) blockSize;
         return new IdPoolBuilder().setKey(new IdPoolKey(poolName))
                 .setBlockSize(size).setPoolName(poolName)
                 .setAvailableIdsHolder(availableIdsHolder)
-                .setReleasedIdsHolder(releasedIdsHolder).build();
+                .setReleasedIdsHolder(releasedIdsHolder)
+                .setAllocatedIdsHolder(allocatedIdsHolder).build();
     }
 
     public AvailableIdsHolder createAvailableIdsHolder(long low, long high, long cursor) {
@@ -113,6 +128,11 @@ public class IdUtils {
                 .setAvailableIdCount(availableIdCount)
                 .setDelayedTimeSec(delayTime).build();
         return releasedIdsHolder;
+    }
+
+    protected AllocatedIdsHolder createAllocatedIdsHolder() {
+        AllocatedIdsHolder allocatedIdsHolder = new AllocatedIdsHolderBuilder().build();
+        return allocatedIdsHolder;
     }
 
     public InstanceIdentifier<IdPool> getIdPoolInstance(String poolName) {
@@ -288,6 +308,20 @@ public class IdUtils {
         long high = availableIdHolder.getHigh();
         AvailableIdsHolder availableIdsHolder = createAvailableIdsHolder(low, high, cur);
         idPool.setAvailableIdsHolder(availableIdsHolder);
+    }
+
+    public void syncAllocatedIdHolder(AllocatedIdHolder allocatedIdHolder, IdPoolBuilder idPool) {
+        AllocatedIdsHolderBuilder allocatedIdsBuilder = new AllocatedIdsHolderBuilder();
+        Map<AllocatedIdEntriesKey, AllocatedIdEntries> allocatedIdEntriesList = new HashMap<>();
+        Map<Long, AllocatedEntry> allocatedIdList = allocatedIdHolder.getAllocatedEntries();
+        for (Map.Entry<Long, AllocatedEntry> entry : allocatedIdList.entrySet()) {
+            AllocatedIdEntries allocatedIdEntry = createAllocatedIdEntry(entry.getValue().getId(),
+                    entry.getValue().getExpiredTimeSec(), entry.getValue().getIdKey());
+            allocatedIdEntriesList.put(allocatedIdEntry.getKey(), allocatedIdEntry);
+        }
+        // Shai - convert map to list?? will list be ok? if so create a list from start
+        allocatedIdsBuilder.setAllocatedIdEntries(new ArrayList<AllocatedIdEntries>(allocatedIdEntriesList.values()));
+        idPool.setAllocatedIdsHolder(allocatedIdsBuilder.build());
     }
 
     public void updateChildPool(WriteTransaction tx, String poolName, String localPoolName) {

@@ -53,6 +53,10 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
                 .setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);
         idLocalPool.getReleasedIds().refreshDataStore(idPool);
+        // Enhanced mode
+        if (idLocalPool.getAllocatedIds() != null) {
+            idLocalPool.getAllocatedIds().refreshDataStore(idPool);
+        }
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
 
