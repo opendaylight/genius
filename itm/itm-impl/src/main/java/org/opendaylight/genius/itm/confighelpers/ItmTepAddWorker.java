@@ -21,13 +21,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger LOG = LoggerFactory.getLogger(ItmTepAddWorker.class) ;
-    private DataBroker dataBroker;
-    private IdManagerService idManagerService;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ItmTepAddWorker.class);
+
+    private final DataBroker dataBroker;
+    private final IdManagerService idManagerService;
     private List<DPNTEPsInfo> meshedDpnList;
-    private List<DPNTEPsInfo> cfgdDpnList ;
-    private IMdsalApiManager mdsalManager;
-    private List<HwVtep> cfgdHwVteps;
+    private final List<DPNTEPsInfo> cfgdDpnList ;
+    private final IMdsalApiManager mdsalManager;
+    private final List<HwVtep> cfgdHwVteps;
 
     public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker,
                            IdManagerService idManagerService, IMdsalApiManager mdsalManager) {

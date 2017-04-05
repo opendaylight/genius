@@ -153,7 +153,7 @@ public class OvsdbTepRemoveConfigHelper {
      * @param portName port name as a part of VtepsKey
      * @param wrTx WriteTransaction object
      */
-    protected static void removeVtepFromTZConfig(IpPrefix subnetMaskObj, String tzName, BigInteger dpnId,
+    private static void removeVtepFromTZConfig(IpPrefix subnetMaskObj, String tzName, BigInteger dpnId,
         String portName, WriteTransaction wrTx) {
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
         VtepsKey vtepkey = new VtepsKey(dpnId, portName);
@@ -231,7 +231,7 @@ public class OvsdbTepRemoveConfigHelper {
      * @param dpnId bridge datapath ID in BigInteger
      * @param wrTx WriteTransaction object
      */
-    protected static void removeVtepFromTepsNotHosted(String tzName, BigInteger dpnId,
+    private static void removeVtepFromTepsNotHosted(String tzName, BigInteger dpnId,
                                                       WriteTransaction wrTx) {
 
         UnknownVtepsKey unknownVtepkey = new UnknownVtepsKey(dpnId);
@@ -252,7 +252,7 @@ public class OvsdbTepRemoveConfigHelper {
      * @param tzName transport zone name in string
      * @param wrTx WriteTransaction object
      */
-    protected static void removeTzFromTepsNotHosted(String tzName, WriteTransaction wrTx) {
+    private static void removeTzFromTepsNotHosted(String tzName, WriteTransaction wrTx) {
         InstanceIdentifier<TepsNotHostedInTransportZone> tzTepsNotHostedTepPath =
                 InstanceIdentifier.builder(TransportZones.class)
                 .child(TepsNotHostedInTransportZone.class,
