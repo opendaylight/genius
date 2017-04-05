@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_1ff2669a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-05T11:29:59Z",
+      "side": 1,
+      "message": "parentRef is part of ietf interface, not of interface-state. There is existing code that takes the dpn from the interface-state. Do you suggest to change all the references and not count on lower-layer-if?",
+      "parentUuid": "da01753e_7f73b2b1",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_d3a29f99",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 21
@@ -108,6 +126,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_5f2b4eeb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-05T11:29:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_df673ee9",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_9fcad69f",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 21
@@ -119,6 +155,24 @@
       "writtenOn": "2017-04-05T05:39:55Z",
       "side": 1,
       "message": "Here operStatus is derived from parentRefs.getParentInterface(), but logical group interface doesn\u0027t have any parent interface. so operStatus should be based on its child tunnel member interfaces.",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_1f770604",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-05T11:29:59Z",
+      "side": 1,
+      "message": "I\u0027m sorry, but I don\u0027t understand your comment. I can\u0027t see where the OperStatus is derived from parentRef. operStatus is argument of this method and it can be changed if the interface config is not enabled for the tunnel members. Regarding the operStatus of the logical tunnel, the state update, based on the child\u0027s, is done in my next review https://git.opendaylight.org/gerrit/53541",
+      "parentUuid": "da01753e_9fcad69f",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -207,6 +261,24 @@
       "side": 1,
       "message": "The lportTag ranges from 1 to 65535. so you could add 300000 to lportTag for select group id.\nMoreover this helps in minimizing unnecessary id manager usage, applications to retrieve getEgressActions on the logical group interface b/w dpn\u0027s from interface manager.",
       "parentUuid": "da01753e_4e30c256",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_fff841c6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-05T11:29:59Z",
+      "side": 1,
+      "message": "I\u0027ve implemented this approach you have recommended. Note: I declared the function \"get logical tunnel group id\" in IfmUtils, because I\u0027ll need to know the group id in both IFM and ITM.",
+      "parentUuid": "da01753e_df4a9e26",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
