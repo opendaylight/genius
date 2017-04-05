@@ -27,12 +27,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<Void>>> {
-    private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorIntervalWorker.class) ;
-    private DataBroker dataBroker;
-    private String tzone;
-    private Integer interval;
 
-    public ItmMonitorIntervalWorker(String tzone,Integer interval, DataBroker dataBroker) {
+    private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorIntervalWorker.class) ;
+
+    private final DataBroker dataBroker;
+    private final String tzone;
+    private final Integer interval;
+
+    public ItmMonitorIntervalWorker(String tzone, Integer interval, DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.interval = interval;
@@ -40,16 +42,17 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval);
     }
 
-    @Override public List<ListenableFuture<Void>> call() {
+    @Override
+    public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         LOG.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(interval,tzone,transaction);
+        toggleTunnelMonitoring(transaction);
         futures.add(transaction.submit());
         return futures;
     }
 
-    private void toggleTunnelMonitoring(Integer interval, String tzone, WriteTransaction transaction) {
+    private void toggleTunnelMonitoring(WriteTransaction transaction) {
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
         LOG.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
         InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
@@ -58,12 +61,12 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
                 dataBroker, ItmUtils.DEFAULT_CALLBACK);
         if (tunnelList != null && !tunnelList.isEmpty()) {
             for (String tunnel : tunnelList) {
-                toggle(tunnel, interval, transaction);
+                toggle(tunnel, transaction);
             }
         }
     }
 
-    private void toggle(String tunnelInterfaceName, Integer interval, WriteTransaction transaction) {
+    private void toggle(String tunnelInterfaceName, WriteTransaction transaction) {
         if (tunnelInterfaceName != null) {
             LOG.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
@@ -74,5 +77,3 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         }
     }
 }
-
-

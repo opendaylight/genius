@@ -40,7 +40,7 @@ public class ItmTunnelStateUpdateHelper {
         StateTunnelList tunnelsState = ItmUtils.getTunnelState(broker, updated.getName(), stListId);
         StateTunnelListBuilder stlBuilder;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = (updated.getOperStatus().equals(Interface.OperStatus.Up)) ? (true) : (false);
+        boolean tunnelState = updated.getOperStatus().equals(Interface.OperStatus.Up);
         switch (updated.getOperStatus()) {
             case Up:
                 tunnelOperStatus = TunnelOperStatus.Up;
