@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_a20e9e32",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-05T11:29:59Z",
+      "side": 1,
+      "message": "Done. Please note, the new function still fills the IP address with  a default 0.0.0.0 just because Netvirt tunnel\u0027s listeners throw NPE\u0027s (NAT and VPN) if the ip not set. We\u0027ll take care of that as part of the Netvirt fixes.",
+      "parentUuid": "da01753e_dfc3be88",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_e9d090f9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
         "patchSetId": 22
@@ -64,6 +82,24 @@
       "writtenOn": "2017-04-04T16:25:58Z",
       "side": 1,
       "message": "why is this method static?  You shouldn\u0027t have to.. just wherever you need to call this, you have to @Inject ItmTunnelAggregationHelper instance - then you can use isTunnelAggregationEnabled() as a non static",
+      "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_5fd06e53",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 6465
+      },
+      "writtenOn": "2017-04-05T11:29:59Z",
+      "side": 1,
+      "message": "Hi Michael. The functions are called from ITM workers, which don\u0027t inject anything, i.e. itm workers have static methods only. To implement what you recommend, I need to inject this ItmTunnelAggregationHelper to TransportZoneListener and pull it out through all methods of the workers : ItmTepAddWorker, ItmInternalTunnelAddWorker, ItmTepRemoveWorker, ItmInternalTunnelDeleteWorker, etc. \nIs it really better?",
+      "parentUuid": "da01753e_29dbb81c",
       "revId": "bf5ff3487b917cf7fc5098e1abc75d8647ee0311",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
