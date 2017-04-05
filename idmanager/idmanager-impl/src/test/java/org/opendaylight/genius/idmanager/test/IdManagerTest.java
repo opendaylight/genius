@@ -648,35 +648,32 @@ public class IdManagerTest {
     private void requestIdsConcurrently(CountDownLatch latch, int numberOfTasks, Set<Long> idSet, boolean isSameKey) {
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < numberOfTasks; i++) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    Future<RpcResult<AllocateIdOutput>> result;
-                    if (!isSameKey) {
-                        result = idManager.allocateId(buildAllocateId(poolName,
-                                Thread.currentThread().getName()));
-                    } else {
-                        result = idManager.allocateId(buildAllocateId(poolName,
-                                idKey));
-                    }
-                    try {
-                        if (result.get().isSuccessful()) {
-                            Long idValue = result.get().getResult().getIdValue();
-                            assertTrue(idValue <= idStart + blockSize);
-                            if (isSameKey) {
-                                idSet.add(idValue);
-                            } else {
-                                assertTrue(idSet.add(idValue));
-                            }
+            executor.execute(() -> {
+                Future<RpcResult<AllocateIdOutput>> result;
+                if (!isSameKey) {
+                    result = idManager.allocateId(buildAllocateId(poolName,
+                            Thread.currentThread().getName()));
+                } else {
+                    result = idManager.allocateId(buildAllocateId(poolName,
+                            idKey));
+                }
+                try {
+                    if (result.get().isSuccessful()) {
+                        Long idValue = result.get().getResult().getIdValue();
+                        assertTrue(idValue <= idStart + blockSize);
+                        if (isSameKey) {
+                            idSet.add(idValue);
                         } else {
-                            RpcError error = result.get().getErrors().iterator().next();
-                            assertTrue(error.getCause().getMessage().contains("Ids exhausted for pool : " + poolName));
+                            assertTrue(idSet.add(idValue));
                         }
-                    } catch (ExecutionException | InterruptedException e) {
-                        assertTrue(e.getCause().getMessage(), false);
-                    } finally {
-                        latch.countDown();
+                    } else {
+                        RpcError error = result.get().getErrors().iterator().next();
+                        assertTrue(error.getCause().getMessage().contains("Ids exhausted for pool : " + poolName));
                     }
+                } catch (ExecutionException | InterruptedException e) {
+                    assertTrue(e.getCause().getMessage(), false);
+                } finally {
+                    latch.countDown();
                 }
             });
         }
