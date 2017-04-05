@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_7f73b2b1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-05T05:39:55Z",
+      "side": 1,
+      "message": "parentRefs already has dpId, so I don\u0027t see a need of having it in lower-layer-if (this should actually represent the interface in ovs).",
+      "parentUuid": "da01753e_13770704",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_d3a29f99",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 21
@@ -66,6 +84,41 @@
       "side": 1,
       "message": "it will be \u0027null\u0027 for the logical tunnel.",
       "parentUuid": "da01753e_d3a29f99",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_df673ee9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-05T05:39:55Z",
+      "side": 1,
+      "message": "you don\u0027t have to setPhysAddress because it is null.",
+      "parentUuid": "da01753e_f3736313",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_9fcad69f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-05T05:39:55Z",
+      "side": 1,
+      "message": "Here operStatus is derived from parentRefs.getParentInterface(), but logical group interface doesn\u0027t have any parent interface. so operStatus should be based on its child tunnel member interfaces.",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -136,6 +189,24 @@
       "side": 1,
       "message": "We allocate the pool in certain range. Since we can\u0027t control the lport tag range, we can exceed the range allocated for the vxlan group and it will intersect with other applications pools.\n We create an empty group while its itm logical tunnel gets up, because ITM is responsible for all tunnels related staff. The group buckets list will be updated as the interface of each vxlan tunnel gets up or when the child-info model is updated for the logical tunnel group (we will listen for InterfaceParentEntry changes). \nPlease see the changes in the review c/53541.",
       "parentUuid": "da01753e_b33b9b37",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_df4a9e26",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-05T05:39:55Z",
+      "side": 1,
+      "message": "The lportTag ranges from 1 to 65535. so you could add 300000 to lportTag for select group id.\nMoreover this helps in minimizing unnecessary id manager usage, applications to retrieve getEgressActions on the logical group interface b/w dpn\u0027s from interface manager.",
+      "parentUuid": "da01753e_4e30c256",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
