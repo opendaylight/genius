@@ -135,17 +135,20 @@ public class LockManager implements LockManagerService {
     private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
+        String lockNameSynchronizer = LockManagerUtils.getLockSynchronizerName(lockData.getLockName());
         for (int retry = 1;; retry++) {
             try {
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    LOG.info("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    LOG.info("Already locked after waiting, try {}", retry);
                 }
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock, try {}", retry, e);
             }
-            Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
+            synchronized(lockNameSynchronizer) {
+                lockNameSynchronizer.wait();
+            }
         }
     }
 

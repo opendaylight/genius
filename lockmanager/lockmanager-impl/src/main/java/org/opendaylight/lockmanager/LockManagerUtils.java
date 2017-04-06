@@ -50,4 +50,9 @@ public class LockManagerUtils {
         return new LockBuilder().setKey(new LockKey(lockName)).setLockName(lockName)
                 .setLockOwner(Thread.currentThread().getName()).build();
     }
+
+    public static String getLockSynchronizerName(String lockName) {
+        String lockSynchronizerName = ("lock-" + lockName).intern();
+        return lockSynchronizerName;
+    }
 }
