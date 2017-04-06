@@ -10,9 +10,9 @@ package org.opendaylight.resourcemanager.tests;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.idmanager.IdManager;
-import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.resourcemanager.ResourceManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.lockmanager.LockListener;
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -34,12 +34,10 @@ public class ResourceManagerTestModule extends AbstractGuiceJsr250Module {
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
 
-        LockManagerService lockManager = new LockManager(dataBroker);
-        bind(LockManagerService.class).toInstance(lockManager);
+        bind(LockManagerService.class).to(LockManager.class);
+        bind(LockListener.class);
 
-        IdUtils idUtils = new IdUtils();
-        IdManagerService idManager = new IdManager(dataBroker, lockManager, idUtils);
-        bind(IdManagerService.class).toInstance(idManager);
+        bind(IdManagerService.class).to(IdManager.class);
         bind(ResourceManagerService.class).to(ResourceManager.class);
     }
 }
