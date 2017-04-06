@@ -18,12 +18,12 @@ import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExt
 
 class ExpectedInterfaceState {
     static def newInterfaceState(Integer lportTag, String interfaceName, OperStatus opState,
-        Class<? extends InterfaceType> ifType) {
+        Class<? extends InterfaceType> ifType, String dpnId) {
         new InterfaceBuilder >> [
             adminStatus = AdminStatus.Up
             ifIndex = lportTag
             lowerLayerIf = #[
-                "openflow:1:2"
+                "openflow:"+dpnId+":2"
             ]
             name = interfaceName
             operStatus = opState
