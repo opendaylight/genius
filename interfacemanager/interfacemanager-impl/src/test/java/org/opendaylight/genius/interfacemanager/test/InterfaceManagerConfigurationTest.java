@@ -9,10 +9,14 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_1;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_2;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.PARENT_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.TRUNK_INTERFACE_NAME;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.TUNNEL_INTERFACE_NAME;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.waitTillOperationCompletes;
+
 import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
 import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
@@ -32,6 +36,7 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
@@ -141,15 +146,13 @@ public class InterfaceManagerConfigurationTest {
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule(),
         new TestableDataTreeChangeListenerModule());
 
-    private static final BigInteger DPN_ID = BigInteger.valueOf(1);
-
     @Inject DataBroker dataBroker;
     @Inject OdlInterfaceRpcService odlInterfaceRpcService;
     @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     @Inject AsyncEventsWaiter asyncEventsWaiter;
 
     @Before
-    public void start() throws InterruptedException {
+    public void start() throws InterruptedException, TransactionCommitFailedException {
         // Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
     }
@@ -162,21 +165,21 @@ public class InterfaceManagerConfigurationTest {
     private void setupAndAssertBridgeDeletion() throws InterruptedException {
         OvsdbSouthboundTestUtil.deleteBridge(dataBroker);
         Thread.sleep(2000);
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(DPN_ID, dataBroker), null);
+        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(DPN_ID_1, dataBroker), null);
     }
 
-    private void setupAndAssertBridgeCreation() throws InterruptedException {
+    private void setupAndAssertBridgeCreation() throws InterruptedException, TransactionCommitFailedException {
         OvsdbSouthboundTestUtil.createBridge(dataBroker);
         Thread.sleep(2000);
         // a) Check bridgeRefEntry in cache and OperDS are same and use the
         // right DPN_ID
-        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(DPN_ID);
+        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(DPN_ID_1);
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
                 .orNull();
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID), bridgeRefEntry);
-        assertEqualBeans(bridgeRefEntry.getDpid(), DPN_ID);
+        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_1), bridgeRefEntry);
+        assertEqualBeans(bridgeRefEntry.getDpid(), DPN_ID_1);
     }
 
     @Test
@@ -210,7 +213,7 @@ public class InterfaceManagerConfigurationTest {
                 IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
 
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            INTERFACE_NAME, Interface.OperStatus.Up, L2vlan.class), ifaceState);
+            INTERFACE_NAME, Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString()), ifaceState);
 
 
         // b) check if lport-tag to interface mapping is created
@@ -245,7 +248,7 @@ public class InterfaceManagerConfigurationTest {
         // Test all RPCs related to vlan-interfaces
         checkVlanRpcs();
 
-        //Update test
+        //Update config test
         // i) vlan interface admin-state updated
         InterfaceManagerTestUtil.updateInterfaceAdminState(dataBroker, INTERFACE_NAME, false);
 
@@ -255,13 +258,38 @@ public class InterfaceManagerConfigurationTest {
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), INTERFACE_NAME, Interface
-            .OperStatus.Down, L2vlan.class), ifaceState);
-
+            .OperStatus.Down, L2vlan.class, DPN_ID_1.toString()), ifaceState);
 
         // Restore the opState back to UP for proceeding with further tests
         InterfaceManagerTestUtil.updateInterfaceAdminState(dataBroker, INTERFACE_NAME, true);
-
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+
+        //state modification tests
+        // 1. Make the operational state of port as DOWN
+        InterfaceManagerTestUtil.updateFlowCapableNodeConnectorState(dataBroker, PARENT_INTERFACE, L2vlan.class, false);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        Thread.sleep(3000);
+        ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
+        // Verify if operational/ietf-interface-state is marked down
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
+            INTERFACE_NAME, Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString()), ifaceState);
+
+        // 4. Delete the southbound OF port
+        InterfaceManagerTestUtil.removeFlowCapableNodeConnectorState(dataBroker, L2vlan.class);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        // Verify if interfaces are deleted from oper/ietf-interfaces-state
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(PARENT_INTERFACE)).get());
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).get());
+
+        // 3. Re-create the OF port to proceeed with vlan-member tests
+        InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, PARENT_INTERFACE, null);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
         testVlanMemberInterface();
 
         //Delete test
@@ -290,6 +318,19 @@ public class InterfaceManagerConfigurationTest {
 
     @Test
     public void newTunnelInterface() throws Exception {
+
+        // 3. Update DPN-ID of the bridge
+        OvsdbSouthboundTestUtil.updateBridge(dataBroker, "00:00:00:00:00:00:00:02");
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(DPN_ID_2);
+        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
+            .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
+        // Verify if DPN-ID is updated in corresponding DS and cache
+        BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
+            .orNull();
+        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_2), bridgeRefEntry);
+
+
         // 1. Given
         // 2. When
         // i) dpn-id specified above configuration comes in
@@ -297,14 +338,14 @@ public class InterfaceManagerConfigurationTest {
         // ii) Vlan interface written to config/ietf-interfaces DS and
         // corresponding parent-interface is not present
         // in operational/ietf-interface-state
-        ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(DPN_ID).build();
+        ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(DPN_ID_2).build();
         InterfaceManagerTestUtil.putInterfaceConfig(dataBroker, TUNNEL_INTERFACE_NAME, parentRefs, Tunnel.class);
         Thread.sleep(5000);
 
         // 3. Then
         // a) check expected bridge-interface mapping in
         // odl-interface-meta/config/bridge-interface-info was created
-        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(DPN_ID);
+        BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(DPN_ID_2);
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(TUNNEL_INTERFACE_NAME);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid = InterfaceMetaUtils
                 .getBridgeInterfaceEntryIdentifier(bridgeEntryKey, bridgeInterfaceEntryKey);
@@ -327,7 +368,8 @@ public class InterfaceManagerConfigurationTest {
         // When termination end point is populated in network-topology
         OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class);
         InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel.class);
-        Thread.sleep(5000);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        Thread.sleep(3000);
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the tunnel interface
@@ -336,7 +378,7 @@ public class InterfaceManagerConfigurationTest {
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class), ifaceState);
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString()), ifaceState);
 
         // Test all RPCs related to tunnel interfaces
         checkTunnelRpcs();
@@ -348,6 +390,53 @@ public class InterfaceManagerConfigurationTest {
         // Then verify if bfd attributes are updated in topology config DS
         assertEqualBeans(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+
+        //state modification tests
+        // 1. Make the operational state of port as DOWN
+        InterfaceManagerTestUtil.updateFlowCapableNodeConnectorState(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel
+            .class, false);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+        // Verify if operational/ietf-interface-state is still up
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+
+        // 2. Make BFD staus of tunnel port as down
+        OvsdbSouthboundTestUtil.updateTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+        // Verify if operational/ietf-interface-state is marked down
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Down, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+
+
+        // 2. Delete the Node
+        InterfaceManagerTestUtil.removeNode(dataBroker);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+        // Verify if operational/ietf-interface-state is marked unknown
+        assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Unknown, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+
+        // Re-create port to proceed with further tests
+        InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel.class);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+
+        // 2. Delete the OF port
+        InterfaceManagerTestUtil.removeFlowCapableNodeConnectorState(dataBroker, Tunnel.class);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        // Verify if operational-states are deleted
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get());
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get());
 
         // Delete test
         // iii) tunnel interface is deleted from config/ietf-interfaces
@@ -375,7 +464,7 @@ public class InterfaceManagerConfigurationTest {
 
         //2. Test interface list fetching from dpnId
         GetDpnInterfaceListInput dpnInterfaceListInput = new GetDpnInterfaceListInputBuilder()
-                .setDpid(DPN_ID).build();
+                .setDpid(DPN_ID_1).build();
         Future<RpcResult<GetDpnInterfaceListOutput>> dpnInterfaceListOutput = odlInterfaceRpcService
             .getDpnInterfaceList(dpnInterfaceListInput);
         List<String> expectedDpnInterfaceList = new ArrayList(DpnInterfaceListOutput.newDpnInterfaceListOutput()
@@ -436,7 +525,8 @@ public class InterfaceManagerConfigurationTest {
 
     private void checkTunnelRpcs() throws Exception {
         //1. Test endpoint ip fetching for dpn-id
-        GetEndpointIpForDpnInput endpointIpForDpnInput = new GetEndpointIpForDpnInputBuilder().setDpid(DPN_ID).build();
+        GetEndpointIpForDpnInput endpointIpForDpnInput = new GetEndpointIpForDpnInputBuilder().setDpid(DPN_ID_2)
+            .build();
         Future<RpcResult<GetEndpointIpForDpnOutput>> endpointIpForDpnOutput = odlInterfaceRpcService
                 .getEndpointIpForDpn(endpointIpForDpnInput);
         assertEqualBeans(EndPointIpFromDpn.newEndPointIpFromDpn(), endpointIpForDpnOutput.get().getResult());
@@ -453,7 +543,7 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.putVlanInterfaceConfig(dataBroker, TRUNK_INTERFACE_NAME, INTERFACE_NAME,
                 IfL2vlan.L2vlanMode.TrunkMember);
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
-
+        Thread.sleep(3000);
         // 3. Then
         // a) check expected interface-child entry mapping in odl-interface-meta/config/interface-child-info was created
         InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryInstanceIdentifier = InterfaceMetaUtils
@@ -470,7 +560,7 @@ public class InterfaceManagerConfigurationTest {
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), TRUNK_INTERFACE_NAME,
-                Interface.OperStatus.Up, L2vlan.class), ifaceState);
+                Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString()), ifaceState);
 
         // b) check if lport-tag to interface mapping is created
         InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(
@@ -490,7 +580,7 @@ public class InterfaceManagerConfigurationTest {
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), TRUNK_INTERFACE_NAME,
-            Interface.OperStatus.Down, L2vlan.class), ifaceState);
+            Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString()), ifaceState);
 
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, TRUNK_INTERFACE_NAME);
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);

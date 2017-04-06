@@ -16,10 +16,12 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
@@ -53,6 +55,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.bridge.attributes.ControllerEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfoBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatusBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
@@ -94,7 +98,7 @@ public class OvsdbSouthboundTestUtil {
         return new NodeId(uri);
     }
 
-    public static void createBridge(DataBroker dataBroker) {
+    public static void createBridge(DataBroker dataBroker) throws TransactionCommitFailedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid = createInstanceIdentifier("192.168.56.101", 6640, ovsdbBridgeName);
         final InstanceIdentifier<OvsdbBridgeAugmentation> ovsdbBridgeIid = bridgeIid.builder()
@@ -109,7 +113,25 @@ public class OvsdbSouthboundTestUtil {
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid, bridgeCreateAugmentationBuilder.build(), true);
-        tx.submit();
+        tx.submit().checkedGet();
+    }
+
+    public static void updateBridge(DataBroker dataBroker, String datapathId) throws TransactionCommitFailedException {
+        final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
+        final InstanceIdentifier<Node> bridgeIid = createInstanceIdentifier("192.168.56.101", 6640, ovsdbBridgeName);
+        final InstanceIdentifier<OvsdbBridgeAugmentation> ovsdbBridgeIid = bridgeIid.builder()
+            .augmentation(OvsdbBridgeAugmentation.class).build();
+        final NodeId bridgeNodeId = createManagedNodeId(bridgeIid);
+        final NodeBuilder bridgeCreateNodeBuilder = new NodeBuilder();
+        bridgeCreateNodeBuilder.setNodeId(bridgeNodeId);
+        OvsdbBridgeAugmentationBuilder bridgeCreateAugmentationBuilder = new OvsdbBridgeAugmentationBuilder();
+        bridgeCreateAugmentationBuilder.setBridgeName(ovsdbBridgeName)
+            .setDatapathId(new DatapathId(datapathId));
+        bridgeCreateNodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, bridgeCreateAugmentationBuilder.build());
+        LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.merge(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid, bridgeCreateAugmentationBuilder.build(), true);
+        tx.submit().checkedGet();
     }
 
     public boolean deleteBridge(final ConnectionInfo connectionInfo, final String bridgeName) {
@@ -194,7 +216,8 @@ public class OvsdbSouthboundTestUtil {
     }
 
     public static void createTerminationPoint(DataBroker dataBroker, String interfaceName,
-                                              Class<? extends InterfaceTypeBase> type) {
+                                              Class<? extends InterfaceTypeBase> type) throws
+        TransactionCommitFailedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid =
             createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
@@ -211,7 +234,33 @@ public class OvsdbSouthboundTestUtil {
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(OPERATIONAL, tpId, tpBuilder.build(), true);
-        tx.submit();
+        tx.submit().checkedGet();
+    }
+
+    public static void updateTerminationPoint(DataBroker dataBroker, String interfaceName,
+                                              Class<? extends InterfaceTypeBase> type) throws
+        TransactionCommitFailedException {
+        final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
+        final InstanceIdentifier<Node> bridgeIid =
+            createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
+        InstanceIdentifier<TerminationPoint> tpId = createTerminationPointInstanceIdentifier(
+            InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        tpBuilder.setKey(InstanceIdentifier.keyOf(tpId));
+        OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
+
+        tpAugmentationBuilder.setName(interfaceName);
+        if (type != null) {
+            tpAugmentationBuilder.setInterfaceType(type);
+        }
+        List<InterfaceBfdStatus> interfaceBfdStatuses = Arrays.asList(new InterfaceBfdStatusBuilder()
+            .setBfdStatusKey("state").setBfdStatusValue("down").build());
+
+        tpAugmentationBuilder.setInterfaceBfdStatus(interfaceBfdStatuses);
+        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.merge(OPERATIONAL, tpId, tpBuilder.build(), true);
+        tx.submit().checkedGet();
     }
 
     public static NodeKey createNodeKey(String ip, Integer port) {

@@ -66,8 +66,11 @@ public class InterfaceManagerTestUtil {
     public static final String INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a218";
     public static final String TUNNEL_INTERFACE_NAME = "tun414a856a7a4";
     public static final String TRUNK_INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a219";
-    public static final String DPN_ID_1 = "1";
-    public static final String PORT_NO_1 = "2";
+
+    public static final BigInteger DPN_ID_1 = BigInteger.valueOf(1);
+    public static final BigInteger DPN_ID_2 = BigInteger.valueOf(2);
+    public static final long PORT_NO_1 = 2;
+
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
     public static final NodeKey NODE_KEY = new NodeKey(new NodeId("openflow:1"));
 
@@ -104,12 +107,12 @@ public class InterfaceManagerTestUtil {
 
 
     static org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector
-        buildFlowCapableNodeConnector(NodeConnectorId ncId, String portName) {
+        buildFlowCapableNodeConnector(NodeConnectorId ncId, String portName, boolean isLive) {
         NodeConnectorBuilder ncBuilder = new NodeConnectorBuilder()
                 .setId(ncId)
                 .setKey(new NodeConnectorKey(ncId));
         ncBuilder.addAugmentation(FlowCapableNodeConnector.class,
-                buildFlowCapableNodeConnector(false, true,"AA:AA:AA:AA:AA:AA", portName));
+                buildFlowCapableNodeConnector(false, isLive,"AA:AA:AA:AA:AA:AA", portName));
         return ncBuilder.build();
     }
 
@@ -248,13 +251,45 @@ public class InterfaceManagerTestUtil {
     }
 
     static void createFlowCapableNodeConnector(DataBroker dataBroker, String interfaceName,
-                                                      Class<? extends InterfaceType> ifType)
+                                               Class<? extends InterfaceType> ifType)
             throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-
+        BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
+        long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
-                .buildFlowCapableNodeConnector(buildNodeConnectorId(BigInteger.valueOf(1), 2), interfaceName);
-        tx.put(OPERATIONAL,buildNodeConnectorInstanceIdentifier(BigInteger.valueOf(1), 2), nodeConnector, true);
+                .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, true);
+        tx.put(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector, true);
+        tx.submit().checkedGet();
+    }
+
+    static void updateFlowCapableNodeConnectorState(DataBroker dataBroker, String interfaceName,
+                                                    Class<? extends InterfaceType> ifType, boolean isLive)
+    throws TransactionCommitFailedException {
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
+        long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
+        NodeConnector nodeConnector = InterfaceManagerTestUtil
+            .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, isLive);
+        tx.merge(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector, true);
+        tx.submit().checkedGet();
+    }
+
+    static void removeFlowCapableNodeConnectorState(DataBroker dataBroker, Class<? extends InterfaceType> ifType)
+    throws TransactionCommitFailedException {
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
+        long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
+        tx.delete(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo));
+        tx.submit().checkedGet();
+    }
+
+
+    static void removeNode(DataBroker dataBroker)
+    throws TransactionCommitFailedException {
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
+            .child(Node.class, new NodeKey(IfmUtil.buildDpnNodeId(DPN_ID_2))).build();
+        tx.delete(OPERATIONAL,nodeInstanceIdentifier);
         tx.submit().checkedGet();
     }
 
