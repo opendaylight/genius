@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.HWVTEP_TOPOLOGY_ID;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.utils.hwvtep.HwvtepSouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -44,6 +46,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifier;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.interfaces._interface.NodeIdentifierKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -54,7 +59,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepGlobalRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentationBuilder;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -65,7 +76,9 @@ public class InterfaceManagerTestUtil {
     public static final String PARENT_INTERFACE = "tap23701c04-7e";
     public static final String INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a218";
     public static final String TUNNEL_INTERFACE_NAME = "tun414a856a7a4";
+    public static final String HWVTEP_INTERFACE_NAME = "tun414a856a7a5";
     public static final String TRUNK_INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a219";
+
     public static final String DPN_ID_1 = "1";
     public static final String PORT_NO_1 = "2";
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
@@ -180,8 +193,23 @@ public class InterfaceManagerTestUtil {
         return builder.build();
     }
 
-    static InstanceIdentifier<TerminationPoint> getTerminationPointId(InstanceIdentifier<?> bridgeIid,
-                                                                      String portName) {
+    public static Interface buildHWvTEPInterface(NodeIdentifier nodeId, String ifName, String desc, boolean enabled,
+                                                 Class<? extends TunnelTypeBase> tunType) {
+        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+            .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
+        ParentRefs parentRefs = new ParentRefsBuilder().setNodeIdentifier(Arrays.asList(nodeId)).build();
+        builder.addAugmentation(ParentRefs.class, parentRefs);
+        IpAddress remoteIp = new IpAddress(Ipv4Address.getDefaultInstance("1.1.1.1"));
+        IpAddress localIp =  new IpAddress(Ipv4Address.getDefaultInstance("2.2.2.2"));
+        IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(localIp)
+                .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(true)
+                .setMonitorEnabled(false).build();
+        builder.addAugmentation(IfTunnel.class, tunnel);
+        return builder.build();
+    }
+
+    public static InstanceIdentifier<TerminationPoint> getTerminationPointId(InstanceIdentifier<?> bridgeIid,
+                                                                             String portName) {
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
                         org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns
@@ -255,6 +283,40 @@ public class InterfaceManagerTestUtil {
         NodeConnector nodeConnector = InterfaceManagerTestUtil
                 .buildFlowCapableNodeConnector(buildNodeConnectorId(BigInteger.valueOf(1), 2), interfaceName);
         tx.put(OPERATIONAL,buildNodeConnectorInstanceIdentifier(BigInteger.valueOf(1), 2), nodeConnector, true);
+        tx.submit().checkedGet();
+    }
+
+    static void putHwvtepInterfaceConfig(DataBroker dataBroker, String ifaceName, InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network
+            .topology.topology.Node> physicalSwitchId)
+            throws TransactionCommitFailedException {
+        NodeIdentifier nodeIdentifier = new NodeIdentifierBuilder().setTopologyId(
+                org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.HWVTEP_TOPOLOGY)
+                .setNodeId("hwvtep:1/192.168.56.1/6640").setKey(new NodeIdentifierKey(org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.HWVTEP_TOPOLOGY))
+                .build();
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
+                hwVtepInterface = InterfaceManagerTestUtil.buildHWvTEPInterface(nodeIdentifier, HWVTEP_INTERFACE_NAME,
+                "test", true, TunnelTypeVxlan.class);
+        InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.put(CONFIGURATION, interfaceInstanceIdentifier, hwVtepInterface, true);
+        tx.submit().checkedGet();
+    }
+
+    static void putHwvtepPhysicalSwitchAugmentation(DataBroker dataBroker, String ifaceName, String physicalSwitchId)
+            throws TransactionCommitFailedException {
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node> psNodeId =
+                InstanceIdentifier.create(NetworkTopology.class).child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
+                .child(org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node.class,
+                        new org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey(new org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId(physicalSwitchId.toString())));
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node> nodeId = HwvtepSouthboundUtils
+                .createInstanceIdentifier(new org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId(physicalSwitchId));
+        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder nodeBuilder =
+                new org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder().setNodeId(
+                        new org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId(String.valueOf(physicalSwitchId)));
+        nodeBuilder.addAugmentation(PhysicalSwitchAugmentation.class,
+                new PhysicalSwitchAugmentationBuilder().setManagedBy(new HwvtepGlobalRef(psNodeId)).build());
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        tx.put(OPERATIONAL, nodeId, nodeBuilder.build(), true);
         tx.submit().checkedGet();
     }
 

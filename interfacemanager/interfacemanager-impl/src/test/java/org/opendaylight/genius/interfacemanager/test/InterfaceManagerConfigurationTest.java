@@ -9,10 +9,7 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.PARENT_INTERFACE;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.TRUNK_INTERFACE_NAME;
-import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.TUNNEL_INTERFACE_NAME;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.*;
 import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
 import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
@@ -37,27 +34,15 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.EgressActionsForInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.EgressInstructionsForInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.EndPointIpFromDpn;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedFlowEntries;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceChildEntry;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceState;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedServicesInfo;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedTerminationPoint;
-import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceFromIfIndexOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceMeta;
-import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceTypeOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.NodeconnectorIdFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.PortFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.*;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -66,6 +51,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.IfIndexesInterfaceMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.TunnelInstanceInterfaceMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
@@ -76,9 +62,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.tunnel.instance._interface.map.TunnelInstanceInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.tunnel.instance._interface.map.TunnelInstanceInterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.tunnel.instance._interface.map.TunnelInstanceInterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutput;
@@ -118,8 +110,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.EncapsulationTypeVxlanOverIpv4;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepPhysicalLocatorAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepPhysicalLocatorAugmentationBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
@@ -506,5 +504,73 @@ public class InterfaceManagerConfigurationTest {
         // c) check if lport-tag to interface mapping is deleted
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             ifIndexInterfaceInstanceIdentifier).get());
+    }
+
+    @Test public void hwVTEPTests() throws Exception {
+        // 1. Given
+        // 2. When
+        // i) dpn-id specified above configuration comes in operational/network-topology
+        // ii) Vlan interface written to config/ietf-interfaces DS and corresponding parent-interface is not present
+        //     in operational/ietf-interface-state
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network
+            .topology.topology.Node> physicalSwitchId = SouthboundUtils.createPhysicalSwitchInstanceIdentifier(
+                    "hwvtep:1/192.168.56.1/6640");
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network
+            .topology.topology.Node> globalId = SouthboundUtils.createPhysicalSwitchInstanceIdentifier(
+                    "hwvtep:1/192.168.56.1/6640");
+        IpAddress remoteIp = new IpAddress(Ipv4Address.getDefaultInstance("1.1.1.1"));
+        IpAddress localIp =  new IpAddress(Ipv4Address.getDefaultInstance("2.2.2.2"));
+        IfTunnel ifTunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(remoteIp)
+                .setTunnelSource(localIp).setTunnelInterfaceType(TunnelTypeVxlan.class)
+                .setInternal(true).setMonitorEnabled(false).build();
+
+        InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer
+            .hwvtep.utilities.SouthboundUtils.createTunnelsInstanceIdentifier(physicalSwitchId,
+                ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
+        InstanceIdentifier<TunnelInstanceInterface> tunnelInterfaceId = InstanceIdentifier.builder(
+                TunnelInstanceInterfaceMap.class).child(TunnelInstanceInterface.class,
+                new TunnelInstanceInterfaceKey(tunnelsInstanceIdentifier.toString())).build();
+        TunnelInstanceInterface tunnelInterface = new TunnelInstanceInterfaceBuilder()
+                .setTunnelInstanceIdentifier(tunnelsInstanceIdentifier.toString()).setKey(
+                        new TunnelInstanceInterfaceKey(tunnelsInstanceIdentifier.toString()))
+                .setInterfaceName("HWVTEP").build();
+
+        //Setup termination points
+        TerminationPointKey tpKey = SouthboundUtils.getTerminationPointKey(ifTunnel.getTunnelDestination()
+                .getIpv4Address().getValue());
+        InstanceIdentifier<TerminationPoint> tpPath = SouthboundUtils.createInstanceIdentifier(physicalSwitchId, tpKey);
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        HwvtepPhysicalLocatorAugmentationBuilder tpAugmentationBuilder =
+            new HwvtepPhysicalLocatorAugmentationBuilder();
+        tpBuilder.setKey(tpKey);
+        tpBuilder.setTpId(tpKey.getTpId());
+        tpAugmentationBuilder.setEncapsulationType(EncapsulationTypeVxlanOverIpv4.class);
+        SouthboundUtils.setDstIp(tpAugmentationBuilder, ifTunnel.getTunnelDestination());
+        tpBuilder.addAugmentation(HwvtepPhysicalLocatorAugmentation.class, tpAugmentationBuilder.build());
+        TerminationPoint terminationPoint = tpBuilder.build();
+
+        // 1. Populate HwVTEP in network-topology/oper DS
+        putHwvtepPhysicalSwitchAugmentation(dataBroker, HWVTEP_INTERFACE_NAME, "hwvtep:1/192.168.56.1/6640");
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        // 2. configure hwvtep interface
+        InterfaceManagerTestUtil.putHwvtepInterfaceConfig(dataBroker, HWVTEP_INTERFACE_NAME, physicalSwitchId);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
+                .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelsInstanceIdentifier.toString())).build();
+        // 3. Verify tunnel mapping is created
+        assertEqualBeans(ExpectedHwvtepTunnelMap.newHwvtepTunnelMap(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+                id).checkedGet().get());
+        Assert.assertTrue(dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
+            tpPath).get().isPresent());
+
+        //4. update BFD tunnel monitoring attributes
+        updateTunnelMonitoringAttributes(dataBroker, HWVTEP_INTERFACE_NAME);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        // 5. delete hwvtep interface
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        deleteInterfaceConfig(dataBroker, HWVTEP_INTERFACE_NAME);
     }
 }
