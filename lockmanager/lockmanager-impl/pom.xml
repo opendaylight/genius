@@ -38,14 +38,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <!-- Testing Dependencies -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>testutils</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
       <scope>test</scope>
     </dependency>
   </dependencies>
