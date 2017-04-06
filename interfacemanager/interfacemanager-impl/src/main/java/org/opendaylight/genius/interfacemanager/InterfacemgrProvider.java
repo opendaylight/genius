@@ -217,13 +217,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
             interfaceInfo = IfmUtil.getVlanInterfaceInfo(interfaceName, intf, dpId);
-        } else if (interfaceType == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
-                || interfaceType == InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE) {
-            // TODO : since there is no logical grouping for tunnel interfaces,
-            // there is no need
-            // for this code as of now. will be revisited once the support comes
-
-        } else {
+        } else if (interfaceType == InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE){
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
         }
