@@ -33,6 +33,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
@@ -117,25 +118,25 @@ public class LockManager implements LockManagerService {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = LockManagerUtils.getLockInstanceIdentifier(lockName);
-        unlock(lockName, lockInstanceIdentifier);
-        RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.success();
-        return Futures.immediateFuture(lockRpcBuilder.build());
-    }
 
-    private void unlock(final String lockName, final InstanceIdentifier<Lock> lockInstanceIdentifier) {
-        ReadWriteTransaction tx = broker.newReadWriteTransaction();
+        RpcResultBuilder<Void> lockRpcBuilder;
         try {
+            ReadWriteTransaction tx = broker.newReadWriteTransaction();
             Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
             if (!result.isPresent()) {
-                LOG.debug("{} is already unlocked", lockName);
-                return;
+                LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
+            } else {
+                tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+                CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+                futures.get();
             }
-            tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
-            CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-            futures.get();
+            lockRpcBuilder = RpcResultBuilder.success();
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("In unlock unable to unlock: {}. Reason :", lockName, e);
+            LOG.error("unlock() failed: {}", lockName, e);
+            lockRpcBuilder = RpcResultBuilder.failed();
+            lockRpcBuilder.withError(ErrorType.APPLICATION, "unlock() failed: " + lockName, e);
         }
+        return lockRpcBuilder.buildFuture();
     }
 
     public CompletableFuture<Void> getSynchronizerForLock(String lockName) {
