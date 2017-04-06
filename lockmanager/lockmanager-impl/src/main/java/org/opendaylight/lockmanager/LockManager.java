@@ -70,7 +70,7 @@ public class LockManager implements LockManagerService {
             return Futures.immediateFuture(lockRpcBuilder.build());
         } catch (InterruptedException e) {
             RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.failed();
-            LOG.info("Failed to get lock {}", lockName);
+            LOG.error("Failed to get lock {}", lockName, e);
             return Futures.immediateFuture(lockRpcBuilder.build());
         }
     }
@@ -98,7 +98,7 @@ public class LockManager implements LockManagerService {
             }
         } catch (InterruptedException e) {
             lockRpcBuilder = RpcResultBuilder.failed();
-            LOG.info("Failed to get lock {}", lockName, e);
+            LOG.error("Failed to get lock {}", lockName, e);
         }
         return Futures.immediateFuture(lockRpcBuilder.build());
     }
