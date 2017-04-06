@@ -22,8 +22,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-import org.opendaylight.genius.infra.LoggingThreadUncaughtExceptionHandler;
-import org.opendaylight.genius.infra.ThreadFactoryProvider;
+import org.opendaylight.infrautils.utils.concurrent.LoggingThreadUncaughtExceptionHandler;
+import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public class DataStoreJobCoordinator {
         fjPool = new ForkJoinPool(
                 Math.min(/* MAX_CAP */ 0x7fff, Runtime.getRuntime().availableProcessors()),
                 ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-                LoggingThreadUncaughtExceptionHandler.toLOG(LOG),
+                LoggingThreadUncaughtExceptionHandler.toLogger(LOG),
                 false);
 
         for (int i = 0; i < THREADPOOL_SIZE; i++) {
