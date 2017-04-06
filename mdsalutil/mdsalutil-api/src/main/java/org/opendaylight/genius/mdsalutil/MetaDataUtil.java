@@ -144,4 +144,12 @@ public class MetaDataUtil {
     public static long getVpnIdMaskForReg() {
         return METADATA_MASK_VRFID.shiftRight(1).longValue();
     }
+
+    public static BigInteger mergeMetadataValues(BigInteger metadata, BigInteger metadata2) {
+        return metadata.or(metadata2);
+    }
+
+    public static BigInteger mergeMetadataMask(BigInteger mask, BigInteger mask2) {
+        return mask.or(mask2);
+    }
 }
