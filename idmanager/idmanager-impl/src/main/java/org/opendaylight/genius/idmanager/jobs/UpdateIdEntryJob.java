@@ -64,9 +64,9 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
             .ifPresent(latch -> latch.countDown());
-        idUtils.unlock(lockManager, uniqueIdKey);
         // Once the id is written to DS, removing the id value from map.
         idUtils.allocatedIdMap.remove(uniqueIdKey);
+        idUtils.unlock(lockManager, uniqueIdKey);
         return Collections.emptyList();
     }
 }
