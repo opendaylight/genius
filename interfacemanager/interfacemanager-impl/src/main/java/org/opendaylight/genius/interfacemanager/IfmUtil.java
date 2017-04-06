@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
@@ -71,6 +72,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
@@ -99,6 +101,7 @@ public class IfmUtil {
         TUNNEL_TYPE_MAP = new ImmutableMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
             .put(TunnelTypeGre.class, GRE_TRUNK_INTERFACE).put(TunnelTypeMplsOverGre.class, MPLS_OVER_GRE)
             .put(TunnelTypeVxlan.class, VXLAN_TRUNK_INTERFACE).put(TunnelTypeVxlanGpe.class, VXLAN_TRUNK_INTERFACE)
+            .put(TunnelTypeLogicalGroup.class, LOGICAL_GROUP_INTERFACE)
             .build();
 
     public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
@@ -179,14 +182,11 @@ public class IfmUtil {
         return InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName)).build();
     }
 
-    public static long getGroupId(long ifIndex, InterfaceInfo.InterfaceType infType) {
+    public static long getGroupId(int ifIndex, InterfaceInfo.InterfaceType infType) {
         if (infType == InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE) {
-            return ifIndex + IfmConstants.LOGICAL_GROUP_START;
-        } else if (infType == VLAN_INTERFACE) {
-            return ifIndex + IfmConstants.VLAN_GROUP_START;
-        } else {
-            return ifIndex + IfmConstants.TRUNK_GROUP_START;
+            return getLogicalTunnelSelectGroupId(ifIndex);
         }
+        return 0;
     }
 
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
