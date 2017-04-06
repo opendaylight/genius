@@ -23,7 +23,6 @@ import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
@@ -174,8 +173,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private boolean isTunnelInterfaceUp(StateTunnelList intf) {
-        boolean interfaceUp = (intf.getOperState().equals(Interface.OperStatus.Up)) ? true : false ;
-        return interfaceUp ;
+        return (intf.getOperState() == TunnelOperStatus.Up);
     }
 
     private String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
@@ -292,14 +290,14 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
                         isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
-                if (update.getOperState().equals(Interface.OperStatus.Unknown)) {
+                if (update.getOperState() == TunnelOperStatus.Unknown) {
                     return null;
-                } else if (update.getOperState().equals(Interface.OperStatus.Up)) {
+                } else if (update.getOperState() == TunnelOperStatus.Up) {
                     LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ",
                             srcDpId, dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-                } else if (update.getOperState().equals(Interface.OperStatus.Down)) {
+                } else if (update.getOperState() == TunnelOperStatus.Down) {
                     LOG.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
