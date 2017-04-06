@@ -57,6 +57,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatusBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
@@ -216,7 +218,7 @@ public class OvsdbSouthboundTestUtil {
     }
 
     public static void createTerminationPoint(DataBroker dataBroker, String interfaceName,
-                                              Class<? extends InterfaceTypeBase> type) throws
+                                              Class<? extends InterfaceTypeBase> type, String externalId) throws
         TransactionCommitFailedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid =
@@ -230,6 +232,13 @@ public class OvsdbSouthboundTestUtil {
         tpAugmentationBuilder.setName(interfaceName);
         if (type != null) {
             tpAugmentationBuilder.setInterfaceType(type);
+        }
+        if (externalId != null) {
+            List<InterfaceExternalIds> interfaceExternalIds = new ArrayList<>();
+            InterfaceExternalIds interfaceExternalIds1 = new InterfaceExternalIdsBuilder().setExternalIdKey("iface-id")
+                .setExternalIdValue(externalId).build();
+            interfaceExternalIds.add(interfaceExternalIds1);
+            tpAugmentationBuilder.setInterfaceExternalIds(interfaceExternalIds);
         }
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();

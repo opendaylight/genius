@@ -9,14 +9,19 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_1;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_2;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME_1;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME_2;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.PARENT_INTERFACE;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.PARENT_INTERFACE_1;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.PARENT_INTERFACE_2;
+import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.PORT_NO_1;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.TRUNK_INTERFACE_NAME;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.TUNNEL_INTERFACE_NAME;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.waitTillOperationCompletes;
-
 import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
 import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
@@ -42,6 +47,8 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
@@ -50,7 +57,10 @@ import org.opendaylight.genius.interfacemanager.test.xtend.EgressInstructionsFor
 import org.opendaylight.genius.interfacemanager.test.xtend.EndPointIpFromDpn;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedFlowEntries;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceChildEntry;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceConfig;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceInfo;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceState;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedOvsdbBridge;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedServicesInfo;
 import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedTerminationPoint;
 import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceFromIfIndexOutput;
@@ -59,6 +69,8 @@ import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceTypeOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.NodeconnectorIdFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.PortFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
+import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -81,6 +93,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
@@ -117,10 +130,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
@@ -148,6 +163,7 @@ public class InterfaceManagerConfigurationTest {
 
     @Inject DataBroker dataBroker;
     @Inject OdlInterfaceRpcService odlInterfaceRpcService;
+    @Inject IInterfaceManager interfaceManager;
     @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     @Inject AsyncEventsWaiter asyncEventsWaiter;
 
@@ -183,9 +199,10 @@ public class InterfaceManagerConfigurationTest {
     }
 
     @Test
-    public void vlanInterfaceTests() throws Exception {
+    public void newl2vlanInterfaceTests() throws Exception {
         // 1. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
+        OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, PARENT_INTERFACE, null, INTERFACE_NAME);
         InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, PARENT_INTERFACE, null);
 
         // ii) Vlan interface written to config/ietf-interfaces DS and
@@ -233,8 +250,8 @@ public class InterfaceManagerConfigurationTest {
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, ingressFlowKey)
                 .build();
-        assertEqualBeans(ExpectedFlowEntries.newIngressFlow(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).checkedGet().get());
+        assertEqualBeans(ExpectedFlowEntries.newIngressFlow(), dataBroker.newReadOnlyTransaction().read(
+            CONFIGURATION, ingressFlowInstanceId).checkedGet().get());
 
         // d) check if default egress service is bound on the interface
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier
@@ -247,6 +264,9 @@ public class InterfaceManagerConfigurationTest {
 
         // Test all RPCs related to vlan-interfaces
         checkVlanRpcs();
+
+        // Test all APIs exposed by interface-manager
+        checkVlanApis();
 
         //Update config test
         // i) vlan interface admin-state updated
@@ -366,7 +386,8 @@ public class InterfaceManagerConfigurationTest {
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
 
         // When termination end point is populated in network-topology
-        OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class);
+        OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class,
+            null);
         InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel.class);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         Thread.sleep(3000);
@@ -382,6 +403,8 @@ public class InterfaceManagerConfigurationTest {
 
         // Test all RPCs related to tunnel interfaces
         checkTunnelRpcs();
+
+        checkTunnelApis();
 
         // Update test
         // i) Enable Tunnel Monitoring
@@ -451,6 +474,178 @@ public class InterfaceManagerConfigurationTest {
         // b) check if termination end point is deleted in
         // config/network-topology
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+    }
+
+    private void checkVlanApis() throws Exception {
+        // 1. Test port-no corresponding to interface
+        long portNo = interfaceManager.getPortForInterface(INTERFACE_NAME);
+        Assert.assertEquals(PORT_NO_1, portNo);
+
+        // 2. fetch interface config from datastore API
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
+            interfaceInfo = interfaceManager.getInterfaceInfoFromConfigDataStore(INTERFACE_NAME);
+        assertEqualBeans(ExpectedInterfaceConfig.newInterfaceConfig(INTERFACE_NAME), interfaceInfo);
+
+        // 3. fetch dpn-id corresponding to an interface
+        BigInteger dpnId = interfaceManager.getDpnForInterface(INTERFACE_NAME);
+        Assert.assertEquals(DPN_ID_1, dpnId);
+
+        // 4. fetch parent-interface corresponding to an interface
+        Assert.assertEquals(PARENT_INTERFACE, interfaceManager.getParentRefNameForInterface(INTERFACE_NAME));
+
+        //5. get interface information
+        assertEqualBeans(ExpectedInterfaceInfo.newVlanInterfaceInfo(), interfaceManager
+            .getInterfaceInfo(INTERFACE_NAME));
+
+        Assert.assertEquals(org.opendaylight.genius.interfacemanager.globals.IfmConstants.VXLAN_GROUPID_MIN + 1,
+            interfaceManager.getLogicalTunnelSelectGroupId(1));
+
+        // 6. Test bind ingress service
+        BoundServices serviceInfo = InterfaceManagerTestUtil.buildServicesInfo("ELAN", NwConstants.ELAN_SERVICE_INDEX);
+        interfaceManager.bindService(INTERFACE_NAME, ServiceModeIngress.class, serviceInfo);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        String lportDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.LPORT_DISPATCHER_TABLE
+            + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
+            + NwConstants.DEFAULT_SERVICE_INDEX;
+
+        FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
+        Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
+        InstanceIdentifier<Flow> lportDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
+            .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+            .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class,
+                lportDispatcherFlowKey).build();
+        assertEqualBeans(ExpectedFlowEntries.newLportDispatcherFlow(),
+            dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).checkedGet().get());
+
+        //7. test check whether service is bound on ingress
+        Assert.assertTrue(interfaceManager.isServiceBoundOnInterfaceForIngress(NwConstants.ELAN_SERVICE_INDEX,
+            INTERFACE_NAME));
+
+        //8. test unbind ingress service
+        interfaceManager.unbindService(INTERFACE_NAME, ServiceModeIngress.class, serviceInfo);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        Assert.assertEquals(Optional.absent(),
+            dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).get());
+
+        // 9. Test bind egress service
+        short egressACLIndex = ServiceIndex.getIndex(NwConstants.EGRESS_ACL_SERVICE_NAME,
+            NwConstants.EGRESS_ACL_SERVICE_INDEX);
+        serviceInfo = InterfaceManagerTestUtil.buildServicesInfo("EGRESS_ACL", egressACLIndex);
+        interfaceManager.bindService(INTERFACE_NAME, ServiceModeEgress.class, serviceInfo);
+        Thread.sleep(1000);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        String egressDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.EGRESS_LPORT_DISPATCHER_TABLE
+            + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
+            + NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+
+        FlowKey egressDispatcherFlowKey = new FlowKey(new FlowId(egressDispatcherFlowRef));
+        InstanceIdentifier<Flow> egressDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
+            .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+            .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class,
+                egressDispatcherFlowKey).build();
+
+        // FIXME the extend file getting generated had some import issues, will revist  later
+        //assertEqualBeans(null,
+        //    dataBroker.newReadOnlyTransaction().read(CONFIGURATION, egressDispatcherFlowId).checkedGet().get());
+
+        Assert.assertNotNull(dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
+            egressDispatcherFlowId).checkedGet().get());
+
+        //10. test check whether service is bound on egress
+        Assert.assertTrue(interfaceManager.isServiceBoundOnInterfaceForEgress(NwConstants.EGRESS_ACL_SERVICE_INDEX,
+            INTERFACE_NAME));
+
+        // 11. Test unbinding of egress service
+        interfaceManager.unbindService(INTERFACE_NAME, ServiceModeEgress.class, serviceInfo);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
+            egressDispatcherFlowId).get());
+
+        // 12. Test fetching child interfaces of an interface
+        assertEqualBeans(ExpectedInterfaceConfig.newChildInterfaceList(INTERFACE_NAME, PARENT_INTERFACE),
+            interfaceManager.getChildInterfaces(PARENT_INTERFACE));
+
+        // 13. Test fetching interface-info from operational DS
+        assertEqualBeans(ExpectedInterfaceInfo.newInterfaceInfo(1, INTERFACE_NAME, PARENT_INTERFACE, null),
+            interfaceManager.getInterfaceInfoFromOperationalDataStore(INTERFACE_NAME));
+
+        // 14. Test fetching of interface-info from oper DS, given interface-type
+        assertEqualBeans(ExpectedInterfaceInfo.newInterfaceInfo(1, INTERFACE_NAME, INTERFACE_NAME, InterfaceInfo
+            .InterfaceType.VLAN_INTERFACE), interfaceManager.getInterfaceInfoFromOperationalDataStore(
+                INTERFACE_NAME, InterfaceInfo.InterfaceType.VLAN_INTERFACE));
+
+        // 15.Test fetching of interface-info from cache
+        assertEqualBeans(ExpectedInterfaceInfo.newInterfaceInfo(1, INTERFACE_NAME, PARENT_INTERFACE, null),
+            interfaceManager.getInterfaceInfoFromOperationalDSCache(INTERFACE_NAME));
+
+        // 16. Test creation of VLAN interface
+        interfaceManager.createVLANInterface(INTERFACE_NAME_1, null, DPN_ID_1, null, INTERFACE_NAME_1,
+            IfL2vlan.L2vlanMode.Trunk);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        assertEqualBeans(ExpectedInterfaceConfig.newVlanInterfaceConfig(INTERFACE_NAME_1, null),
+            dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil.buildId(
+                INTERFACE_NAME_1)).checkedGet().get());
+
+        // 17. Update Parent Refs for VLAN interface
+        interfaceManager.updateInterfaceParentRef(INTERFACE_NAME_1, PARENT_INTERFACE_1);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        assertEqualBeans(ExpectedInterfaceConfig.newVlanInterfaceConfig(INTERFACE_NAME_1, PARENT_INTERFACE_1),
+            dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
+            .buildId(INTERFACE_NAME_1)).checkedGet().get());
+
+        // 18. Test creation of external l2vlan interfaces
+        interfaceManager.createVLANInterface(INTERFACE_NAME_2, null, DPN_ID_1, null, INTERFACE_NAME_2,
+            IfL2vlan.L2vlanMode.Trunk, true);
+        Thread.sleep(2000);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+
+        // FIXME need to wait for https://git.opendaylight.org/gerrit/#/c/54811/ this to land
+        // to do proper assertion
+        Assert.assertNotNull(dataBroker
+            .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
+            .buildId(INTERFACE_NAME_2)).checkedGet().get().getAugmentation(IfExternal.class));
+
+        // 19. update parent-refs
+        interfaceManager.updateInterfaceParentRef(INTERFACE_NAME_2, PARENT_INTERFACE_2, true);
+        waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+        Assert.assertEquals(PARENT_INTERFACE_2, dataBroker
+            .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
+                .buildId(INTERFACE_NAME_2)).checkedGet().get().getAugmentation(ParentRefs.class).getParentInterface());
+
+        // 20. get list of vlan interfaces
+        // FIXME need to wait for https://git.opendaylight.org/gerrit/#/c/54811/ this to land
+        // to do proper assertion
+        assertEqualBeans(3, interfaceManager.getVlanInterfaces().size());
+
+        // 21. check if an interface is external interface
+        Assert.assertTrue(interfaceManager.isExternalInterface(INTERFACE_NAME_2));
+
+        // 22. check port name for an interface, given dpn-id and interface-name
+        assertEqualBeans(PARENT_INTERFACE, interfaceManager.getPortNameForInterface(DPN_ID_1.toString(),
+            PARENT_INTERFACE));
+
+        // 23. check port name for an interface, given nodeconnectorid
+        assertEqualBeans(PARENT_INTERFACE, interfaceManager.getPortNameForInterface(new NodeConnectorId("openflow:1:2"),
+            PARENT_INTERFACE));
+
+        // 24. get termination-points from cache
+        Assert.assertNotNull(interfaceManager.getTerminationPointCache().get(INTERFACE_NAME));
+
+        // 25. fetch termination point for interface
+        assertEqualBeans(ExpectedTerminationPoint.newOvsdbTerminationPointAugmentation(), interfaceManager
+            .getTerminationPointForInterface(INTERFACE_NAME));
+
+        // 26. fetch ovsdb bridge corresponding to an interface
+        assertEqualBeans(ExpectedOvsdbBridge.newOvsdbBridge(),
+            interfaceManager.getOvsdbBridgeForInterface(INTERFACE_NAME));
+
+        // 27. fetch ovsdb bridge corresponding to nodeIid
+        assertEqualBeans(ExpectedOvsdbBridge.newOvsdbBridge(), interfaceManager.getOvsdbBridgeForNodeIid(
+            OvsdbSouthboundTestUtil.createInstanceIdentifier("192.168.56.101", 6640, "s2")));
     }
 
     private void checkVlanRpcs() throws Exception {
@@ -536,6 +731,23 @@ public class InterfaceManagerConfigurationTest {
         GetTunnelTypeInput tunnelTypeInput = new GetTunnelTypeInputBuilder().setIntfName(TUNNEL_INTERFACE_NAME).build();
         Future<RpcResult<GetTunnelTypeOutput>> tunnelTypeOutput = odlInterfaceRpcService.getTunnelType(tunnelTypeInput);
         assertEqualBeans(TunnelTypeOutput.newTunnelTypeOutput(), tunnelTypeOutput.get().getResult());
+    }
+
+    private void checkTunnelApis() throws  Exception {
+
+        // 1. fetch get all ports on bridge
+        assertEqualBeans(ExpectedTerminationPoint.newTerminationPointList(),
+            interfaceManager.getPortsOnBridge(DPN_ID_2));
+
+        // 2. fetch get all tunnel ports on bridge
+        assertEqualBeans(ExpectedTerminationPoint.newTerminationPointList(),
+            interfaceManager.getTunnelPortsOnBridge(DPN_ID_2));
+
+        // 3. fetch tunnel end point ip for DPN
+        assertEqualBeans("2.2.2.2", interfaceManager.getEndpointIpForDpn(DPN_ID_2));
+
+        // 4. get list of vxlan interfaces
+        assertEqualBeans(1, interfaceManager.getVxlanInterfaces().size());
     }
 
     public void testVlanMemberInterface() throws Exception {
