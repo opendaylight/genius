@@ -11,6 +11,9 @@ package org.opendaylight.lockmanager;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +38,10 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LockManager implements LockManagerService {
+
+    private final ConcurrentHashMap<String, CompletableFuture<Void>> lockSynchronizerMap =
+            new ConcurrentHashMap<>();
+
     private static final Logger LOG = LoggerFactory.getLogger(LockManager.class);
 
     private static final int DEFAULT_RETRY_COUNT = 3;
@@ -129,6 +136,10 @@ public class LockManager implements LockManagerService {
         }
     }
 
+    public CompletableFuture<Void> getSynchronizerForLock(String lockName) {
+        return lockSynchronizerMap.get(lockName);
+    }
+
     /**
      * Try to acquire lock indefinitely until it is successful.
      */
@@ -138,16 +149,23 @@ public class LockManager implements LockManagerService {
         String lockName = lockData.getLockName();
         for (int retry = 1;; retry++) {
             try {
+                lockSynchronizerMap.putIfAbsent(lockName, new CompletableFuture<>());
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    LOG.info("Already locked for {} after waiting {}ms, try {}",
-                            lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    LOG.info("Already locked after waiting, try {}", retry);
                 }
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
             }
-            Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
+            java.util.Optional.ofNullable(lockSynchronizerMap.get(lockName)).ifPresent(future -> {
+                try {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.error("Problems in waiting on lock synchronizer {}", lockName, e);
+                }
+            });
+            lockSynchronizerMap.remove(lockName);
         }
     }
 
