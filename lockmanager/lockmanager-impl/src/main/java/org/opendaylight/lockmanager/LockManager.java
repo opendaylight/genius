@@ -11,6 +11,8 @@ package org.opendaylight.lockmanager;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
+
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -135,17 +137,26 @@ public class LockManager implements LockManagerService {
     private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
+        String lockName = lockData.getLockName();
         for (int retry = 1;; retry++) {
             try {
+                LockManagerUtils.LOCK_SYNCHRONIZER_MAP.putIfAbsent(lockName, new CompletableFuture<>());
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    LOG.info("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    LOG.info("Already locked after waiting, try {}", retry);
                 }
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock, try {}", retry, e);
             }
-            Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
+            java.util.Optional.ofNullable(LockManagerUtils.LOCK_SYNCHRONIZER_MAP.get(lockName)).ifPresent(future -> {
+                try {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.error("Problems in waiting on lock synchronizer {}", lockName, e);
+                }
+            });
+            LockManagerUtils.LOCK_SYNCHRONIZER_MAP.remove(lockName);
         }
     }
 
