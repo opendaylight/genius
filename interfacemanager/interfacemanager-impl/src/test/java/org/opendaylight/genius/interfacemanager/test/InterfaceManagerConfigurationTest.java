@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -182,6 +183,7 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(bridgeRefEntry.getDpid(), DPN_ID_1);
     }
 
+    @Ignore
     @Test
     public void vlanInterfaceTests() throws Exception {
         // 1. When
@@ -316,6 +318,7 @@ public class InterfaceManagerConfigurationTest {
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL, ifIndexInterfaceInstanceIdentifier).get());
     }
 
+    @Ignore
     @Test
     public void newTunnelInterface() throws Exception {
 
