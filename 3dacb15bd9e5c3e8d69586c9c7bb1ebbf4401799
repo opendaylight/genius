@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_f36cfa38",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-06T07:42:33Z",
+      "side": 1,
+      "message": "ok. this can be useful for existing methods.",
+      "parentUuid": "da01753e_1ff2669a",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_d3a29f99",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 21
@@ -173,6 +191,24 @@
       "side": 1,
       "message": "I\u0027m sorry, but I don\u0027t understand your comment. I can\u0027t see where the OperStatus is derived from parentRef. operStatus is argument of this method and it can be changed if the interface config is not enabled for the tunnel members. Regarding the operStatus of the logical tunnel, the state update, based on the child\u0027s, is done in my next review https://git.opendaylight.org/gerrit/53541",
       "parentUuid": "da01753e_9fcad69f",
+      "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_935f6e72",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 450,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-06T07:42:33Z",
+      "side": 1,
+      "message": "Sorry, I was talking about OperStatus of VLAN interface which is derived from parentRef. For LogicalTunnelInterface, I see OperStatus set as UP during initial logical group interface creation, that\u0027s ok.",
+      "parentUuid": "da01753e_1f770604",
       "revId": "3dacb15bd9e5c3e8d69586c9c7bb1ebbf4401799",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
