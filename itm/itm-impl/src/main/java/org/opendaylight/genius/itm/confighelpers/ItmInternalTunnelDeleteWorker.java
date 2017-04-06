@@ -169,6 +169,7 @@ public class ItmInternalTunnelDeleteWorker {
                                     writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, tnlContainerPath);
                                 }
                             }
+                            break; // because at this point srcDpn was deleted from DS
                         }
                     }
                 }
@@ -216,11 +217,13 @@ public class ItmInternalTunnelDeleteWorker {
         LOG.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ",
                 trunkRevIfName, trunkIdentifier) ;
         transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
+        ItmUtils.itmCache.removeInterface(trunkRevIfName);
 
         // also update itm-state ds -- Delete the reverse tunnel-interface from the tunnel list
         path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(srcDpnId, dstDpnId, dstTep.getTunnelType()));
         transaction.delete(LogicalDatastoreType.CONFIGURATION,path) ;
+        ItmUtils.itmCache.removeInternalTunnel(trunkRevIfName);
 
         // Release the Ids for the reverse trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
@@ -288,7 +291,7 @@ public class ItmInternalTunnelDeleteWorker {
             }
             if (emptyTunnelGroup && foundLogicGroupIface) {
                 WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-                LOG.debug("MULTIPLE_VxLAN_TUNNELS: remove the logical tunnel group {} because a last tunnel"
+                LOG.info("MULTIPLE_VxLAN_TUNNELS: remove the logical tunnel group {} because a last tunnel"
                     + " interface on srcDpnId {} dstDpnId {} is removed", logicTunnelName, srcDpnId, dstDpnId);
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(logicTunnelName);
                 tx.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
