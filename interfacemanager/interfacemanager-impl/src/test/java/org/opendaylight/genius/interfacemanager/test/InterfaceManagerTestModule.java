@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.mockito.Mockito.mock;
 
 import java.net.UnknownHostException;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
@@ -36,6 +37,7 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.ModuleSetupRuntimeException;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.lockmanager.LockListener;
 import org.opendaylight.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -62,18 +64,9 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
 
-        LockManagerService lockManager = new LockManager(dataBroker);
-        bind(LockManagerService.class).toInstance(lockManager);
-
-        IdUtils idUtils = new IdUtils();
-        IdManagerService idManager;
-        try {
-            idManager = new IdManager(dataBroker, lockManager, idUtils);
-        } catch (ReadFailedException e) {
-            // TODO Support AbstractGuiceJsr250Module
-            throw new ModuleSetupRuntimeException(e);
-        }
-        bind(IdManagerService.class).toInstance(idManager);
+        bind(LockManagerService.class).to(LockManager.class);
+        bind(LockListener.class);
+        bind(IdManagerService.class).to(IdManager.class);
 
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
