@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -20,6 +21,7 @@ import org.opendaylight.genius.mdsalutil.FlowInfoKey;
 import org.opendaylight.genius.mdsalutil.GroupInfoKey;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.genius.mdsalutil.matches.MatchMetadata;
@@ -78,6 +80,34 @@ public class InterfaceServiceUtil {
             matches.add(new MatchVlanVid((int) vlanId));
         }
         return matches;
+    }
+
+    /**
+     * If matches contains MatchMetadata in its list and match is of type MatchMetadata, then this
+     * function will merge the MatchMetadatas using "or" of the masks and the values, otherwise it will add
+     * the match to the matches list.
+     *
+     * @param matches - matches list
+     * @param match - metadata or other match
+     */
+    public static void mergeMetadataMatchsOrAdd(List<MatchInfoBase> matches, MatchInfoBase match) {
+        Iterator<MatchInfoBase> iter = matches.iterator();
+        while (iter.hasNext()) {
+            MatchInfoBase match2 = iter.next();
+            if (match2 instanceof MatchMetadata) {
+                if (match instanceof MatchMetadata) {
+                    MatchMetadata metadataMatch = (MatchMetadata) match;
+                    BigInteger value = MetaDataUtil.mergeMetadataValues(((MatchMetadata) match2).getMetadata(),
+                            metadataMatch.getMetadata());
+                    BigInteger mask = MetaDataUtil.mergeMetadataMask(((MatchMetadata) match2).getMask(),
+                            metadataMatch.getMask());
+                    match = new MatchMetadata(value, mask);
+                    iter.remove();
+                }
+                break;
+            }
+        }
+        matches.add(match);
     }
 
     public static short getVlanId(String interfaceName, DataBroker broker) {
