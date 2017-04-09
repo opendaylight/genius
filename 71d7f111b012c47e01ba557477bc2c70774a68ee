@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_610ca243",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-09T16:36:41Z",
+      "side": 1,
+      "message": "isn\u0027t both the ifs using the same itm utility.what is the point in separating them? any special reason?",
+      "revId": "71d7f111b012c47e01ba557477bc2c70774a68ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
