@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_8cee1621",
+        "filename": "lockmanager/lockmanager-impl/pom.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-04-10T17:28:25Z",
+      "side": 1,
+      "message": "just use the project.version here since I think all the genius modules are the same. similar to the lockmanager-api above.",
+      "revId": "656eabc32544c9e8935aa8fbf81d9a75b97d64b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
