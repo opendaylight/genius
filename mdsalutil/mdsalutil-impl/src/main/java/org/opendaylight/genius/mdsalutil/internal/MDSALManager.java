@@ -272,8 +272,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-
-        tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        Optional<Group> existingGroupId = MDSALUtil.read(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                groupInstanceId);
+        if (existingGroupId.isPresent()) {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        }
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowInternal(FlowEntity flowEntity) {
@@ -313,8 +316,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flowEntity.getTableId())).child(Flow.class, flowKey).build();
-
-        tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        Optional<Flow> existingFlowId = MDSALUtil.read(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                flowInstanceId);
+        if (existingFlowId.isPresent()) {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        }
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowNewInternal(BigInteger dpnId,
@@ -331,7 +337,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
-        tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        Optional<Flow> existingFlowId = MDSALUtil.read(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                flowInstanceId);
+        if (existingFlowId.isPresent()) {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        }
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeGroupInternal(GroupEntity groupEntity) {
