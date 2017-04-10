@@ -272,8 +272,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-
-        tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        Optional<Group>existingGroupId = MDSALUtil.read(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                groupInstanceId);
+        if (existingGroupId.isPresent()) {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
+        }
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowInternal(FlowEntity flowEntity) {
