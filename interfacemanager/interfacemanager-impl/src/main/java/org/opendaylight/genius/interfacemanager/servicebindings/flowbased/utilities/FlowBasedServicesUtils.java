@@ -285,7 +285,7 @@ public class FlowBasedServicesUtils {
     public static void installEgressDispatcherFlows(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex,
             Interface iface) {
-        LOG.debug("Installing Egress Dispatcher Flows {}, {}", dpId, interfaceName);
+        LOG.debug("Installing Egress Dispatcher Flows on dpn : {}, for interface : {}", dpId, interfaceName);
         installEgressDispatcherFlow(dpId, boundService, interfaceName, writeTransaction, interfaceTag,
                 currentServiceIndex, nextServiceIndex);
 
@@ -345,7 +345,7 @@ public class FlowBasedServicesUtils {
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
-        LOG.debug("Installing Egress Dispatcher Flow {}, {}", flowRef, interfaceName);
+        LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", interfaceName, flowRef);
         installFlow(dpId, egressFlow, writeTransaction);
     }
 
