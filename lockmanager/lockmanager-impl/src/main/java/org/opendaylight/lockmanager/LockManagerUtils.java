@@ -18,10 +18,6 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class LockManagerUtils {
 
-    public static long convertToMillis(long waitTime, TimeUnit timeUnit) {
-        return timeUnit.toMillis(waitTime);
-    }
-
     public static TimeUnit convertToTimeUnit(TimeUnits timeUnit) {
         switch (timeUnit) {
             case Days:
