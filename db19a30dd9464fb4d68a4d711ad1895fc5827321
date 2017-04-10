@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_5cb0658b",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-04-10T05:43:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_1c41c639",
+      "revId": "db19a30dd9464fb4d68a4d711ad1895fc5827321",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_1cc42691",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-04-07T07:44:14Z",
       "side": 1,
       "message": "same here",
+      "revId": "db19a30dd9464fb4d68a4d711ad1895fc5827321",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_fcbb1970",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-04-10T05:43:50Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_1cc42691",
       "revId": "db19a30dd9464fb4d68a4d711ad1895fc5827321",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
