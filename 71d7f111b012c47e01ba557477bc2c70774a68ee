@@ -16,6 +16,24 @@
       "revId": "71d7f111b012c47e01ba557477bc2c70774a68ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_00830705",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-11T06:53:49Z",
+      "side": 1,
+      "message": "I think the idea behind this is to return the actual tunnel if the logical tunnel is not available",
+      "parentUuid": "da01753e_610ca243",
+      "revId": "71d7f111b012c47e01ba557477bc2c70774a68ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
