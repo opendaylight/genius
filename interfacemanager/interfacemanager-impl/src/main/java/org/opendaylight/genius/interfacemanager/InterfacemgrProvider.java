@@ -192,7 +192,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                .getInterfaceState(interfaceName, dataBroker);
 
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
@@ -254,7 +254,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         org.opendaylight.yang.gen.v1.urn
             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
                 InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;
@@ -291,7 +291,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.error("Interface {} is not present", interfaceName);
             return null;

@@ -65,7 +65,7 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
                 .getInterfaceName();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.warn("Interface not operational, not binding Service for Interface: {}", interfaceName);
             return futures;

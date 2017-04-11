@@ -80,7 +80,7 @@ public class OvsInterfaceConfigRemoveHelper {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                .getInterfaceState(interfaceName, dataBroker);
 
         if (ifState == null) {
             LOG.debug("could not fetch interface state corresponding to {}", interfaceName);
@@ -195,7 +195,7 @@ public class OvsInterfaceConfigRemoveHelper {
             WriteTransaction transaction, IdManagerService idManagerService) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
             .interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                .getInterfaceState(interfaceName, dataBroker);
         if (ifState != null && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown) {
