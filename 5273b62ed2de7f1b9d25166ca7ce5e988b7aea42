@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_2051eb62",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-11T07:34:43Z",
+      "side": 1,
+      "message": "I think so.",
+      "parentUuid": "da01753e_73312a0b",
+      "revId": "5273b62ed2de7f1b9d25166ca7ce5e988b7aea42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_5336a604",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateUpdateHelper.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-04-06T08:03:11Z",
       "side": 1,
       "message": "... and again.",
+      "revId": "5273b62ed2de7f1b9d25166ca7ce5e988b7aea42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_804ed7bf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-11T07:34:43Z",
+      "side": 1,
+      "message": "Yes",
+      "parentUuid": "da01753e_5336a604",
       "revId": "5273b62ed2de7f1b9d25166ca7ce5e988b7aea42",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
