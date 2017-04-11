@@ -77,7 +77,7 @@ public class OvsVlanMemberConfigUpdateHelper {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
             .interfaces.rev140508.interfaces.state.Interface pifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(parentRefsNew.getParentInterface(), dataBroker);
+                .getInterfaceState(parentRefsNew.getParentInterface(), dataBroker);
         if (pifState != null) {
             OperStatus operStatus = OperStatus.Down;
             if (interfaceNew.isEnabled()) {
