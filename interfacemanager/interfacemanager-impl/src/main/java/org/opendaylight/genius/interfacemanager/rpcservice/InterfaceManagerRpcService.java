@@ -125,7 +125,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             } else {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                        .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                        .getInterfaceState(interfaceName, dataBroker);
                 if (ifState != null) {
                     String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -297,7 +297,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             long portNo = 0;
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                    .getInterfaceState(interfaceName, dataBroker);
             if (ifState != null) {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -336,7 +336,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         try {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceStateFromOperDS(interfaceName, dataBroker);
+                    .getInterfaceState(interfaceName, dataBroker);
             String lowerLayerIf = ifState.getLowerLayerIf().get(0);
             NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
 
