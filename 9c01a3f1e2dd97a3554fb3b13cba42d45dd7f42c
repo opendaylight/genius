@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_7bff2535",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-11T12:49:45Z",
+      "side": 1,
+      "message": "Could we transform this comments in proper JavaDocs?",
+      "range": {
+        "startLine": 168,
+        "startChar": 0,
+        "endLine": 171,
+        "endChar": 7
+      },
+      "revId": "9c01a3f1e2dd97a3554fb3b13cba42d45dd7f42c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
