@@ -57,7 +57,7 @@ public class OvsInterfaceConfigUpdateHelper {
         // create
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
+                .getInterfaceState(interfaceNew.getName(), dataBroker);
         if (ifState == null) {
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
                     interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,

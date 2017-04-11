@@ -63,7 +63,7 @@ public class OvsVlanMemberConfigRemoveHelper {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
+                .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
         if (ifState != null) {
             LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
