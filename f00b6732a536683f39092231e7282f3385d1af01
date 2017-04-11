@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_1bf6dad7",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-11T09:18:50Z",
+      "side": 1,
+      "message": "there is already groupExists() method which does the same. can you use it ?\njust with if (groupExists(dpId, groupId))",
+      "revId": "f00b6732a536683f39092231e7282f3385d1af01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_bbd34e37",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-11T09:18:50Z",
+      "side": 1,
+      "message": "can you have a method like flowExists(dpId, tanleId, flowKey) which return boolean",
+      "revId": "f00b6732a536683f39092231e7282f3385d1af01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_1b1d3a10",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-11T09:18:50Z",
+      "side": 1,
+      "message": "do the same here.",
+      "revId": "f00b6732a536683f39092231e7282f3385d1af01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_fbb4b6f3",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 454,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-11T09:18:50Z",
+      "side": 1,
+      "message": "same comment here.",
+      "revId": "f00b6732a536683f39092231e7282f3385d1af01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_3b959e40",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-11T09:18:50Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "f00b6732a536683f39092231e7282f3385d1af01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_5bc5025a",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-11T09:18:50Z",
+      "side": 1,
+      "message": "same comment here. We could log error message if group doesn\u0027t exist for delete. Let us do it in all the methods.",
+      "revId": "f00b6732a536683f39092231e7282f3385d1af01",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
