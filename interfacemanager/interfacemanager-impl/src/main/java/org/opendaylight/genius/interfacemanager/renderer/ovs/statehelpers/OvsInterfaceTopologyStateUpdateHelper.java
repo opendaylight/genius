@@ -78,7 +78,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             // of BFD monitoring
             final List<ListenableFuture<Void>> futures = new ArrayList<>();
             final Interface interfaceState = InterfaceManagerCommonUtils
-                    .getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
+                    .getInterfaceState(terminationPointNew.getName(), dataBroker);
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);

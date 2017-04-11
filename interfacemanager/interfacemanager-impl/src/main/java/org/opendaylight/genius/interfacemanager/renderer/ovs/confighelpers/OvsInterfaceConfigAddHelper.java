@@ -83,7 +83,7 @@ public class OvsInterfaceConfigAddHelper {
         LOG.info("adding vlan configuration for interface {}", interfaceNew.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceStateFromOperDS(parentRefs.getParentInterface(), dataBroker);
+                .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
 
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, defaultOperShardTransaction,
                 idManager, futures, ifState);
@@ -156,7 +156,7 @@ public class OvsInterfaceConfigAddHelper {
             // program tunnel ingress flow
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceStateFromOperDS(interfaceNew.getName(), dataBroker);
+                    .getInterfaceState(interfaceNew.getName(), dataBroker);
             if (ifState != null) {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if (ncId != null) {
