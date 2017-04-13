@@ -322,6 +322,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (existingFutureIdValue != null) {
             try {
                 newIdValuesList = existingFutureIdValue.get();
+                idUtils.unlock(lockManager, uniqueIdKey);
                 return newIdValuesList;
             } catch (InterruptedException | ExecutionException e) {
                 LOG.warn("Could not obtain id from existing futureIdValue for idKey {} and pool {}.",
