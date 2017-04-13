@@ -59,6 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -727,10 +728,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId) {
         List<OvsdbTerminationPointAugmentation> tpList = null;
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
-        if (bridgeEntry != null) {
+        List<InterfaceNameEntry> interfaceList = InterfaceManagerCommonUtils.getAllInterfaces(dpnId, dataBroker);
+        if (interfaceList != null) {
             tpList = new ArrayList<>();
-            for (BridgeInterfaceEntry ifaceEntry: bridgeEntry.getBridgeInterfaceEntry()) {
+            for (InterfaceNameEntry ifaceEntry: interfaceList) {
                 OvsdbTerminationPointAugmentation terminationPoint =
                                 getTerminationPointForInterface(ifaceEntry.getInterfaceName());
                 LOG.trace("Found TerminationPoint {} for interface {}", terminationPoint,
