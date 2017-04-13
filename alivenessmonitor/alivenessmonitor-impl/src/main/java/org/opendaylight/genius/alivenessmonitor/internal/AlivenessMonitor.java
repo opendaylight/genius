@@ -648,6 +648,7 @@ public class AlivenessMonitor
     }
 
     @Override
+    @SuppressWarnings("resource") // tx.close() in Future's callback(s)
     public Future<RpcResult<Void>> monitorUnpause(MonitorUnpauseInput input) {
         LOG.debug("Monitor Unpause operation invoked for monitor id: {}", input.getMonitorId());
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
@@ -661,6 +662,7 @@ public class AlivenessMonitor
 
             @Override
             public void onFailure(Throwable error) {
+                tx.close();
                 String msg = String.format("Unable to read monitoring info associated with monitor id %d", monitorId);
                 LOG.error("Monitor unpause Failed. {}", msg, error);
                 result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error).build());
@@ -676,6 +678,7 @@ public class AlivenessMonitor
 
                         @Override
                         public void onFailure(Throwable error) {
+                            tx.close();
                             String msg = String.format("Unable to read Monitoring profile associated with id %d",
                                     info.getProfileId());
                             LOG.warn("Monitor unpause Failed. {}", msg, error);
@@ -1093,7 +1096,9 @@ public class AlivenessMonitor
             }
             releaseIdForMonitoringInfo(info);
 
-            lockMap.remove(monitorKey);
+            if (monitorKey != null) {
+                lockMap.remove(monitorKey);
+            }
 
             result.set(RpcResultBuilder.<Void>success().build());
         } else {
@@ -1202,6 +1207,7 @@ public class AlivenessMonitor
                 String.format("Monitor status update for %d to %s", monitorId, newStatus.toString())));
     }
 
+    @SuppressWarnings("resource") // tx.close() in Future's callback(s)
     private void resumeMonitoring(final long monitorId) {
         final ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
         ListenableFuture<Optional<MonitoringInfo>> readInfoResult = tx.read(LogicalDatastoreType.OPERATIONAL,
@@ -1213,6 +1219,7 @@ public class AlivenessMonitor
             public void onFailure(Throwable error) {
                 String msg = String.format("Unable to read monitoring info associated with monitor id %d", monitorId);
                 LOG.error("Monitor resume Failed. {}", msg, error);
+                tx.close();
             }
 
             @Override
@@ -1228,6 +1235,7 @@ public class AlivenessMonitor
                             String msg = String.format("Unable to read Monitoring profile associated with id %d",
                                     info.getProfileId());
                             LOG.warn("Monitor resume Failed. {}", msg, error);
+                            tx.close();
                         }
 
                         @Override
