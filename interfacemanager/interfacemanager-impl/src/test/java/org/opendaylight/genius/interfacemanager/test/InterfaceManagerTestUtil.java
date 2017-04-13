@@ -263,8 +263,7 @@ public class InterfaceManagerTestUtil {
     }
 
     static void updateFlowCapableNodeConnectorState(DataBroker dataBroker, String interfaceName,
-                                                    Class<? extends InterfaceType> ifType, boolean isLive)
-    throws TransactionCommitFailedException {
+            Class<? extends InterfaceType> ifType, boolean isLive) throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
@@ -275,7 +274,7 @@ public class InterfaceManagerTestUtil {
     }
 
     static void removeFlowCapableNodeConnectorState(DataBroker dataBroker, Class<? extends InterfaceType> ifType)
-    throws TransactionCommitFailedException {
+            throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
@@ -284,8 +283,7 @@ public class InterfaceManagerTestUtil {
     }
 
 
-    static void removeNode(DataBroker dataBroker)
-    throws TransactionCommitFailedException {
+    static void removeNode(DataBroker dataBroker) throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
             .child(Node.class, new NodeKey(IfmUtil.buildDpnNodeId(DPN_ID_2))).build();
