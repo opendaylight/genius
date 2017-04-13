@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, OvsdbNodeListener>
     implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbNodeListener.class);
-    private DataBroker dataBroker;
-    private ItmConfig itmConfig;
+    private final DataBroker dataBroker;
+    private final ItmConfig itmConfig;
 
     @Inject
     public OvsdbNodeListener(final DataBroker dataBroker, final ItmConfig itmConfig) {
@@ -383,19 +383,8 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             return null;
         }
 
-        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList =
-            ovsdbNodeAugmentation.getOpenvswitchExternalIds();
-        if (ovsdbNodeExternalIdsList == null) {
-            LOG.warn("ExternalIds list does not exist in the OVSDB Node Augmentation.");
-            return null;
-        }
-
+        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
         OvsdbExternalIdsInfo externalIdsInfoObj = new OvsdbExternalIdsInfo();
-
-        if (externalIdsInfoObj == null) {
-            LOG.error("Memory could not be allocated. System fatal error.");
-            return null;
-        }
 
         if (ovsdbNodeExternalIdsList != null) {
             for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
