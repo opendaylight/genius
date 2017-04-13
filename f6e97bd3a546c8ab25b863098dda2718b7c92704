@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_cc6da79b",
+        "filename": "arputil/arputil-api/src/main/java/org/opendaylight/genius/arputil/api/ArpConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-04-13T15:22:52Z",
+      "side": 1,
+      "message": "some like interface for constants... others don\u0027t. I would prefer to leave this as is since it is just moving the file from vpnmanager to here. We can rework this in the next step when we refactor this bundle properly.",
+      "parentUuid": "da01753e_4c6257ae",
+      "revId": "f6e97bd3a546c8ab25b863098dda2718b7c92704",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_ac594300",
         "filename": "arputil/arputil-api/src/main/java/org/opendaylight/genius/arputil/api/ArpConstants.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-04-13T15:16:52Z",
       "side": 1,
       "message": "do you need to expose all these constants?  What really motivated this change is that you need the ARP cache timeout, right?  Perhaps move just that (or that and whatever else you need), not everything from the impl?  Like the messages are really internal...",
+      "revId": "f6e97bd3a546c8ab25b863098dda2718b7c92704",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_2c6d5399",
+        "filename": "arputil/arputil-api/src/main/java/org/opendaylight/genius/arputil/api/ArpConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-04-13T15:22:52Z",
+      "side": 1,
+      "message": "There is a mix of stuff in this file, of which different classes use. I think there were a couple constants in here not used so it wasn\u0027t worth it to break them out.",
+      "parentUuid": "da01753e_ac594300",
       "revId": "f6e97bd3a546c8ab25b863098dda2718b7c92704",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_0c684f86",
+        "filename": "arputil/arputil-api/src/main/java/org/opendaylight/genius/arputil/api/ArpConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-04-13T15:22:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_ec4b4b29",
+      "revId": "f6e97bd3a546c8ab25b863098dda2718b7c92704",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_6c38fba0",
         "filename": "arputil/arputil-api/src/main/java/org/opendaylight/genius/arputil/api/ArpConstants.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-04-13T15:16:52Z",
       "side": 1,
       "message": "this isn\u0027t needed / doesn\u0027t really make sense, as the ARP_CACHE_TIMEOUT_MILLIS is a public constant already, it\u0027s duplicated and could be confusing to use (which one am I supposed to use?) ... Your idea here, based on our chat on IRC yesterday, is probably that the implementation of this could later be changed - but that won\u0027t work anyway, it\u0027s static, with no DataBroker.. so I would just remove this method, and leave the constant - and then later refactor it better.",
+      "revId": "f6e97bd3a546c8ab25b863098dda2718b7c92704",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4c09b7dc",
+        "filename": "arputil/arputil-api/src/main/java/org/opendaylight/genius/arputil/api/ArpConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-04-13T15:22:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_6c38fba0",
       "revId": "f6e97bd3a546c8ab25b863098dda2718b7c92704",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
