@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_ce1760a2",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "you can avoid local variable since tableId is used only once. do it for other variables too.",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4e237005",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "add flowExists check here too.",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_6e263418",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "also log dpId. ditto for other logs.",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ee7984fd",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "what is the need of this ?",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ce7e40e4",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "add if-else inside isRemove for flowExists(dpId, tableId, flowKey) so that you can log warn message.",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_2e842cd3",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 458,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "same comment as above",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_0e8968eb",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-13T08:52:26Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "ec8993839dffe5ffd67bed0aaacb0509e5c81695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
