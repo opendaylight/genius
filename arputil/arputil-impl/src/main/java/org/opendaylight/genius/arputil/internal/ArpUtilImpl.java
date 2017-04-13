@@ -38,6 +38,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.arputil.api.ArpConstants;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NWUtil;
@@ -102,21 +103,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private final NotificationPublishService notificationPublishService;
     private final NotificationService notificationService;
     private final OdlInterfaceRpcService odlInterfaceRpcService;
-
     private ListenerRegistration<ArpUtilImpl> listenerRegistration;
-
-    private static final String FAILED_TO_GET_SRC_IP_FOR_INTERFACE = "Failed to get src ip for %s";
-    private static final String FAILED_TO_GET_SRC_MAC_FOR_INTERFACE = "Failed to get src mac for interface %s iid %s ";
-    private static final String FAILED_TO_SEND_ARP_REQ_FOR_INTERFACE = "failed to send arp req for interface ";
-    private static final String UNKNOWN_IP_ADDRESS_SUPPLIED = "unknown ip address supplied";
-    private static final String NODE_CONNECTOR_NOT_FOUND_ERROR = "Node connector id not found for interface %s";
-    private static final String DPN_NOT_FOUND_ERROR = "dpn not found for interface %s ";
-    private static final short ARP_REQUEST_OP = (short) 1;
-    private static final short ARP_RESPONSE_OP = (short) 2;
-    private static final short ETH_TYPE_ARP = 0x0806;
-
     private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
-
     private final ConcurrentMap<String, String> macsDB = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>> macAddrs = new ConcurrentHashMap<>();
 
@@ -213,7 +201,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             dstIpBytes = getIpAddressBytes(arpReqInput.getIpaddress());
         } catch (UnknownHostException e) {
             LOG.error("Cannot get IP address", e);
-            failureBuilder.withError(ErrorType.APPLICATION, UNKNOWN_IP_ADDRESS_SUPPLIED);
+            failureBuilder.withError(ErrorType.APPLICATION, ArpConstants.UNKNOWN_IP_ADDRESS_SUPPLIED);
             return Futures.immediateFuture(failureBuilder.build());
         }
 
@@ -229,10 +217,11 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 checkNotNull(portResult);
                 dpnId = portResult.getDpid();
                 Long portid = portResult.getPortno();
-                checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId), DPN_NOT_FOUND_ERROR, interfaceName);
+                checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId),
+                    ArpConstants.DPN_NOT_FOUND_ERROR, interfaceName);
 
                 NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
-                checkNotNull(ref, NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
+                checkNotNull(ref, ArpConstants.NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
 
                 LOG.trace("sendArpRequest received dpnId {} out interface {}", dpnId, interfaceName);
                 if (interfaceAddress.getMacaddress() == null) {
@@ -242,10 +231,10 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                     String macAddr = interfaceAddress.getMacaddress().getValue();
                     srcMac = HexEncode.bytesFromHexString(macAddr);
                 }
-                checkNotNull(srcMac, FAILED_TO_GET_SRC_MAC_FOR_INTERFACE, interfaceName, ref.getValue());
-                checkNotNull(srcIpBytes, FAILED_TO_GET_SRC_IP_FOR_INTERFACE, interfaceName);
+                checkNotNull(srcMac, ArpConstants.FAILED_TO_GET_SRC_MAC_FOR_INTERFACE, interfaceName, ref.getValue());
+                checkNotNull(srcIpBytes, ArpConstants.FAILED_TO_GET_SRC_IP_FOR_INTERFACE, interfaceName);
 
-                payload = ArpPacketUtil.getPayload(ARP_REQUEST_OP, srcMac, srcIpBytes,
+                payload = ArpPacketUtil.getPayload(ArpConstants.ARP_REQUEST_OP, srcMac, srcIpBytes,
                         ArpPacketUtil.ETHERNET_BROADCAST_DESTINATION, dstIpBytes);
 
                 List<Action> actions = getEgressAction(interfaceName);
@@ -255,10 +244,10 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException e) {
                 LOG.trace("failed to send arp req for {} on interface {}", arpReqInput.getIpaddress(), interfaceName);
 
-                failureBuilder.withError(ErrorType.APPLICATION, FAILED_TO_SEND_ARP_REQ_FOR_INTERFACE + interfaceName,
-                        e);
-                successBuilder.withError(ErrorType.APPLICATION, FAILED_TO_SEND_ARP_REQ_FOR_INTERFACE + interfaceName,
-                        e);
+                failureBuilder.withError(ErrorType.APPLICATION,
+                    ArpConstants.FAILED_TO_SEND_ARP_REQ_FOR_INTERFACE + interfaceName, e);
+                successBuilder.withError(ErrorType.APPLICATION,
+                    ArpConstants.FAILED_TO_SEND_ARP_REQ_FOR_INTERFACE + interfaceName, e);
                 localErrorCount++;
             }
         }
@@ -328,8 +317,9 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             dpnId = portResult.getDpid();
             Long portid = portResult.getPortno();
             NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
-            checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId), DPN_NOT_FOUND_ERROR, interfaceName);
-            checkNotNull(ref, NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
+            checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId),
+                ArpConstants.DPN_NOT_FOUND_ERROR, interfaceName);
+            checkNotNull(ref, ArpConstants.NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
 
             LOG.trace("sendArpRequest received dpnId {} out interface {}", dpnId, interfaceName);
 
@@ -342,8 +332,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 srcMac = HexEncode.bytesFromHexString(macAddr);
             }
             byte[] dstMac = NWUtil.parseMacAddress(input.getDstMacaddress().getValue());
-            checkNotNull(srcIpBytes, FAILED_TO_GET_SRC_IP_FOR_INTERFACE, interfaceName);
-            payload = ArpPacketUtil.getPayload(ARP_RESPONSE_OP, srcMac, srcIpBytes, dstMac, dstIpBytes);
+            checkNotNull(srcIpBytes, ArpConstants.FAILED_TO_GET_SRC_IP_FOR_INTERFACE, interfaceName);
+            payload = ArpPacketUtil.getPayload(ArpConstants.ARP_RESPONSE_OP, srcMac, srcIpBytes, dstMac, dstIpBytes);
 
             List<Action> actions = getEgressAction(interfaceName);
             sendPacketOutWithActions(dpnId, payload, ref, actions);
@@ -373,7 +363,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 Ethernet ethernet = new Ethernet();
 
                 ethernet.deserialize(data, 0, data.length * NetUtils.NumBitsInAByte);
-                if (ethernet.getEtherType() != ETH_TYPE_ARP) {
+                if (ethernet.getEtherType() != ArpConstants.ETH_TYPE_ARP) {
                     return;
                 }
 
@@ -397,7 +387,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr, srcMac);
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(), NWUtil.toStringMacAddress(srcMac));
-                if (arp.getOpCode() == ARP_REQUEST_OP) {
+                if (arp.getOpCode() == ArpConstants.ARP_REQUEST_OP) {
                     fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, tableId,
                             metadata.getMetadata());
                 } else {
