@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
-
 import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.karaf.shell.commands.Command;
