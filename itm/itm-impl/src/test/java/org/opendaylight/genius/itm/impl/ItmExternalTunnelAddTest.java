@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -304,6 +305,7 @@ public class ItmExternalTunnelAddTest {
 
     }
 
+    @Ignore
     @Test
     public void testBuildTunnelsFromDpnToExternalEndPoint() {
 
