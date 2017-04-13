@@ -70,7 +70,7 @@ public class LockManager implements LockManagerService {
             return Futures.immediateFuture(lockRpcBuilder.build());
         } catch (InterruptedException e) {
             RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.failed();
-            LOG.info("Failed to get lock {}", lockName);
+            LOG.info("Failed to get lock {}", lockName, e);
             return Futures.immediateFuture(lockRpcBuilder.build());
         }
     }
@@ -98,7 +98,7 @@ public class LockManager implements LockManagerService {
             }
         } catch (InterruptedException e) {
             lockRpcBuilder = RpcResultBuilder.failed();
-            LOG.info("Failed to get lock {}", lockName, e);
+            LOG.info("Failed to get lock {}. Reason :", lockName, e);
         }
         return Futures.immediateFuture(lockRpcBuilder.build());
     }
@@ -125,7 +125,7 @@ public class LockManager implements LockManagerService {
             CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
             futures.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("In unlock unable to unlock: ", e);
+            LOG.error("In unlock unable to unlock: {}. Reason :", lockName, e);
         }
     }
 
@@ -135,15 +135,17 @@ public class LockManager implements LockManagerService {
     private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
+        String lockName = lockData.getLockName();
         for (int retry = 1;; retry++) {
             try {
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    LOG.info("Already locked after waiting {}ms, try {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    LOG.info("Already locked for {} after waiting {}ms, try {}",
+                            lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock, try {}", retry, e);
+                LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
             }
             Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
@@ -156,16 +158,18 @@ public class LockManager implements LockManagerService {
     private boolean getLock(InstanceIdentifier<Lock> lockInstanceIdentifier, Lock lockData, long retryCount)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
+        String lockName = lockData.getLockName();
         for (int retry = 1; retry <= retryCount; retry++) {
             try {
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return true;
                 } else {
-                    LOG.debug("Already locked after waiting {}ms, try {} of {}", DEFAULT_WAIT_TIME_IN_MILLIS, retry,
-                            retryCount);
+                    LOG.debug("Already locked for {} after waiting {}ms, try {} of {}", lockName,
+                            DEFAULT_WAIT_TIME_IN_MILLIS, retry, retryCount);
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock, try {} of {}", retry, retryCount, e);
+                LOG.error("Unable to acquire lock for {}, try {} of {}", lockName, retry,
+                        retryCount);
             }
             Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
