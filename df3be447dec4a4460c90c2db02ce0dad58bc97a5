@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_128a25bf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-15T04:06:20Z",
+      "side": 1,
+      "message": "This adds a read to DS, potential perf issues. Whole point of these APIs to provide means to read caches. Operational read may be good enough on local reads, but not sure about remote reads.",
+      "range": {
+        "startLine": 621,
+        "startChar": 49,
+        "endLine": 621,
+        "endChar": 61
+      },
+      "revId": "df3be447dec4a4460c90c2db02ce0dad58bc97a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

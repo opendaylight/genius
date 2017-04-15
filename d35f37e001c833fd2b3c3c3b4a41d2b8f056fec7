@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_b2a3594e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 733,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-15T04:06:20Z",
+      "side": 0,
+      "message": "this only contains tunnel ports? Then it is a very misleadingly named yang. Why we need two different containers for tunnels and non-tunnel ports?",
+      "range": {
+        "startLine": 733,
+        "startChar": 62,
+        "endLine": 733,
+        "endChar": 85
+      },
+      "revId": "d35f37e001c833fd2b3c3c3b4a41d2b8f056fec7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
