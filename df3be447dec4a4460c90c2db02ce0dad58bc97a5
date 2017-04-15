@@ -22,6 +22,30 @@
       "revId": "df3be447dec4a4460c90c2db02ce0dad58bc97a5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_75ed5b25",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-15T12:33:30Z",
+      "side": 1,
+      "message": "As far as I know, from the experiments we had done during scale testing, operational reads were not costly, only config reads seemed to have performance overheads..",
+      "parentUuid": "da01753e_128a25bf",
+      "range": {
+        "startLine": 621,
+        "startChar": 49,
+        "endLine": 621,
+        "endChar": 61
+      },
+      "revId": "df3be447dec4a4460c90c2db02ce0dad58bc97a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
