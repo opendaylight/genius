@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_a8ec8690",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-17T04:10:34Z",
+      "side": 1,
+      "message": "The logic of building nodeDpn and groupInstanceId can go inside if loop.",
+      "revId": "f3c1e79952cc2b3fd0d3617baa261859b853c39e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_08031243",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-17T04:10:34Z",
+      "side": 1,
+      "message": "same comment and do it for all the occurrences.",
+      "revId": "f3c1e79952cc2b3fd0d3617baa261859b853c39e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_48fd1a3a",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-17T04:10:34Z",
+      "side": 1,
+      "message": "try to avoid using local variable if that is being used only once. here nodeDpn.",
+      "revId": "f3c1e79952cc2b3fd0d3617baa261859b853c39e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_e8fdee3c",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-17T04:10:34Z",
+      "side": 1,
+      "message": "this is wrong. you should have groupExists check inside isRemove condition. I think this is root cause for csit failures",
+      "revId": "f3c1e79952cc2b3fd0d3617baa261859b853c39e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
