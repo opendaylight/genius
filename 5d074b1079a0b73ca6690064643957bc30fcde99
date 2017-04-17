@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_ab7120e2",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-17T11:26:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_2ca0b39e",
+      "revId": "5d074b1079a0b73ca6690064643957bc30fcde99",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_acb143e3",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
         "patchSetId": 7
@@ -30,6 +48,30 @@
       "writtenOn": "2017-04-13T15:58:52Z",
       "side": 1,
       "message": "this static field which holds ConcurrentHashMap is not so great.. imagine if you have 2 tests, this is going to be \"global state\", which won\u0027t be cleared out.  It would much better to make this ConcurrentHashMap a non-static private field in LockManager or LockListener, then then in the respective other one where you need it e.g. @Inject LockListener to LockManager, and have a method to access this ConcurrentHashMap.  Even better not a getter method but an action method to do what you need to with it.",
+      "range": {
+        "startLine": 24,
+        "startChar": 29,
+        "endLine": 24,
+        "endChar": 30
+      },
+      "revId": "5d074b1079a0b73ca6690064643957bc30fcde99",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_0b782cc3",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-17T11:26:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_acb143e3",
       "range": {
         "startLine": 24,
         "startChar": 29,
