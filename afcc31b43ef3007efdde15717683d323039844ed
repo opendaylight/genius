@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_772a7b7f",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-04-18T09:29:02Z",
+      "side": 1,
+      "message": "Can’t we suppress the warnings only on the callbacks? It would be a shame to miss something in monitorUnpause() itself because of this.",
+      "revId": "afcc31b43ef3007efdde15717683d323039844ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_d721a7a0",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 1210,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-04-18T09:29:02Z",
+      "side": 1,
+      "message": "Same here.",
+      "revId": "afcc31b43ef3007efdde15717683d323039844ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
