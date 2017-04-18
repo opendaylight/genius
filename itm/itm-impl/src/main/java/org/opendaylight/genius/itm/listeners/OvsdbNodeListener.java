@@ -39,10 +39,12 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, OvsdbNodeListener>
-    implements AutoCloseable {
+        implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbNodeListener.class);
-    private DataBroker dataBroker;
-    private ItmConfig itmConfig;
+
+    private final DataBroker dataBroker;
+    private final ItmConfig itmConfig;
 
     @Inject
     public OvsdbNodeListener(final DataBroker dataBroker, final ItmConfig itmConfig) {
@@ -383,8 +385,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
             return null;
         }
 
-        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList =
-            ovsdbNodeAugmentation.getOpenvswitchExternalIds();
+        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
         if (ovsdbNodeExternalIdsList == null) {
             LOG.warn("ExternalIds list does not exist in the OVSDB Node Augmentation.");
             return null;
@@ -392,29 +393,23 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
         OvsdbExternalIdsInfo externalIdsInfoObj = new OvsdbExternalIdsInfo();
 
-        if (externalIdsInfoObj == null) {
-            LOG.error("Memory could not be allocated. System fatal error.");
-            return null;
+        for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
+            if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TEP_IP.equals(externalId.getExternalIdKey())) {
+                String tepIp = externalId.getExternalIdValue();
+                externalIdsInfoObj.setTepIp(tepIp);
+            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
+                String tzName = externalId.getExternalIdValue();
+                externalIdsInfoObj.setTzName(tzName);
+            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
+                String bridgeName = externalId.getExternalIdValue();
+                externalIdsInfoObj.setBrName(bridgeName);
+            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
+                boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
+                externalIdsInfoObj.setOfTunnel(ofTunnel);
+            }
         }
 
-        if (ovsdbNodeExternalIdsList != null) {
-            for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-                if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TEP_IP.equals(externalId.getExternalIdKey())) {
-                    String tepIp = externalId.getExternalIdValue();
-                    externalIdsInfoObj.setTepIp(tepIp);
-                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
-                    String tzName = externalId.getExternalIdValue();
-                    externalIdsInfoObj.setTzName(tzName);
-                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
-                    String bridgeName = externalId.getExternalIdValue();
-                    externalIdsInfoObj.setBrName(bridgeName);
-                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
-                    boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
-                    externalIdsInfoObj.setOfTunnel(ofTunnel);
-                }
-            }
-            LOG.trace("{}", externalIdsInfoObj.toString());
-        }
+        LOG.trace("{}", externalIdsInfoObj.toString());
         return externalIdsInfoObj;
     }
     // End of class
