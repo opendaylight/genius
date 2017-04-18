@@ -16,6 +16,24 @@
       "revId": "40b50cc9f6ba7c51ec9bf113db897b4adc731964",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_974eff6d",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-18T09:46:35Z",
+      "side": 1,
+      "message": "yeah I know, but it\u0027s not - that {} is for lockName, not e!",
+      "parentUuid": "da01753e_20da8b78",
+      "revId": "40b50cc9f6ba7c51ec9bf113db897b4adc731964",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
