@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_9dc9fd7b",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-18T15:35:06Z",
+      "side": 1,
+      "message": "I just briefly tried, and unfortunately no we cannot.. you have to annotate a method or local variable - and the warning appears on the return at the end of this method, and neither annotating the tx local variable nor the onFailure and onSuccess methods in the anonymous inner class work (which kind of makes sense actually)",
+      "parentUuid": "da01753e_772a7b7f",
+      "revId": "afcc31b43ef3007efdde15717683d323039844ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_d721a7a0",
         "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
         "patchSetId": 4
