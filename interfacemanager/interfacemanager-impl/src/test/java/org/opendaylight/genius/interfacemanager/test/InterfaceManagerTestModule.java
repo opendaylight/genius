@@ -18,6 +18,8 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
@@ -64,6 +66,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
         LockManagerService lockManager = new LockManager(dataBroker);
         bind(LockManagerService.class).toInstance(lockManager);
+        bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 
         IdUtils idUtils = new IdUtils();
         IdManagerService idManager;
