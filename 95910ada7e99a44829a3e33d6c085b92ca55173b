@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_43168fa8",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-19T16:33:52Z",
+      "side": 1,
+      "message": "we need this retry when multiple threads are waiting to acquired a lock. When one thread already holds a lock, then remaining threads are blocked at future.get(), upon release of the lock only on thread would get chance to get the lock and remaining threads goes to retry again.\n\n(this works?): From the code wise, changes look okay because it can work across cluster since LockListener is made as clustered DTCN listener to make future complete upon lock removal(release). \nLet us also do some tests/csit runs to confirm it.",
+      "parentUuid": "da01753e_a3cbfba3",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_802a2d2a",
         "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
         "patchSetId": 12
