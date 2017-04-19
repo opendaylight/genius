@@ -130,10 +130,10 @@ public class FlowBasedServicesUtils {
         matches.add(new MatchInPort(dpId, portNo));
         int vlanId = 0;
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
-        if (l2vlan != null && l2vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Transparent) {
+        if (l2vlan != null) {
             vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
         }
-        if (vlanId > 0) {
+        if (vlanId >= 0  && l2vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Transparent) {
             matches.add(new MatchVlanVid(vlanId));
         }
         return matches;
