@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_3790f242",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-19T07:00:44Z",
+      "side": 1,
+      "message": "I don\u0027t think synchronized makes sense here because tx.submit happens later by the applications. I just realized it now :(",
+      "revId": "59e4976d154a979f4e3632f75b18c8ca1b7d8119",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
