@@ -105,7 +105,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     }
 
     private void assertFailedFutureRpcResult(Future<RpcResult<Void>> futureRpcResult)
-    throws InterruptedException, ExecutionException, TimeoutException {
+            throws InterruptedException, ExecutionException, TimeoutException {
         assertThat(futureRpcResult.get(5, TimeUnit.SECONDS).isSuccessful()).isFalse();
     }
 
