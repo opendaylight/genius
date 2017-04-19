@@ -16,6 +16,24 @@
       "revId": "4d3b5cbedc02cc60e35d6bc533ccc26de83d88ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_209421e1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-19T14:36:27Z",
+      "side": 1,
+      "message": "cookie\u003d0x8000000, duration\u003d440.771s, table\u003d0, n_packets\u003d52, n_bytes\u003d3096, priority\u003d4,in_port\u003d2,vlan_tci\u003d0x0000/0x1fff actions\u003dwrite_metadata:0x30000000000/0xffffff0000000001,goto_table:17 cookie\u003d0x8000000, duration\u003d411.279s, table\u003d0, n_packets\u003d35, n_bytes\u003d2286, priority\u003d4,in_port\u003d3,vlan_tci\u003d0x0000/0x1fff actions\u003dwrite_metadata:0x50000000000/0xffffff0000000001,goto_table:17",
+      "parentUuid": "da01753e_2021c1fb",
+      "revId": "4d3b5cbedc02cc60e35d6bc533ccc26de83d88ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
