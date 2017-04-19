@@ -34,6 +34,24 @@
       "revId": "4d3b5cbedc02cc60e35d6bc533ccc26de83d88ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_c059d55c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-19T14:51:25Z",
+      "side": 1,
+      "message": "What is the vlan mode here? trunk or trunk-member?",
+      "parentUuid": "da01753e_209421e1",
+      "revId": "4d3b5cbedc02cc60e35d6bc533ccc26de83d88ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
