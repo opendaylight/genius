@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_2021c1fb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2017-04-19T14:16:10Z",
+      "side": 1,
+      "message": "could you further explain (maybe using dump-flows) what is the use case\nFrom first impression it seems like trunk ports would have an additional match of vid\u003d0 in addition to in_port. Was this the intention of this patch? We are planning to start using trunk ports for flat networks in https://git.opendaylight.org/gerrit/#/c/53688/ to allow coexistence of flat and vlan networks on the same port and this might be an issue",
+      "revId": "4d3b5cbedc02cc60e35d6bc533ccc26de83d88ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
