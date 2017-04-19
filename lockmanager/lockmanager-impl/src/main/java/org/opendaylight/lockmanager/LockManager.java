@@ -60,13 +60,13 @@ public class LockManager implements LockManagerService {
     @Override
     public Future<RpcResult<Void>> lock(LockInput input) {
         String lockName = input.getLockName();
-        LOG.info("Locking {}", lockName);
+        LOG.debug("Locking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = LockManagerUtils.getLockInstanceIdentifier(lockName);
         Lock lockData = LockManagerUtils.buildLockData(lockName);
         try {
             getLock(lockInstanceIdentifier, lockData);
             RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.success();
-            LOG.info("Acquired lock {}", lockName);
+            LOG.debug("Acquired lock {}", lockName);
             return Futures.immediateFuture(lockRpcBuilder.build());
         } catch (InterruptedException e) {
             RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.failed();
@@ -78,7 +78,7 @@ public class LockManager implements LockManagerService {
     @Override
     public Future<RpcResult<Void>> tryLock(TryLockInput input) {
         String lockName = input.getLockName();
-        LOG.info("Locking {}", lockName);
+        LOG.debug("Locking {}", lockName);
         long waitTime = input.getTime() == null ? DEFAULT_WAIT_TIME_IN_MILLIS * DEFAULT_RETRY_COUNT : input.getTime();
         TimeUnit timeUnit = input.getTimeUnit() == null ? TimeUnit.MILLISECONDS
                 : LockManagerUtils.convertToTimeUnit(input.getTimeUnit());
@@ -91,10 +91,10 @@ public class LockManager implements LockManagerService {
         try {
             if (getLock(lockInstanceIdentifier, lockData, retryCount)) {
                 lockRpcBuilder = RpcResultBuilder.success();
-                LOG.info("Acquired lock {}", lockName);
+                LOG.debug("Acquired lock {}", lockName);
             } else {
                 lockRpcBuilder = RpcResultBuilder.failed();
-                LOG.info("Failed to get lock {}", lockName);
+                LOG.error("Failed to get lock {}", lockName);
             }
         } catch (InterruptedException e) {
             lockRpcBuilder = RpcResultBuilder.failed();
@@ -106,7 +106,7 @@ public class LockManager implements LockManagerService {
     @Override
     public Future<RpcResult<Void>> unlock(UnlockInput input) {
         String lockName = input.getLockName();
-        LOG.info("Unlocking {}", lockName);
+        LOG.debug("Unlocking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = LockManagerUtils.getLockInstanceIdentifier(lockName);
         unlock(lockName, lockInstanceIdentifier);
         RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.success();
@@ -118,7 +118,7 @@ public class LockManager implements LockManagerService {
         try {
             Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
             if (!result.isPresent()) {
-                LOG.info("{} is already unlocked", lockName);
+                LOG.debug("{} is already unlocked", lockName);
                 return;
             }
             tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
@@ -141,8 +141,13 @@ public class LockManager implements LockManagerService {
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    LOG.info("Already locked for {} after waiting {}ms, try {}",
-                            lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    if (retry >= 30) {
+                        LOG.debug("Already locked for {} after waiting {}ms, try {}",
+                                lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    } else {
+                        LOG.warn("Already locked for {} after waiting {}ms, try {}",
+                                lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
+                    }
                 }
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
@@ -187,7 +192,7 @@ public class LockManager implements LockManagerService {
             ReadWriteTransaction tx = broker.newReadWriteTransaction();
             Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
             if (!result.isPresent()) {
-                LOG.info("Writing lock lockData {}", lockData);
+                LOG.debug("Writing lock lockData {}", lockData);
                 tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
                 CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
                 futures.get();
