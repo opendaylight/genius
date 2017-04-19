@@ -34,6 +34,24 @@
       "revId": "40b50cc9f6ba7c51ec9bf113db897b4adc731964",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_c6fe12ae",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-19T07:06:30Z",
+      "side": 1,
+      "message": "Yes Michael, I didn\u0027t notice it.",
+      "parentUuid": "da01753e_974eff6d",
+      "revId": "40b50cc9f6ba7c51ec9bf113db897b4adc731964",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
