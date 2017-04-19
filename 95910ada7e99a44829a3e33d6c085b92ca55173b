@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_802a2d2a",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-19T13:43:12Z",
+      "side": 1,
+      "message": "@Inject LockManagerService lockManager;",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_c0f435d1",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-19T13:43:12Z",
+      "side": 1,
+      "message": "remove this, this is wrong - you have to let Guice control the object creation by dependency injection, not do it yourself",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_200421bf",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-19T13:43:12Z",
+      "side": 1,
+      "message": "bind(LockManagerService.class).to(LockManager.class);",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
