@@ -632,6 +632,18 @@ public final class InterfaceManagerCommonUtils {
         BatchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
+    public static List<InterfaceNameEntry> getAllInterfaces(BigInteger dpnId, DataBroker dataBroker) {
+        DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpnId);
+        InstanceIdentifier<DpnToInterface> dpninterfaceListId =
+            InstanceIdentifier.builder(DpnToInterfaceList.class).child(DpnToInterface.class, dpnToInterfaceKey).build();
+        Optional<DpnToInterface> interfaceList = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpninterfaceListId,
+            dataBroker);
+        if (interfaceList.isPresent()) {
+            return interfaceList.get().getInterfaceNameEntry();
+        }
+        return null;
+    }
+
     public static void deleteDpnToInterface(DataBroker dataBroker,
             BigInteger dpId, String infName, WriteTransaction transaction) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
