@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "da01753e_a3cbfba3",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-19T15:21:10Z",
+      "side": 1,
+      "message": "I\u0027m not completely following what you\u0027re doing here yet, but if you replace the \"busy spin\" Thread.sleep loop with this Future.get idea (this works?) then can\u0027t you completely remove the retry?  Perhaps I\u0027m not getting what it\u0027s looping for..",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_802a2d2a",
         "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
         "patchSetId": 12
