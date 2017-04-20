@@ -16,6 +16,24 @@
       "revId": "161f46a2489f16e631c8d1d44ec5faafef7f84ab",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_aeff57a9",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2017-04-20T08:15:20Z",
+      "side": 1,
+      "message": "have a look at the log [1] I linked earlier, this clearly happens a lot and is expected (129 times)\nINFOs should only happen for event changes.\n\non an unrelated note - is this an unbounded retry with sleeps???\nshouldn\u0027t we fail after a reasonable number of retries?\n\n[1] https://logs.opendaylight.org/releng/jenkins092/netvirt-csit-1node-openstack-mitaka-upstream-learn-carbon/252/archives/odl1_karaf.log.gz",
+      "parentUuid": "da01753e_eb995120",
+      "revId": "161f46a2489f16e631c8d1d44ec5faafef7f84ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
