@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_4e006b67",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-20T09:08:07Z",
+      "side": 1,
+      "message": "we chose to manage DHCP server allocation pools with id-manager. For DHCP - specific allocations are required for specific requests or manual allocations",
+      "parentUuid": "da01753e_4c2a412d",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_6baba1d6",
         "filename": "docs/specs/enhanced-id-allocation.rst",
         "patchSetId": 10
@@ -30,6 +48,24 @@
       "writtenOn": "2017-04-20T05:51:51Z",
       "side": 1,
       "message": "why can\u0027t we simply move expired ids into released ids ?\nAnd add expiry-time property in delayed-id-entry so that it can be used again when this id is allocated again.",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_8ec53390",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-20T09:08:07Z",
+      "side": 1,
+      "message": "the intention is to check if id has expired, or look for an expired id - on demand, instead of constantly checking for expired id\u0027s and releasing them (assuming ids are usually released or renewed). If we want to constantly scan, then its another valid iplementation that can be re-considered..\n\nregarding delayed-id-entry, for the current implementation - I can indeed extend it and use it in allocated-ids instead of defining the \"allocated-id-entry\" (ready-time-sec will be the expiry-time and id-key will be added as optional).",
+      "parentUuid": "da01753e_6baba1d6",
       "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_8ecff37e",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-20T09:08:07Z",
+      "side": 1,
+      "message": "id should be in range - I will add a verification for that in Workflow -\u003e Specific id allocation -\u003e Id doesn\u0027t exist\n\nin the same place (Workflow -\u003e Specific id allocation -\u003e Id doesn\u0027t exist), I am talking about the possible inconsistency with available-id-holder and released-id-holder.",
+      "parentUuid": "da01753e_abbaa907",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_cb560dd2",
         "filename": "docs/specs/enhanced-id-allocation.rst",
         "patchSetId": 10
@@ -64,6 +118,24 @@
       "writtenOn": "2017-04-20T05:51:51Z",
       "side": 1,
       "message": "If the given id-value is already allocated for some other id-key, should we assign some other id-value ?",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4ead0b9c",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-20T09:08:07Z",
+      "side": 1,
+      "message": "if requested id is not available - a new id will be allocated dynamically (this is on the client-side to determine if he is pleased or not with the result)",
+      "parentUuid": "da01753e_cb560dd2",
       "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_ae72b746",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-20T09:08:07Z",
+      "side": 1,
+      "message": "as discussed above, this is indeed another way to implement it",
+      "parentUuid": "da01753e_2b2b5931",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_8b21a54f",
         "filename": "docs/specs/enhanced-id-allocation.rst",
         "patchSetId": 10
@@ -98,6 +188,24 @@
       "writtenOn": "2017-04-20T05:51:51Z",
       "side": 1,
       "message": "Nit: remove trailing space.",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_2e9ec756",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-20T09:08:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_8b21a54f",
       "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
