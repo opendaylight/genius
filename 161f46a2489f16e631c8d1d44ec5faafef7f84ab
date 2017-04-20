@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_eb995120",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T07:21:32Z",
+      "side": 1,
+      "message": "this could still be info. since this message occurrence is very less and useful to figure out lockmanager issues.",
+      "revId": "161f46a2489f16e631c8d1d44ec5faafef7f84ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
