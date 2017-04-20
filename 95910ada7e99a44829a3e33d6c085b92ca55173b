@@ -54,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_6bca816f",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-04-20T06:16:54Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_802a2d2a",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_c0f435d1",
         "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
         "patchSetId": 12
@@ -71,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_2bb999e9",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-04-20T06:16:54Z",
+      "side": 1,
+      "message": "Had tried this. But at that time missed out to add bind for lockManager. Thanks for pointing this out.",
+      "parentUuid": "da01753e_c0f435d1",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_200421bf",
         "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTestModule.java",
         "patchSetId": 12
@@ -82,6 +118,24 @@
       "writtenOn": "2017-04-19T13:43:12Z",
       "side": 1,
       "message": "bind(LockManagerService.class).to(LockManager.class);",
+      "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ebbe71d3",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/lockmanager/tests/LockManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-04-20T06:16:54Z",
+      "side": 1,
+      "message": "Thanks :)",
+      "parentUuid": "da01753e_200421bf",
       "revId": "95910ada7e99a44829a3e33d6c085b92ca55173b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
