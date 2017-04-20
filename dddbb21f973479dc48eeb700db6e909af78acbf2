@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_4c2a412d",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T05:51:51Z",
+      "side": 1,
+      "message": "is there any specific requirement which needs this to get implemented ? Please elaborate.",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_6baba1d6",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T05:51:51Z",
+      "side": 1,
+      "message": "why can\u0027t we simply move expired ids into released ids ?\nAnd add expiry-time property in delayed-id-entry so that it can be used again when this id is allocated again.",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_abbaa907",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T05:51:51Z",
+      "side": 1,
+      "message": "is the id-value is within the id range of its pool ? Or do we even allow id which is out of range ?\n\nThe user requested id-value could be even present in available-id-holder, released-id-holder of parent/child pools. Are we considering this too ?",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_cb560dd2",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T05:51:51Z",
+      "side": 1,
+      "message": "If the given id-value is already allocated for some other id-key, should we assign some other id-value ?",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_2b2b5931",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T05:51:51Z",
+      "side": 1,
+      "message": "we could simply use existing id-entries to store all the allocated id\u0027s and add expiry time to it. There could be background scheduling thread which can drain out expired id entries into released id pool.",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_8b21a54f",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T05:51:51Z",
+      "side": 1,
+      "message": "Nit: remove trailing space.",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
