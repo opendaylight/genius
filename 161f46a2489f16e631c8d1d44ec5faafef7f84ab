@@ -34,6 +34,29 @@
       "revId": "161f46a2489f16e631c8d1d44ec5faafef7f84ab",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_6e856fac",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-20T09:08:59Z",
+      "side": 1,
+      "message": "Okay Alon, But I meant this log is useful if multiple threads are contending for same lock but it is never released. We could troubleshoot with retry count for a lockName.\nIf you think these info logs (129 times for different lock names) are too high, we could change it to info only if retry (say 2000) reaches to some level.\n\nlock rpc is typical blocking call like synchronized (or) ReentrantLock#lock. so it needed infinite retries. This is being improved in https://git.opendaylight.org/gerrit/#/c/54425/.",
+      "range": {
+        "startLine": 143,
+        "startChar": 24,
+        "endLine": 144,
+        "endChar": 53
+      },
+      "revId": "161f46a2489f16e631c8d1d44ec5faafef7f84ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
