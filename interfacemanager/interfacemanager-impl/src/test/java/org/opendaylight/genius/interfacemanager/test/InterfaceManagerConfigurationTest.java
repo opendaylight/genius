@@ -564,6 +564,7 @@ public class InterfaceManagerConfigurationTest {
 
         // 11. Test unbinding of egress service
         interfaceManager.unbindService(INTERFACE_NAME, ServiceModeEgress.class, serviceInfo);
+        Thread.sleep(1000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
             egressDispatcherFlowId).get());
@@ -588,6 +589,7 @@ public class InterfaceManagerConfigurationTest {
         // 16. Test creation of VLAN interface
         interfaceManager.createVLANInterface(INTERFACE_NAME_1, null, DPN_ID_1, null, INTERFACE_NAME_1,
             IfL2vlan.L2vlanMode.Trunk);
+        Thread.sleep(1000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         assertEqualBeans(ExpectedInterfaceConfig.newVlanInterfaceConfig(INTERFACE_NAME_1, null),
@@ -596,6 +598,7 @@ public class InterfaceManagerConfigurationTest {
 
         // 17. Update Parent Refs for VLAN interface
         interfaceManager.updateInterfaceParentRef(INTERFACE_NAME_1, PARENT_INTERFACE_1);
+        Thread.sleep(1000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         assertEqualBeans(ExpectedInterfaceConfig.newVlanInterfaceConfig(INTERFACE_NAME_1, PARENT_INTERFACE_1),
@@ -616,6 +619,7 @@ public class InterfaceManagerConfigurationTest {
 
         // 19. update parent-refs
         interfaceManager.updateInterfaceParentRef(INTERFACE_NAME_2, PARENT_INTERFACE_2, true);
+        Thread.sleep(1000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         Assert.assertEquals(PARENT_INTERFACE_2, dataBroker
             .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
