@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_272265a4",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-21T07:12:39Z",
+      "side": 1,
+      "message": "We could even don\u0027t need to use delayed-id-entry. id-entries itself can have another field expired-time and if both released-id-holder/available-id-holder doesn\u0027t have id to allocate, we could look for expired id entry in id-entries for allocation. This way we could completely avoid moving expired ids from id-entries to released ids by constant scan.\nThis can allow to remove enhanced-id-allocation flag in createIdPool and allocated-ids-holder completely.\n\nWDYT ?",
+      "parentUuid": "da01753e_8ec53390",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_abbaa907",
         "filename": "docs/specs/enhanced-id-allocation.rst",
         "patchSetId": 10
@@ -107,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_67146d44",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-21T07:12:39Z",
+      "side": 1,
+      "message": "Ok, but child pool (id\u0027s with block size) is created per cluster node. so when a node is requesting for a id which is already part of other node child pool, we need to make sure it is borrowed from that child pool. we may need to use IdPoolListener so that corresponding child pool can be updated.",
+      "parentUuid": "da01753e_8ecff37e",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_cb560dd2",
         "filename": "docs/specs/enhanced-id-allocation.rst",
         "patchSetId": 10
@@ -136,6 +172,24 @@
       "side": 1,
       "message": "if requested id is not available - a new id will be allocated dynamically (this is on the client-side to determine if he is pleased or not with the result)",
       "parentUuid": "da01753e_cb560dd2",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_470fa92e",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-21T07:12:39Z",
+      "side": 1,
+      "message": "Ok.",
+      "parentUuid": "da01753e_4ead0b9c",
       "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
