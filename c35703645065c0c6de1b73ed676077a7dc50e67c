@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_44c0477c",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-21T04:37:50Z",
+      "side": 1,
+      "message": "shouldn\u0027t it be retry \u003c 30 ?",
+      "revId": "c35703645065c0c6de1b73ed676077a7dc50e67c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
