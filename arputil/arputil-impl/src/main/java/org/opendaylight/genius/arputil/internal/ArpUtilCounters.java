@@ -27,4 +27,8 @@ public enum ArpUtilCounters {
     public void inc() {
         counter.inc();
     }
+
+    public long get() {
+        return counter.get();
+    }
 }
