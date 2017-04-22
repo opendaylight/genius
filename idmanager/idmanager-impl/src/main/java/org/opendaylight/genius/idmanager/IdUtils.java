@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -10,21 +10,19 @@ package org.opendaylight.genius.idmanager;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
@@ -64,9 +62,9 @@ public class IdUtils {
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
 
-    public final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
-    public final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
+    public final Map<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
+    public final Map<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
+    private final Map<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
 
     private final int bladeId;
 
@@ -77,8 +75,7 @@ public class IdUtils {
     public InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdEntries> idEntriesBuilder = poolName
                 .builder().child(IdEntries.class, new IdEntriesKey(idKey));
-        InstanceIdentifier<IdEntries> idEntry = idEntriesBuilder.build();
-        return idEntry;
+        return idEntriesBuilder.build();
     }
 
     public IdEntries createIdEntries(String idKey, List<Long> newIdVals) {
@@ -103,32 +100,28 @@ public class IdUtils {
     }
 
     public AvailableIdsHolder createAvailableIdsHolder(long low, long high, long cursor) {
-        AvailableIdsHolder availableIdsHolder = new AvailableIdsHolderBuilder()
+        return new AvailableIdsHolderBuilder()
                 .setStart(low).setEnd(high).setCursor(cursor).build();
-        return availableIdsHolder;
     }
 
     protected ReleasedIdsHolder createReleasedIdsHolder(long availableIdCount, long delayTime) {
-        ReleasedIdsHolder releasedIdsHolder = new ReleasedIdsHolderBuilder()
+        return new ReleasedIdsHolderBuilder()
                 .setAvailableIdCount(availableIdCount)
                 .setDelayedTimeSec(delayTime).build();
-        return releasedIdsHolder;
     }
 
     public InstanceIdentifier<IdPool> getIdPoolInstance(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idPoolBuilder = InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(poolName));
-        InstanceIdentifier<IdPool> id = idPoolBuilder.build();
-        return id;
+        return idPoolBuilder.build();
     }
 
     public InstanceIdentifier<ReleasedIdsHolder> getReleasedIdsHolderInstance(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<ReleasedIdsHolder> releasedIdsHolder = InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(poolName)).child(ReleasedIdsHolder.class);
-        InstanceIdentifier<ReleasedIdsHolder> releasedIds = releasedIdsHolder.build();
-        return releasedIds;
+        return releasedIdsHolder.build();
     }
 
     protected boolean isIdAvailable(AvailableIdsHolderBuilder availableIds) {
@@ -192,18 +185,16 @@ public class IdUtils {
     }
 
     public InstanceIdentifier<IdEntries> getIdEntriesInstanceIdentifier(String poolName, String idKey) {
-        InstanceIdentifier<IdEntries> idEntries = InstanceIdentifier
+        return InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(poolName)).child(IdEntries.class, new IdEntriesKey(idKey)).build();
-        return idEntries;
     }
 
     protected InstanceIdentifier<ChildPools> getChildPoolsInstanceIdentifier(String poolName, String localPoolName) {
-        InstanceIdentifier<ChildPools> childPools = InstanceIdentifier
+        return InstanceIdentifier
                 .builder(IdPools.class)
                 .child(IdPool.class, new IdPoolKey(poolName))
                 .child(ChildPools.class, new ChildPoolsKey(localPoolName)).build();
-        return childPools;
     }
 
     public long computeBlockSize(long low, long high) {
@@ -264,8 +255,7 @@ public class IdUtils {
     public InstanceIdentifier<IdPools> getIdPools() {
         InstanceIdentifier.InstanceIdentifierBuilder<IdPools> idPoolsBuilder = InstanceIdentifier
                 .builder(IdPools.class);
-        InstanceIdentifier<IdPools> id = idPoolsBuilder.build();
-        return id;
+        return idPoolsBuilder.build();
     }
 
     public void syncReleaseIdHolder(ReleasedIdHolder releasedIdHolder, IdPoolBuilder idPool) {
