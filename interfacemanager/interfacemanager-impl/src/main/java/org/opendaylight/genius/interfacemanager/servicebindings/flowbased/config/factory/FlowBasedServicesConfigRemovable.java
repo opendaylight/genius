@@ -10,9 +10,8 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface FlowBasedServicesConfigRemovable {
-    List<ListenableFuture<Void>> unbindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-            BoundServices boundServiceNew);
+    List<ListenableFuture<Void>> unbindService(String interfaceName,BoundServices boundServiceNew,
+                                               List<BoundServices> boundServicesList);
 }
