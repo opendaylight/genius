@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_d696a8ef",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-23T10:32:07Z",
+      "side": 1,
+      "message": "the main reason for the allocated-ids-holder is to have cache with a list of all allocated ids, mapped by id, in order to easily check if a specific id is available. If I already have that mapped list, I thought using it for expiration as well, while not touching id-entries and the way they are stored in db.",
+      "parentUuid": "da01753e_272265a4",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_abbaa907",
         "filename": "docs/specs/enhanced-id-allocation.rst",
         "patchSetId": 10
@@ -137,6 +155,24 @@
       "side": 1,
       "message": "Ok, but child pool (id\u0027s with block size) is created per cluster node. so when a node is requesting for a id which is already part of other node child pool, we need to make sure it is borrowed from that child pool. we may need to use IdPoolListener so that corresponding child pool can be updated.",
       "parentUuid": "da01753e_8ecff37e",
+      "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_36ac5435",
+        "filename": "docs/specs/enhanced-id-allocation.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 6947
+      },
+      "writtenOn": "2017-04-23T10:32:07Z",
+      "side": 1,
+      "message": "I Didn\u0027t think about it :)\n\nI thought about 2 directions:\n1. verfiy that the requested id is in range according to the parent pool. If id is in range, I can scan the child pools for the range that contains the requested id - if I find it, I can forward the allocation to the relevant odl with routed RPC, but if I don\u0027t find it, that\u0027s a problem. It could be caused because no one asked for that block yet, or that block was already exhausted and a new block took its place. Unused block is a problem I don\u0027t know how to solve.. but to keep track on all exhausted blocks of a certain child pool - I can add it to the allocated-ids-holder. WDYT? Any suggestion about the Unused block problem?\n2. maintain the allocated-ids-holder on the parent pool instead of on every child pool. That way each odl can check if id is used and allocate if possible, and due to the fact I am double checking allocation of a released/ available id, it is safe. The problem is - if different odls get a request with the same id at the same time - how do we make sure this id is not allocated twice? any other down sides?\n3. other suggestions? :)",
+      "parentUuid": "da01753e_67146d44",
       "revId": "dddbb21f973479dc48eeb700db6e909af78acbf2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
