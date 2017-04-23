@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -79,6 +81,9 @@ public class FlowBasedServicesUtils {
     public enum ServiceMode {
         INGRESS, EGRESS
     }
+
+    private static ConcurrentMap<String, InterfaceBoundServicesState> boundServicesStateMap = new
+        ConcurrentHashMap<>();
 
     public static final ImmutableBiMap<ServiceMode, Class<? extends ServiceModeBase>>
         SERVICE_MODE_MAP = new ImmutableBiMap.Builder<ServiceMode, Class<? extends ServiceModeBase>>()
@@ -644,6 +649,19 @@ public class FlowBasedServicesUtils {
         WriteTransaction inventoryConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         installFlow(dpId, ingressFlow, inventoryConfigShardTransaction);
         futures.add(inventoryConfigShardTransaction.submit());
+    }
+
+    public static InterfaceBoundServicesState getBoundServicesStateFromCache(String interfaceName) {
+        return boundServicesStateMap.get(interfaceName);
+    }
+
+    public static void addBoundServicesStateToCache(String interfaceName, InterfaceBoundServicesState
+        interfaceBoundServicesState) {
+        boundServicesStateMap.put(interfaceName, interfaceBoundServicesState);
+    }
+
+    public static  InterfaceBoundServicesState removeBoundServicesStateFromCache(String interfaceName) {
+        return boundServicesStateMap.remove(interfaceName);
     }
 
     private static boolean isExternal(Interface iface) {
