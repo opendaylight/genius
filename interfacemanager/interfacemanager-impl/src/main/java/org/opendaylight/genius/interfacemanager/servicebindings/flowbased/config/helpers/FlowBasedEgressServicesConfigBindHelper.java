@@ -22,10 +22,7 @@ import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,12 +54,11 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
     }
 
     @Override
-    public List<ListenableFuture<Void>> bindService(InstanceIdentifier<BoundServices> instanceIdentifier,
-            BoundServices boundServiceNew) {
+    public List<ListenableFuture<Void>> bindService(String interfaceName, BoundServices boundServiceNew,
+                                                    List<BoundServices> allServices) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        String interfaceName = InstanceIdentifier.keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class))
-                .getInterfaceName();
+
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceState(interfaceName, dataBroker);
@@ -71,19 +67,8 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
             return futures;
         }
 
-        Class<? extends ServiceModeBase> serviceMode = InstanceIdentifier
-                .keyOf(instanceIdentifier.firstIdentifierOf(ServicesInfo.class)).getServiceMode();
-        // Get the Parent ServiceInfo
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(interfaceName, serviceMode,
-                dataBroker);
-        if (servicesInfo == null) {
-            LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
         if (allServices.isEmpty()) {
-            LOG.error("Reached Impossible part 2 in the code during bind service for: {}", boundServiceNew);
+            LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
             return futures;
         }
 
