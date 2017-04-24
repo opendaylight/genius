@@ -8,6 +8,10 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
 import java.math.BigInteger;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 
 public final class InterfaceBoundServicesState {
     private final String portName;
@@ -15,16 +19,29 @@ public final class InterfaceBoundServicesState {
     private final int ifIndex;
     private final BigInteger dpId;
     private final long groupId;
-    private final int portNo;
+    private final long portNo;
+    private final Class<? extends InterfaceType> interfaceType;
 
-    public InterfaceBoundServicesState(String portName, String interfaceName, int ifIndex, BigInteger dpId, long
-        groupId, int portNo) {
+    public InterfaceBoundServicesState(Class<? extends InterfaceType> interfaceType, String portName,
+                                       String interfaceName, int ifIndex, BigInteger dpId, long groupId, long portNo) {
+        this.interfaceType = interfaceType;
         this.portName = portName;
         this.interfaceName = interfaceName;
         this.ifIndex = ifIndex;
         this.dpId = dpId;
         this.groupId = groupId;
         this.portNo = portNo;
+    }
+
+    public InterfaceBoundServicesState(Interface interfaceState) {
+        this.portName = interfaceState.getName();
+        this.interfaceName = interfaceState.getName();
+        this.ifIndex = interfaceState.getIfIndex();
+        NodeConnectorId nodeConnectorId = IfmUtil.getNodeConnectorIdFromInterface(interfaceState);
+        this.dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        this.portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+        this.interfaceType = interfaceState.getType();
+        this.groupId = -1;
     }
 
     public String getPortName() {
@@ -47,8 +64,12 @@ public final class InterfaceBoundServicesState {
         return groupId;
     }
 
-    public int getPortNo() {
+    public long getPortNo() {
         return portNo;
+    }
+
+    public Class<? extends InterfaceType> getInterfaceType() {
+        return interfaceType;
     }
 
     @Override
@@ -71,6 +92,9 @@ public final class InterfaceBoundServicesState {
         if (getPortNo() != that.getPortNo()) {
             return false;
         }
+        if (!interfaceType.equals(that.interfaceType)) {
+            return false;
+        }
         if (getPortName() != null ? !getPortName().equals(that.getPortName()) : that.getPortName() != null) {
             return false;
         }
@@ -83,12 +107,13 @@ public final class InterfaceBoundServicesState {
 
     @Override
     public int hashCode() {
-        int result = getPortName() != null ? getPortName().hashCode() : 0;
+        int result = interfaceType.hashCode();
+        result = 31 * result + (getPortName() != null ? getPortName().hashCode() : 0);
         result = 31 * result + getInterfaceName().hashCode();
         result = 31 * result + getIfIndex();
         result = 31 * result + getDpId().hashCode();
         result = 31 * result + (int) (getGroupId() ^ (getGroupId() >>> 32));
-        result = 31 * result + getPortNo();
+        result = 31 * result + (int) (getPortNo() ^ (getPortNo() >>> 32));
         return result;
     }
 }

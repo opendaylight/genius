@@ -50,6 +50,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.InterfaceBoundServicesState;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.EgressActionsForInterfaceOutput;
@@ -511,7 +512,6 @@ public class InterfaceManagerConfigurationTest {
         String lportDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.LPORT_DISPATCHER_TABLE
             + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
             + NwConstants.DEFAULT_SERVICE_INDEX;
-
         FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> lportDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
@@ -521,6 +521,12 @@ public class InterfaceManagerConfigurationTest {
         // FIXME instruction list is coming in random order, and hence not able to assert with xtend
         Assert.assertNotNull(dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId)
             .checkedGet().get());
+
+        // check whether service-binding state cache is populated
+        assertEqualBeans(new InterfaceBoundServicesState(L2vlan.class, INTERFACE_NAME,
+            INTERFACE_NAME, 1, DPN_ID_1, 0L, PORT_NO_1), FlowBasedServicesUtils
+            .getBoundServicesStateFromCache(FlowBasedServicesUtils.getBoundServiceCacheKey(ServiceModeIngress.class,
+                INTERFACE_NAME)));
 
         //7. test check whether service is bound on ingress
         Assert.assertTrue(interfaceManager.isServiceBoundOnInterfaceForIngress(NwConstants.ELAN_SERVICE_INDEX,
@@ -533,6 +539,7 @@ public class InterfaceManagerConfigurationTest {
         Assert.assertEquals(Optional.absent(),
             dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).get());
 
+        // check service-state cache is cleaned up
         // 9. Test bind egress service
         short egressACLIndex = ServiceIndex.getIndex(NwConstants.EGRESS_ACL_SERVICE_NAME,
             NwConstants.EGRESS_ACL_SERVICE_INDEX);
