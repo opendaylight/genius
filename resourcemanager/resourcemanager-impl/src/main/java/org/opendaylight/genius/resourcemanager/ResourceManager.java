@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -110,11 +109,6 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
             resourcesCache.put(ResourceTypeGroupIds.class, RESOURCE_TYPE_GROUPS_DEFAULT_NAME);
             resourcesCache.put(ResourceTypeMeterIds.class, RESOURCE_TYPE_METERS_DEFAULT_NAME);
         }
-    }
-
-    @PostConstruct
-    public void start() {
-        LOG.info("{} start", getClass().getSimpleName());
         createIdpools();
     }
 
