@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_9ca0bfa0",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-04-24T07:52:21Z",
+      "side": 1,
+      "message": "I’m not sure it’s appropriate here, but if the fact that the implementations are concurrency-friendly is significant, ConcurrentMap\u003c\u003e would be a more appropriate interface.\n\nWhy are these instances public? (Fixing *that* might be better left to another commit of course...)",
+      "revId": "eb10c760b06bd2531e2ac461c83d6f736b579664",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_dc89a727",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-04-24T07:52:21Z",
+      "side": 1,
+      "message": "Might as well replace this with\n\n    return InstanceIdentifier.builder(IdPools.class).build();\n\n;-)",
+      "revId": "eb10c760b06bd2531e2ac461c83d6f736b579664",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
