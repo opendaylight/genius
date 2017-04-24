@@ -511,7 +511,6 @@ public class InterfaceManagerConfigurationTest {
         String lportDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.LPORT_DISPATCHER_TABLE
             + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
             + NwConstants.DEFAULT_SERVICE_INDEX;
-
         FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> lportDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)

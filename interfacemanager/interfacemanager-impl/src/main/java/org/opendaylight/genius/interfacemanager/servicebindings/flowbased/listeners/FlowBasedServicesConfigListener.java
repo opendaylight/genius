@@ -27,6 +27,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
@@ -35,6 +36,9 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigUnbindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.InterfaceBoundServicesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
@@ -51,12 +55,14 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
+    private final DataBroker dataBroker;
 
     @Inject
     public FlowBasedServicesConfigListener(final DataBroker dataBroker,
                                            final InterfacemgrProvider interfacemgrProvider) {
         initializeFlowBasedServiceHelpers(interfacemgrProvider);
         registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        this.dataBroker = dataBroker;
     }
 
     protected InstanceIdentifier<ServicesInfo> getWildCardPath() {
@@ -145,17 +151,15 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     protected void remove(ServicesInfoKey serviceKey, InstanceIdentifier<BoundServices> key, BoundServices
         boundServiceOld, List<BoundServices> boundServicesList) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
-                boundServiceOld);
-            FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
-                .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
-                .getFlowBasedServicesRemoveRenderer();
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(serviceKey
-                .getInterfaceName(), flowBasedServicesConfigRemovable, boundServiceOld, boundServicesList);
-            coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
-        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
+        LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
+            boundServiceOld);
+        FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
+            .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
+            .getFlowBasedServicesRemoveRenderer();
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(serviceKey
+            .getInterfaceName(), flowBasedServicesConfigRemovable, boundServiceOld, boundServicesList);
+        coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     protected void update(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld,
@@ -169,16 +173,14 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     protected void add(ServicesInfoKey serviceKey, InstanceIdentifier<BoundServices> key, BoundServices
         boundServicesNew, List<BoundServices> boundServicesList) {
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
-            LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
-                boundServicesNew);
-            FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
-                .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesAddRenderer();
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            RendererConfigAddWorker configWorker = new RendererConfigAddWorker(serviceKey.getInterfaceName(),
-                flowBasedServicesAddable, boundServicesNew, boundServicesList);
-            coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
-        }, IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY);
+        LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
+            boundServicesNew);
+        FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
+            .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesAddRenderer();
+        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(serviceKey.getInterfaceName(),
+            flowBasedServicesAddable, boundServicesNew, boundServicesList);
+        coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
@@ -197,8 +199,24 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         @Override
         public List<ListenableFuture<Void>> call() {
+            if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+                return null;
+            }
+            InterfaceBoundServicesState boundServicesState = FlowBasedServicesUtils
+                .getBoundServicesStateFromCache(interfaceName);
+            // if service-binding state is not present, construct the same using ifstate
+            if (boundServicesState == null) {
+                Interface ifState = InterfaceManagerCommonUtils.getInterfaceState(interfaceName, dataBroker);
+                if (ifState == null) {
+                    LOG.warn("Interface not operational, not binding Service for Interface: {}", interfaceName);
+                    return null;
+                }
+                boundServicesState = new InterfaceBoundServicesState(ifState);
+                FlowBasedServicesUtils.addBoundServicesStateToCache(interfaceName,
+                    boundServicesState);
+            }
             return flowBasedServicesAddable.bindService(interfaceName, boundServicesNew,
-                boundServicesList);
+                boundServicesList, boundServicesState);
         }
     }
 
@@ -219,8 +237,17 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         @Override
         public List<ListenableFuture<Void>> call() {
+            // if this is the last service getting unbound, remove service-state cache information
+            InterfaceBoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesStateFromCache(
+                interfaceName);
+            if (boundServicesList.isEmpty()) {
+                FlowBasedServicesUtils.removeBoundServicesStateFromCache(interfaceName);
+            }
+            if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+                return null;
+            }
             return flowBasedServicesConfigRemovable.unbindService(interfaceName, boundServicesNew,
-                boundServicesList);
+                boundServicesList, boundServiceState);
         }
     }
 }

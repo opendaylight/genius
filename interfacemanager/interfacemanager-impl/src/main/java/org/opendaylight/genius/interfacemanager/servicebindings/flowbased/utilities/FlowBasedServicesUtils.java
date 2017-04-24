@@ -239,7 +239,6 @@ public class FlowBasedServicesUtils {
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
-        LOG.debug("Installing LPort Dispatcher Flow {}, {}", dpId, interfaceName);
         String serviceRef = boundService.getServiceName();
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId, interfaceTag,
                 currentServiceIndex);
@@ -284,6 +283,8 @@ public class FlowBasedServicesUtils {
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
                 flowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
+        LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
+            interfaceName, flowRef);
         installFlow(dpId, ingressFlow, writeTransaction);
     }
 
