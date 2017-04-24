@@ -240,7 +240,6 @@ public class FlowBasedServicesUtils {
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
-        LOG.debug("Installing LPort Dispatcher Flow {}, {}", dpId, interfaceName);
         String serviceRef = boundService.getServiceName();
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId, interfaceTag,
                 currentServiceIndex);
@@ -276,7 +275,7 @@ public class FlowBasedServicesUtils {
 
         //////////////////////////////////////////
         // FIXME: workaround for https://bugs.opendaylight.org/show_bug.cgi?id=7451
-        int flowPriority = DEFAULT_DISPATCHER_PRIORITY;
+        int flowPriority = boundService.getServicePriority();
         //////////////////////////////////////////
 
         // build the flow and install it
@@ -285,6 +284,8 @@ public class FlowBasedServicesUtils {
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
                 flowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
+        LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
+            interfaceName, flowRef);
         installFlow(dpId, ingressFlow, writeTransaction);
     }
 
@@ -634,6 +635,10 @@ public class FlowBasedServicesUtils {
         WriteTransaction inventoryConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         installFlow(dpId, ingressFlow, inventoryConfigShardTransaction);
         futures.add(inventoryConfigShardTransaction.submit());
+    }
+
+    public static String getBoundServiceCacheKey(Class<? extends ServiceModeBase> serviceMode, String interfaceName) {
+        return new StringBuilder().append(serviceMode).append(interfaceName).toString();
     }
 
     public static InterfaceBoundServicesState getBoundServicesStateFromCache(String interfaceName) {
