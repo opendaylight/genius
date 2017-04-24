@@ -28,8 +28,10 @@ public class ArpUtilTestModule extends AbstractGuiceJsr250Module {
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
 
-        bind(OdlInterfaceRpcService.class).toInstance(mock(OdlInterfaceRpcService.class));
-        bind(PacketProcessingService.class).toInstance(mock(PacketProcessingService.class));
+        TestOdlInterfaceRpcService testOdlInterfaceRpcService = TestOdlInterfaceRpcService.newInstance();
+        bind(OdlInterfaceRpcService.class).toInstance(testOdlInterfaceRpcService);
+        TestPacketProcessingService testPacketProcessingService = TestPacketProcessingService.newInstance();
+        bind(PacketProcessingService.class).toInstance(testPacketProcessingService);
         bind(NotificationService.class).toInstance(mock(NotificationService.class));
         bind(NotificationPublishService.class).toInstance(mock(NotificationPublishService.class));
         bind(OdlArputilService.class).to(ArpUtilImpl.class);
