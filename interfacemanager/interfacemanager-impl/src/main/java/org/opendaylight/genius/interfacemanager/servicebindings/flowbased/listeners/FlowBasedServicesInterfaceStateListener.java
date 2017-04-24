@@ -31,6 +31,9 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedServicesInterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
+    private DataBroker dataBroker;
 
     @Inject
     public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider,
@@ -46,6 +50,7 @@ public class FlowBasedServicesInterfaceStateListener
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        this.dataBroker = interfacemgrProvider.getDataBroker();
     }
 
     @PostConstruct
@@ -99,16 +104,17 @@ public class FlowBasedServicesInterfaceStateListener
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
         if (interfaceStateNew.getType() == null
-                || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
+
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
                 interfaceStateNew.getName(),
                 new RendererStateInterfaceBindWorker(FlowBasedServicesStateRendererFactory
                         .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer(),
-                        interfaceStateNew),
+                        interfaceStateNew, serviceMode),
                 IfmConstants.JOB_MAX_RETRIES));
     }
 
@@ -120,16 +126,33 @@ public class FlowBasedServicesInterfaceStateListener
     private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable,
-                Interface iface) {
+                                         Interface iface, Class<? extends ServiceModeBase> serviceMode) {
             this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
             this.iface = iface;
+            this.serviceMode = serviceMode;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return flowBasedServicesStateAddable.bindServicesOnInterface(iface);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
+                serviceMode, dataBroker);
+            if (servicesInfo == null) {
+                LOG.trace("service info is null for interface {}", iface.getName());
+                return null;
+            }
+
+            List<BoundServices> allServices = servicesInfo.getBoundServices();
+            if (allServices == null || allServices.isEmpty()) {
+                LOG.trace("bound services is empty for interface {}", iface.getName());
+                return null;
+            }
+            // Build the service-binding state if there are services bound on this interface
+            FlowBasedServicesUtils.addBoundServicesState(dataBroker, iface.getName(),
+                FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
+            return flowBasedServicesStateAddable.bindServicesOnInterface(iface, allServices);
         }
     }
 

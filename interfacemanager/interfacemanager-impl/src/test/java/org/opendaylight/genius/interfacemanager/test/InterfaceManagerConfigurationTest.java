@@ -50,25 +50,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.EgressActionsForInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.EgressInstructionsForInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.EndPointIpFromDpn;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedFlowEntries;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceChildEntry;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceConfig;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceInfo;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceState;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedOvsdbBridge;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedServicesInfo;
-import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedTerminationPoint;
-import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceFromIfIndexOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceMeta;
-import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceTypeOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.NodeconnectorIdFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.PortFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.*;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
@@ -511,7 +493,6 @@ public class InterfaceManagerConfigurationTest {
         String lportDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.LPORT_DISPATCHER_TABLE
             + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
             + NwConstants.DEFAULT_SERVICE_INDEX;
-
         FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> lportDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
@@ -521,6 +502,10 @@ public class InterfaceManagerConfigurationTest {
         // FIXME instruction list is coming in random order, and hence not able to assert with xtend
         Assert.assertNotNull(dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId)
             .checkedGet().get());
+
+        // check whether service-binding state cache is populated
+        assertEqualBeans(ExpectedBoundServiceState.newBoundServiceState(), FlowBasedServicesUtils
+            .getBoundServicesState(dataBroker, INTERFACE_NAME, ServiceModeIngress.class));
 
         //7. test check whether service is bound on ingress
         Assert.assertTrue(interfaceManager.isServiceBoundOnInterfaceForIngress(NwConstants.ELAN_SERVICE_INDEX,
@@ -533,6 +518,7 @@ public class InterfaceManagerConfigurationTest {
         Assert.assertEquals(Optional.absent(),
             dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).get());
 
+        // check service-state cache is cleaned up
         // 9. Test bind egress service
         short egressACLIndex = ServiceIndex.getIndex(NwConstants.EGRESS_ACL_SERVICE_NAME,
             NwConstants.EGRESS_ACL_SERVICE_INDEX);
