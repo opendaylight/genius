@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_671624f3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-04-24T09:30:18Z",
+      "side": 1,
+      "message": "I am not clear why null being passed on here? Can you please explain.",
+      "revId": "d0adf6278930aeaf216856a31eaf1f765eca25dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
