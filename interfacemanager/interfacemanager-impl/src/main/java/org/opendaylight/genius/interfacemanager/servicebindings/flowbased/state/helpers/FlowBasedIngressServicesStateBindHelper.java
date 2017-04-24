@@ -24,8 +24,6 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -64,25 +62,10 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
     }
 
     @Override
-    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState) {
-        if (ifaceState.getType() == null) {
-            return null;
-        }
+    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState, List<BoundServices> allServices) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("binding services on interface {}", ifaceState.getName());
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-                ServiceModeIngress.class, dataBroker);
-        if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
         if (L2vlan.class.equals(ifaceState.getType())) {
             return bindServiceOnVlan(allServices, ifaceState, dataBroker);
         } else if (Tunnel.class.equals(ifaceState.getType())) {
