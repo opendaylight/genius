@@ -13,8 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -51,6 +50,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.SplitHorizon;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.BoundServicesStateList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
@@ -58,6 +58,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflowBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesStateBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesStateKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -81,9 +84,6 @@ public class FlowBasedServicesUtils {
     public enum ServiceMode {
         INGRESS, EGRESS
     }
-
-    private static ConcurrentMap<String, InterfaceBoundServicesState> boundServicesStateMap = new
-        ConcurrentHashMap<>();
 
     public static final ImmutableBiMap<ServiceMode, Class<? extends ServiceModeBase>>
         SERVICE_MODE_MAP = new ImmutableBiMap.Builder<ServiceMode, Class<? extends ServiceModeBase>>()
@@ -213,8 +213,8 @@ public class FlowBasedServicesUtils {
         }
 
         String serviceRef = boundServiceNew.getServiceName();
-        String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(), boundServiceNew,
-                boundServiceNew.getServicePriority());
+        String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(),
+                boundServiceNew, boundServiceNew.getServicePriority());
         StypeOpenflow stypeOpenflow = boundServiceNew.getAugmentation(StypeOpenflow.class);
         Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionSet);
@@ -240,7 +240,6 @@ public class FlowBasedServicesUtils {
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
-        LOG.debug("Installing LPort Dispatcher Flow {}, {}", dpId, interfaceName);
         String serviceRef = boundService.getServiceName();
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId, interfaceTag,
                 currentServiceIndex);
@@ -274,17 +273,14 @@ public class FlowBasedServicesUtils {
             }
         }
 
-        //////////////////////////////////////////
-        // FIXME: workaround for https://bugs.opendaylight.org/show_bug.cgi?id=7451
-        int flowPriority = DEFAULT_DISPATCHER_PRIORITY;
-        //////////////////////////////////////////
-
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName, boundService,
-                currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName,
+            boundService, currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
-                flowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
+                DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
+        LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
+            interfaceName, flowRef);
         installFlow(dpId, ingressFlow, writeTransaction);
     }
 
@@ -347,7 +343,7 @@ public class FlowBasedServicesUtils {
 
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService,
-                currentServiceIndex);
+            currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
@@ -489,7 +485,7 @@ public class FlowBasedServicesUtils {
         boundServicesOld.getAugmentation(StypeOpenflow.class);
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
-                currentServiceIndex);
+            currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -511,7 +507,7 @@ public class FlowBasedServicesUtils {
             short currentServiceIndex, BoundServices boundServicesOld) {
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
-                currentServiceIndex);
+            currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -542,8 +538,8 @@ public class FlowBasedServicesUtils {
         return String.format("%d:%s:%s", tableId, dpnId, infName);
     }
 
-    private static String getFlowRef(BigInteger dpnId, short tableId, String iface, BoundServices service,
-            short currentServiceIndex) {
+    private static String getFlowRef(BigInteger dpnId, short tableId, String iface,BoundServices service,
+                                     short currentServiceIndex) {
         return String.valueOf(dpnId) + tableId + NwConstants.FLOWID_SEPARATOR + iface + NwConstants.FLOWID_SEPARATOR
                 + currentServiceIndex;
     }
@@ -651,17 +647,46 @@ public class FlowBasedServicesUtils {
         futures.add(inventoryConfigShardTransaction.submit());
     }
 
-    public static InterfaceBoundServicesState getBoundServicesStateFromCache(String interfaceName) {
-        return boundServicesStateMap.get(interfaceName);
+    public static BoundServicesState buildBoundServicesState(
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+            interfaceState, Class<? extends ServiceModeBase> serviceMode) {
+        NodeConnectorId nodeConnectorId = IfmUtil.getNodeConnectorIdFromInterface(interfaceState);
+        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+        BoundServicesStateKey boundServicesStateKey = new BoundServicesStateKey(interfaceState.getName(), serviceMode);
+        return new BoundServicesStateBuilder().setDpid(dpId).setIfIndex(interfaceState.getIfIndex())
+            .setInterfaceName(interfaceState.getName()).setInterfaceType(interfaceState.getType()).setPortNo(portNo)
+            .setServiceMode(serviceMode).setKey(boundServicesStateKey).build();
     }
 
-    public static void addBoundServicesStateToCache(String interfaceName, InterfaceBoundServicesState
-        interfaceBoundServicesState) {
-        boundServicesStateMap.put(interfaceName, interfaceBoundServicesState);
+    public static BoundServicesState getBoundServicesState(DataBroker dataBroker,
+                                                           String interfaceName,
+                                                           Class<? extends ServiceModeBase>
+                                                                                 serviceMode) {
+        InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
+            .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).orNull();
     }
 
-    public static  InterfaceBoundServicesState removeBoundServicesStateFromCache(String interfaceName) {
-        return boundServicesStateMap.remove(interfaceName);
+    public static void addBoundServicesState(DataBroker dataBroker, String interfaceName,
+                                             BoundServicesState interfaceBoundServicesState) {
+        LOG.info("adding bound-service state information for interface : {}", interfaceBoundServicesState);
+        InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
+            .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
+                interfaceBoundServicesState.getServiceMode())).build();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState, true);
+        writeTransaction.submit();
+    }
+
+    public static  void removeBoundServicesState(DataBroker dataBroker, String interfaceName, Class<?
+        extends ServiceModeBase> serviceMode) {
+        LOG.info("remove bound-service state information for interface : {}", interfaceName);
+        InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
+            .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, id);
+        writeTransaction.submit();
     }
 
     private static boolean isExternal(Interface iface) {
