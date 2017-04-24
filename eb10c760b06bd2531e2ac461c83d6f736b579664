@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_a803b90b",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-24T14:27:12Z",
+      "side": 1,
+      "message": "You are right, in this case the IdManager is using one of the specific atomic methods (putIfAbsent), for the allocatedIdMap map, so I\u0027ll leave them as they are by now. That\u0027s the reason why those maps are also public, which breaks the encapsulation, but, as you say, it might be solved in a different commit.",
+      "parentUuid": "da01753e_9ca0bfa0",
+      "revId": "eb10c760b06bd2531e2ac461c83d6f736b579664",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_dc89a727",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-04-24T07:52:21Z",
       "side": 1,
       "message": "Might as well replace this with\n\n    return InstanceIdentifier.builder(IdPools.class).build();\n\n;-)",
+      "revId": "eb10c760b06bd2531e2ac461c83d6f736b579664",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_080be525",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-24T14:27:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_dc89a727",
       "revId": "eb10c760b06bd2531e2ac461c83d6f736b579664",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
