@@ -96,19 +96,22 @@ public class TerminationPointStateListener extends
             interfaceMgrProvider.addNodeIidForInterface(newInterfaceName, nodeIid);
         }
 
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
-            return;
-        }
-        String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName, nodeIid);
-        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
-        if (dpnId != null && newInterfaceName != null
-                && (oldInterfaceName == null || !oldInterfaceName.equals(newInterfaceName))) {
-            String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
-            LOG.debug(
-                    "Detected update to termination point {} with external ID {}, updating parent ref "
-                            + "of that interface ID to this termination point's interface-state name {}",
-                    tpNew.getName(), newInterfaceName, parentRefName);
-            interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
+        // skip parent-refs updation for interfaces with external-id for tunnels
+        if (!org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils.isInterfaceTypeTunnel(
+            tpNew.getInterfaceType())) {
+            if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+                return;
+            }
+            String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName, nodeIid);
+            String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+            if (dpnId != null && newInterfaceName != null && (oldInterfaceName == null
+                || !oldInterfaceName.equals(newInterfaceName))) {
+                String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
+                LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
+                    + "of that interface ID to this termination point's interface-state name {}", tpNew.getName(),
+                    newInterfaceName, parentRefName);
+                interfaceMgrProvider.updateInterfaceParentRef(newInterfaceName, parentRefName);
+            }
         }
     }
 
