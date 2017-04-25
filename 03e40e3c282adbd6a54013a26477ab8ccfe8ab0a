@@ -16,6 +16,24 @@
       "revId": "03e40e3c282adbd6a54013a26477ab8ccfe8ab0a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_063bd138",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-04-25T16:05:07Z",
+      "side": 1,
+      "message": "Refer usage of interfaceName on line 134. In current code the log will *always* throw NPE, we\u0027re logging iface.getName() when iface is null :)",
+      "parentUuid": "da01753e_0b5aba4f",
+      "revId": "03e40e3c282adbd6a54013a26477ab8ccfe8ab0a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
