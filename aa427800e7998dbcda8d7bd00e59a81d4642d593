@@ -46,6 +46,30 @@
       "revId": "aa427800e7998dbcda8d7bd00e59a81d4642d593",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_664a9dc6",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-25T16:06:00Z",
+      "side": 1,
+      "message": "you could just remove implements AutoCloseable ?",
+      "parentUuid": "da01753e_d51055aa",
+      "range": {
+        "startLine": 329,
+        "startChar": 4,
+        "endLine": 333,
+        "endChar": 5
+      },
+      "revId": "aa427800e7998dbcda8d7bd00e59a81d4642d593",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
