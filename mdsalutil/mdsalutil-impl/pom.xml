@@ -49,6 +49,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.spotify</groupId>
+      <artifactId>futures-extra</artifactId>
+      <version>3.0.0</version>
+    </dependency>
     <!--  TEST Dependencies -->
     <dependency>
       <groupId>org.powermock</groupId>
@@ -71,6 +76,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${mdsal.version}</version>
       <scope>test</scope>
       <type>test-jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
