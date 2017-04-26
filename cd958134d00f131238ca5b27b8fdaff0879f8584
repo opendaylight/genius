@@ -66,6 +66,30 @@
     },
     {
       "key": {
+        "uuid": "da01753e_f0863eda",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-26T17:21:53Z",
+      "side": 1,
+      "message": "Yes, I think it is better to have the constants closer to the classes that are actually using them. If we need this in other tests later we can move them.",
+      "parentUuid": "da01753e_0a3aafe6",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 10
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_a7963e3d",
         "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
         "patchSetId": 1
@@ -101,6 +125,30 @@
       "side": 1,
       "message": "Agreed, remove this, it makes the test easier to read",
       "parentUuid": "da01753e_a7963e3d",
+      "range": {
+        "startLine": 71,
+        "startChar": 3,
+        "endLine": 77,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_f0a2be49",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-26T17:21:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_4a603701",
       "range": {
         "startLine": 71,
         "startChar": 3,
@@ -246,6 +294,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_b06af6eb",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-26T17:21:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_35127857",
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_d5016c06",
         "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTestModule.java",
         "patchSetId": 1
@@ -257,6 +323,30 @@
       "writtenOn": "2017-04-26T13:31:26Z",
       "side": 1,
       "message": "configureBindings() throws Exception (now), so you can remove all this - just let it propagate, and simplify to much easier to read 1 line:\n\nIdManagerService idManager \u003d new IdManager(dataBroker, lockManager, idUtils);",
+      "range": {
+        "startLine": 51,
+        "startChar": 29,
+        "endLine": 51,
+        "endChar": 30
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_106ca207",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-26T17:21:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_d5016c06",
       "range": {
         "startLine": 51,
         "startChar": 29,
