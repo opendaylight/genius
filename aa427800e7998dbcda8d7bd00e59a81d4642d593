@@ -70,6 +70,30 @@
       "revId": "aa427800e7998dbcda8d7bd00e59a81d4642d593",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_64e29430",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-04-26T06:24:30Z",
+      "side": 1,
+      "message": "Yes, I might do that, but I thought implementing Autocloseable (to release resources in case we have them) was some sort of idiom in the implementation of our services.",
+      "parentUuid": "da01753e_664a9dc6",
+      "range": {
+        "startLine": 329,
+        "startChar": 4,
+        "endLine": 333,
+        "endChar": 5
+      },
+      "revId": "aa427800e7998dbcda8d7bd00e59a81d4642d593",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
