@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "da01753e_8a04df18",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-26T13:31:26Z",
+      "side": 1,
+      "message": "\"... from 0% to more than 70% ...\" !!",
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_4774b267",
         "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
         "patchSetId": 1
@@ -13,6 +30,30 @@
       "writtenOn": "2017-04-26T09:11:56Z",
       "side": 1,
       "message": "can be put in a testUtil class as static final field",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 10
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_0a3aafe6",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-26T13:31:26Z",
+      "side": 1,
+      "message": "If you don\u0027t need it anywhere else, then I think leaving it here is fine.  It makes a test class easier to read if everything is together in 1 place.  I would only move it into a separate class if you start needing it elsewhere, like a separate new test class, if it ever gets to that (instead of copy/pasting it)",
+      "parentUuid": "da01753e_4774b267",
       "range": {
         "startLine": 62,
         "startChar": 4,
@@ -48,6 +89,30 @@
     },
     {
       "key": {
+        "uuid": "da01753e_4a603701",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-26T13:31:26Z",
+      "side": 1,
+      "message": "Agreed, remove this, it makes the test easier to read",
+      "parentUuid": "da01753e_a7963e3d",
+      "range": {
+        "startLine": 71,
+        "startChar": 3,
+        "endLine": 77,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_a7659eb6",
         "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
         "patchSetId": 1
@@ -59,6 +124,30 @@
       "writtenOn": "2017-04-26T09:11:56Z",
       "side": 1,
       "message": "can this be put in a testUtil.class ?\nit would improve readability for the test cases, \nand would be easier to add more in future.",
+      "range": {
+        "startLine": 88,
+        "startChar": 4,
+        "endLine": 94,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ea3e4bd9",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-26T13:31:26Z",
+      "side": 1,
+      "message": "as above",
+      "parentUuid": "da01753e_a7659eb6",
       "range": {
         "startLine": 88,
         "startChar": 4,
@@ -133,6 +222,46 @@
         "startChar": 3,
         "endLine": 170,
         "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_35127857",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-26T13:31:26Z",
+      "side": 1,
+      "message": "this comment was intended to \"structure\" the type of bindings by type .. as \"headings\" for \"sections\". As that\u0027s not how they are ordered below, I would just remove these 3 comments",
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_d5016c06",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-26T13:31:26Z",
+      "side": 1,
+      "message": "configureBindings() throws Exception (now), so you can remove all this - just let it propagate, and simplify to much easier to read 1 line:\n\nIdManagerService idManager \u003d new IdManager(dataBroker, lockManager, idUtils);",
+      "range": {
+        "startLine": 51,
+        "startChar": 29,
+        "endLine": 51,
+        "endChar": 30
       },
       "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
