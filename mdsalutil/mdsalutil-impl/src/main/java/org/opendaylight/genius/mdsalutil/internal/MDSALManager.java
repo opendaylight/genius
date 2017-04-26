@@ -12,7 +12,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +19,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.databrokerutils.AsyncDataBroker;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -78,8 +77,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private static final Logger LOG = LoggerFactory.getLogger(MDSALManager.class);
 
     private final DataBroker dataBroker;
-
+    private final AsyncDataBroker asyncDataBroker;
     private final PacketProcessingService packetProcessingService;
+
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -97,8 +97,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
      *            PacketProcessingService for sending the packet outs
      */
     @Inject
-    public MDSALManager(DataBroker db, PacketProcessingService pktProcService) {
+    public MDSALManager(DataBroker db, AsyncDataBroker asyncDataBroker, PacketProcessingService pktProcService) {
         this.dataBroker = db;
+        this.asyncDataBroker = asyncDataBroker;
         this.packetProcessingService = pktProcService;
         singleTxDb = new SingleTransactionDataBroker(dataBroker);
         LOG.info("MDSAL Manager Initialized ");
@@ -197,15 +198,15 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         FlowBatchingUtils.write(flowInstanceId, flow);
     }
 
-    public void batchedRemoveFlowInternal(BigInteger dpId, Flow flow) {
+    public void batchedRemoveFlowInternal(final BigInteger dpId, Flow flow) {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         short tableId = flow.getTableId();
-        if (flowExists(dpId, tableId, flowKey)) {
-            InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-            FlowBatchingUtils.delete(flowInstanceId);
-        } else {
-            LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
-        }
+        final InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
+
+        asyncDataBroker.withNewSingleAsyncReadOnlyTransaction(
+            tx -> tx.read(LogicalDatastoreType.CONFIGURATION, flowInstanceId,
+                readFlow -> FlowBatchingUtils.delete(buildFlowInstanceIdentifier(dpId, tableId, flowKey)))
+                .orElse(() -> LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId)));
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> installGroupInternal(GroupEntity groupEntity) {
@@ -264,7 +265,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowInternal(FlowEntity flowEntity) {
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         deleteFlowEntityInternal(flowEntity, tx);
 
         CheckedFuture<Void, TransactionCommitFailedException> submitFuture = tx.submit();
@@ -294,35 +295,35 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return submitFuture;
     }
 
-    public void deleteFlowEntityInternal(FlowEntity flowEntity, WriteTransaction tx) {
+    public void deleteFlowEntityInternal(FlowEntity flowEntity, ReadWriteTransaction tx) {
         BigInteger dpId = flowEntity.getDpnId();
         short tableId = flowEntity.getTableId();
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
-        if (flowExists(dpId, tableId, flowKey)) {
-            InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-        } else {
-            LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
-        }
+        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
+
+        asyncDataBroker.asAsyncReadTransaction(tx)
+            .read(LogicalDatastoreType.CONFIGURATION, flowInstanceId,
+                readFlow -> tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId))
+                .orElse(() -> LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId));
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowNewInternal(BigInteger dpnId,
             Flow flowEntity) {
         LOG.debug("Remove flow {}", flowEntity);
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         deleteFlowInternal(dpnId, flowEntity, tx);
         return tx.submit();
     }
 
-    public void deleteFlowInternal(BigInteger dpId, Flow flow, WriteTransaction tx) {
+    public void deleteFlowInternal(BigInteger dpId, Flow flow, ReadWriteTransaction tx) {
         FlowKey flowKey = new FlowKey(flow.getId());
         short tableId = flow.getTableId();
-        if (flowExists(dpId, tableId, flowKey)) {
-            InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-        } else {
-            LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
-        }
+        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
+
+        asyncDataBroker.asAsyncReadTransaction(tx)
+            .read(LogicalDatastoreType.CONFIGURATION, flowInstanceId,
+                readFlow -> tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId))
+                .orElse(() -> LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId));
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> removeGroupInternal(GroupEntity groupEntity) {
@@ -447,11 +448,10 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         if (isRemove) {
             synchronized (getFlowKey(dpId, tableId, flowKey)) {
-                if (flowExists(dpId, tableId, flowKey)) {
-                    MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-                } else {
-                    LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
-                }
+                asyncDataBroker.withNewSingleAsyncReadWriteTransaction(
+                    tx -> tx.read(LogicalDatastoreType.CONFIGURATION, flowInstanceId,
+                        readFlow -> tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId))
+                        .orElse(() -> LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId)));
             }
         } else {
             MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow);
@@ -692,12 +692,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx) {
+    public void removeFlowToTx(BigInteger dpId, Flow flow, ReadWriteTransaction tx) {
         deleteFlowInternal(dpId, flow, tx);
     }
 
     @Override
-    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+    public void removeFlowToTx(FlowEntity flowEntity, ReadWriteTransaction tx) {
         deleteFlowEntityInternal(flowEntity, tx);
     }
 
@@ -782,18 +782,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                 .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
                 .child(Group.class, new GroupKey(new GroupId(groupId))).build();
         return groupInstanceId;
-    }
-
-    public boolean flowExists(BigInteger dpId, short tableId, FlowKey flowKey) {
-        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-        try {
-            Optional<Flow> flowOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
-                    flowInstanceId);
-            return flowOptional.isPresent();
-        } catch (ReadFailedException e) {
-            LOG.warn("Exception while reading flow {} for dpn {}", flowKey, dpId);
-        }
-        return false;
     }
 
     private InstanceIdentifier<Flow> buildFlowInstanceIdentifier(BigInteger dpnId, short tableId, FlowKey flowKey) {

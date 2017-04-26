@@ -8,10 +8,9 @@
 package org.opendaylight.genius.mdsalutil.interfaces;
 
 import com.google.common.util.concurrent.CheckedFuture;
-
 import java.math.BigInteger;
 import java.util.List;
-
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -74,7 +73,7 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    void removeFlowToTx(BigInteger dpId, Flow flow, WriteTransaction tx);
+    void removeFlowToTx(BigInteger dpId, Flow flow, ReadWriteTransaction tx);
 
     /**
      *  Remove a Flow using batched transaction.
@@ -85,7 +84,7 @@ public interface IMdsalApiManager {
      * @param tx
      *            batched transaction
      */
-    void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx);
+    void removeFlowToTx(FlowEntity flowEntity, ReadWriteTransaction tx);
 
     void installGroup(GroupEntity groupEntity);
 
