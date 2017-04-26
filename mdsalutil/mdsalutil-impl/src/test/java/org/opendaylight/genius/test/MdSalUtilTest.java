@@ -23,6 +23,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.databrokerutils.internal.AsyncDataBrokerImpl;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.BucketInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -67,7 +68,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
     @Before
     public void setUp() throws Exception {
         dataBroker = getDataBroker();
-        mdSalMgr = new MDSALManager(dataBroker, ppS);
+        mdSalMgr = new MDSALManager(dataBroker, new AsyncDataBrokerImpl(dataBroker), ppS);
         flowFwder = new MockFlowForwarder(dataBroker);
         grpFwder = new MockGroupForwarder(dataBroker);
 

@@ -20,4 +20,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <service ref="mDSALManager"
            interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
 
+  <service ref="asyncDataBrokerImpl"
+           interface="org.opendaylight.genius.databrokerutils.AsyncDataBroker" />
+
 </blueprint>

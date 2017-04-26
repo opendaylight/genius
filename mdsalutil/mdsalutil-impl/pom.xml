@@ -73,6 +73,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <type>test-jar</type>
     </dependency>
     <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+    </dependency>
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>mdsalutil-api</artifactId>
       <version>${project.version}</version>
