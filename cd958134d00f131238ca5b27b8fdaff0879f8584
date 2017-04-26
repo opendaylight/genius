@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_4774b267",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-04-26T09:11:56Z",
+      "side": 1,
+      "message": "can be put in a testUtil class as static final field",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 69,
+        "endChar": 10
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a7659eb6",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-04-26T09:11:56Z",
+      "side": 1,
+      "message": "can this be put in a testUtil.class ?\nit would improve readability for the test cases, \nand would be easier to add more in future.",
+      "range": {
+        "startLine": 88,
+        "startChar": 4,
+        "endLine": 94,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_87533ae1",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-04-26T09:11:56Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 109,
+        "startChar": 3,
+        "endLine": 113,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_6750d6d4",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-04-26T09:11:56Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 134,
+        "startChar": 4,
+        "endLine": 140,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_c760a2a7",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-04-26T09:11:56Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 159,
+        "startChar": 3,
+        "endLine": 170,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
