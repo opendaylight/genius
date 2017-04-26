@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "da01753e_a7963e3d",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-04-26T09:46:30Z",
+      "side": 1,
+      "message": "Is this needed ?",
+      "range": {
+        "startLine": 71,
+        "startChar": 3,
+        "endLine": 77,
+        "endChar": 5
+      },
+      "revId": "cd958134d00f131238ca5b27b8fdaff0879f8584",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_a7659eb6",
         "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
         "patchSetId": 1
