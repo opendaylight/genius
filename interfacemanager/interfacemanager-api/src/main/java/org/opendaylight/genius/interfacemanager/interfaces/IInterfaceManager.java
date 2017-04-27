@@ -63,5 +63,7 @@ public interface IInterfaceManager {
     List<Interface> getVlanInterfaces();
     List<Interface> getVxlanInterfaces();
 
+    List<Interface> getChildInterfaces(String parentInterface);
+
     public boolean isExternalInterface(String interfaceName);
 }
