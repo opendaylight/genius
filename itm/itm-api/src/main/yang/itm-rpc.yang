@@ -275,4 +275,18 @@ module itm-rpc {
             }
         }
 
+        rpc get-dpn-endpoint-ips {
+            description "used to retrieve tunnel end point IPs of a Dpn";
+            input {
+                leaf source-dpid {
+                type uint64;
+                }
+            }
+            output {
+                leaf-list nexthopip-list {
+                    type inet:ip-address;
+                }
+            }
+        }
+
     }
