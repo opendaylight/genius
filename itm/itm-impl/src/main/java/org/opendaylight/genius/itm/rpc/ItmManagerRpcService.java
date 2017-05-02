@@ -39,8 +39,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
@@ -64,6 +66,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.B
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.CreateTerminatingServiceActionsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutputBuilder;
@@ -798,4 +803,35 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         return Futures.immediateFuture(resultBld.build());
     }
+
+    @Override
+    public Future<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
+        BigInteger srcDpn = input.getSourceDpid() ;
+        RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = RpcResultBuilder.failed();
+        InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
+                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
+                        new DPNTEPsInfoKey(srcDpn)).build();
+        Optional<DPNTEPsInfo> tunnelInfo = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tunnelInfoId, dataBroker);
+        if (!tunnelInfo.isPresent()) {
+            LOG.error("tunnelInfo is not present");
+            return Futures.immediateFuture(resultBld.build());
+        }
+
+        List<TunnelEndPoints> tunnelEndPointList = tunnelInfo.get().getTunnelEndPoints();
+        if (tunnelEndPointList == null || tunnelEndPointList.isEmpty()) {
+            LOG.error("tunnelEndPointList is null or empty");
+            return Futures.immediateFuture(resultBld.build());
+        }
+
+        List<IpAddress> nexthopIpList = new ArrayList<>();
+        tunnelEndPointList.forEach(tunnelEndPoint-> {
+            nexthopIpList.add(tunnelEndPoint.getIpAddress());
+        });
+
+        GetDpnEndpointIpsOutputBuilder output = new GetDpnEndpointIpsOutputBuilder().setNexthopipList(nexthopIpList);
+        resultBld = RpcResultBuilder.success();
+        resultBld.withResult(output.build()) ;
+        return Futures.immediateFuture(resultBld.build());
+    }
+
 }
