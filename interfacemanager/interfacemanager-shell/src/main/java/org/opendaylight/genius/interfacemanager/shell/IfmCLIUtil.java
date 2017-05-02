@@ -7,24 +7,32 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
+import java.math.BigInteger;
 import java.util.Formatter;
 
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceOpState;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
 
 public class IfmCLIUtil {
     private static final String VLAN_OUTPUT_FORMAT_LINE1 = "%-55s";
     private static final String VLAN_OUTPUT_FORMAT = "%-24s %-20s %-15s %-24s";
     private static final String VXLAN_OUTPUT_FORMAT = "%-24s %-24s %-18s %-5s";
     private static final String VXLAN_OUTPUT_FORMAT_LINE1 = "%-49s %-45s";
-    private static final String TP_OUTPUT_FORMAT_LINE1 = "%-49s %-45s";
+    private static final String IF_TP_OUTPUT_FORMAT = "%-24s";
+    private static final String TP_OUTPUT_FORMAT = "%-24s %-20s %-8s";
+    private static final String TP_VXLAN_OUTPUT_FORMAT_LINE1 = "local_ip:%-24s remote_ip:%-24s key:%-12s";
+    private static final String BRIDGE_PORTS_OUTPUT_FORMAT_HEADER = "%-8s %-20s";
+    private static final String TP_OUTPUT_FORMAT_LINE2 = "%-12s";
     private static final String UNSET = "N/A";
+    private static final int IFTYPE_LEN = "InterfaceType".length();
 
     public static void showVlanHeaderOutput(CommandSession session) {
         StringBuilder sb = new StringBuilder();
@@ -114,7 +122,10 @@ public class IfmCLIUtil {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt
-                .format(TP_OUTPUT_FORMAT_LINE1, "InterfaceName", "PortName"));
+                        .format(TP_OUTPUT_FORMAT, "PortName", "Type", "OFPort"));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                .format(IF_TP_OUTPUT_FORMAT, "InterfaceName"));
         sb.setLength(0);
         session.getConsole().println(fmt
                 .format("--------------------------------------------------------------------------------"));
@@ -125,8 +136,71 @@ public class IfmCLIUtil {
                     CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
-        session.getConsole().println(fmt.format(TP_OUTPUT_FORMAT_LINE1, ifName, port.getName()));
+        session.getConsole().println(fmt
+            .format(TP_OUTPUT_FORMAT, port.getName(), getPortTypeStr(port), port.getOfport()));
+        sb.setLength(0);
+        session.getConsole().println(fmt.format(IF_TP_OUTPUT_FORMAT, ifName));
         sb.setLength(0);
         fmt.close();
+    }
+
+    public static void showBridgePortsHeader(CommandSession session, BigInteger dpnId) {
+        StringBuilder sb = new StringBuilder();
+        Formatter fmt = new Formatter(sb);
+        session.getConsole().println(fmt
+                .format(BRIDGE_PORTS_OUTPUT_FORMAT_HEADER, "DPN-ID", dpnId));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                .format("--------------------------------------------------------------------------------"));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                        .format(TP_OUTPUT_FORMAT, "PortName", "Type", "OFPort"));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                        .format(TP_OUTPUT_FORMAT_LINE2, "PortDetails"));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                        .format("--------------------------------------------------------------------------------"));
+        fmt.close();
+    }
+
+    public static void showBridgePortsOutput(CommandSession session, OvsdbTerminationPointAugmentation port) {
+        StringBuilder sb = new StringBuilder();
+        Formatter fmt = new Formatter(sb);
+        session.getConsole().println(fmt
+            .format(TP_OUTPUT_FORMAT, port.getName(), getPortTypeStr(port), port.getOfport()));
+        sb.setLength(0);
+        session.getConsole().println(getPortDetails(port));
+        sb.setLength(0);
+        fmt.close();
+    }
+
+    private static String getPortTypeStr(OvsdbTerminationPointAugmentation port) {
+        String portType = port.getInterfaceType().getSimpleName();
+        // Skip the InterfaceType part
+        if (portType.startsWith("InterfaceType")) {
+            return portType.substring(IFTYPE_LEN);
+        } else {
+            return portType;
+        }
+    }
+
+    private static String getPortDetails(OvsdbTerminationPointAugmentation port) {
+        if (SouthboundUtils.isInterfaceTypeTunnel(port.getInterfaceType())) {
+            String remoteIp = UNSET;
+            String localIp = UNSET;
+            String key = UNSET;
+            for (Options portOption: port.getOptions()) {
+                if (portOption.getOption().equals("local_ip")) {
+                    localIp = portOption.getValue();
+                } else if (portOption.getOption().equals("remote_ip")) {
+                    remoteIp = portOption.getValue();
+                } else if (portOption.getOption().equals("key")) {
+                    key = portOption.getValue();
+                }
+            }
+            return String.format(TP_VXLAN_OUTPUT_FORMAT_LINE1, localIp, remoteIp, key);
+        }
+        return String.format(TP_OUTPUT_FORMAT_LINE2, UNSET);
     }
 }

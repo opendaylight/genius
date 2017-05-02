@@ -20,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -97,10 +98,14 @@ public interface IInterfaceManager {
 
     List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId);
 
+    Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>>
+        getPortsOnBridgeByType(BigInteger dpnId);
+
     void updateInterfaceParentRef(String interfaceName, String parentInterface);
 
     void updateInterfaceParentRef(String interfaceName, String parentInterface, boolean readInterfaceBeforeWrite);
 
     long getLogicalTunnelSelectGroupId(int lportTag);
+
 
 }
