@@ -23,5 +23,10 @@
                 <property name="interfaceManager" ref="interfaceManagerRef" />
             </action>
         </command>
+        <command>
+            <action class="org.opendaylight.genius.interfacemanager.shell.ShowOvsPorts">
+                <property name="interfaceManager" ref="interfaceManagerRef" />
+            </action>
+        </command>
     </command-bundle>
 </blueprint>

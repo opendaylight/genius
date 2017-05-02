@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -57,9 +58,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -81,9 +79,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
@@ -728,9 +728,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     /**
      * Get all termination points on a given DPN.
-     * This API conflicts with getTunnelPortsOnBridge since both read from two different DS,
-     * probable future optimization will be to make both of them use the same DS.
-     *
+     * This API uses read on Operational DS. If there are perf issues in cluster
+     * setup, we can consider caching later.
      *
      * @param dpnId
      *            Datapath Node Identifier
@@ -739,43 +738,74 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      *         Augmentations
      */
     public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId) {
-        List<OvsdbTerminationPointAugmentation> tpList = null;
-        List<InterfaceNameEntry> interfaceList = InterfaceManagerCommonUtils.getAllInterfaces(dpnId, dataBroker);
-        if (interfaceList != null) {
-            tpList = new ArrayList<>();
-            for (InterfaceNameEntry ifaceEntry: interfaceList) {
-                OvsdbTerminationPointAugmentation terminationPoint =
-                                getTerminationPointForInterface(ifaceEntry.getInterfaceName());
-                LOG.trace("Found TerminationPoint {} for interface {}", terminationPoint,
-                        ifaceEntry.getInterfaceName());
-                if (terminationPoint != null) {
-                    tpList.add(terminationPoint);
-                }
+        List<OvsdbTerminationPointAugmentation> ports = new ArrayList<>();
+        List<TerminationPoint> portList = IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId);
+        for (TerminationPoint ovsPort : portList) {
+            if (ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class) != null) {
+                ports.add(ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class));
             }
         }
-        return tpList;
+        LOG.debug("Found {} ports on bridge {}", ports.size(), dpnId);
+        return ports;
+    }
+
+    /**
+     * Get all termination points of type tunnel on a given DPN.
+     *
+     * @param dpnId
+     *            Datapath Node Identifier
+     *
+     * @return If the data at the supplied path exists, returns a list of all termination point
+     *         Augmentations of type tunnel
+     */
+    @Override
+    public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId) {
+        List<OvsdbTerminationPointAugmentation> tunnelPorts = new ArrayList<>();
+        List<TerminationPoint> portList = IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId);
+        for (TerminationPoint ovsPort : portList) {
+            OvsdbTerminationPointAugmentation portAug =
+                    ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
+            if (portAug != null && SouthboundUtils.isInterfaceTypeTunnel(portAug.getInterfaceType())) {
+                tunnelPorts.add(portAug);
+            }
+        }
+
+        LOG.debug("Found {} tunnel ports on bridge {}", tunnelPorts.size(), dpnId);
+        return tunnelPorts;
+    }
+
+    /**
+     * Get all termination points by type on a given DPN.
+     *
+     * @param dpnId
+     *            Datapath Node Identifier
+     *
+     * @return If the data at the supplied path exists, returns a Map where key is interfaceType
+     *         and value is list of termination points of given type
+     */
+    @Override
+    public Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>>
+        getPortsOnBridgeByType(BigInteger dpnId) {
+
+        Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>> portMap;
+        portMap = new ConcurrentHashMap<>();
+        Optional<List<TerminationPoint>> portList =
+                Optional.ofNullable(IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId));
+        portList.ifPresent(ovsPorts -> ovsPorts.parallelStream().forEach(ovsPort -> {
+            OvsdbTerminationPointAugmentation portAug =
+                            ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
+            if (portAug != null && portAug.getInterfaceType() != null) {
+                if (portMap.get(portAug.getInterfaceType()) ==  null) {
+                    portMap.put(portAug.getInterfaceType(), new ArrayList<>());
+                }
+                portMap.get(portAug.getInterfaceType()).add(portAug);
+            }
+        }));
+
+        return portMap;
     }
 
     @Override
-    public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId) {
-        List<OvsdbTerminationPointAugmentation> tpList = null;
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
-        if (bridgeEntry != null) {
-            tpList = new ArrayList<>();
-            for (BridgeInterfaceEntry ifaceEntry: bridgeEntry.getBridgeInterfaceEntry()) {
-                OvsdbTerminationPointAugmentation terminationPoint =
-                                getTerminationPointForInterface(ifaceEntry.getInterfaceName());
-                LOG.trace("Found TerminationPoint {} for interface {}", terminationPoint,
-                                ifaceEntry.getInterfaceName());
-                if (terminationPoint != null
-                        && SouthboundUtils.isInterfaceTypeTunnel(terminationPoint.getInterfaceType())) {
-                    tpList.add(terminationPoint);
-                }
-            }
-        }
-        return tpList;
-    }
-
     public long getLogicalTunnelSelectGroupId(int lportTag) {
         return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
     }

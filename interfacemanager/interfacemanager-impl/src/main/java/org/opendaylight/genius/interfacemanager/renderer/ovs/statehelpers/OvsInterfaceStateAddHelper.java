@@ -67,10 +67,9 @@ public class OvsInterfaceStateAddHelper {
             .interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
-        if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)) {
-            if (!validateTunnelPortAttributes(nodeConnectorId, iface, interfaceName)) {
-                return futures;
-            }
+        if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
+                && !validateTunnelPortAttributes(nodeConnectorId, iface, interfaceName)) {
+            return futures;
         }
 
         Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
@@ -130,9 +129,6 @@ public class OvsInterfaceStateAddHelper {
                         iface.getName(), currentDpnId, parentRefs.getDatapathNodeIdentifier());
                 return false;
             }
-        } else {
-            LOG.debug("Received tunnel state add notification for a tunnel which is not configured {}", interfaceName);
-            return false;
         }
         return true;
     }
