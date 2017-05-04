@@ -74,6 +74,7 @@ import org.slf4j.LoggerFactory;
 
 public class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
+    private static final int DEFAULT_DISPATCHER_PRIORITY = 10;
 
     public enum ServiceMode  {
         INGRESS,
@@ -282,10 +283,15 @@ public class FlowBasedServicesUtils {
             }
         }
 
+        //////////////////////////////////////////
+        // FIXME: workaround for https://bugs.opendaylight.org/show_bug.cgi?id=7451
+        int flowPriority = DEFAULT_DISPATCHER_PRIORITY;
+        //////////////////////////////////////////
+
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName, boundService, currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
-                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
+                flowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
         installFlow(dpId, ingressFlow, t);
     }
 
