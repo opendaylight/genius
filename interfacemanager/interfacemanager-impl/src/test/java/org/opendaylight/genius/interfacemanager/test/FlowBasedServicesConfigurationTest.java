@@ -33,6 +33,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.dom.store.impl.DataChangeListenerRegistration;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchFieldType;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
@@ -174,7 +175,8 @@ public class FlowBasedServicesConfigurationTest {
         matches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
                 MetaDataUtil.getMetaDataForLPortDispatcher(ifaceBuilder.getIfIndex(), boundServiceNew.getServicePriority()),
                 MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
-        ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef, boundServiceNew.getServicePriority(), serviceRef, 0, 0,
+        ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef, 10,
+            serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionList);
         FlowKey flowKey = new FlowKey(new FlowId(ingressFlow.getId()));
         flowInstanceId = InterfaceManagerTestUtil.getFlowInstanceIdentifier(dpId,ingressFlow.getTableId(),flowKey);

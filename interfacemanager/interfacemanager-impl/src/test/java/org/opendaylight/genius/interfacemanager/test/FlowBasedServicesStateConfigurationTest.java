@@ -163,7 +163,7 @@ public class FlowBasedServicesStateConfigurationTest {
         matches.add(new MatchInfo(MatchFieldType.metadata, new BigInteger[] {
                 MetaDataUtil.getMetaDataForLPortDispatcher(ifaceBuilder.getIfIndex(), boundService.getServicePriority()),
                 MetaDataUtil.getMetaDataMaskForLPortDispatcher() }));
-        ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef, boundService.getServicePriority(), serviceRef, 0, 0,
+        ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef, 10, serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionList);
         FlowKey flowKey = new FlowKey(new FlowId(ingressFlow.getId()));
         flowInstanceId = InterfaceManagerTestUtil.getFlowInstanceIdentifier(dpId,ingressFlow.getTableId(),flowKey);
