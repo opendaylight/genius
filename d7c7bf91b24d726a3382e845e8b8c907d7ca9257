@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_91400458",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-05T09:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_394af383",
+      "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_79447b74",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-05-02T07:41:30Z",
       "side": 1,
       "message": "can you relieve the notification thread before handling this notification on ServicesInfo with djc on interfacename key ?",
+      "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_f124f0c7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-05T09:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_79447b74",
       "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_31815890",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-05T09:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_5949b78a",
+      "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_d97da7b3",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 4
@@ -64,6 +118,24 @@
       "writtenOn": "2017-05-02T07:41:30Z",
       "side": 1,
       "message": "change it to ConcurrentMap",
+      "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_7131200b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-05T09:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_d97da7b3",
       "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_51369c04",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/InterfaceBoundServicesState.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-05T09:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_1968cff4",
+      "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_d9a64753",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/InterfaceBoundServicesState.java",
         "patchSetId": 4
@@ -115,6 +205,24 @@
       "writtenOn": "2017-05-02T07:41:30Z",
       "side": 1,
       "message": "change it to private final",
+      "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_b13b88ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/InterfaceBoundServicesState.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-05T09:56:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_d9a64753",
       "revId": "d7c7bf91b24d726a3382e845e8b8c907d7ca9257",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
