@@ -98,6 +98,13 @@
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>odl-infrautils-caches</artifactId>
+      <version>${infrautils.version}</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
 
     <!-- Libraries from other projects -->
     <dependency>
