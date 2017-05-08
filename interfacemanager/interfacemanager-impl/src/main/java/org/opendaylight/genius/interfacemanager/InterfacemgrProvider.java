@@ -43,6 +43,10 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.caches.Cache;
+import org.opendaylight.infrautils.caches.CacheConfigBuilder;
+import org.opendaylight.infrautils.caches.CachePolicyBuilder;
+import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -97,17 +101,21 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
+    private final CacheProvider cacheProvider;
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
+    private Cache<String, OvsdbTerminationPointAugmentation> ifaceTpMap;
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+            final CacheProvider cacheProvider) {
         this.dataBroker = dataBroker;
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
+        this.cacheProvider = cacheProvider;
     }
 
     @PostConstruct
@@ -121,6 +129,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             this.ifaceToTpMap = new ConcurrentHashMap<>();
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
+            ifaceTpMap = cacheProvider.newCache(
+                    new CacheConfigBuilder<String, OvsdbTerminationPointAugmentation>()
+                    .anchor(this)
+                    .cacheFunction(key -> someCacheFunction(key))
+                    .description("cache for interfaceNam to TerminationPoint")
+                    .build(),
+                new CachePolicyBuilder().build());
 
             INTERFACE_STATUS_MONITOR.reportStatus("OPERATIONAL");
         } catch (Exception e) {
@@ -128,6 +143,15 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             throw e;
         }
         LOG.info("InterfacemgrProvider Started");
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    private OvsdbTerminationPointAugmentation someCacheFunction(String key) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
@@ -776,6 +800,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return tpList;
     }
 
+    @Override
     public long getLogicalTunnelSelectGroupId(int lportTag) {
         return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
     }
