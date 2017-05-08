@@ -41,6 +41,9 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.caches.Cache;
+import org.opendaylight.infrautils.caches.CacheConfigBuilder;
+import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -100,20 +103,24 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
-    private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
+    private final CacheProvider cacheProvider;
+    //private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
     private EntityOwnershipCandidateRegistration configEntityCandidate;
     private EntityOwnershipCandidateRegistration bindingEntityCandidate;
+    private Cache<String, OvsdbTerminationPointAugmentation> ifaceTpCache;
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+            final CacheProvider cacheProvider) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
+        this.cacheProvider = cacheProvider;
     }
 
     @PostConstruct
@@ -134,9 +141,16 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             }
 
             BatchingUtils.registerWithBatchManager(this.dataBroker);
-            this.ifaceToTpMap = new ConcurrentHashMap<>();
+            //this.ifaceToTpMap = new ConcurrentHashMap<>();
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
+            ifaceTpCache = cacheProvider.newCache(
+                    new CacheConfigBuilder<String, OvsdbTerminationPointAugmentation>()
+                    .anchor(this)
+                    .id("ifaceToTp")
+                    .cacheFunction(key -> ifaceTpCacheLookup(key))
+                    .description("cache for interfaceName to TerminationPoint")
+                    .build());
 
             INTERFACE_STATUS_MONITOR.reportStatus("OPERATIONAL");
         } catch (Exception e) {
@@ -144,6 +158,16 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             throw e;
         }
         LOG.info("InterfacemgrProvider Started");
+    }
+
+    private OvsdbTerminationPointAugmentation ifaceTpCacheLookup(String key) {
+        /* TODO:
+         * We don't have enough information to generate Iid
+         * and read off datastore. Probably need information from
+         * other caches, but if we don't have it with us, they won't
+         * either.
+         */
+        return null;
     }
 
     @Override
@@ -160,6 +184,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
 
         LOG.info("InterfacemgrProvider Closed");
+        ifaceTpCache.close();
     }
 
     public EntityOwnershipService getEntityOwnershipService() {
@@ -589,27 +614,29 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, interfaceName);
     }
 
+    @Deprecated
     @Override
     public Map<String, OvsdbTerminationPointAugmentation> getTerminationPointCache() {
-        return new ConcurrentHashMap<>(this.ifaceToTpMap);
+        //return new ConcurrentHashMap<>(this.ifaceToTpMap);
+        return Collections.emptyMap();
     }
 
     public void addTerminationPointForInterface(String interfaceName,
             OvsdbTerminationPointAugmentation terminationPoint) {
         LOG.debug("Adding TerminationPoint {} to cache for Interface {}", terminationPoint.getName(), interfaceName);
         if (interfaceName != null && terminationPoint != null) {
-            ifaceToTpMap.put(interfaceName, terminationPoint);
+            ifaceTpCache.put(interfaceName, terminationPoint);
         }
     }
 
     public OvsdbTerminationPointAugmentation getTerminationPoint(String interfaceName) {
-        return ifaceToTpMap.get(interfaceName);
+        return ifaceTpCache.get(interfaceName);
     }
 
     public void removeTerminationPointForInterface(String interfaceName) {
         LOG.debug("Removing TerminationPoint from cache for Interface {}", interfaceName);
         if (interfaceName != null) {
-            ifaceToTpMap.remove(interfaceName);
+            ifaceTpCache.evict(interfaceName);
         }
     }
 

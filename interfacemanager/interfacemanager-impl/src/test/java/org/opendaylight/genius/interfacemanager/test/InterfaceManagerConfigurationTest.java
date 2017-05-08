@@ -79,6 +79,7 @@ import org.opendaylight.genius.interfacemanager.test.xtend.PortFromInterfaceOutp
 import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
+import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
