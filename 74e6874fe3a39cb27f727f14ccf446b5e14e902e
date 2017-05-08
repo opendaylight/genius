@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_585518c5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-05-08T18:04:53Z",
+      "side": 1,
+      "message": "need inputs on this, Javadocs would\u0027ve helped ;)",
+      "range": {
+        "startLine": 132,
+        "startChar": 25,
+        "endLine": 138,
+        "endChar": 49
+      },
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
