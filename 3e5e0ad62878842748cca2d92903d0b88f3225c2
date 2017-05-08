@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_781d7c73",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-08T21:31:33Z",
+      "side": 0,
+      "message": "technically you\u0027ve lost this LOG.trace, but I\u0027m sure that\u0027s OK.",
+      "revId": "3e5e0ad62878842748cca2d92903d0b88f3225c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

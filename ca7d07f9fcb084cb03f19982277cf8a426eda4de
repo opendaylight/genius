@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_5806b821",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-08T21:31:33Z",
+      "side": 1,
+      "message": "technically you\u0027ve slightly changed the behaviour, because before *ALL* system properties had to be set, and if e.g. only 2 were set and 1 not then all would be defaulted.. but I doubt that ever was intentional, so your change here, although not strictly speaking 100% backward compatible, makes sense to me and does seem more consistent.  Just to be extra careful, I\u0027ll +1 instead of +2 it just so that others can have a look as well.",
+      "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_f8084c2f",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-08T21:31:33Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
