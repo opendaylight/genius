@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_388db47c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-08T15:42:55Z",
+      "side": 1,
+      "message": "this, an Optional\u003cCollection\u003c?\u003e\u003e is typically considered bad design - just return only Collection, and make it empty if you have nothing.  (Also perhaps use the Guava collection so you don\u0027t have to fully qualify java.util.Optional and then convert it.)",
+      "revId": "274cf697233d888caace426b91dbe81c910b416f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
