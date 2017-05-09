@@ -16,6 +16,24 @@
       "revId": "274cf697233d888caace426b91dbe81c910b416f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_33a79551",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-05-09T06:40:28Z",
+      "side": 1,
+      "message": "will do. My instinct was to go with just Collection too, went with this as more of learning exercise as well as to solicit comments. java.util.Optional vs Guava Optional is something I am not sure what to use. The reference code I used for this mainly uses java.util while most of infra code is using Guava. Since you mentioned no perf benefits if it is not parallel stream, I\u0027ll probably rework this to use collections and for loops.",
+      "parentUuid": "ba068154_388db47c",
+      "revId": "274cf697233d888caace426b91dbe81c910b416f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
