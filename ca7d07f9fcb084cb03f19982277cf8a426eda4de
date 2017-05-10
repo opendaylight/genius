@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba068154_c1946c39",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-05-10T14:14:31Z",
+      "side": 1,
+      "message": "Is there a specific reason to subclass ConcurrentHashMap here?\n\n    ConcurrentMap\u003cClass\u003c? extends ResourceTypeBase\u003e, String\u003e cache \u003d new ConcurrentHashMap\u003c\u003e();\n    cache.put(...);\n    return cache;",
+      "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_5806b821",
         "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
         "patchSetId": 1
@@ -13,6 +30,23 @@
       "writtenOn": "2017-05-08T21:31:33Z",
       "side": 1,
       "message": "technically you\u0027ve slightly changed the behaviour, because before *ALL* system properties had to be set, and if e.g. only 2 were set and 1 not then all would be defaulted.. but I doubt that ever was intentional, so your change here, although not strictly speaking 100% backward compatible, makes sense to me and does seem more consistent.  Just to be extra careful, I\u0027ll +1 instead of +2 it just so that others can have a look as well.",
+      "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_e1b6d0db",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-05-10T14:14:31Z",
+      "side": 1,
+      "message": "I generally don\u0027t like constant fields for string messages, but for consistency here, and since some of the other constants are used multiple times, it might be worth turning this into a constant too...",
       "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
