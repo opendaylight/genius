@@ -305,7 +305,12 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     private <T> ListenableFuture<RpcResult<T>> buildFailedRpcResultFuture(String msg, Exception exception) {
-        LOG.error(msg, exception);
+        if (exception instanceof IdDoesNotExistException) {
+            // Do not log full stack trace in case ID does not exist
+            LOG.error(msg + " : " + exception.getMessage());
+        } else {
+            LOG.error(msg, exception);
+        }
         RpcResultBuilder<T> failedRpcResultBuilder = RpcResultBuilder.failed();
         failedRpcResultBuilder.withError(ErrorType.APPLICATION, msg, exception);
         if (exception instanceof OperationFailedException) {
@@ -630,7 +635,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<IdEntries> idEntries = parentIdPool.getIdEntries();
         List<IdEntries> newIdEntries = idEntries;
         if (idEntries == null) {
-            throw new IdManagerException("Id Entries does not exist");
+            throw new IdDoesNotExistException(parentPoolName, idKey);
         }
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
         Optional<IdEntries> existingIdEntryObject = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
