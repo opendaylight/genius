@@ -83,6 +83,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private static final Logger LOG = LoggerFactory.getLogger(IdManager.class);
     private static final long DEFAULT_IDLE_TIME = 24 * 60 * 60;
+    private static final IdManagerException EXCEPTION_ID_NOT_AVAILABLE =
+            new IdManagerException("Ids entries does not exist", null, true, false);
 
     private final DataBroker broker;
     private final SingleTransactionDataBroker singleTxDB;
@@ -625,7 +627,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<IdEntries> idEntries = parentIdPool.getIdEntries();
         List<IdEntries> newIdEntries = idEntries;
         if (idEntries == null) {
-            throw new IdManagerException("Id Entries does not exist");
+            throw EXCEPTION_ID_NOT_AVAILABLE;
         }
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
         Optional<IdEntries> existingIdEntryObject = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
