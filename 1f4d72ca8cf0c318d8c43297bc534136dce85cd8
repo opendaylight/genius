@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_5bca2b50",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-05-10T09:02:42Z",
+      "side": 1,
+      "message": "use stream constructs to handle this logic 94-102.",
+      "revId": "1f4d72ca8cf0c318d8c43297bc534136dce85cd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_fb115fad",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 639,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-05-10T09:02:42Z",
+      "side": 1,
+      "message": "where do you use these methods ?",
+      "revId": "1f4d72ca8cf0c318d8c43297bc534136dce85cd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_db129bb3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/InterfaceBoundServicesState.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-05-10T09:02:42Z",
+      "side": 1,
+      "message": "change it to final to make this class as completely immutable",
+      "revId": "1f4d72ca8cf0c318d8c43297bc534136dce85cd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
