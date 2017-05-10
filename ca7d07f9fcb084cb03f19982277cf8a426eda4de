@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_1351a762",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-05-10T18:31:40Z",
+      "side": 1,
+      "message": "No, I just keep it as it was. I\u0027ll change it.",
+      "parentUuid": "ba068154_c1946c39",
+      "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_5806b821",
         "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2017-05-10T14:14:31Z",
       "side": 1,
       "message": "I generally don\u0027t like constant fields for string messages, but for consistency here, and since some of the other constants are used multiple times, it might be worth turning this into a constant too...",
+      "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_534b2fb0",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-05-10T18:31:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_e1b6d0db",
       "revId": "ca7d07f9fcb084cb03f19982277cf8a426eda4de",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
