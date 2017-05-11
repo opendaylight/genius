@@ -142,15 +142,14 @@ public class OvsInterfaceConfigUpdateHelper {
             WriteTransaction transaction, Interface interfaceNew, DataBroker dataBroker,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        OperStatus operStatus = InterfaceManagerCommonUtils.updateStateEntry(interfaceNew, dataBroker, transaction,
-                ifState);
-
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
-
+        LOG.info("admin-state modified for interface {}", interfaceNew.getName());
+        OperStatus operStatus = InterfaceManagerCommonUtils.updateStateEntry(interfaceNew, dataBroker, transaction,
+            ifState);
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
         InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);

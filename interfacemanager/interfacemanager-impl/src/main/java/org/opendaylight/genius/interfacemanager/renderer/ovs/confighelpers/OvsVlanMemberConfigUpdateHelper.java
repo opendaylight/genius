@@ -39,6 +39,8 @@ public class OvsVlanMemberConfigUpdateHelper {
             AlivenessMonitorService alivenessMonitorService, ParentRefs parentRefsNew, Interface interfaceOld,
             IfL2vlan ifL2vlanNew, Interface interfaceNew, IdManagerService idManager,
             IMdsalApiManager mdsalApiManager) {
+        LOG.info("updating interface configuration for vlan memeber {} with parent-interface {}", interfaceNew
+            .getName(), parentRefsNew.getParentInterface());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         ParentRefs parentRefsOld = interfaceOld.getAugmentation(ParentRefs.class);
 
@@ -64,6 +66,7 @@ public class OvsVlanMemberConfigUpdateHelper {
 
         if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId())
                 || !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
+            LOG.info("vlan-id modified for interface {}", interfaceNew.getName());
             futures.addAll(OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefsOld, interfaceOld,
                     ifL2vlanOld, idManager));
             futures.addAll(OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefsNew, interfaceNew,
@@ -83,7 +86,7 @@ public class OvsVlanMemberConfigUpdateHelper {
             if (interfaceNew.isEnabled()) {
                 operStatus = pifState.getOperStatus();
             }
-
+            LOG.info("admin-state modified for interface {}", interfaceNew.getName());
             WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
             InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
                 .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
