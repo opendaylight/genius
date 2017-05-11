@@ -16,6 +16,24 @@
       "revId": "ac75b3f80deb1ccc34ce39eee7986eaf916ccd38",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_1d925057",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-05-11T23:03:51Z",
+      "side": 1,
+      "message": "Ok, now I get it. Sometimes I use the double curly braces initialization for convenience, in tests and usually statically, but in this case the inner class might be a problem. :(. I\u0027ll change it.",
+      "parentUuid": "ba068154_095b3a55",
+      "revId": "ac75b3f80deb1ccc34ce39eee7986eaf916ccd38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
