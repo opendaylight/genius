@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_095b3a55",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-05-11T08:09:45Z",
+      "side": 1,
+      "message": "I wasn’t referring specifically to the return type, but to the instance construction:\n\n    ConcurrentMap\u003cClass\u003c? extends ResourceTypeBase\u003e, String\u003e cache \u003d new ConcurrentHashMap\u003c\u003e();\n    cache.put(ResourceTypeTableIds.class,\n        System.getProperty(RESOURCE_TABLES_NAME_PROPERTY, RESOURCE_TABLES_DEFAULT_NAME));\n    cache.put(ResourceTypeGroupIds.class,\n        System.getProperty(RESOURCE_GROUPS_NAME_PROPERTY, RESOURCE_GROUPS_DEFAULT_NAME));\n    cache.put(ResourceTypeMeterIds.class,\n        System.getProperty(RESOURCE_METERS_NAME_PROPERTY, RESOURCE_METERS_DEFAULT_NAME));\n    return cache;",
+      "revId": "ac75b3f80deb1ccc34ce39eee7986eaf916ccd38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
