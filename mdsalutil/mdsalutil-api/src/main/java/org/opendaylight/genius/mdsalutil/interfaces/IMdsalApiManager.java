@@ -23,7 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group
 
 public interface IMdsalApiManager {
 
-    void installFlow(FlowEntity flowEntity);
+    CheckedFuture<Void,TransactionCommitFailedException> installFlow(FlowEntity flowEntity);
 
     CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
 
@@ -57,7 +57,7 @@ public interface IMdsalApiManager {
 
     void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity);
 
-    void removeFlow(FlowEntity flowEntity);
+    CheckedFuture<Void,TransactionCommitFailedException> removeFlow(FlowEntity flowEntity);
 
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
 
