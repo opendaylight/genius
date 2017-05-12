@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_5869868a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-05-12T07:12:18Z",
+      "side": 1,
+      "message": "why is multiple vxlan tunnel changes coming in this patch?",
+      "revId": "ba6b5e80b8a4e76afad1177c73d0cd96643cec9f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
