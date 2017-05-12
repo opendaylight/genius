@@ -16,6 +16,24 @@
       "revId": "ba6b5e80b8a4e76afad1177c73d0cd96643cec9f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_98d80e55",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-05-12T07:37:37Z",
+      "side": 1,
+      "message": "You\u0027re looking at diff with previous patchset, so it also shows up changes brought in by rebase. Diff against \u0027base\u0027 will show correctly.",
+      "parentUuid": "ba068154_5869868a",
+      "revId": "ba6b5e80b8a4e76afad1177c73d0cd96643cec9f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
