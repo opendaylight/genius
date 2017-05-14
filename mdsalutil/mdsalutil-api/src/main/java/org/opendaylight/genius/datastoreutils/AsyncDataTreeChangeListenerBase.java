@@ -11,6 +11,7 @@ package org.opendaylight.genius.datastoreutils;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
@@ -41,7 +42,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
 
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
-
+    private final RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
     private final ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
@@ -51,7 +52,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
             ThreadFactoryProvider.builder()
                 .namePrefix("AsyncDataTreeChangeListenerBase-DataTreeChangeHandler")
                 .logger(LOG)
-                .build().get());
+                .build().get(), rejectedExecutionHandler);
 
     protected final Class<T> clazz;
 
