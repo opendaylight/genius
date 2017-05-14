@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -166,9 +168,13 @@ public class LockManager implements LockManagerService {
             }
             java.util.Optional.ofNullable(lockSynchronizerMap.get(lockName)).ifPresent(future -> {
                 try {
-                    future.get();
+                    // Making this as timed get to avoid any missing signal for lock remove notifications
+                    // in LockListener (which does the futue.complete())
+                    future.get(DEFAULT_WAIT_TIME_IN_MILLIS, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Problems in waiting on lock synchronizer {}", lockName, e);
+                } catch (TimeoutException e) {
+                    LOG.info("Waiting for the lock {} is timed out. retrying again", lockName);
                 }
             });
             lockSynchronizerMap.remove(lockName);
