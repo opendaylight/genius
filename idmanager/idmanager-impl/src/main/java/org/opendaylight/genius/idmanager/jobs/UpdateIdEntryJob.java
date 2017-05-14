@@ -47,16 +47,16 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         this.broker = broker;
         this.idUtils = idUtils;
         this.lockManager = lockManager;
-        if (newIdValues != null) {
-            this.newIdValues = new ArrayList<Long>(newIdValues);
-        } else {
-            this.newIdValues = null;
+        this.newIdValues = Optional.ofNullable(newIdValues)
+                .map(idValues -> new ArrayList<Long>(idValues)).orElse(null);
         }
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws TransactionCommitFailedException {
+        String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         WriteTransaction tx = broker.newWriteOnlyTransaction();
+        try {
         idUtils.updateChildPool(tx, parentPoolName, localPoolName);
         if (newIdValues != null && !newIdValues.isEmpty()) {
             IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
@@ -66,12 +66,13 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         }
         tx.submit().checkedGet();
         LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
-        String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
+        } finally {
         Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
             .ifPresent(latch -> latch.countDown());
         // Once the id is written to DS, removing the id value from map.
         idUtils.allocatedIdMap.remove(uniqueIdKey);
         idUtils.unlock(lockManager, uniqueIdKey);
+        }
         return Collections.emptyList();
     }
 }
