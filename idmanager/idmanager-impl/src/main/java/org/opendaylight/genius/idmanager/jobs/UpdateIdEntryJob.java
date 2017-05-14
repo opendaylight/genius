@@ -12,6 +12,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,10 +44,14 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
         this.idKey = idKey;
-        this.newIdValues = newIdValues;
         this.broker = broker;
         this.idUtils = idUtils;
         this.lockManager = lockManager;
+        if (newIdValues != null) {
+            this.newIdValues = new ArrayList<Long>(newIdValues);
+        } else {
+            this.newIdValues = null;
+        }
     }
 
     @Override
