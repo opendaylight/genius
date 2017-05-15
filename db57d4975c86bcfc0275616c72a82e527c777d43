@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba068154_45deb740",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/UpdateIdEntryJob.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-15T15:02:28Z",
+      "side": 1,
+      "message": "+1 this part of the change makes perfect sense to me",
+      "revId": "db57d4975c86bcfc0275616c72a82e527c777d43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_137a38f1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-15T15:02:28Z",
+      "side": 1,
+      "message": "This does not make sense to me.. the CallerRunsPolicy essentially turns this into a synchronous instead of async util, any time we have more than 1 concurrent notification.  I doubt that is what we want, or is even outright dangerous and wrong?  As we\u0027re using a LinkedBlockingQueue, according to the JavaDoc of ThreadPoolExecutor, it (quote) \"will cause new tasks to wait in the queue when all corePoolSize threads are busy\", so.. why do we need this?",
+      "revId": "db57d4975c86bcfc0275616c72a82e527c777d43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_05d4af1e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-15T15:02:28Z",
+      "side": 1,
+      "message": "as in the other class",
+      "revId": "db57d4975c86bcfc0275616c72a82e527c777d43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
