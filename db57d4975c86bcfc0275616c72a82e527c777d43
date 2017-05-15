@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_e82b4280",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-05-15T16:34:18Z",
+      "side": 1,
+      "message": "Yes Michael,It should be the behavior since queue is an unbounded one. But when I ran resoucemanager tests repeatedly (sent an email about this issue. please have a look), lock dcn\u0027s are not delivered due default abort policy. Hence this change.",
+      "parentUuid": "ba068154_137a38f1",
+      "revId": "db57d4975c86bcfc0275616c72a82e527c777d43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_05d4af1e",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
         "patchSetId": 1
