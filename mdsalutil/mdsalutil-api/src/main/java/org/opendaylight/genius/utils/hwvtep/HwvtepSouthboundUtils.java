@@ -271,10 +271,16 @@ public class HwvtepSouthboundUtils {
      *            the tunnel key
      * @return the logical switches
      */
-    public static LogicalSwitches createLogicalSwitch(String name, String desc, String tunnelKey) {
+    public static LogicalSwitches createLogicalSwitch(String name, String desc, String tunnelKey,
+                                                      String replicationMode) {
         HwvtepNodeName hwvtepName = new HwvtepNodeName(name);
+
         LogicalSwitchesBuilder lsBuilder = new LogicalSwitchesBuilder().setHwvtepNodeDescription(desc)
                 .setHwvtepNodeName(hwvtepName).setKey(new LogicalSwitchesKey(hwvtepName)).setTunnelKey(tunnelKey);
+
+        if (replicationMode != null && !replicationMode.isEmpty()) {
+            lsBuilder.setReplicationMode(replicationMode);
+        }
         return lsBuilder.build();
     }
 
@@ -394,5 +400,4 @@ public class HwvtepSouthboundUtils {
         }
         return tpKeyStr;
     }
-
 }

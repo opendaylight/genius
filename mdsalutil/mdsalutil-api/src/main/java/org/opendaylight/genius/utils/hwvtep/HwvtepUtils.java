@@ -653,4 +653,13 @@ public final class HwvtepUtils {
         return HwvtepUtils.addRemoteUcastMacs(broker, nodeId, macs);
     }
 
+    public static String getDbVersion(DataBroker broker, NodeId nodeId) {
+        Node hwvtepNode = getHwVtepNode(broker, LogicalDatastoreType.OPERATIONAL, nodeId);
+        String dbVersion = "";
+        if (hwvtepNode != null) {
+            dbVersion = hwvtepNode.getAugmentation(HwvtepGlobalAugmentation.class).getDbVersion();
+        }
+        return dbVersion;
+    }
+
 }
