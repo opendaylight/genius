@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016,2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -271,10 +271,16 @@ public class HwvtepSouthboundUtils {
      *            the tunnel key
      * @return the logical switches
      */
-    public static LogicalSwitches createLogicalSwitch(String name, String desc, String tunnelKey) {
+    public static LogicalSwitches createLogicalSwitch(String name, String desc, String tunnelKey,
+                                                      String replicationMode) {
         HwvtepNodeName hwvtepName = new HwvtepNodeName(name);
+
         LogicalSwitchesBuilder lsBuilder = new LogicalSwitchesBuilder().setHwvtepNodeDescription(desc)
                 .setHwvtepNodeName(hwvtepName).setKey(new LogicalSwitchesKey(hwvtepName)).setTunnelKey(tunnelKey);
+
+        if (replicationMode != null && !replicationMode.isEmpty()) {
+            lsBuilder.setReplicationMode(replicationMode);
+        }
         return lsBuilder.build();
     }
 
@@ -394,5 +400,4 @@ public class HwvtepSouthboundUtils {
         }
         return tpKeyStr;
     }
-
 }
