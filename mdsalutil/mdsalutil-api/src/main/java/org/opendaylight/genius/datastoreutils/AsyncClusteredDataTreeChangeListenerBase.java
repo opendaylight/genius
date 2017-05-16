@@ -10,6 +10,7 @@ package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ShutdownLoggingExecutorService;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -43,7 +45,8 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
 
-    private final ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
+    private final ExecutorService dataTreeChangeHandlerExecutor =
+        new ShutdownLoggingExecutorService(new ThreadPoolExecutor(
             DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
             DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
@@ -52,7 +55,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
             ThreadFactoryProvider.builder()
                 .namePrefix("AsyncClusteredDataTreeChangeListenerBase-DataTreeChangeHandler")
                 .logger(LOG)
-                .build().get());
+                .build().get()));
 
     protected final Class<T> clazz;
 
