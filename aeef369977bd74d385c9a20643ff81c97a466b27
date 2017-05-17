@@ -34,6 +34,24 @@
       "revId": "aeef369977bd74d385c9a20643ff81c97a466b27",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_3cdc6112",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-17T10:39:45Z",
+      "side": 1,
+      "message": "as in https://git.opendaylight.org/gerrit/#/c/57257/ ?  That would work for me too.. the idea I had here is that this approach would have separated rejection due to shutdown from other rejections more clearly (which, as discussed by email), should not happen in this case, but could in other Executors.  If you prefer the c/57257 approach, please -1 this one and I\u0027ll Abandon it, and we\u0027ll refine c/57257 together (+1 it if you\u0027re OK with it as is, -1 if you like the direction but have some suggestions to tweak that one a bit).",
+      "parentUuid": "ba068154_ca874e60",
+      "revId": "aeef369977bd74d385c9a20643ff81c97a466b27",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
