@@ -16,6 +16,24 @@
       "revId": "4f73470488b4c3d3c9d716d6061a77dbbeb64ca1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba068154_c27d6e70",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/LoggingRejectedExecutionHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-05-17T14:44:41Z",
+      "side": 1,
+      "message": "Well a lambda has to be copy/pasted .. we already use this in 2 places in this change (and could use it elsewhere in the future), so I think this justifies having a dedicated class instead of copy/pasting this twice into different places..",
+      "parentUuid": "ba068154_1c54fd1f",
+      "revId": "4f73470488b4c3d3c9d716d6061a77dbbeb64ca1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
