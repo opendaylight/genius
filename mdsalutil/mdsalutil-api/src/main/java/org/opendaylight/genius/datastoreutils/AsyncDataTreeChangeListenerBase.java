@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.LoggingRejectedExecutionHandler;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -51,7 +52,8 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
             ThreadFactoryProvider.builder()
                 .namePrefix("AsyncDataTreeChangeListenerBase-DataTreeChangeHandler")
                 .logger(LOG)
-                .build().get());
+                .build().get(),
+            new LoggingRejectedExecutionHandler());
 
     protected final Class<T> clazz;
 
