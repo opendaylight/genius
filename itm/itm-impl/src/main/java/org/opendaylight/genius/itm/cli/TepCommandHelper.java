@@ -37,6 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
@@ -466,6 +467,8 @@ public class TepCommandHelper {
                         String strTunnelType ;
                         if (tz.getTunnelType().equals(TunnelTypeGre.class)) {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_GRE;
+                        } else if (tz.getTunnelType().equals(TunnelTypeVxlanGpe.class)) {
+                            strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN_GPE;
                         } else {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
                         }
@@ -711,6 +714,8 @@ public class TepCommandHelper {
                     tunnelType = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
                 } else if (tunType.equals(TunnelTypeLogicalGroup.class)) {
                     tunnelType = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
+                } else if (tunType.equals(TunnelTypeVxlanGpe.class)) {
+                    tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN_GPE;
                 }
                 System.out.println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(),
                         tunnelInst.getSrcInfo().getTepDeviceId(), tunnelInst.getDstInfo().getTepDeviceId(),
@@ -832,6 +837,8 @@ public class TepCommandHelper {
         Class<? extends TunnelTypeBase> tunType;
         if (strTunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
             tunType = TunnelTypeVxlan.class;
+        } else if (strTunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN_GPE)) {
+            tunType = TunnelTypeVxlanGpe.class;
         } else {
             tunType = TunnelTypeGre.class;
         }
