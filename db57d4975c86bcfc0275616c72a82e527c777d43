@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "ba068154_cee2bf00",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-05-17T05:22:09Z",
+      "side": 1,
+      "message": "As discussed, reverting this change and added my comment in https://git.opendaylight.org/gerrit/#/c/57156/.",
+      "parentUuid": "ba068154_aff2dc97",
+      "revId": "db57d4975c86bcfc0275616c72a82e527c777d43",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_05d4af1e",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
         "patchSetId": 1
