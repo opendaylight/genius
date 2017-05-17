@@ -128,6 +128,7 @@ public final class NwConstants {
     public static final short SNAT_TABLE = 28;
     public static final short INTERNAL_TUNNEL_TABLE = 36;
     public static final short EXTERNAL_TUNNEL_TABLE = 38;
+    public static final short ARP_CHECK_TABLE = 43;
     public static final short INBOUND_NAPT_TABLE = 44;
     public static final short IPV6_TABLE = 45;
     public static final short OUTBOUND_NAPT_TABLE = 46;
