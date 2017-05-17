@@ -247,6 +247,8 @@ public class ItmUtils {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
         } else if (tunnelType.contains("TunnelTypeLogicalGroup")) {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
+        } else if (tunnelType.contains("TunnelTypeVxlanGpe")) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN_GPE;
         } else {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
