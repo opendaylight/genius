@@ -64,8 +64,13 @@ public class TerminationPointStateListener extends
         LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
 
         String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
-        interfaceMgrProvider.removeTerminationPointForInterface(oldInterfaceName);
-        interfaceMgrProvider.removeNodeIidForInterface(oldInterfaceName);
+        if (oldInterfaceName == null && InterfaceManagerCommonUtils.isTunnelPort(tpOld.getName())) {
+            interfaceMgrProvider.removeTerminationPointForInterface(tpOld.getName());
+            interfaceMgrProvider.removeNodeIidForInterface(tpOld.getName());
+        } else {
+            interfaceMgrProvider.removeTerminationPointForInterface(oldInterfaceName);
+            interfaceMgrProvider.removeNodeIidForInterface(oldInterfaceName);
+        }
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
