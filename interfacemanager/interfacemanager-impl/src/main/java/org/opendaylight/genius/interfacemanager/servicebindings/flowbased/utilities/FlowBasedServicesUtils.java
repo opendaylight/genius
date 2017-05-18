@@ -213,8 +213,8 @@ public class FlowBasedServicesUtils {
         }
 
         String serviceRef = boundServiceNew.getServiceName();
-        String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(), boundServiceNew,
-                boundServiceNew.getServicePriority());
+        String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(),
+            boundServiceNew.getServicePriority());
         StypeOpenflow stypeOpenflow = boundServiceNew.getAugmentation(StypeOpenflow.class);
         Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionSet);
@@ -280,8 +280,8 @@ public class FlowBasedServicesUtils {
         //////////////////////////////////////////
 
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName, boundService,
-                currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName,
+            boundService.getServicePriority());
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
                 flowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
@@ -346,8 +346,8 @@ public class FlowBasedServicesUtils {
         }
 
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService,
-                currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName,
+            boundService.getServicePriority());
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
@@ -469,8 +469,8 @@ public class FlowBasedServicesUtils {
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId,
             WriteTransaction writeTransaction) {
-        String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name, serviceOld,
-                serviceOld.getServicePriority());
+        String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name,
+            serviceOld.getServicePriority());
         LOG.debug("Removing Ingress Flow {}", flowKeyStr);
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);
@@ -488,8 +488,8 @@ public class FlowBasedServicesUtils {
 
         boundServicesOld.getAugmentation(StypeOpenflow.class);
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
-                currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface,
+            boundServicesOld.getServicePriority());
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -510,8 +510,8 @@ public class FlowBasedServicesUtils {
     private static void removeEgressDispatcherFlow(BigInteger dpId, String iface, WriteTransaction writeTransaction,
             short currentServiceIndex, BoundServices boundServicesOld) {
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
-                currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface,
+            boundServicesOld.getServicePriority());
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -542,10 +542,10 @@ public class FlowBasedServicesUtils {
         return String.format("%d:%s:%s", tableId, dpnId, infName);
     }
 
-    private static String getFlowRef(BigInteger dpnId, short tableId, String iface, BoundServices service,
-            short currentServiceIndex) {
+    private static String getFlowRef(BigInteger dpnId, short tableId, String iface,
+            short servicePriority) {
         return String.valueOf(dpnId) + tableId + NwConstants.FLOWID_SEPARATOR + iface + NwConstants.FLOWID_SEPARATOR
-                + currentServiceIndex;
+                + servicePriority;
     }
 
     private static String getSplitHorizonFlowRef(BigInteger dpnId, short tableId, String iface,
