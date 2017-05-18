@@ -497,8 +497,8 @@ public class InterfaceManagerConfigurationTest {
         Assert.assertEquals(PARENT_INTERFACE, interfaceManager.getParentRefNameForInterface(INTERFACE_NAME));
 
         //5. get interface information
-        assertEqualBeans(ExpectedInterfaceInfo.newVlanInterfaceInfo(), interfaceManager
-            .getInterfaceInfo(INTERFACE_NAME));
+        InterfaceInfo interfaceInfo1 = interfaceManager.getInterfaceInfo(INTERFACE_NAME);
+        assertEqualBeans(ExpectedInterfaceInfo.newVlanInterfaceInfo(), interfaceInfo1);
 
         Assert.assertEquals(org.opendaylight.genius.interfacemanager.globals.IfmConstants.VXLAN_GROUPID_MIN + 1,
             interfaceManager.getLogicalTunnelSelectGroupId(1));
@@ -509,8 +509,8 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         String lportDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.LPORT_DISPATCHER_TABLE
-            + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
-            + NwConstants.DEFAULT_SERVICE_INDEX;
+            + NwConstants.FLOWID_SEPARATOR + interfaceInfo1.getInterfaceTag() + NwConstants.FLOWID_SEPARATOR
+            + serviceInfo.getServicePriority();
 
         FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
@@ -542,8 +542,8 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         String egressDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.EGRESS_LPORT_DISPATCHER_TABLE
-            + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
-            + NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+            + NwConstants.FLOWID_SEPARATOR + interfaceInfo1.getInterfaceTag() + NwConstants.FLOWID_SEPARATOR
+            + serviceInfo.getServicePriority();
 
         FlowKey egressDispatcherFlowKey = new FlowKey(new FlowId(egressDispatcherFlowRef));
         InstanceIdentifier<Flow> egressDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
