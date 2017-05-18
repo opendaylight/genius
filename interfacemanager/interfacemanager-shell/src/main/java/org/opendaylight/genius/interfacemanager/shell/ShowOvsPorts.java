@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,8 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.math.BigInteger;
+import java.util.List;
+import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -17,9 +18,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Command(scope = "ifm-cache", name = "show", description = "view the ifm caches")
-public class DumpIfmCache extends OsgiCommandSupport {
-    private static final Logger LOG = LoggerFactory.getLogger(DumpIfmCache.class);
+@Command(scope = "ovs-ports", name = "show", description = "view the OVS ports on a DPN")
+public class ShowOvsPorts extends OsgiCommandSupport {
+    @Argument(index = 0, name = "dpnId", description = "DPN-ID", required = true, multiValued = false)
+    private BigInteger dpnId;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ShowOvsPorts.class);
     private IInterfaceManager interfaceManager;
     private DataBroker dataBroker;
 
@@ -33,14 +37,14 @@ public class DumpIfmCache extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() {
-        LOG.debug("Executing show ifm-cache command");
-        Map<String, OvsdbTerminationPointAugmentation> tpMap = interfaceManager.getTerminationPointCache();
+        LOG.debug("Executing show ovs-ports command");
+        List<OvsdbTerminationPointAugmentation> ports = interfaceManager.getPortsOnBridge(dpnId);
 
-        if (!tpMap.isEmpty()) {
-            IfmCLIUtil.showInterfaceToTpHeader(session);
+        if (!ports.isEmpty()) {
+            IfmCLIUtil.showBridgePortsHeader(session, dpnId);
         }
-        for (Entry<String, OvsdbTerminationPointAugmentation> tpEntry: tpMap.entrySet()) {
-            IfmCLIUtil.showInterfaceToTpOutput(tpEntry.getKey(), tpEntry.getValue(), session);
+        for (OvsdbTerminationPointAugmentation port: ports) {
+            IfmCLIUtil.showBridgePortsOutput(session, port);
         }
         return null;
     }
