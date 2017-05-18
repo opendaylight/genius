@@ -100,8 +100,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         BigInteger dpId = FlowBasedServicesUtils.getDpnIdFromInterface(ifaceState);
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, tx,
-                    NwConstants.DEFAULT_SERVICE_INDEX);
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), ifaceState.getIfIndex(),
+                boundServiceOld, tx, NwConstants.DEFAULT_SERVICE_INDEX);
             if (tx != null) {
                 futures.add(tx.submit());
             }
@@ -114,14 +114,14 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         if (high == null) {
             LOG.trace("Deleting ingress dispatcher table entry for service {}, match service index {}", boundServiceOld,
                     NwConstants.DEFAULT_SERVICE_INDEX);
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, tx,
-                    NwConstants.DEFAULT_SERVICE_INDEX);
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), ifaceState.getIfIndex(),
+                boundServiceOld, tx, NwConstants.DEFAULT_SERVICE_INDEX);
             if (low != null) {
                 // delete the lower services flow entry.
                 LOG.trace("Deleting ingress dispatcher table entry for lower service {}, match service index {}", low,
                         low.getServicePriority());
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), low, tx,
-                        low.getServicePriority());
+                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), ifaceState.getIfIndex(),
+                    low, tx, low.getServicePriority());
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
                         : low.getServicePriority() + 1);
@@ -135,8 +135,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         } else {
             LOG.trace("Deleting ingress dispatcher table entry for service {}, match service index {}", boundServiceOld,
                     boundServiceOld.getServicePriority());
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundServiceOld, tx,
-                    boundServiceOld.getServicePriority());
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), ifaceState.getIfIndex(),
+                boundServiceOld, tx, boundServiceOld.getServicePriority());
             short lowerServiceIndex = (short) (low != null ? low.getServicePriority()
                     : boundServiceOld.getServicePriority() + 1);
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
@@ -170,7 +170,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
 
         if (boundServices.isEmpty()) {
             // Remove entry from Ingress Table.
-            FlowBasedServicesUtils.removeIngressFlow(ifState.getName(), boundServiceOld, dpId, tx);
+            FlowBasedServicesUtils.removeIngressFlow(ifState.getName(), boundServiceOld, dpId,
+                ifState.getIfIndex(), tx);
             if (tx != null) {
                 futures.add(tx.submit());
             }
@@ -187,8 +188,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         }
 
         if (highestPriority < boundServiceOld.getServicePriority()) {
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifState.getName(), boundServiceOld, tx,
-                    boundServiceOld.getServicePriority());
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifState.getName(), ifState.getIfIndex(),
+                boundServiceOld, tx, boundServiceOld.getServicePriority());
             if (tx != null) {
                 futures.add(tx.submit());
             }
@@ -202,10 +203,10 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         BoundServices toBeMoved = tmpServicesMap.get(highestPriority);
         Interface iface =
                 InterfaceManagerCommonUtils.getInterfaceFromConfigDS(ifState.getName(), dataBroker);
-        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), boundServiceOld, dpId, tx);
+        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), boundServiceOld, dpId, ifState.getIfIndex(), tx);
         FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, toBeMoved, tx, matches, ifState.getIfIndex(),
                 NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
-        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), toBeMoved, tx,
+        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), ifState.getIfIndex(), toBeMoved, tx,
                 toBeMoved.getServicePriority());
 
         if (tx != null) {

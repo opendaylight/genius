@@ -104,12 +104,13 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
 
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, writeTransaction);
+        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId,
+            iface.getIfIndex(), writeTransaction);
 
         for (BoundServices boundService : allServices) {
             if (!boundService.equals(highestPriorityBoundService)) {
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), boundService, writeTransaction,
-                        boundService.getServicePriority());
+                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), iface.getIfIndex(),
+                    boundService, writeTransaction, boundService.getServicePriority());
             }
         }
 
@@ -130,11 +131,11 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
                 .compareTo(serviceInfo2.getServicePriority()));
         BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, writeTransaction,
-                NwConstants.DEFAULT_SERVICE_INDEX);
+        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), ifaceState.getIfIndex(),
+            highestPriority, writeTransaction, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, writeTransaction,
-                    boundService.getServicePriority());
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), ifaceState.getIfIndex(),
+                boundService, writeTransaction, boundService.getServicePriority());
         }
         futures.add(writeTransaction.submit());
         return futures;

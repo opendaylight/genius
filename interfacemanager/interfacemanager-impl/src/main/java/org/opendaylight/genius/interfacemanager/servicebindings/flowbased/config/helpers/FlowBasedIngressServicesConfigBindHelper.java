@@ -142,7 +142,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
 
             if (matches != null) {
                 WriteTransaction removeFlowTransaction = dataBroker.newWriteOnlyTransaction();
-                FlowBasedServicesUtils.removeIngressFlow(iface.getName(), serviceToReplace, dpId,
+                FlowBasedServicesUtils.removeIngressFlow(iface.getName(), serviceToReplace, dpId, ifState.getIfIndex(),
                         removeFlowTransaction);
                 futures.add(removeFlowTransaction.submit());
 
