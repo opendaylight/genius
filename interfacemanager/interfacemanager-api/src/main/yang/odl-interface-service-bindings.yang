@@ -12,6 +12,10 @@ module interface-service-bindings {
         prefix ext;
     }
 
+    import ietf-interfaces {
+        prefix if; revision-date 2014-05-08;
+    }
+
     revision "2016-04-06" {
         description "This YANG module defines the service binding model.";
     }
@@ -208,4 +212,36 @@ module interface-service-bindings {
             uses ofplugin:nx-action-learn-grouping;
         }
     }
+
+    container bound-services-state-list {
+            config false;
+            description "Contains the interface-state information for bound-services";
+
+            list bound-services-state {
+                key "interface-name service-mode";
+                    leaf interface-name {
+                        type string;
+                    }
+
+                    leaf service-mode {
+                        type identityref{
+                            base service-mode-base;
+                        }
+                    }
+                    leaf dpid {
+                        type uint64;
+                    }
+                    leaf port-no {
+                        type uint32;
+                    }
+                    leaf if-index {
+                        type int32;
+                    }
+                    leaf interface-type {
+                        type identityref {
+                            base if:interface-type;
+                        }
+                    }
+            }
+       }
 }
