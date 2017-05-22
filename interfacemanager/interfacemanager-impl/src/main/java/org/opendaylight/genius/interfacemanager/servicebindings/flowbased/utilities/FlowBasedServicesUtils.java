@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -304,48 +303,58 @@ public class FlowBasedServicesUtils {
 
     private static void installEgressDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
-        String serviceRef = boundService.getServiceName();
-        List<? extends MatchInfoBase> matches = FlowBasedServicesUtils
-                .getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex);
 
-        // Get the metadata and mask from the service's write metadata
-        // instruction
-        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
-        List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
-        int instructionSize = serviceInstructions.size();
+        // Get the metadata and mask from the service's write metadata instruction
+        StypeOpenflow stypeOpenflow = boundService.getAugmentation(StypeOpenflow.class);
+        if (stypeOpenflow == null) {
+            LOG.warn("Could not install egress dispatcher flow, missing service openflow configuration");
+            return;
+        }
+        List<Instruction> serviceInstructions = stypeOpenflow.getInstruction() != null
+                ? stypeOpenflow.getInstruction()
+                : Collections.emptyList();
 
         // build the final instruction for LPort Dispatcher table flow entry
+        List<Action> finalApplyActions = new ArrayList<>();
         List<Instruction> instructions = new ArrayList<>();
         if (boundService.getServicePriority() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
             BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
             BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForEgressDispatcherTable();
             instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadataValues[0], metadataMask,
-                ++instructionSize));
-            instructions.add(MDSALUtil.buildAndGetSetReg6ActionInstruction(0, ++instructionSize, 0, 31,
+                    instructions.size()));
+            finalApplyActions.add(MDSALUtil.createSetReg6Action(finalApplyActions.size(), 0, 31,
                     MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, nextServiceIndex)));
         }
-        if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
-            for (Instruction info : serviceInstructions) {
+
+        final int applyActionsOffset = finalApplyActions.size();
+        for (Instruction info : serviceInstructions) {
+            if (info.getInstruction() instanceof WriteActionsCase) {
+                List<Action> writeActions = ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((WriteActionsCase) info.getInstruction()).getWriteActions().getAction());
+                instructions.add(MDSALUtil.buildWriteActionsInstruction(writeActions, instructions.size()));
+            } else if (info.getInstruction() instanceof ApplyActionsCase) {
+                List<Action> applyActions = ActionConverterUtil.convertServiceActionToFlowAction(
+                        ((ApplyActionsCase) info.getInstruction()).getApplyActions().getAction(),
+                        applyActionsOffset);
+                finalApplyActions.addAll(applyActions);
+            } else if (!(info.getInstruction() instanceof WriteMetadataCase)) {
                 // Skip meta data write as that is handled already
-                if (info.getInstruction() instanceof WriteMetadataCase) {
-                    continue;
-                } else if (info.getInstruction() instanceof WriteActionsCase) {
-                    info = MDSALUtil.buildWriteActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
-                            ((WriteActionsCase) info.getInstruction()).getWriteActions().getAction()));
-                } else if (info.getInstruction() instanceof ApplyActionsCase) {
-                    info = MDSALUtil.buildApplyActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
-                            ((ApplyActionsCase) info.getInstruction()).getApplyActions().getAction()));
-                }
-                instructions.add(info);
+                instructions.add(MDSALUtil.buildInstruction(info, instructions.size()));
             }
+        }
+        if (!finalApplyActions.isEmpty()) {
+            instructions.add(MDSALUtil.buildApplyActionsInstruction(finalApplyActions, instructions.size()));
         }
 
         // build the flow and install it
+        String serviceRef = boundService.getServiceName();
+        List<? extends MatchInfoBase> matches = FlowBasedServicesUtils
+                .getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex);
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService,
             currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
-                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
+                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie(), matches,
                 instructions);
         LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", interfaceName, flowRef);
         installFlow(dpId, egressFlow, writeTransaction);
