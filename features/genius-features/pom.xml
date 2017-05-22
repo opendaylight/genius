@@ -13,13 +13,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>features-parent</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.8.0-Carbon</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>genius-features</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.0-Carbon</version>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
   <name>ODL :: genius :: ${project.artifactId}</name>
@@ -29,16 +29,16 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   </prerequisites>
 
   <properties>
-    <openflowplugin.version>0.4.0-SNAPSHOT</openflowplugin.version>
-    <ovsdb.version>1.4.0-SNAPSHOT</ovsdb.version>
-    <mdsal.model.version>0.10.0-SNAPSHOT</mdsal.model.version>
-    <mdsal.version>1.5.0-SNAPSHOT</mdsal.version>
-    <restconf.version>1.5.0-SNAPSHOT</restconf.version>
-    <yangtools.version>1.1.0-SNAPSHOT</yangtools.version>
-    <dluxapps.version>0.5.0-SNAPSHOT</dluxapps.version>
-    <liblldp.version>0.12.0-SNAPSHOT</liblldp.version>
+    <openflowplugin.version>0.4.0-Carbon</openflowplugin.version>
+    <ovsdb.version>1.4.0-Carbon</ovsdb.version>
+    <mdsal.model.version>0.10.0-Carbon</mdsal.model.version>
+    <mdsal.version>1.5.0-Carbon</mdsal.version>
+    <restconf.version>1.5.0-Carbon</restconf.version>
+    <yangtools.version>1.1.0-Carbon</yangtools.version>
+    <dluxapps.version>0.5.0-Carbon</dluxapps.version>
+    <liblldp.version>0.12.0-Carbon</liblldp.version>
     <configfile.directory>etc/opendaylight/karaf</configfile.directory>
-    <infrautils.version>1.1.0-SNAPSHOT</infrautils.version>
+    <infrautils.version>1.1.0-Carbon</infrautils.version>
   </properties>
 
   <dependencyManagement>

@@ -13,13 +13,13 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>single-feature-parent</artifactId>
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.8.0-Carbon</version>
     <relativePath />
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-ui</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.0-Carbon</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: UI</name>
 
@@ -35,14 +35,14 @@
     <dependency>
       <groupId>org.opendaylight.netconf</groupId>
       <artifactId>odl-mdsal-apidocs</artifactId>
-      <version>1.5.0-SNAPSHOT</version>
+      <version>1.5.0-Carbon</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.dluxapps</groupId>
       <artifactId>odl-dluxapps-yangman</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
+      <version>0.5.0-Carbon</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
