@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionConntrackApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionLearnApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionMultipathApplyActionsCase;
@@ -104,16 +105,33 @@ public class ActionConverterUtil {
         .types.rev131112.action.list.Action> convertServiceActionToFlowAction(
             List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
                 .action.list.Action> inActionList) {
+        return convertServiceActionToFlowAction(inActionList, 0);
+    }
+
+    /**
+     * Convert service binding actions to flow actions, applying an offset to
+     * its order.
+     *
+     * @param inActionList the service binding actions.
+     * @param keyOffset the offset.
+     * @return the flow actions.
+     */
+    public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action
+            .types.rev131112.action.list.Action> convertServiceActionToFlowAction(
+            List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
+                    .action.list.Action> inActionList,
+            int keyOffset) {
         List<org.opendaylight.yang.gen.v1.urn.opendaylight
-            .action.types.rev131112.action.list.Action> outActionList = new ArrayList<>();
+                .action.types.rev131112.action.list.Action> outActionList = new ArrayList<>();
         if (inActionList != null) {
             for (org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
                      .action.list.Action inAction : inActionList) {
                 outActionList.add(
                         new org.opendaylight.yang.gen.v1.urn.opendaylight
-                        .action.types.rev131112.action.list.ActionBuilder()
+                                .action.types.rev131112.action.list.ActionBuilder()
                                 .setAction(convertServiceActionToFlowAction(inAction.getAction()))
-                                .setKey(inAction.getKey()).build());
+                                .setKey(new ActionKey(inAction.getKey().getOrder() + keyOffset))
+                                .build());
             }
         }
         return outActionList;
