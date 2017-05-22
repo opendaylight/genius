@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -421,8 +422,17 @@ public class MDSALUtil {
         return buildApplyActionsInstruction(listAction, instructionKey);
     }
 
-    public static Instruction buildAndGetSetReg6ActionInstruction(int actionKey, int instructionKey,
-                                                                  int startOffSet, int endOffSet, long value) {
+
+    /**
+     * Create action to set REG6 to the given value.
+     *
+     * @param actionKey the action key.
+     * @param startOffSet the start offset.
+     * @param endOffSet the end offset.
+     * @param value the value.
+     * @return the action.
+     */
+    public static Action createSetReg6Action(int actionKey, int startOffSet, int endOffSet, long value) {
         NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
         Dst dst =  new DstBuilder()
                 .setDstChoice(new DstNxRegCaseBuilder().setNxReg(NxmNxReg6.class).build())
@@ -435,9 +445,14 @@ public class MDSALUtil {
         ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegLoad(nxRegLoadBuilder.build()).build());
         ab.setKey(new ActionKey(actionKey));
-        List<Action> listAction = new ArrayList<>();
-        listAction.add(ab.build());
-        return buildApplyActionsInstruction(listAction, instructionKey);
+        return ab.build();
+    }
+
+    public static Instruction buildAndGetSetReg6ActionInstruction(int actionKey, int instructionKey,
+                                                                  int startOffSet, int endOffSet, long value) {
+        return buildApplyActionsInstruction(
+                Collections.singletonList(createSetReg6Action(actionKey, startOffSet, endOffSet, value)),
+                instructionKey);
     }
 
     public static Instruction buildApplyActionsInstruction(List<Action> actions) {
@@ -455,13 +470,28 @@ public class MDSALUtil {
     }
 
     public static Instruction buildWriteActionsInstruction(List<Action> actions) {
+        return buildWriteActionsInstruction(actions, 0);
+    }
+
+    /**
+     * Build write actions instruction with the given actions and key.
+     *
+     * @param actions the actions.
+     * @param instructionKey the instruction key.
+     * @return the instruction.
+     */
+    public static Instruction buildWriteActionsInstruction(List<Action> actions, int instructionKey) {
         WriteActions writeActions = new WriteActionsBuilder().setAction(actions).build();
         WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
         InstructionBuilder instructionBuilder = new InstructionBuilder();
 
         instructionBuilder.setInstruction(writeActionsCase);
-        instructionBuilder.setKey(new InstructionKey(0));
+        instructionBuilder.setKey(new InstructionKey(instructionKey));
         return instructionBuilder.build();
+    }
+
+    public static Instruction buildInstruction(Instruction instruction, int instructionKey) {
+        return new InstructionBuilder(instruction).setKey(new InstructionKey(instructionKey)).build();
     }
 
     public static List<Instruction> buildInstructionsDrop() {
@@ -476,15 +506,16 @@ public class MDSALUtil {
         return mkInstructions;
     }
 
-
+    /**
+     * Build write actions instruction with the given actions and key.
+     *
+     * @param listAction the actions.
+     * @param instructionKey the instruction key.
+     * @return the instruction.
+     * @deprecated Use buildWriteActionsInstruction
+     */
     public static Instruction getWriteActionsInstruction(List<Action> listAction, int instructionKey) {
-        WriteActions writeActions = new WriteActionsBuilder().setAction(listAction).build();
-        WriteActionsCase writeActionsCase = new WriteActionsCaseBuilder().setWriteActions(writeActions).build();
-        InstructionBuilder instructionBuilder = new InstructionBuilder();
-
-        instructionBuilder.setInstruction(writeActionsCase);
-        instructionBuilder.setKey(new InstructionKey(instructionKey));
-        return instructionBuilder.build();
+        return buildWriteActionsInstruction(listAction, instructionKey);
     }
 
     public static Action buildAction(int actionKey, int instruction) {
