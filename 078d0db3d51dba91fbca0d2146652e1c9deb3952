@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7af0899e_6efe6f6d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-05-23T07:55:07Z",
+      "side": 1,
+      "message": "Don\u0027t create an Optional just for this! The safest approach is\n\n    List\u003cInstruction\u003e serviceInstructions \u003d new ArrayList\u003c\u003e();\n    if (stypeOpenflow.getInstruction() !\u003d null) {\n        serviceInstructions.addAll(stypeOpenflow.getInstruction());\n    }\n\nif stypeOpenflow.getInstruction() really can return null.",
+      "revId": "078d0db3d51dba91fbca0d2146652e1c9deb3952",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7af0899e_aef7b78b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-05-23T07:55:07Z",
+      "side": 1,
+      "message": "Please don\u0027t overwrite info here:\n\n    instructions.add(MDSALUtil...);",
+      "revId": "078d0db3d51dba91fbca0d2146652e1c9deb3952",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
