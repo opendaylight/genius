@@ -166,7 +166,8 @@ public class LockManager implements LockManagerService {
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
             }
-            java.util.Optional.ofNullable(lockSynchronizerMap.get(lockName)).ifPresent(future -> {
+            CompletableFuture<Void> future = lockSynchronizerMap.get(lockName);
+            if (future != null) {
                 try {
                     // Making this as timed get to avoid any missing signal for lock remove notifications
                     // in LockListener (which does the futue.complete())
@@ -176,8 +177,8 @@ public class LockManager implements LockManagerService {
                 } catch (TimeoutException e) {
                     LOG.info("Waiting for the lock {} is timed out. retrying again", lockName);
                 }
-            });
-            lockSynchronizerMap.remove(lockName);
+                lockSynchronizerMap.remove(lockName);
+            }
         }
     }
 

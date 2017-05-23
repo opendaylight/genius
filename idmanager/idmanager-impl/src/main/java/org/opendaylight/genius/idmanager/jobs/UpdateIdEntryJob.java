@@ -15,9 +15,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import java.util.concurrent.CountDownLatch;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -33,7 +33,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     private final String parentPoolName;
     private final String localPoolName;
     private final String idKey;
-    private final List<Long> newIdValues;
+    private final List<Long> newIdValues = new ArrayList<>();
     private final DataBroker broker;
     private final IdUtils idUtils;
     private final LockManagerService lockManager;
@@ -47,8 +47,9 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         this.broker = broker;
         this.idUtils = idUtils;
         this.lockManager = lockManager;
-        this.newIdValues = Optional.ofNullable(newIdValues)
-                .map(idValues -> new ArrayList<Long>(idValues)).orElse(null);
+        if (newIdValues != null) {
+            this.newIdValues.addAll(newIdValues);
+        }
     }
 
     @Override
@@ -57,7 +58,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         try {
             idUtils.updateChildPool(tx, parentPoolName, localPoolName);
-            if (newIdValues != null && !newIdValues.isEmpty()) {
+            if (!newIdValues.isEmpty()) {
                 IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
                 tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
             } else {
@@ -66,8 +67,10 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             tx.submit().checkedGet();
             LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
         } finally {
-            Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
-                .ifPresent(latch -> latch.countDown());
+            CountDownLatch latch = idUtils.releaseIdLatchMap.get(uniqueIdKey);
+            if (latch != null) {
+                latch.countDown();
+            }
             // Once the id is written to DS, removing the id value from map.
             idUtils.allocatedIdMap.remove(uniqueIdKey);
             idUtils.unlock(lockManager, uniqueIdKey);
