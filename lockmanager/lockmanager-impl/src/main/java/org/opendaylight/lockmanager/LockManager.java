@@ -164,14 +164,14 @@ public class LockManager implements LockManagerService {
             } catch (ExecutionException e) {
                 LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
             }
-            java.util.Optional.ofNullable(lockSynchronizerMap.get(lockName)).ifPresent(future -> {
+            CompletableFuture<Void> future = lockSynchronizerMap.remove(lockName);
+            if (future != null) {
                 try {
                     future.get();
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Problems in waiting on lock synchronizer {}", lockName, e);
                 }
-            });
-            lockSynchronizerMap.remove(lockName);
+            }
         }
     }
 
