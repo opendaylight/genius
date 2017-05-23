@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -133,8 +132,7 @@ public class OvsInterfaceConfigAddHelper {
             createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ? true
                     : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
-                    Optional.absent());
+            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName());
 
             if (InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName) != null) {
                 InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures,
@@ -147,7 +145,7 @@ public class OvsInterfaceConfigAddHelper {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: createInterfaceChildEntry for {} in logical group {}",
                     tunnelName, parentInterface);
             InterfaceManagerCommonUtils.createInterfaceChildEntry(parentInterface, tunnelName,
-                    Optional.of(defaultOperShardTransaction));
+                    defaultOperShardTransaction);
         }
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
