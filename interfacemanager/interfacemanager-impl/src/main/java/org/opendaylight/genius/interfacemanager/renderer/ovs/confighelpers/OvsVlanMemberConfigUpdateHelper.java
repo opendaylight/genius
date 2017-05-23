@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -103,13 +104,6 @@ public class OvsVlanMemberConfigUpdateHelper {
     }
 
     public static boolean vlanIdModified(VlanId vlanIdOld, VlanId vlanIdNew) {
-        if (vlanIdOld != null && vlanIdNew == null || vlanIdOld == null && vlanIdOld != null) {
-            return true;
-        }
-
-        if (vlanIdOld != null && vlanIdNew != null && !vlanIdOld.equals(vlanIdNew)) {
-            return true;
-        }
-        return false;
+        return !Objects.equals(vlanIdOld, vlanIdNew);
     }
 }
