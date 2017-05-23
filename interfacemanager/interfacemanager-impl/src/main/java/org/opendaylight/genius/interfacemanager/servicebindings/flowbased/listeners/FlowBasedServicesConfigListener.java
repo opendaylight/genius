@@ -37,6 +37,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -128,8 +129,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                     boundServicesBefore.getKey()), boundServicesBefore, boundServices);
                 break;
             case SUBTREE_MODIFIED:
-                update(getBoundServicesInstanceIdentifier(rootIdentifier, boundServicesBefore.getKey()),
-                    boundServicesBefore, boundServicesAfter);
+                update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
+                        boundServicesBefore.getKey()), boundServicesBefore, boundServicesAfter, boundServices);
                 break;
             case WRITE:
                 if (boundServicesBefore == null) {
@@ -160,12 +161,17 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    protected void update(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld,
-                          BoundServices boundServiceNew) {
-        if (!Objects.equals(boundServiceOld, boundServiceNew)) {
+    protected void update(ServicesInfoKey serviceKey, InstanceIdentifier<BoundServices> key,
+                          BoundServices boundServiceOld, BoundServices boundServiceNew,
+                          List<BoundServices> boundServicesList) {
+        if (boundServiceNew.getServicePriority() == NwConstants.ACL_SERVICE_INDEX
+                && !Objects.equals(boundServiceOld, boundServiceNew)) {
+            LOG.info("Bound services flow update for service {}", boundServiceNew.getServiceName());
+            add(serviceKey, key, boundServiceNew, boundServicesList);
+        } else {
             LOG.error("Service Binding entry update not allowed for: {}, Data: {}",
-                InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
-                boundServiceNew);
+                    InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
+                    boundServiceNew);
         }
     }
 
