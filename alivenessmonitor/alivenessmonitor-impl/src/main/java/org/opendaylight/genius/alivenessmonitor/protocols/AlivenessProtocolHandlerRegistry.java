@@ -24,7 +24,7 @@ public interface AlivenessProtocolHandlerRegistry {
 
     @Nullable AlivenessProtocolHandler getOpt(EtherTypes etherType);
 
-    @Nullable AlivenessProtocolHandler getOpt(Class<? extends Object> packetClass);
+    @Nullable AlivenessProtocolHandler getOpt(Class<?> packetClass);
 
     @NonNull  AlivenessProtocolHandler get(EtherTypes etherType);
 }

@@ -42,7 +42,7 @@ public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHa
     }
 
     @Override
-    public synchronized @Nullable AlivenessProtocolHandler getOpt(Class<? extends Object> packetClass) {
+    public synchronized @Nullable AlivenessProtocolHandler getOpt(Class<?> packetClass) {
         return packetTypeToProtocolHandler.get(packetClass);
     }
 
