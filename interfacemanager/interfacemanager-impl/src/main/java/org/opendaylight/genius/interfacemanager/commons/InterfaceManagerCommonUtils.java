@@ -269,6 +269,7 @@ public final class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
+    // TODO Clean up
     public static void createInterfaceChildEntry(String parentInterface, String childInterface,
                                                  Optional<WriteTransaction> txOptional) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);

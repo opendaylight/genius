@@ -216,13 +216,19 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             output.setIdValue(newIdValue);
             futureResult = RpcResultBuilder.<AllocateIdOutput>success().withResult(output.build()).buildFuture();
         } catch (OperationFailedException | IdManagerException e) {
-            java.util.Optional.ofNullable(
-                    idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey)))
-                    .ifPresent(futureId -> futureId.completeExceptionally(e));
+            completeExceptionallyIfPresent(poolName, idKey, e);
             futureResult = buildFailedRpcResultFuture("allocateId failed: " + input.toString(), e);
             idUtils.unlock(lockManager, uniqueKey);
         }
         return futureResult;
+    }
+
+    private void completeExceptionallyIfPresent(String poolName, String idKey, Exception e) {
+        CompletableFuture<List<Long>> completableFuture =
+                idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey));
+        if (completableFuture != null) {
+            completableFuture.completeExceptionally(e);
+        }
     }
 
     @Override
@@ -245,9 +251,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             output.setIdValues(newIdValuesList);
             futureResult = RpcResultBuilder.<AllocateIdRangeOutput>success().withResult(output.build()).buildFuture();
         } catch (OperationFailedException | IdManagerException e) {
-            java.util.Optional.ofNullable(
-                    idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey)))
-                    .ifPresent(futureId -> futureId.completeExceptionally(e));
+            completeExceptionallyIfPresent(poolName, idKey, e);
             futureResult = buildFailedRpcResultFuture("allocateIdRange failed: " + input.toString(), e);
             idUtils.unlock(lockManager, uniqueKey);
         }
@@ -610,7 +614,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             throws ReadFailedException, IdManagerException {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
         LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
-        java.util.Optional.ofNullable(idUtils.releaseIdLatchMap.get(idLatchKey)).ifPresent(latch -> {
+        CountDownLatch latch = idUtils.releaseIdLatchMap.get(idLatchKey);
+        if (latch != null) {
             try {
                 latch.await(10, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
@@ -618,7 +623,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             } finally {
                 idUtils.releaseIdLatchMap.remove(idLatchKey);
             }
-        });
+        }
         localPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
