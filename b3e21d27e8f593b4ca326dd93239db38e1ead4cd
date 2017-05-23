@@ -16,6 +16,24 @@
       "revId": "b3e21d27e8f593b4ca326dd93239db38e1ead4cd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7af0899e_54818449",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-05-23T12:39:41Z",
+      "side": 1,
+      "message": "boundServiceNew.getServiceName() is a string that contains both the Service Name and Interface Name",
+      "parentUuid": "7af0899e_74a5a003",
+      "revId": "b3e21d27e8f593b4ca326dd93239db38e1ead4cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
