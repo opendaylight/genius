@@ -337,16 +337,12 @@ public class SouthboundUtils {
     }
 
     public static boolean isOfTunnel(IfTunnel ifTunnel) {
-        if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())
-                || BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
-            return true;
-        }
-        return false;
+        return Boolean.TRUE.equals(ifTunnel.isTunnelRemoteIpFlow())
+                || Boolean.TRUE.equals(ifTunnel.isTunnelSourceIpFlow());
     }
 
     public static boolean isInterfaceTypeTunnel(Class<? extends InterfaceTypeBase> interfaceType) {
-        return interfaceType != null && (interfaceType.equals(InterfaceTypeGre.class)
-            || interfaceType.equals(InterfaceTypeVxlan.class)) ? true : false;
+        return InterfaceTypeGre.class.equals(interfaceType) || InterfaceTypeVxlan.class.equals(interfaceType);
     }
 
 }
