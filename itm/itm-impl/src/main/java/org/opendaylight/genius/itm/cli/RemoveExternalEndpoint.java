@@ -42,12 +42,12 @@ public class RemoveExternalEndpoint extends OsgiCommandSupport {
     protected Object doExecute() {
         try {
             LOG.debug("RemoveExternalEndpoint: destinationIP {} with tunnelType {}", destinationIp, tunnelType);
-            Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-            if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
+            Class<? extends TunnelTypeBase> tunType;
+            if (tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN)) {
                 tunType = TunnelTypeVxlan.class;
-            } else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_GRE)) {
+            } else if (tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE)) {
                 tunType = TunnelTypeGre.class;
-            } else if (tunnelType.toUpperCase().equals(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
+            } else if (tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_MPLSoGRE)) {
                 tunType = TunnelTypeMplsOverGre.class;
             } else {
                 System.out.println("Invalid tunnel-type " + tunnelType);
@@ -69,6 +69,4 @@ public class RemoveExternalEndpoint extends OsgiCommandSupport {
         }
         return null;
     }
-
-
 }
