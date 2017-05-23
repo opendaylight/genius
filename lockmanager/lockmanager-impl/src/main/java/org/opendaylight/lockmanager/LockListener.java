@@ -7,6 +7,7 @@
  */
 package org.opendaylight.lockmanager;
 
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,8 +51,10 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
     protected void remove(InstanceIdentifier<Lock> key, Lock remove) {
         String lockName = remove.getLockName();
         LOG.debug("Received remove for lock {} : {}", lockName, remove);
-        java.util.Optional.ofNullable(lockManager.getSynchronizerForLock(lockName))
-            .ifPresent(future -> future.complete(null));
+        CompletableFuture<Void> lock = lockManager.getSynchronizerForLock(lockName);
+        if (lock != null) {
+            lock.complete(null);
+        }
     }
 
     @Override

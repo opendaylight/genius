@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -789,18 +788,16 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
         Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>> portMap;
         portMap = new ConcurrentHashMap<>();
-        Optional<List<TerminationPoint>> portList =
-                Optional.ofNullable(IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId));
-        portList.ifPresent(ovsPorts -> ovsPorts.parallelStream().forEach(ovsPort -> {
-            OvsdbTerminationPointAugmentation portAug =
-                            ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
-            if (portAug != null && portAug.getInterfaceType() != null) {
-                if (portMap.get(portAug.getInterfaceType()) ==  null) {
-                    portMap.put(portAug.getInterfaceType(), new ArrayList<>());
+        List<TerminationPoint> ovsPorts = IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId);
+        if (ovsPorts != null) {
+            for (TerminationPoint ovsPort : ovsPorts) {
+                OvsdbTerminationPointAugmentation portAug =
+                        ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
+                if (portAug != null && portAug.getInterfaceType() != null) {
+                    portMap.computeIfAbsent(portAug.getInterfaceType(), k -> new ArrayList<>()).add(portAug);
                 }
-                portMap.get(portAug.getInterfaceType()).add(portAug);
             }
-        }));
+        }
 
         return portMap;
     }
