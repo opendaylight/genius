@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class OvsVlanMemberConfigAddHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName(),
-                Optional.of(writeTransaction));
+                writeTransaction);
         futures.add(writeTransaction.submit());
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
