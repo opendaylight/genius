@@ -14,10 +14,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -269,18 +272,37 @@ public final class InterfaceManagerCommonUtils {
         MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
     }
 
+    public static void createInterfaceChildEntry(String parentInterface, String childInterface) {
+        createInterfaceChildEntry(parentInterface, childInterface,
+            pair -> BatchingUtils.write(pair.getKey(), pair.getValue(), BatchingUtils.EntityType.DEFAULT_CONFIG));
+    }
+
     public static void createInterfaceChildEntry(String parentInterface, String childInterface,
-                                                 Optional<WriteTransaction> txOptional) {
+            @Nonnull WriteTransaction tx) {
+        createInterfaceChildEntry(parentInterface, childInterface,
+            pair -> tx.put(LogicalDatastoreType.CONFIGURATION, pair.getKey(), pair.getValue(), true));
+    }
+
+    private static void createInterfaceChildEntry(String parentInterface, String childInterface,
+            Consumer<Pair<InstanceIdentifier<InterfaceChildEntry>, InterfaceChildEntry>> writer) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
-        InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
+        InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-        InterfaceChildEntryBuilder entryBuilder = new InterfaceChildEntryBuilder().setKey(interfaceChildEntryKey)
-                .setChildInterface(childInterface);
-        if (!txOptional.isPresent()) {
-            BatchingUtils.write(intfId, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+        InterfaceChildEntry interfaceChildEntry = new InterfaceChildEntryBuilder()
+                .setKey(interfaceChildEntryKey)
+                .setChildInterface(childInterface)
+                .build();
+        writer.accept(Pair.of(interfaceChildEntryIdentifier, interfaceChildEntry));
+    }
+
+    @Deprecated
+    public static void createInterfaceChildEntry(String parentInterface, String childInterface,
+                                                 Optional<WriteTransaction> txOptional) {
+        if (txOptional.isPresent()) {
+            createInterfaceChildEntry(parentInterface, childInterface, txOptional.get());
         } else {
-            txOptional.get().put(LogicalDatastoreType.CONFIGURATION, intfId, entryBuilder.build(), true);
+            createInterfaceChildEntry(parentInterface, childInterface);
         }
     }
 
@@ -516,7 +538,7 @@ public final class InterfaceManagerCommonUtils {
 
         LOG.info("Creating child interface {} of type {} bound on parent-interface {}",
                 childInterface, l2vlanMode, parentInterface);
-        createInterfaceChildEntry(parentInterface, childInterface, Optional.of(tx));
+        createInterfaceChildEntry(parentInterface, childInterface, tx);
         return true;
     }
 
