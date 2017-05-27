@@ -12,6 +12,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,30 +44,34 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
         this.idKey = idKey;
-        this.newIdValues = newIdValues;
         this.broker = broker;
         this.idUtils = idUtils;
         this.lockManager = lockManager;
+        this.newIdValues = Optional.ofNullable(newIdValues)
+                .map(idValues -> new ArrayList<Long>(idValues)).orElse(null);
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws TransactionCommitFailedException {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        idUtils.updateChildPool(tx, parentPoolName, localPoolName);
-        if (newIdValues != null && !newIdValues.isEmpty()) {
-            IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
-            tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
-        } else {
-            tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
-        }
-        tx.submit().checkedGet();
-        LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
-        Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
-            .ifPresent(latch -> latch.countDown());
-        // Once the id is written to DS, removing the id value from map.
-        idUtils.allocatedIdMap.remove(uniqueIdKey);
-        idUtils.unlock(lockManager, uniqueIdKey);
+        WriteTransaction tx = broker.newWriteOnlyTransaction();
+        try {
+            idUtils.updateChildPool(tx, parentPoolName, localPoolName);
+            if (newIdValues != null && !newIdValues.isEmpty()) {
+                IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
+                tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
+            } else {
+                tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
+            }
+            tx.submit().checkedGet();
+            LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
+        } finally {
+            Optional.ofNullable(idUtils.releaseIdLatchMap.get(uniqueIdKey))
+                .ifPresent(latch -> latch.countDown());
+            // Once the id is written to DS, removing the id value from map.
+            idUtils.allocatedIdMap.remove(uniqueIdKey);
+            idUtils.unlock(lockManager, uniqueIdKey);
+        }
         return Collections.emptyList();
     }
 }
