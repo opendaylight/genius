@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_b288b8c7",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-05-29T12:49:27Z",
+      "side": 1,
+      "message": "Why do we need this construct?\nCouldn\u0027t we just throw the exception?",
+      "range": {
+        "startLine": 86,
+        "startChar": 4,
+        "endLine": 94,
+        "endChar": 6
+      },
+      "revId": "d9b2a3af868c9e10ae50b9de78612297d8af890b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
