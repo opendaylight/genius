@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class IdUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IdUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IdUtils.class);
 
     public static final long DEFAULT_DELAY_TIME = 30;
     private static final long DEFAULT_AVAILABLE_ID_COUNT = 0;
@@ -220,14 +220,14 @@ public class IdUtils {
         Future<RpcResult<Void>> result = lockManager.lock(input);
         try {
             if (result != null && result.get().isSuccessful()) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Acquired lock {}", poolName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Acquired lock {}", poolName);
                 }
             } else {
                 throw new IdManagerException(String.format("Unable to getLock for pool %s", poolName));
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Unable to getLock for pool {}", poolName, e);
+            LOG.error("Unable to getLock for pool {}", poolName, e);
             throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName), e);
         }
     }
@@ -237,16 +237,16 @@ public class IdUtils {
         Future<RpcResult<Void>> result = lockManager.unlock(input);
         try {
             if (result != null && result.get().isSuccessful()) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Unlocked {}", poolName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Unlocked {}", poolName);
                 }
             } else {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Unable to unlock pool {}", poolName);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Unable to unlock pool {}", poolName);
                 }
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Unable to unlock for pool {}", poolName, e);
+            LOG.error("Unable to unlock for pool {}", poolName, e);
             throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e);
         }
     }
