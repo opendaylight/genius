@@ -7,47 +7,25 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Objects;
+import org.immutables.value.Value.Immutable;
+import org.opendaylight.genius.infra.OpenDaylightImmutableStyle;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.GroupKey;
-import org.opendaylight.yangtools.util.EvenMoreObjects;
 
-public class GroupEntity extends AbstractSwitchEntity {
+@Immutable
+@OpenDaylightImmutableStyle
+public abstract class GroupEntity extends AbstractSwitchEntity {
 
-    private final BigInteger dpnId;
-    private long groupId;
-    private String groupName;
-    private GroupTypes groupType;
-    private List<BucketInfo> bucketInfos;
+    // This is required as it will cause the code generation by @Immutable.org to implement Builder,
+    // which is required Xtend sources can use the XtendBuilderExtensions.operator_doubleGreaterThan
+    public abstract static class Builder implements org.opendaylight.yangtools.concepts.Builder<GroupEntity> {}
 
     private transient GroupBuilder groupBuilder;
 
-    public GroupEntity(BigInteger dpnId) {
-        this.dpnId = dpnId;
-    }
-
-    public GroupEntity(long dpnId) {
-        this(BigInteger.valueOf(dpnId));
-    }
-
-    @Override
-    public BigInteger getDpnId() {
-        return dpnId;
-    }
-
-    @Override
-    public String toString() {
-        return "GroupEntity [dpnId=" + getDpnId() + ", groupId=" + groupId + ", groupName=" + groupName
-                + ", groupType=" + groupType + ", bucketInfo=" + bucketInfos + "]";
-    }
-
-    public List<BucketInfo> getBucketInfoList() {
-        return bucketInfos;
-    }
+    public abstract List<BucketInfo> getBucketInfoList();
 
     public GroupBuilder getGroupBuilder() {
         if (groupBuilder == null) {
@@ -65,53 +43,10 @@ public class GroupEntity extends AbstractSwitchEntity {
         return groupBuilder;
     }
 
-    public long getGroupId() {
-        return groupId;
-    }
+    public abstract long getGroupId();
 
-    public String getGroupName() {
-        return groupName;
-    }
+    public abstract String getGroupName();
 
-    public GroupTypes getGroupType() {
-        return groupType;
-    }
+    public abstract GroupTypes getGroupType();
 
-    public void setBucketInfoList(List<BucketInfo> listBucketInfo) {
-        this.bucketInfos = listBucketInfo;
-    }
-
-    public void setGroupId(long groupIdAsLong) {
-        this.groupId = groupIdAsLong;
-        if (this.groupBuilder != null) {
-            GroupId groupId = new GroupId(getGroupId());
-            this.groupBuilder.setKey(new GroupKey(groupId));
-            this.groupBuilder.setGroupId(groupId);
-        }
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-        this.groupBuilder = null;
-    }
-
-    public void setGroupType(GroupTypes groupType) {
-        this.groupType = groupType;
-        this.groupBuilder = null;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getDpnId(), groupId, groupName, groupType, bucketInfos);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return EvenMoreObjects.equalsHelper(this, obj,
-            (self, other) -> Objects.equals(self.getDpnId(), other.getDpnId())
-                          && Objects.equals(this.groupId, other.groupId)
-                          && Objects.equals(this.groupName, other.groupName)
-                          && Objects.equals(this.groupType, other.groupType)
-                          && Objects.equals(this.bucketInfos, other.bucketInfos));
-    }
 }
