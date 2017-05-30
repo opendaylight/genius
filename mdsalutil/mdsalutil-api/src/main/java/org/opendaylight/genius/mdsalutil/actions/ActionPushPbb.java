@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Push PBB action.
  */
 public class ActionPushPbb extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionPushPbb() {
         this(0);
     }
@@ -32,6 +34,7 @@ public class ActionPushPbb extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
                 new PushPbbActionCaseBuilder().setPushPbbAction(

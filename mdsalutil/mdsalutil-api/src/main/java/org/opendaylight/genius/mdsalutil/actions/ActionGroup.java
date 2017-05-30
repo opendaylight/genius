@@ -18,6 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Group action.
  */
 public class ActionGroup extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final long groupId;
 
     public ActionGroup(long groupId) {

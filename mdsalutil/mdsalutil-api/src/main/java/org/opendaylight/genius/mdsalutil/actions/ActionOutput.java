@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Output action.
  */
 public class ActionOutput extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final Uri outputNodeConnector;
     private final int maxLength;
 

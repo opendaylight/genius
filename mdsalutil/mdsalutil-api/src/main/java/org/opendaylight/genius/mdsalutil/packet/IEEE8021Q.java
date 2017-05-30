@@ -20,6 +20,7 @@ public class IEEE8021Q extends Ethernet {
     private static final String VLAN_ID = "VlanId";
     private static final String ETHT = "EtherType";
 
+    @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(PRIORITY, new ImmutablePair<>(0, 3));
