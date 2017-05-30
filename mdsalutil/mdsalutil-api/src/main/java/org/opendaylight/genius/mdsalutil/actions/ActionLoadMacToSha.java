@@ -28,6 +28,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * was looking for.
  */
 public class ActionLoadMacToSha extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final MacAddress address;
 
     public ActionLoadMacToSha(MacAddress address) {

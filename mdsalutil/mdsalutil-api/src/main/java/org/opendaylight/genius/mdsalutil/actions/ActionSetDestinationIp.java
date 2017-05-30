@@ -20,6 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set destination IP action.
  */
 public class ActionSetDestinationIp extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final Ipv4Prefix destination;
 
     public ActionSetDestinationIp(String destinationIp) {

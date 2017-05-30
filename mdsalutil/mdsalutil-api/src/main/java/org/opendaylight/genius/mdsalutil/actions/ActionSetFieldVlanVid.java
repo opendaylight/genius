@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set VLAN VID field action.
  */
 public class ActionSetFieldVlanVid extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final int vlanId;
 
     public ActionSetFieldVlanVid(int vlanId) {

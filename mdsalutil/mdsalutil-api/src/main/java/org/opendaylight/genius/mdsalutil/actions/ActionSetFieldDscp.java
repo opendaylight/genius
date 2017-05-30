@@ -18,6 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.IpMatchBuilder;
 
 public class ActionSetFieldDscp extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final short dscp;
 
     public ActionSetFieldDscp(short dscp) {

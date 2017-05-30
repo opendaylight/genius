@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Pop MPLS action.
  */
 public class ActionPopMpls extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionPopMpls() {
         this(0);
     }
@@ -32,6 +34,7 @@ public class ActionPopMpls extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
                 new PopMplsActionCaseBuilder().setPopMplsAction(
