@@ -20,6 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set UDP source port action.
  */
 public class ActionSetUdpSourcePort extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final int port;
 
     public ActionSetUdpSourcePort(int port) {

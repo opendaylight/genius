@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set MPLS label field action.
  */
 public class ActionSetFieldMplsLabel extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final long label;
 
     public ActionSetFieldMplsLabel(long label) {

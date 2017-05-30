@@ -61,6 +61,7 @@ public class IPv4 extends Packet {
         PROTOCOL_CLASS_MAP.put(IPProtocols.TCP.byteValue(), TCP.class);
     }
 
+    @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(VERSION, new ImmutablePair<>(0, 4));

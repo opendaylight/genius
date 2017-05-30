@@ -23,6 +23,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Action to load an NXM register.
  */
 public class ActionRegLoad extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final Class<? extends NxmNxReg> register;
     private final int start;
     private final int end;

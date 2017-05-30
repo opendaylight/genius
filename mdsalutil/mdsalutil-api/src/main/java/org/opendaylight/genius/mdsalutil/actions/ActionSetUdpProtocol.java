@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set UDP protocol action.
  */
 public class ActionSetUdpProtocol extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionSetUdpProtocol() {
         this(0);
     }
@@ -32,6 +34,7 @@ public class ActionSetUdpProtocol extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder()
             .setAction(new SetFieldCaseBuilder()
