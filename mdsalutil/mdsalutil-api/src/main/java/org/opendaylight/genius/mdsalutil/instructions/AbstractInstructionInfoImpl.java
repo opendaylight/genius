@@ -15,6 +15,7 @@ import org.opendaylight.genius.mdsalutil.InstructionInfo;
  */
 /* can remain package local instead of public (unless there are InstructionInfo impls elsewhere?) */
 abstract class AbstractInstructionInfoImpl implements InstructionInfo {
+    private static final long serialVersionUID = 1L;
 
     @Override
     public abstract boolean equals(Object other);

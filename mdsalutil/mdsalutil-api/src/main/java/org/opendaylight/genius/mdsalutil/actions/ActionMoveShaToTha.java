@@ -23,6 +23,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * response need to be addressed to.
  */
 public class ActionMoveShaToTha extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionMoveShaToTha() {
         this(0);
     }
@@ -36,6 +38,7 @@ public class ActionMoveShaToTha extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         // Length of the SHA is 6 byte, hence the end offset bit is 47
         return new ActionBuilder()

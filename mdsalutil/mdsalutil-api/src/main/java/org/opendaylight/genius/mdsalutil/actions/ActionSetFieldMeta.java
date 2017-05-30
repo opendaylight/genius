@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
 
 public class ActionSetFieldMeta extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final BigInteger metadataValue;
 
     public ActionSetFieldMeta(BigInteger metadataValue) {
@@ -65,7 +67,7 @@ public class ActionSetFieldMeta extends ActionInfo {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((metadataValue == null) ? 0 : metadataValue.hashCode());
+        result = prime * result + (metadataValue == null ? 0 : metadataValue.hashCode());
         return result;
     }
 }

@@ -37,6 +37,7 @@ public class ARP extends Packet {
 
     public static short PROTO_TYPE_IP = 0x800;
 
+    @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(HWTYPE, new ImmutablePair<>(0, 16));

@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set Ethernet source field action.
  */
 public class ActionSetFieldEthernetSource extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final MacAddress source;
 
     public ActionSetFieldEthernetSource(MacAddress source) {

@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Set ARP Operation Type that is Request or Replay.
  */
 public class ActionSetArpOp extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final int value;
 
     public ActionSetArpOp(int value) {

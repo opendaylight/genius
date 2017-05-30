@@ -24,6 +24,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Move source/destination Ethernet action.
  */
 public class ActionMoveSourceDestinationEth extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionMoveSourceDestinationEth() {
         this(0);
     }
@@ -37,6 +39,7 @@ public class ActionMoveSourceDestinationEth extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         ActionBuilder ab = new ActionBuilder();
         NxRegMove regMove = new NxRegMoveBuilder()

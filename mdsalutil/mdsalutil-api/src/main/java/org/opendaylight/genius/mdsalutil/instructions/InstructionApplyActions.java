@@ -20,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Apply actions instruction.
  */
 public class InstructionApplyActions extends AbstractInstructionInfoImpl {
+    private static final long serialVersionUID = 1L;
 
     private final ActionInfoList actions;
 

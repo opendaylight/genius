@@ -29,6 +29,7 @@ public class ICMP extends Packet {
     private static final String IDENTIFIER = "Identifier";
     private static final String SEQNUMBER = "SequenceNumber";
 
+    @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(TYPE, new ImmutablePair<>(0, 8));
@@ -144,8 +145,6 @@ public class ICMP extends Packet {
 
     /**
      * Sets the ICMP sequence number for the current ICMP object instance.
-     * @param seqNumber-short
-     * @return ICMP
      */
     public ICMP setSequenceNumber(short seqNumber) {
         byte[] icmpSeqNumber = BitBufferHelper.toByteArray(seqNumber);
