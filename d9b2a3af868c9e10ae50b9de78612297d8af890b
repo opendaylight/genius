@@ -22,6 +22,30 @@
       "revId": "d9b2a3af868c9e10ae50b9de78612297d8af890b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_bb71b379",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-05-30T07:47:12Z",
+      "side": 1,
+      "message": "This is to override full stack trace logging. With this, only exception message is logged when you try to log exception.",
+      "parentUuid": "3afa9182_b288b8c7",
+      "range": {
+        "startLine": 86,
+        "startChar": 4,
+        "endLine": 94,
+        "endChar": 6
+      },
+      "revId": "d9b2a3af868c9e10ae50b9de78612297d8af890b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
