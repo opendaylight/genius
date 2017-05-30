@@ -20,6 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set PBB ISID field action.
  */
 public class ActionSetFieldPbbIsid extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final long isid;
 
     public ActionSetFieldPbbIsid(long isid) {

@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Drop action.
  */
 public class ActionDrop extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionDrop() {
         this(0);
     }
@@ -32,6 +34,7 @@ public class ActionDrop extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         DropActionBuilder dab = new DropActionBuilder();
         DropAction dropAction = dab.build();

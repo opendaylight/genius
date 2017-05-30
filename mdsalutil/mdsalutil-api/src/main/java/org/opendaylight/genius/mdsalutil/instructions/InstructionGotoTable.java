@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
  * Goto table instruction.
  */
 public class InstructionGotoTable extends AbstractInstructionInfoImpl {
+    private static final long serialVersionUID = 1L;
 
     private final short tableId;
 

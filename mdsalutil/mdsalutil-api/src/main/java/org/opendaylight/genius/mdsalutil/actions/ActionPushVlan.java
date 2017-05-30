@@ -19,6 +19,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Push VLAN action.
  */
 public class ActionPushVlan extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionPushVlan() {
         this(0);
     }
@@ -32,6 +34,7 @@ public class ActionPushVlan extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
                 new PushVlanActionCaseBuilder().setPushVlanAction(

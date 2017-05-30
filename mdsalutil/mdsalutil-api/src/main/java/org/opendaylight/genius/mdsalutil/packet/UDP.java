@@ -27,6 +27,7 @@ public class UDP extends Packet {
     private static final String LENGTH = "Length";
     private static final String CHECKSUM = "Checksum";
 
+    @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(SRCPORT, new ImmutablePair<>(0, 16));

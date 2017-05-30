@@ -25,6 +25,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Set tunnel destination IP action.
  */
 public class ActionSetTunnelDestinationIp extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     private final BigInteger destIp;
     private final boolean groupBucket;
 

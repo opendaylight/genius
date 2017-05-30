@@ -32,6 +32,7 @@ public class TCP extends Packet {
     public static final String CHECKSUM = "Checksum";
     public static final String URGENTPOINTER = "UrgentPointer";
 
+    @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(SRCPORT, new ImmutablePair<>(0, 16));

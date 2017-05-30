@@ -18,6 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Pop PBB action.
  */
 public class ActionPopPbb extends ActionInfo {
+    private static final long serialVersionUID = 1L;
+
     public ActionPopPbb() {
         this(0);
     }
@@ -31,6 +33,7 @@ public class ActionPopPbb extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder()
                 .setAction(new PopPbbActionCaseBuilder().setPopPbbAction(new PopPbbActionBuilder().build()).build())
