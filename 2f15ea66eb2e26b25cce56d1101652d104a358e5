@@ -16,6 +16,24 @@
       "revId": "2f15ea66eb2e26b25cce56d1101652d104a358e5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_695f8273",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-05-31T18:57:23Z",
+      "side": 1,
+      "message": "Doh, that’s not what I meant to commit, fixed.",
+      "parentUuid": "3afa9182_09499ed0",
+      "revId": "2f15ea66eb2e26b25cce56d1101652d104a358e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
