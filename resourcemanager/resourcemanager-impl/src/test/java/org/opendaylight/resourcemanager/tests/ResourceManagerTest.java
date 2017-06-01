@@ -46,12 +46,16 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
  * Resource Manager Service Test Suite.
  *
  * @author David Suárez
- *
  */
 public class ResourceManagerTest extends AbstractConcurrentDataBrokerTest {
+
     public final @Rule LogRule logRule = new LogRule();
 
-    public @Rule MethodRule guice = new GuiceRule(new ResourceManagerTestModule(),
+    // public static final @ClassRule RunUntilFailureClassRule CLASS_REPEATER = new RunUntilFailureClassRule();
+    // public final @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(CLASS_REPEATER);
+
+    public final @Rule MethodRule guice = new GuiceRule(
+            new ResourceManagerTestModule(),
             new TestableDataTreeChangeListenerModule());
 
     @Inject DataBroker dataBroker;
