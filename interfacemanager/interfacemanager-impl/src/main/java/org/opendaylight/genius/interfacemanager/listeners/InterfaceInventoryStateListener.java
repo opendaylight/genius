@@ -27,6 +27,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
@@ -136,15 +137,20 @@ public class InterfaceInventoryStateListener
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
-        // VM Migration: Delete existing interface entry for older DPN
         if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
             NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
+                if (!fcNodeConnectorNew.getReason().equals(PortReason.Add)) {
+                    LOG.error("Dropping NodeConnector Event for {}, VM migration should be triggered "
+                            + "only for OFPT_PORT_STATUS/OFPPR_ADD", fcNodeConnectorNew.getName());
+                    return;
+                }
+                // VM Migration: Delete existing interface entry for older DPN
                 LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName,
                     nodeConnectorId, nodeConnectorIdOld);
                 remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
-                // Adding a delay of 10sec for VM migration, so applications
-                // can process remove and add events
+                // Adding a delay of 10sec for VM migration, so applications will have sufficient time
+                // for processing remove before add
                 try {
                     Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
                 } catch (InterruptedException e) {
