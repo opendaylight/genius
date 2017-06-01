@@ -32,7 +32,7 @@ public abstract class ActionInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "ActionInfo{actionKey = " + actionKey + "}";
+        return getClass().getSimpleName() + "{actionKey = " + actionKey + "}";
     }
 
     @Override
