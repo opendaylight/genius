@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_18e72242",
+        "filename": "resourcemanager/resourcemanager-impl/src/test/java/org/opendaylight/resourcemanager/tests/ResourceManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-01T14:21:28Z",
+      "side": 0,
+      "message": "If I remember correctly, this TestableDataTreeChangeListener() was added by Peri to solve another problem that arose:\n\nhttps://git.opendaylight.org/gerrit/#/c/56448/\n\nDo you think we can just remove it without bringing back the other error?",
+      "range": {
+        "startLine": 55,
+        "startChar": 12,
+        "endLine": 55,
+        "endChar": 54
+      },
+      "revId": "f1c3d0c82a67b6392bd1794c833fba50ada04db9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
