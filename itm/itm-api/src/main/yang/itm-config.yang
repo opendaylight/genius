@@ -161,5 +161,11 @@ module itm-config {
             }
             default 0;
        }
+       leaf gpe-extension-enabled {
+            description "Enable the GPE extension for VXLAN tunnel interfaces
+                configured through ITM.";
+            type boolean;
+            default false;
+       }
     }
 }
