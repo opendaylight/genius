@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
-import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.AllocateResourceInput;
@@ -51,14 +50,15 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class ResourceManagerTest extends AbstractConcurrentDataBrokerTest {
     public final @Rule LogRule logRule = new LogRule();
 
-    public @Rule MethodRule guice = new GuiceRule(new ResourceManagerTestModule(),
-            new TestableDataTreeChangeListenerModule());
+    public final @Rule MethodRule guice = new GuiceRule(
+            new ResourceManagerTestModule());
 
     @Inject DataBroker dataBroker;
     @Inject ResourceManagerService resourceManager;
 
     private static final Long NUMBER_OF_RESOURCES = 5L;
 
+    @SuppressWarnings("serial")
     private static final Map<String, Class<? extends ResourceTypeBase>>
         RESOURCE_TYPES = new HashMap<String, Class<? extends ResourceTypeBase>>() {
                 {
