@@ -24,10 +24,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
        build failure. Please do not modify this unless you have a good reason. -->
   <name>ODL :: genius :: ${project.artifactId}</name>
 
-  <prerequisites>
-    <maven>3.1.1</maven>
-  </prerequisites>
-
   <properties>
     <openflowplugin.version>0.4.1-SNAPSHOT</openflowplugin.version>
     <ovsdb.version>1.4.1-SNAPSHOT</ovsdb.version>
