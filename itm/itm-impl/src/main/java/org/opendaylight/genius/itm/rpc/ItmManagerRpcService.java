@@ -824,7 +824,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
 
         List<IpAddress> nexthopIpList = new ArrayList<>();
-        tunnelEndPointList.forEach(tunnelEndPoint-> {
+        tunnelEndPointList.forEach(tunnelEndPoint -> {
             nexthopIpList.add(tunnelEndPoint.getIpAddress());
         });
 
