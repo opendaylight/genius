@@ -301,7 +301,7 @@ public class IdUtils {
 
     public boolean getPoolUpdatedMap(String localPoolName) {
         AtomicInteger value = poolUpdatedMap.get(localPoolName);
-        return value != null && value.get() > 0 ? true : false;
+        return value != null && value.get() > 0;
     }
 
     public void removeFromPoolUpdatedMap(String localPoolName) {
