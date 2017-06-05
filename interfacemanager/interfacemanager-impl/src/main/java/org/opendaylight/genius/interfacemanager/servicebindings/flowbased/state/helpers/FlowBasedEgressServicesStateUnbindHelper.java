@@ -9,18 +9,15 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +37,7 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
     @Override
     protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
                                              Interface ifaceState) {
-        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        /*futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             List<String> ofportIds = ifaceState.getLowerLayerIf();
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -52,7 +49,7 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
                 FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(),
                         tx, boundService.getServicePriority());
             }
-        }));
+        }));*/
         // remove the default egress service bound on the interface, once all
         // flows are removed
         IfmUtil.unbindService(getTxRunner(), coordinator, ifaceState.getName(),
