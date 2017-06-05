@@ -10,28 +10,19 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedIngressServicesStateUnbindHelper;
 
 @Singleton
 public class FlowBasedIngressServicesStateRendererFactory extends FlowBasedServicesStateRendererFactory {
     private final FlowBasedIngressServicesStateBindHelper flowBasedServicesStateAddable;
-    private final FlowBasedIngressServicesStateUnbindHelper flowBasedServicesStateRemovable;
 
     @Inject
     public FlowBasedIngressServicesStateRendererFactory(
-            FlowBasedIngressServicesStateBindHelper flowBasedServicesStateAddable,
-            FlowBasedIngressServicesStateUnbindHelper flowBasedServicesStateRemovable) {
+            FlowBasedIngressServicesStateBindHelper flowBasedServicesStateAddable) {
         this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
-        this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
     }
 
     @Override
     public FlowBasedServicesStateAddable getFlowBasedServicesStateAddRenderer() {
         return flowBasedServicesStateAddable;
-    }
-
-    @Override
-    public FlowBasedServicesStateRemovable getFlowBasedServicesStateRemoveRenderer() {
-        return flowBasedServicesStateRemovable;
     }
 }

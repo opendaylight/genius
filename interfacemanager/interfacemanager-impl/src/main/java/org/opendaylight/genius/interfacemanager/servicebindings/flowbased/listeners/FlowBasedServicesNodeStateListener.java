@@ -18,7 +18,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -59,11 +58,7 @@ public class FlowBasedServicesNodeStateListener
 
     @Override
     protected void remove(InstanceIdentifier<Node> identifier, Node del) {
-        BigInteger dpId = getDpnID(del);
-        if (dpId == null) {
-            return;
-        }
-        unbindServicesOnTunnelType(dpId);
+        // Do nothing
     }
 
     @Override
@@ -93,19 +88,6 @@ public class FlowBasedServicesNodeStateListener
         }
     }
 
-    private void unbindServicesOnTunnelType(BigInteger dpId) {
-        LOG.debug("Received node add event for {}", dpId);
-        for (Class<?extends ServiceModeBase> serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
-            for (String interfaceName : FlowBasedServicesUtils.INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS) {
-                FlowBasedServicesStateRemovable flowBasedServicesStateRemovable =
-                    flowBasedServicesStateRendererFactoryResolver.getFlowBasedServicesStateRendererFactory(serviceMode)
-                        .getFlowBasedServicesStateRemoveRenderer();
-                coordinator.enqueueJob(interfaceName,
-                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId, interfaceName));
-            }
-        }
-    }
-
     private static class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
         private final String iface;
         BigInteger dpnId;
@@ -122,26 +104,6 @@ public class FlowBasedServicesNodeStateListener
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             flowBasedServicesStateAddable.bindServicesOnInterfaceType(futures, dpnId, iface);
-            return futures;
-        }
-    }
-
-    private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
-        private final String iface;
-        BigInteger dpnId;
-        FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
-
-        RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
-                                           BigInteger dpnId, String iface) {
-            this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
-            this.dpnId = dpnId;
-            this.iface = iface;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateRemovable.unbindServicesOnInterfaceType(futures, dpnId, iface);
             return futures;
         }
     }
