@@ -16,17 +16,21 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -70,12 +74,10 @@ public class FlowBasedServicesInterfaceStateListener
         }
 
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
-                .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
-                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRendererFactoryResolver
-                            .getFlowBasedServicesStateRendererFactory(serviceMode)
-                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld, serviceMode),
-                        IfmConstants.JOB_MAX_RETRIES));
+        // Unbind Default Egress Dispatcher Service when interface-state is removed.
+        coordinator.enqueueJob(interfaceStateOld.getName(),
+                new RendererStateInterfaceUnbindWorker(coordinator, dataBroker, interfaceStateOld),
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
@@ -142,20 +144,39 @@ public class FlowBasedServicesInterfaceStateListener
 
     private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
-        FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
-        Class<? extends ServiceModeBase> serviceMode;
+        JobCoordinator coordinator;
+        ManagedNewTransactionRunner txRunner;
+        DataBroker dataBroker;
 
-        RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
-                Interface iface, Class<? extends ServiceModeBase> serviceMode) {
-            this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
+        RendererStateInterfaceUnbindWorker(JobCoordinator coordinator, DataBroker dataBroker, Interface iface) {
             this.iface = iface;
-            this.serviceMode = serviceMode;
+            this.coordinator = coordinator;
+            this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+            this.dataBroker = dataBroker;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
+            LOG.debug("unbinding services on interface {}", iface.getName());
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateRemovable.unbindServices(futures, iface, serviceMode);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
+                    ServiceModeEgress.class, this.dataBroker);
+            if (servicesInfo == null) {
+                LOG.trace("service info is null for interface {}", iface.getName());
+                return futures;
+            }
+
+            List<BoundServices> allServices = servicesInfo.getBoundServices();
+            if (allServices == null || allServices.isEmpty()) {
+                LOG.trace("bound services is empty for interface {}", iface.getName());
+                return futures;
+            }
+
+            if (L2vlan.class.equals(iface.getType())) {
+                // remove the default egress service bound on the interface
+                IfmUtil.unbindService(txRunner, coordinator, iface.getName(),
+                        FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
+            }
             return futures;
         }
     }
