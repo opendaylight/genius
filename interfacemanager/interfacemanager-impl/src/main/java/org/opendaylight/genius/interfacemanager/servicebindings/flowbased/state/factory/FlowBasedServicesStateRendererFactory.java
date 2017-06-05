@@ -11,5 +11,4 @@ public abstract class FlowBasedServicesStateRendererFactory {
 
     public abstract FlowBasedServicesStateAddable getFlowBasedServicesStateAddRenderer();
 
-    public abstract FlowBasedServicesStateRemovable getFlowBasedServicesStateRemoveRenderer();
 }
