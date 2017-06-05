@@ -90,12 +90,13 @@ public class FlowBasedServicesInterfaceStateListener
 
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
+        /*FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
                 .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
                         new RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRendererFactory
                                 .getFlowBasedServicesStateRendererFactory(serviceMode)
                                 .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld),
                         IfmConstants.JOB_MAX_RETRIES));
+        */
     }
 
     @Override
