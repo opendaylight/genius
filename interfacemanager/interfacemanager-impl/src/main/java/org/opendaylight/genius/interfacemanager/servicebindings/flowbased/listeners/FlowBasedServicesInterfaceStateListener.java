@@ -15,7 +15,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -49,7 +48,7 @@ public class FlowBasedServicesInterfaceStateListener
             DataBroker dataBroker) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        //this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         this.dataBroker = interfacemgrProvider.getDataBroker();
     }
 
