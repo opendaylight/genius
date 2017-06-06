@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_761aa46f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 389,
+      "author": {
+        "id": 5350
+      },
+      "writtenOn": "2017-06-06T14:47:08Z",
+      "side": 1,
+      "message": "Not sure if it should return a succesful empty list result, or if it should return a failed operation",
+      "revId": "6e6dcd056f5267406bd74a7da4da432c47bd0188",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
