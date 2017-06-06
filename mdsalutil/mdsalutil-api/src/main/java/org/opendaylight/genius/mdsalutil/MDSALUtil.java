@@ -177,14 +177,13 @@ public class MDSALUtil {
     public static GroupEntity buildGroupEntity(BigInteger dpnId, long groupId, String groupName, GroupTypes groupType,
             List<BucketInfo> listBucketInfo) {
 
-        GroupEntity groupEntity = new GroupEntity(dpnId);
-
+        GroupEntityBuilder groupEntity = new GroupEntityBuilder();
+        groupEntity.setDpnId(dpnId);
         groupEntity.setGroupId(groupId);
         groupEntity.setGroupName(groupName);
         groupEntity.setGroupType(groupType);
         groupEntity.setBucketInfoList(listBucketInfo);
-
-        return groupEntity;
+        return groupEntity.build();
     }
 
     public static Group buildGroup(long groupId, String groupName, GroupTypes groupType, Buckets buckets) {
