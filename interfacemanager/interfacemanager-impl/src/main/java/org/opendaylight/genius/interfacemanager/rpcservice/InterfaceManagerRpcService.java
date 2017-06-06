@@ -362,13 +362,17 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
             Optional<IfIndexInterface> ifIndexesInterface = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id,
                     dataBroker);
-            if (ifIndexesInterface.isPresent()) {
-                String interfaceName = ifIndexesInterface.get().getInterfaceName();
-                GetInterfaceFromIfIndexOutputBuilder output = new GetInterfaceFromIfIndexOutputBuilder()
-                        .setInterfaceName(interfaceName);
-                rpcResultBuilder = RpcResultBuilder.success();
-                rpcResultBuilder.withResult(output.build());
+
+            if (!ifIndexesInterface.isPresent()) {
+                String errMsg = "Could not find " + id.toString() + " in OperationalDS for idIndex=" + ifIndex;
+                return Futures.immediateFuture(RpcResultBuilder.failed()
+                                                        .withError(RpcError.ErrorType.APPLICATION, errMsg).build());
             }
+            String interfaceName = ifIndexesInterface.get().getInterfaceName();
+            GetInterfaceFromIfIndexOutput output =
+                new GetInterfaceFromIfIndexOutputBuilder().setInterfaceName(interfaceName).build();
+            rpcResultBuilder = RpcResultBuilder.success();
+            rpcResultBuilder.withResult(output);
         } catch (Exception e) {
             LOG.error("Retrieval of interfaceName for the key {} failed due to {}", ifIndex, e);
             rpcResultBuilder = RpcResultBuilder.failed();
@@ -385,21 +389,34 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
                     .child(DpnToInterface.class, new DpnToInterfaceKey(dpnid)).build();
             Optional<DpnToInterface> entry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
-            if (entry.isPresent()) {
-                List<InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
-                if (interfaceNameEntries != null && !interfaceNameEntries.isEmpty()) {
-                    List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName)
-                            .collect(Collectors.toList());
-                    GetDpnInterfaceListOutputBuilder output = new GetDpnInterfaceListOutputBuilder()
-                            .setInterfacesList(interfaceList);
-                    rpcResultBuilder = RpcResultBuilder.success();
-                    rpcResultBuilder.withResult(output.build());
-                }
+            if (!entry.isPresent()) {
+                LOG.warn("Could not find Operational DpnToInterface info for DPN {}. Returning empty list", dpnid);
+                return buildEmptyInterfaceListResult();
             }
+
+            List<InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
+            if (interfaceNameEntries == null || interfaceNameEntries.isEmpty()) {
+                LOG.debug("No Interface list found in Operational for DPN {}", dpnid);
+                return buildEmptyInterfaceListResult();
+            }
+            List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName)
+                    .collect(Collectors.toList());
+            GetDpnInterfaceListOutput output =
+                new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList).build();
+            rpcResultBuilder = RpcResultBuilder.success();
+            rpcResultBuilder.withResult(output);
         } catch (Exception e) {
             LOG.error("Retrieval of interfaceNameList for the dpnId {} failed due to {}", dpnid, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
+        return Futures.immediateFuture(rpcResultBuilder.build());
+    }
+
+    protected Future<RpcResult<GetDpnInterfaceListOutput>> buildEmptyInterfaceListResult() {
+        GetDpnInterfaceListOutput emptyListResult =
+            new GetDpnInterfaceListOutputBuilder().setInterfacesList(Collections.emptyList()).build();
+        RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = RpcResultBuilder.success();
+        rpcResultBuilder.withResult(emptyListResult);
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
