@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3afa9182_568968c9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-06-06T17:14:39Z",
+      "side": 1,
+      "message": "use the topic neutron-odl-dhcp-proxy.\n\nUpdate this same topic name in Openstack Spec reviews, Openstack Patches reviews and in ODL NetVirt reviews for this feature.",
+      "revId": "46d474f6b7608bf30761eeff59e786c07533cb53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3afa9182_36865cba",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-06-06T17:14:39Z",
+      "side": 1,
+      "message": "can you quickly post sample flows that will go inside Table 43.\n\nAlso can you please quickly indicate which flows will land the packet into Table 43 (ie., from which Table).",
+      "revId": "46d474f6b7608bf30761eeff59e786c07533cb53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
