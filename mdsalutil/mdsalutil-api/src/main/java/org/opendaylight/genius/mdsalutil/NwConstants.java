@@ -32,6 +32,7 @@ public final class NwConstants {
     public static final int IP_PROT_TCP = 6;
     public static final int IP_PROT_UDP = 17;
     public static final int IP_PROT_GRE = 47;
+    public static final int IP_PROT_ANY = 0;
 
     //ARP TYPE
     public static final int ARP_REQUEST = 1;
