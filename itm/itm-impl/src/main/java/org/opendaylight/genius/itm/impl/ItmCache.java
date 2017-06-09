@@ -12,15 +12,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ItmCache {
 
     private final ConcurrentHashMap<String, Interface> interfaces;
     private final ConcurrentHashMap<String, ExternalTunnel> externalTunnels;
     private final ConcurrentHashMap<String, InternalTunnel> internalTunnels;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ItmCache.class);
 
     public ItmCache() {
         this.interfaces = new ConcurrentHashMap<>();
@@ -70,6 +75,7 @@ public class ItmCache {
     }
 
     public InternalTunnel removeInternalTunnel(String name) {
+        LOG.debug(" Removing Internal Tunnel - {} from Cache ", name) ;
         return this.internalTunnels.remove(name);
     }
 
