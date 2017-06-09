@@ -320,6 +320,12 @@ public class ItmUtils {
         return id;
     }
 
+    public static InstanceIdentifier<IfTunnel> buildTunnelId(String ifName) {
+        InstanceIdentifier<IfTunnel> tunnelInstIdentifier = InstanceIdentifier.builder(Interfaces.class)
+                .child(Interface.class, new InterfaceKey(ifName)).augmentation(IfTunnel.class).build();
+        return tunnelInstIdentifier;
+    }
+
     public static Interface buildLogicalTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled) {
         InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
