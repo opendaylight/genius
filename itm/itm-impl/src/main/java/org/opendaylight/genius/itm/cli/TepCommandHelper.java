@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -493,22 +494,52 @@ public class TepCommandHelper {
 
     @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     public void showCache(String cacheName) {
-
-        if (!DataStoreCache.isCacheValid(cacheName)) {
+        boolean dataStoreCache = DataStoreCache.isCacheValid(cacheName);
+        boolean inMemoryCache = isInMemoryCacheNameValid(cacheName);
+        if (!dataStoreCache && !inMemoryCache) {
             System.out.println(" " + cacheName + " is not a valid Cache Name ");
             return ;
         }
-        List<Object> keys = null;
-        keys = DataStoreCache.getKeys(cacheName);
-        if (keys != null && !keys.isEmpty()) {
-            System.out.println("Dumping the data in cache for " + cacheName);
-            for (Object key : keys) {
-                System.out.println(" KEY:  " + key + " Value: " + DataStoreCache.get(cacheName, key));
-                System.out.println();
+        if (dataStoreCache) {
+            List<Object> keys = null;
+            keys = DataStoreCache.getKeys(cacheName);
+            if (keys != null && !keys.isEmpty()) {
+                System.out.println("Dumping the data in cache for " + cacheName);
+                for (Object key : keys) {
+                    System.out.println(" KEY:  " + key + " Value: " + DataStoreCache.get(cacheName, key));
+                }
+            } else {
+                System.out.println("No data in cache for " + cacheName);
             }
-        } else {
-            System.out.println("No data in cache for " + cacheName);
+        } else if (inMemoryCache) {
+            System.out.println("Dumping the data in cache for " + cacheName);
+            Collection<String> cacheContent = null;
+            switch (cacheName) {
+                case ITMConstants.INTERNAL_TUNNEL_CACHE_NAME:
+                    cacheContent = ItmUtils.itmCache.getAllInternalInterfaces();
+                    break;
+                case ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME:
+                    cacheContent = ItmUtils.itmCache.getAllExternalInterfaces();
+                    break;
+                default:
+                    cacheContent = null;
+            }
+            System.out.println("Number of data in cache " + cacheContent.size());
+            if (cacheContent != null && !cacheContent.isEmpty()) {
+                for (String key : cacheContent) {
+                    System.out.println(key + " ");
+                }
+            } else {
+                System.out.println("No data in cache for " + cacheName);
+            }
         }
+    }
+
+    public boolean isInMemoryCacheNameValid(String name) {
+        boolean valid = false;
+        valid = name.equals(ITMConstants.INTERNAL_TUNNEL_CACHE_NAME)
+                || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME);
+        return valid;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")

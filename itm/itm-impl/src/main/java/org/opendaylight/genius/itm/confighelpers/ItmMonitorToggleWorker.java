@@ -15,9 +15,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -73,14 +70,12 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
 
     private void toggle(String tunnelInterfaceName, WriteTransaction transaction) {
         if (tunnelInterfaceName != null) {
-            InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(tunnelInterfaceName);
+            InstanceIdentifier<IfTunnel> trunkIdentifier = ItmUtils.buildTunnelId(tunnelInterfaceName);
             LOG.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {},  "
                     + "monitorEnable = {} ",tunnelInterfaceName, monitorProtocol, enabled);
             IfTunnel tunnel = new IfTunnelBuilder().setMonitorEnabled(enabled)
                     .setMonitorProtocol(monitorProtocol).build();
-            InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelInterfaceName))
-                    .addAugmentation(IfTunnel.class, tunnel);
-            transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, builder.build());
+            transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, tunnel);
         }
     }
 }
