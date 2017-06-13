@@ -39,6 +39,13 @@
       <!-- Karaf 4 -->
       <dependency>
         <groupId>${project.groupId}</groupId>
+        <artifactId>features4-genius</artifactId>
+        <version>${project.version}</version>
+        <classifier>features</classifier>
+        <type>xml</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
         <artifactId>odl-genius-api</artifactId>
         <version>${project.version}</version>
         <classifier>features</classifier>
