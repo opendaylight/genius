@@ -53,6 +53,23 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_6a877210",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-06-13T08:59:15Z",
+      "side": 1,
+      "message": "if this is a clustered listener based approach at the backend, what kind of response we can give to the caller? whether the operation on the final application was done properly will be out of the control of SRM right?",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_975807fc",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 1
