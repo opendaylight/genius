@@ -16,6 +16,24 @@
       "revId": "d4f079bf0e08842d4f580d6d038afe339258904d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_a3f34509",
+        "filename": "artifacts/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-06-13T17:31:51Z",
+      "side": 1,
+      "message": "sure will put it back...thought of just running csit with this patch, but since anyways builds are broken, will amend the patch",
+      "parentUuid": "1af78d9a_e340ad37",
+      "revId": "d4f079bf0e08842d4f580d6d038afe339258904d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
