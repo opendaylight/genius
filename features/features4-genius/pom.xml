@@ -38,30 +38,35 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>odl-genius-api</artifactId>
+      <version>${project.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>odl-genius</artifactId>
+      <version>${project.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>odl-genius-rest</artifactId>
+      <version>${project.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>odl-genius-ui</artifactId>
+      <version>${project.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>odl-genius-fcaps-framework</artifactId>
+      <version>${project.version}</version>
       <classifier>features</classifier>
       <type>xml</type>
     </dependency>
