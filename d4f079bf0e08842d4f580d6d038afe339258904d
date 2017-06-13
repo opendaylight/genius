@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_e340ad37",
+        "filename": "artifacts/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-13T15:11:50Z",
+      "side": 1,
+      "message": "Strictly speaking this can break projects depending on this artifacts who rely on the version of genius-features being fixed here, so I\u0027d rather that we either (a) completely remove Karaf 3 genius-features completely already in this patch here (and then keep this POM as it is now); *or* (b) that we just add features4-genius after genius-features here additionally (and remove it in a later change when we\u0027re comfortable to completely remove Karaf 3 genius-features)",
+      "revId": "d4f079bf0e08842d4f580d6d038afe339258904d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
