@@ -317,7 +317,7 @@ public class DataStoreJobCoordinator {
                         if (jobEntriesMap.isEmpty()) {
                             continue;
                         }
-                        LOG.trace("JobQueueHandler handling queue {} with kesy size {}. Keys: {} ", i,
+                        LOG.trace("JobQueueHandler handling queue {} with key size {}. Keys: {} ", i,
                                 jobEntriesMap.size(), jobEntriesMap.keySet());
 
                         synchronized (jobEntriesMap) {
