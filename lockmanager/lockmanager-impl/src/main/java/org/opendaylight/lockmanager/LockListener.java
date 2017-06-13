@@ -49,7 +49,7 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
     @Override
     protected void remove(InstanceIdentifier<Lock> key, Lock remove) {
         String lockName = remove.getLockName();
-        LOG.info("Received remove for lock {} : {}", lockName, remove);
+        LOG.debug("Received remove for lock {} : {}", lockName, remove);
         java.util.Optional.ofNullable(lockManager.getSynchronizerForLock(lockName))
             .ifPresent(future -> future.complete(null));
     }
@@ -61,7 +61,7 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
 
     @Override
     protected void add(InstanceIdentifier<Lock> key, Lock add) {
-        LOG.info("Received add for lock {} : {}", add.getLockName(), add);
+        LOG.debug("Received add for lock {} : {}", add.getLockName(), add);
     }
 
     @Override
