@@ -50,7 +50,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>genius-features</artifactId>
+      <artifactId>features4-genius</artifactId>
       <classifier>features</classifier>
       <type>xml</type>
       <scope>runtime</scope>
@@ -64,7 +64,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <skip>true</skip>
+          <skip>false</skip>
         </configuration>
       </plugin>
     </plugins>
