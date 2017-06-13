@@ -37,6 +37,8 @@ import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExist
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.recovery.impl.ServiceRecoveryManager;
+import org.opendaylight.genius.interfacemanager.recovery.utils.ServiceRecoveryConstants;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
@@ -810,4 +812,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
     }
 
+    @Override
+    public boolean recoverService(String entityType, String entityName, String entityId) {
+        return ServiceRecoveryManager.recoverService(ServiceRecoveryConstants.SERVICE_PREFIX, null, null);
+    }
 }

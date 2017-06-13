@@ -107,5 +107,5 @@ public interface IInterfaceManager {
 
     long getLogicalTunnelSelectGroupId(int lportTag);
 
-
+    boolean recoverService(String entityType, String entityName, String entityId);
 }
