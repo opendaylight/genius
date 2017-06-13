@@ -27,16 +27,14 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Karaf 3 -->
+      <!-- Karaf 4 -->
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>genius-features</artifactId>
+        <artifactId>features4-genius</artifactId>
         <version>${project.version}</version>
         <classifier>features</classifier>
         <type>xml</type>
       </dependency>
-
-      <!-- Karaf 4 -->
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>odl-genius-api</artifactId>
