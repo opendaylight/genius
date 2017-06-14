@@ -48,7 +48,7 @@ public final class ItmInternalTunnelAddWorker {
     private static Integer monitorInterval;
     private static ItmConfig itmCfg;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
-
+    private static List<DPNTEPsInfo> meshedDpnList ;
     private static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
         @Override
         public void onSuccess(Void result) {
@@ -68,8 +68,9 @@ public final class ItmInternalTunnelAddWorker {
                                                                  IdManagerService idManagerService,
                                                                  IMdsalApiManager mdsalManager,
                                                                  List<DPNTEPsInfo> cfgdDpnList,
-                                                                 List<DPNTEPsInfo> meshedDpnList,
                                                                  ItmConfig itmConfig) {
+        LOG.debug("Fetching the configured DPN List ONLY at the time of meshing");
+        meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
         monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
@@ -104,6 +105,10 @@ public final class ItmInternalTunnelAddWorker {
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
         ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        // Commenting out the batching to see if the batching delay affects full mesh creation when teps
+        // are added in quick succession
+        //ITMBatchingUtils.update(dep,tnlBuilder , ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        transaction.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder, true);
     }
 
     private static void buildTunnelFrom(DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
