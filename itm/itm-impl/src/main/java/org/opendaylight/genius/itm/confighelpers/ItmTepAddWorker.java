@@ -49,17 +49,16 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     @Override
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
-                cfgdDpnList, meshedDpnList);
-        futures.addAll(ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalManager,
-                cfgdDpnList, meshedDpnList, itmConfig)) ;
+        //this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
+        LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ", cfgdDpnList);
+        futures.addAll(ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker,idManagerService,mdsalManager,
+                cfgdDpnList,itmConfig));
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
         if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
                 futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, idManagerService,
-                        cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType(), itmConfig));
+                        dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType(), itmConfig));
             }
         }
         //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
@@ -72,7 +71,8 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     @Override
     public String toString() {
         return "ItmTepAddWorker  { "
-                + "Configured Dpn List : " + cfgdDpnList
-                + "  Meshed Dpn List : " + meshedDpnList + " }" ;
+                + "Configured Dpn List : "
+                + cfgdDpnList
+                + " }" ;
     }
 }
