@@ -52,6 +52,7 @@ public class ItmExternalTunnelAddWorker {
     private static Boolean monitorEnabled;
     private static Integer monitorInterval;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+    private static List<DPNTEPsInfo> cfgDpnList;
 
     private static final FutureCallback<Void> DEFAULT_CALLBACK =
         new FutureCallback<Void>() {
@@ -69,12 +70,12 @@ public class ItmExternalTunnelAddWorker {
 
     public static List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(DataBroker dataBroker,
                                                                               IdManagerService idManagerService,
-                                                                              List<DPNTEPsInfo> cfgDpnList,
                                                                               IpAddress extIp,
                                                                               Class<? extends TunnelTypeBase> tunType,
                                                                               ItmConfig itmConfig) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        cfgDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         if (null != cfgDpnList) {
             for (DPNTEPsInfo teps : cfgDpnList) {
                 // CHECK -- Assumption -- Only one End Point / Dpn for GRE/Vxlan Tunnels
@@ -129,7 +130,7 @@ public class ItmExternalTunnelAddWorker {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         List<DPNTEPsInfo> cfgDpnList = dpnId == null ? ItmUtils.getTunnelMeshInfo(dataBroker)
                         : ItmUtils.getDpnTepListFromDpnId(dataBroker, dpnId);
-        futures = buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgDpnList, extIp, tunType, itmConfig);
+        futures = buildTunnelsToExternalEndPoint(dataBroker, idManagerService, extIp, tunType, itmConfig);
         return futures;
     }
 
