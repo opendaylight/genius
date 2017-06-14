@@ -300,7 +300,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
 
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,idManagerService,cfgdDpnListVxlan,
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,idManagerService,
                 ipAddress2,tunnelType1, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
