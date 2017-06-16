@@ -166,10 +166,24 @@ public class FlowBasedServicesUtils {
         return matches;
     }
 
+    public static List<MatchInfoBase> getMatchInfoForDispatcherTable(short serviceIndex, short interfaceType) {
+        List<MatchInfoBase> matches = new ArrayList<>();
+        matches.add(new NxMatchRegister(NxmNxReg6.class,
+                MetaDataUtil.getReg6ValueForLPortDispatcher(serviceIndex, interfaceType)));
+        return matches;
+    }
+
     public static List<MatchInfoBase> getMatchInfoForEgressDispatcherTable(int interfaceTag, short serviceIndex) {
         List<MatchInfoBase> matches = new ArrayList<>();
         matches.add(new NxMatchRegister(NxmNxReg6.class,
                 MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, serviceIndex)));
+        return matches;
+    }
+
+    public static List<MatchInfoBase> getMatchInfoForEgressDispatcherTable(short serviceIndex, short interfaceType) {
+        List<MatchInfoBase> matches = new ArrayList<>();
+        matches.add(new NxMatchRegister(NxmNxReg6.class,
+                MetaDataUtil.getReg6ValueForLPortDispatcher(serviceIndex, interfaceType)));
         return matches;
     }
 
@@ -291,6 +305,53 @@ public class FlowBasedServicesUtils {
         installFlow(dpId, ingressFlow, writeTransaction);
     }
 
+    /*public static void installTypeBasedLPortDispatcherFlow(BigInteger dpId, BoundServices boundService,
+                                                           String interfaceName, WriteTransaction writeTransaction,
+                                                           int interfaceTag, short currentServiceIndex,
+                                                           short nextServiceIndex) {
+        String serviceRef = boundService.getServiceName();
+        List<MatchInfoBase> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(currentServiceIndex,
+                getBindingType(interfaceName));
+
+        // Get the metadata and mask from the service's write metadata
+        // instruction
+        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
+        List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
+        int instructionSize = serviceInstructions.size();
+        BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
+        BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex,
+                metadataValues[0]);
+        BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
+
+        // build the final instruction for LPort Dispatcher table flow entry
+        List<Instruction> instructions = new ArrayList<>();
+        instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize));
+        if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
+            for (Instruction info : serviceInstructions) {
+                // Skip meta data write as that is handled already
+                if (info.getInstruction() instanceof WriteMetadataCase) {
+                    continue;
+                } else if (info.getInstruction() instanceof WriteActionsCase) {
+                    info = MDSALUtil.buildWriteActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                            ((WriteActionsCase) info.getInstruction()).getWriteActions().getAction()));
+                } else if (info.getInstruction() instanceof ApplyActionsCase) {
+                    info = MDSALUtil.buildApplyActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                            ((ApplyActionsCase) info.getInstruction()).getApplyActions().getAction()));
+                }
+                instructions.add(info);
+            }
+        }
+
+        // build the flow and install it
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName, currentServiceIndex);
+        Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
+                DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
+                instructions);
+        LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
+                interfaceName, flowRef);
+        installFlow(dpId, ingressFlow, writeTransaction);
+    }*/
+
     public static void installEgressDispatcherFlows(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex,
             Interface iface) {
@@ -392,6 +453,78 @@ public class FlowBasedServicesUtils {
 
         installFlow(dpId, egressSplitHorizonFlow, writeTransaction);
     }
+
+    public static void installTypeBasedEgressDispatcherFlows(BigInteger dpId, BoundServices boundService,
+                                                             WriteTransaction writeTransaction,
+                                                             String interfaceype, short currentServiceIndex,
+                                                             short nextServiceIndex) {
+        LOG.debug("Installing Egress Dispatcher Flows on dpn : {}", dpId);
+        installTypeBasedEgressDispatcherFlow(dpId, boundService, writeTransaction, interfaceype, currentServiceIndex,
+                nextServiceIndex);
+
+        // Install Split Horizon drop flow only for the default egress service -
+        // this flow drops traffic targeted to external interfaces if they
+        // arrived
+        // from an external interface (marked with the SH bit)
+        /*if (boundService.getServicePriority() == ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
+            installEgressDispatcherSplitHorizonFlow(dpId, boundService, interfaceName, writeTransaction, interfaceTag,
+                    currentServiceIndex, iface);
+        }*/
+    }
+
+    private static void installTypeBasedEgressDispatcherFlow(BigInteger dpId, BoundServices boundService,
+                                                             WriteTransaction writeTransaction,
+                                                             String interfaceType, short currentServiceIndex,
+                                                             short nextServiceIndex) {
+        String serviceRef = boundService.getServiceName();
+        List<? extends MatchInfoBase> matches = FlowBasedServicesUtils
+                .getMatchInfoForEgressDispatcherTable(currentServiceIndex, getBindingType(interfaceType));
+
+        // Get the metadata and mask from the service's write metadata
+        // instruction
+        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
+        List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
+        int instructionSize = serviceInstructions.size();
+
+        // build the final instruction for LPort Dispatcher table flow entry
+        List<Instruction> instructions = new ArrayList<>();
+        if (boundService.getServicePriority() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
+           /* BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
+            BigInteger reg6mask = MetaDataUtil.getWriteMetaDataMaskForEgressDispatcherTable();
+            *//*instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadataValues[0], metadataMask,
+                    ++instructionSize));*/
+            instructions.add(MDSALUtil.buildAndGetSetReg6ActionInstruction(0, ++instructionSize, 0, 31,
+                    MetaDataUtil.getReg6ValueForLPortDispatcher(nextServiceIndex, getBindingType(interfaceType))));
+        }
+        if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
+            for (Instruction info : serviceInstructions) {
+                /*// Skip meta data write as that is handled already
+                if (info.getInstruction() instanceof WriteMetadataCase) {
+                    continue;*/
+                if (info.getInstruction() instanceof WriteActionsCase) {
+                    info = MDSALUtil.buildWriteActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                            ((WriteActionsCase) info.getInstruction()).getWriteActions().getAction()));
+                } else if (info.getInstruction() instanceof ApplyActionsCase) {
+                    info = MDSALUtil.buildApplyActionsInstruction(ActionConverterUtil.convertServiceActionToFlowAction(
+                            ((ApplyActionsCase) info.getInstruction()).getApplyActions().getAction()));
+                }
+                instructions.add(info);
+            }
+        }
+
+        // build the flow and install it
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceType,
+                boundService.getServicePriority());
+        Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
+                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
+                instructions);
+        LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", flowRef);
+        installFlow(dpId, egressFlow, writeTransaction);
+    }
+
+
 
     public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
             BigInteger cookie, List<Instruction> instructions) {
@@ -503,6 +636,24 @@ public class FlowBasedServicesUtils {
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
 
+    /*public static void removeLPortDispatcherFlow(BigInteger dpId, String iface, BoundServices boundServicesOld,
+                                                 WriteTransaction writeTransaction, short currentServiceIndex) {
+        LOG.debug("Removing LPort Dispatcher Flows {}, {}", dpId, iface);
+
+        boundServicesOld.getAugmentation(StypeOpenflow.class);
+        // build the flow and install it
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
+                currentServiceIndex);
+        FlowKey flowKey = new FlowKey(new FlowId(flowRef));
+        Node nodeDpn = buildInventoryDpnNode(dpId);
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
+                .build();
+
+        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+    }*/
+
     public static void removeEgressDispatcherFlows(BigInteger dpId, String iface, BoundServices boundServicesOld,
             WriteTransaction writeTransaction, short currentServiceIndex) {
         LOG.debug("Removing Egress Dispatcher Flows {}, {}", dpId, iface);
@@ -522,6 +673,28 @@ public class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
+        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+    }
+
+    public static void removeTypeBasedEgressDispatcherFlows(BigInteger dpId, String iface,
+                                                            WriteTransaction writeTransaction,
+                                                            short servicePriority) {
+        LOG.debug("Removing Egress Dispatcher Flows {}, for type {}", dpId, iface);
+        removeTypeBasedEgressDispatcherFlow(dpId, iface, writeTransaction, servicePriority);
+        //removeEgressSplitHorizonDispatcherFlow(dpId, iface, writeTransaction, currentServiceIndex);
+    }
+
+    private static void removeTypeBasedEgressDispatcherFlow(BigInteger dpId, String iface,
+                                                            WriteTransaction writeTransaction,
+                                                            short servicePriority) {
+        // build the flow and install it
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface, servicePriority);
+        FlowKey flowKey = new FlowKey(new FlowId(flowRef));
+        Node nodeDpn = buildInventoryDpnNode(dpId);
+        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
+                .build();
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
 
@@ -549,6 +722,11 @@ public class FlowBasedServicesUtils {
                                      short currentServiceIndex) {
         return String.valueOf(dpnId) + tableId + NwConstants.FLOWID_SEPARATOR + iface + NwConstants.FLOWID_SEPARATOR
                 + currentServiceIndex;
+    }
+
+    private static String getFlowRef(BigInteger dpnId, short tableId, String type, short servicePriority) {
+        return String.valueOf(dpnId) + NwConstants.FLOWID_SEPARATOR + tableId + NwConstants.FLOWID_SEPARATOR
+                + type + NwConstants.FLOWID_SEPARATOR + servicePriority;
     }
 
     private static String getSplitHorizonFlowRef(BigInteger dpnId, short tableId, String iface,
@@ -706,5 +884,17 @@ public class FlowBasedServicesUtils {
         }
         IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
+    }
+
+    public static short getBindingType(String type) {
+        switch   (type) {
+            case "all_vxlan_internal": return NwConstants.ALL_VXLAN_INTERNAL;
+
+            case "all_vxlan_external": return NwConstants.ALL_VXLAN_EXTERNAL;
+
+            case "all_mpls_over_gre": return NwConstants.ALL_MPLS_OVER_GRE;
+
+            default: return -1;
+        }
     }
 }

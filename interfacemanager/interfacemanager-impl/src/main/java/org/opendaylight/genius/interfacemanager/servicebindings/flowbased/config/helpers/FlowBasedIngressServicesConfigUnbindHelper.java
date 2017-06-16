@@ -12,11 +12,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
@@ -70,41 +72,29 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
                                                       DataBroker dataBroker) {
 
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        if (boundServicesState == null) {
-            LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
+        WriteTransaction transaction = dataBroker.newReadWriteTransaction();
+        Set<BigInteger> dpnList = null;
+        boolean typeBased = false;
+        // Split based on type of interface....
+        if (FlowBasedServicesUtils.isInterfaceTypeBasedServiceBinding(interfaceName)) {
+            dpnList = InterfaceMetaUtils.getDpnIdsFromBridgeEntryCache();
+            typeBased = true;
+        } else if (L2vlan.class.equals(boundServicesState.getInterfaceType())) {
+            dpnList.add(boundServicesState.getDpid());
+        } else if (Tunnel.class.equals(boundServicesState.getInterfaceType())) {
+            return unbindServiceOnTunnel(boundServiceOld, boundServices, boundServicesState, dataBroker);
+        } else {
             return futures;
         }
 
-        // Split based on type of interface....
-        if (L2vlan.class.equals(boundServicesState.getInterfaceType())) {
-            return unbindServiceOnVlan(boundServiceOld, boundServices, boundServicesState, dataBroker);
-        } else if (Tunnel.class.equals(boundServicesState.getInterfaceType())) {
-            return unbindServiceOnTunnel(boundServiceOld, boundServices, boundServicesState, dataBroker);
-        }
-        return null;
-    }
-
-    protected List<ListenableFuture<Void>> unbindServiceOnInterfaceType(BoundServices boundServiceNew,
-                                                                        List<BoundServices> allServices,
-                                                                        DataBroker dataBroker) {
-        LOG.info("unbindServiceOnInterfaceType Ingress - WIP");
-        return null;
-    }
-
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
-            List<BoundServices> boundServices, BoundServicesState boundServicesState,
-            DataBroker dataBroker) {
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 boundServicesState.getInterfaceName());
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        BigInteger dpId = boundServicesState.getDpid();
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(),
-                boundServiceOld, tx, NwConstants.DEFAULT_SERVICE_INDEX);
-            if (tx != null) {
-                futures.add(tx.submit());
+            removeFlowsIngress(dpnList, boundServiceOld, transaction, NwConstants.DEFAULT_SERVICE_INDEX, interfaceName,
+                    typeBased);
+            if (transaction != null) {
+                futures.add(transaction.submit());
             }
             return futures;
         }
@@ -115,14 +105,14 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         if (high == null) {
             LOG.trace("Deleting ingress dispatcher table entry for service {}, match service index {}", boundServiceOld,
                     NwConstants.DEFAULT_SERVICE_INDEX);
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(),
-                boundServiceOld, tx, NwConstants.DEFAULT_SERVICE_INDEX);
+            removeFlowsIngress(dpnList, boundServiceOld, transaction, NwConstants.DEFAULT_SERVICE_INDEX, interfaceName,
+                    typeBased);
             if (low != null) {
                 // delete the lower services flow entry.
                 LOG.trace("Deleting ingress dispatcher table entry for lower service {}, match service index {}", low,
                         low.getServicePriority());
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(), low, tx,
-                        low.getServicePriority());
+                removeFlowsIngress(dpnList, low, transaction, low.getServicePriority(), interfaceName,
+                        typeBased);
                 BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
                 short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
                         : low.getServicePriority() + 1);
@@ -130,30 +120,30 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
                         "Installing new ingress dispatcher table entry for lower service {}, match service index "
                                 + "{}, update service index {}",
                         low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, low, boundServicesState.getInterfaceName(), tx,
-                        boundServicesState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                writeFlowsIngress(dpnList,  low,  transaction, boundServicesState,  NwConstants.DEFAULT_SERVICE_INDEX,
+                        lowerServiceIndex,  typeBased);
             }
         } else {
             LOG.trace("Deleting ingress dispatcher table entry for service {}, match service index {}", boundServiceOld,
                     boundServiceOld.getServicePriority());
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(),
-                boundServiceOld, tx, boundServiceOld.getServicePriority());
+            removeFlowsIngress(dpnList, boundServiceOld, transaction, boundServiceOld.getServicePriority(),
+                    interfaceName, typeBased);
             short lowerServiceIndex = (short) (low != null ? low.getServicePriority()
                     : boundServiceOld.getServicePriority() + 1);
             BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
             if (high.equals(highest)) {
                 LOG.trace("Update the existing higher service {}, match service index {}, update service index {}",
                         high, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, boundServicesState.getInterfaceName(), tx,
-                        boundServicesState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
+                writeFlowsIngress(dpnList, high, transaction, boundServicesState, NwConstants.DEFAULT_SERVICE_INDEX,
+                        lowerServiceIndex, typeBased);
             } else {
                 LOG.trace("Update the existing higher service {}, match service index {}, update service index {}",
                         high, high.getServicePriority(), lowerServiceIndex);
-                FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, high, boundServicesState.getInterfaceName(), tx,
-                        boundServicesState.getIfIndex(), high.getServicePriority(), lowerServiceIndex);
+                writeFlowsIngress(dpnList, high, transaction, boundServicesState, high.getServicePriority(),
+                        lowerServiceIndex, typeBased);
             }
         }
-        futures.add(tx.submit());
+        futures.add(transaction.submit());
         return futures;
     }
 

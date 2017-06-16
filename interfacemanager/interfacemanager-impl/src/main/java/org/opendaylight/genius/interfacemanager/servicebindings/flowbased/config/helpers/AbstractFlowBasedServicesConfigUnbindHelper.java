@@ -8,25 +8,23 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * AbstractFlowBasedServicesConfigBindHelper to enable flow based ingress/egress service binding for interfaces.
  */
-public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
+public abstract class AbstractFlowBasedServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigInstallHelper
+        implements FlowBasedServicesConfigRemovable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractFlowBasedServicesConfigUnbindHelper.class);
     private InterfacemgrProvider interfaceMgrProvider;
 
     /**
@@ -41,17 +39,10 @@ public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements Flo
     public List<ListenableFuture<Void>> unbindService(String interfaceName, BoundServices boundServiceOld,
                                                       List<BoundServices> boundServices,
                                                       BoundServicesState boundServicesState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        if (FlowBasedServicesUtils.isInterfaceTypeBasedServiceBinding(interfaceName)) {
-            unbindServiceOnInterfaceType(boundServiceOld, boundServices, dataBroker);
-        } else if (L2vlan.class.equals(boundServicesState.getInterfaceType())
-            || Tunnel.class.equals(boundServicesState.getInterfaceType())) {
-            unbindServiceOnInterface(interfaceName, boundServiceOld, boundServices, boundServicesState, dataBroker);
-        }
-        return futures;
-    }
 
+        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
+        return unbindServiceOnInterface(interfaceName, boundServiceOld, boundServices, boundServicesState, dataBroker);
+    }
 
     protected abstract List<ListenableFuture<Void>> unbindServiceOnInterface(String interfaceName,
                                                                              BoundServices boundServiceOld,
@@ -59,10 +50,37 @@ public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements Flo
                                                                              BoundServicesState boundServicesState,
                                                                              DataBroker dataBroker);
 
-    protected abstract List<ListenableFuture<Void>> unbindServiceOnInterfaceType(BoundServices boundServiceOld,
-                                                                                 List<BoundServices> allServices,
-                                                                                 DataBroker dataBroker);
 
+    protected void removeFlowsEgress(Set<BigInteger> dpnId, BoundServices boundServicesOld,
+                                     WriteTransaction transaction, short currentServiceIndex,
+                                     String ifaceName, boolean typeBased) {
+
+        if (typeBased) {
+            for (BigInteger dpId : dpnId) { //install flows per dpn
+                FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpId, ifaceName, transaction,
+                        currentServiceIndex);
+            }
+        } else {
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpnId.iterator().next(), ifaceName, boundServicesOld,
+                    transaction, currentServiceIndex);
+        }
+    }
+
+    protected void removeFlowsIngress(Set<BigInteger> dpnId, BoundServices boundServicesOld,
+                                      WriteTransaction transaction, short currentServiceIndex,
+                                      String ifaceName, boolean typeBased) {
+
+        if (typeBased) {
+            for (BigInteger dpId : dpnId) { //install flows per dpn
+                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceName, boundServicesOld, transaction,
+                        currentServiceIndex);
+            }
+        } else {
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpnId.iterator().next(), ifaceName, boundServicesOld,
+                    transaction,
+                    currentServiceIndex);
+        }
+    }
 }
 
 
