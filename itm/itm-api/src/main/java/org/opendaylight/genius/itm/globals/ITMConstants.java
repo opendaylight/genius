@@ -51,6 +51,8 @@ public class ITMConstants {
     // changes the name
     @SuppressWarnings("checkstyle:ConstantName")
     public static final String DPN_TEPs_Info_CACHE_NAME = "ItmDpnTepsInfoCache";
+    public static final String INTERNAL_TUNNEL_CACHE_NAME = "InternalTunnelCache";
+    public static final String EXTERNAL_TUNNEL_CACHE_NAME = "ExternalTunnelCache";
     public static final String TUNNEL_STATE_UP = "UP";
     public static final String TUNNEL_STATE_DOWN = "DOWN";
     public static final String TUNNEL_STATE_UNKNOWN = "UNKNOWN";
