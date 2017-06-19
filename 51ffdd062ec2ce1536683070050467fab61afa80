@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_a4c85475",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "Perhaps best to -1 yourself if you don\u0027t want this to be merged yet?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_44cb7072",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractClusteredDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "why enforce for implementations to be AutoCloseable?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_64ce6c85",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractClusteredDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "I would remove this dummy JavaDoc - it adds no value IMHO.",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_84eef8ea",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "why enforce for implementations to be AutoCloseable?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_04ba08de",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "I would remove this dummy JavaDoc - it adds no value IMHO.",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_c4bf60cf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "would it make sense to mark this \"final\", to avoid that subclasses @Override this?  (Because if they do need to @Override this, then perhaps / probably they just shouldn\u0027t be extending this utility in the first place...)",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_a4f174cf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataTreeChangeListenerActions.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T16:27:28Z",
+      "side": 1,
+      "message": "why enforce for implementations to be AutoCloseable?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
