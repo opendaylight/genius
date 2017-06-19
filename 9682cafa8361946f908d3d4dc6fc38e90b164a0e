@@ -33,6 +33,24 @@
       "revId": "9682cafa8361946f908d3d4dc6fc38e90b164a0e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_3e8631ba",
+        "filename": "karaf/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-06-19T11:16:56Z",
+      "side": 1,
+      "message": "yes...it was just changed so that, i can test karaf4 distribution on sandbox..we can put it back after our verification",
+      "parentUuid": "1af78d9a_5ee7bd12",
+      "revId": "9682cafa8361946f908d3d4dc6fc38e90b164a0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
