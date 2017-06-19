@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_24b74488",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_a4c85475",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_44cb7072",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractClusteredDataTreeChangeListener.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-06-19T16:27:28Z",
       "side": 1,
       "message": "why enforce for implementations to be AutoCloseable?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_c46800f8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractClusteredDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "It is an error copied wrongly from the original in SFC.",
+      "parentUuid": "1af78d9a_44cb7072",
       "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_246e2402",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractClusteredDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "Yes, this is the default JavaDoc added by the IDE. I\u0027ll remove it.",
+      "parentUuid": "1af78d9a_64ce6c85",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_84eef8ea",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-06-19T16:27:28Z",
       "side": 1,
       "message": "why enforce for implementations to be AutoCloseable?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_447410cf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "1af78d9a_84eef8ea",
       "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_64778cd5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_04ba08de",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_c4bf60cf",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
         "patchSetId": 1
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_445b7054",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "It makes perfect sense.",
+      "parentUuid": "1af78d9a_c4bf60cf",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_a4f174cf",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataTreeChangeListenerActions.java",
         "patchSetId": 1
@@ -115,6 +223,24 @@
       "writtenOn": "2017-06-19T16:27:28Z",
       "side": 1,
       "message": "why enforce for implementations to be AutoCloseable?",
+      "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_0441685a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataTreeChangeListenerActions.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-06-19T19:03:13Z",
+      "side": 1,
+      "message": "The listeners usually have to release some resources, at least call the listenerRegistration.close(). We could just use Closeable instead, but at least something to force that. The current abstract classes do not implement the close method themselves as we can see in other places, but this is something that we can add as well.",
+      "parentUuid": "1af78d9a_a4f174cf",
       "revId": "51ffdd062ec2ce1536683070050467fab61afa80",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
