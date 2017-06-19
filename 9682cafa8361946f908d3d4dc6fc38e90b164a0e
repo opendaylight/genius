@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_bed86154",
+        "filename": "features/features4-genius/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T11:10:15Z",
+      "side": 1,
+      "message": "Technically these are not needed (that\u0027s what the genius / artifacts/pom.xml is for...) but if you find this clearer, it does not really hurt to have this here either..",
+      "revId": "9682cafa8361946f908d3d4dc6fc38e90b164a0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_5ee7bd12",
+        "filename": "karaf/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-19T11:10:15Z",
+      "side": 1,
+      "message": "this is a bit confusing, because it contradicts the comment above now.. ;-) let me make an edit to clarify this.",
+      "revId": "9682cafa8361946f908d3d4dc6fc38e90b164a0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
