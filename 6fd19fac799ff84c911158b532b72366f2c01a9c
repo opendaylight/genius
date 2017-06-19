@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_83b6f23b",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdDoesNotExistException.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-19T06:51:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_af8dd533",
+      "revId": "6fd19fac799ff84c911158b532b72366f2c01a9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_ef87dd0d",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 6
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1af78d9a_e3825651",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-19T06:51:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_ef87dd0d",
+      "revId": "6fd19fac799ff84c911158b532b72366f2c01a9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_8f76193d",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 6
@@ -47,6 +83,24 @@
       "writtenOn": "2017-06-16T13:03:13Z",
       "side": 1,
       "message": "I don\u0027t think this do what you want.. read slf4j API doc - but this would only work if msg had a {} placeholder to put exception.getMessage() into - but it probably doesn\u0027t?  I think what you want is e.g. like this:\n\n    LOG.error(msg + \" : \" + exception.getMessage());",
+      "revId": "6fd19fac799ff84c911158b532b72366f2c01a9c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_c3875a60",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-19T06:51:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_8f76193d",
       "revId": "6fd19fac799ff84c911158b532b72366f2c01a9c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
