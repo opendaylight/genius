@@ -1,0 +1,310 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1af78d9a_6c1daebd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/ServiceRecoveryInterface.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "This entityType thing looks like it really should be an enum?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_cc7942fe",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/ServiceRecoveryInterface.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "apparently (?) both String entityType and String entityId are optional, given that you\u0027re passing in null from InterfacemgrProvider? That really should be documented here (with an explanation of what it means), and annotated with @Nullable.",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_0c0d0a91",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/DpnInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "private final",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_4c6d5232",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/DpnInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "assembling this here doesn\u0027t seem right.. shouldn\u0027t this calling using a method in ServiceRecoveryManager?  Actually, this \"key\" probably shouldn\u0027t be exposed at all.. Perhaps the register should have a method directly taking String entityName, String entityType, String entityId ?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_4c26f217",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "private final",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_8c4e1ac0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines : Just putting all set-up code directly into the constructor (instead of a separate @PostConstruct init) is simpler, easier to read, and thus recommended.",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_2c51e662",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_8c773a02",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "same comment as in DpnInstanceRecoveryHandler",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_2c23a606",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "private final",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_ec5fde70",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_4c543254",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "I\u0027m dying to know what this \"WIP\" will be replaced by... ;-) How will you actually recover?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_6c748efd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "same comment as in DpnInstanceRecoveryHandler",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_ec887ee9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "not static, and maybe private?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_0c84ead2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "Here also: no no no, not more static stuff, please... ;-) This can very well be non-static, and @Singleton, and @Inject wherever you need it.",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_ac7e76e2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "no no no, not more static stuff, please... ;-) This can very well be non-static, and @Singleton, and @Inject wherever you need it.",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_0c5b4a88",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "kill",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_ac65d646",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines : You really only should have a @PreDestroy method if you really have something else to close() or unregister() or shutdown() in it. Do NOT use a @PreDestroy just to LOG.info(\"MyThing closed()\") - that\u0027s pointless.",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1af78d9a_cc602238",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-20T18:41:14Z",
+      "side": 1,
+      "message": "need to handle if get() return null, and e.g. throw new IllegalArgumentException with message including entityName?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
