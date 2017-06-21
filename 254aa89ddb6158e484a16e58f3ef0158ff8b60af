@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_2a2bbfec",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataTreeChangeListenerActions.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-21T05:01:01Z",
+      "side": 1,
+      "message": "why use a separate class? Why couldn\u0027t we have it in abstract listener itself?",
+      "range": {
+        "startLine": 27,
+        "startChar": 17,
+        "endLine": 27,
+        "endChar": 46
+      },
+      "revId": "254aa89ddb6158e484a16e58f3ef0158ff8b60af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_0a307b55",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataTreeChangeListenerActions.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-21T05:01:01Z",
+      "side": 1,
+      "message": "This is what I wanted to avoid as we lose out on useful infomation present in dataObjectModification as well as rootNodeidentifier.\n\nI\u0027d prefer these metohds to be:\nadd(dataObjctodification.getRootNodeIdentifier(), dataObjectModification.getRootNode());\nupdate(dataObjctodification.getRootNodeIdentifier(), dataObjectModification.getRootNode());\ndelete(dataObjctodification.getRootNodeIdentifier(), dataObjectModification.getRootNode());\n\nThis way listeners get all the information and also option to have add/update/delete so they can implement as they see fit.",
+      "range": {
+        "startLine": 41,
+        "startChar": 20,
+        "endLine": 41,
+        "endChar": 106
+      },
+      "revId": "254aa89ddb6158e484a16e58f3ef0158ff8b60af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
