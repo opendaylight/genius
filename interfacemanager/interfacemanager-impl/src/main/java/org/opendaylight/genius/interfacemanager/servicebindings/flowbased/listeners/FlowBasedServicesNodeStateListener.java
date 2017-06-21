@@ -81,10 +81,10 @@ public class FlowBasedServicesNodeStateListener
             return;
         }
         BigInteger dpId = new BigInteger(node[1]);
-        bindServicesOnTunnelType(dpId);
+        bindServicesOnInterfaceType(dpId);
     }
 
-    private void bindServicesOnTunnelType(BigInteger dpId) {
+    private void bindServicesOnInterfaceType(BigInteger dpId) {
         LOG.debug("Received node add event for {}", dpId);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         for (Object serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
