@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "fa2559ec_30ba10e2",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-21T11:15:48Z",
+      "side": 1,
+      "message": "how about a new interface RecoverableService {\n   void reinstallService():\n   void recoverService();\n   void recoverInstance(String instanceID);\n}\n\nNB I\u0027ve intentionally let out the EntityName of this interface, as any given RecoverableService IS an entity?  Only the other interface needs EntityName?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_70b488f2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/ServiceRecoveryInterface.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-21T11:15:48Z",
+      "side": 1,
+      "message": "let\u0027s find a better name for this... the *Interface suffix isn\u0027t great, agreed?  Is this a *Handler?  Or is the ServiceRecoveryService (which e.g. can be invoked by RPC) ?  Or am I getting all confused and this one IS the RecoverableService?",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_50b984e8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/ServiceRecoveryInterface.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-21T11:15:48Z",
+      "side": 1,
+      "message": "are you sure that having a single method for the concepts you describe on https://logs.opendaylight.org/releng/jenkins092/docs-verify-rtd-nitrogen/546/html/submodules/genius/docs/specs/service-recovery.html#srm-terminology is a good idea? Why not just make this more clear with a handful of dedicated methods, something like:\n\n  void reinstallService(String serviceName):\n\n  void recoverService(String serviceName);\n\n  void recoverInstance(String instanceName, String instanceID);",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_6c1daebd",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/ServiceRecoveryInterface.java",
         "patchSetId": 1
