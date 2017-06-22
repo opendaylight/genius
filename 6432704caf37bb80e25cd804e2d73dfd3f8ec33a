@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_11e54ba8",
+        "filename": "features/genius-features/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-06-22T09:41:14Z",
+      "side": 0,
+      "message": "minor, but we may want to keep this?",
+      "revId": "6432704caf37bb80e25cd804e2d73dfd3f8ec33a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
