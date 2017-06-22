@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_bf0b6b2a",
+        "filename": "fcapsmanager/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-06-22T08:32:56Z",
+      "side": 1,
+      "message": "For pure aggregators there’s a new aggregator-parent you can use instead (it disables installing and deploying, so you could drop the build/plugins stuff below).",
+      "revId": "034b25e66fd367dbb6e8c38cf24b035816fa206b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
