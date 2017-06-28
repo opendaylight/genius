@@ -44,15 +44,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     </dependency>
   </dependencies>
 
-  <!-- For CSIT, temporarily *DO* install or deploy the karaf artifact! -->
-  <!-- TODO : Change 'false' back to 'true' and comment: DO NOT install or deploy the karaf artifact -->
+  <!-- DO NOT install or deploy the karaf artifact -->
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <configuration>
-          <skip>false</skip>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>
