@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_c19f5d4f",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_77463b25",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_d74a8f26",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-06-13T06:12:01Z",
       "side": 1,
       "message": "white space",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_21ad9989",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_d74a8f26",
       "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_01aa1570",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_b747031d",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_6a877210",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-06-13T08:59:15Z",
       "side": 1,
       "message": "if this is a clustered listener based approach at the backend, what kind of response we can give to the caller? whether the operation on the final application was done properly will be out of the control of SRM right?",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_61b671de",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Yes, even with API based, actual recovery can take much longer. This will only tell if the call to trigger recovery passed or not. Actual status would be tracked/known through SnD.",
+      "parentUuid": "1af78d9a_6a877210",
       "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_41bb6dc4",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Should be servicerecovery-ops.yang",
+      "parentUuid": "1af78d9a_975807fc",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_575e9fea",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 1
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_a1b069de",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Problem is today SnD doesn\u0027t define any such names or expose them through any yang that can be consumed by SRM.",
+      "parentUuid": "1af78d9a_575e9fea",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1af78d9a_376313b3",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 1
@@ -115,6 +223,24 @@
       "writtenOn": "2017-06-13T06:12:01Z",
       "side": 1,
       "message": "trailing space",
+      "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_81b565cf",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-06-29T09:03:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1af78d9a_376313b3",
       "revId": "878d502d0fcb1a67af31db6c42e8d0e7415c8051",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
