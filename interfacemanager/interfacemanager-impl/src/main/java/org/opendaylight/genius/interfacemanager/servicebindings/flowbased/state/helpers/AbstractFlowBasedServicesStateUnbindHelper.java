@@ -72,7 +72,9 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
                                                                               Interface ifState,
                                                                                Integer ifIndex, DataBroker dataBroker);
 
-    public abstract List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName);
+    public abstract List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                               List<BoundServices> allServices,
+                                                                               DataBroker dataBroker);
 }
 
 
