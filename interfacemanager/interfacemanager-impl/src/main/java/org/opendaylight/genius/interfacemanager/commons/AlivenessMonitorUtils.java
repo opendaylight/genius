@@ -122,7 +122,7 @@ public final class AlivenessMonitorUtils {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker)
-                .transform(MonitorIdInterface::getInterfaceName).orNull();
+                .toJavaUtil().map(MonitorIdInterface::getInterfaceName).orElse(null);
     }
 
     private static void removeMonitorIdInterfaceMap(DataBroker broker, long monitorId) {
@@ -240,8 +240,8 @@ public final class AlivenessMonitorUtils {
     public static List<Long> getMonitorIdForInterface(DataBroker broker, String infName) {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).transform(InterfaceMonitorId::getMonitorId)
-                .orNull();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).toJavaUtil().map(
+                InterfaceMonitorId::getMonitorId).orElse(null);
     }
 
     public static long createMonitorProfile(AlivenessMonitorService alivenessMonitor,

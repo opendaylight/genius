@@ -40,6 +40,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -194,9 +195,9 @@ public class AlivenessMonitor
         createIdPool();
         monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
             @Override
-            public String load(Long monitorId) {
+            public String load(@Nonnull Long monitorId) {
                 return read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId))
-                        .transform(MonitoridKeyEntry::getMonitorKey).orNull();
+                        .toJavaUtil().map(MonitoridKeyEntry::getMonitorKey).orElse(null);
             }
         });
 
@@ -1296,6 +1297,6 @@ public class AlivenessMonitor
 
     private List<Long> getMonitorIds(String interfaceName) {
         return read(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName))
-                .transform(InterfaceMonitorEntry::getMonitorIds).or(Collections.emptyList());
+                .toJavaUtil().map(InterfaceMonitorEntry::getMonitorIds).orElse(Collections.emptyList());
     }
 }

@@ -96,7 +96,7 @@ public class ITMManager implements AutoCloseable {
     protected boolean getTunnelMonitorEnabledFromConfigDS() {
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker)
-                .transform(TunnelMonitorParams::isEnabled).or(true);
+                .toJavaUtil().map(TunnelMonitorParams::isEnabled).orElse(true);
     }
 
     protected Class<? extends TunnelMonitoringTypeBase> getTunnelMonitorTypeFromConfigDS() {
@@ -114,7 +114,7 @@ public class ITMManager implements AutoCloseable {
     protected int getTunnelMonitorIntervalFromConfigDS() {
         InstanceIdentifier<TunnelMonitorInterval> path =
                 InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker).transform(
-                TunnelMonitorInterval::getInterval).or(ITMConstants.DEFAULT_MONITOR_INTERVAL);
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker).toJavaUtil().map(
+                TunnelMonitorInterval::getInterval).orElse(ITMConstants.DEFAULT_MONITOR_INTERVAL);
     }
 }

@@ -648,14 +648,15 @@ public class MDSALUtil {
                 .child(Node.class, new NodeKey(nodeId))
                 .child(NodeConnector.class,
                         new NodeConnectorKey(nodeConnectorId)).build();
-        return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).transform(
-            nc -> nc.getAugmentation(FlowCapableNodeConnector.class).getName()).orNull();
+        return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).toJavaUtil().map(
+                nc -> nc.getAugmentation(FlowCapableNodeConnector.class)).map(FlowCapableNodeConnector::getName).orElse(
+                null);
     }
 
     public static NodeConnectorId getNodeConnectorId(DataBroker dataBroker,
             NodeConnectorRef ref) {
-        return ((Optional<NodeConnector>) read(dataBroker, LogicalDatastoreType.OPERATIONAL, ref.getValue())).transform(
-                NodeConnector::getId).orNull();
+        return ((Optional<NodeConnector>) read(dataBroker, LogicalDatastoreType.OPERATIONAL,
+                ref.getValue())).toJavaUtil().map(NodeConnector::getId).orElse(null);
     }
 
     public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {
