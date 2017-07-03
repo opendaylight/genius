@@ -89,15 +89,14 @@ public final class ItmInternalTunnelAddWorker {
                 meshedDpnList = new ArrayList<>();
             }
             meshedDpnList.add(dpn);
-            // Update the operational datastore -- FIXME -- Error Handling
-            updateOperationalDatastore(dataBroker, dpn, transaction, futures);
+            // Update the config datastore -- FIXME -- Error Handling
+            updateDpnTepInfoToConfig(dpn);
         }
         futures.add(transaction.submit()) ;
         return futures ;
     }
 
-    private static void updateOperationalDatastore(DataBroker dataBroker, DPNTEPsInfo dpn,
-                                                   WriteTransaction transaction, List<ListenableFuture<Void>> futures) {
+    private static void updateDpnTepInfoToConfig(DPNTEPsInfo dpn) {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
