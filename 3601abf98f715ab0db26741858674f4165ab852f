@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_763c6b94",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ExternalTunnelCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-07-03T08:45:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_a503230e",
+      "revId": "3601abf98f715ab0db26741858674f4165ab852f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_e804e216",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ExternalTunnelCache.java",
         "patchSetId": 9
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_164b6f2c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ExternalTunnelCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-07-03T08:45:13Z",
+      "side": 1,
+      "message": "overriding the interface method. Hence left it as it is.",
+      "parentUuid": "ba068154_e804e216",
+      "revId": "3601abf98f715ab0db26741858674f4165ab852f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_c81d9e68",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmManagerRpcServiceTest.java",
         "patchSetId": 9
@@ -47,6 +83,24 @@
       "writtenOn": "2017-05-15T16:31:19Z",
       "side": 1,
       "message": "are you sure that you want to @Mock this? It\u0027s not an interface, so... I\u0027m not sure what Mockito does in this case, I think it may just create a new ExternalTunnelCache instance (not a Mock for it) anyway, but this is a bit confusing when reading this test code.. how about jsut putting new ExternalTunnelCache() as last arg to ItmManagerRpcService in @Before instead of doing this?",
+      "revId": "3601abf98f715ab0db26741858674f4165ab852f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_f647bb1b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmManagerRpcServiceTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-07-03T08:45:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba068154_c81d9e68",
       "revId": "3601abf98f715ab0db26741858674f4165ab852f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
