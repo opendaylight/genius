@@ -49,7 +49,7 @@ Following use cases will not be supported:
 
 Proposed change
 ===============
-``OVS 2.0.0`` onwards allows configuration of flow based tunnels through
+``OVS 2.0.1`` onwards allows configuration of flow based tunnels through
 interface ``option:remote_ip=flow``. Currently this field is set to
 IP address of the destination endpoint.
 
@@ -439,7 +439,7 @@ Work Items
 
 Dependencies
 ============
-This doesn't add any new dependencies. This requires minimum of ``OVS 2.0.0``
+This doesn't add any new dependencies. This requires minimum of ``OVS 2.0.1``
 which is already lower than required by some of other features.
 
 This change is backwards compatible, so no impact on dependent projects.
