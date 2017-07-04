@@ -22,6 +22,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.infrautils.utils.concurrent.LoggingThreadUncaughtExceptionHandler;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.slf4j.Logger;
@@ -50,6 +52,9 @@ public class DataStoreJobCoordinator {
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
     private final ReentrantLock reentrantLock = new ReentrantLock();
     private final Condition waitCondition = reentrantLock.newCondition();
+
+    @GuardedBy("reentrantLock")
+    private boolean isJobAvailable = false;
 
     private static DataStoreJobCoordinator instance;
 
@@ -128,12 +133,7 @@ public class DataStoreJobCoordinator {
             DataStoreJobCoordinatorCounters.jobs_incomplete.inc();
             DataStoreJobCoordinatorCounters.jobs_created.inc();
         }
-        reentrantLock.lock();
-        try {
-            waitCondition.signal();
-        } finally {
-            reentrantLock.unlock();
-        }
+        signalForNextJob();
     }
 
     public long getIncompleteTaskCount() {
@@ -157,6 +157,7 @@ public class DataStoreJobCoordinator {
         }
         DataStoreJobCoordinatorCounters.jobs_cleared.inc();
         DataStoreJobCoordinatorCounters.jobs_incomplete.dec();
+        signalForNextJob();
     }
 
     /**
@@ -341,15 +342,7 @@ public class DataStoreJobCoordinator {
                             }
                         }
                     }
-
-                    reentrantLock.lock();
-                    try {
-                        if (isJobQueueEmpty()) {
-                            waitCondition.await();
-                        }
-                    } finally {
-                        reentrantLock.unlock();
-                    }
+                    waitForJobIfNeeded();
                 } catch (Exception e) {
                     LOG.error("Exception while executing the tasks", e);
                 } catch (Throwable e) {
@@ -370,4 +363,26 @@ public class DataStoreJobCoordinator {
         return true;
     }
 
+
+    private void signalForNextJob() {
+        reentrantLock.lock();
+        try {
+            isJobAvailable = true;
+            waitCondition.signalAll();
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
+
+    private void waitForJobIfNeeded() throws InterruptedException {
+        reentrantLock.lock();
+        try {
+            while (!isJobAvailable) {
+                waitCondition.await(1, TimeUnit.SECONDS);
+            }
+            isJobAvailable = false;
+        } finally {
+            reentrantLock.unlock();
+        }
+    }
 }
