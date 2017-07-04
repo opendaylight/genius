@@ -246,6 +246,9 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(dataBroker, interfaceName, serviceMode);
             }
+            if (boundServiceState == null) {
+                LOG.error("bound-service-state cannot be null!!!");
+            }
             return flowBasedServicesConfigRemovable.unbindService(interfaceName, boundServicesNew,
                 boundServicesList, boundServiceState);
         }
