@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil.instructions;
 
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfoList;
@@ -43,7 +44,17 @@ public class InstructionWriteActions extends AbstractInstructionInfoImpl {
     }
 
     public List<ActionInfo> getActionInfos() {
-        return actions.getActionInfos();
+        // This is required because,
+        // even though actions is final and should never be null,
+        // the xtendbeans library creates instances of this class
+        // via a reflection-based trick (to determine default values)
+        // and logs a confusing NPE warning during tests, if we don't guard:
+        if (actions != null) {
+            return actions.getActionInfos();
+        } else {
+            return Collections.emptyList();
+        }
+
     }
 
     @Override
