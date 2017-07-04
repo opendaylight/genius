@@ -690,7 +690,8 @@ public class FlowBasedServicesUtils {
 
     public static  void removeBoundServicesState(DataBroker dataBroker, String interfaceName, Class<?
         extends ServiceModeBase> serviceMode) {
-        LOG.info("remove bound-service state information for interface : {}", interfaceName);
+        LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
+            serviceMode.getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();

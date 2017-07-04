@@ -151,6 +151,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         }
         LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
             boundServiceOld);
+        LOG.info("Current Service List: {}", boundServicesList);
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
             .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
             .getFlowBasedServicesRemoveRenderer();
@@ -176,6 +177,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         }
         LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
             boundServicesNew);
+        LOG.info("Current Service List: {}", boundServicesList);
         FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
             .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesAddRenderer();
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -245,6 +247,9 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 dataBroker, interfaceName, serviceMode);
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(dataBroker, interfaceName, serviceMode);
+            }
+            if (boundServiceState == null) {
+                LOG.error("bound-service-state cannot be null!!! for {}, {}", interfaceName, serviceMode);
             }
             return flowBasedServicesConfigRemovable.unbindService(interfaceName, boundServicesNew,
                 boundServicesList, boundServiceState);
