@@ -16,6 +16,24 @@
       "revId": "007e3cde4793f8c2a02d264c354f03f70d15cf18",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_a5098297",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-07-04T11:43:55Z",
+      "side": 1,
+      "message": "Yes, you are right. Just after rising this patch I realized that I should have used Dependency Injection instead :). I\u0027ll  rise an improved version soon.",
+      "parentUuid": "da2a55be_a56342b0",
+      "revId": "007e3cde4793f8c2a02d264c354f03f70d15cf18",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
