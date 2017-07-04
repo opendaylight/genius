@@ -72,7 +72,9 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
                                                                                  Interface ifState,
                                                                                  DataBroker dataBroker);
 
-    public abstract List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName);
+    public abstract List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                             List<BoundServices> allServices,
+                                                                             DataBroker dataBroker);
 }
 
 
