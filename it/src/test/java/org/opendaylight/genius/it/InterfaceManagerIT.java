@@ -48,7 +48,7 @@ public class InterfaceManagerIT extends AbstractMdsalTestBase {
 
     @Override
     public String getFeatureName() {
-        return "odl-genius-ui";
+        return "odl-genius-rest";
     }
 
     @Override
