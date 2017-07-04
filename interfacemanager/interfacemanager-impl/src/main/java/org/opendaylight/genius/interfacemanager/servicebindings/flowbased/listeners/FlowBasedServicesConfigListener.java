@@ -242,6 +242,10 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             // if this is the last service getting unbound, remove service-state cache information
             BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
                 dataBroker, interfaceName, serviceMode);
+            if (boundServiceState == null) {
+                LOG.error("bound-service-state is null for {}, {}", interfaceName, serviceMode);
+                return null;
+            }
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(dataBroker, interfaceName, serviceMode);
             }
