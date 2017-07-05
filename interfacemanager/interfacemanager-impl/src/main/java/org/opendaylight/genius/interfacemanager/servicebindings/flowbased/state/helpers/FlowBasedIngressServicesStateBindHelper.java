@@ -75,9 +75,33 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
         return futures;
     }
 
-    public List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName) {
-        LOG.info("bindServicesOnInterfaceType Ingress - WIP");
-        return null;
+    public List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                    List<BoundServices> allServices,
+                                                                    DataBroker dataBroker) {
+        LOG.info("bind all ingress services for interface type: {}", ifaceName);
+        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
+                : highestPriority.getServicePriority() + 1);
+        FlowBasedServicesUtils.installTypeBasedLPortDispatcherFlow(dpnId, highestPriority, writeTransaction,  ifaceName,
+                NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex);
+        BoundServices prev = null;
+        for (BoundServices boundService : allServices) {
+            if (prev != null) {
+                FlowBasedServicesUtils.installTypeBasedLPortDispatcherFlow(dpnId, prev, writeTransaction, ifaceName,
+                        prev.getServicePriority(), boundService.getServicePriority());
+            }
+            prev = boundService;
+        }
+        if (prev != null) {
+            FlowBasedServicesUtils.installTypeBasedLPortDispatcherFlow(dpnId, prev, writeTransaction, ifaceName,
+                    prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
+        }
+        futures.add(writeTransaction.submit());
+        return futures;
     }
 
     protected List<ListenableFuture<Void>> bindServicesOnTunnel(List<BoundServices> allServices,
