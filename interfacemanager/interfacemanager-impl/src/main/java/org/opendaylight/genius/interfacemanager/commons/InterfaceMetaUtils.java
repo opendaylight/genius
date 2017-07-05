@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.commons;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.inject.Inject;
@@ -375,6 +376,10 @@ public final class InterfaceMetaUtils {
         return bridgeEntryMap.get(dpnId);
     }
     // End: Bridge Entry Cache
+
+    public Set<BigInteger> getDpnIdsFromBridgeEntryCache() {
+        return bridgeRefEntryMap.keySet();
+    }
 
     //Start: BridgeRefEntry Cache
     public void addBridgeRefEntryToCache(BigInteger dpnId, BridgeRefEntry bridgeRefEntry) {
