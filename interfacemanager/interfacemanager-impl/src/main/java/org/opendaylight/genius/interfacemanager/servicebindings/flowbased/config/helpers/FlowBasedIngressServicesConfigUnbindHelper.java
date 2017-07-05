@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -30,14 +29,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
+public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigUnbindHelper {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigRemovable flowBasedIngressServicesRemovable;
 
     private FlowBasedIngressServicesConfigUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
+
     }
 
     public static void intitializeFlowBasedIngressServicesConfigRemoveHelper(
@@ -64,12 +63,13 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
     }
 
     @Override
-    public List<ListenableFuture<Void>> unbindService(String interfaceName, BoundServices boundServiceOld,
+    public List<ListenableFuture<Void>> unbindServiceOnInterface(String interfaceName,
+                                                      BoundServices boundServiceOld,
                                                       List<BoundServices> boundServices,
-                                                      BoundServicesState boundServicesState) {
+                                                      BoundServicesState boundServicesState,
+                                                      DataBroker dataBroker) {
 
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         if (boundServicesState == null) {
             LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
             return futures;
@@ -81,7 +81,14 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         } else if (Tunnel.class.equals(boundServicesState.getInterfaceType())) {
             return unbindServiceOnTunnel(boundServiceOld, boundServices, boundServicesState, dataBroker);
         }
-        return futures;
+        return null;
+    }
+
+    protected List<ListenableFuture<Void>> unbindServiceOnInterfaceType(BoundServices boundServiceNew,
+                                                                        List<BoundServices> allServices,
+                                                                        DataBroker dataBroker) {
+        LOG.info("unbindServiceOnInterfaceType Ingress - WIP");
+        return null;
     }
 
     private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,

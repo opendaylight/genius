@@ -92,7 +92,7 @@ public class FlowBasedServicesInterfaceStateListener
                 .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
                         new RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRendererFactory
                                 .getFlowBasedServicesStateRendererFactory(serviceMode)
-                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld),
+                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld, serviceMode),
                         IfmConstants.JOB_MAX_RETRIES));
     }
 
@@ -152,23 +152,25 @@ public class FlowBasedServicesInterfaceStateListener
             // Build the service-binding state if there are services bound on this interface
             FlowBasedServicesUtils.addBoundServicesState(dataBroker, iface.getName(),
                 FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
-            return flowBasedServicesStateAddable.bindServicesOnInterface(iface, allServices);
+            return flowBasedServicesStateAddable.bindServicesOnInterface(iface, allServices, serviceMode);
         }
     }
 
     private class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
-                Interface iface) {
+                Interface iface, Class<? extends ServiceModeBase> serviceMode) {
             this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
             this.iface = iface;
+            this.serviceMode = serviceMode;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return flowBasedServicesStateRemovable.unbindServicesFromInterface(iface);
+            return flowBasedServicesStateRemovable.unbindServicesFromInterface(iface, serviceMode);
         }
     }
 }
