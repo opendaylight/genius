@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -27,7 +26,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
-import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
@@ -36,11 +34,8 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigUnbindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -202,21 +197,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            BoundServicesState boundServicesState = FlowBasedServicesUtils
-                .getBoundServicesState(dataBroker, interfaceName, serviceMode);
-            // if service-binding state is not present, construct the same using ifstate
-            if (boundServicesState == null) {
-                Interface ifState = InterfaceManagerCommonUtils.getInterfaceState(interfaceName, dataBroker);
-                if (ifState == null) {
-                    LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
-                        interfaceName);
-                    return null;
-                }
-                boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
-                FlowBasedServicesUtils.addBoundServicesState(dataBroker, interfaceName,boundServicesState);
-            }
             return flowBasedServicesAddable.bindService(interfaceName, boundServicesNew,
-                boundServicesList, boundServicesState);
+                boundServicesList, serviceMode);
         }
     }
 
@@ -240,19 +222,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         @Override
         public List<ListenableFuture<Void>> call() {
             // if this is the last service getting unbound, remove service-state cache information
-            BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
-                dataBroker, interfaceName, serviceMode);
-            if (boundServiceState == null) {
-                LOG.error("bound-service-state is not present for interface:{}, service-mode:{}, "
-                        + "service-name:{}, service-priority:{}", interfaceName, serviceMode,
-                    boundServicesNew.getServiceName(), boundServicesNew.getServicePriority());
-                return null;
-            }
-            if (boundServicesList.isEmpty()) {
-                FlowBasedServicesUtils.removeBoundServicesState(dataBroker, interfaceName, serviceMode);
-            }
             return flowBasedServicesConfigRemovable.unbindService(interfaceName, boundServicesNew,
-                boundServicesList, boundServiceState);
+                boundServicesList, serviceMode);
         }
     }
 }
