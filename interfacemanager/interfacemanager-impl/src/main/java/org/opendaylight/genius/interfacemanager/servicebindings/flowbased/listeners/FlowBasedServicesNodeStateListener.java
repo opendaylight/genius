@@ -79,10 +79,10 @@ public class FlowBasedServicesNodeStateListener
         if (dpId == null) {
             return;
         }
-        bindServicesOnTunnelType(dpId);
+        bindServicesOnInterfaceType(dpId);
     }
 
-    private void bindServicesOnTunnelType(BigInteger dpId) {
+    private void bindServicesOnInterfaceType(BigInteger dpId) {
         LOG.debug("Received node add event for {}", dpId);
         for (Class<?extends ServiceModeBase> serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
             for (String interfaceName : FlowBasedServicesUtils.INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS) {

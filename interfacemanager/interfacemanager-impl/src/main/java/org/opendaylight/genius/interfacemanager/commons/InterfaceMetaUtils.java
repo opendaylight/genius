@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.commons;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -351,6 +352,10 @@ public class InterfaceMetaUtils {
         return bridgeEntryMap.get(dpnId);
     }
     // End: Bridge Entry Cache
+
+    public static Set<BigInteger> getDpnIdsFromBridgeEntryCache() {
+        return bridgeRefEntryMap.keySet();
+    }
 
     //Start: BridgeRefEntry Cache
     public static void addBridgeRefEntryToCache(BigInteger dpnId, BridgeRefEntry bridgeRefEntry) {
