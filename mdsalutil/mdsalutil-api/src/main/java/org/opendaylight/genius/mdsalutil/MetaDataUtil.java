@@ -129,8 +129,21 @@ public class MetaDataUtil {
         return new BigInteger("F", 16).and(BigInteger.valueOf(serviceIndex)).shiftLeft(28);
     }
 
+    public static BigInteger getInterfaceTypeForReg6(int tunnelType) {
+        return new BigInteger("F", 16).and(BigInteger.valueOf(tunnelType)).shiftLeft(4);
+    }
+
     public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex) {
         return getServiceIndexForReg6(serviceIndex).or(getLportTagForReg6(lportTag)).longValue();
+    }
+
+    /** Utility to fetch the register value for lport dispatcher table.
+     * Register6 used for service binding will have first 4 bits of service-index, next 20 bits for lportTag,
+     * and next 4 bits for interface-type
+     */
+    public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex, short interfaceType) {
+        return getServiceIndexForReg6(serviceIndex).or(getLportTagForReg6(lportTag)
+                .or(getInterfaceTypeForReg6(interfaceType))).longValue();
     }
 
     public static long getLportTagMaskForReg6() {

@@ -30,14 +30,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServicesConfigAddable {
+public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedServicesConfigBindHelper {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigBindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigAddable flowBasedIngressServicesAddable;
 
     private FlowBasedIngressServicesConfigBindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
     }
 
     public static void intitializeFlowBasedIngressServicesConfigAddHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -63,12 +62,20 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
     }
 
     @Override
-    public List<ListenableFuture<Void>> bindService(String interfaceName, BoundServices boundServiceNew,
-                                                    List<BoundServices> allServices,
-                                                    BoundServicesState boundServiceState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
+    protected List<ListenableFuture<Void>> bindServiceOnInterfaceType(BoundServices boundServiceNew,
+                                                                      List<BoundServices> allServices,
+                                                                      DataBroker dataBroker) {
+        LOG.info("Interface Type based ingress service binding - WIP");
+        return null;
+    }
 
+    @Override
+    public List<ListenableFuture<Void>> bindServiceOnInterface(BoundServices boundServiceNew,
+                                                               List<BoundServices> allServices,
+                                                               BoundServicesState
+                                                                       boundServiceState,
+                                                               DataBroker dataBroker) {
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         if (allServices.isEmpty()) {
             LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
             return futures;
@@ -79,7 +86,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
         } else if (Tunnel.class.equals(boundServiceState.getInterfaceType())) {
             return bindServiceOnTunnel(boundServiceNew, allServices, boundServiceState, dataBroker);
         }
-        return futures;
+        return null;
     }
 
     private static List<ListenableFuture<Void>> bindServiceOnTunnel(BoundServices boundServiceNew,
