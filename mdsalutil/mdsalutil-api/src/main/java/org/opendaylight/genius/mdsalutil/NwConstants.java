@@ -176,6 +176,11 @@ public final class NwConstants {
     public static final short EGRESS_LEARN_ACL_FILTER_TABLE = 244;
     public static final short EGRESS_COUNTERS_TABLE = 249;
 
+    //constants for type based service binding
+    public static final short ALL_VXLAN_INTERNAL = 1;
+    public static final short ALL_VXLAN_EXTERNAL = 2;
+    public static final short ALL_MPLS_OVER_GRE = 3;
+
     public enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
         NXM_OF_ETH_DST(0x0000, 1, 6, 48),
