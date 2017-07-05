@@ -14,7 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 
 public interface FlowBasedServicesConfigRemovable {
-    List<ListenableFuture<Void>> unbindService(String interfaceName,BoundServices boundServiceNew,
+    List<ListenableFuture<Void>> unbindService(String interfaceName,BoundServices boundServiceOld,
                                                List<BoundServices> boundServicesList,
                                                BoundServicesState boundServicesState);
 }
