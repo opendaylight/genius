@@ -98,7 +98,6 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     @Override
     public void onDataTreeChanged(@Nonnull Collection<DataTreeModification<ServicesInfo>> collection) {
         collection.stream().forEach(servicesInfoDataTreeModification -> {
-            LOG.trace("Services Info configuration has changed: {}", servicesInfoDataTreeModification.getRootNode());
             servicesInfoDataTreeModification.getRootNode().getModifiedChildren().stream().filter(
                 dataObjectModification -> dataObjectModification.getDataType().equals(BoundServices.class)).forEach(
                     dataObjectModification -> onBoundServicesChanged(
