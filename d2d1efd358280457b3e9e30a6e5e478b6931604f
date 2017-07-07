@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_628db37b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-07-07T13:36:38Z",
+      "side": 1,
+      "message": "-1 just to \"force\" a discussion (David, perhaps post to genius-dev list?) re. whether we even actually want to use a JobCoordinator here... I\u0027m not sure I get the real need.  Isn\u0027t JobCoordinator really for stuff with those keys and all that - we don\u0027t use that here, so this adds complexity, without the need... what if, instead of JobCoordinator, we just passed an Executor[Service?] (or ForkJoinPool?) here?  We could even imagine \u0026 discuss registering a suitable one in the OSGi registry, perhaps from infrautils, which could be @OsgiService injected here?",
+      "revId": "d2d1efd358280457b3e9e30a6e5e478b6931604f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
