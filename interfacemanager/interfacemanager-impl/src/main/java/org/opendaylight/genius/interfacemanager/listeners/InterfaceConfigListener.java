@@ -143,7 +143,8 @@ public class InterfaceConfigListener
         IfmClusterUtils.runOnlyInLeaderNode(() -> {
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getParentInterface() == null) {
+            if (parentRefs == null || parentRefs.getParentInterface() == null
+                    && !InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew)) {
                 // If parentRefs are missing, try to find a matching parent and
                 // update - this will trigger another DCN
                 updateInterfaceParentRefs(interfaceNew);
