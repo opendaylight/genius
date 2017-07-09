@@ -59,6 +59,7 @@ public class OvsInterfaceConfigAddHelper {
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+        InterfaceManagerCommonUtils.updateStateEntry(dataBroker, defaultOperShardTransaction, interfaceNew, idManager);
         if (ifTunnel != null) {
             addTunnelConfiguration(dataBroker, parentRefs, interfaceNew, idManager, alivenessMonitorService, ifTunnel,
                     mdsalApiManager, defaultOperShardTransaction, futures);
