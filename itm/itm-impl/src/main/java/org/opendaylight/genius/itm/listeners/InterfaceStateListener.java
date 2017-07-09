@@ -124,6 +124,13 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
          * update contains only delta, may not include iftype Note: This assumes
          * type can't be edited on the fly
          */
+        //JOSH: Check above comment IF this works
+        if (original.getType() == null && update.getType() != null) {
+            LOG.debug("Interface updated: BUT type was perviously null, treating as add. Forwarding...");
+            add(identifier, update);
+            return;
+        }
+
         if (ItmUtils.isItmIfType(original.getType())) {
             LOG.trace("Interface updated. Old: {} New: {}", original, update);
             OperStatus operStatus = update.getOperStatus();
