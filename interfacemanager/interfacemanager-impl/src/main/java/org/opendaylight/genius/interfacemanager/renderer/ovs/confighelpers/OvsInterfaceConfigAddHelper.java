@@ -59,9 +59,12 @@ public class OvsInterfaceConfigAddHelper {
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                                .interfaces.state.Interface ifState = InterfaceManagerCommonUtils.updateStateEntry(
+                                dataBroker, defaultOperShardTransaction, interfaceNew, idManager);
         if (ifTunnel != null) {
             addTunnelConfiguration(dataBroker, parentRefs, interfaceNew, idManager, alivenessMonitorService, ifTunnel,
-                    mdsalApiManager, defaultOperShardTransaction, futures);
+                    ifState, mdsalApiManager, defaultOperShardTransaction, futures);
         } else {
             addVlanConfiguration(interfaceNew, parentRefs, dataBroker, idManager, defaultConfigShardTransaction,
                     defaultOperShardTransaction, futures);
@@ -101,7 +104,10 @@ public class OvsInterfaceConfigAddHelper {
     private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
                                                Interface interfaceNew, IdManagerService idManager,
                                                AlivenessMonitorService alivenessMonitorService,
-                                               IfTunnel ifTunnel, IMdsalApiManager mdsalApiManager,
+                                               IfTunnel ifTunnel, org.opendaylight.yang.gen.v1.urn.ietf.params.xml
+                                               .ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+                                               ifState,
+                                               IMdsalApiManager mdsalApiManager,
                                                WriteTransaction defaultOperShardTransaction,
                                                List<ListenableFuture<Void>> futures) {
         if (parentRefs == null) {
@@ -163,9 +169,9 @@ public class OvsInterfaceConfigAddHelper {
 
             // if TEP is already configured on switch, start LLDP monitoring and
             // program tunnel ingress flow
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceState(interfaceNew.getName(), dataBroker);
+//            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+//                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+//                    .getInterfaceState(interfaceNew.getName(), dataBroker);
             if (ifState != null) {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if (ncId != null) {

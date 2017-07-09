@@ -430,6 +430,40 @@ public final class InterfaceManagerCommonUtils {
         createOrUpdateDpnToInterface(dpId, interfaceName,interfaceOperShardTransaction);
     }
 
+    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                    .interfaces.state.Interface updateStateEntry(DataBroker dataBroker, WriteTransaction transaction,
+                    org.opendaylight.yang.gen.v1.urn. ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                    .interfaces.Interface configInterface, IdManagerService idManager) {
+        String interfaceName = configInterface.getName();
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                    .interfaces.state.Interface interfaceState = getInterfaceState(interfaceName, dataBroker);
+        if (null == interfaceState) {
+            return null;
+        }
+
+        boolean needUpdate = false;
+        InterfaceBuilder newStateBuilder = new InterfaceBuilder(interfaceState);
+        if (null == interfaceState.getType()) {
+            newStateBuilder.setType(configInterface.getType());
+            needUpdate = true;
+        }
+
+        if (null == interfaceState.getIfIndex()) {
+            Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
+            newStateBuilder.setIfIndex(ifIndex);
+            InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
+            needUpdate = true;
+        }
+
+        if (needUpdate) {
+            interfaceState = newStateBuilder.build();
+            transaction.put(LogicalDatastoreType.OPERATIONAL, IfmUtil.buildStateInterfaceId(interfaceName),
+                            interfaceState, true);
+        }
+
+        return interfaceState;
+    }
+
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
             Interface interfaceInfo, String interfaceName, WriteTransaction transaction, IdManagerService idManager,
