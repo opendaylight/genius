@@ -210,7 +210,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         Future<RpcResult<AllocateIdOutput>> futureResult;
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
-            idUtils.lock(lockManager, uniqueKey);
             //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
             newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
             output.setIdValue(newIdValue);
@@ -322,7 +321,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (existingFutureIdValue != null) {
             try {
                 newIdValuesList = existingFutureIdValue.get();
-                idUtils.unlock(lockManager, uniqueIdKey);
                 return newIdValuesList;
             } catch (InterruptedException | ExecutionException e) {
                 LOG.warn("Could not obtain id from existing futureIdValue for idKey {} and pool {}.",
@@ -334,6 +332,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         localPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
+        idUtils.lock(lockManager, uniqueIdKey);
         Optional<IdEntries> existingIdEntry = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
         if (existingIdEntry.isPresent()) {
             newIdValuesList = existingIdEntry.get().getIdValue();
