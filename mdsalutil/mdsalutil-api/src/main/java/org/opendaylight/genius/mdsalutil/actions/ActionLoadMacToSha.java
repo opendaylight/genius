@@ -90,4 +90,10 @@ public class ActionLoadMacToSha extends ActionInfo {
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionLoadMacToSha [address=" + address + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

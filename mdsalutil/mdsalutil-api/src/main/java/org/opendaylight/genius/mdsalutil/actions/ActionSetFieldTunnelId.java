@@ -104,4 +104,11 @@ public class ActionSetFieldTunnelId extends ActionInfo {
         result = 31 * result + (tunnelMask != null ? tunnelMask.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldTunnelId [tunnelId=" + tunnelId + ", tunnelMask=" + tunnelMask + ", getActionKey()="
+                + getActionKey() + "]";
+    }
+
 }

@@ -184,6 +184,14 @@ public class ActionLearn extends ActionInfo {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "ActionLearn [actionKey=" + getActionKey() + ", idleTimeout=" + idleTimeout + ", hardTimeout="
+                + hardTimeout + ", priority=" + priority + ", cookie=" + cookie + ", flags=" + flags + ", tableId="
+                + tableId + ", finIdleTimeout=" + finIdleTimeout + ", finHardTimeout=" + finHardTimeout + ", flowMods="
+                + flowMods + "]";
+    }
+
     public interface FlowMod {
         FlowMods buildFlowMod();
     }
@@ -197,6 +205,18 @@ public class ActionLearn extends ActionInfo {
             this.sourceField = sourceField;
             this.destField = destField;
             this.bits = bits;
+        }
+
+        public long getSourceField() {
+            return sourceField;
+        }
+
+        public long getDestField() {
+            return destField;
+        }
+
+        public int getBits() {
+            return bits;
         }
 
         @Override
@@ -242,6 +262,11 @@ public class ActionLearn extends ActionInfo {
             result = 31 * result + bits;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "MatchFromField [sourceField=" + sourceField + ", destField=" + destField + ", bits=" + bits + "]";
+        }
     }
 
     public static class MatchFromValue implements FlowMod {
@@ -253,6 +278,18 @@ public class ActionLearn extends ActionInfo {
             this.value = value;
             this.sourceField = sourceField;
             this.bits = bits;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public long getSourceField() {
+            return sourceField;
+        }
+
+        public int getBits() {
+            return bits;
         }
 
         @Override
@@ -297,6 +334,11 @@ public class ActionLearn extends ActionInfo {
             result = 31 * result + bits;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "MatchFromValue [value=" + value + ", sourceField=" + sourceField + ", bits=" + bits + "]";
+        }
     }
 
     public static class CopyFromField implements FlowMod {
@@ -308,6 +350,18 @@ public class ActionLearn extends ActionInfo {
             this.sourceField = sourceField;
             this.destField = destField;
             this.bits = bits;
+        }
+
+        public long getSourceField() {
+            return sourceField;
+        }
+
+        public long getDestField() {
+            return destField;
+        }
+
+        public int getBits() {
+            return bits;
         }
 
         @Override
@@ -353,6 +407,11 @@ public class ActionLearn extends ActionInfo {
             result = 31 * result + bits;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "CopyFromField [sourceField=" + sourceField + ", destField=" + destField + ", bits=" + bits + "]";
+        }
     }
 
     public static class CopyFromValue implements FlowMod {
@@ -364,6 +423,18 @@ public class ActionLearn extends ActionInfo {
             this.value = value;
             this.destField = destField;
             this.bits = bits;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public long getDestField() {
+            return destField;
+        }
+
+        public int getBits() {
+            return bits;
         }
 
         @Override
@@ -408,6 +479,11 @@ public class ActionLearn extends ActionInfo {
             result = 31 * result + bits;
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "CopyFromValue [value=" + value + ", destField=" + destField + ", bits=" + bits + "]";
+        }
     }
 
     public static class OutputToPort implements FlowMod {
@@ -417,6 +493,14 @@ public class ActionLearn extends ActionInfo {
         public OutputToPort(long sourceField, int bits) {
             this.sourceField = sourceField;
             this.bits = bits;
+        }
+
+        public long getSourceField() {
+            return sourceField;
+        }
+
+        public int getBits() {
+            return bits;
         }
 
         @Override
@@ -455,6 +539,11 @@ public class ActionLearn extends ActionInfo {
             int result = (int) (sourceField ^ sourceField >>> 32);
             result = 31 * result + bits;
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "OutputToPort [sourceField=" + sourceField + ", bits=" + bits + "]";
         }
     }
 }

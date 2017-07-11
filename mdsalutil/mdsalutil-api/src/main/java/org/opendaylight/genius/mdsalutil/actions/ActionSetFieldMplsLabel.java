@@ -32,6 +32,10 @@ public class ActionSetFieldMplsLabel extends ActionInfo {
         this.label = label;
     }
 
+    public long getLabel() {
+        return label;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -75,4 +79,10 @@ public class ActionSetFieldMplsLabel extends ActionInfo {
         result = 31 * result + (int) (label ^ label >>> 32);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldMplsLabel [label=" + label + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

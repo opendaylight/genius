@@ -92,4 +92,10 @@ public class ActionSetSourceIpv6 extends ActionInfo {
         result = 31 * result + (source != null ? source.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetSourceIpv6 [source=" + source + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

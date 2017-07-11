@@ -48,6 +48,14 @@ public class ActionSetTunnelSourceIp extends ActionInfo {
         this(actionKey, MDSALUtil.getBigIntIpFromIpAddress(sourceIp));
     }
 
+    public BigInteger getSourceIp() {
+        return sourceIp;
+    }
+
+    public boolean isGroupBucket() {
+        return groupBucket;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -102,5 +110,11 @@ public class ActionSetTunnelSourceIp extends ActionInfo {
         result = 31 * result + (sourceIp != null ? sourceIp.hashCode() : 0);
         result = 31 * result + (groupBucket ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ActionSetTunnelSourceIp [sourceIp=" + sourceIp + ", groupBucket=" + groupBucket + ", getActionKey()="
+                + getActionKey() + "]";
     }
 }
