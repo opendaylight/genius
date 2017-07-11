@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_6d23db05",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-11T18:13:57Z",
+      "side": 1,
+      "message": "as discussed, add seviceName too. It may not be key but makes for more readable log.",
+      "revId": "fce064268d3331363995716087a690815468d989",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
