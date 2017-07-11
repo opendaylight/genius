@@ -120,7 +120,9 @@ public class DataStoreJobCoordinator {
             if (jobQueue == null) {
                 jobQueue = new JobQueue();
             }
-            LOG.trace("Adding jobkey {} to queue {} with size {}", key, hashKey, jobEntriesMap.size());
+            if(LOG.isTraceEnabled()) {
+                LOG.trace("Adding jobkey {} to queue {} with size {}", key, hashKey, jobEntriesMap.size());
+            }
             jobQueue.addEntry(jobEntry);
             jobEntriesMap.put(key, jobQueue);
 
@@ -317,8 +319,10 @@ public class DataStoreJobCoordinator {
                         if (jobEntriesMap.isEmpty()) {
                             continue;
                         }
-                        LOG.trace("JobQueueHandler handling queue {} with key size {}. Keys: {} ", i,
+                        if(LOG.isTraceEnabled()) {
+                            LOG.trace("JobQueueHandler handling queue {} with key size {}. Keys: {} ", i,
                                 jobEntriesMap.size(), jobEntriesMap.keySet());
+                        }
 
                         synchronized (jobEntriesMap) {
                             Iterator<Map.Entry<String, JobQueue>> it = jobEntriesMap.entrySet().iterator();
