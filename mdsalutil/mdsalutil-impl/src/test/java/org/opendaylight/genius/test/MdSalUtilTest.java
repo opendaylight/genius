@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.test;
 
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,13 +83,13 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         // Install Flow 1
         FlowEntity testFlow1 = createFlowEntity(dpnId, tableId1);
         mdSalMgr.installFlowInternal(testFlow1).get();
-        assertEquals(1, flowFwder.getDataChgCount());
+        flowFwder.awaitDataChangeCount(1);
 
         // Install FLow 2
         String tableId2 = "13";
         FlowEntity testFlow2 = createFlowEntity(dpnId, tableId2);
         mdSalMgr.installFlowInternal(testFlow2).get();
-        assertEquals(2, flowFwder.getDataChgCount());
+        flowFwder.awaitDataChangeCount(2);
     }
 
     @Test
@@ -102,9 +100,9 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
         // To test RemoveFlow add and then delete Flows
         mdSalMgr.installFlowInternal(testFlow).get();
-        assertEquals(1, flowFwder.getDataChgCount());
+        flowFwder.awaitDataChangeCount(1);
         mdSalMgr.removeFlowInternal(testFlow).get();
-        assertEquals(0, flowFwder.getDataChgCount());
+        flowFwder.awaitDataChangeCount(0);
     }
 
     @Test
@@ -115,14 +113,14 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         GroupEntity grpEntity1 = createGroupEntity(NODE_ID, inport, vlanid);
 
         mdSalMgr.installGroupInternal(grpEntity1).get();
-        assertEquals(1, grpFwder.getDataChgCount());
+        grpFwder.awaitDataChangeCount(1);
 
         // Install Group 2
         inport = "3";
         vlanid = 100;
         GroupEntity grpEntity2 = createGroupEntity(NODE_ID, inport, vlanid);
         mdSalMgr.installGroupInternal(grpEntity2).get();
-        assertEquals(2, grpFwder.getDataChgCount());
+        grpFwder.awaitDataChangeCount(2);
     }
 
     @Test
@@ -132,9 +130,9 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         GroupEntity grpEntity = createGroupEntity(NODE_ID, inport, vlanid);
         // To test RemoveGroup add and then delete Group
         mdSalMgr.installGroupInternal(grpEntity).get();
-        assertEquals(1, grpFwder.getDataChgCount());
+        grpFwder.awaitDataChangeCount(1);
         mdSalMgr.removeGroupInternal(grpEntity).get();
-        assertEquals(0, grpFwder.getDataChgCount());
+        grpFwder.awaitDataChangeCount(0);
     }
 
     public void addFlowCapableNode(NodeKey nodeKey) throws ExecutionException, InterruptedException {

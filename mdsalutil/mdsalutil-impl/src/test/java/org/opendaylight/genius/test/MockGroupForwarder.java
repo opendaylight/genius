@@ -7,7 +7,13 @@
  */
 package org.opendaylight.genius.test;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.awaitility.Awaitility;
+import org.hamcrest.Matchers;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
@@ -19,10 +25,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockGroupForwarder extends AbstractMockForwardingRulesManager<Group> {
+    private static final Logger LOG = LoggerFactory.getLogger(MockGroupForwarder.class);
 
-    private int groupCount = 0;
+    private final AtomicInteger groupCount = new AtomicInteger(0);
     private ListenerRegistration<MockGroupForwarder> listenerRegistration;
 
     public MockGroupForwarder(final DataBroker db) {
@@ -49,14 +58,14 @@ public class MockGroupForwarder extends AbstractMockForwardingRulesManager<Group
 
             switch (mod.getModificationType()) {
                 case DELETE:
-                    groupCount -= 1;
+                    groupCount.decrementAndGet();
                     break;
                 case SUBTREE_MODIFIED:
                     // CHECK IF RQD
                     break;
                 case WRITE:
                     if (mod.getDataBefore() == null) {
-                        groupCount += 1;
+                        groupCount.incrementAndGet();
                     } else {
                         // UPDATE COUNT UNCHANGED
                     }
@@ -67,7 +76,12 @@ public class MockGroupForwarder extends AbstractMockForwardingRulesManager<Group
         }
     }
 
-    public int getDataChgCount() {
-        return groupCount;
+    public void awaitDataChangeCount(int expCount) {
+        Awaitility.await("MockFlowForwarder").atMost(5, TimeUnit.SECONDS).pollDelay(0, MILLISECONDS)
+            .conditionEvaluationListener(condition -> LOG.info(
+                "awaitDataChangeCount: Elapsed time {}s, remaining time {}s; flowCount: {}",
+                    condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
+                    condition.getValue()))
+            .untilAtomic(groupCount, Matchers.equalTo(expCount));
     }
 }
