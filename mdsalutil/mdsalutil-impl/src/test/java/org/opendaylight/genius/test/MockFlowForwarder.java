@@ -7,7 +7,13 @@
  */
 package org.opendaylight.genius.test;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.awaitility.Awaitility;
+import org.hamcrest.Matchers;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
@@ -20,10 +26,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MockFlowForwarder extends AbstractMockForwardingRulesManager<Flow> {
+    private static final Logger LOG = LoggerFactory.getLogger(MockFlowForwarder.class);
 
-    private int flowCount = 0;
+    private final AtomicInteger flowCount = new AtomicInteger(0);
 
     private ListenerRegistration<MockFlowForwarder> listenerRegistration;
 
@@ -51,14 +60,14 @@ public class MockFlowForwarder extends AbstractMockForwardingRulesManager<Flow> 
 
             switch (mod.getModificationType()) {
                 case DELETE:
-                    flowCount -= 1;
+                    flowCount.decrementAndGet();
                     break;
                 case SUBTREE_MODIFIED:
                     // CHECK IF RQD
                     break;
                 case WRITE:
                     if (mod.getDataBefore() == null) {
-                        flowCount += 1;
+                        flowCount.incrementAndGet();
                     } else {
                         // UPDATE COUNT UNCHANGED
                     }
@@ -69,7 +78,12 @@ public class MockFlowForwarder extends AbstractMockForwardingRulesManager<Flow> 
         }
     }
 
-    public int getDataChgCount() {
-        return flowCount;
+    public void awaitDataChangeCount(int expCount) {
+        Awaitility.await("MockFlowForwarder").atMost(5, TimeUnit.SECONDS).pollDelay(0, MILLISECONDS)
+            .conditionEvaluationListener(condition -> LOG.info(
+                "awaitDataChangeCount: Elapsed time {}s, remaining time {}s; flowCount: {}",
+                    condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
+                    condition.getValue()))
+            .untilAtomic(flowCount, Matchers.equalTo(expCount));
     }
 }
