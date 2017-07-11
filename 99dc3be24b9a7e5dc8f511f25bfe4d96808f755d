@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_a2c5e25c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-11T12:37:42Z",
+      "side": 1,
+      "message": "1. I\u0027d like to log service name also.\n2. If, as of today, ACLService is the only one that can call this as a geniune non-error use case, good to add additional check for ACLService. If it is ACL, log it as debug, else error.",
+      "revId": "99dc3be24b9a7e5dc8f511f25bfe4d96808f755d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
