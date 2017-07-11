@@ -13,13 +13,13 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>single-feature-parent</artifactId>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.8.1-Carbon</version>
     <relativePath />
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-fcaps-framework</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.1-Carbon</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: fcapsframework</name>
 
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>odl-mdsal-broker</artifactId>
-      <version>1.5.1-SNAPSHOT</version>
+      <version>1.5.1-Carbon</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>

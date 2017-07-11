@@ -12,13 +12,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>odlparent-lite</artifactId>
-    <version>1.8.1-SNAPSHOT</version>
+    <version>1.8.1-Carbon</version>
     <relativePath/>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>idmanager-aggregator</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.1-Carbon</version>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
   <name>ODL :: genius :: ${project.artifactId}</name>
