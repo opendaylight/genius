@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_88727d7a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionNxResubmit.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-07-11T21:54:09Z",
+      "side": 1,
+      "message": "add space and use [] instead of {}. Also the actionKey \u003d should remove the spaces to match all the other toString\u0027s",
+      "revId": "05a1258638f3c44aa44c5496714060346f64538d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
