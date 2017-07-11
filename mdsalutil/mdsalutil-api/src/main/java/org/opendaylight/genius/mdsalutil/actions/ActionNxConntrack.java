@@ -95,6 +95,10 @@ public class ActionNxConntrack extends ActionInfo {
         return recircTable;
     }
 
+    public List<NxCtAction> getCtActions() {
+        return ctActions;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -135,10 +139,16 @@ public class ActionNxConntrack extends ActionInfo {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "ActionNxConntrack [flags=" + flags + ", zoneSrc=" + zoneSrc + ", conntrackZone=" + conntrackZone
+                + ", recircTable=" + recircTable + ", ctActions=" + ctActions + ", getActionKey()=" + getActionKey()
+                + "]";
+    }
+
     public interface NxCtAction {
         CtActions buildCtActions();
     }
-
 
     public static class NxNat implements NxCtAction {
         private final int flags;
@@ -156,6 +166,30 @@ public class ActionNxConntrack extends ActionInfo {
             this.ipAddressMax = ipAddressMax;
             this.portMin = portMin;
             this.portMax = portMax;
+        }
+
+        public int getFlags() {
+            return flags;
+        }
+
+        public int getRangePresent() {
+            return rangePresent;
+        }
+
+        public IpAddress getIpAddressMin() {
+            return ipAddressMin;
+        }
+
+        public IpAddress getIpAddressMax() {
+            return ipAddressMax;
+        }
+
+        public int getPortMin() {
+            return portMin;
+        }
+
+        public int getPortMax() {
+            return portMax;
         }
 
         @Override
@@ -213,6 +247,12 @@ public class ActionNxConntrack extends ActionInfo {
             result = 31 * result + portMin;
             result = 31 * result + portMax;
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "NxNat [flags=" + flags + ", rangePresent=" + rangePresent + ", ipAddressMin=" + ipAddressMin
+                    + ", ipAddressMax=" + ipAddressMax + ", portMin=" + portMin + ", portMax=" + portMax + "]";
         }
     }
 }

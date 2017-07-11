@@ -112,4 +112,11 @@ public class ActionRegMove extends ActionInfo {
         result = 31 * result + end;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionRegMove [register=" + register + ", start=" + start + ", end=" + end + ", getActionKey()="
+                + getActionKey() + "]";
+    }
+
 }

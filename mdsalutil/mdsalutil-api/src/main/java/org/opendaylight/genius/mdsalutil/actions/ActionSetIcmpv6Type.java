@@ -76,4 +76,10 @@ public class ActionSetIcmpv6Type extends ActionInfo {
         result = 31 * result + type;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetIcmpv6Type [type=" + type + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

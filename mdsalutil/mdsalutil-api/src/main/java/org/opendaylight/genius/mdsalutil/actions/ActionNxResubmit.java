@@ -35,6 +35,10 @@ public class ActionNxResubmit extends ActionInfo {
         this.table = table;
     }
 
+    public short getTable() {
+        return table;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -73,4 +77,10 @@ public class ActionNxResubmit extends ActionInfo {
         result = 31 * result + table;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionNxResubmit{actionKey = " + getActionKey() + ", table=" + table + "}";
+    }
+
 }

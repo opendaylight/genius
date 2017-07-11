@@ -80,4 +80,11 @@ public class ActionSetFieldEthernetDestination extends ActionInfo {
         result = 31 * result + (destination != null ? destination.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldEthernetDestination [destination=" + destination + ", getActionKey()=" + getActionKey()
+                + "]";
+    }
+
 }
