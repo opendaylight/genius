@@ -78,4 +78,9 @@ public class ActionSetTcpSourcePort extends ActionInfo {
         result = 31 * result + port;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetTcpSourcePort [port=" + port + ", getActionKey()=" + getActionKey() + "]";
+    }
 }

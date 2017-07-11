@@ -31,6 +31,10 @@ public class ActionSetFieldDscp extends ActionInfo {
         this.dscp = dscp;
     }
 
+    public short getDscp() {
+        return dscp;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -69,4 +73,10 @@ public class ActionSetFieldDscp extends ActionInfo {
         result = 31 * result + dscp;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldDscp [dscp=" + dscp + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

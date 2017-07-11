@@ -34,6 +34,10 @@ public class ActionSetArpOp extends ActionInfo {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -80,4 +84,10 @@ public class ActionSetArpOp extends ActionInfo {
         result = 31 * result + value;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetArpOp [value=" + value + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

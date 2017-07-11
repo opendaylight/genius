@@ -48,6 +48,14 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
         this(actionKey, MDSALUtil.getBigIntIpFromIpAddress(destIp));
     }
 
+    public BigInteger getDestIp() {
+        return destIp;
+    }
+
+    public boolean isGroupBucket() {
+        return groupBucket;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -102,5 +110,11 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
         result = 31 * result + (destIp != null ? destIp.hashCode() : 0);
         result = 31 * result + (groupBucket ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ActionSetTunnelDestinationIp [destIp=" + destIp + ", groupBucket=" + groupBucket + ", getActionKey()="
+                + getActionKey() + "]";
     }
 }

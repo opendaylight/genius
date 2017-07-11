@@ -94,4 +94,10 @@ public class ActionSetSourceIp extends ActionInfo {
         result = 31 * result + (source != null ? source.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetSourceIp [source=" + source + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

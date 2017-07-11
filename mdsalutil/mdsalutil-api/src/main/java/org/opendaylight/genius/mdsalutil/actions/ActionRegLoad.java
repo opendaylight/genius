@@ -113,4 +113,11 @@ public class ActionRegLoad extends ActionInfo {
         result = 31 * result + (int) (load ^ load >>> 32);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionRegLoad [register=" + register + ", start=" + start + ", end=" + end + ", load=" + load
+                + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

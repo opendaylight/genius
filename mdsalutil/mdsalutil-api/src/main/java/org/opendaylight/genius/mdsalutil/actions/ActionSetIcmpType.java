@@ -78,4 +78,10 @@ public class ActionSetIcmpType extends ActionInfo {
         result = 31 * result + type;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetIcmpType [type=" + type + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }
