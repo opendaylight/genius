@@ -44,6 +44,14 @@ public class ActionOutput extends ActionInfo {
         this.maxLength = maxLength;
     }
 
+    public Uri getOutputNodeConnector() {
+        return outputNodeConnector;
+    }
+
+    public int getMaxLength() {
+        return maxLength;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -86,4 +94,11 @@ public class ActionOutput extends ActionInfo {
         result = 31 * result + maxLength;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionOutput [outputNodeConnector=" + outputNodeConnector + ", maxLength=" + maxLength
+                + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

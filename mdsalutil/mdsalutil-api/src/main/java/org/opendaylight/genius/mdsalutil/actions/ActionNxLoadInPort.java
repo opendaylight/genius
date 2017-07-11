@@ -83,4 +83,10 @@ public class ActionNxLoadInPort extends ActionInfo {
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionNxLoadInPort [value=" + value + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

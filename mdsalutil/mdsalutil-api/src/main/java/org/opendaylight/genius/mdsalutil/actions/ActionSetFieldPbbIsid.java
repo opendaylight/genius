@@ -33,6 +33,10 @@ public class ActionSetFieldPbbIsid extends ActionInfo {
         this.isid = isid;
     }
 
+    public long getIsid() {
+        return isid;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -78,4 +82,10 @@ public class ActionSetFieldPbbIsid extends ActionInfo {
         result = 31 * result + (int) (isid ^ isid >>> 32);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldPbbIsid [isid=" + isid + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

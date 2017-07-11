@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -22,6 +23,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -126,6 +128,17 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             // in case of a comparison failure, is *A LOT* more clearly readable
             // than what G Truth (or Hamcrest) can do based on toString.
             assertEqualBeans(sortedExpectedFlows, sortedFlows);
+            if (sortedExpectedFlows.toString().equals(sortedFlows.toString())
+                    && !sortedExpectedFlows.equals(sortedFlows)) {
+                fail("Suspected toString, missing getter, equals (hashCode) bug in FlowEntity related class!!! :-(");
+            }
+            throw new ComparisonFailure(
+                    "assertEqualBeans() MUST fail - given that the assertThat.containsExactlyElementsIn() just failed!"
+                    // Beware, we're using XtendBeanGenerator instead of XtendYangBeanGenerator like in
+                    // AssertDataObjects, but for FlowEntity it's the same... it only makes a difference for DataObjects
+                    + " What is missing in: " + new XtendBeanGenerator().getExpression(sortedFlows),
+                    sortedExpectedFlows.toString(), sortedFlows.toString());
+            // If this ^^^ occurs, then there is probably a bug in ch.vorburger.xtendbeans
         }
     }
 
