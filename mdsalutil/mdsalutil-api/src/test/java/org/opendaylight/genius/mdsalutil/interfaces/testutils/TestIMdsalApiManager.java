@@ -9,6 +9,7 @@ package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
@@ -120,12 +121,15 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             // hard to read (the diff printed subsequently by assertEqualBeans
             // is, much, more readable), there are cases when looking more closely
             // at the full toString() output of the flows is still useful, so:
+            // TIP: Use e.g. 'wdiff -n expected.txt actual.txt | colordiff' to compare these!
             LOG.warn("assert failed [order ignored!]; expected flows: {}", sortedExpectedFlows);
             LOG.warn("assert failed [order ignored!]; actual flows  : {}", sortedFlows);
-            // The point of this is basically just that our assertEqualBeans output,
+            // The point of now also doing assertEqualBeans() is just that its output,
             // in case of a comparison failure, is *A LOT* more clearly readable
             // than what G Truth (or Hamcrest) can do based on toString.
             assertEqualBeans(sortedExpectedFlows, sortedFlows);
+            fail("assertEqualBeans() MUST fail - given that the assertThat.containsExactlyElementsIn() just failed!");
+            // If this ^^^ occurs, then there is probably a bug in ch.vorburger.xtendbeans
         }
     }
 
