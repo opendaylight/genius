@@ -103,11 +103,6 @@ public class DataStoreJobCoordinator {
         enqueueJob(key, mainWorker, null, maxRetries);
     }
 
-    public void enqueueJob(AbstractDataStoreJob job) throws InvalidJobException {
-        job.validate();
-        enqueueJob(job.getJobQueueKey(), job);
-    }
-
     /**
      *    This is used by the external applications to enqueue a Job
      *    with an appropriate key. A JobEntry is created and queued
