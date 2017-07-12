@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "da2a55be_3cac76a0",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-07-12T07:33:42Z",
+      "side": 1,
+      "message": "It did fail on Jenkins build also, see Aswhin\u0027s comment in https://git.opendaylight.org/gerrit/#/c/60222/",
+      "revId": "05a1258638f3c44aa44c5496714060346f64538d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_88727d7a",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionNxResubmit.java",
         "patchSetId": 1
