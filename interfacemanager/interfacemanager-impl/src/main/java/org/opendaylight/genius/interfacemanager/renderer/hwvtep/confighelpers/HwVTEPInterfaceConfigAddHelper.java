@@ -39,16 +39,17 @@ public class HwVTEPInterfaceConfigAddHelper {
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
         // create hwvtep through ovsdb plugin
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId, transaction,
-                ifTunnel);
+        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction topologyConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
+        InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId,
+            defaultOperShardTransaction, ifTunnel);
         if (globalNodeId != null) {
-            addTerminationPoints(transaction, futures, globalNodeId, ifTunnel);
-            SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.getAugmentation(IfTunnel.class), transaction);
-        } else {
-            LOG.debug("specified physical switch is not connected {}", physicalSwitchNodeId);
+            addTerminationPoints(topologyConfigShardTransaction, futures, globalNodeId,ifTunnel);
+            SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.getAugmentation(IfTunnel.class),
+                defaultOperShardTransaction);
         }
-        futures.add(transaction.submit());
+        futures.add(defaultOperShardTransaction.submit());
+        futures.add(topologyConfigShardTransaction.submit());
         return futures;
     }
 
