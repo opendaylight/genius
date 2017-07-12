@@ -61,8 +61,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
-                                SouthboundUtils.createGlobalNodeInstanceIdentifier(dataBroker,
-                                        nodeIdentifier.getNodeId()));
+                                SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()));
                         coordinator.enqueueJob(interfaceOld.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
                     }
                 }
@@ -82,8 +81,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                         RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
-                                SouthboundUtils.createGlobalNodeInstanceIdentifier(dataBroker,
-                                        nodeIdentifier.getNodeId()),
+                                SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 ifTunnel);
                         coordinator.enqueueJob(interfaceNew.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
                     }
@@ -104,8 +102,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
-                                SouthboundUtils.createGlobalNodeInstanceIdentifier(dataBroker,
-                                        nodeIdentifier.getNodeId()),
+                                SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 ifTunnel);
                         coordinator.enqueueJob(interfaceNew.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
                     }
