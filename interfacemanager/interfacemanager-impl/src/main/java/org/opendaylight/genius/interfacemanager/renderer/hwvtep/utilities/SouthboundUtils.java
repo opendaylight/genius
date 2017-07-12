@@ -43,6 +43,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+
 public class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
     public static final String HWVTEP_TOPOLOGY = "hwvtep:1";
@@ -50,6 +52,8 @@ public class SouthboundUtils {
     public static final String TEP_PREFIX = "vxlan_over_ipv4:";
     public static final String BFD_OP_STATE = "state";
     public static final String BFD_STATE_UP = "up";
+    public static final String PS_NODE_ID_PREFIX = "/physicalswitch";
+
     // BFD parameters
     static final String BFD_PARAM_ENABLE = "enable";
     static final String BFD_PARAM_MIN_RX = "min_rx";
@@ -93,6 +97,22 @@ public class SouthboundUtils {
         PhysicalSwitchAugmentation physicalSwitchAugmentation = physicalSwitch
                 .getAugmentation(PhysicalSwitchAugmentation.class);
         return (InstanceIdentifier<Node>) physicalSwitchAugmentation.getManagedBy().getValue();
+    }
+
+    public static @Nullable InstanceIdentifier<Node> createGlobalNodeInstanceIdentifier(String psNodeIdString) {
+        String globalNodeIdStr;
+        try {
+            globalNodeIdStr = psNodeIdString.substring(0, psNodeIdString.indexOf(PS_NODE_ID_PREFIX));
+        } catch (StringIndexOutOfBoundsException ex) {
+            LOG.error("cannot determine global-node-id for the physical node {}", psNodeIdString);
+            return null;
+        }
+        NodeId globalNodeId = new NodeId(globalNodeIdStr);
+        InstanceIdentifier<Node> globalNodeInstanceId = InstanceIdentifier
+            .create(NetworkTopology.class)
+            .child(Topology.class, new TopologyKey(HWVTEP_TOPOLOGY_ID))
+            .child(Node.class,new NodeKey(globalNodeId));
+        return globalNodeInstanceId;
     }
 
     public static InstanceIdentifier<TerminationPoint> createTEPInstanceIdentifier(InstanceIdentifier<Node> nodeIid,
