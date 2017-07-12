@@ -31,17 +31,18 @@ public class HwVTEPConfigRemoveHelper {
     public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, Interface interfaceOld,
             InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchNodeId) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction topologyConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("removing hwvtep configuration for {}", interfaceOld.getName());
         if (globalNodeId != null) {
             IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
-            // removeTunnelTableEntry(transaction, ifTunnel,
-            // physicalSwitchNodeId);
-            removeTerminationEndPoint(transaction, ifTunnel, globalNodeId);
-            InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), transaction);
-            InterfaceMetaUtils.removeTunnelToInterfaceMap(physicalSwitchNodeId, transaction, ifTunnel);
+            //removeTunnelTableEntry(defaultOperShardTransaction, ifTunnel, physicalSwitchNodeId);
+            removeTerminationEndPoint(topologyConfigShardTransaction, ifTunnel, globalNodeId);
+            InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), defaultOperShardTransaction);
+            InterfaceMetaUtils.removeTunnelToInterfaceMap(physicalSwitchNodeId, defaultOperShardTransaction, ifTunnel);
         }
-        futures.add(transaction.submit());
+        futures.add(defaultOperShardTransaction.submit());
+        futures.add(topologyConfigShardTransaction.submit());
         return futures;
     }
 
