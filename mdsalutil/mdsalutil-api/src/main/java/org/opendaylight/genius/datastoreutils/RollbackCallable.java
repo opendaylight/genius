@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+@Deprecated
 public abstract class RollbackCallable implements Callable<List<ListenableFuture<Void>>> {
 
     private List<ListenableFuture<Void>> futures;
