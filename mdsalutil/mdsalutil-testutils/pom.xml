@@ -84,7 +84,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <type>test-jar</type>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>jobcoordinator-impl</artifactId>
+      <version>${genius.infrautils.version}</version>
+      <scope>compile</scope>
+    </dependency>
 
+    <!-- Now all <scope>test here: -->
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>infrautils-testutils</artifactId>
