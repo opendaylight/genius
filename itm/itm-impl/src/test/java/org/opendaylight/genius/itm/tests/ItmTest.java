@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.itm.impl.ItmTestUtils;
 import org.opendaylight.genius.utils.cache.CacheTestUtil;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
@@ -25,7 +26,7 @@ public class ItmTest {
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class);
+    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class);
 
     @Before
     public void before() {
