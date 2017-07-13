@@ -68,6 +68,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>mycila-guice-jsr250</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>jobcoordinator-impl</artifactId>
+      <version>${genius.infrautils.version}</version>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
