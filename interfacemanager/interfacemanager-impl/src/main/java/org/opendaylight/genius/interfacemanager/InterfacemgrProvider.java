@@ -28,7 +28,6 @@ import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipS
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -43,6 +42,7 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -85,28 +85,35 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
     private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
+
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
+    private final JobCoordinator jobCoordinator;
+
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+            @OsgiService JobCoordinator jobCoordinator) {
         this.dataBroker = dataBroker;
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
+        this.jobCoordinator = jobCoordinator;
     }
 
     @PostConstruct
@@ -437,7 +444,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo) {
-        IfmUtil.unbindService(dataBroker, interfaceName,
+        IfmUtil.unbindService(dataBroker, jobCoordinator, interfaceName,
                 FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
     }
 
@@ -673,7 +680,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return;
         }
 
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         ParentRefUpdateWorker parentRefUpdateWorker = new ParentRefUpdateWorker(interfaceName, parentInterface,
                 readInterfaceBeforeWrite);
         jobCoordinator.enqueueJob(interfaceName, parentRefUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
