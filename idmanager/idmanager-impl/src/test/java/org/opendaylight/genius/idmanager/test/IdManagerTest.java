@@ -40,6 +40,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
@@ -83,7 +84,7 @@ public class IdManagerTest {
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule MethodRule guice = new GuiceRule(IdManagerTestModule.class,
-            TestableDataTreeChangeListenerModule.class);
+            TestableDataTreeChangeListenerModule.class, JobCoordinatorTestModule.class);
 
     private @Inject IdManagerService idManagerService;
     private @Inject DataBroker dataBroker;

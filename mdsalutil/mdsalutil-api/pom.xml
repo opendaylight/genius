@@ -102,8 +102,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <optional>true</optional>
     </dependency>
 
-
-  <!-- Dependencies with <scope>test -->
+    <!-- Dependencies with <scope>test -->
     <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
       <artifactId>testutils</artifactId>
