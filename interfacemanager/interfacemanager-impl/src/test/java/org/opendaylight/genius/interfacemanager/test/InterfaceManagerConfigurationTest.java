@@ -29,6 +29,7 @@ import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -42,6 +43,7 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
@@ -140,9 +142,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -154,15 +163,18 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 @SuppressWarnings("deprecation")
 public class InterfaceManagerConfigurationTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerConfigurationTest.class);
+
     // Uncomment this, temporarily (never commit!), to see concurrency issues:
-    // public static @ClassRule RunUntilFailureRule repeater = new
-    // RunUntilFailureRule();
+    // public static @ClassRule RunUntilFailureClassRule classRepeater = new RunUntilFailureClassRule();
+    // public @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(classRepeater);
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule(),
         new TestableDataTreeChangeListenerModule());
 
     @Inject DataBroker dataBroker;
+    SingleTransactionDataBroker db;
     @Inject OdlInterfaceRpcService odlInterfaceRpcService;
     @Inject IInterfaceManager interfaceManager;
     @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
@@ -172,6 +184,7 @@ public class InterfaceManagerConfigurationTest {
     public void start() throws InterruptedException, TransactionCommitFailedException {
         // Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
+        db = new SingleTransactionDataBroker(dataBroker);
     }
 
     @After
@@ -339,7 +352,7 @@ public class InterfaceManagerConfigurationTest {
     }
 
     @Test
-    public void newTunnelInterface() throws Exception {
+    public <T> void newTunnelInterface() throws Exception {
 
         // 3. Update DPN-ID of the bridge
         OvsdbSouthboundTestUtil.updateBridge(dataBroker, "00:00:00:00:00:00:00:02");
@@ -384,8 +397,7 @@ public class InterfaceManagerConfigurationTest {
                 .createInstanceIdentifier("192.168.56.101", 6640, "s2");
         InstanceIdentifier<TerminationPoint> tpIid = InterfaceManagerTestUtil.getTerminationPointId(bridgeIid,
                 TUNNEL_INTERFACE_NAME);
-        assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        assertEqualTerminationPoints(ExpectedTerminationPoint.newTerminationPoint(), db.syncRead(CONFIGURATION, tpIid));
 
         // When termination end point is populated in network-topology
         OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class,
@@ -413,8 +425,8 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.updateTunnelMonitoringAttributes(dataBroker, TUNNEL_INTERFACE_NAME);
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         // Then verify if bfd attributes are updated in topology config DS
-        assertEqualBeans(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        assertEqualTerminationPoints(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(),
+                db.syncRead(CONFIGURATION, tpIid));
 
         //state modification tests
         // 1. Make the operational state of port as DOWN
@@ -477,6 +489,45 @@ public class InterfaceManagerConfigurationTest {
         // config/network-topology
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+    }
+
+    private void assertEqualTerminationPoints(TerminationPoint expected, TerminationPoint actual) {
+        // Re-create the termination points to avoid re-deserialising the augmentations
+        assertEqualBeans(rebuildTerminationPoint(expected), rebuildTerminationPoint(actual));
+    }
+
+    private TerminationPoint rebuildTerminationPoint(TerminationPoint tp) {
+        // The problem we're fixing here is that, in MD-SAL binding v1, YANG lists are represented
+        // as Java lists but they don't preserve order (unless they specify “ordered-by user”).
+        // YANG keyed lists in particular are backed by maps, so you can store such a list in the
+        // MD-SAL and get it back in a different order.
+        // When comparing beans involving such lists, we need to sort the lists before comparing
+        // them. Retrieving the augmentation gives a modifiable list, so it's tempting to just
+        // sort that — but the list is re-created every time the augmentation is retrieved, so
+        // the sort is lost.
+        // To avoid all this, we rebuild instances of TerminationPoint, and sort the affected lists
+        // in the augmentations, with full augmentation rebuilds too (since the lists in a built
+        // augmentation might be unmodifiable).
+        TerminationPointBuilder newTpBuilder = new TerminationPointBuilder(tp);
+        OvsdbTerminationPointAugmentation ovsdbTpAugmentation =
+                tp.getAugmentation(OvsdbTerminationPointAugmentation.class);
+        if (ovsdbTpAugmentation != null) {
+            OvsdbTerminationPointAugmentationBuilder newOvsdbTpAugmentationBuilder =
+                    new OvsdbTerminationPointAugmentationBuilder(ovsdbTpAugmentation);
+            if (ovsdbTpAugmentation.getOptions() != null) {
+                List<Options> options = new ArrayList<>(ovsdbTpAugmentation.getOptions());
+                options.sort(Comparator.comparing(o -> o.getKey().toString()));
+                newOvsdbTpAugmentationBuilder.setOptions(options);
+            }
+            if (ovsdbTpAugmentation.getInterfaceBfd() != null) {
+                List<InterfaceBfd> interfaceBfd = new ArrayList<>(ovsdbTpAugmentation.getInterfaceBfd());
+                interfaceBfd.sort(Comparator.comparing(o -> o.getKey().toString()));
+                newOvsdbTpAugmentationBuilder.setInterfaceBfd(interfaceBfd);
+            }
+            newTpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class,
+                    newOvsdbTpAugmentationBuilder.build());
+        }
+        return newTpBuilder.build();
     }
 
     private void checkVlanApis() throws Exception {
