@@ -117,9 +117,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     private void registerListener(DataBroker db) {
         FlowListener flowListener = new FlowListener();
-        GroupListener groupListener = new GroupListener();
+        FlowConfigListener flowConfigListener = new FlowConfigListener();
+        final GroupListener groupListener = new GroupListener();
         FlowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(), db);
         flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
+        flowConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, db);
         groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
     }
 
@@ -576,6 +578,43 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         @Override
         protected FlowListener getDataTreeChangeListener() {
             return FlowListener.this;
+        }
+    }
+
+    class FlowConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowConfigListener> {
+        private final Logger flowLog = LoggerFactory.getLogger(FlowConfigListener.class);
+
+        FlowConfigListener() {
+            super(Flow.class, FlowConfigListener.class);
+        }
+
+        @Override
+        protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            flowLog.trace("FlowId {} deleted from Table {} on DPN {}",
+                del.getId().getValue(), del.getTableId(), dpId);
+        }
+
+        @Override
+        protected void update(InstanceIdentifier<Flow> identifier, Flow original, Flow update) {
+        }
+
+        @Override
+        protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            flowLog.debug("FlowId {} added to Table {} on DPN {}",
+                add.getId().getValue(), add.getTableId(), dpId);
+        }
+
+        @Override
+        protected InstanceIdentifier<Flow> getWildCardPath() {
+            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
+                .child(Table.class).child(Flow.class);
+        }
+
+        @Override
+        protected FlowConfigListener getDataTreeChangeListener() {
+            return FlowConfigListener.this;
         }
     }
 
