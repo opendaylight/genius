@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
-
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_1;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_2;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME;
@@ -42,6 +41,7 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
@@ -140,7 +140,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yangtools.yang.binding.Identifiable;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
@@ -155,14 +157,15 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class InterfaceManagerConfigurationTest {
 
     // Uncomment this, temporarily (never commit!), to see concurrency issues:
-    // public static @ClassRule RunUntilFailureRule repeater = new
-    // RunUntilFailureRule();
+    // public static @ClassRule RunUntilFailureClassRule classRepeater = new RunUntilFailureClassRule();
+    // public @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(classRepeater);
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule(),
         new TestableDataTreeChangeListenerModule());
 
     @Inject DataBroker dataBroker;
+    SingleTransactionDataBroker db;
     @Inject OdlInterfaceRpcService odlInterfaceRpcService;
     @Inject IInterfaceManager interfaceManager;
     @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
@@ -172,6 +175,7 @@ public class InterfaceManagerConfigurationTest {
     public void start() throws InterruptedException, TransactionCommitFailedException {
         // Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
+        db = new SingleTransactionDataBroker(dataBroker);
     }
 
     @After
@@ -338,7 +342,7 @@ public class InterfaceManagerConfigurationTest {
     }
 
     @Test
-    public void newTunnelInterface() throws Exception {
+    public <T> void newTunnelInterface() throws Exception {
 
         // 3. Update DPN-ID of the bridge
         OvsdbSouthboundTestUtil.updateBridge(dataBroker, "00:00:00:00:00:00:00:02");
@@ -383,8 +387,10 @@ public class InterfaceManagerConfigurationTest {
                 .createInstanceIdentifier("192.168.56.101", 6640, "s2");
         InstanceIdentifier<TerminationPoint> tpIid = InterfaceManagerTestUtil.getTerminationPointId(bridgeIid,
                 TUNNEL_INTERFACE_NAME);
-        assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        TerminationPoint tp1 = db.syncRead(CONFIGURATION, tpIid);
+        tp1.getAugmentation(OvsdbTerminationPointAugmentation.class).getOptions()
+            .sort((o1, o2) -> o1.getKey().toString().compareTo(o2.getKey().toString()));
+        assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(), tp1);
 
         // When termination end point is populated in network-topology
         OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class,
@@ -412,8 +418,12 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.updateTunnelMonitoringAttributes(dataBroker, TUNNEL_INTERFACE_NAME);
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         // Then verify if bfd attributes are updated in topology config DS
-        assertEqualBeans(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        TerminationPoint tp2 = db.syncRead(CONFIGURATION, tpIid);
+        tp2.getAugmentation(OvsdbTerminationPointAugmentation.class).getOptions()
+            .sort((o1, o2) -> o1.getKey().toString().compareTo(o2.getKey().toString()));
+        tp2.getAugmentation(OvsdbTerminationPointAugmentation.class).getInterfaceBfd()
+            .sort((o1, o2) -> o1.getKey().toString().compareTo(o2.getKey().toString()));
+        assertEqualBeans(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(), tp2);
 
         //state modification tests
         // 1. Make the operational state of port as DOWN
@@ -476,6 +486,10 @@ public class InterfaceManagerConfigurationTest {
         // config/network-topology
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
+    }
+
+    // TODO How do you do the generics right here?!
+    private void sort(@SuppressWarnings("rawtypes") List<Identifiable> list) {
     }
 
     private void checkVlanApis() throws Exception {
