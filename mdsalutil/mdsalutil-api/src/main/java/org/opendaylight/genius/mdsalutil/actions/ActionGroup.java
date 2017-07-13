@@ -71,4 +71,10 @@ public class ActionGroup extends ActionInfo {
         result = 31 * result + (int) (groupId ^ groupId >>> 32);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionGroup [actionKey=" + getActionKey() + ", groupId=" + groupId + "]";
+    }
+
 }

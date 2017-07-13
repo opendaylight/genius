@@ -67,7 +67,7 @@ public class ActionSetDestinationIp extends ActionInfo {
             .build();
     }
 
-    public Ipv4Prefix getSource() {
+    public Ipv4Prefix getDestination() {
         return destination;
     }
 
@@ -94,4 +94,10 @@ public class ActionSetDestinationIp extends ActionInfo {
         result = 31 * result + (destination != null ? destination.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetDestinationIp [destination=" + destination + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

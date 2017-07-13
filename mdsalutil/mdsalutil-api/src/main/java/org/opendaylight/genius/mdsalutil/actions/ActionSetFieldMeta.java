@@ -32,6 +32,10 @@ public class ActionSetFieldMeta extends ActionInfo {
         this.metadataValue = metadataValue;
     }
 
+    public BigInteger getMetadataValue() {
+        return metadataValue;
+    }
+
     @Override
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
@@ -70,4 +74,10 @@ public class ActionSetFieldMeta extends ActionInfo {
         result = prime * result + (metadataValue == null ? 0 : metadataValue.hashCode());
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldMeta [metadataValue=" + metadataValue + ", getActionKey()=" + getActionKey() + "]";
+    }
+
 }

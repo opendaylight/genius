@@ -34,6 +34,10 @@ public class ActionSetFieldVlanVid extends ActionInfo {
         this.vlanId = vlanId;
     }
 
+    public int getVlanId() {
+        return vlanId;
+    }
+
     @Override
     public Action buildAction() {
         return buildAction(getActionKey());
@@ -82,5 +86,10 @@ public class ActionSetFieldVlanVid extends ActionInfo {
         int result = super.hashCode();
         result = 31 * result + vlanId;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ActionSetFieldVlanVid [vlanId=" + vlanId + ", getActionKey()=" + getActionKey() + "]";
     }
 }
