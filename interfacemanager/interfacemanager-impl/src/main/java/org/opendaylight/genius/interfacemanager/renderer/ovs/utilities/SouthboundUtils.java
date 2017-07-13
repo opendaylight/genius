@@ -7,11 +7,11 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
-import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -170,7 +170,13 @@ public class SouthboundUtils {
             vlanId = ifL2vlan.getVlanId().getValue();
         }
 
-        Map<String, String> options = Maps.newHashMap();
+        Map<String, String> options = new LinkedHashMap<String, String>() {
+            @Override
+            public String put(String key, String value) {
+                LOG.warn("put({}, {}", key, value);
+                return super.put(key, value);
+            }
+        };
 
         // Options common to any kind of tunnel
         if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
@@ -246,6 +252,8 @@ public class SouthboundUtils {
         if (options != null) {
             List<Options> optionsList = new ArrayList<>();
             for (Map.Entry<String, String> entry : options.entrySet()) {
+                LOG.warn("entry({}, {}", entry.getKey(), entry.getValue());
+
                 OptionsBuilder optionsBuilder = new OptionsBuilder();
                 optionsBuilder.setKey(new OptionsKey(entry.getKey()));
                 optionsBuilder.setOption(entry.getKey());
