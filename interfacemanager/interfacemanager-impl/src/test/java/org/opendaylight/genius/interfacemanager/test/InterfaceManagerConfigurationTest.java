@@ -48,6 +48,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -177,8 +178,8 @@ public class InterfaceManagerConfigurationTest {
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
-    public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule(),
-        new TestableDataTreeChangeListenerModule());
+    public @Rule MethodRule guice = new GuiceRule(InterfaceManagerTestModule.class,
+        TestableDataTreeChangeListenerModule.class, JobCoordinatorTestModule.class);
 
     @Inject DataBroker dataBroker;
     SingleTransactionDataBroker db;
