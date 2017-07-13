@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
@@ -94,7 +95,7 @@ public class ItmManagerRpcServiceTest {
 
     public @Rule LogRule logRule = new LogRule();
     // TODO public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class);
+    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class);
 
     String trunkInterfaceName;
 
