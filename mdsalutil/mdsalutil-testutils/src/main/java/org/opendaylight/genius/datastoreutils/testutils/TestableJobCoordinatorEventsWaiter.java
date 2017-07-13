@@ -31,14 +31,16 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
     /**
      * Constructs an instance that uses the deprecated DataStoreJobCoordinator.
      *
-     * @deprecated Use {@link TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor coordinatorMonitor)} instead.
+     * @deprecated Use
+     *             {@link TestableJobCoordinatorEventsWaiter#TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor)}
+     *             instead.
      */
     @Deprecated
-    @Inject
     public TestableJobCoordinatorEventsWaiter() {
         incompleteTaskCountSupplier = () -> DataStoreJobCoordinator.getInstance().getIncompleteTaskCount();
     }
 
+    @Inject
     public TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor coordinatorMonitor) {
         incompleteTaskCountSupplier = () -> coordinatorMonitor.getIncompleteTaskCount();
     }
