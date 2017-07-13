@@ -11,11 +11,11 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.is;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +23,14 @@ import org.slf4j.LoggerFactory;
 public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsWaiter {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestableJobCoordinatorEventsWaiter.class);
+
+    private final JobCoordinatorMonitor infrautilsJobCoordinatorMonitor;
+
+    @Inject
+    public TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor infrautilsJobCoordinatorMonitor) {
+        super();
+        this.infrautilsJobCoordinatorMonitor = infrautilsJobCoordinatorMonitor;
+    }
 
     @Override
     public boolean awaitEventsConsumption() throws ConditionTimeoutException {
@@ -33,7 +41,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
                     "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; incompleteTaskCount: {}",
                         condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
                         condition.getValue()))
-            .until(() -> DataStoreJobCoordinator.getInstance().getIncompleteTaskCount(), is(0L));
+            .until(() -> infrautilsJobCoordinatorMonitor.getIncompleteTaskCount(), is(0L));
         return true;
     }
 
