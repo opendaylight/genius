@@ -144,7 +144,7 @@ public class ActionConverterUtil {
                 Method build = ofActionClass.getDeclaredMethod(BUILD_METHOD);
                 Object ofActionObj = ofActionClass.newInstance();
                 ofActionObj = build.invoke(copy(inAction, ofActionObj));
-                LOG.info("Converted {} action to {} action", inAction.getImplementedInterface(),
+                LOG.debug("Converted {} action to {} action", inAction.getImplementedInterface(),
                         ((Action) ofActionObj).getImplementedInterface());
                 inAction = (Action) ofActionObj;
             } catch (InstantiationException e) {
