@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_45005401",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-18T16:27:29Z",
+      "side": 1,
+      "message": "This is DataStore read. hwvtepNode should already be cached with a Util to access it, probably in netvirt code. In netvirt get HwTepNode and then extract db-version.",
+      "range": {
+        "startLine": 657,
+        "startChar": 26,
+        "endLine": 657,
+        "endChar": 39
+      },
+      "revId": "29f21cee9b61d1fbe8d027e2a74e14d9a4ae62dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
