@@ -22,6 +22,30 @@
       "revId": "29f21cee9b61d1fbe8d027e2a74e14d9a4ae62dc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_45d17456",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 657,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-18T17:14:09Z",
+      "side": 1,
+      "message": "On second thoughts, read on operational should be okay. We don\u0027t already have listener for it so can\u0027t reuse. Reads on oeprational are not that big an issue as on config. If we run into perf, then we can consider using caching.",
+      "parentUuid": "da2a55be_45005401",
+      "range": {
+        "startLine": 657,
+        "startChar": 26,
+        "endLine": 657,
+        "endChar": 39
+      },
+      "revId": "29f21cee9b61d1fbe8d027e2a74e14d9a4ae62dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
