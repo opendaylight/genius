@@ -16,6 +16,24 @@
       "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_d3152ee6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-07-19T10:50:12Z",
+      "side": 1,
+      "message": "We can definitely add checks here. I did not notice any loops in my testing.",
+      "parentUuid": "da2a55be_d3e24e2e",
+      "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
