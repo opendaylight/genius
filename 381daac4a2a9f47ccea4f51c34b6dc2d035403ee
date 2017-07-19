@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_d3e24e2e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-07-19T10:12:38Z",
+      "side": 1,
+      "message": "Every tunnel port add, results in 4 southbound events - 1 OF Port add notification, and 3 OVSDB notifications for BFD status change. We update interface-state based on the BFD notifications. I am wondering in a scaled scenario, will this result in a loop? update calling add -\u003e add doing an interface-state update --\u003e this again triggers update.. I do agree that we have put checks to see if there is any change in status update, then only proceed. But I have seen scenarios in scale testing, where these reads can go stale, and we end up in unnecessary updates.",
+      "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
