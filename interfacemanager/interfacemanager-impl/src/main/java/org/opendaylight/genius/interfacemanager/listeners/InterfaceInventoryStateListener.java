@@ -8,8 +8,11 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -140,12 +143,18 @@ public class InterfaceInventoryStateListener
         if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
             NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
-                if (!fcNodeConnectorNew.getReason().equals(PortReason.Add)) {
-                    LOG.error("Dropping NodeConnector Event for {}, VM migration should be triggered "
-                            + "only for OFPT_PORT_STATUS/OFPPR_ADD", fcNodeConnectorNew.getName());
-                    return;
+                BigInteger dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
+                BigInteger dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                if (!Objects.equals(dpnIdOld, dpnIdNew)) {
+                    if (fcNodeConnectorNew.getReason() != PortReason.Add) {
+                        LOG.error("Dropping Port update event for {}, as DPN id is changed from {} to {}",
+                            fcNodeConnectorNew.getName(), dpnIdOld, dpnIdNew);
+                        return;
+                    }
+                } else {
+                    LOG.warn("Port number update detected for {}", fcNodeConnectorNew.getName());
                 }
-                // VM Migration: Delete existing interface entry for older DPN
+                //VM Migration or Port Number Update: Delete existing interface entry for older DPN
                 LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName,
                     nodeConnectorId, nodeConnectorIdOld);
                 remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
