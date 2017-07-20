@@ -16,6 +16,24 @@
       "revId": "a0b52c86a88131c19ee62fb4e09c93d1d5c05981",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_94f39c9e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-07-20T05:10:49Z",
+      "side": 1,
+      "message": "I have added @Nullable.. Callers of this method are checking for null.. Also we don\u0027t want to log StringIndexOutofBoundException but log a human readable error which prints the string so that it becomes obvious that the substring is not present",
+      "parentUuid": "da2a55be_712c5003",
+      "revId": "a0b52c86a88131c19ee62fb4e09c93d1d5c05981",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
