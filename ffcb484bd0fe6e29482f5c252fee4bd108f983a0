@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_9c10de02",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-07-21T09:16:27Z",
+      "side": 1,
+      "message": "Could you move this functionality into ItmUtils. Have one method that reads from the cache if object is not present then read it from the datastore and return the object.This way, the method can be re-used for other RPCs that work on external tunnels.",
+      "revId": "ffcb484bd0fe6e29482f5c252fee4bd108f983a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
