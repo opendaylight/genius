@@ -100,8 +100,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class IfmUtil {
+
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final int INVALID_ID = 0;
+
+    private IfmUtil() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final ImmutableMap<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>
         TUNNEL_TYPE_MAP = new ImmutableMap.Builder<Class<? extends TunnelTypeBase>, InterfaceInfo.InterfaceType>()
@@ -170,10 +175,7 @@ public class IfmUtil {
                         new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                             .ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
                                 interfaceName));
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface> id = idBuilder
-                .build();
-        return id;
+        return idBuilder.build();
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
