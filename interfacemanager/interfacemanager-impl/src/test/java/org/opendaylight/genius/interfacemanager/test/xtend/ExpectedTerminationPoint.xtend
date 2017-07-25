@@ -30,16 +30,16 @@ class ExpectedTerminationPoint {
                 name = "tun414a856a7a4"
                 options = #[
                     new OptionsBuilder >> [
+                        option = "key"
+                        value = "flow"
+                    ],
+                    new OptionsBuilder >> [
                         option = "local_ip"
                         value = "2.2.2.2"
                     ],
                     new OptionsBuilder >> [
                         option = "remote_ip"
                         value = "1.1.1.1"
-                    ],
-                    new OptionsBuilder >> [
-                        option = "key"
-                        value = "flow"
                     ]
                 ]
             ])
@@ -53,21 +53,25 @@ class ExpectedTerminationPoint {
         addAugmentation(OvsdbTerminationPointAugmentation, new OvsdbTerminationPointAugmentationBuilder >> [
             interfaceBfd = #[
                 new InterfaceBfdBuilder >> [
+                    bfdKey = "forwarding_if_rx"
+                    bfdValue = "true"
+                ],
+                new InterfaceBfdBuilder >> [
                     bfdKey = "enable"
                     bfdValue = "true"
                 ],
                 new InterfaceBfdBuilder >> [
                     bfdKey = "min_tx"
                     bfdValue = "10000"
-                ],
-                new InterfaceBfdBuilder >> [
-                    bfdKey = "forwarding_if_rx"
-                    bfdValue = "true"
                 ]
             ]
             interfaceType = InterfaceTypeVxlan
             name = "tun414a856a7a4"
             options = #[
+                new OptionsBuilder >> [
+                    option = "key"
+                    value = "flow"
+                ],
                 new OptionsBuilder >> [
                     option = "local_ip"
                     value = "2.2.2.2"
@@ -75,10 +79,6 @@ class ExpectedTerminationPoint {
                 new OptionsBuilder >> [
                     option = "remote_ip"
                     value = "1.1.1.1"
-                ],
-                new OptionsBuilder >> [
-                    option = "key"
-                    value = "flow"
                 ]
             ]
         ])
