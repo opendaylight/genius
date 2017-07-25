@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.commons;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -216,6 +217,15 @@ public class InterfaceMetaUtils {
     public static InterfaceChildEntry getInterfaceChildEntryFromConfigDS(
             InstanceIdentifier<InterfaceChildEntry> intfChildIid, DataBroker dataBroker) {
         return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker).orNull();
+    }
+
+    public static List<InterfaceChildEntry> getInterfaceChildEntries(DataBroker dataBroker, String interfaceName) {
+        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceName, dataBroker);
+        if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
+            return interfaceParentEntry.getInterfaceChildEntry();
+        }
+        return new ArrayList<>();
     }
 
     public static void createLportTagInterfaceMap(WriteTransaction tx, String infName, Integer ifIndex) {

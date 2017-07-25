@@ -18,10 +18,16 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +37,17 @@ public class InterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
     private final DataBroker dataBroker;
+    private final IdManagerService idManagerService;
+    private final IMdsalApiManager mdsalApiManager;
+    private final AlivenessMonitorService alivenessMonitorService;
 
     @Inject
-    public InterfaceStateListener(DataBroker dataBroker) {
+    public InterfaceStateListener(DataBroker dataBroker, IdManagerService idManagerService,
+                                  IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService) {
         this.dataBroker = dataBroker;
+        this.idManagerService = idManagerService;
+        this.mdsalApiManager = mdsalApiManager;
+        this.alivenessMonitorService = alivenessMonitorService;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -79,6 +92,25 @@ public class InterfaceStateListener
             }
             return futures;
         });
+
+        String interfaceName = interfaceStateNew.getName();
+        List<InterfaceChildEntry> interfaceChildEntries = InterfaceMetaUtils.getInterfaceChildEntries(dataBroker,
+                interfaceName);
+        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+            String childInterfaceName = interfaceChildEntry.getChildInterface();
+            Interface childInterfaceState = InterfaceManagerCommonUtils.getInterfaceStateFromCache(childInterfaceName);
+            boolean isOfTunnelInterface = InterfaceManagerCommonUtils.isOfTunnelInterface(
+                    InterfaceManagerCommonUtils.getInterfaceFromCache(childInterfaceName));
+
+            if (childInterfaceState != null || !isOfTunnelInterface) {
+                LOG.trace("Interface {} is not an stateless flow based tunnel interface, skip add state operation",
+                        childInterfaceName);
+                continue;
+            }
+            DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, () -> OvsInterfaceStateAddHelper.addState(
+                    dataBroker, idManagerService, mdsalApiManager, alivenessMonitorService, childInterfaceName,
+                    interfaceStateNew));
+        }
     }
 
     @Override

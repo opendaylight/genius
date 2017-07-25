@@ -8,9 +8,7 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -33,7 +31,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.Fl
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -192,7 +189,8 @@ public class InterfaceInventoryStateListener
         public Object call() {
             List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
                     mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName, fcNodeConnectorNew);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            List<InterfaceChildEntry> interfaceChildEntries = InterfaceMetaUtils.getInterfaceChildEntries(
+                    dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
                         nodeConnectorId, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
@@ -227,7 +225,8 @@ public class InterfaceInventoryStateListener
         public Object call() {
             List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(key,
                     alivenessMonitorService, dataBroker, interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            List<InterfaceChildEntry> interfaceChildEntries = InterfaceMetaUtils.getInterfaceChildEntries(
+                    dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
                         fcNodeConnectorOld, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
@@ -286,7 +285,8 @@ public class InterfaceInventoryStateListener
                     alivenessMonitorService, nodeConnectorIdNew, nodeConnectorIdOld, dataBroker, interfaceName,
                     fcNodeConnectorOld, isNodePresent, parentInterface);
 
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            List<InterfaceChildEntry> interfaceChildEntries = InterfaceMetaUtils.getInterfaceChildEntries(
+                    dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 // Fetch all interfaces on this port and trigger remove worker
                 // for each of them
@@ -304,14 +304,5 @@ public class InterfaceInventoryStateListener
                     + nodeConnectorIdOld + ", fcNodeConnectorOld=" + fcNodeConnectorOld + ", interfaceName='"
                     + interfaceName + '\'' + '}';
         }
-    }
-
-    public static List<InterfaceChildEntry> getInterfaceChildEntries(DataBroker dataBroker, String interfaceName) {
-        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                .getInterfaceParentEntryFromConfigDS(interfaceName, dataBroker);
-        if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
-            return interfaceParentEntry.getInterfaceChildEntry();
-        }
-        return new ArrayList<>();
     }
 }

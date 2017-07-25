@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.test;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_1;
@@ -140,6 +143,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -384,8 +388,21 @@ public class InterfaceManagerConfigurationTest {
                 .createInstanceIdentifier("192.168.56.101", 6640, "s2");
         InstanceIdentifier<TerminationPoint> tpIid = InterfaceManagerTestUtil.getTerminationPointId(bridgeIid,
                 TUNNEL_INTERFACE_NAME);
-        assertEqualBeans(ExpectedTerminationPoint.newTerminationPoint(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        TerminationPoint expectedTerminationPoint = ExpectedTerminationPoint.newTerminationPoint();
+        TerminationPoint actualTerminationPoint = dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get()
+                .orNull();
+        assertThat(actualTerminationPoint, notNullValue());
+        assertEqualBeans(actualTerminationPoint.getTpId(), expectedTerminationPoint.getTpId());
+        OvsdbTerminationPointAugmentation actualOvsdbTerminationPoint =
+                actualTerminationPoint.getAugmentation(OvsdbTerminationPointAugmentation.class);
+        OvsdbTerminationPointAugmentation expectedOvsdbTerminationPoint =
+                expectedTerminationPoint.getAugmentation(OvsdbTerminationPointAugmentation.class);
+        assertThat(actualOvsdbTerminationPoint, notNullValue());
+        assertEqualBeans(actualOvsdbTerminationPoint.getName(), expectedOvsdbTerminationPoint.getName());
+        assertEqualBeans(actualOvsdbTerminationPoint.getInterfaceType(),
+                expectedOvsdbTerminationPoint.getInterfaceType());
+        assertThat(actualOvsdbTerminationPoint.getOptions(),
+                containsInAnyOrder(expectedOvsdbTerminationPoint.getOptions().toArray()));
 
         // When termination end point is populated in network-topology
         OvsdbSouthboundTestUtil.createTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class,
@@ -413,8 +430,23 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.updateTunnelMonitoringAttributes(dataBroker, TUNNEL_INTERFACE_NAME);
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         // Then verify if bfd attributes are updated in topology config DS
-        assertEqualBeans(ExpectedTerminationPoint.newBfdEnabledTerminationPoint(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).checkedGet().get());
+        TerminationPoint expectedBfdTerminationPoint = ExpectedTerminationPoint.newBfdEnabledTerminationPoint();
+        TerminationPoint actualBfdTerminationPoint = dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid)
+                .get().orNull();
+        assertThat(actualBfdTerminationPoint, notNullValue());
+        assertEqualBeans(actualBfdTerminationPoint.getTpId(), expectedBfdTerminationPoint.getTpId());
+        OvsdbTerminationPointAugmentation actualOvsdbBfdTerminationPoint =
+                actualBfdTerminationPoint.getAugmentation(OvsdbTerminationPointAugmentation.class);
+        OvsdbTerminationPointAugmentation expectedOvsdbBfdTerminationPoint =
+                expectedBfdTerminationPoint.getAugmentation(OvsdbTerminationPointAugmentation.class);
+        assertThat(actualOvsdbBfdTerminationPoint, notNullValue());
+        assertEqualBeans(actualOvsdbBfdTerminationPoint.getName(), expectedOvsdbBfdTerminationPoint.getName());
+        assertEqualBeans(actualOvsdbBfdTerminationPoint.getInterfaceType(),
+                expectedOvsdbBfdTerminationPoint.getInterfaceType());
+        assertThat(actualOvsdbBfdTerminationPoint.getOptions(),
+                containsInAnyOrder(expectedOvsdbBfdTerminationPoint.getOptions().toArray()));
+        assertThat(actualOvsdbBfdTerminationPoint.getInterfaceBfd(),
+                containsInAnyOrder(expectedOvsdbBfdTerminationPoint.getInterfaceBfd().toArray()));
 
         //state modification tests
         // 1. Make the operational state of port as DOWN
