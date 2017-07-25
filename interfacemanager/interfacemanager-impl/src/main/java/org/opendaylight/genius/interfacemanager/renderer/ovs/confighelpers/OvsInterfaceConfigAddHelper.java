@@ -133,11 +133,6 @@ public class OvsInterfaceConfigAddHelper {
                     : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
             InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName());
-
-            if (InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName) != null) {
-                InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures,
-                                InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName));
-            }
         }
         String parentInterface = parentRefs.getParentInterface();
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)
