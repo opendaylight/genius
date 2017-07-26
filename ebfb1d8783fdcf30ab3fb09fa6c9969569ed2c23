@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_96ed51f2",
+        "filename": "fcapsmanager/counterframework/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-07-26T06:36:57Z",
+      "side": 1,
+      "message": "Sorry, but this makes no sense... what does this have to do with Checkstyle?",
+      "revId": "ebfb1d8783fdcf30ab3fb09fa6c9969569ed2c23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
