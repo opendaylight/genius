@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_99b58233",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedTerminationPoint.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-07-26T10:22:05Z",
+      "side": 1,
+      "message": "assertEqualBeans does not do an order insensitive comparison of lists. I moved this around for now as assertEqualBeans seems to be the preferred option throughout the test, but wouldn\u0027t it be more appropriate to use other traditional assert options?",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 9
+      },
+      "revId": "8b94a5460f24e7f2de2e4ba9c4f975a886345ea6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
