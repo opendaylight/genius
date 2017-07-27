@@ -34,7 +34,7 @@ public class HwVTEPInterfaceConfigUpdateHelper {
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
             Interface interfaceNew, IfTunnel ifTunnel) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
+        LOG.info("updating hwvtep configuration for {}", interfaceNew.getName());
 
         // Create hwvtep through OVSDB plugin
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
