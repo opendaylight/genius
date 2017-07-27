@@ -130,5 +130,10 @@
       <artifactId>resourcemanager-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>srm-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
