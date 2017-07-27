@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_00b8efc6",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T14:52:23Z",
+      "side": 1,
+      "message": "notepad++ auto complete error, should be \u0027a service\u0027",
+      "parentUuid": "da2a55be_e0d4bb48",
+      "range": {
+        "startLine": 40,
+        "startChar": 93,
+        "endLine": 41,
+        "endChar": 10
+      },
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_20cff3b1",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2017-07-27T14:31:59Z",
       "side": 1,
       "message": "does this mean the SRM has the ability to create a hierarchy of services to modify? Or are these single service controls where it is up to the user to call multiple rpcs to achieve the same?",
+      "range": {
+        "startLine": 71,
+        "startChar": 28,
+        "endLine": 72,
+        "endChar": 9
+      },
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_20b533cd",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T14:52:23Z",
+      "side": 1,
+      "message": "This means that reinstall of a given servie may lead to restart of multiple bundles. e.g. Restart of L3vpn restarting vpnmanager, neutronvpn, fibmanager etc. Up to individual service to handle as pat of respective implementation.",
+      "parentUuid": "da2a55be_20cff3b1",
       "range": {
         "startLine": 71,
         "startChar": 28,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_80cb3f52",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T14:52:23Z",
+      "side": 1,
+      "message": "yeah, have decided on the CLI and will add it.",
+      "parentUuid": "da2a55be_c06d379a",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_00074fcb",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 4
@@ -82,6 +148,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_60c60b4b",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T14:52:23Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "da2a55be_00074fcb",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_e0095bde",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 4
@@ -93,6 +177,24 @@
       "writtenOn": "2017-07-27T14:31:59Z",
       "side": 1,
       "message": "high level list of steps required is good to have",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_e0e15bd1",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T14:52:23Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "da2a55be_e0095bde",
       "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
