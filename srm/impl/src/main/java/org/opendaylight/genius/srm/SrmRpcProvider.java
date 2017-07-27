@@ -13,14 +13,13 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.infra.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.RecoverInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.RecoverOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.ReinstallInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.ReinstallOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.SrmRpcsService;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,19 +37,16 @@ public class SrmRpcProvider implements SrmRpcsService {
 
     @Override
     public Future<RpcResult<RecoverOutput>> recover(RecoverInput input) {
-        LOG.trace("recover() called with {}", input);
-        RpcResultBuilder resultBuilder = RpcResultBuilder.failed()
-            .withError(ErrorType.APPLICATION, "Not implemented yet");
-        return Futures.immediateFuture(resultBuilder.build());
+        return FutureRpcResults.fromListenableFuture(LOG, "recover", input, () -> {
+            return Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input));
+        }).build();
     }
-
 
     @Override
     public Future<RpcResult<ReinstallOutput>> reinstall(ReinstallInput input) {
-        LOG.trace("reinstall() called with {}", input);
-        RpcResultBuilder resultBuilder = RpcResultBuilder.failed()
-            .withError(ErrorType.APPLICATION, "Not implemented yet");
-        return Futures.immediateFuture(resultBuilder.build());
+        return FutureRpcResults.fromListenableFuture(LOG, "reinstall", input, () -> {
+            return Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input));
+        }).build();
     }
 
 }
