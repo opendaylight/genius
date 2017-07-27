@@ -34,6 +34,23 @@
       "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_4a2206a5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T07:40:32Z",
+      "side": 1,
+      "message": "This is just bad design pattern and would like to avoid it. There will not be loops but there will be significant perf overhead. I am not fan of adding perf issues for everyday use cases to accommodate highly infrequent us case like upgrade.",
+      "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
