@@ -51,6 +51,24 @@
       "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_c54a69c4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-07-27T11:34:37Z",
+      "side": 1,
+      "message": "We can add checks here to check what changed to filter out everything except the upgrade scenario. That way it should not impact performance.",
+      "parentUuid": "da2a55be_4a2206a5",
+      "revId": "381daac4a2a9f47ccea4f51c34b6dc2d035403ee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
