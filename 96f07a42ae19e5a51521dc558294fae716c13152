@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_2f14044d",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T06:56:52Z",
+      "side": 1,
+      "message": "OFplugin is offset1. However, this is dependency on Genius-api, not impl.",
+      "parentUuid": "da2a55be_0b54a61f",
+      "revId": "96f07a42ae19e5a51521dc558294fae716c13152",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_ab3c7ae3",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2017-07-20T14:12:50Z",
       "side": 1,
       "message": "is it mandatory to hardcode all these? this adds a restriction whoever wants to add recovery has to first register identities here",
+      "revId": "96f07a42ae19e5a51521dc558294fae716c13152",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_0f178052",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-27T06:56:52Z",
+      "side": 1,
+      "message": "Yes, that is the intention. SRM can\u0027t offer recovery for anything it is not aware of. Not much different from services using genius adding in NwConstants etc.",
+      "parentUuid": "da2a55be_ab3c7ae3",
       "revId": "96f07a42ae19e5a51521dc558294fae716c13152",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
