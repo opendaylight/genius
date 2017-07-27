@@ -8,12 +8,19 @@
 
 package org.opendaylight.genius.srm.shell;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.ReinstallInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.ReinstallInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.ReinstallOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.SrmRpcsService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityNameBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityTypeService;
+import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +32,6 @@ public class ReinstallCommand extends OsgiCommandSupport {
     private SrmRpcsService srmRpcService;
     private final Class<? extends EntityTypeBase> entityType = EntityTypeService.class;
 
-
     public ReinstallCommand(SrmRpcsService srmRpcService) {
         this.srmRpcService = srmRpcService;
     }
@@ -36,13 +42,56 @@ public class ReinstallCommand extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() throws Exception {
-        session.getConsole().println(getHelp());
+        try {
+            ReinstallInput input = getInput();
+            if (input == null) {
+                // We've already shown the relevant error msg
+                return null;
+            }
+            Future<RpcResult<ReinstallOutput>> result = srmRpcService.reinstall(input);
+            RpcResult<ReinstallOutput> reinstallResult = result.get();
+            printResult(reinstallResult);
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Reinstall interrupted", e);
+        } catch (NullPointerException e) {
+            LOG.error("Unexpected error", e);
+        }
         return null;
     }
 
+    private void printResult(RpcResult<ReinstallOutput> reinstallResult) {
+        StringBuilder strResult = new StringBuilder("");
+        if (reinstallResult.isSuccessful()) {
+            strResult.append("RPC call to reinstall was successful");
+            LOG.trace("RPC Result: ", reinstallResult.getResult());
+        } else {
+            strResult.append("RPC Call to reinstall failed.\n")
+                .append("ErrorMsg: ").append(reinstallResult.getResult().getMessage());
+            LOG.trace("RPC Result: ", reinstallResult.getResult());
+        }
+        session.getConsole().println(strResult.toString());
+    }
+
+    private ReinstallInput getInput() {
+        if (name == null) {
+            session.getConsole().println(getHelp());
+            return null;
+        }
+        Class<? extends EntityNameBase> entityName = SrmCliUtils.getEntityName(entityType, name);
+        if (entityName == null) {
+            session.getConsole().println(SrmCliUtils.getNameHelp(entityType));
+            return null;
+        }
+        ReinstallInputBuilder inputBuilder = new ReinstallInputBuilder();
+        inputBuilder.setEntityType(entityType);
+        inputBuilder.setEntityName(entityName);
+        return inputBuilder.build();
+    }
+
+
     private String getHelp() {
         StringBuilder help = new StringBuilder("Usage:");
-        help.append("srm:reinstall <name>\n");
+        help.append("exec reinstall <name>\n");
         return help.toString();
     }
 
