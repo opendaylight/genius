@@ -188,5 +188,15 @@
       <type>xml</type>
       <classifier>config</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>srm-impl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>srm-shell</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
