@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_e0d4bb48",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-07-27T14:31:59Z",
+      "side": 1,
+      "message": "what is an \"able service\"?",
+      "range": {
+        "startLine": 40,
+        "startChar": 93,
+        "endLine": 41,
+        "endChar": 10
+      },
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_20cff3b1",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-07-27T14:31:59Z",
+      "side": 1,
+      "message": "does this mean the SRM has the ability to create a hierarchy of services to modify? Or are these single service controls where it is up to the user to call multiple rpcs to achieve the same?",
+      "range": {
+        "startLine": 71,
+        "startChar": 28,
+        "endLine": 72,
+        "endChar": 9
+      },
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_c06d379a",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-07-27T14:31:59Z",
+      "side": 1,
+      "message": "sounds like this should be included. It would provide a good picture of the usage also.",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_00074fcb",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 471,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-07-27T14:31:59Z",
+      "side": 1,
+      "message": "remove this text",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_e0095bde",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-07-27T14:31:59Z",
+      "side": 1,
+      "message": "high level list of steps required is good to have",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
