@@ -190,10 +190,10 @@ public class ItmExternalTunnelDeleteTest {
         hwVtep1.setTransportZone(transportZone1);
         hwVtep1.setGatewayIP(gtwyIp1);
         hwVtep1.setHwIp(ipAddress2);
-        hwVtep1.setTunnel_type(tunnelType1);
+        hwVtep1.setTunnelType(tunnelType1);
         hwVtep1.setVlanID(vlanId);
-        hwVtep1.setTopo_id("hwvtep:1");
-        hwVtep1.setNode_id("hwvtep://192.168.101.30:6640/physicalswitch/s3");
+        hwVtep1.setTopoId("hwvtep:1");
+        hwVtep1.setNodeId("hwvtep://192.168.101.30:6640/physicalswitch/s3");
         hwVtep1.setIpPrefix(ipPrefixTest);
         vteps = new VtepsBuilder().setDpnId(dpId2).setIpAddress(ipAddress1).setPortname(portName1).setKey(new
                 VtepsKey(dpId2,portName1)).build();
@@ -257,7 +257,7 @@ public class ItmExternalTunnelDeleteTest {
                 TransportZoneKey(transportZone1)).setSubnets(subnetsList).build();
         externalTunnel = new ExternalTunnelBuilder().setTunnelInterfaceName(parentInterfaceName)
                 .setTransportType(tunnelType1).setDestinationDevice("hwvtep:1").setSourceDevice(dpId2.toString())
-                .setKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNode_id() , tunnelType1)).build();
+                .setKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNodeId() , tunnelType1)).build();
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, parentInterfaceName,
                 tunnelEndPointsVxlan.getIpAddress().getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(),
                 tunnelType1.getName());
@@ -286,23 +286,23 @@ public class ItmExternalTunnelDeleteTest {
         InstanceIdentifier<TransportZone> transportZoneIdentifier = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(transportZone1)).build();
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier1 = InstanceIdentifier.create(ExternalTunnelList
-                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getTopo_id(),
+                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getTopoId(),
                 dpId2.toString(), tunnelType1));
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier2 = InstanceIdentifier.create(ExternalTunnelList
                 .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(dpId2.toString(),
-                hwVtep1.getTopo_id(), tunnelType1));
+                hwVtep1.getTopoId(), tunnelType1));
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier3 = InstanceIdentifier.create(ExternalTunnelList
-                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getNode_id(),
+                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getNodeId(),
                 dpId2.toString(), tunnelType1));
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier4 = InstanceIdentifier.create(ExternalTunnelList
                 .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(dpId2.toString(),
-                hwVtep1.getNode_id(), tunnelType1));
+                hwVtep1.getNodeId(), tunnelType1));
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier5 = InstanceIdentifier.create(ExternalTunnelList
-                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getTopo_id(),
-                hwVtep1.getNode_id(), tunnelType1));
+                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getTopoId(),
+                hwVtep1.getNodeId(), tunnelType1));
         InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier6 = InstanceIdentifier.create(ExternalTunnelList
-                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getNode_id(),
-                hwVtep1.getTopo_id(), tunnelType1));
+                .class).child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(hwVtep1.getNodeId(),
+                hwVtep1.getTopoId(), tunnelType1));
 
         Optional<TransportZone> optionalTransportZone = Optional.of(transportZone);
         Optional<ExternalTunnel> exTunnels = Optional.of(externalTunnel);

@@ -835,10 +835,10 @@ public class ItmUtils {
         hwVtep.setGatewayIP(gatewayIP);
         hwVtep.setHwIp(ipAddress);
         hwVtep.setIpPrefix(ipPrefix);
-        hwVtep.setNode_id(nodeId);
-        hwVtep.setTopo_id(topoId);
+        hwVtep.setNodeId(nodeId);
+        hwVtep.setTopoId(topoId);
         hwVtep.setTransportZone(transportZone.getZoneName());
-        hwVtep.setTunnel_type(tunneltype);
+        hwVtep.setTunnelType(tunneltype);
         hwVtep.setVlanID(vlanID);
         return hwVtep;
     }
@@ -983,9 +983,9 @@ public class ItmUtils {
                             }
                             if (hwVteps != null && !hwVteps.isEmpty()) {
                                 for (HwVtep hwVtep : hwVteps) {
-                                    tunnels.add(getExtTunnel(hwVtep.getNode_id(), vtepLocal.getDpnId().toString(),
+                                    tunnels.add(getExtTunnel(hwVtep.getNodeId(), vtepLocal.getDpnId().toString(),
                                             tunType, dataBroker));
-                                    tunnels.add(getExtTunnel(vtepLocal.getDpnId().toString(), hwVtep.getNode_id(),
+                                    tunnels.add(getExtTunnel(vtepLocal.getDpnId().toString(), hwVtep.getNodeId(),
                                             tunType, dataBroker));
                                 }
                             }
@@ -997,9 +997,9 @@ public class ItmUtils {
                 for (HwVtep hwVtep : hwVteps) {
                     for (HwVtep hwVtepOther : hwVteps) {
                         if (!hwVtep.getHwIp().equals(hwVtepOther.getHwIp())) {
-                            tunnels.add(getExtTunnel(hwVtep.getNode_id(), hwVtepOther.getNode_id(),
+                            tunnels.add(getExtTunnel(hwVtep.getNodeId(), hwVtepOther.getNodeId(),
                                     tunType, dataBroker));
-                            tunnels.add(getExtTunnel(hwVtepOther.getNode_id(), hwVtep.getNode_id(),
+                            tunnels.add(getExtTunnel(hwVtepOther.getNodeId(), hwVtep.getNodeId(),
                                     tunType, dataBroker));
                         }
                     }

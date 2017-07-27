@@ -157,8 +157,8 @@ public class ItmExternalTunnelDeleteWorker {
                 LOG.trace("processing hwTep from list {}", hwTep);
                 for (HwVtep hwTepRemote : cfgdhwVteps) {
                     if (!hwTep.getHwIp().equals(hwTepRemote.getHwIp())) {
-                        deleteTrunksTorTor(dataBroker, idManagerService, hwTep.getTopo_id(), hwTep.getNode_id(),
-                                hwTep.getHwIp(), hwTepRemote.getTopo_id(), hwTepRemote.getNode_id(),
+                        deleteTrunksTorTor(dataBroker, idManagerService, hwTep.getTopoId(), hwTep.getNodeId(),
+                                hwTep.getHwIp(), hwTepRemote.getTopoId(), hwTepRemote.getNodeId(),
                                 hwTepRemote.getHwIp(), TunnelTypeVxlan.class, writeTransaction, futures);
                     }
                 }
@@ -177,7 +177,7 @@ public class ItmExternalTunnelDeleteWorker {
                                 }
                                 //TOR-TOR
                                 LOG.trace("deleting tor-tor {} and {}", hwTep, hwVtepDS);
-                                deleteTrunksTorTor(dataBroker, idManagerService, hwTep.getTopo_id(), hwTep.getNode_id(),
+                                deleteTrunksTorTor(dataBroker, idManagerService, hwTep.getTopoId(), hwTep.getNodeId(),
                                         hwTep.getHwIp(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
                                         hwVtepDS.getIpAddress(), originalTZone.getTunnelType(),
                                         writeTransaction, futures);
@@ -191,7 +191,7 @@ public class ItmExternalTunnelDeleteWorker {
                                 String parentIf =
                                         ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId());
                                 deleteTrunksOvsTor(dataBroker, idManagerService, vtep.getDpnId(), parentIf,
-                                        vtep.getIpAddress(), hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(),
+                                        vtep.getIpAddress(), hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
                                         originalTZone.getTunnelType(), writeTransaction, futures);
                             }
                         }
@@ -231,7 +231,7 @@ public class ItmExternalTunnelDeleteWorker {
             if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
                 for (HwVtep hwVtep : cfgdhwVteps) {
                     deleteTrunksOvsTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
-                            srcTep.getIpAddress(), hwVtep.getTopo_id(), hwVtep.getNode_id(), hwVtep.getHwIp(),
+                            srcTep.getIpAddress(), hwVtep.getTopoId(), hwVtep.getNodeId(), hwVtep.getHwIp(),
                             TunnelTypeVxlan.class, writeTransaction, futures);
 
                 }

@@ -245,7 +245,7 @@ public class ItmExternalTunnelAddWorker {
                                     continue;//dont mesh with self
                                 }
                                 LOG.trace("wire up {} and {}",hwTep, hwVtepDS);
-                                if (!wireUp(hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(),
+                                if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
                                         hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(), hwTep.getIpPrefix(),
                                         hwTep.getGatewayIP(), sub.getPrefix(), tunType,false,monitorProtocol,
                                         monitorInterval, idManagerService, dataBroker, futures, transaction)) {
@@ -254,8 +254,8 @@ public class ItmExternalTunnelAddWorker {
                                 }
                                 //TOR2-TOR1
                                 LOG.trace("wire up {} and {}", hwVtepDS,hwTep);
-                                if (!wireUp(hwTep.getTopo_id(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
-                                        hwTep.getNode_id(), hwTep.getHwIp(), sub.getPrefix(), sub.getGatewayIp(),
+                                if (!wireUp(hwTep.getTopoId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
+                                        hwTep.getNodeId(), hwTep.getHwIp(), sub.getPrefix(), sub.getGatewayIp(),
                                         hwTep.getIpPrefix(), tunType, false, monitorProtocol, monitorInterval,
                                         idManagerService, dataBroker, futures, transaction)) {
                                     LOG.error("Unable to build tunnel {} -- {}",
@@ -271,7 +271,7 @@ public class ItmExternalTunnelAddWorker {
                                 //TOR-OVS
                                 String cssID = vtep.getDpnId().toString();
                                 LOG.trace("wire up {} and {}",hwTep, vtep);
-                                if (!wireUp(hwTep.getTopo_id(), hwTep.getNode_id(), hwTep.getHwIp(), cssID,
+                                if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(), cssID,
                                         vtep.getIpAddress(), hwTep.getIpPrefix(), hwTep.getGatewayIP(),
                                         sub.getPrefix(), tunType,false, monitorProtocol, monitorInterval,
                                         idManagerService, dataBroker, futures, transaction)) {
@@ -282,7 +282,7 @@ public class ItmExternalTunnelAddWorker {
                                 LOG.trace("wire up {} and {}", vtep,hwTep);
                                 boolean useOfTunnel = ItmUtils.falseIfNull(vtep.isOptionOfTunnel());
                                 if (!wireUp(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId(), vtep.getIpAddress(),
-                                        useOfTunnel, hwTep.getNode_id(),hwTep.getHwIp(),sub.getPrefix(),
+                                        useOfTunnel, hwTep.getNodeId(),hwTep.getHwIp(),sub.getPrefix(),
                                         sub.getGatewayIp(),hwTep.getIpPrefix(), tunType,false,monitorProtocol,
                                         monitorInterval, idManagerService, dataBroker, futures, transaction)) {
                                     //do nothing

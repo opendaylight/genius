@@ -58,7 +58,6 @@ public class HwVtep {
             return false;
         }
         return hwIp.equals(hwVtep.hwIp);
-
     }
 
     @Override
@@ -95,11 +94,11 @@ public class HwVtep {
         this.transportZone = transportZone;
     }
 
-    public Class<? extends TunnelTypeBase> getTunnel_type() {
+    public Class<? extends TunnelTypeBase> getTunnelType() {
         return tunnelType;
     }
 
-    public void setTunnel_type(Class<? extends TunnelTypeBase> tunnelType) {
+    public void setTunnelType(Class<? extends TunnelTypeBase> tunnelType) {
         this.tunnelType = tunnelType;
     }
 
@@ -127,19 +126,19 @@ public class HwVtep {
         this.vlanID = vlanID;
     }
 
-    public String getTopo_id() {
+    public String getTopoId() {
         return topoId;
     }
 
-    public void setTopo_id(String topoId) {
+    public void setTopoId(String topoId) {
         this.topoId = topoId;
     }
 
-    public String getNode_id() {
+    public String getNodeId() {
         return nodeId;
     }
 
-    public void setNode_id(String nodeId) {
+    public void setNodeId(String nodeId) {
         this.nodeId = nodeId;
     }
 
