@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.slf4j.Logger;
@@ -21,14 +20,9 @@ import org.slf4j.LoggerFactory;
 public class DumpIfmCache extends OsgiCommandSupport {
     private static final Logger LOG = LoggerFactory.getLogger(DumpIfmCache.class);
     private IInterfaceManager interfaceManager;
-    private DataBroker dataBroker;
 
     public void setInterfaceManager(IInterfaceManager interfaceManager) {
         this.interfaceManager = interfaceManager;
-    }
-
-    public void setDataBroker(DataBroker dataBroker) {
-        this.dataBroker = dataBroker;
     }
 
     @Override
