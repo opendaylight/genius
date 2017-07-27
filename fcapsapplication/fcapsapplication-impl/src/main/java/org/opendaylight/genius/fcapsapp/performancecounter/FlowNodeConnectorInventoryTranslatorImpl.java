@@ -174,6 +174,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
      */
     public boolean isNodeOwner(String nodeId) {
         Entity entity = new Entity("openflow", nodeId);
+        // EntityOwnershipState::isOwner never returns null and is thus safe for transform()
         return this.entityOwnershipService.getOwnershipState(entity).transform(EntityOwnershipState::isOwner).or(false);
     }
 

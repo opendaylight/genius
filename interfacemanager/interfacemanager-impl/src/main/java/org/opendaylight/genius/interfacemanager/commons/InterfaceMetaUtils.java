@@ -306,8 +306,8 @@ public class InterfaceMetaUtils {
                                                                  DataBroker dataBroker) {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).transform(
-                TunnelInstanceInterface::getInterfaceName).orNull();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).toJavaUtil().map(
+                TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
     public static void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,

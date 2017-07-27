@@ -282,7 +282,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public List<VtepConfigSchema> getAllVtepConfigSchemas() {
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, ItmUtils.getVtepConfigSchemasIdentifier(),
-                this.dataBroker).transform(VtepConfigSchemas::getVtepConfigSchema).orNull();
+                this.dataBroker).toJavaUtil().map(VtepConfigSchemas::getVtepConfigSchema).orElse(null);
     }
 
     @Override
