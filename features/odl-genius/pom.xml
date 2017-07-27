@@ -181,6 +181,7 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+<<<<<<< HEAD
       <!-- finalname="etc/opendaylight/datastore/initial/config/genius-itm-config.xml" -->
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>itm-impl</artifactId>
@@ -189,6 +190,8 @@
       <classifier>config</classifier>
     </dependency>
     <dependency>
+=======
+>>>>>>> Initial bundle setup for SRM
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>srm-impl</artifactId>
       <version>${project.version}</version>
