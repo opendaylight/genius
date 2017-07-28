@@ -113,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_fe71fbe0",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-07-28T08:44:20Z",
+      "side": 1,
+      "message": "Those are out of scope for this spec. This introduces the framework and provides a few names as reference. Any service that wants to use this framework can add to these models over time. They may or may not have individual specs, entirely up to individual services.",
+      "parentUuid": "da2a55be_7e686b87",
+      "revId": "fcc7cf48fc57205f134a69d30f1e033af7b33ed9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_c06d379a",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 4
