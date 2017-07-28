@@ -284,7 +284,7 @@ public class DataStoreJobCoordinator {
                 futures = jobEntry.getMainWorker().call();
                 long jobExecutionTime = System.currentTimeMillis() - jobStartTimestamp;
                 printJobs(jobEntry.getKey(), jobExecutionTime);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOG.error("Exception when executing jobEntry: {}", jobEntry, e);
             }
 
