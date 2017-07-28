@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_fed57bb9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-07-28T08:12:48Z",
+      "side": 1,
+      "message": "why 5 threads, what made you choose this value?  Remember we had to change it to 1 in the current async listener base which this is supposed to eventually replace..",
+      "range": {
+        "startLine": 31,
+        "startChar": 36,
+        "endLine": 31,
+        "endChar": 37
+      },
+      "revId": "bafdbe54cf2062347a90b2f881cdb978070b7cdf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da2a55be_3ed713c1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-07-28T08:12:48Z",
+      "side": 1,
+      "message": "David, sorry to be a PITA here, but as I said I do think that we should PASS an ExecutorService here - pass as in let it be an @Inject\u0027d argument of this constructor - not have a default constructor that creates one, like you currently have it.\n\nThis is important IMHO for Test-ability of all our async stuff.  We have to be able to, in tests, inject more testable general implementations of ExecutorService than the ones we use in production.\n\nThe next question then obviously is how a user of this class who subclasses it obtains the (say production) ExecutorService implementation (which may well be a ForkJoinPool?) ... I think we should discuss if this should be a new one per listener (as your current proposal would have done it; but I\u0027m not sure that\u0027s right) or an ExecutorService shared among all async listeners?  If it\u0027s the latter, then we should probably register a suitable one in the OSGi registry, perhaps from genius or even in infrautils, which could be @OsgiService injected here?",
+      "revId": "bafdbe54cf2062347a90b2f881cdb978070b7cdf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
