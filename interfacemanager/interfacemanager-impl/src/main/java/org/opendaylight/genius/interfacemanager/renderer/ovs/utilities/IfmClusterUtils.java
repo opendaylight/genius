@@ -54,13 +54,13 @@ public class IfmClusterUtils {
                 if (isOwner) {
                     job.run();
                 } else {
-                    LOG.trace("job is not run as node is not owner for :{} ", INTERFACE_CONFIG_ENTITY);
+                    LOG.trace("job is not run as node is not owner for :{} ", entity);
                 }
             }
 
             @Override
             public void onFailure(Throwable error) {
-                LOG.error("Failed to identify owner for entity {} due to {}", INTERFACE_CONFIG_ENTITY, error);
+                LOG.error("Failed to identify owner for entity {} due to {}", entity, error);
             }
         });
     }
