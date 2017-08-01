@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -218,8 +217,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
                 FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, interfaceName,boundServicesState);
             }
-            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew,
-                boundServicesList, boundServicesState);
+            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                    boundServicesState);
             return futures;
         }
     }
@@ -256,8 +255,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(futures, dataBroker, interfaceName, serviceMode);
             }
-            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
-                boundServicesList, boundServiceState);
+            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                    boundServiceState);
             return futures;
         }
     }

@@ -28,14 +28,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesStateBindHelper implements FlowBasedServicesStateAddable {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateBindHelper.class);
+public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedServicesStateBindHelper {
 
-    private final InterfacemgrProvider interfaceMgrProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateBindHelper.class);
     private static volatile FlowBasedServicesStateAddable flowBasedIngressServicesStateAddable;
 
     private FlowBasedIngressServicesStateBindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
+        super(interfaceMgrProvider);
+
     }
 
     public static void intitializeFlowBasedIngressServicesStateAddHelper(InterfacemgrProvider interfaceMgrProvider) {
@@ -61,10 +61,9 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
     }
 
     @Override
-    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures,
-                                        Interface ifaceState, List<BoundServices> allServices) {
+    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
+                                        Interface ifaceState, DataBroker dataBroker) {
         LOG.debug("binding services on interface {}", ifaceState.getName());
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         if (L2vlan.class.equals(ifaceState.getType())) {
             bindServiceOnVlan(futures, allServices, ifaceState, dataBroker);
         } else if (Tunnel.class.equals(ifaceState.getType())) {
@@ -76,7 +75,7 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
                                             List<BoundServices> allServices, Interface ifState,
                                             DataBroker dataBroker) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
+                .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
@@ -127,5 +126,11 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
                     ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
         }
         futures.add(writeTransaction.submit());
+    }
+
+
+    public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName) {
+        LOG.info("bindServicesOnInterfaceType Ingress - WIP");
+        return;
     }
 }
