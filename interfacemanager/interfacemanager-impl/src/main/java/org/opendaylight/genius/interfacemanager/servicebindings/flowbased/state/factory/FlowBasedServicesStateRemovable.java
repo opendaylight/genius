@@ -8,9 +8,15 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 
 public interface FlowBasedServicesStateRemovable {
-    List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState);
+    List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState,
+                                                             Class<? extends ServiceModeBase> serviceMode);
+
+    List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName);
 }
