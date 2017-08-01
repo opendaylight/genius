@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -28,16 +27,11 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesRendererFactory;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigUnbindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigBindHelper;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedIngressServicesConfigUnbindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
@@ -56,13 +50,12 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeListener<ServicesInfo> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
+
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
 
     @Inject
-    public FlowBasedServicesConfigListener(final DataBroker dataBroker,
-                                           final InterfacemgrProvider interfacemgrProvider) {
-        initializeFlowBasedServiceHelpers(interfacemgrProvider);
+    public FlowBasedServicesConfigListener(final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
@@ -74,16 +67,6 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     public void registerListener(LogicalDatastoreType dsType, final DataBroker db) {
         final DataTreeIdentifier<ServicesInfo> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
         listenerRegistration = db.registerDataTreeChangeListener(treeId, FlowBasedServicesConfigListener.this);
-    }
-
-    private void initializeFlowBasedServiceHelpers(InterfacemgrProvider interfaceMgrProvider) {
-        FlowBasedIngressServicesConfigBindHelper
-                .intitializeFlowBasedIngressServicesConfigAddHelper(interfaceMgrProvider);
-        FlowBasedIngressServicesConfigUnbindHelper
-                .intitializeFlowBasedIngressServicesConfigRemoveHelper(interfaceMgrProvider);
-        FlowBasedEgressServicesConfigBindHelper.intitializeFlowBasedEgressServicesConfigAddHelper(interfaceMgrProvider);
-        FlowBasedEgressServicesConfigUnbindHelper
-                .intitializeFlowBasedEgressServicesConfigRemoveHelper(interfaceMgrProvider);
     }
 
     @PreDestroy
@@ -186,7 +169,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
-        String interfaceName;
+        private final String interfaceName;
         Class<? extends ServiceModeBase> serviceMode;
         FlowBasedServicesConfigAddable flowBasedServicesAddable;
         BoundServices boundServicesNew;
@@ -218,14 +201,14 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
                 FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, interfaceName,boundServicesState);
             }
-            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew,
-                boundServicesList, boundServicesState);
+            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                    boundServicesState);
             return futures;
         }
     }
 
     private class RendererConfigRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-        String interfaceName;
+        private final String interfaceName;
         Class<? extends ServiceModeBase> serviceMode;
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable;
         BoundServices boundServicesNew;
@@ -256,8 +239,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(futures, dataBroker, interfaceName, serviceMode);
             }
-            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
-                boundServicesList, boundServiceState);
+            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                    boundServiceState);
             return futures;
         }
     }
