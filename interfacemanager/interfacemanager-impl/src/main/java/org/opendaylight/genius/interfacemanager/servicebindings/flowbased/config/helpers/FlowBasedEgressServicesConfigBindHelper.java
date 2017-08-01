@@ -10,40 +10,33 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedServicesConfigAddable {
+@Singleton
+public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedServicesConfigBindHelper {
+
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigBindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesConfigAddable flowBasedEgressServicesAddable;
 
-    private FlowBasedEgressServicesConfigBindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
-    }
 
-    public static void intitializeFlowBasedEgressServicesConfigAddHelper(InterfacemgrProvider interfaceMgrProvider) {
-        if (flowBasedEgressServicesAddable == null) {
-            synchronized (FlowBasedEgressServicesConfigBindHelper.class) {
-                if (flowBasedEgressServicesAddable == null) {
-                    flowBasedEgressServicesAddable = new FlowBasedEgressServicesConfigBindHelper(interfaceMgrProvider);
-                }
-            }
-        }
+    @Inject
+    private FlowBasedEgressServicesConfigBindHelper(DataBroker dataBroker) {
+        super(dataBroker);
+        flowBasedEgressServicesAddable = this;
     }
 
     public static FlowBasedServicesConfigAddable getFlowBasedEgressServicesAddHelper() {
@@ -54,28 +47,9 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
     }
 
     @Override
-    public void bindService(List<ListenableFuture<Void>> futures,
-                            String interfaceName, BoundServices boundServiceNew,
-                            List<BoundServices> allServices,
-                            BoundServicesState interfaceBoundServicesState) {
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-
-        if (allServices.isEmpty()) {
-            LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
-            return;
-        }
-
-        if (L2vlan.class.equals(interfaceBoundServicesState.getInterfaceType())
-            || Tunnel.class.equals(interfaceBoundServicesState.getInterfaceType())) {
-            bindService(futures, boundServiceNew, allServices, interfaceBoundServicesState, dataBroker);
-        }
-    }
-
-    private static void bindService(List<ListenableFuture<Void>> futures,
-                                    BoundServices boundServiceNew,
-                                    List<BoundServices> allServices,
-                                    BoundServicesState boundServiceState,
-                                    DataBroker dataBroker) {
+    protected void bindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
+                                          List<BoundServices> allServices, BoundServicesState boundServiceState,
+                                          DataBroker dataBroker) {
         BigInteger dpId = boundServiceState.getDpid();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
@@ -148,5 +122,12 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
         FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew, boundServiceState.getInterfaceName(),
             transaction, boundServiceState.getIfIndex(), currentServiceIndex, nextServiceIndex, iface);
         futures.add(transaction.submit());
+    }
+
+    @Override
+    protected void bindServiceOnInterfaceType(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
+                                              List<BoundServices> allServices, DataBroker dataBroker) {
+        LOG.info("Tunnel Type based egress service binding - WIP");
+        return;
     }
 }

@@ -9,45 +9,36 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServicesStateRemovable {
+@Singleton
+public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBasedServicesStateUnbindHelper {
+
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateUnbindHelper.class);
 
-    private final InterfacemgrProvider interfaceMgrProvider;
     private static volatile FlowBasedServicesStateRemovable flowBasedIngressServicesStateRemovable;
 
-    private FlowBasedIngressServicesStateUnbindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
-    }
-
-    public static void intitializeFlowBasedIngressServicesStateRemoveHelper(InterfacemgrProvider interfaceMgrProvider) {
-        if (flowBasedIngressServicesStateRemovable == null) {
-            synchronized (FlowBasedIngressServicesStateUnbindHelper.class) {
-                if (flowBasedIngressServicesStateRemovable == null) {
-                    flowBasedIngressServicesStateRemovable = new FlowBasedIngressServicesStateUnbindHelper(
-                            interfaceMgrProvider);
-                }
-            }
-        }
+    @Inject
+    private FlowBasedIngressServicesStateUnbindHelper(DataBroker dataBroker) {
+        super(dataBroker);
+        flowBasedIngressServicesStateRemovable = this;
     }
 
     public static FlowBasedServicesStateRemovable getFlowBasedIngressServicesStateRemoveHelper() {
@@ -62,44 +53,25 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
     }
 
     @Override
-    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState) {
-        if (ifaceState.getType() == null) {
-            return null;
+    protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
+                                             Interface ifState, Integer ifIndex, DataBroker dataBroker) {
+        if (L2vlan.class.equals(ifState.getType())) {
+            unbindServicesOnVlan(futures, allServices, ifState, ifState.getIfIndex(), dataBroker);
+        } else if (Tunnel.class.equals(ifState.getType())) {
+            unbindServicesOnTunnel(futures, allServices, ifState, ifState.getIfIndex(), dataBroker);
         }
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        LOG.info("unbind all ingress services on interface {}", ifaceState.getName());
-
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-                ServiceModeIngress.class, dataBroker);
-        if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
-        }
-
-        if (L2vlan.class.equals(ifaceState.getType())) {
-            return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        } else if (Tunnel.class.equals(ifaceState.getType())) {
-            return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
-        }
-        return futures;
+        return;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(List<BoundServices> allServices, Interface iface,
-            Integer ifIndex, DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    protected void unbindServicesOnTunnel(List<ListenableFuture<Void>> futures,
+                                                                  List<BoundServices> allServices, Interface iface,
+                                                                  Integer ifIndex, DataBroker dataBroker) {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
         List<String> ofportIds = iface.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
         if (nodeConnectorId == null) {
-            return futures;
+            return;
         }
         BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
 
@@ -114,21 +86,19 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
         }
 
         futures.add(writeTransaction.submit());
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(List<BoundServices> allServices,
-            Interface ifaceState, Integer ifIndex, DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    protected void unbindServicesOnVlan(List<ListenableFuture<Void>> futures,
+                                                                List<BoundServices> allServices, Interface ifaceState,
+                                                                Integer ifIndex, DataBroker dataBroker) {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
         if (nodeConnectorId == null) {
-            return futures;
+            return;
         }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
-                .compareTo(serviceInfo2.getServicePriority()));
+        Collections.sort(allServices, Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
         FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, writeTransaction,
                 NwConstants.DEFAULT_SERVICE_INDEX);
@@ -137,6 +107,12 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
                     boundService.getServicePriority());
         }
         futures.add(writeTransaction.submit());
-        return futures;
+    }
+
+    @Override
+    public void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                              String ifaceName) {
+        LOG.info("unbindServicesFromInterfaceType Ingree - WIP");
+        return;
     }
 }
