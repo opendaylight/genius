@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -89,6 +90,12 @@ public class FlowBasedServicesUtils {
             .put(ServiceMode.EGRESS, ServiceModeEgress.class).put(ServiceMode.INGRESS, ServiceModeIngress.class)
             .build();
 
+    // To keep the mapping between Tunnel Types and Tunnel Interfaces
+    public static final List<String> INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS =
+            Arrays.asList(org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_INTERNAL,
+                    org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_EXTERNAL,
+                    org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_MPLS_OVER_GRE);
+
     public static ServicesInfo getServicesInfoForInterface(String interfaceName,
             Class<? extends ServiceModeBase> serviceMode, DataBroker dataBroker) {
         ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName, serviceMode);
@@ -139,7 +146,12 @@ public class FlowBasedServicesUtils {
             vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
         }
         if (vlanId >= 0  && l2vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Transparent) {
-            matches.add(new MatchVlanVid(vlanId));
+            try {
+                matches.add(new MatchVlanVid(vlanId));
+            } catch (NullPointerException e) {
+                LOG.debug("NPE while gettingMatchInfoForVlanPortAtIngressTable", e);
+            }
+
         }
         return matches;
     }
@@ -232,9 +244,7 @@ public class FlowBasedServicesUtils {
 
     private static Node buildInventoryDpnNode(BigInteger dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
-        Node nodeDpn = new NodeBuilder().setId(nodeId).setKey(new NodeKey(nodeId)).build();
-
-        return nodeDpn;
+        return new NodeBuilder().setId(nodeId).setKey(new NodeKey(nodeId)).build();
     }
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
@@ -671,8 +681,7 @@ public class FlowBasedServicesUtils {
 
     public static BoundServicesState getBoundServicesState(DataBroker dataBroker,
                                                            String interfaceName,
-                                                           Class<? extends ServiceModeBase>
-                                                                                 serviceMode) {
+                                                           Class<? extends ServiceModeBase> serviceMode) {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).orNull();
@@ -701,6 +710,10 @@ public class FlowBasedServicesUtils {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, id);
         futures.add(writeTransaction.submit());
+    }
+
+    public static boolean isInterfaceTypeBasedServiceBinding(String interfaceName) {
+        return INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS.contains(interfaceName);
     }
 
     private static boolean isExternal(Interface iface) {

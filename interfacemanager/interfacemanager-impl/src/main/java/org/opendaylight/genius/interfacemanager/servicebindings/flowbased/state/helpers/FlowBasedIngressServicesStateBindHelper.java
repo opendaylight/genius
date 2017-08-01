@@ -10,11 +10,13 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -28,25 +30,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedIngressServicesStateBindHelper implements FlowBasedServicesStateAddable {
-    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateBindHelper.class);
+@Singleton
+public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedServicesStateBindHelper {
 
-    private final InterfacemgrProvider interfaceMgrProvider;
+    private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateBindHelper.class);
     private static volatile FlowBasedServicesStateAddable flowBasedIngressServicesStateAddable;
 
-    private FlowBasedIngressServicesStateBindHelper(InterfacemgrProvider interfaceMgrProvider) {
-        this.interfaceMgrProvider = interfaceMgrProvider;
-    }
-
-    public static void intitializeFlowBasedIngressServicesStateAddHelper(InterfacemgrProvider interfaceMgrProvider) {
-        if (flowBasedIngressServicesStateAddable == null) {
-            synchronized (FlowBasedIngressServicesStateBindHelper.class) {
-                if (flowBasedIngressServicesStateAddable == null) {
-                    flowBasedIngressServicesStateAddable = new FlowBasedIngressServicesStateBindHelper(
-                            interfaceMgrProvider);
-                }
-            }
-        }
+    @Inject
+    private FlowBasedIngressServicesStateBindHelper(final DataBroker dataBroker) {
+        super(dataBroker);
+        flowBasedIngressServicesStateAddable = this;
     }
 
     public static void clearFlowBasedIngressServicesStateAddHelper() {
@@ -61,23 +54,20 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
     }
 
     @Override
-    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures,
-                                        Interface ifaceState, List<BoundServices> allServices) {
+    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
+                                        Interface ifaceState) {
         LOG.debug("binding services on interface {}", ifaceState.getName());
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         if (L2vlan.class.equals(ifaceState.getType())) {
-            bindServiceOnVlan(futures, allServices, ifaceState, dataBroker);
+            bindServiceOnVlan(futures, allServices, ifaceState);
         } else if (Tunnel.class.equals(ifaceState.getType())) {
-            bindServiceOnTunnel(futures, allServices, ifaceState, dataBroker);
+            bindServiceOnTunnel(futures, allServices, ifaceState);
         }
     }
 
-    private static void bindServiceOnTunnel(List<ListenableFuture<Void>> futures,
-                                            List<BoundServices> allServices, Interface ifState,
-                                            DataBroker dataBroker) {
-        LOG.info("bind all ingress services on tunnel interface: {}", ifState.getName());
+    private void bindServiceOnTunnel(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
+                                     Interface ifState) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
+                .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
@@ -101,15 +91,13 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
         futures.add(writeTransaction.submit());
     }
 
-    private static void bindServiceOnVlan(List<ListenableFuture<Void>> futures,
-                                          List<BoundServices> allServices, Interface ifState,
-                                          DataBroker dataBroker) {
-        LOG.info("bind all ingress services on vlan interface: {}", ifState.getName());
+    private void bindServiceOnVlan(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
+                                   Interface ifState) {
+        LOG.info("bind all ingress services for vlan port: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
-                .compareTo(serviceInfo2.getServicePriority()));
+        Collections.sort(allServices, Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
         short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
                 : highestPriority.getServicePriority() + 1);
@@ -128,5 +116,10 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
                     ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
         }
         futures.add(writeTransaction.submit());
+    }
+
+    @Override
+    public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName) {
+        LOG.info("bindServicesOnInterfaceType Ingress - WIP");
     }
 }
