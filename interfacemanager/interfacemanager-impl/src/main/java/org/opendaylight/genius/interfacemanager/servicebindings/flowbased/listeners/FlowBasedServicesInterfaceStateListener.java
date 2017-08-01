@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -44,7 +43,8 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedServicesInterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
-    private DataBroker dataBroker;
+
+    private final DataBroker dataBroker;
 
     @Inject
     public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider,
@@ -55,25 +55,22 @@ public class FlowBasedServicesInterfaceStateListener
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
-    @PostConstruct
-    public void start() throws Exception {
-
-        LOG.info("FlowBasedServicesInterfaceStateListener started");
-    }
-
     @Override
     @PreDestroy
     public void close() {
         LOG.info("FlowBasedServicesInterfaceStateListener closed");
+
     }
 
     private void initializeFlowBasedServiceStateBindHelpers(InterfacemgrProvider interfaceMgrProvider) {
-        FlowBasedIngressServicesStateBindHelper.intitializeFlowBasedIngressServicesStateAddHelper(interfaceMgrProvider);
+        FlowBasedIngressServicesStateBindHelper
+                .intitializeFlowBasedIngressServicesStateAddHelper(dataBroker, interfaceMgrProvider);
         FlowBasedIngressServicesStateUnbindHelper
-                .intitializeFlowBasedIngressServicesStateRemoveHelper(interfaceMgrProvider);
-        FlowBasedEgressServicesStateBindHelper.intitializeFlowBasedEgressServicesStateBindHelper(interfaceMgrProvider);
+                .intitializeFlowBasedIngressServicesStateRemoveHelper(dataBroker, interfaceMgrProvider);
+        FlowBasedEgressServicesStateBindHelper
+                .intitializeFlowBasedEgressServicesStateBindHelper(dataBroker, interfaceMgrProvider);
         FlowBasedEgressServicesStateUnbindHelper
-                .intitializeFlowBasedEgressServicesStateUnbindHelper(interfaceMgrProvider);
+                .intitializeFlowBasedEgressServicesStateUnbindHelper(dataBroker, interfaceMgrProvider);
     }
 
     @Override
@@ -94,7 +91,7 @@ public class FlowBasedServicesInterfaceStateListener
                 .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
                         new RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRendererFactory
                                 .getFlowBasedServicesStateRendererFactory(serviceMode)
-                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld),
+                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld, serviceMode),
                         IfmConstants.JOB_MAX_RETRIES));
     }
 
@@ -155,7 +152,7 @@ public class FlowBasedServicesInterfaceStateListener
             // Build the service-binding state if there are services bound on this interface
             FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
                 FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
-            flowBasedServicesStateAddable.bindServicesOnInterface(futures, iface, allServices);
+            flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
             return futures;
         }
     }
@@ -163,16 +160,20 @@ public class FlowBasedServicesInterfaceStateListener
     private class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
-                Interface iface) {
+                Interface iface, Class<? extends ServiceModeBase> serviceMode) {
             this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
             this.iface = iface;
+            this.serviceMode = serviceMode;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return flowBasedServicesStateRemovable.unbindServicesFromInterface(iface);
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            flowBasedServicesStateRemovable.unbindServices(futures, iface, serviceMode);
+            return futures;
         }
     }
 }

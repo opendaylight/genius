@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -56,6 +55,7 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeListener<ServicesInfo> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
+
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
 
@@ -78,12 +78,13 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     private void initializeFlowBasedServiceHelpers(InterfacemgrProvider interfaceMgrProvider) {
         FlowBasedIngressServicesConfigBindHelper
-                .intitializeFlowBasedIngressServicesConfigAddHelper(interfaceMgrProvider);
+                .intitializeFlowBasedIngressServicesConfigAddHelper(dataBroker, interfaceMgrProvider);
         FlowBasedIngressServicesConfigUnbindHelper
-                .intitializeFlowBasedIngressServicesConfigRemoveHelper(interfaceMgrProvider);
-        FlowBasedEgressServicesConfigBindHelper.intitializeFlowBasedEgressServicesConfigAddHelper(interfaceMgrProvider);
+                .intitializeFlowBasedIngressServicesConfigRemoveHelper(dataBroker, interfaceMgrProvider);
+        FlowBasedEgressServicesConfigBindHelper
+                .intitializeFlowBasedEgressServicesConfigAddHelper(dataBroker, interfaceMgrProvider);
         FlowBasedEgressServicesConfigUnbindHelper
-                .intitializeFlowBasedEgressServicesConfigRemoveHelper(interfaceMgrProvider);
+                .intitializeFlowBasedEgressServicesConfigRemoveHelper(dataBroker, interfaceMgrProvider);
     }
 
     @PreDestroy
@@ -218,8 +219,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
                 FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, interfaceName,boundServicesState);
             }
-            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew,
-                boundServicesList, boundServicesState);
+            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                    boundServicesState);
             return futures;
         }
     }
@@ -256,8 +257,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(futures, dataBroker, interfaceName, serviceMode);
             }
-            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
-                boundServicesList, boundServiceState);
+            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                    boundServiceState);
             return futures;
         }
     }
