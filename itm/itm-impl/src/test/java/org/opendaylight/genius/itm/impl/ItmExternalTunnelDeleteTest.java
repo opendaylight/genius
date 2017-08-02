@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -147,8 +147,6 @@ public class ItmExternalTunnelDeleteTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
 
-    ItmExternalTunnelDeleteWorker itmExternalTunnelDeleteWorker = new ItmExternalTunnelDeleteWorker();
-
     @Before
     public void setUp() {
         when(dataBroker.registerDataChangeListener(
@@ -273,11 +271,10 @@ public class ItmExternalTunnelDeleteTest {
 
     @Test
     public void testDeleteTunnels() {
-        itmExternalTunnelDeleteWorker.deleteTunnels(dataBroker,idManagerService,dpnTepsList,ipAddress1,tunnelType1);
+        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker,idManagerService,dpnTepsList,ipAddress1,tunnelType1);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,path);
-
     }
 
     @Test
@@ -322,7 +319,7 @@ public class ItmExternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
                 externalTunnelIdentifier6);
 
-        itmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService, dpnTepsList, cfgdHwVtepsList,
+        ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService, dpnTepsList, cfgdHwVtepsList,
                 transportZone);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);
@@ -332,7 +329,5 @@ public class ItmExternalTunnelDeleteTest {
         verify(mockWriteTx, times(2)).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier4);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier5);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier6);
-
     }
-
 }
