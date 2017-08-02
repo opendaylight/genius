@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -18,12 +18,15 @@ import org.opendaylight.genius.utils.cache.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EntityOwnerUtils {
+public final class EntityOwnerUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(EntityOwnerUtils.class);
 
-    public  static final String ENTITY_OWNER_CACHE = "entity.owner.cache";
+    public static final String ENTITY_OWNER_CACHE = "entity.owner.cache";
     private static final ArrayList<EntityEvent> EVENTS_HISTORY = new ArrayList<>();
+
+    private EntityOwnerUtils() {
+    }
 
     public static class EntityEvent {
         private final long time;
@@ -73,19 +76,9 @@ public class EntityOwnerUtils {
         return entityType;
     }
 
-    private static void updateEntityOwner(String entityType, String entityName, Boolean isOwner) {
-        ConcurrentMap<String, Boolean> entityOwnerCache =
-                (ConcurrentMap<String, Boolean>) CacheUtil.getCache(ENTITY_OWNER_CACHE);
-        String entity = getEntity(entityType, entityName);
-        if (entityOwnerCache != null) {
-            LOG.trace("updating entity owner " + isOwner + " " + entity);
-            entityOwnerCache.put(entity, isOwner);
-        }
-    }
-
     public static boolean amIEntityOwner(String entityType, String entityName) {
-        ConcurrentMap<String, Boolean> entityOwnerCache =
-                (ConcurrentMap<String, Boolean>) CacheUtil.getCache(ENTITY_OWNER_CACHE);
+        ConcurrentMap<String, Boolean> entityOwnerCache = (ConcurrentMap<String, Boolean>) CacheUtil
+                .getCache(ENTITY_OWNER_CACHE);
         String entity = getEntity(entityType, entityName);
         boolean ret = false;
         if (entityOwnerCache != null) {
@@ -95,31 +88,29 @@ public class EntityOwnerUtils {
         } else {
             LOG.error("entity owner cache null");
         }
-        LOG.trace("get entity owner result {} for type {}" ,ret ,entity);
+        LOG.trace("get entity owner result {} for type {}", ret, entity);
         return ret;
     }
 
     /**
-     * Registers the entityName for ownership for given entityType
-     * adds a local listener which takes care of updating the cached entity status.
+     * Registers the entityName for ownership for given entityType adds a local
+     * listener which takes care of updating the cached entity status.
      *
-     * @param listener also adds this listener for ownership events if provided
+     * @param listener
+     *            also adds this listener for ownership events if provided
      */
-    public static void registerEntityCandidateForOwnerShip(
-            EntityOwnershipService entityOwnershipService,
+    public static void registerEntityCandidateForOwnerShip(EntityOwnershipService entityOwnershipService,
             String entityType, String entityName, EntityOwnershipListener listener)
             throws CandidateAlreadyRegisteredException {
         LOG.info("registering for entity ownership for type {}", entityType);
         Entity candidateEntity = new Entity(entityType, entityName);
-        entityOwnershipService.registerCandidate(
-                candidateEntity);
-        entityOwnershipService.registerListener(entityType,
-                entityOwnershipListener);
+        entityOwnershipService.registerCandidate(candidateEntity);
+        entityOwnershipService.registerListener(entityType, entityOwnershipListener);
         if (listener != null) {
             entityOwnershipService.registerListener(entityType, listener);
         }
         LOG.info("registered for entity ownership for type {}", entityType);
-        //TODO track registrations for closing
+        // TODO track registrations for closing
     }
 
     private static Listener entityOwnershipListener = new Listener();
@@ -131,7 +122,7 @@ public class EntityOwnerUtils {
             String entityType = ownershipChange.getEntity().getType();
             String entityName = ownershipChange.getEntity().getId().toString();
             LOG.info("entity ownership changed for {}", entityType);
-            EVENTS_HISTORY.add(new EntityEvent(System.currentTimeMillis(), entityName, ownershipChange.hasOwner() ,
+            EVENTS_HISTORY.add(new EntityEvent(System.currentTimeMillis(), entityName, ownershipChange.hasOwner(),
                     ownershipChange.isOwner()));
             if (ownershipChange.hasOwner() && ownershipChange.isOwner()) {
                 LOG.info("entity ownership change became owner for type {}", entityType);
@@ -139,6 +130,16 @@ public class EntityOwnerUtils {
             } else {
                 LOG.info("entity ownership lost ownership for type {} ", entityType);
                 updateEntityOwner(entityType, entityName, Boolean.FALSE);
+            }
+        }
+
+        private void updateEntityOwner(String entityType, String entityName, Boolean isOwner) {
+            ConcurrentMap<String, Boolean> entityOwnerCache = (ConcurrentMap<String, Boolean>) CacheUtil
+                    .getCache(ENTITY_OWNER_CACHE);
+            String entity = getEntity(entityType, entityName);
+            if (entityOwnerCache != null) {
+                LOG.trace("updating entity owner {} {}", isOwner, entity);
+                entityOwnerCache.put(entity, isOwner);
             }
         }
     }
