@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -152,11 +152,8 @@ public class ItmInternalTunnelAddTest {
     @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
 
-    ItmInternalTunnelAddWorker addWorker = new ItmInternalTunnelAddWorker();
-
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional;
-
 
     @Before
     public void setUp() {
@@ -257,8 +254,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
-        addWorker.build_all_tunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan, meshDpnListVxlan,
-                itmConfig);
+        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan,
+                meshDpnListVxlan, itmConfig);
 
         //Add some verifications
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
@@ -290,8 +287,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        addWorker.build_all_tunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListGre, meshDpnListGre,
-                itmConfig);
+        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListGre,
+                meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
                 internalTunnel1,true);
@@ -323,8 +320,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        addWorker.build_all_tunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre,
-                itmConfig);
+        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan,
+                meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
                 internalTunnel1,true);
