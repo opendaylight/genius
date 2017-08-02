@@ -49,6 +49,7 @@ public class ItmInternalTunnelAddWorker {
     private static Integer monitorInterval;
     private static ItmConfig itmCfg;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+
     private static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
         @Override
         public void onSuccess(Void result) {
@@ -61,7 +62,11 @@ public class ItmInternalTunnelAddWorker {
         }
     };
 
-    public static List<ListenableFuture<Void>> build_all_tunnels(DataBroker dataBroker,
+    private ItmInternalTunnelAddWorker() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static List<ListenableFuture<Void>> buildAllTunnels(DataBroker dataBroker,
                                                                  IdManagerService idManagerService,
                                                                  IMdsalApiManager mdsalManager,
                                                                  List<DPNTEPsInfo> cfgdDpnList,
@@ -81,7 +86,7 @@ public class ItmInternalTunnelAddWorker {
 
         for (DPNTEPsInfo dpn : cfgdDpnList) {
             //#####if dpn is not in meshedDpnList
-            build_tunnel_from(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, transaction, futures);
+            buildTunnelFrom(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, transaction, futures);
             if (null == meshedDpnList) {
                 meshedDpnList = new ArrayList<>();
             }
@@ -103,11 +108,11 @@ public class ItmInternalTunnelAddWorker {
         ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    private static void build_tunnel_from(DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
+    private static void buildTunnelFrom(DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
                                           IdManagerService idManagerService, IMdsalApiManager mdsalManager,
                                           WriteTransaction transaction, List<ListenableFuture<Void>> futures) {
         LOG.trace("Building tunnels from DPN {} " , srcDpn);
-        if (null == meshedDpnList || 0 == meshedDpnList.size()) {
+        if (null == meshedDpnList || meshedDpnList.isEmpty()) {
             LOG.debug("No DPN in the mesh ");
             return ;
         }
