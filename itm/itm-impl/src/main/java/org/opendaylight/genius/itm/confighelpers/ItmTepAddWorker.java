@@ -52,7 +52,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
                 cfgdDpnList, meshedDpnList);
-        futures.addAll(ItmInternalTunnelAddWorker.build_all_tunnels(dataBroker, idManagerService, mdsalManager,
+        futures.addAll(ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalManager,
                 cfgdDpnList, meshedDpnList, itmConfig)) ;
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
