@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_63bcb96d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-08-02T13:08:15Z",
+      "side": 1,
+      "message": "UnsupportedOperationException seems more appropriate (and isn’t that what we use elsewhere?). Of course throwing an exception here isn’t all that useful, the private constructor can’t be called anyway.",
+      "revId": "b9ce7aecd309798a1ef5d95d02601e137b1eb538",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
