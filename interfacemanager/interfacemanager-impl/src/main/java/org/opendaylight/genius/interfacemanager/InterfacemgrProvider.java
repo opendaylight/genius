@@ -310,8 +310,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 interfaceInfo.setPortName(interfaceName);
             } else {
                 Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
-                ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-                interfaceInfo.setPortName(parentRefs.getParentInterface());
+                if (iface != null) {
+                    ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+                    interfaceInfo.setPortName(parentRefs.getParentInterface());
+                }
             }
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
