@@ -549,14 +549,15 @@ public class FlowBasedServicesUtils {
 
     private static String getFlowRef(BigInteger dpnId, short tableId, String iface,BoundServices service,
                                      short currentServiceIndex) {
-        return String.valueOf(dpnId) + tableId + NwConstants.FLOWID_SEPARATOR + iface + NwConstants.FLOWID_SEPARATOR
-                + currentServiceIndex;
+        return String.valueOf(dpnId) + NwConstants.FLOWID_SEPARATOR + tableId + NwConstants.FLOWID_SEPARATOR + iface
+                + NwConstants.FLOWID_SEPARATOR + currentServiceIndex;
     }
 
     private static String getSplitHorizonFlowRef(BigInteger dpnId, short tableId, String iface,
             short currentServiceIndex, BigInteger shFlag) {
-        return new StringBuffer().append(dpnId).append(tableId).append(NwConstants.FLOWID_SEPARATOR).append(iface)
-                .append(NwConstants.FLOWID_SEPARATOR).append(shFlag.toString()).toString();
+        return new StringBuffer().append(dpnId).append(NwConstants.FLOWID_SEPARATOR).append(tableId).append(NwConstants
+                .FLOWID_SEPARATOR).append(iface).append(NwConstants.FLOWID_SEPARATOR)
+                .append(shFlag.toString()).toString();
     }
 
     /**
