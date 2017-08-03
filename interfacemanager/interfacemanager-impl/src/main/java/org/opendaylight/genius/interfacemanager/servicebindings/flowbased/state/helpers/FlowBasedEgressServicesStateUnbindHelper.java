@@ -53,7 +53,7 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
         return flowBasedServicesStateRemovable;
     }
 
-    protected List<ListenableFuture<Void>> unbindServicesOnInterface(List<BoundServices> allServices,
+    public  List<ListenableFuture<Void>> unbindServicesFromInterface(List<BoundServices> allServices,
                                                                        Interface ifaceState,
                                                                        Integer ifIndex, DataBroker dataBroker) {
         final List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -80,8 +80,25 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
         return futures;
     }
 
-    public  List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName) {
-        LOG.info("unbingServicesOnInterfaceType Egress - WIP");
-        return null;
+    public  List<ListenableFuture<Void>> unbindServicesFromInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                         List<BoundServices> allServices,
+                                                                         DataBroker dataBroker) {
+        LOG.info("unbinding all egress services for interface type: {}", ifaceName);
+        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, highestPriority, writeTransaction,
+                ifaceName, NwConstants.DEFAULT_SERVICE_INDEX);
+        for (BoundServices boundService : allServices) {
+            FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, boundService, writeTransaction,
+                    ifaceName, boundService.getServicePriority());
+        }
+        futures.add(writeTransaction.submit());
+        // remove the default egress service bound on the interface, once all
+        // flows are removed
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceName);
+        return futures;
     }
 }

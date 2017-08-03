@@ -59,7 +59,7 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
 
-    protected List<ListenableFuture<Void>> unbindServicesOnInterface(List<BoundServices> allServices,
+    public List<ListenableFuture<Void>> unbindServicesFromInterface(List<BoundServices> allServices,
                                                                        Interface ifState,
                                                                        Integer ifIndex, DataBroker dataBroker) {
         if (L2vlan.class.equals(ifState.getType())) {
@@ -70,9 +70,23 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
         return null;
     }
 
-    public List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName) {
-        LOG.info("unbindServicesFromInterfaceType Ingree - WIP");
-        return null;
+    public List<ListenableFuture<Void>> unbindServicesFromInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                        List<BoundServices> allServices,
+                                                                        DataBroker dataBroker) {
+        LOG.info("unbinding all ingress services for interface type: {}", ifaceName);
+        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, highestPriority, writeTransaction, ifaceName,
+                NwConstants.DEFAULT_SERVICE_INDEX);
+        for (BoundServices boundService : allServices) {
+            FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, boundService, writeTransaction, ifaceName,
+                    boundService.getServicePriority());
+        }
+        futures.add(writeTransaction.submit());
+        return futures;
     }
 
 
