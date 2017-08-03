@@ -509,9 +509,8 @@ public class InterfaceManagerConfigurationTest {
         interfaceManager.bindService(INTERFACE_NAME, ServiceModeIngress.class, serviceInfo);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
-        String lportDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.LPORT_DISPATCHER_TABLE
-            + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
-            + NwConstants.DEFAULT_SERVICE_INDEX;
+        String lportDispatcherFlowRef = InterfaceManagerTestUtil.getDispatcherFlowRef(dpnId,
+                NwConstants.LPORT_DISPATCHER_TABLE, INTERFACE_NAME,NwConstants.DEFAULT_SERVICE_INDEX);
         FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> lportDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
@@ -546,9 +545,8 @@ public class InterfaceManagerConfigurationTest {
         Thread.sleep(1000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
-        String egressDispatcherFlowRef = String.valueOf(dpnId) + NwConstants.EGRESS_LPORT_DISPATCHER_TABLE
-            + NwConstants.FLOWID_SEPARATOR + INTERFACE_NAME + NwConstants.FLOWID_SEPARATOR
-            + NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
+        String egressDispatcherFlowRef = InterfaceManagerTestUtil.getDispatcherFlowRef(dpnId,
+                NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, INTERFACE_NAME, NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
 
         FlowKey egressDispatcherFlowKey = new FlowKey(new FlowId(egressDispatcherFlowRef));
         InstanceIdentifier<Flow> egressDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)

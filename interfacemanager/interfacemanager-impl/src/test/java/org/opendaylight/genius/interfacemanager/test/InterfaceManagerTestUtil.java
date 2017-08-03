@@ -345,9 +345,9 @@ public class InterfaceManagerTestUtil {
             .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
     }
 
-    static InstanceIdentifier<BoundServices> buildServiceId(String vpnInterfaceName, short serviceIndex) {
-        return InstanceIdentifier.builder(ServiceBindings.class)
-            .child(ServicesInfo.class, new ServicesInfoKey(vpnInterfaceName, ServiceModeIngress.class))
-            .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();
+    static String getDispatcherFlowRef(BigInteger dpnId, short tableId, String iface,
+                                     short currentServiceIndex) {
+        return String.valueOf(dpnId) + NwConstants.FLOWID_SEPARATOR + tableId + NwConstants.FLOWID_SEPARATOR + iface
+                + NwConstants.FLOWID_SEPARATOR + currentServiceIndex;
     }
 }
