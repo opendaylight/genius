@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_2ec8e173",
+        "filename": "srm/api/src/main/yang/srm-types.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-03T17:01:20Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "e9a1c06c8415b6f2ea15a19de44488dac7d5f86d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0ec51d5b",
+        "filename": "srm/impl/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-03T17:01:20Z",
+      "side": 1,
+      "message": "is this needed per module? i thought we have enabled at the root pom..",
+      "revId": "e9a1c06c8415b6f2ea15a19de44488dac7d5f86d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
