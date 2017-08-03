@@ -71,6 +71,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.ovsdb.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>srm-api</artifactId>
+      <version>${genius.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.ovsdb</groupId>
       <artifactId>utils.southbound-utils</artifactId>
       <version>${genius.ovsdb.version}</version>

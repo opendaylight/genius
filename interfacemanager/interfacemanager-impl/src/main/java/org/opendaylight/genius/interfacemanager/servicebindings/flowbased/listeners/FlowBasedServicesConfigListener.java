@@ -61,8 +61,12 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     public FlowBasedServicesConfigListener(final DataBroker dataBroker,
                                            final InterfacemgrProvider interfacemgrProvider) {
         initializeFlowBasedServiceHelpers(interfacemgrProvider);
-        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
         this.dataBroker = dataBroker;
+        registerListener();
+    }
+
+    public void registerListener() {
+        this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
     protected InstanceIdentifier<ServicesInfo> getWildCardPath() {
