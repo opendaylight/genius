@@ -62,21 +62,20 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
     }
 
     @Override
-    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState, List<BoundServices> allServices) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures,
+                                        Interface ifaceState, List<BoundServices> allServices) {
         LOG.debug("binding services on interface {}", ifaceState.getName());
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         if (L2vlan.class.equals(ifaceState.getType())) {
-            return bindServiceOnVlan(allServices, ifaceState, dataBroker);
+            bindServiceOnVlan(futures, allServices, ifaceState, dataBroker);
         } else if (Tunnel.class.equals(ifaceState.getType())) {
-            return bindServiceOnTunnel(allServices, ifaceState, dataBroker);
+            bindServiceOnTunnel(futures, allServices, ifaceState, dataBroker);
         }
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnTunnel(List<BoundServices> allServices, Interface ifState,
-            DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    private static void bindServiceOnTunnel(List<ListenableFuture<Void>> futures,
+                                            List<BoundServices> allServices, Interface ifState,
+                                            DataBroker dataBroker) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
@@ -100,11 +99,11 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
         }
 
         futures.add(writeTransaction.submit());
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindServiceOnVlan(List<BoundServices> allServices, Interface ifState,
-            DataBroker dataBroker) {
+    private static void bindServiceOnVlan(List<ListenableFuture<Void>> futures,
+                                          List<BoundServices> allServices, Interface ifState,
+                                          DataBroker dataBroker) {
         LOG.info("bind all ingress services for vlan port: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -128,8 +127,6 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, prev, ifState.getName(), writeTransaction,
                     ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
         }
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         futures.add(writeTransaction.submit());
-        return futures;
     }
 }

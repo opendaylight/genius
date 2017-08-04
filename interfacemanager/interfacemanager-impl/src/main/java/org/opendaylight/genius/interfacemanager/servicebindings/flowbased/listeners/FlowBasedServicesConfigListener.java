@@ -9,6 +9,8 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -61,8 +63,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     public FlowBasedServicesConfigListener(final DataBroker dataBroker,
                                            final InterfacemgrProvider interfacemgrProvider) {
         initializeFlowBasedServiceHelpers(interfacemgrProvider);
-        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
         this.dataBroker = dataBroker;
+        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
     protected InstanceIdentifier<ServicesInfo> getWildCardPath() {
@@ -205,6 +207,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             BoundServicesState boundServicesState = FlowBasedServicesUtils
                 .getBoundServicesState(dataBroker, interfaceName, serviceMode);
             // if service-binding state is not present, construct the same using ifstate
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
             if (boundServicesState == null) {
                 Interface ifState = InterfaceManagerCommonUtils.getInterfaceState(interfaceName, dataBroker);
                 if (ifState == null) {
@@ -213,10 +216,11 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                     return null;
                 }
                 boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
-                FlowBasedServicesUtils.addBoundServicesState(dataBroker, interfaceName,boundServicesState);
+                FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, interfaceName,boundServicesState);
             }
-            return flowBasedServicesAddable.bindService(interfaceName, boundServicesNew,
+            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew,
                 boundServicesList, boundServicesState);
+            return futures;
         }
     }
 
@@ -248,11 +252,13 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                     boundServicesNew.getServiceName(), boundServicesNew.getServicePriority());
                 return null;
             }
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
             if (boundServicesList.isEmpty()) {
-                FlowBasedServicesUtils.removeBoundServicesState(dataBroker, interfaceName, serviceMode);
+                FlowBasedServicesUtils.removeBoundServicesState(futures, dataBroker, interfaceName, serviceMode);
             }
-            return flowBasedServicesConfigRemovable.unbindService(interfaceName, boundServicesNew,
+            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
                 boundServicesList, boundServiceState);
+            return futures;
         }
     }
 }
