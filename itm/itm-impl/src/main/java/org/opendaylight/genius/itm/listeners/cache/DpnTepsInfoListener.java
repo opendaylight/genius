@@ -71,7 +71,7 @@ public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBas
 
     @Override
     protected void add(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo add) {
-        LOG.debug(" Add to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
+        LOG.info(" Add to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
                 + add.getDPNID()) ;
         DataStoreCache.add(ITMConstants.DPN_TEPs_Info_CACHE_NAME, add.getDPNID(), add);
     }
