@@ -25,6 +25,8 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -119,23 +121,14 @@ public class FlowBasedServicesInterfaceStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
+
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
             ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
                 serviceMode, dataBroker);
-            if (servicesInfo == null) {
-                LOG.trace("service info is null for interface {}", iface.getName());
-                return null;
-            }
-
             List<BoundServices> allServices = servicesInfo.getBoundServices();
-            if (allServices == null || allServices.isEmpty()) {
-                LOG.trace("bound services is empty for interface {}", iface.getName());
-                return null;
+            if (L2vlan.class.equals(iface.getType()) || Tunnel.class.equals(iface.getType())) {
+                flowBasedServicesStateAddable.bindServicesOnInterface(futures, iface, servicesInfo, allServices);
             }
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
-                FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
-            flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
             return futures;
         }
     }
@@ -154,8 +147,14 @@ public class FlowBasedServicesInterfaceStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
+
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateRemovable.unbindServices(futures, iface, serviceMode);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
+                    serviceMode, dataBroker);
+            List<BoundServices> allServices = servicesInfo.getBoundServices();
+            if (L2vlan.class.equals(iface.getType()) || Tunnel.class.equals(iface.getType())) {
+                flowBasedServicesStateRemovable.unbindServicesFromInterface(futures, iface, servicesInfo, allServices);
+            }
             return futures;
         }
     }

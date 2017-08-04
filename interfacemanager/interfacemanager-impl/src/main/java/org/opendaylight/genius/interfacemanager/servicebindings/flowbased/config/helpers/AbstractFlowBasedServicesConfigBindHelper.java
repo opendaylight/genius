@@ -44,6 +44,7 @@ public abstract class AbstractFlowBasedServicesConfigBindHelper extends FlowInst
     public final void bindService(List<ListenableFuture<Void>> futures, String interfaceName,
                                   BoundServices boundServiceNew, List<BoundServices> allServices,
                                   Class<? extends ServiceModeBase> serviceMode) {
+
         if (allServices.isEmpty()) {
             LOG.error("empty bound service list during bind service {}, for: {}", boundServiceNew, interfaceName);
             return;

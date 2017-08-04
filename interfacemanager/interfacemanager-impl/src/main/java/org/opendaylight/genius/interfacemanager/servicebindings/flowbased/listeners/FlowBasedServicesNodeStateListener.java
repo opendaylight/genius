@@ -25,6 +25,8 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -112,6 +114,7 @@ public class FlowBasedServicesNodeStateListener
         private final String iface;
         BigInteger dpnId;
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable, BigInteger dpnId,
                                          String iface) {
@@ -122,8 +125,11 @@ public class FlowBasedServicesNodeStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
+
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateAddable.bindServicesOnInterfaceType(futures, dpnId, iface);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface, serviceMode, broker);
+            List<BoundServices> allServices = servicesInfo.getBoundServices();
+            flowBasedServicesStateAddable.bindServicesOnInterfaceType(futures, dpnId, servicesInfo, allServices);
             return futures;
         }
     }
@@ -132,6 +138,7 @@ public class FlowBasedServicesNodeStateListener
         private final String iface;
         BigInteger dpnId;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
                                            BigInteger dpnId, String iface) {
@@ -143,7 +150,9 @@ public class FlowBasedServicesNodeStateListener
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateRemovable.unbindServicesOnInterfaceType(futures, dpnId, iface);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface, serviceMode, broker);
+            List<BoundServices> allServices = servicesInfo.getBoundServices();
+            flowBasedServicesStateRemovable.unbindServicesFromInterfaceType(futures, dpnId, servicesInfo, allServices);
             return futures;
         }
     }

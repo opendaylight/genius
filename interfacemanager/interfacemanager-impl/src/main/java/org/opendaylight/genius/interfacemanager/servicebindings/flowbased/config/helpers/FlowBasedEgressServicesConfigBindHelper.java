@@ -50,6 +50,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
     @Override
     protected void bindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                           List<BoundServices> allServices, BoundServicesState boundServiceState) {
+
         BigInteger dpId = boundServiceState.getDpid();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
