@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_441d31bd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-08-04T17:04:17Z",
+      "side": 1,
+      "message": "same question as related patch, do we need to find the reason for the iface being null?",
+      "revId": "efd8a1d0f67d291fc6e85dc4da7e9c367365ed7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
