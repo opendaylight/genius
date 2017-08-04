@@ -266,8 +266,8 @@ public class ItmInternalTunnelAddTest {
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2,
                 internalTunnel2,true);
         PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        //ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
+                //ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     @Test
@@ -299,8 +299,8 @@ public class ItmInternalTunnelAddTest {
                 internalTunnel2,true);
 
         PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsGre,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        //ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsGre,
+                //ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     @Test
@@ -331,7 +331,7 @@ public class ItmInternalTunnelAddTest {
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
                 internalTunnel2,true);
         PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        //ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
+                //ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 }
