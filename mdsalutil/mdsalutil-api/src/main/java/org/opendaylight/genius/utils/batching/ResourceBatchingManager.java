@@ -228,11 +228,11 @@ public class ResourceBatchingManager implements AutoCloseable {
                         new MdsalDsTask<>(resourceType, resList.subList(j, j + batchSize)).process();
                     }
                     // process remaining routes
-                    LOG.trace("Picked up 1 size {} ", resList.subList(batches * batchSize, resList.size()).size());
+                    LOG.info("Picked up 1 size {} ", resList.subList(batches * batchSize, resList.size()).size());
                     new MdsalDsTask<>(resourceType, resList.subList(batches * batchSize, resList.size())).process();
                 } else {
                     // process less than OR == batchsize routes
-                    LOG.trace("Picked up 2 size {}", resList.size());
+                    LOG.info("Picked up 2 size {}", resList.size());
                     new MdsalDsTask<>(resourceType, resList).process();
                 }
 
@@ -260,7 +260,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             InstanceIdentifier<T> identifier;
             Object instance;
 
-            LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
+            LOG.info("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
             Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
             if (resMapper == null) {
                 LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
@@ -272,6 +272,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             List<SubTransaction> transactionObjects = new ArrayList<>();
             for (ActionableResource actResource : actResourceList) {
+                LOG.info("BUG@8233 -> process() Action {}", actResource.getAction());
                 switch (actResource.getAction()) {
                     case ActionableResource.CREATE:
                         identifier = actResource.getInstanceIdentifier();
@@ -279,6 +280,9 @@ public class ResourceBatchingManager implements AutoCloseable {
                         resHandler.create(tx, dsType, identifier, instance,transactionObjects);
                         break;
                     case ActionableResource.UPDATE:
+                        LOG.info("BUG@8233 -> update() identifier: {}", actResource.getInstanceIdentifier());
+                        LOG.info("BUG@8233 -> update() original instance: {}", actResource.getOldInstance());
+                        LOG.info("BUG@8233 -> update() updated instance: {}", actResource.getInstance());
                         identifier = actResource.getInstanceIdentifier();
                         Object updated = actResource.getInstance();
                         Object original = actResource.getOldInstance();
@@ -301,7 +305,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             try {
                 futures.get();
                 long time = System.currentTimeMillis() - start;
-                LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
+                LOG.info("##### Time taken for {} = {}ms", actResourceList.size(), time);
 
             } catch (InterruptedException | ExecutionException e) {
                 LOG.error("Exception occurred while batch writing to datastore", e);
