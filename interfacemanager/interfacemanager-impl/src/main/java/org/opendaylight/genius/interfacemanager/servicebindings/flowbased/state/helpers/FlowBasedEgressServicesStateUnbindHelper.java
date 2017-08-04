@@ -20,6 +20,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -53,10 +54,14 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
         return flowBasedServicesStateRemovable;
     }
 
-    protected List<ListenableFuture<Void>> unbindServicesOnInterface(List<BoundServices> allServices,
-                                                                       Interface ifaceState,
-                                                                       Integer ifIndex, DataBroker dataBroker) {
-        final List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public  List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifaceState, ServicesInfo servicesInfo,
+                                                                     List<BoundServices> allServices, Integer ifIndex,
+                                                                     DataBroker dataBroker) {
+        LOG.info("Unbind all egress services for interface : {}", ifaceState.getName());
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        if (!validate(ifaceState.getName(), servicesInfo, allServices)) {
+            return futures;
+        }
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
@@ -80,8 +85,29 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
         return futures;
     }
 
-    public  List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName) {
-        LOG.info("unbingServicesOnInterfaceType Egress - WIP");
-        return null;
+    public  List<ListenableFuture<Void>> unbindServicesFromInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                         ServicesInfo servicesInfo,
+                                                                         List<BoundServices> allServices,
+                                                                         DataBroker dataBroker) {
+        LOG.info("unbinding all egress services for interface type: {}", ifaceName);
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        if (!validate(ifaceName, servicesInfo, allServices)) {
+            return futures;
+        }
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, highestPriority, writeTransaction,
+                ifaceName, NwConstants.DEFAULT_SERVICE_INDEX);
+        for (BoundServices boundService : allServices) {
+            FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, boundService, writeTransaction,
+                    ifaceName, boundService.getServicePriority());
+        }
+        futures.add(writeTransaction.submit());
+        // remove the default egress service bound on the interface, once all
+        // flows are removed
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceName);
+        return futures;
     }
 }
