@@ -70,6 +70,10 @@ public class InterfaceInventoryStateListener
         this.idManager = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
+        registerListener();
+    }
+
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 

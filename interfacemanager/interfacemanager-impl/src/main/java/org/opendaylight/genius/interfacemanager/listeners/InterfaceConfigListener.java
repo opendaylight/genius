@@ -60,6 +60,10 @@ public class InterfaceConfigListener
         this.mdsalApiManager = mdsalApiManager;
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.alivenessMonitorService = alivenessMonitorService;
+        registerListener();
+    }
+
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
