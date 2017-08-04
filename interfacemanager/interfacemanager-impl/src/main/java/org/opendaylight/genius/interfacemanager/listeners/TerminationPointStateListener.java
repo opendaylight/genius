@@ -44,7 +44,11 @@ public class TerminationPointStateListener extends
                                          final InterfacemgrProvider interfaceMgrProvider) {
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
+        registerListener();
+    }
+
+    public void registerListener() {
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @Override
