@@ -9,16 +9,11 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.slf4j.Logger;
@@ -40,39 +35,26 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
         this.interfaceMgrProvider = interfaceMgrProvider;
     }
 
-    @Override
-    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState, List<BoundServices>
-        allServices, Class<? extends ServiceModeBase> serviceMode) {
-
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        if (ifaceState.getType() == null) {
-            return futures;
-        }
-        LOG.debug("binding services on interface {}", ifaceState.getName());
-        DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-            serviceMode, dataBroker);
+    public boolean validate(String ifaceName, ServicesInfo servicesInfo, List<BoundServices> allServices) {
         if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return futures;
+            LOG.trace("service info is null for interface {}", ifaceName);
+            return false;
         }
         if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return futures;
+            LOG.trace("bound services is empty for interface {}", ifaceName);
+            return false;
         }
-
-        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            return bindServicesOnInterface(allServices, ifaceState, dataBroker);
-        }
-
-        return futures;
+        return true;
     }
 
-    protected abstract List<ListenableFuture<Void>> bindServicesOnInterface(List<BoundServices> allServices,
-                                                                                 Interface ifState,
-                                                                                 DataBroker dataBroker);
+    public abstract List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifState, ServicesInfo servicesInfo,
+                                                                         List<BoundServices> allServices,
+                                                                         DataBroker dataBroker);
 
-    public abstract List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName);
+    public abstract List<ListenableFuture<Void>> bindServicesOnInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                             ServicesInfo servicesInfo,
+                                                                             List<BoundServices> allServices,
+                                                                             DataBroker dataBroker);
 }
 
 

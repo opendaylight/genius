@@ -22,6 +22,7 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -59,20 +60,43 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
 
-    protected List<ListenableFuture<Void>> unbindServicesOnInterface(List<BoundServices> allServices,
-                                                                       Interface ifState,
-                                                                       Integer ifIndex, DataBroker dataBroker) {
+    public List<ListenableFuture<Void>> unbindServicesFromInterface(Interface ifState, ServicesInfo servicesInfo,
+                                                                    List<BoundServices> allServices, Integer ifIndex,
+                                                                    DataBroker dataBroker) {
+        LOG.info("unbinding all ingress services for interface type: {}", ifState.getName());
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        if (!validate(ifState.getName(), servicesInfo, allServices)) {
+            return futures;
+        }
         if (L2vlan.class.equals(ifState.getType())) {
             return unbindServicesOnVlan(allServices, ifState, ifState.getIfIndex(), dataBroker);
         } else if (Tunnel.class.equals(ifState.getType())) {
             return unbindServicesOnTunnel(allServices, ifState, ifState.getIfIndex(), dataBroker);
         }
-        return null;
+        return futures;
     }
 
-    public List<ListenableFuture<Void>> unbindServicesOnInterfaceType(BigInteger dpnId, String ifaceName) {
-        LOG.info("unbindServicesFromInterfaceType Ingree - WIP");
-        return null;
+    public List<ListenableFuture<Void>> unbindServicesFromInterfaceType(BigInteger dpnId, String ifaceName,
+                                                                        ServicesInfo servicesInfo,
+                                                                        List<BoundServices> allServices,
+                                                                        DataBroker dataBroker) {
+        LOG.info("unbinding all ingress services for interface type: {}", ifaceName);
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        if (!validate(ifaceName, servicesInfo, allServices)) {
+            return futures;
+        }
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, highestPriority, writeTransaction, ifaceName,
+                NwConstants.DEFAULT_SERVICE_INDEX);
+        for (BoundServices boundService : allServices) {
+            FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, boundService, writeTransaction, ifaceName,
+                    boundService.getServicePriority());
+        }
+        futures.add(writeTransaction.submit());
+        return futures;
     }
 
 
