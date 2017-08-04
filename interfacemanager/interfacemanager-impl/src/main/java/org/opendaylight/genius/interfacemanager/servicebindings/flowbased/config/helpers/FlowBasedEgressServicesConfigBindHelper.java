@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -55,28 +54,28 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
     }
 
     @Override
-    public List<ListenableFuture<Void>> bindService(String interfaceName, BoundServices boundServiceNew,
-                                                    List<BoundServices> allServices,
-                                                    BoundServicesState interfaceBoundServicesState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public void bindService(List<ListenableFuture<Void>> futures,
+                            String interfaceName, BoundServices boundServiceNew,
+                            List<BoundServices> allServices,
+                            BoundServicesState interfaceBoundServicesState) {
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
 
         if (allServices.isEmpty()) {
             LOG.error("Reached Impossible part 1 in the code during bind service for: {}", boundServiceNew);
-            return futures;
+            return;
         }
 
         if (L2vlan.class.equals(interfaceBoundServicesState.getInterfaceType())
             || Tunnel.class.equals(interfaceBoundServicesState.getInterfaceType())) {
-            bindService(boundServiceNew, allServices, interfaceBoundServicesState, dataBroker);
+            bindService(futures, boundServiceNew, allServices, interfaceBoundServicesState, dataBroker);
         }
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> bindService(BoundServices boundServiceNew,
-            List<BoundServices> allServices, BoundServicesState boundServiceState,
-            DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    private static void bindService(List<ListenableFuture<Void>> futures,
+                                    BoundServices boundServiceNew,
+                                    List<BoundServices> allServices,
+                                    BoundServicesState boundServiceState,
+                                    DataBroker dataBroker) {
         BigInteger dpId = boundServiceState.getDpid();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
@@ -93,7 +92,7 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
             if (transaction != null) {
                 futures.add(transaction.submit());
             }
-            return futures;
+            return;
         }
         allServices.remove(boundServiceNew);
         BoundServices[] highLowPriorityService = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices,
@@ -149,6 +148,5 @@ public class FlowBasedEgressServicesConfigBindHelper implements FlowBasedService
         FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew, boundServiceState.getInterfaceName(),
             transaction, boundServiceState.getIfIndex(), currentServiceIndex, nextServiceIndex, iface);
         futures.add(transaction.submit());
-        return futures;
     }
 }

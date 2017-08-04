@@ -9,9 +9,7 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -64,32 +62,31 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
     }
 
     @Override
-    public List<ListenableFuture<Void>> unbindService(String interfaceName, BoundServices boundServiceOld,
-                                                      List<BoundServices> boundServices,
-                                                      BoundServicesState boundServicesState) {
-
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public void unbindService(List<ListenableFuture<Void>> futures,
+                              String interfaceName, BoundServices boundServiceOld,
+                              List<BoundServices> boundServices,
+                              BoundServicesState boundServicesState) {
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         if (boundServicesState == null) {
             LOG.info("Interface not operational, not unbinding Service for Interface: {}", interfaceName);
-            return futures;
+            return;
         }
 
         // Split based on type of interface....
         if (L2vlan.class.equals(boundServicesState.getInterfaceType())) {
-            return unbindServiceOnVlan(boundServiceOld, boundServices, boundServicesState, dataBroker);
+            unbindServiceOnVlan(futures, boundServiceOld, boundServices, boundServicesState, dataBroker);
         } else if (Tunnel.class.equals(boundServicesState.getInterfaceType())) {
-            return unbindServiceOnTunnel(boundServiceOld, boundServices, boundServicesState, dataBroker);
+            unbindServiceOnTunnel(futures, boundServiceOld, boundServices, boundServicesState, dataBroker);
         }
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnVlan(BoundServices boundServiceOld,
-            List<BoundServices> boundServices, BoundServicesState boundServicesState,
-            DataBroker dataBroker) {
+    private static void unbindServiceOnVlan(List<ListenableFuture<Void>> futures,
+                                                                    BoundServices boundServiceOld,
+                                                                    List<BoundServices> boundServices,
+                                                                    BoundServicesState boundServicesState,
+                                                                    DataBroker dataBroker) {
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 boundServicesState.getInterfaceName());
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = boundServicesState.getDpid();
         if (boundServices.isEmpty()) {
@@ -99,7 +96,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             if (tx != null) {
                 futures.add(tx.submit());
             }
-            return futures;
+            return;
         }
         BoundServices[] highLow = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, boundServiceOld);
         BoundServices low = highLow[0];
@@ -147,14 +144,13 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             }
         }
         futures.add(tx.submit());
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
-            List<BoundServices> boundServices, BoundServicesState boundServicesState,
-            DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-
+    private static void unbindServiceOnTunnel(List<ListenableFuture<Void>> futures,
+                                                                      BoundServices boundServiceOld,
+                                                                      List<BoundServices> boundServices,
+                                                                      BoundServicesState boundServicesState,
+                                                                      DataBroker dataBroker) {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = boundServicesState.getDpid();
 
@@ -164,7 +160,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             if (tx != null) {
                 futures.add(tx.submit());
             }
-            return futures;
+            return;
         }
 
         Map<Short, BoundServices> tmpServicesMap = new ConcurrentHashMap<>();
@@ -182,7 +178,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
             if (tx != null) {
                 futures.add(tx.submit());
             }
-            return futures;
+            return;
         }
 
         List<MatchInfo> matches;
@@ -201,6 +197,6 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         if (tx != null) {
             futures.add(tx.submit());
         }
-        return futures;
+        return;
     }
 }
