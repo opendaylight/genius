@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_0f55171d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "remove this \"WIP\" now?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4f68aff5",
+        "filename": "features/odl-genius-api/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "Strictly speaking this is now not required anymore here (as part of this change; although we\u0027ll likely be adding this soon anyway, as part of my part to have the genius DJC delegate to the infrautils JC) - but it would probably still be best for clarity to remove this here now?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_af6deb06",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "as per the other comment - remove this, now?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4f4f0f93",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "mark this as @Singleton, just for clarify / documentation?  As far as I know, any subclass of this will have to repeat the @Singleton again - but IMHO it\u0027s nice to mark this anyway.",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0f7eb7ae",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "why \"return Collections.emptyList()\" ?  I don\u0027t get for what... just because you have to return something from a Callable? Can\u0027t you just make it a Callable\u003cVoid\u003e and return null?  Or better, if you don\u0027t return anything (no return statement), won\u0027t Java 8 be smart enough to create a lambda that instead of Callable implements Runnable, which does not have to return anything?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4f36ef04",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractClusteredSyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "do we also need an AbstractClusteredAsyncDataTreeChangeListener?  Like the current AsyncClusteredDataTreeChangeListenerBase?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2f58db55",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "why (necessarily) extends AutoCloseable ?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8f49078e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "what is this good for? it seems a duplication - copy/paste mistake - you just did this in the line above?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_cf5adf4f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T11:54:40Z",
+      "side": 1,
+      "message": "again - this is weird.. did you perhaps mean to store this in a local variable? And pass it into add/remove/update as an arg? Like the current classes do... (Or does this have some \"side effect\", which we desire? Then that should be documented inline here.)",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
