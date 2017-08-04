@@ -41,8 +41,9 @@ public abstract class AbstractFlowBasedServicesConfigUnbindHelper extends FlowIn
     @Override
     public void unbindService(List<ListenableFuture<Void>> futures, String interfaceName, BoundServices boundServiceOld,
                               List<BoundServices> boundServices,  Class<? extends ServiceModeBase> serviceMode) {
+
         if (FlowBasedServicesUtils.isInterfaceTypeBasedServiceBinding(interfaceName)) {
-            unbindServiceOnInterfaceType(futures, interfaceName, boundServiceOld, boundServices);
+            unbindServiceFromInterfaceType(futures, interfaceName, boundServiceOld, boundServices);
         } else {
             BoundServicesState boundServicesState = FlowBasedServicesUtils.getBoundServicesState(
                     dataBroker, interfaceName, serviceMode);
@@ -58,19 +59,19 @@ public abstract class AbstractFlowBasedServicesConfigUnbindHelper extends FlowIn
             }
             if (L2vlan.class.equals(boundServicesState.getInterfaceType())
                     || Tunnel.class.equals(boundServicesState.getInterfaceType())) {
-                unbindServiceOnInterface(futures, boundServiceOld, boundServices, boundServicesState);
+                unbindServiceFromInterface(futures, boundServiceOld, boundServices, boundServicesState);
             }
         }
     }
 
 
-    protected abstract void unbindServiceOnInterface(List<ListenableFuture<Void>> futures,
-                                                     BoundServices boundServiceOld, List<BoundServices> allServices,
-                                                     BoundServicesState boundServicesState);
+    protected abstract void unbindServiceFromInterface(List<ListenableFuture<Void>> futures,
+                                                       BoundServices boundServiceOld, List<BoundServices> allServices,
+                                                       BoundServicesState boundServicesState);
 
-    protected abstract void unbindServiceOnInterfaceType(List<ListenableFuture<Void>> futures, String ifaceType,
-                                                         BoundServices boundServiceOld,
-                                                         List<BoundServices> allServices);
+    protected abstract void unbindServiceFromInterfaceType(List<ListenableFuture<Void>> futures, String ifaceType,
+                                                           BoundServices boundServiceOld,
+                                                           List<BoundServices> allServices);
 }
 
 
