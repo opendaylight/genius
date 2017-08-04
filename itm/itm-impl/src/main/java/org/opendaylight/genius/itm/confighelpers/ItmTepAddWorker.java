@@ -62,7 +62,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
                         cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType(), itmConfig));
             }
         }
-        //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
+        //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList,extIp);
         LOG.debug("invoking build hwVtepTunnels with hwVteplist {}", cfgdHwVteps);
         futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService,
                 cfgdDpnList,cfgdHwVteps));
