@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e1b417f4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "I haven\u0027t finished it yet :), but I think we can now remove it.  I\u0027d like to implement the clustered version.",
+      "parentUuid": "ba1f61a0_0f55171d",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4f68aff5",
         "filename": "features/odl-genius-api/pom.xml",
         "patchSetId": 8
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-04T11:54:40Z",
       "side": 1,
       "message": "Strictly speaking this is now not required anymore here (as part of this change; although we\u0027ll likely be adding this soon anyway, as part of my part to have the genius DJC delegate to the infrautils JC) - but it would probably still be best for clarity to remove this here now?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_41c5235a",
+        "filename": "features/odl-genius-api/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "I leave it there for that reason, but as you say, it is better to commit cleaner patches. I\u0027ll remove it.",
+      "parentUuid": "ba1f61a0_4f68aff5",
       "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a1a17fab",
+        "filename": "mdsalutil/mdsalutil-api/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "I\u0027ll remove it.",
+      "parentUuid": "ba1f61a0_af6deb06",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4f4f0f93",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
         "patchSetId": 8
@@ -64,6 +118,24 @@
       "writtenOn": "2017-08-04T11:54:40Z",
       "side": 1,
       "message": "mark this as @Singleton, just for clarify / documentation?  As far as I know, any subclass of this will have to repeat the @Singleton again - but IMHO it\u0027s nice to mark this anyway.",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_81a6fbbf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "Yes, the subclasses must repeat it, but it is better to clarify and document here.",
+      "parentUuid": "ba1f61a0_4f4f0f93",
       "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a4050dc4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "I\u0027ll change it. I forgot to change it when replacing the DJC, since it had a different method to enqueue jobs\npublic void enqueueJob(String key, Callable\u003cList\u003cListenableFuture\u003cVoid\u003e\u003e\u003e mainWorker,...",
+      "parentUuid": "ba1f61a0_0f7eb7ae",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4f36ef04",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractClusteredSyncDataTreeChangeListener.java",
         "patchSetId": 8
@@ -98,6 +188,24 @@
       "writtenOn": "2017-08-04T11:54:40Z",
       "side": 1,
       "message": "do we also need an AbstractClusteredAsyncDataTreeChangeListener?  Like the current AsyncClusteredDataTreeChangeListenerBase?",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_84528911",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractClusteredSyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "Added.",
+      "parentUuid": "ba1f61a0_4f36ef04",
       "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e46ee5c8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "We discussed this on the first patch:\n\nThe listeners usually have to release some resources, at least call the listenerRegistration.close(). We could just use Closeable instead, but at least something to force that. The current abstract classes do not implement the close method themselves as we can see in other places, but this is something that we can add as well.\n\nI\u0027ll can change it to closeable.",
+      "parentUuid": "ba1f61a0_2f58db55",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_8f49078e",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
         "patchSetId": 8
@@ -138,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_4448915b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "There were part of a test a did. They should have been removed.",
+      "parentUuid": "ba1f61a0_8f49078e",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_cf5adf4f",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
         "patchSetId": 8
@@ -149,6 +293,24 @@
       "writtenOn": "2017-08-04T11:54:40Z",
       "side": 1,
       "message": "again - this is weird.. did you perhaps mean to store this in a local variable? And pass it into add/remove/update as an arg? Like the current classes do... (Or does this have some \"side effect\", which we desire? Then that should be documented inline here.)",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a474ed9c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T16:08:24Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "ba1f61a0_cf5adf4f",
       "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
