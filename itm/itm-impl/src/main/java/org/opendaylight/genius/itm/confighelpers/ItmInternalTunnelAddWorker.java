@@ -86,7 +86,7 @@ public class ItmInternalTunnelAddWorker {
                 meshedDpnList = new ArrayList<>();
             }
             meshedDpnList.add(dpn);
-            // Update the operational datastore -- FIXME -- Error Handling
+            //Update the operational datastore -- FIXME -- Error Handling
             updateOperationalDatastore(dataBroker, dpn, transaction, futures);
         }
         futures.add(transaction.submit()) ;
@@ -100,7 +100,7 @@ public class ItmInternalTunnelAddWorker {
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
-        ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        transaction.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder, true);
     }
 
     private static void build_tunnel_from(DPNTEPsInfo srcDpn,List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
@@ -189,7 +189,8 @@ public class ItmInternalTunnelAddWorker {
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
             parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId, dataBroker);
         }
-        createTunnelInterface(srcte, dstte, srcDpnId, dstDpnId, tunType, trunkInterfaceName, parentInterfaceName);
+        createTunnelInterface(srcte, dstte, srcDpnId, dstDpnId, tunType, trunkInterfaceName, parentInterfaceName,
+                transaction, futures);
         // also update itm-state ds?
         createInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName, transaction);
         return true;
@@ -198,7 +199,8 @@ public class ItmInternalTunnelAddWorker {
     private static void createTunnelInterface(TunnelEndPoints srcte, TunnelEndPoints dstte,
                                              BigInteger srcDpnId, BigInteger dstDpnId,
                                              Class<? extends TunnelTypeBase> tunType,
-                                             String trunkInterfaceName, String parentInterfaceName) {
+                                             String trunkInterfaceName, String parentInterfaceName,
+                                             WriteTransaction transaction, List<ListenableFuture<Void>> futures) {
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
         IpAddress gatewayIpObj = new IpAddress(gateway.toCharArray());
         IpAddress gwyIpAddress =
@@ -218,7 +220,7 @@ public class ItmInternalTunnelAddWorker {
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
-        ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
         ItmUtils.itmCache.addInterface(iface);
     }
 
