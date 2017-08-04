@@ -172,7 +172,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
 
     @Override
     protected void update(InstanceIdentifier<TransportZone> key, TransportZone tzOld, TransportZone tzNew) {
-        LOG.debug("Received Transport Zone Update Event: Key - {}, Old - {}, Updated - {}", key, tzOld, tzNew);
+        LOG.info("Received Transport Zone Update Event: Key - {}, Old - {}, Updated - {}", key, tzOld, tzNew);
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(tzOld);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(tzNew);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -193,9 +193,9 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("oldcopy Size " + oldDpnTepsList.size());
         LOG.trace("newcopy Size " + newDpnTepsList.size());
         if (!newDpnTepsList.isEmpty()) {
-            LOG.trace("Adding TEPs ");
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
-                    idManagerService, mdsalManager, itmConfig);
+            LOG.info("Adding TEPs ");
+            ItmTepAddWorker addWorker = new ItmTepAddWorker(tzNew.getZoneName(), newDpnTepsList,
+                    Collections.emptyList(), dataBroker, idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldDpnTepsList.isEmpty()) {
@@ -221,8 +221,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("newHwListcopy" + newHwListcopy);
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
-                    idManagerService, mdsalManager, itmConfig);
+            ItmTepAddWorker addWorker = new ItmTepAddWorker(tzNew.getZoneName(), Collections.emptyList(), newHwList,
+                    dataBroker, idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldHwList.isEmpty()) {
@@ -244,8 +244,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService,
-                    mdsalManager, itmConfig);
+            ItmTepAddWorker addWorker = new ItmTepAddWorker(tzNew.getZoneName(), opDpnList, hwVtepList, dataBroker,
+                    idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
     }
