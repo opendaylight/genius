@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_efda43e8",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T11:17:50Z",
+      "side": 1,
+      "message": "We could link to the AAA documentation where we can find how the user roles are defined and handled.",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 60
+      },
+      "revId": "72c59be59e8c8ef51d2c2ad7feafbb7ba391abe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8fd627c4",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T11:17:50Z",
+      "side": 1,
+      "message": "I miss the definition of Service, since we are talking about them since the beginning. What is a service made of? for example, can be mapped to one or more features or modules?",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 15
+      },
+      "revId": "72c59be59e8c8ef51d2c2ad7feafbb7ba391abe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_cfd77fbe",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T11:17:50Z",
+      "side": 1,
+      "message": "Still valid?",
+      "range": {
+        "startLine": 437,
+        "startChar": 0,
+        "endLine": 437,
+        "endChar": 9
+      },
+      "revId": "72c59be59e8c8ef51d2c2ad7feafbb7ba391abe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_afe84b7d",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 453,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-04T11:17:50Z",
+      "side": 1,
+      "message": "shouldn\u0027t this framework its own feature? something like odl-genius-srm?",
+      "range": {
+        "startLine": 453,
+        "startChar": 0,
+        "endLine": 453,
+        "endChar": 10
+      },
+      "revId": "72c59be59e8c8ef51d2c2ad7feafbb7ba391abe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
