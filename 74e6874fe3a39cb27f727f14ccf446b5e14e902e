@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_642035f8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "this should NOT be called *Map - because it really is not a Map... ;-) so perhaps ifaceTpCache?",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e40c2597",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "just FYI: As explained during the F2F Dependency Injection training week before last in B\u0027lore, see also video recordings, if you like you could now use \"@OsgiService CacheProvider cacheProvider\" here, to save you having to change the BP XML interfacemanager.xml for this, see https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#NEW:_.40OsgiService_.26_.40OsgiServiceProvider_.28pax-cdi-api.29",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8430c957",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "interfaceNam not interfaceName (typo)",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba068154_585518c5",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -19,6 +70,104 @@
         "endLine": 138,
         "endChar": 49
       },
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_44eff1b0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "FYI: Even more JavaDoc than there already was have now added to https://git.opendaylight.org/gerrit/#/c/48920/, which is now final from my end.\n\nAlso, you can remove the new CachePolicyBuilder().build(), that\u0027s the default.  (Earlier it did not work due to https://issues.apache.org/jira/browse/KARAF-5086, but I\u0027ve now worked around that, so you can remove it here.)",
+      "parentUuid": "ba068154_585518c5",
+      "range": {
+        "startLine": 132,
+        "startChar": 25,
+        "endLine": 138,
+        "endChar": 49
+      },
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e4354547",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "remove this useless JavaDoc?",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c43ac135",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "rename this method to ifaceTpMapCacheLookup",
+      "range": {
+        "startLine": 152,
+        "startChar": 58,
+        "endLine": 152,
+        "endChar": 59
+      },
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_043cd92e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "you would do the lookup from the data store here.  You cannot return null.",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_24263d17",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-04T17:04:59Z",
+      "side": 1,
+      "message": "plz add ifaceTpMap.close(); here!",
       "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
