@@ -69,6 +69,10 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         return InstanceIdentifier.create(ServiceBindings.class).child(ServicesInfo.class);
     }
 
+    public void registerListener() {
+        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+    }
+
     public void registerListener(LogicalDatastoreType dsType, final DataBroker db) {
         final DataTreeIdentifier<ServicesInfo> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
         listenerRegistration = db.registerDataTreeChangeListener(treeId, FlowBasedServicesConfigListener.this);
