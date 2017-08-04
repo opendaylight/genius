@@ -8,6 +8,8 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.annotation.PostConstruct;
@@ -49,8 +51,8 @@ public class FlowBasedServicesInterfaceStateListener
             DataBroker dataBroker) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         this.dataBroker = interfacemgrProvider.getDataBroker();
+        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @PostConstruct
@@ -149,10 +151,12 @@ public class FlowBasedServicesInterfaceStateListener
                 LOG.trace("bound services is empty for interface {}", iface.getName());
                 return null;
             }
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
             // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(dataBroker, iface.getName(),
+            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
                 FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
-            return flowBasedServicesStateAddable.bindServicesOnInterface(iface, allServices);
+            flowBasedServicesStateAddable.bindServicesOnInterface(futures, iface, allServices);
+            return futures;
         }
     }
 

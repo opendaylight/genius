@@ -13,5 +13,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 
 public interface FlowBasedServicesStateAddable {
-    List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState, List<BoundServices> allServices);
+    List<ListenableFuture<Void>> bindServicesOnInterface(List<ListenableFuture<Void>> futures,
+                                                         Interface ifaceState, List<BoundServices> allServices);
 }

@@ -55,25 +55,24 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
     }
 
     @Override
-    public List<ListenableFuture<Void>> unbindService(String interfaceName, BoundServices boundServiceOld,
-                                                      List<BoundServices> boundServices,
-                                                      BoundServicesState boundServicesState) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public void unbindService(List<ListenableFuture<Void>> futures,
+                              String interfaceName, BoundServices boundServiceOld,
+                              List<BoundServices> boundServices,
+                              BoundServicesState boundServicesState) {
         DataBroker dataBroker = interfaceMgrProvider.getDataBroker();
         if (L2vlan.class.equals(boundServicesState.getInterfaceType())
             || Tunnel.class.equals(boundServicesState.getInterfaceType())) {
             unbindService(boundServiceOld, boundServices, boundServicesState, dataBroker);
         }
-        return futures;
     }
 
-    private static List<ListenableFuture<Void>> unbindService(BoundServices boundServiceOld,
-                                                              List<BoundServices> boundServices,
-                                                              BoundServicesState boundServicesState,
-                                                              DataBroker dataBroker) {
+    private static void unbindService(List<ListenableFuture<Void>> futures,
+                                      BoundServices boundServiceOld,
+                                      List<BoundServices> boundServices,
+                                      BoundServicesState boundServicesState,
+                                      DataBroker dataBroker) {
         LOG.info("unbinding egress service {} for interface: {}", boundServiceOld.getServiceName(), boundServicesState
             .getInterfaceName());
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName(),
             dataBroker);
@@ -85,7 +84,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
             if (tx != null) {
                 futures.add(tx.submit());
             }
-            return futures;
+            return;
         }
         BoundServices[] highLow = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, boundServiceOld);
         BoundServices low = highLow[0];
@@ -133,7 +132,6 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
             }
         }
         futures.add(tx.submit());
-        return futures;
     }
 
     private static List<ListenableFuture<Void>> unbindServiceOnTunnel(BoundServices boundServiceOld,
