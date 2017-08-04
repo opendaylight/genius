@@ -67,7 +67,7 @@ public class ItmInternalTunnelAddWorker {
                                                                  List<DPNTEPsInfo> cfgdDpnList,
                                                                  List<DPNTEPsInfo> meshedDpnList,
                                                                  ItmConfig itmConfig) {
-        LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
+        LOG.info("Building tunnels with DPN List {} " , cfgdDpnList);
         monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
         monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
         monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
@@ -80,14 +80,14 @@ public class ItmInternalTunnelAddWorker {
         }
 
         for (DPNTEPsInfo dpn : cfgdDpnList) {
+            // Update the operational datastore -- FIXME -- Error Handling
+            updateOperationalDatastore(dataBroker, dpn, transaction, futures);
             //#####if dpn is not in meshedDpnList
             build_tunnel_from(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, transaction, futures);
             if (null == meshedDpnList) {
                 meshedDpnList = new ArrayList<>();
             }
             meshedDpnList.add(dpn);
-            // Update the operational datastore -- FIXME -- Error Handling
-            updateOperationalDatastore(dataBroker, dpn, transaction, futures);
         }
         futures.add(transaction.submit()) ;
         return futures ;
@@ -95,7 +95,7 @@ public class ItmInternalTunnelAddWorker {
 
     private static void updateOperationalDatastore(DataBroker dataBroker, DPNTEPsInfo dpn,
                                                    WriteTransaction transaction, List<ListenableFuture<Void>> futures) {
-        LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
+        LOG.info("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(dpn) ;
@@ -175,7 +175,7 @@ public class ItmInternalTunnelAddWorker {
                                   IMdsalApiManager mdsalManager, WriteTransaction transaction,
                                   List<ListenableFuture<Void>> futures) {
         // Wire Up logic
-        LOG.trace("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
+        LOG.info("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
         String interfaceName = srcte.getInterfaceName();
         Class<? extends TunnelTypeBase> tunType = srcte.getTunnelType();
         String tunTypeStr = srcte.getTunnelType().getName();
@@ -203,7 +203,7 @@ public class ItmInternalTunnelAddWorker {
         IpAddress gatewayIpObj = new IpAddress(gateway.toCharArray());
         IpAddress gwyIpAddress =
                 srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
-        LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, "
+        LOG.info(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}",
                 trunkInterfaceName, srcte.getInterfaceName(), srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress);
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
@@ -217,7 +217,7 @@ public class ItmInternalTunnelAddWorker {
         LOG.debug(" Trunk Interface builder - {} ", iface);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
-        LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
+        LOG.info(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
         ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
         ItmUtils.itmCache.addInterface(iface);
     }

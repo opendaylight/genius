@@ -50,7 +50,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
+        LOG.info("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
                 cfgdDpnList, meshedDpnList);
         futures.addAll(ItmInternalTunnelAddWorker.build_all_tunnels(dataBroker, idManagerService, mdsalManager,
                 cfgdDpnList, meshedDpnList, itmConfig)) ;
