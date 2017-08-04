@@ -194,8 +194,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("newcopy Size " + newDpnTepsList.size());
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
-                    idManagerService, mdsalManager, itmConfig);
+            ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(),
+                    dataBroker, idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldDpnTepsList.isEmpty()) {
