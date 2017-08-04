@@ -52,6 +52,10 @@ public class FlowBasedServicesInterfaceStateListener
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
         this.dataBroker = interfacemgrProvider.getDataBroker();
+        registerListener();
+    }
+
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
