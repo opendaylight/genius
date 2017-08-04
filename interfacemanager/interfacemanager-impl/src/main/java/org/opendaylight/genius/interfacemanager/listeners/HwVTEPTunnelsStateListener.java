@@ -38,6 +38,10 @@ public class HwVTEPTunnelsStateListener
     public HwVTEPTunnelsStateListener(final DataBroker dataBroker) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.dataBroker = dataBroker;
+        registerListener();
+    }
+
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
