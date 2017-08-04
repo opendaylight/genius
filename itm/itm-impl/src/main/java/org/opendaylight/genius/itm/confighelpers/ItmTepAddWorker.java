@@ -36,6 +36,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker,
                            IdManagerService idManagerService, IMdsalApiManager mdsalManager,
                            ItmConfig itmConfig) {
+        this.transportZoneName = transportZoneName;
         this.cfgdDpnList = cfgdDpnList ;
         this.dataBroker = broker ;
         this.idManagerService = idManagerService;
@@ -62,7 +63,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
                         cfgdDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType(), itmConfig));
             }
         }
-        //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
+        //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList,extIp);
         LOG.debug("invoking build hwVtepTunnels with hwVteplist {}", cfgdHwVteps);
         futures.addAll(ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, idManagerService,
                 cfgdDpnList,cfgdHwVteps));

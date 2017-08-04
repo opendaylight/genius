@@ -69,12 +69,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(ITMBatchingUtils.class)
 public class ItmInternalTunnelAddTest {
 
     BigInteger dpId1 = BigInteger.valueOf(1);
@@ -149,7 +147,6 @@ public class ItmInternalTunnelAddTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock IdManagerService idManagerService;
-    @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
 
     ItmInternalTunnelAddWorker addWorker = new ItmInternalTunnelAddWorker();
@@ -160,7 +157,6 @@ public class ItmInternalTunnelAddTest {
 
     @Before
     public void setUp() {
-        PowerMockito.mockStatic(ITMBatchingUtils.class);
         when(dataBroker.registerDataChangeListener(
                 any(LogicalDatastoreType.class),
                 any(InstanceIdentifier.class),
@@ -266,8 +262,6 @@ public class ItmInternalTunnelAddTest {
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2,
                 internalTunnel2,true);
         PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     @Test
@@ -299,8 +293,6 @@ public class ItmInternalTunnelAddTest {
                 internalTunnel2,true);
 
         PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsGre,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     @Test
@@ -331,7 +323,5 @@ public class ItmInternalTunnelAddTest {
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
                 internalTunnel2,true);
         PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 }
