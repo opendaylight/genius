@@ -22,6 +22,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -47,9 +48,15 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
     }
 
     @Override
-    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                        Interface ifState) {
+    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures, Interface ifState,
+                ServicesInfo servicesInfo, List<BoundServices> allServices) {
+
         LOG.info("bind all egress services for interface: {}", ifState.getName());
+        if (!validate(ifState.getName(), servicesInfo, allServices)) {
+            return;
+        }
+        FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, ifState.getName(),
+                FlowBasedServicesUtils.buildBoundServicesState(ifState, servicesInfo.getServiceMode()));
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
@@ -78,7 +85,33 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
     }
 
     @Override
-    public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName) {
-        LOG.info("bindServicesOnInterfaceType Egress - WIP");
+    public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                            ServicesInfo servicesInfo, List<BoundServices> allServices) {
+
+        LOG.info("bind all egress services for interface type: {}", servicesInfo.getInterfaceName());
+        if (!validate(servicesInfo.getInterfaceName(), servicesInfo, allServices)) {
+            return;
+        }
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices,
+                Comparator.comparing(BoundServices::getServicePriority));
+        BoundServices highestPriority = allServices.remove(0);
+        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
+                : highestPriority.getServicePriority() + 1);
+        FlowBasedServicesUtils.installTypeBasedEgressDispatcherFlows(dpnId, highestPriority, writeTransaction,
+                servicesInfo.getInterfaceName(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex);
+        BoundServices prev = null;
+        for (BoundServices boundService : allServices) {
+            if (prev != null) {
+                FlowBasedServicesUtils.installTypeBasedEgressDispatcherFlows(dpnId, prev, writeTransaction,
+                        servicesInfo.getInterfaceName(), prev.getServicePriority(), boundService.getServicePriority());
+            }
+            prev = boundService;
+        }
+        if (prev != null) {
+            FlowBasedServicesUtils.installTypeBasedEgressDispatcherFlows(dpnId, prev, writeTransaction,
+                    servicesInfo.getInterfaceName(), prev.getServicePriority(), (short)(prev.getServicePriority() + 1));
+        }
+        futures.add(writeTransaction.submit());
     }
 }

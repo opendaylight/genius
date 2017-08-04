@@ -67,6 +67,7 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
 
     private void bindServiceOnTunnel(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                      List<BoundServices> allServices, BoundServicesState boundServiceState) {
+
         long portNo = boundServiceState.getPortNo();
         BigInteger dpId = boundServiceState.getDpid();
         LOG.info("binding ingress service {} for tunnel port: {}", boundServiceNew.getServiceName(),
@@ -133,6 +134,7 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
 
     private void bindServiceOnVlan(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                    List<BoundServices> allServices, BoundServicesState boundServiceState) {
+
         BigInteger dpId = boundServiceState.getDpid();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("binding ingress service {} for vlan port: {}", boundServiceNew.getServiceName(), boundServiceState

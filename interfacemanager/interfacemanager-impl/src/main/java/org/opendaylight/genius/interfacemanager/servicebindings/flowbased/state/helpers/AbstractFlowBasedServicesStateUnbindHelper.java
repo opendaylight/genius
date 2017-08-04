@@ -12,11 +12,7 @@ import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.slf4j.Logger;
@@ -39,34 +35,23 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
         this.dataBroker = dataBroker;
     }
 
-    @Override
-    public final void unbindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
-                                     Class<? extends ServiceModeBase> serviceMode) {
-
-        LOG.debug("unbinding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-                serviceMode, dataBroker);
+    public boolean validate(String ifaceName, ServicesInfo servicesInfo, List<BoundServices> allServices) {
         if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return;
+            LOG.trace("service info is null for interface {}", ifaceName);
+            return false;
         }
-
-        List<BoundServices> allServices = servicesInfo.getBoundServices();
         if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return;
+            LOG.trace("bound services is empty for interface {}", ifaceName);
+            return false;
         }
-
-        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            unbindServicesOnInterface(futures, allServices, ifaceState);
-        }
+        return true;
     }
 
-    protected abstract void unbindServicesOnInterface(List<ListenableFuture<Void>> futures,
-                                                      List<BoundServices> allServices, Interface ifState);
+    public abstract void unbindServicesFromInterface(List<ListenableFuture<Void>> futures, Interface ifState,
+                                                     ServicesInfo servicesInfo, List<BoundServices> allServices);
 
-    public abstract void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                                       String ifaceName);
+    public abstract void unbindServicesFromInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                                         ServicesInfo servicesInfo, List<BoundServices> allServices);
 }
 
 

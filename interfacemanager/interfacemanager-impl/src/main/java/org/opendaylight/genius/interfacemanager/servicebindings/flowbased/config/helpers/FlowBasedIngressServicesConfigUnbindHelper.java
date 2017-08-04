@@ -55,18 +55,18 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
     }
 
     @Override
-    protected void unbindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+    protected void unbindServiceFromInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
                                             List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         // Split based on type of interface....
         if (L2vlan.class.equals(boundServicesState.getInterfaceType())) {
-            unbindServiceOnVlan(futures, boundServiceOld, boundServices, boundServicesState);
+            unbindServiceFromVlan(futures, boundServiceOld, boundServices, boundServicesState);
         } else if (Tunnel.class.equals(boundServicesState.getInterfaceType())) {
-            unbindServiceOnTunnel(futures, boundServiceOld, boundServices, boundServicesState);
+            unbindServiceFromTunnel(futures, boundServiceOld, boundServices, boundServicesState);
         }
     }
 
-    private void unbindServiceOnVlan(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
-                                            List<BoundServices> boundServices, BoundServicesState boundServicesState) {
+    private void unbindServiceFromVlan(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+                                       List<BoundServices> boundServices, BoundServicesState boundServicesState) {
 
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 boundServicesState.getInterfaceName());
@@ -128,8 +128,9 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         futures.add(tx.submit());
     }
 
-    private void unbindServiceOnTunnel(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
-                                       List<BoundServices> boundServices, BoundServicesState boundServicesState) {
+    private void unbindServiceFromTunnel(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+                                         List<BoundServices> boundServices, BoundServicesState boundServicesState) {
+
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = boundServicesState.getDpid();
 
@@ -182,8 +183,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
     }
 
     @Override
-    protected void unbindServiceOnInterfaceType(List<ListenableFuture<Void>> futures, String interfaceType,
-                                           BoundServices boundServiceOld, List<BoundServices> allServices) {
+    protected void unbindServiceFromInterfaceType(List<ListenableFuture<Void>> futures, String interfaceType,
+                                                  BoundServices boundServiceOld, List<BoundServices> allServices) {
 
         LOG.info("unbinding ingress service {} for type {}", boundServiceOld.getServiceName(), interfaceType);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();

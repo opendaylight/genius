@@ -11,13 +11,13 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 
 public interface FlowBasedServicesStateAddable {
+    void bindServicesOnInterface(List<ListenableFuture<Void>> futures, Interface ifaceState, ServicesInfo servicesInfo,
+                                 List<BoundServices> allServices);
 
-    void bindServices(List<ListenableFuture<Void>> futures, Interface ifaceState, List<BoundServices> allServices,
-                      Class<? extends ServiceModeBase> serviceMode);
-
-    void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName);
+    void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, ServicesInfo servicesInfo,
+                                     List<BoundServices> allServices);
 }
