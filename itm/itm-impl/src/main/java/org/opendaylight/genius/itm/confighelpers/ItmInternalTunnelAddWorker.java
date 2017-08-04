@@ -80,14 +80,14 @@ public class ItmInternalTunnelAddWorker {
         }
 
         for (DPNTEPsInfo dpn : cfgdDpnList) {
+            // Update the operational datastore -- FIXME -- Error Handling
+            updateOperationalDatastore(dataBroker, dpn, transaction, futures);
             //#####if dpn is not in meshedDpnList
             build_tunnel_from(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, transaction, futures);
             if (null == meshedDpnList) {
                 meshedDpnList = new ArrayList<>();
             }
             meshedDpnList.add(dpn);
-            // Update the operational datastore -- FIXME -- Error Handling
-            updateOperationalDatastore(dataBroker, dpn, transaction, futures);
         }
         futures.add(transaction.submit()) ;
         return futures ;
