@@ -21,6 +21,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -46,8 +47,13 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
     }
 
     @Override
-    protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                             Interface ifaceState, Integer ifIndex) {
+    public  void unbindServicesFromInterface(List<ListenableFuture<Void>> futures, Interface ifaceState,
+                                             ServicesInfo servicesInfo, List<BoundServices> allServices) {
+
+        LOG.info("Unbind all egress services for interface : {}", ifaceState.getName());
+        if (!validate(ifaceState.getName(), servicesInfo, allServices)) {
+            return;
+        }
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
@@ -70,8 +76,26 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
     }
 
     @Override
-    public void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                              String ifaceName) {
-        LOG.info("unbindServicesOnInterfaceType Egress - WIP");
+    public void unbindServicesFromInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                                ServicesInfo servicesInfo, List<BoundServices> allServices) {
+
+        LOG.info("unbinding all egress services for interface type: {}", servicesInfo.getInterfaceName());
+        if (!validate(servicesInfo.getInterfaceName(), servicesInfo, allServices)) {
+            return;
+        }
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, highestPriority, writeTransaction,
+                servicesInfo.getInterfaceName(), NwConstants.DEFAULT_SERVICE_INDEX);
+        for (BoundServices boundService : allServices) {
+            FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, boundService, writeTransaction,
+                    servicesInfo.getInterfaceName(), boundService.getServicePriority());
+        }
+        futures.add(writeTransaction.submit());
+        // remove the default egress service bound on the interface, once all
+        // flows are removed
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, servicesInfo.getInterfaceName());
     }
 }

@@ -23,6 +23,7 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -52,18 +53,24 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
     @Override
-    protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                             Interface ifState, Integer ifIndex) {
-        if (L2vlan.class.equals(ifState.getType())) {
-            unbindServicesOnVlan(futures, allServices, ifState, ifState.getIfIndex(), dataBroker);
-        } else if (Tunnel.class.equals(ifState.getType())) {
-            unbindServicesOnTunnel(futures, allServices, ifState, ifState.getIfIndex(), dataBroker);
+    public void unbindServicesFromInterface(List<ListenableFuture<Void>> futures, Interface ifState,
+                                            ServicesInfo servicesInfo, List<BoundServices> allServices) {
+
+        LOG.info("unbinding all ingress services for interface type: {}", ifState.getName());
+        if (!validate(ifState.getName(), servicesInfo, allServices)) {
+            return;
         }
-        return;
+        if (L2vlan.class.equals(ifState.getType())) {
+            unbindServicesFromVlan(futures, ifState, allServices);
+        } else if (Tunnel.class.equals(ifState.getType())) {
+            unbindServicesFromTunnel(futures, ifState, allServices);
+        }
     }
 
-    protected void unbindServicesOnTunnel(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                          Interface iface, Integer ifIndex, DataBroker dataBroker) {
+
+    protected void unbindServicesFromTunnel(List<ListenableFuture<Void>> futures, Interface iface,
+                                            List<BoundServices> allServices) {
+
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("unbinding all services on tunnel interface {}", iface.getName());
         List<String> ofportIds = iface.getLowerLayerIf();
@@ -82,13 +89,11 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
                         boundService.getServicePriority());
             }
         }
-
         futures.add(writeTransaction.submit());
     }
 
-    protected void unbindServicesOnVlan(List<ListenableFuture<Void>> futures,
-                                        List<BoundServices> allServices, Interface ifaceState, Integer ifIndex,
-                                        DataBroker dataBroker) {
+    protected void unbindServicesFromVlan(List<ListenableFuture<Void>> futures, Interface ifaceState,
+                                          List<BoundServices> allServices) {
 
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
@@ -109,8 +114,23 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
     @Override
-    public void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                              String ifaceName) {
-        LOG.info("unbindServicesFromInterfaceType Ingree - WIP");
+    public void unbindServicesFromInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                                ServicesInfo servicesInfo, List<BoundServices> allServices) {
+
+        LOG.info("unbinding all ingress services for interface type: {}", servicesInfo.getInterfaceName());
+        if (!validate(servicesInfo.getInterfaceName(), servicesInfo, allServices)) {
+            return;
+        }
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
+                .compareTo(serviceInfo2.getServicePriority()));
+        BoundServices highestPriority = allServices.remove(0);
+        FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, highestPriority, writeTransaction,
+                servicesInfo.getInterfaceName(), NwConstants.DEFAULT_SERVICE_INDEX);
+        for (BoundServices boundService : allServices) {
+            FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, boundService, writeTransaction,
+                    servicesInfo.getInterfaceName(), boundService.getServicePriority());
+        }
+        futures.add(writeTransaction.submit());
     }
 }
