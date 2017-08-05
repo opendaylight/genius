@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da2a55be_651c5d14",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-05T07:53:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa2559ec_30ba10e2",
+      "revId": "af249000227476a4daf669febff27ad044f56fcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa2559ec_70b488f2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/ServiceRecoveryInterface.java",
         "patchSetId": 1
