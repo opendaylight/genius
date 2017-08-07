@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class ActionableResourceImpl implements ActionableResource {
@@ -15,6 +17,7 @@ public class ActionableResourceImpl implements ActionableResource {
     private String key;
     private InstanceIdentifier identifier;
     private short action;
+    private final SettableFuture future = SettableFuture.create();
 
     public ActionableResourceImpl(String key) {
         this.key = key;
@@ -77,5 +80,10 @@ public class ActionableResourceImpl implements ActionableResource {
     @Override
     public String getKey() {
         return this.key;
+    }
+
+    @Override
+    public ListenableFuture<Void> getResultFuture() {
+        return future;
     }
 }
