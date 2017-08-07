@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.idmanager;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toCollection;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.base.Optional;
@@ -29,7 +31,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -39,6 +40,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
@@ -129,7 +131,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         IdPools idPools = idPoolsOptional.get();
         List<IdPool> idPoolList = idPools.getIdPool();
         idPoolList
-                .parallelStream()
+                .stream()
                 .filter(idPool -> idPool.getParentPoolName() != null
                         && !idPool.getParentPoolName().isEmpty()
                         && idUtils.getLocalPoolName(idPool.getParentPoolName())
@@ -151,11 +153,11 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<DelayedIdEntry> delayedIdEntryInCache = new CopyOnWriteArrayList<>();
         if (delayedEntries != null) {
             delayedIdEntryInCache = delayedEntries
-                    .parallelStream()
+                    .stream()
                     .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                             .getId(), delayedIdEntry.getReadyTimeSec()))
-                            .sorted((idEntry1, idEntry2) -> Long.compare(idEntry1.getReadyTimeSec(),
-                                    idEntry2.getReadyTimeSec())).collect(Collectors.toList());
+                            .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
+                            .collect(toCollection(CopyOnWriteArrayList::new));
         }
         releasedIdHolder.setDelayedEntries(delayedIdEntryInCache);
 
@@ -208,9 +210,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         long newIdValue = -1;
         AllocateIdOutputBuilder output = new AllocateIdOutputBuilder();
         Future<RpcResult<AllocateIdOutput>> futureResult;
-        String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
-            idUtils.lock(lockManager, uniqueKey);
             //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
             newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
             output.setIdValue(newIdValue);
@@ -220,7 +220,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey)))
                     .ifPresent(futureId -> futureId.completeExceptionally(e));
             futureResult = buildFailedRpcResultFuture("allocateId failed: " + input.toString(), e);
-            idUtils.unlock(lockManager, uniqueKey);
         }
         return futureResult;
     }
@@ -237,9 +236,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<Long> newIdValuesList = new ArrayList<>();
         AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
         Future<RpcResult<AllocateIdRangeOutput>> futureResult;
-        String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
-            idUtils.lock(lockManager, uniqueKey);
             newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
             Collections.sort(newIdValuesList);
             output.setIdValues(newIdValuesList);
@@ -249,7 +246,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey)))
                     .ifPresent(futureId -> futureId.completeExceptionally(e));
             futureResult = buildFailedRpcResultFuture("allocateIdRange failed: " + input.toString(), e);
-            idUtils.unlock(lockManager, uniqueKey);
         }
         return futureResult;
     }
@@ -268,7 +264,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 IdPool idPool = singleTxDB.syncRead(CONFIGURATION, idPoolToBeDeleted);
                 List<ChildPools> childPoolList = idPool.getChildPools();
                 if (childPoolList != null) {
-                    childPoolList.parallelStream().forEach(childPool -> deletePool(childPool.getChildPoolName()));
+                    childPoolList.stream().forEach(childPool -> deletePool(childPool.getChildPoolName()));
                 }
                 singleTxDB.syncDelete(CONFIGURATION, idPoolToBeDeleted);
                 if (LOG.isDebugEnabled()) {
@@ -314,96 +310,47 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             String idKey, long size) throws OperationFailedException, IdManagerException {
         LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName,
                     idKey);
-        List<Long> newIdValuesList = new ArrayList<>();
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
         CompletableFuture<List<Long>> existingFutureIdValue =
                 idUtils.allocatedIdMap.putIfAbsent(uniqueIdKey, futureIdValues);
         if (existingFutureIdValue != null) {
             try {
-                newIdValuesList = existingFutureIdValue.get();
-                idUtils.unlock(lockManager, uniqueIdKey);
-                return newIdValuesList;
+                return existingFutureIdValue.get();
             } catch (InterruptedException | ExecutionException e) {
                 LOG.warn("Could not obtain id from existing futureIdValue for idKey {} and pool {}.",
                         idKey, parentPoolName);
                 throw new IdManagerException(e.getMessage(), e);
             }
         }
-        long newIdValue = -1;
-        localPoolName = localPoolName.intern();
-        InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
-        InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
-        Optional<IdEntries> existingIdEntry = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
-        if (existingIdEntry.isPresent()) {
-            newIdValuesList = existingIdEntry.get().getIdValue();
-            LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
-            // Inform other waiting threads about this new value.
-            futureIdValues.complete(newIdValuesList);
-            // This is to avoid stale entries in the map. If this thread had populated the map,
-            // then the entry should be removed.
-            if (existingFutureIdValue == null) {
-                idUtils.allocatedIdMap.remove(uniqueIdKey);
+        try {
+            List<Long> newIdValuesList = checkForIdInIdEntries(parentPoolName, idKey, uniqueIdKey, futureIdValues,
+                    existingFutureIdValue);
+            if (!newIdValuesList.isEmpty()) {
+                return newIdValuesList;
             }
-            idUtils.unlock(lockManager, uniqueIdKey);
-            return newIdValuesList;
-        }
-        //This get will not help in concurrent reads. Hence the same read needs to be done again.
-        IdLocalPool localIdPool = localPool.get(parentPoolName);
-        if (localIdPool == null) {
-            idUtils.lock(lockManager, parentPoolName);
-            try {
-                //Check if a previous thread that got the cluster-wide lock first, has created the localPool
-                if (localPool.get(parentPoolName) == null) {
-                    WriteTransaction tx = broker.newWriteOnlyTransaction();
-                    IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
-                    localIdPool = createLocalPool(tx, localPoolName, parentIdPool); // Return localIdPool.....
-                    tx.submit().checkedGet();
-                } else {
-                    localIdPool = localPool.get(parentPoolName);
-                }
-            } finally {
-                idUtils.unlock(lockManager, parentPoolName);
-            }
-        }
-        LOG.info("Got pool {}", localIdPool);
-        if (size == 1) {
-            newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
-            newIdValuesList.add(newIdValue);
-        } else {
-            IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
-            long totalAvailableIdCount = localIdPool.getAvailableIds().getAvailableIdCount()
-                    + localIdPool.getReleasedIds().getAvailableIdCount();
-            AvailableIdsHolderBuilder availableParentIds = idUtils.getAvailableIdsHolderBuilder(parentIdPool);
-            ReleasedIdsHolderBuilder releasedParentIds = idUtils.getReleaseIdsHolderBuilder(parentIdPool);
-            totalAvailableIdCount = totalAvailableIdCount + releasedParentIds.getAvailableIdCount()
-                    + idUtils.getAvailableIdsCount(availableParentIds);
-            if (totalAvailableIdCount > size) {
-                while (size > 0) {
-                    try {
-                        newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
-                    } catch (OperationFailedException e) {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Releasing IDs to pool {}", localPoolName);
-                        }
-                        // Releasing the IDs added in newIdValuesList since a null list would be returned now, as the
-                        // requested size of list IDs exceeds the number of available IDs.
-                        updateDelayedEntriesInLocalCache(newIdValuesList, parentPoolName, localIdPool);
-                    }
-                    newIdValuesList.add(newIdValue);
-                    size--;
-                }
+            //This get will not help in concurrent reads. Hence the same read needs to be done again.
+            IdLocalPool localIdPool = getOrCreateLocalIdPool(parentPoolName, localPoolName);
+            LOG.info("Got pool {}", localIdPool);
+            long newIdValue = -1;
+            localPoolName = localPoolName.intern();
+            if (size == 1) {
+                newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
+                newIdValuesList.add(newIdValue);
             } else {
-                throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
+                getRangeOfIds(parentPoolName, localPoolName, size, newIdValuesList, localIdPool, newIdValue);
             }
+            LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
+            idUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
+            UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
+                    idUtils, lockManager);
+            DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
+            futureIdValues.complete(newIdValuesList);
+            return newIdValuesList;
+        } catch (OperationFailedException | IdManagerException e) {
+            idUtils.unlock(lockManager, uniqueIdKey);
+            throw e;
         }
-        LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
-        idUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
-        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
-                idUtils, lockManager);
-        DataStoreJobCoordinator.getInstance().enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
-        futureIdValues.complete(newIdValuesList);
-        return newIdValuesList;
     }
 
     private Long getIdFromLocalPoolCache(IdLocalPool localIdPool, String parentPoolName)
@@ -436,7 +383,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             long idCount = getIdBlockFromParentPool(parentPoolName, localIdPool);
             if (idCount <= 0) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unable to allocate Id block from global pool");
+                    LOG.debug("Unable to allocate Id block from global pool {}", parentPoolName);
                 }
                 throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
             }
@@ -503,8 +450,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<ChildPools> childPoolsList = parentIdPool.getChildPools();
         // Sorting the child pools on last accessed time so that the pool that
         // was not accessed for a long time comes first.
-        Collections.sort(childPoolsList,
-            (childPool1, childPool2) -> childPool1.getLastAccessTime().compareTo(childPool2.getLastAccessTime()));
+        Collections.sort(childPoolsList, comparing(ChildPools::getLastAccessTime));
         long currentTime = System.currentTimeMillis() / 1000;
         for (ChildPools childPools : childPoolsList) {
             if (childPools.getLastAccessTime() + DEFAULT_IDLE_TIME > currentTime) {
@@ -556,13 +502,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<DelayedIdEntries> idEntriesToBeRemoved = delayedIdEntriesParent.subList(0, idCount);
         ReleasedIdHolder releasedIds = (ReleasedIdHolder) localIdPool.getReleasedIds();
         List<DelayedIdEntry> delayedIdEntriesLocalCache = releasedIds.getDelayedEntries();
-        delayedIdEntriesLocalCache = idEntriesToBeRemoved
-                .parallelStream()
+        List<DelayedIdEntry> delayedIdEntriesFromParentPool = idEntriesToBeRemoved
+                .stream()
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                         .getId(), delayedIdEntry.getReadyTimeSec()))
-                .sorted((idEntry1, idEntry2) -> Long.compare(idEntry1.getReadyTimeSec(),
-                        idEntry2.getReadyTimeSec())).collect(Collectors.toList());
-        releasedIds.setDelayedEntries(delayedIdEntriesLocalCache);
+                .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
+                .collect(toCollection(CopyOnWriteArrayList::new));
+        delayedIdEntriesFromParentPool.addAll(delayedIdEntriesLocalCache);
+        releasedIds.setDelayedEntries(delayedIdEntriesFromParentPool);
         releasedIds.setAvailableIdCount(releasedIds.getAvailableIdCount() + idCount);
         localIdPool.setReleasedIds(releasedIds);
         delayedIdEntriesParent.removeAll(idEntriesToBeRemoved);
@@ -725,4 +672,85 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 .map(localPool -> localPool.deepCopyOf());
     }
 
+    private List<Long> checkForIdInIdEntries(String parentPoolName, String idKey, String uniqueIdKey,
+            CompletableFuture<List<Long>> futureIdValues, CompletableFuture<List<Long>> existingFutureIdValue)
+            throws IdManagerException, ReadFailedException {
+        InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
+        InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
+        idUtils.lock(lockManager, uniqueIdKey);
+        List<Long> newIdValuesList = new ArrayList<>();
+        Optional<IdEntries> existingIdEntry = singleTxDB.syncReadOptional(CONFIGURATION, existingId);
+        if (existingIdEntry.isPresent()) {
+            newIdValuesList = existingIdEntry.get().getIdValue();
+            LOG.debug("Existing ids {} for the key {} ", newIdValuesList, idKey);
+            // Inform other waiting threads about this new value.
+            futureIdValues.complete(newIdValuesList);
+            // This is to avoid stale entries in the map. If this thread had populated the map,
+            // then the entry should be removed.
+            if (existingFutureIdValue == null) {
+                idUtils.allocatedIdMap.remove(uniqueIdKey);
+            }
+            idUtils.unlock(lockManager, uniqueIdKey);
+            return newIdValuesList;
+        }
+        return newIdValuesList;
+    }
+
+    private IdLocalPool getOrCreateLocalIdPool(String parentPoolName, String localPoolName)
+            throws IdManagerException, ReadFailedException, OperationFailedException, TransactionCommitFailedException {
+        IdLocalPool localIdPool = localPool.get(parentPoolName);
+        if (localIdPool == null) {
+            idUtils.lock(lockManager, parentPoolName);
+            try {
+                // Check if a previous thread that got the cluster-wide lock
+                // first, has created the localPool
+                if (localPool.get(parentPoolName) == null) {
+                    WriteTransaction tx = broker.newWriteOnlyTransaction();
+                    InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils
+                            .getIdPoolInstance(parentPoolName);
+                    IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
+                    // Return localIdPool
+                    localIdPool = createLocalPool(tx, localPoolName, parentIdPool);
+                    tx.submit().checkedGet();
+                } else {
+                    localIdPool = localPool.get(parentPoolName);
+                }
+            } finally {
+                idUtils.unlock(lockManager, parentPoolName);
+            }
+        }
+        return localIdPool;
+    }
+
+    private void getRangeOfIds(String parentPoolName, String localPoolName, long size, List<Long> newIdValuesList,
+            IdLocalPool localIdPool, long newIdValue) throws ReadFailedException, IdManagerException {
+        InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier1 = idUtils.getIdPoolInstance(parentPoolName);
+        IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier1);
+        long totalAvailableIdCount = localIdPool.getAvailableIds().getAvailableIdCount()
+                + localIdPool.getReleasedIds().getAvailableIdCount();
+        AvailableIdsHolderBuilder availableParentIds = idUtils.getAvailableIdsHolderBuilder(parentIdPool);
+        ReleasedIdsHolderBuilder releasedParentIds = idUtils.getReleaseIdsHolderBuilder(parentIdPool);
+        totalAvailableIdCount = totalAvailableIdCount + releasedParentIds.getAvailableIdCount()
+                + idUtils.getAvailableIdsCount(availableParentIds);
+        if (totalAvailableIdCount > size) {
+            while (size > 0) {
+                try {
+                    newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
+                } catch (OperationFailedException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Releasing IDs to pool {}", localPoolName);
+                    }
+                    // Releasing the IDs added in newIdValuesList since
+                    // a null list would be returned now, as the
+                    // requested size of list IDs exceeds the number of
+                    // available IDs.
+                    updateDelayedEntriesInLocalCache(newIdValuesList, parentPoolName, localIdPool);
+                }
+                newIdValuesList.add(newIdValue);
+                size--;
+            }
+        } else {
+            throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentPoolName));
+        }
+    }
 }
