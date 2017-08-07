@@ -9,8 +9,12 @@ package org.opendaylight.genius.utils.batching;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -127,13 +132,15 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    public void merge(ShardResource shardResource, InstanceIdentifier identifier, DataObject updatedData) {
+    public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier identifier,
+                                        DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+                identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
         if (queue != null) {
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
-                    identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
         }
+        return actResource.getResultFt();
     }
 
     public void merge(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
@@ -145,13 +152,14 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    public void delete(ShardResource shardResource, InstanceIdentifier identifier) {
+    public ListenableFuture<Void> delete(ShardResource shardResource, InstanceIdentifier identifier) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+                identifier, ActionableResource.DELETE, null, null/*oldData*/);
         if (queue != null) {
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
-                    identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
         }
+        return actResource.getResultFt();
     }
 
     public void delete(String resourceType, InstanceIdentifier identifier) {
@@ -163,13 +171,15 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    public void put(ShardResource shardResource, InstanceIdentifier identifier, DataObject updatedData) {
+    public ListenableFuture<Void> put(ShardResource shardResource, InstanceIdentifier identifier,
+                                      DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+                identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
         if (queue != null) {
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
-                    identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
         }
+        return actResource.getResultFt();
     }
 
     public void put(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
@@ -271,27 +281,37 @@ public class ResourceBatchingManager implements AutoCloseable {
             LogicalDatastoreType dsType = resHandler.getDatastoreType();
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             List<SubTransaction> transactionObjects = new ArrayList<>();
+            Map<SubTransaction, SettableFuture> txMap = new HashMap();
+            List<SettableFuture> fts = new ArrayList<>();
             for (ActionableResource actResource : actResourceList) {
+                int startSize = transactionObjects.size();
                 switch (actResource.getAction()) {
                     case ActionableResource.CREATE:
                         identifier = actResource.getInstanceIdentifier();
                         instance = actResource.getInstance();
                         resHandler.create(tx, dsType, identifier, instance,transactionObjects);
+                        fts.add((SettableFuture) actResource.getResultFt());
                         break;
                     case ActionableResource.UPDATE:
                         identifier = actResource.getInstanceIdentifier();
                         Object updated = actResource.getInstance();
                         Object original = actResource.getOldInstance();
                         resHandler.update(tx, dsType, identifier, original, updated,transactionObjects);
+                        fts.add((SettableFuture) actResource.getResultFt());
                         break;
                     case ActionableResource.DELETE:
                         identifier = actResource.getInstanceIdentifier();
                         instance = actResource.getInstance();
                         resHandler.delete(tx, dsType, identifier, instance,transactionObjects);
+                        fts.add((SettableFuture) actResource.getResultFt());
                         break;
                     default:
                         LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
                                 resourceType, actResource.getKey());
+                }
+                int endSize = transactionObjects.size();
+                if (endSize > startSize) {
+                    txMap.put(transactionObjects.get(endSize - 1), (SettableFuture) actResource.getResultFt());
                 }
             }
 
@@ -300,6 +320,7 @@ public class ResourceBatchingManager implements AutoCloseable {
 
             try {
                 futures.get();
+                fts.forEach((ft) -> ft.set(null));
                 long time = System.currentTimeMillis() - start;
                 LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
 
@@ -328,7 +349,13 @@ public class ResourceBatchingManager implements AutoCloseable {
                             .submit();
                     try {
                         futureOperation.get();
+                        if (txMap.containsKey(object)) {
+                            txMap.get(object).set(null);
+                        }
                     } catch (InterruptedException | ExecutionException exception) {
+                        if (txMap.containsKey(object)) {
+                            txMap.get(object).setException(exception);
+                        }
                         LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
                                 object.getInstanceIdentifier(), object.getInstance(), exception);
                     }
