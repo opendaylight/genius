@@ -53,6 +53,8 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
     private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
     private static final int THREAD_POOL_SIZE = 4;
     private static final int NO_DELAY = 0;
+    private static final String POLLING_INTERVAL_PATH = "interfacemanager-statistics-polling-interval";
+    private static final int DEFAULT_POLLING_INTERVAL = 15;
     public static final PMAgentForNodeConnectorCounters PMAGENT = new PMAgentForNodeConnectorCounters();
     private final PortRpcStatisticsListener portStatsListener = new PortRpcStatisticsListener();
     private final FlowRpcStatisticsListener flowTableStatsListener = new FlowRpcStatisticsListener();
@@ -105,8 +107,8 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
         }
         LOG.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
-        scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, NO_DELAY, 10000,
-                TimeUnit.MILLISECONDS);
+        scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, NO_DELAY, Integer.getInteger(POLLING_INTERVAL_PATH, DEFAULT_POLLING_INTERVAL),
+                TimeUnit.MINUTES);
     }
 
     /*
