@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public interface ActionableResource {
@@ -34,4 +35,6 @@ public interface ActionableResource {
     String getKey();
 
     void setKey(String key);
+
+    ListenableFuture<Void> getResultFuture();
 }
