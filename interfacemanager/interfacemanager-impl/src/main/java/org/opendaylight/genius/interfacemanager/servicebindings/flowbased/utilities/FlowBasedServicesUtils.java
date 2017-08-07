@@ -678,7 +678,8 @@ public class FlowBasedServicesUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).orNull();
     }
 
-    public static void addBoundServicesState(DataBroker dataBroker, String interfaceName,
+    public static void addBoundServicesState(List<ListenableFuture<Void>> futures,
+                                             DataBroker dataBroker, String interfaceName,
                                              BoundServicesState interfaceBoundServicesState) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
             interfaceBoundServicesState.getInterfaceName(), interfaceBoundServicesState.getServiceMode().getName());
@@ -687,18 +688,19 @@ public class FlowBasedServicesUtils {
                 interfaceBoundServicesState.getServiceMode())).build();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState, true);
-        writeTransaction.submit();
+        futures.add(writeTransaction.submit());
     }
 
-    public static  void removeBoundServicesState(DataBroker dataBroker, String interfaceName, Class<?
-        extends ServiceModeBase> serviceMode) {
+    public static  void removeBoundServicesState(List<ListenableFuture<Void>> futures,
+                                                 DataBroker dataBroker,
+                                                 String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
             serviceMode.getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, id);
-        writeTransaction.submit();
+        futures.add(writeTransaction.submit());
     }
 
     private static boolean isExternal(Interface iface) {

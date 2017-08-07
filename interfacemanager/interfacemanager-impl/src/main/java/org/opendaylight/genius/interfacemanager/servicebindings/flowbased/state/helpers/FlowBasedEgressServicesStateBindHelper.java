@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -56,16 +55,17 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
     }
 
     @Override
-    public List<ListenableFuture<Void>> bindServicesOnInterface(Interface ifaceState, List<BoundServices> allServices) {
+    public void bindServicesOnInterface(List<ListenableFuture<Void>> futures,
+                                                                Interface ifaceState, List<BoundServices> allServices) {
         LOG.debug("binding services on interface {}", ifaceState.getName());
         if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            return bindServices(allServices, ifaceState, interfaceMgrProvider.getDataBroker());
+            bindServices(futures, allServices, ifaceState, interfaceMgrProvider.getDataBroker());
         }
-        return null;
     }
 
-    private static List<ListenableFuture<Void>> bindServices(List<BoundServices> allServices, Interface ifState,
-            DataBroker dataBroker) {
+    private static void bindServices(List<ListenableFuture<Void>> futures,
+                                                             List<BoundServices> allServices, Interface ifState,
+                                                             DataBroker dataBroker) {
         LOG.info("bind all egress services for interface: {}", ifState.getName());
 
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
@@ -94,8 +94,6 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
                     ifState.getIfIndex(),
                     prev.getServicePriority(), (short) (prev.getServicePriority() + 1), iface);
         }
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         futures.add(writeTransaction.submit());
-        return futures;
     }
 }
