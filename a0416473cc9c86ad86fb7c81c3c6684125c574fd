@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_b3bb86c3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildEntryListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-08T15:03:42Z",
+      "side": 1,
+      "message": "AsyncBases are all deprecated, I would suggest using your own listener instead of extending this, till David comes up with the new infra. Vishal\u0027s point is very important, do you really need a clustered listener in this case?",
+      "parentUuid": "ba1f61a0_8a03abb7",
+      "revId": "a0416473cc9c86ad86fb7c81c3c6684125c574fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_6a00f7aa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildEntryListener.java",
         "patchSetId": 6
