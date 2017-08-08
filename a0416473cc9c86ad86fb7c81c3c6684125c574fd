@@ -57,6 +57,23 @@
       "revId": "a0416473cc9c86ad86fb7c81c3c6684125c574fd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_73d8ee1d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildEntryListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-08T15:06:17Z",
+      "side": 1,
+      "message": "what is the guarantee that parentInterfaceState will be present in cache, by the time this listener is invoked?",
+      "revId": "a0416473cc9c86ad86fb7c81c3c6684125c574fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
