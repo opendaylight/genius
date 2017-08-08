@@ -39,12 +39,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdUtils;
@@ -153,7 +155,7 @@ public class IdManagerTest {
             doReturn(Futures.immediateCheckedFuture(optionalIdPools)).when(mockReadTx)
                     .read(LogicalDatastoreType.CONFIGURATION, idUtils.getIdPools());
         }
-        idManager = new IdManager(dataBroker, lockManager, idUtils);
+        idManager = new IdManager(dataBroker, lockManager, idUtils, Mockito.mock(DataImportBootReady.class));
     }
 
     @Test
