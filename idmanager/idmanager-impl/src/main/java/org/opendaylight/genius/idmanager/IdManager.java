@@ -41,6 +41,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
@@ -77,6 +78,7 @@ import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,11 +97,21 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private final Timer cleanJobTimer = new Timer();
 
     @Inject
-    public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils) throws ReadFailedException {
+    public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils,
+            @OsgiService DataImportBootReady dataImportBootReady) throws ReadFailedException {
         this.broker = db;
         this.singleTxDB = new SingleTransactionDataBroker(db);
         this.lockManager = lockManager;
         this.idUtils = idUtils;
+
+        // NB: We do not "use" the DataImportBootReady, but it's presence in the OSGi
+        // Service Registry is the required "signal" that the Daexim "import on boot"
+        // has fully completed (which we want to wait for).  Therefore, making this
+        // dependent on that defers the Blueprint initialization, as we'd like to,
+        // so that we do not start giving out new IDs before an import went in.
+        // Thus, please DO NOT remove the DataImportBootReady argument, even if
+        // it appears to be (is) un-used from a Java code PoV!
+
         this.localPool = new ConcurrentHashMap<>();
         populateCache();
     }
@@ -174,6 +186,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     @Override
     public Future<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
         LOG.info("createIdPool called with input {}", input);
+        // TODO later change this to be non-blocking, using Future chaining
+        // but before doing that, it would be nice if the original code below as non-blocking, first..
         String poolName = input.getPoolName();
         long low = input.getLow();
         long high = input.getHigh();
@@ -204,6 +218,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     @Override
     public Future<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
         LOG.debug("AllocateId called with input {}", input);
+        // TODO later change this to be non-blocking, using Future chaining
+        // but before doing that, it would be nice if the original code below as non-blocking, first..
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         String localPoolName = idUtils.getLocalPoolName(poolName);
@@ -235,6 +251,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (LOG.isDebugEnabled()) {
             LOG.debug("AllocateIdRange called with input {}", input);
         }
+        // TODO later change this to be non-blocking, using Future chaining
+        // but before doing that, it would be nice if the original code below as non-blocking, first..
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         long size = input.getSize();
@@ -259,6 +277,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (LOG.isDebugEnabled()) {
             LOG.debug("DeleteIdPool called with input {}", input);
         }
+        // TODO later change this to be non-blocking, using Future chaining
+        // but before doing that, it would be nice if the original code below as non-blocking, first..
         String poolName = input.getPoolName();
         Future<RpcResult<Void>> futureResult;
         try {
@@ -287,6 +307,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
         LOG.info("Releasing ID {} from pool {}", idKey, poolName);
+        // TODO later change this to be non-blocking, using Future chaining
         Future<RpcResult<Void>> futureResult;
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
         try {
