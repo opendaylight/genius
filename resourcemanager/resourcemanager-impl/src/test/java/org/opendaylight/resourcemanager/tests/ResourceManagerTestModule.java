@@ -9,6 +9,7 @@ package org.opendaylight.resourcemanager.tests;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
+import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.resourcemanager.ResourceManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
@@ -33,6 +34,8 @@ public class ResourceManagerTestModule extends AbstractGuiceJsr250Module {
     protected void configureBindings() throws Exception {
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+
+        bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
 
         bind(LockManagerService.class).to(LockManager.class);
         bind(LockListener.class);

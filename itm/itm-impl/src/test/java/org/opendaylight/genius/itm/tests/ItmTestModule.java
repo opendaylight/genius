@@ -12,6 +12,7 @@ import static org.mockito.Mockito.mock;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
+import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -84,6 +85,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
+        bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
     }
 
 }
