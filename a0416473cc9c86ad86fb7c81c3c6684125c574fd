@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_8a03abb7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildEntryListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-08T04:41:54Z",
+      "side": 1,
+      "message": "you\u0027re using clustered listener but I didn\u0027t see any code where you make sure it only runs on one node. You\u0027re adding interface state, which means you will run into conflictingModException if all 3 nodes of cluster try to add state for same interface.",
+      "revId": "a0416473cc9c86ad86fb7c81c3c6684125c574fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6a00f7aa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildEntryListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-08T04:41:54Z",
+      "side": 1,
+      "message": "prefer using added/iface etc. instead of generic dataObjectModification. Variable name should give idea of its type. dataObjectModification should be used if this is a generic handler without type.",
+      "range": {
+        "startLine": 74,
+        "startChar": 66,
+        "endLine": 74,
+        "endChar": 88
+      },
+      "revId": "a0416473cc9c86ad86fb7c81c3c6684125c574fd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
