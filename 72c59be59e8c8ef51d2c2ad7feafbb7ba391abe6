@@ -120,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_eabb4770",
+        "filename": "docs/specs/service-recovery.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-08T07:34:41Z",
+      "side": 1,
+      "message": "Examples are covered in the very next section in much more detail, that is why I didn\u0027t capture here.",
+      "parentUuid": "ba1f61a0_aaf30f72",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 15
+      },
+      "revId": "72c59be59e8c8ef51d2c2ad7feafbb7ba391abe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_cfd77fbe",
         "filename": "docs/specs/service-recovery.rst",
         "patchSetId": 6
