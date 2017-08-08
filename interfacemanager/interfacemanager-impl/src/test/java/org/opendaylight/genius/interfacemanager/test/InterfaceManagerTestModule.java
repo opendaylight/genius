@@ -14,6 +14,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.clustering.testutil.TestEntityOwnershipService;
+import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
@@ -61,6 +62,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+
+        bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
 
         bind(LockManagerService.class).to(LockManager.class);
         bind(LockListener.class);
