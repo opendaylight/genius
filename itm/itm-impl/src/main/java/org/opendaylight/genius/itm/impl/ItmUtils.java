@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -1573,7 +1572,7 @@ public class ItmUtils {
     }
 
     public static List<TunnelOptions> buildTunnelOptions(TunnelEndPoints tep, ItmConfig itmConfig) {
-        List<TunnelOptions> tunOptions = null;
+        List<TunnelOptions> tunOptions = new ArrayList<>();
 
         String tos = tep.getOptionTunnelTos();
         if (tos == null) {
@@ -1581,14 +1580,22 @@ public class ItmUtils {
         }
         /* populate tos option only if its not default value of 0 */
         if (tos != null && !tos.equals("0")) {
-            tunOptions = new ArrayList<>(1);
             TunnelOptionsBuilder optionsBuilder = new TunnelOptionsBuilder();
             optionsBuilder.setKey(new TunnelOptionsKey("tos"));
             optionsBuilder.setTunnelOption("tos");
             optionsBuilder.setValue(tos);
             tunOptions.add(optionsBuilder.build());
         }
-        return tunOptions;
+
+        if (tep.getTunnelType() == TunnelTypeVxlan.class && itmConfig.isGpeExtensionEnabled()) {
+            TunnelOptionsBuilder optionsBuilder = new TunnelOptionsBuilder();
+            optionsBuilder.setKey(new TunnelOptionsKey("exts"));
+            optionsBuilder.setTunnelOption("exts");
+            optionsBuilder.setValue("gpe");
+            tunOptions.add(optionsBuilder.build());
+        }
+
+        return tunOptions.isEmpty() ? null : tunOptions;
     }
 
     public static ExternalTunnel getExternalTunnelbyExternalTunnelKey(ExternalTunnelKey externalTunnelKey,

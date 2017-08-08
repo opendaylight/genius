@@ -56,7 +56,10 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(ITMManager.class);
         bind(ItmProvider.class);
         ItmConfig itmConfigObj = new ItmConfigBuilder()
-            .setDefTzEnabled(true).setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
+                .setDefTzEnabled(true)
+                .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN)
+                .setGpeExtensionEnabled(false)
+                .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);
         bind(ItmMonitoringIntervalListener.class);
         bind(DpnTepsInfoListener.class);
