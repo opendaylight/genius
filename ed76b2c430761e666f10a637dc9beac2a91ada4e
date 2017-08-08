@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_383e55b9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ActionableResource.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-08-08T11:46:43Z",
+      "side": 1,
+      "message": "getFuture()",
+      "range": {
+        "startLine": 39,
+        "startChar": 27,
+        "endLine": 39,
+        "endChar": 38
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_984b0159",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ActionableResourceImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-08-08T11:46:43Z",
+      "side": 1,
+      "message": "future",
+      "range": {
+        "startLine": 20,
+        "startChar": 27,
+        "endLine": 20,
+        "endChar": 29
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d874599e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ActionableResourceImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-08-08T11:46:43Z",
+      "side": 1,
+      "message": "getFuture()",
+      "range": {
+        "startLine": 86,
+        "startChar": 34,
+        "endLine": 86,
+        "endChar": 45
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7848cd5b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ActionableResourceImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-08-08T11:46:43Z",
+      "side": 1,
+      "message": "future",
+      "range": {
+        "startLine": 87,
+        "startChar": 15,
+        "endLine": 87,
+        "endChar": 17
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b879a595",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-08-08T11:46:43Z",
+      "side": 1,
+      "message": "listOfFutures()",
+      "range": {
+        "startLine": 285,
+        "startChar": 33,
+        "endLine": 285,
+        "endChar": 36
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b8a085f5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2017-08-08T11:46:43Z",
+      "side": 1,
+      "message": "Is this right?\nI think you need to add the future obj returned when the tx.submit() happens.\ntx is the asynchronous entity here.\nthe actionableResource is just an object that holds data that need to be batched.",
+      "range": {
+        "startLine": 293,
+        "startChar": 24,
+        "endLine": 293,
+        "endChar": 76
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
