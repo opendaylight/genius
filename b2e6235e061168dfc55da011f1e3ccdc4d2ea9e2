@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_4eeee0ed",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T07:13:16Z",
+      "side": 0,
+      "message": "why is only start removed and not close() ? Both are doing same thing",
+      "revId": "b2e6235e061168dfc55da011f1e3ccdc4d2ea9e2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
