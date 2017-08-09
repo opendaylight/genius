@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_0ecb4873",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T07:14:34Z",
+      "side": 1,
+      "message": "Previous patch was saying IllegalStateException and this one UnsupportedOperation",
+      "revId": "7253d87b35f2f995935877a76461c926e329d2b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
