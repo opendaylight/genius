@@ -44,6 +44,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
         BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
+        LOG.debug("updating bridge references for bridge: {}, dpnNew: {}, dpnOld: {}", bridgeNew,
+                dpnIdNew, dpnIdOld);
         // delete bridge reference entry for the old dpn in interface meta
         // operational DS
         InterfaceMetaUtils.deleteBridgeRefEntry(dpnIdOld, writeTransaction);

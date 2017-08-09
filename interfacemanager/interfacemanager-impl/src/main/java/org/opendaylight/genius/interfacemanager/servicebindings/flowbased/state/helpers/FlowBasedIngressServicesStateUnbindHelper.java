@@ -95,7 +95,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
             Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-
+        LOG.info("unbinding all services on tunnel interface {}", iface.getName());
         List<String> ofportIds = iface.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
         if (nodeConnectorId == null) {
@@ -120,6 +120,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
     private static List<ListenableFuture<Void>> unbindServiceOnVlan(List<BoundServices> allServices,
             Interface ifaceState, Integer ifIndex, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
+        LOG.info("unbinding all services on vlan interface {}", ifaceState.getName());
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));

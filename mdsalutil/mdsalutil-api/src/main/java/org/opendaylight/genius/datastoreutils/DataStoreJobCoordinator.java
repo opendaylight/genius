@@ -329,7 +329,9 @@ public class DataStoreJobCoordinator {
                             Iterator<Map.Entry<String, JobQueue>> it = jobEntriesMap.entrySet().iterator();
                             while (it.hasNext()) {
                                 Map.Entry<String, JobQueue> entry = it.next();
-                                if (entry.getValue().getExecutingEntry() != null) {
+                                JobEntry executingEntry = entry.getValue().getExecutingEntry();
+                                if (executingEntry != null) {
+                                    LOG.trace("Job is under execution {}", executingEntry);
                                     continue;
                                 }
                                 JobEntry jobEntry = entry.getValue().getWaitingEntries().poll();

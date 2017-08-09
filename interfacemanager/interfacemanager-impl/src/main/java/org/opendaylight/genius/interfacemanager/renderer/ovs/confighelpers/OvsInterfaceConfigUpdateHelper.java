@@ -41,10 +41,11 @@ public class OvsInterfaceConfigUpdateHelper {
             AlivenessMonitorService alivenessMonitorService, IdManagerService idManager,
             IMdsalApiManager mdsalApiManager, Interface interfaceNew, Interface interfaceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        LOG.info("updating configuration for interface {}", interfaceNew.getName());
         // If any of the port attributes are modified, treat it as a delete and
         // recreate scenario
         if (portAttributesModified(interfaceOld, interfaceNew)) {
+            LOG.info("port attributes modified, requires a delete and recreate of {} configuration", interfaceNew
+                    .getName());
             futures.addAll(OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService,
                     interfaceOld, idManager, mdsalApiManager, interfaceOld.getAugmentation(ParentRefs.class)));
             futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,

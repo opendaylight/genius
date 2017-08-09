@@ -36,6 +36,8 @@ public class OvsInterfaceTopologyStateRemoveHelper {
             return futures;
         }
 
+        LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeOld,
+                dpnId);
         // delete bridge reference entry in interface meta operational DS
         InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, transaction);
 

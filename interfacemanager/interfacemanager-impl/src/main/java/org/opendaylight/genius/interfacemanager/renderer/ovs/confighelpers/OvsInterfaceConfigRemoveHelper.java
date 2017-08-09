@@ -89,7 +89,8 @@ public class OvsInterfaceConfigRemoveHelper {
                 .getInterfaceState(interfaceName, dataBroker);
 
         if (ifState == null) {
-            LOG.debug("could not fetch interface state corresponding to {}", interfaceName);
+            LOG.debug("could not fetch interface state corresponding to {}, probably already removed as part of port "
+                    + "removal event, proceeding with remaining config cleanups", interfaceName);
         }
 
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, dataBroker,

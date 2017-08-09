@@ -35,7 +35,7 @@ public class OvsInterfaceTopologyStateAddHelper {
             return futures;
         }
         BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
-
+        LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
         // create bridge reference entry in interface meta operational DS
         InterfaceMetaUtils.createBridgeRefEntry(dpnId, bridgeIid, writeTransaction);
 

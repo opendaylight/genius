@@ -378,7 +378,8 @@ public final class InterfaceManagerCommonUtils {
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
         InterfaceMetaUtils.createLportTagInterfaceMap(interfaceOperShardTransaction, interfaceName, ifIndex);
         if (ifState == null) {
-            LOG.debug("received null ifState (for parent), cannot add state for {}", interfaceName);
+            LOG.debug("could not retrieve interface state corresponding to {}, processing will be resumed when "
+                    + "interface-state is available", interfaceName);
             return;
         }
         LOG.debug("adding interface state for {}", interfaceName);

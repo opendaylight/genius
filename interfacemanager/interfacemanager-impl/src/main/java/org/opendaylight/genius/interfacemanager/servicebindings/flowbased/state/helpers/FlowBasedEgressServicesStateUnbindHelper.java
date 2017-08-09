@@ -84,7 +84,7 @@ public class FlowBasedEgressServicesStateUnbindHelper implements FlowBasedServic
 
     private static List<ListenableFuture<Void>> unbindServices(List<BoundServices> allServices, Interface ifaceState,
             Integer ifIndex, DataBroker dataBroker) {
-        LOG.info("unbind all egress services for interface: {}", ifaceState.getName());
+        LOG.info("unbinding all egress services on interface: {}", ifaceState.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
