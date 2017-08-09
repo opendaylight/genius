@@ -28,6 +28,7 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -580,6 +581,11 @@ public final class InterfaceManagerCommonUtils {
 
     public static boolean isTunnelInterface(Interface interfaceInfo) {
         return interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null;
+    }
+
+    public static boolean isOfTunnelInterface(Interface interfaceInfo) {
+        return isTunnelInterface(interfaceInfo)
+                && SouthboundUtils.isOfTunnel(interfaceInfo.getAugmentation(IfTunnel.class));
     }
 
     public static boolean isVlanInterface(Interface interfaceInfo) {

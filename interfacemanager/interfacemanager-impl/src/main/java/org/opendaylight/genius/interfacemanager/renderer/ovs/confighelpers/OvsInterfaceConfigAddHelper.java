@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -23,6 +24,7 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -125,20 +127,26 @@ public class OvsInterfaceConfigAddHelper {
                                   defaultOperShardTransaction, futures);
             return;
         }
+
         boolean createTunnelPort = true;
-        String tunnelName = interfaceNew.getName();
+        final String tunnelName;
         if (SouthboundUtils.isOfTunnel(ifTunnel)) {
             BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpId, dataBroker);
-            createTunnelPort = bridgeEntry == null || bridgeEntry.getBridgeInterfaceEntry() == null ? true
-                    : bridgeEntry.getBridgeInterfaceEntry().isEmpty();
+            createTunnelPort = bridgeEntry == null
+                    || bridgeEntry.getBridgeInterfaceEntry() == null
+                    || bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName());
-
-            if (InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName) != null) {
-                InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures,
-                                InterfaceManagerCommonUtils.getInterfaceStateFromCache(tunnelName));
-            }
+            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
+                    defaultOperShardTransaction);
+            Optional.ofNullable(InterfaceManagerCommonUtils.getInterfaceState(tunnelName, dataBroker))
+                    .ifPresent(anInterfaceState -> DataStoreJobCoordinator.getInstance().enqueueJob(
+                            tunnelName, () -> OvsInterfaceStateAddHelper.addState(
+                                    dataBroker, idManager, mdsalApiManager, alivenessMonitorService,
+                                    interfaceNew.getName(), anInterfaceState)));
+        } else {
+            tunnelName = interfaceNew.getName();
         }
+
         String parentInterface = parentRefs.getParentInterface();
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)
                 && !Strings.isNullOrEmpty(parentInterface)) {
