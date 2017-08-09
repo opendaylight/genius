@@ -73,24 +73,24 @@ public class AlarmNotificationListeners implements Runnable {
                 ObjectName mbn = msnotification.getMBeanName();
 
                 if ("JMX.mbean.registered".equals(notificationType) && mbn.toString().contains(DOMAIN)) {
-                    LOG.debug("Received registeration of Mbean " + mbn);
+                    LOG.debug("Received registeration of Mbean {}", mbn);
                     try {
                         mbs.addNotificationListener(mbn, delegateListener, null, null);
-                        LOG.debug("Added attribute notification listener for Mbean " + mbn);
+                        LOG.debug("Added attribute notification listener for Mbean {}", mbn);
                     } catch (InstanceNotFoundException e) {
-                        LOG.error("Exception while adding attribute notification of mbean {}", e);
+                        LOG.error("Exception while adding attribute notification of mbean ", e);
                     }
                 }
 
                 if ("JMX.mbean.unregistered".equals(notificationType) && mbn.toString().contains(DOMAIN)) {
-                    LOG.debug("Time: " + msnotification.getTimeStamp() + "MBean " + msnotification.getMBeanName()
-                            + " unregistered successfully");
+                    LOG.debug("Time: {} MBean {} unregistered successfully", msnotification.getTimeStamp(),
+                            msnotification.getMBeanName());
                 }
             } else if (notification instanceof AttributeChangeNotification) {
                 AttributeChangeNotification acn = (AttributeChangeNotification) notification;
 
-                LOG.debug("Received attribute notification of Mbean: " + notification.getSource() + " for attribute:"
-                        + acn.getAttributeName());
+                LOG.debug("Received attribute notification of Mbean: {} for attribute: {}", notification.getSource(),
+                        acn.getAttributeName());
 
                 if ("raiseAlarmObject".equals(acn.getAttributeName())) {
                     String value = acn.getNewValue().toString();
@@ -98,7 +98,9 @@ public class AlarmNotificationListeners implements Runnable {
                     value = value.replace(value.charAt(value.lastIndexOf(']')), ' ');
 
                     String[] args = value.split(",");
-                    LOG.debug("Receive attribute value :" + args[0].trim() + args[1].trim() + args[2].trim());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Receive attribute value : {}", args[0].trim() + args[1].trim() + args[2].trim());
+                    }
                     if (getAlarmServiceSPI() != null) {
                         getAlarmServiceSPI().raiseAlarm(args[0].trim(), args[1].trim(), args[2].trim());
                     } else {
@@ -110,7 +112,9 @@ public class AlarmNotificationListeners implements Runnable {
                     value = value.replace(value.charAt(value.lastIndexOf(']')), ' ');
 
                     String[] args = value.split(",");
-                    LOG.debug("Receive attribute value :" + args[0].trim() + args[1].trim() + args[2].trim());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Receive attribute value : {}", args[0].trim() + args[1].trim() + args[2].trim());
+                    }
                     if (getAlarmServiceSPI() != null) {
                         getAlarmServiceSPI().clearAlarm(args[0].trim(), args[1].trim(), args[2].trim());
                     } else {
@@ -146,7 +150,7 @@ public class AlarmNotificationListeners implements Runnable {
             mbs.addNotificationListener(delegate, delegateListener, filter, null);
             LOG.debug("Added registeration listener for Mbean {}", delegate);
         } catch (InstanceNotFoundException e) {
-            LOG.error("Failed to add registeration listener {}", e);
+            LOG.error("Failed to add registeration listener", e);
             return;
         }
 
@@ -172,9 +176,9 @@ public class AlarmNotificationListeners implements Runnable {
             if (beanName.toString().contains(DOMAIN)) {
                 try {
                     mbs.addNotificationListener(beanName, delegateListener, null, null);
-                    LOG.debug("Added attribute notification listener for Mbean " + beanName);
+                    LOG.debug("Added attribute notification listener for Mbean {}", beanName);
                 } catch (InstanceNotFoundException e) {
-                    LOG.error("Failed to add attribute notification for Mbean {}", e);
+                    LOG.error("Failed to add attribute notification for Mbean", e);
                 }
             }
         }

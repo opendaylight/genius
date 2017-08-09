@@ -177,21 +177,21 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(tzNew);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
         oldDpnTepsListcopy.addAll(oldDpnTepsList);
-        LOG.trace("oldcopy0" + oldDpnTepsListcopy);
+        LOG.trace("oldcopy0 {}", oldDpnTepsListcopy);
         List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<>();
         newDpnTepsListcopy.addAll(newDpnTepsList);
-        LOG.trace("newcopy0" + newDpnTepsListcopy);
+        LOG.trace("newcopy0 {}", newDpnTepsListcopy);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         oldDpnTepsList.removeAll(newDpnTepsListcopy);
         newDpnTepsList.removeAll(oldDpnTepsListcopy);
 
-        LOG.trace("oldDpnTepsList" + oldDpnTepsList);
-        LOG.trace("newDpnTepsList" + newDpnTepsList);
-        LOG.trace("oldcopy" + oldDpnTepsListcopy);
-        LOG.trace("newcopy" + newDpnTepsListcopy);
-        LOG.trace("oldcopy Size " + oldDpnTepsList.size());
-        LOG.trace("newcopy Size " + newDpnTepsList.size());
+        LOG.trace("oldDpnTepsList {}", oldDpnTepsList);
+        LOG.trace("newDpnTepsList {}", newDpnTepsList);
+        LOG.trace("oldcopy {}", oldDpnTepsListcopy);
+        LOG.trace("newcopy {}", newDpnTepsListcopy);
+        LOG.trace("oldcopy Size {}", oldDpnTepsList.size());
+        LOG.trace("newcopy Size {}", newDpnTepsList.size());
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
@@ -208,17 +208,17 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         List<HwVtep> newHwList = createhWVteps(tzNew);
         List<HwVtep> oldHwListcopy = new ArrayList<>();
         oldHwListcopy.addAll(oldHwList);
-        LOG.trace("oldHwListcopy0" + oldHwListcopy);
+        LOG.trace("oldHwListcopy0 {}", oldHwListcopy);
         List<HwVtep> newHwListcopy = new ArrayList<>();
         newHwListcopy.addAll(newHwList);
-        LOG.trace("newHwListcopy0" + newHwListcopy);
+        LOG.trace("newHwListcopy0 {}", newHwListcopy);
 
         oldHwList.removeAll(newHwListcopy);
         newHwList.removeAll(oldHwListcopy);
-        LOG.trace("oldHwList" + oldHwList);
-        LOG.trace("newHwList" + newHwList);
-        LOG.trace("oldHwListcopy" + oldHwListcopy);
-        LOG.trace("newHwListcopy" + newHwListcopy);
+        LOG.trace("oldHwList {}", oldHwList);
+        LOG.trace("newHwList {}", newHwList);
+        LOG.trace("oldHwListcopy {}", oldHwListcopy);
+        LOG.trace("newHwListcopy {}", newHwListcopy);
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,

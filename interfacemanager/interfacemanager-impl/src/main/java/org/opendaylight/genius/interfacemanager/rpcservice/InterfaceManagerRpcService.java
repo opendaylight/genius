@@ -179,7 +179,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder.withResult(endpointIpForDpnOutput.build());
             LOG.debug("Endpoint ip for dpn {} is {}", input.getDpid(), tunnel.getTunnelSource());
         } catch (Exception e) {
-            LOG.error("Retrieval of endpoint of for dpn {} failed due to {}", input.getDpid(), e);
+            LOG.error("Retrieval of endpoint of for dpn {} failed due to", input.getDpid(), e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -232,7 +232,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder.withResult(output.build());
             LOG.debug("interface type for interface {} is {}", input.getIntfName(), interfaceInfo.getType());
         } catch (Exception e) {
-            LOG.error("Retrieval of interface type for the key {} failed due to {}", interfaceName, e);
+            LOG.error("Retrieval of interface type for the key {}", interfaceName, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -266,7 +266,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 rpcResultBuilder = RpcResultBuilder.failed();
             }
         } catch (Exception e) {
-            LOG.error("Retrieval of interface type for the key {} failed due to {}", interfaceName, e);
+            LOG.error("Retrieval of interface type for the key {}", interfaceName, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -358,7 +358,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder.withResult(output.build());
             LOG.debug("nodeconnector id for interface {} is {}", input.getIntfName(), lowerLayerIf);
         } catch (Exception e) {
-            LOG.error("Retrieval of nodeconnector id for the key {} failed due to {}", interfaceName, e);
+            LOG.error("Retrieval of nodeconnector id for the key {}", interfaceName, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -389,7 +389,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder.withResult(output);
             LOG.debug("interface corresponding to ifindex {} is {}", input.getIfIndex(), interfaceName);
         } catch (Exception e) {
-            LOG.error("Retrieval of interfaceName for the key {} failed due to {}", ifIndex, e);
+            LOG.error("Retrieval of interfaceName for the key {}", ifIndex, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());
@@ -423,7 +423,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             rpcResultBuilder.withResult(output);
             LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfaceList);
         } catch (Exception e) {
-            LOG.error("Retrieval of interfaceNameList for the dpnId {} failed due to {}", dpnid, e);
+            LOG.error("Retrieval of interfaceNameList for the dpnId {}", dpnid, e);
             rpcResultBuilder = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(rpcResultBuilder.build());

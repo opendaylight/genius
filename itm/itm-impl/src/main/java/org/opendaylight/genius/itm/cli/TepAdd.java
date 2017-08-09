@@ -50,12 +50,13 @@ public class TepAdd extends OsgiCommandSupport {
                         + "gatewayIp transportZone");
                 return null;
             }
-            LOG.debug("Executing create TEP command" + "\t" + dpnId + "\t" + portName + "\t" + vlanId + "\t"
-                    + ipAddress + "\t" + subnetMask + "\t" + gatewayIp + "\t" + transportZone);
+            LOG.debug("Executing create TEP command dpnId={}, portName={}, vlanId={}, ipAddress={},"
+                            + " subnetMask={}, gatewayIp={}, transportZone={}", dpnId, portName, vlanId, ipAddress,
+                    subnetMask, gatewayIp, transportZone);
             itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
                     transportZone, session);
         } catch (Exception e) {
-            LOG.error("Exception occurred during execution of command \"tep-add\": ", e);
+            LOG.error("Exception occurred during execution of command \"tep-add\"", e);
             throw e;
         }
         return null;

@@ -368,21 +368,21 @@ public class TepCommandHelper {
         TransportZones transportZonesBuilt = null;
         TransportZone transportZone = null;
         try {
-            LOG.debug("no of teps added" + check);
+            LOG.debug("no of teps added {}", check);
             if (transportZonesHashMap != null || !transportZonesHashMap.isEmpty()) {
                 transportZoneArrayList = new ArrayList<>();
                 for (String tz : transportZonesHashMap.keySet()) {
-                    LOG.debug("transportZonesHashMap" + tz);
+                    LOG.debug("transportZonesHashMap {}", tz);
                     subnetList = new ArrayList<>();
                     Map<SubnetObject, List<Vteps>> subVtepMapTemp = transportZonesHashMap.get(tz);
                     for (SubnetObject subOb : subVtepMapTemp.keySet()) {
-                        LOG.debug("subnets" + subOb.get_prefix());
+                        LOG.debug("subnets {}", subOb.get_prefix());
                         List<Vteps> vtepList = subVtepMapTemp.get(subOb);
                         Subnets subnet = new SubnetsBuilder().setGatewayIp(subOb.get_gatewayIp())
                                 .setKey(subOb.get_key()).setPrefix(subOb.get_prefix()).setVlanId(subOb.get_vlanId())
                                 .setVteps(vtepList).build();
                         subnetList.add(subnet);
-                        LOG.debug("vteps" + vtepList);
+                        LOG.debug("vteps {}", vtepList);
                     }
                     InstanceIdentifier<TransportZone> transportZonePath =
                             InstanceIdentifier.builder(TransportZones.class)
@@ -392,7 +392,7 @@ public class TepCommandHelper {
                     LOG.debug("read container from DS");
                     if (transportZoneOptional.isPresent()) {
                         TransportZone tzoneFromDs = transportZoneOptional.get();
-                        LOG.debug("read tzone container" + tzoneFromDs.toString());
+                        LOG.debug("read tzone container {}", tzoneFromDs);
                         if (tzoneFromDs.getTunnelType() == null
                                 || tzoneFromDs.getTunnelType().equals(TunnelTypeVxlan.class)) {
                             transportZone =
@@ -411,15 +411,15 @@ public class TepCommandHelper {
                                         .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList).setZoneName(tz)
                                         .build();
                     }
-                    LOG.debug("tzone object" + transportZone);
+                    LOG.debug("tzone object {}", transportZone);
                     transportZoneArrayList.add(transportZone);
                 }
                 transportZonesBuilt = new TransportZonesBuilder().setTransportZone(transportZoneArrayList).build();
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-                LOG.debug("InstanceIdentifier" + path);
+                LOG.debug("InstanceIdentifier {}", path);
                 ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, transportZonesBuilt, dataBroker,
                         ItmUtils.DEFAULT_CALLBACK);
-                LOG.debug("wrote to Config DS" + transportZonesBuilt);
+                LOG.debug("wrote to Config DS {}", transportZonesBuilt);
                 transportZonesHashMap.clear();
                 transportZoneArrayList.clear();
                 subnetList.clear();
@@ -454,12 +454,12 @@ public class TepCommandHelper {
                     + "---------------------------------");
             for (TransportZone tz : transportZones.getTransportZone()) {
                 if (tz.getSubnets() == null || tz.getSubnets().isEmpty()) {
-                    LOG.error("Transport Zone " + tz.getZoneName() + "has no subnets");
+                    LOG.error("Transport Zone {} has no subnets", tz.getZoneName());
                     continue;
                 }
                 for (Subnets sub : tz.getSubnets()) {
                     if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
-                        LOG.error("Transport Zone " + tz.getZoneName() + "subnet " + sub.getPrefix() + "has no vteps");
+                        LOG.error("Transport Zone {} subnet {} has no vteps", tz.getZoneName(), sub.getPrefix());
                         continue;
                     }
                     for (Vteps vtep : sub.getVteps()) {

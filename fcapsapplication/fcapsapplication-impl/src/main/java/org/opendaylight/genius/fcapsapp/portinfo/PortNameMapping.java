@@ -53,7 +53,7 @@ public class PortNameMapping implements PortNameMappingMBean {
         try {
             mbeanName = new ObjectName(beanName);
         } catch (MalformedObjectNameException e) {
-            LOG.error("ObjectName instance creation failed for BEANAME {} : {}", beanName, e);
+            LOG.error("ObjectName instance creation failed for BEANAME {}", beanName, e);
 
         }
         try {
@@ -63,7 +63,7 @@ public class PortNameMapping implements PortNameMappingMBean {
             }
 
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed for Mbean {} :{}", mbeanName, e);
+            LOG.error("Registeration failed for Mbean {}", mbeanName, e);
         }
     }
 }
