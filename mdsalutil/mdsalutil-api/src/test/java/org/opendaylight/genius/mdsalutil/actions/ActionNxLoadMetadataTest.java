@@ -25,12 +25,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  */
 public class ActionNxLoadMetadataTest {
     private static final BigInteger VALUE = BigInteger.TEN;
+    private static final Integer START = 0;
+    private static final Integer END = 23;
 
     private XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
-        verifyAction(new ActionNxLoadMetadata(VALUE).buildAction());
+        verifyAction(new ActionNxLoadMetadata(VALUE, START, END).buildAction());
     }
 
     private void verifyAction(Action action) {
@@ -42,15 +44,16 @@ public class ActionNxLoadMetadataTest {
         assertTrue(nxRegLoad.getDst().getDstChoice() instanceof DstOfMetadataCase);
         DstOfMetadataCase dstOfMetadataCase = (DstOfMetadataCase) nxRegLoad.getDst().getDstChoice();
         assertTrue(dstOfMetadataCase.isOfMetadata());
-        assertEquals(1, nxRegLoad.getDst().getStart().intValue());
-        assertEquals(23, nxRegLoad.getDst().getEnd().intValue());
+        assertEquals(START, nxRegLoad.getDst().getStart());
+        assertEquals(END, nxRegLoad.getDst().getEnd());
         assertEquals(VALUE, nxRegLoad.getValue());
     }
 
     @Test
     public void generateAction() {
-        ActionInfo actionInfo = new ActionNxLoadMetadata(VALUE);
+        ActionInfo actionInfo = new ActionNxLoadMetadata(VALUE, START, END);
         assertEquals(
-            "new ActionNxLoadMetadata(0, " + VALUE + "bi)", generator.getExpression(actionInfo));
+            "new ActionNxLoadMetadata(0, " + VALUE + "bi" + ", " + START +  ", " + END + ")", generator
+            .getExpression(actionInfo));
     }
 }

@@ -24,14 +24,18 @@ public class ActionNxLoadMetadata extends ActionInfo {
     private static final long serialVersionUID = 1L;
 
     private final BigInteger value;
+    private final Integer startBit;
+    private final Integer endBit;
 
-    public ActionNxLoadMetadata(BigInteger value) {
-        this(0, value);
+    public ActionNxLoadMetadata(BigInteger value, Integer startBit, Integer endBit) {
+        this(0, value, startBit, endBit);
     }
 
-    public ActionNxLoadMetadata(int actionKey, BigInteger value) {
+    public ActionNxLoadMetadata(int actionKey, BigInteger value, Integer startBit, Integer endBit) {
         super(actionKey);
         this.value = value;
+        this.startBit = startBit;
+        this.endBit = endBit;
     }
 
     @Override
@@ -46,8 +50,8 @@ public class ActionNxLoadMetadata extends ActionInfo {
                 .setNxRegLoad(new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
                         .setDstChoice(new DstOfMetadataCaseBuilder().setOfMetadata(true).build())
-                        .setStart(1)
-                        .setEnd(23)
+                        .setStart(startBit)
+                        .setEnd(endBit)
                         .build())
                     .setValue(value)
                     .build())
@@ -60,10 +64,20 @@ public class ActionNxLoadMetadata extends ActionInfo {
         return value;
     }
 
+    public Integer getStartBit() {
+        return startBit;
+    }
+
+    public Integer getEndBit() {
+        return endBit;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
+        result = prime * result + ((endBit == null) ? 0 : endBit.hashCode());
+        result = prime * result + ((startBit == null) ? 0 : startBit.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -80,6 +94,20 @@ public class ActionNxLoadMetadata extends ActionInfo {
             return false;
         }
         ActionNxLoadMetadata other = (ActionNxLoadMetadata) obj;
+        if (endBit == null) {
+            if (other.endBit != null) {
+                return false;
+            }
+        } else if (!endBit.equals(other.endBit)) {
+            return false;
+        }
+        if (startBit == null) {
+            if (other.startBit != null) {
+                return false;
+            }
+        } else if (!startBit.equals(other.startBit)) {
+            return false;
+        }
         if (value == null) {
             if (other.value != null) {
                 return false;
@@ -92,7 +120,8 @@ public class ActionNxLoadMetadata extends ActionInfo {
 
     @Override
     public String toString() {
-        return "ActionNxLoadMetadata [value=" + value + ", getValue()=" + getValue() + "]";
+        return "ActionNxLoadMetadata [value=" + value + ", startBit=" + startBit + ", endBit=" + endBit
+                + ", getValue()=" + getValue() + ", getStartBit()=" + getStartBit() + ", getEndBit()=" + getEndBit()
+                + "]";
     }
-
 }
