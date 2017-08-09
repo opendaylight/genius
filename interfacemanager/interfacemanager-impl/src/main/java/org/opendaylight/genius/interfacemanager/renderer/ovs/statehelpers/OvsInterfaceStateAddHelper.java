@@ -53,7 +53,7 @@ public class OvsInterfaceStateAddHelper {
         }
 
         // Retrieve PbyAddress & OperState from the DataObject
-        LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
+        LOG.info("adding interface state to Oper DS for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
         PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);

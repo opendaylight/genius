@@ -56,6 +56,8 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
             ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
             if (parentRefs != null && parentRefs.getNodeIdentifier() != null) {
+                LOG.debug("Received HwVTEP Interface Remove Event: {}", interfaceOld.getName());
+                LOG.trace("Received HwVTEP Interface Remove Event: {}, {}", key, interfaceOld);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -76,6 +78,8 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs != null && parentRefs.getNodeIdentifier() != null) {
+                LOG.debug("Received HwVTEP Interface Update Event: {}", interfaceNew.getName());
+                LOG.trace("Received HwVTEP Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
@@ -97,6 +101,8 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs != null && parentRefs.getNodeIdentifier() != null) {
+                LOG.debug("Received HwVTEP Interface Add Event: {}", interfaceNew.getName());
+                LOG.trace("Received HwVTEP Interface Add Event: {}, {}", key, interfaceNew);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();

@@ -155,6 +155,9 @@ public class FlowBasedIngressServicesConfigUnbindHelper implements FlowBasedServ
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         BigInteger dpId = boundServicesState.getDpid();
 
+        LOG.info("unbinding ingress service {} for tunnel port: {}", boundServiceOld.getServiceName(),
+                boundServicesState.getInterfaceName());
+
         if (boundServices.isEmpty()) {
             // Remove entry from Ingress Table.
             FlowBasedServicesUtils.removeIngressFlow(boundServicesState.getInterfaceName(), boundServiceOld, dpId, tx);

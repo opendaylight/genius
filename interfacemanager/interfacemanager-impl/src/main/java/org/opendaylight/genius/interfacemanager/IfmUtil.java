@@ -330,7 +330,7 @@ public class IfmUtil {
             case VLAN_INTERFACE:
                 if (isDefaultEgress) {
                     IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
-                    LOG.trace("L2Vlan: {}", vlanIface);
+                    LOG.trace("get egress actions for l2vlan interface: {}", vlanIface);
                     boolean isVlanTransparent = false;
                     int vlanVid = 0;
                     if (vlanIface != null) {

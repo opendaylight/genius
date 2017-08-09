@@ -75,6 +75,7 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
     private static void bindServiceOnTunnel(List<ListenableFuture<Void>> futures,
                                             List<BoundServices> allServices, Interface ifState,
                                             DataBroker dataBroker) {
+        LOG.info("bind all ingress services on tunnel interface: {}", ifState.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
@@ -103,7 +104,7 @@ public class FlowBasedIngressServicesStateBindHelper implements FlowBasedService
     private static void bindServiceOnVlan(List<ListenableFuture<Void>> futures,
                                           List<BoundServices> allServices, Interface ifState,
                                           DataBroker dataBroker) {
-        LOG.info("bind all ingress services for vlan port: {}", ifState.getName());
+        LOG.info("bind all ingress services on vlan interface: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();

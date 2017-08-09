@@ -85,6 +85,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.SendToController;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -271,10 +272,12 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             List<Action> actions) {
 
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
-        return packetProcessingService.transmitPacket(new TransmitPacketInputBuilder().setPayload(payload)
+        TransmitPacketInput transmitPacketInput = new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
                         .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
-                .setIngress(nodeConnectorRef).setEgress(ref).setAction(actions).build());
+                .setIngress(nodeConnectorRef).setEgress(ref).setAction(actions).build();
+        LOG.trace("PacketOut message framed for transmitting {}", transmitPacketInput);
+        return packetProcessingService.transmitPacket(transmitPacketInput);
     }
 
     private List<Action> getEgressAction(String interfaceName) {
