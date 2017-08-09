@@ -16,6 +16,24 @@
       "revId": "7253d87b35f2f995935877a76461c926e329d2b1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2ef8cc7b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-09T07:39:51Z",
+      "side": 1,
+      "message": "This one should be the exception type to be used. I changed it by a comment made by Stephen. Sorry, I\u0027ll change the previous one once it is merged.",
+      "parentUuid": "ba1f61a0_0ecb4873",
+      "revId": "7253d87b35f2f995935877a76461c926e329d2b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
