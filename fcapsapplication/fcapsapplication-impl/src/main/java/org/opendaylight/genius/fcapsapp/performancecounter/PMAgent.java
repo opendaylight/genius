@@ -46,7 +46,7 @@ public class PMAgent {
             portMBeanName = new ObjectName(PORTS_BEANNAME);
             pktInMBeanName = new ObjectName(PKTIN_BEANNAME);
         } catch (MalformedObjectNameException e) {
-            LOG.error("ObjectName instance creation failed for BEANAME {}", e);
+            LOG.error("ObjectName instance creation failed for BEANAME ", e);
         }
     }
 
@@ -65,7 +65,7 @@ public class PMAgent {
             }
 
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed for Mbean {} :{}", switchMBeanName, e);
+            LOG.error("Registeration failed for Mbean {} : ", switchMBeanName, e);
         }
     }
 
@@ -76,7 +76,7 @@ public class PMAgent {
                 LOG.info("Registered Mbean {} successfully", portMBeanName);
             }
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed for Mbean {} :{}", portMBeanName, e);
+            LOG.error("Registeration failed for Mbean {} : ", portMBeanName, e);
         }
     }
 
@@ -87,7 +87,7 @@ public class PMAgent {
                 LOG.info("Registered Mbean {} successfully", pktInMBeanName);
             }
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed for Mbean {} :{}", pktInMBeanName, e);
+            LOG.error("Registeration failed for Mbean {} : ", pktInMBeanName, e);
         }
     }
 

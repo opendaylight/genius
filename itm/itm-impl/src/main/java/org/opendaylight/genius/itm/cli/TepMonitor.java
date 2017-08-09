@@ -33,7 +33,7 @@ public class TepMonitor extends OsgiCommandSupport {
     @Override
     protected Object doExecute() {
         try {
-            LOG.debug("Executing TEP monitor command with interval: " + "\t" + interval);
+            LOG.debug("Executing TEP monitor command with interval:\t{}", interval);
             if (!(interval >= ITMConstants.MIN_MONITOR_INTERVAL && interval <= ITMConstants.MAX_MONITOR_INTERVAL)) {
                 session.getConsole().println("Monitoring Interval must be in the range 100 - 30000");
             } else {

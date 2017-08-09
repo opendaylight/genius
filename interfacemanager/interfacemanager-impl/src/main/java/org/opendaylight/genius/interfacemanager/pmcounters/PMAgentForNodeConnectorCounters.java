@@ -66,7 +66,7 @@ public class PMAgentForNodeConnectorCounters {
             mbeanForOFPortBytesReceive = new ObjectName(BEANNAMEFOROFPORTBYTESRECEIVE);
             mbeanForEntriesPerOFTable = new ObjectName(BEANNAMEFORENTRIESPEROFTABLE);
         } catch (MalformedObjectNameException e) {
-            LOG.error("ObjectName instance creation failed with exception {}", e);
+            LOG.error("ObjectName instance creation failed with exception ", e);
 
         }
     }
@@ -108,7 +108,7 @@ public class PMAgentForNodeConnectorCounters {
                 LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForEntriesPerOFTable);
             }
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed with exception {}", e);
+            LOG.error("Registeration failed with exception ", e);
         }
     }
 

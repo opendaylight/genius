@@ -39,7 +39,7 @@ public class Poller {
      * details.
      */
     public void polling() {
-        LOG.debug("Poller Polling Mbean List and the content is " + PMRegistrationListener.beanNames);
+        LOG.debug("Poller Polling Mbean List and the content is {}", PMRegistrationListener.beanNames);
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(new PollerThread(), 0, 5, TimeUnit.SECONDS);
     }
@@ -76,7 +76,7 @@ public class Poller {
                         LOG.debug("PM service not available");
                     }
                 } catch (InstanceNotFoundException | ReflectionException | MBeanException e) {
-                    LOG.error("Exception caught: ", e);
+                    LOG.error("Exception caught while retrieving countermap from mbean and sending to platform: ", e);
                 }
             }
         }

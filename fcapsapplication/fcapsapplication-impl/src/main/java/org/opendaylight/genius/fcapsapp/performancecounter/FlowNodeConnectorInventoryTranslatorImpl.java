@@ -199,7 +199,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         } else {
             nodeConnectorCountermap.remove(counterkey);
         }
-        LOG.debug("NumberOfOFPorts:" + nodeListPortsCountStr + " portlistsize " + portname.size());
+        LOG.debug("NumberOfOFPorts: {} portlistsize {}", nodeListPortsCountStr, portname.size());
         agent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
     }
 }

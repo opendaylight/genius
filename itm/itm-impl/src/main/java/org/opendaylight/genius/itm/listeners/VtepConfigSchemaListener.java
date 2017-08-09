@@ -163,8 +163,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
     @Override
     protected void update(InstanceIdentifier<VtepConfigSchema> identifier, VtepConfigSchema original,
                           VtepConfigSchema updated) {
-        LOG.error("Receivedn DCN for updating VTEP Original schema: {}. Updated schema: {}",
-                original, updated);
+        LOG.error("Receivedn DCN for updating VTEP Original schema: {}. Updated schema: {}", original, updated);
         //LOG.trace("Received notification for VTEP config schema [{}] updated.", original.getSchemaName());
 
         try {
@@ -209,7 +208,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
             VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
             addVteps(validatedSchema, vtepIpPool);
         } catch (Exception e) {
-            LOG.error("Failed to handle DCN for add VtepConfigSchema: {}", e);
+            LOG.error("Failed to handle DCN for add VtepConfigSchema: ", e);
         }
     }
 
