@@ -526,7 +526,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
         if (!macAddress.equals(macsDB.get(interfaceName + "-" + inetAddr.getHostAddress()))) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("mac address changed for " + inetAddr);
+                LOG.trace("mac address changed for {}", inetAddr);
             }
             MacChangedBuilder builder = new MacChangedBuilder();
             builder.setInterface(interfaceName);
