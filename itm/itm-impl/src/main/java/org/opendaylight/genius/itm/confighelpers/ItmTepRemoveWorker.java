@@ -63,8 +63,8 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
                 if (tunnelEndPointsList.size() == 1) {
                     dpnDeleteList.add(dpnTEPInfo);
                 } else {
-                    LOG.error("DPNTEPInfo not available in data store for dpnId" + dpnTEPInfo.getDPNID()
-                            + ". Unable to delete external tunnel for dpn ");
+                    LOG.error("DPNTEPInfo not available in data store for dpnId {}. Unable to delete external tunnel " +
+                            "for dpn ", dpnTEPInfo.getDPNID());
                 }
             }
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {

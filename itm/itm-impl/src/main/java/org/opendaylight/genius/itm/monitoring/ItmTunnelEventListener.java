@@ -282,14 +282,16 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            String ifName = update.getTunnelInterfaceName() ;
+            String ifName = update.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
             if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
-                        isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
+                if(LOG.isTraceEnabled()) {
+                    LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
+                            isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
+                }
                 if (update.getOperState() == TunnelOperStatus.Unknown) {
                     return null;
                 } else if (update.getOperState() == TunnelOperStatus.Up) {

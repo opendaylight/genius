@@ -39,7 +39,7 @@ public class Poller {
      * details.
      */
     public void polling() {
-        LOG.debug("Poller Polling Mbean List and the content is " + PMRegistrationListener.beanNames);
+        LOG.debug("Poller Polling Mbean List and the content is {}", PMRegistrationListener.beanNames);
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(new PollerThread(), 0, 5, TimeUnit.SECONDS);
     }
