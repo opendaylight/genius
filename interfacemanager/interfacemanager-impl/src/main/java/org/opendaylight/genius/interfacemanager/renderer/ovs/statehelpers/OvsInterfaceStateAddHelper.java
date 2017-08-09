@@ -42,21 +42,44 @@ public class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
     public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
+                                                        IMdsalApiManager mdsalApiManager,
+                                                        AlivenessMonitorService alivenessMonitorService,
+                                                        String interfaceName, Interface parentInterface) {
+        if (parentInterface.getLowerLayerIf() == null || parentInterface.getLowerLayerIf().isEmpty()) {
+            LOG.trace("Cannot obtain lower layer if, not proceeding with Interface State addition for interface: {}",
+                    interfaceName);
+        }
+        NodeConnectorId nodeConnectorId = new NodeConnectorId(parentInterface.getLowerLayerIf().get(0));
+        PhysAddress physAddress = parentInterface.getPhysAddress();
+        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+        return addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName,
+                portNo, physAddress);
+    }
+
+
+
+    public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
             IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
             NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
-        // Retrieve Port No from nodeConnectorId
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+        PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
+        return addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName,
+                portNo, physAddress);
+    }
+
+    private static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
+            NodeConnectorId nodeConnectorId, String interfaceName, long portNo, PhysAddress physAddress) {
+        LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
+
         if (portNo == IfmConstants.INVALID_PORT_NO) {
             LOG.trace("Cannot derive port number, not proceeding with Interface State " + "addition for interface: {}",
                     interfaceName);
             return null;
         }
 
-        // Retrieve PbyAddress & OperState from the DataObject
-        LOG.info("adding interface state to Oper DS for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
-        PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
 
         Interface.OperStatus operStatus = Interface.OperStatus.Up;
         Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;

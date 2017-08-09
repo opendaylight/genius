@@ -28,6 +28,7 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
@@ -448,9 +449,6 @@ public final class InterfaceManagerCommonUtils {
             ifaceBuilder.setIfIndex(ifIndex);
             InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
         }
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                .buildStateInterfaceId(interfaceName);
         List<String> childLowerLayerIfList = new ArrayList<>();
         if (nodeConnectorId != null) {
             childLowerLayerIfList.add(0, nodeConnectorId.getValue());
@@ -467,15 +465,15 @@ public final class InterfaceManagerCommonUtils {
         if (physAddress != null) {
             ifaceBuilder.setPhysAddress(physAddress);
         }
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
+                .buildStateInterfaceId(interfaceName);
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
                 .build();
-        if (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)) {
-            BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        } else {
-            transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
-        }
+        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
+
         if (nodeConnectorId != null) {
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
             // Update the DpnToInterfaceList OpDS
@@ -581,6 +579,11 @@ public final class InterfaceManagerCommonUtils {
 
     public static boolean isTunnelInterface(Interface interfaceInfo) {
         return interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null;
+    }
+
+    public static boolean isOfTunnelInterface(Interface interfaceInfo) {
+        return isTunnelInterface(interfaceInfo)
+                && SouthboundUtils.isOfTunnel(interfaceInfo.getAugmentation(IfTunnel.class));
     }
 
     public static boolean isVlanInterface(Interface interfaceInfo) {
