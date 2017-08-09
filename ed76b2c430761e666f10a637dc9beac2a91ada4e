@@ -137,6 +137,30 @@
       "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a1c7ad11",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 6393
+      },
+      "writtenOn": "2017-08-09T09:18:50Z",
+      "side": 1,
+      "message": "Each ActionalbleResource is having a future, \nUpon successful completion of tx.Submit each ft will be set to null, notifying the ft listener that it is successfully done.\nI have removed the independent list of fts now to clear the confusion.",
+      "parentUuid": "ba1f61a0_b8a085f5",
+      "range": {
+        "startLine": 293,
+        "startChar": 24,
+        "endLine": 293,
+        "endChar": 76
+      },
+      "revId": "ed76b2c430761e666f10a637dc9beac2a91ada4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
