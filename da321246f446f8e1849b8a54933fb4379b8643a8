@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_2bf9cfe9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-10T18:04:40Z",
+      "side": 1,
+      "message": "how costly is this generation? We are doing it once just to generate the synch key, and once again here..",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_eb6337af",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-10T18:04:40Z",
+      "side": 1,
+      "message": "interface child entry is config..why is opershard transaction passed there?",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4b59a3fd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-10T18:04:40Z",
+      "side": 1,
+      "message": "shouldn\u0027t be the read of interface-state also inside the DJC? else how do we ensure that synchronization between interface-child and interface-state is proper? Race condition is still there",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
