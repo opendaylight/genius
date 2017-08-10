@@ -98,17 +98,24 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_NSHC3 = "nshc3";
     private static final String TUNNEL_OPTIONS_NSHC4 = "nshc4";
 
+    // Tunnel options for MPLS-GRE tunnels [requires OVS 2.8+)
+    private static final String TUNNEL_OPTIONS_PKT_TYPE = "packet_type";
+
     // Option values for VxLAN-GPE + NSH tunnels
     private static final String TUNNEL_OPTIONS_VALUE_FLOW = "flow";
     private static final String TUNNEL_OPTIONS_VALUE_GPE = "gpe";
     // UDP port for VxLAN-GPE Tunnels
     private static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
 
+    // Tunnel option values for MPLS-GRE tunnels [requires OVS 2.8+)
+    private static final String TUNNEL_OPTIONS_VALUE_LEGACY_L3 = "legacy_l3";
+
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
     private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
         TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
             {
                 put(TunnelTypeGre.class, InterfaceTypeGre.class);
+                put(TunnelTypeMplsOverGre.class, InterfaceTypeGre.class);
                 put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
                 put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
             }
@@ -185,9 +192,10 @@ public class SouthboundUtils {
             IpAddress remoteIp = ifTunnel.getTunnelDestination();
             options.put(TUNNEL_OPTIONS_REMOTE_IP, String.valueOf(remoteIp.getValue()));
         }
-
         // Specific options for each type of tunnel
-        if (!ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
+        if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
+            options.put(TUNNEL_OPTIONS_PKT_TYPE, TUNNEL_OPTIONS_VALUE_LEGACY_L3);
+        } else {
             options.put(TUNNEL_OPTIONS_KEY, TUNNEL_OPTIONS_VALUE_FLOW);
         }
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlanGpe.class)) {
