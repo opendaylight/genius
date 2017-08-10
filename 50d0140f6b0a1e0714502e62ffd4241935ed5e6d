@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_e5c1a6e5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-10T14:07:03Z",
+      "side": 1,
+      "message": "key\u003dflow was not required for mpls-o-gre tunnels..please confirm how the behaviour is on ovs2.8",
+      "revId": "50d0140f6b0a1e0714502e62ffd4241935ed5e6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
