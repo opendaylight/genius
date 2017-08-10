@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_76929258",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5433
+      },
+      "writtenOn": "2017-08-10T00:13:00Z",
+      "side": 1,
+      "message": "Have you considered having some kinds of synchronize logic where we only allow one update to the same transport zone at the same time? That way we never run into race condition?\n\nWould the following suggestion work?\n\n1) TransportZoneListener::add() passes the TransportZone name to the ItmTepAddWorker\n\n2) In the ItmTepAddWorker::call() add the synchronized(transportZoneName.intern()) around existing logic",
+      "revId": "f47d238490b8f72d688e906bc6e1823e7dd493bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d6c89e76",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5433
+      },
+      "writtenOn": "2017-08-10T00:13:00Z",
+      "side": 1,
+      "message": "This would greatly reduce the race condition but not totally eliminate it. The proposed logic are (I think, please correct me if I am wrong)\n\na) get the meshed dpn list\nb) update the DPNTEPsInfo to the meshed dpn list\nc) build bi-directional tunnels from the meshed dpn list in (a)\n\nCould the race condition still occurs when two updates for compute 1 and compute 2 execute a) roughly at the same time, and the time sequence happens like:\n\n1) compute 1 - a\n2) compute 2 - a\n\n3) compute 1 - b\n4) compute 2 - b\n\n5) compute 2 - c\n6) compute 1 - c\n\nNow at steps 5) and 6) the tunnels are built with stale info?\n\nI know the time window for race condition like above is very small, but it is still there",
+      "revId": "f47d238490b8f72d688e906bc6e1823e7dd493bd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
