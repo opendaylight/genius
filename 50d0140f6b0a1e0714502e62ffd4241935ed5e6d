@@ -16,6 +16,24 @@
       "revId": "50d0140f6b0a1e0714502e62ffd4241935ed5e6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_456eb202",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T14:08:13Z",
+      "side": 1,
+      "message": "Done. Was 50/50 if this is needed now or not.",
+      "parentUuid": "ba1f61a0_e5c1a6e5",
+      "revId": "50d0140f6b0a1e0714502e62ffd4241935ed5e6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
