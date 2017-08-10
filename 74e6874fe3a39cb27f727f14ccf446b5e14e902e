@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_2ba54f53",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_642035f8",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e40c2597",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_8b89dbcc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "I did this in patchset2 just to see how it works, but will go with current approach for now. This would be good refactoring to do later.",
+      "parentUuid": "ba1f61a0_e40c2597",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_8430c957",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2017-08-04T17:04:59Z",
       "side": 1,
       "message": "interfaceNam not interfaceName (typo)",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6b8627bb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_8430c957",
       "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -100,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_cb93d3f8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "Done, I think.",
+      "parentUuid": "ba1f61a0_44eff1b0",
+      "range": {
+        "startLine": 132,
+        "startChar": 25,
+        "endLine": 138,
+        "endChar": 49
+      },
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e4354547",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -111,6 +189,24 @@
       "writtenOn": "2017-08-04T17:04:59Z",
       "side": 1,
       "message": "remove this useless JavaDoc?",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ab901fed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_e4354547",
       "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -140,6 +236,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_0bbdeb68",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_c43ac135",
+      "range": {
+        "startLine": 152,
+        "startChar": 58,
+        "endLine": 152,
+        "endChar": 59
+      },
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_043cd92e",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -157,6 +277,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_4bb7e386",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "just place holder code, but why can\u0027t return null? what if it is not present in datastore yet?",
+      "parentUuid": "ba1f61a0_043cd92e",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_24263d17",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -168,6 +306,24 @@
       "writtenOn": "2017-08-04T17:04:59Z",
       "side": 1,
       "message": "plz add ifaceTpMap.close(); here!",
+      "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2bbc2f69",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-10T21:29:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_24263d17",
       "revId": "74e6874fe3a39cb27f727f14ccf446b5e14e902e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
