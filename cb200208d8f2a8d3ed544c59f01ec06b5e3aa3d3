@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_a5696e8d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnerUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T13:03:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "cb200208d8f2a8d3ed544c59f01ec06b5e3aa3d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4527d264",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnerUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T13:03:12Z",
+      "side": 1,
+      "message": "nah, there\u0027s no point to this IMHO - it cannot be instantiated anyway",
+      "revId": "cb200208d8f2a8d3ed544c59f01ec06b5e3aa3d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
