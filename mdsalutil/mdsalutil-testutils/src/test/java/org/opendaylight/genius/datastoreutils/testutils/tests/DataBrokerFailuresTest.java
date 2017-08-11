@@ -95,6 +95,12 @@ public class DataBrokerFailuresTest {
         dataBroker.newReadWriteTransaction().submit().checkedGet();
     }
 
+    @Test
+    public void testFailButSubmitsAnywaysReadWriteTransaction() {
+        dbFailures.failButSubmitsAnyways();
+        checkSubmitFails();
+    }
+
     // TODO make this work for TransactionChain as well ...
 
 }
