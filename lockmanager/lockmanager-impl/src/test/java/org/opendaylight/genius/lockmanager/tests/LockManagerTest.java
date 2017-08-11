@@ -24,9 +24,11 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailures;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresModule;
 import org.opendaylight.genius.lockmanager.LockManager;
+import org.opendaylight.genius.lockmanager.LockManagerUtils;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
@@ -57,6 +59,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     @Inject DataBroker dataBroker;
     @Inject DataBrokerFailures dbFailureSimulator;
     @Inject LockManagerService lockManager;
+    @Inject LockManagerUtils lockManagerUtils;
 
     @Test
     public void testLockAndUnLock() throws InterruptedException, ExecutionException, TimeoutException {
@@ -90,7 +93,8 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     // test re-lock of already locked key using tryLock() RPC.
     // tryLock() RPC will retry only specific number of times, and it will only return after that
     public void testTryLock() throws InterruptedException, ExecutionException, TimeoutException {
-        logCaptureRule.expectError("Failed to get lock testTryLock after 3 retries");
+        String uniqueId = lockManagerUtils.getBladeId() + ":2";
+        logCaptureRule.expectError("Failed to get lock testTryLock owner " + uniqueId + " after 3 retries");
 
         TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3L)
             .setTimeUnit(TimeUnits.Seconds).build();
@@ -116,6 +120,15 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         dbFailureSimulator.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
         runUnfailSubmitsTimerTask(3000); // see other tests above
+        assertSuccessfulFutureRpcResult(lockManager.lock(lockInput));
+    }
+
+    @Test
+    public void testAskTimeOutException() throws InterruptedException, ExecutionException, TimeoutException {
+        String lockName = "testLock";
+        logCaptureRule.expectError("Unable to acquire lock for " + lockName + ", try 1");
+        dbFailureSimulator.failButSubmitsAnyways();
+        LockInput lockInput = new LockInputBuilder().setLockName(lockName).build();
         assertSuccessfulFutureRpcResult(lockManager.lock(lockInput));
     }
 
