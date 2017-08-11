@@ -40,6 +40,13 @@ public interface DataBrokerFailures {
     void failSubmits(int howManyTimes, TransactionCommitFailedException exception);
 
     /**
+     * To simulate scenarios where even though the transaction throws a
+     * TransactionCommitFailedException (caused by
+     * akka.pattern.AskTimeoutException) it eventually succeeds.
+     */
+    void failButSubmitsAnyways();
+
+    /**
      * Resets any earlier {@link #unfailSubmits()}.
      */
     void unfailSubmits();
