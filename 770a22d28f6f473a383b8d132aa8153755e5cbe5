@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_fd8f7a21",
+        "filename": "srm/api/src/main/yang/srm-types.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-11T06:18:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_3dde3240",
+      "revId": "770a22d28f6f473a383b8d132aa8153755e5cbe5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_1de36e08",
         "filename": "srm/api/src/main/yang/srm-types.yang",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-11T06:00:19Z",
       "side": 1,
       "message": "will be better to get opinion from Michael on this.. He might tell that applications who want to register for recovery should be registering through an interface with SRM :)",
+      "revId": "770a22d28f6f473a383b8d132aa8153755e5cbe5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9d73de4c",
+        "filename": "srm/api/src/main/yang/srm-types.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-11T06:18:34Z",
+      "side": 1,
+      "message": "That could\u0027v been one of the designs but we decided not to go with it. Services that want to support SRM add their types to yang and us listeners to listen for their events. This way SRM doesn\u0027t need to maintain any runtime inventory of registered services etc. It makes for simpler and faster code.",
+      "parentUuid": "ba1f61a0_1de36e08",
       "revId": "770a22d28f6f473a383b8d132aa8153755e5cbe5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
