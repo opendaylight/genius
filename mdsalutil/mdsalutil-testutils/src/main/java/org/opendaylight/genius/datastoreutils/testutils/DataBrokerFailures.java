@@ -40,6 +40,17 @@ public interface DataBrokerFailures {
     void failSubmits(int howManyTimes, TransactionCommitFailedException exception);
 
     /**
+     * To simulate scenarios where even though the transaction throws a
+     * TransactionCommitFailedException (caused by
+     * akka.pattern.AskTimeoutException) it eventually succeeds. These timeouts
+     * are typically seen in scaled cluster environments under load. The new
+     * tell-based protocol, which will soon be enabled by default (c/61002),
+     * adds internal retries for transactions, making the application not to
+     * handle such scenarios.
+     */
+    void failButSubmitsAnyways();
+
+    /**
      * Resets any earlier {@link #unfailSubmits()}.
      */
     void unfailSubmits();

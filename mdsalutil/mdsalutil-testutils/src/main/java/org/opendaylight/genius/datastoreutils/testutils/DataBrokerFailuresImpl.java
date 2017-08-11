@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -22,6 +23,8 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DataBroker with methods to simulate failures, useful for tests.
@@ -34,9 +37,12 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 @SuppressWarnings("deprecation")
 public class DataBrokerFailuresImpl extends ForwardingDataBroker implements DataBrokerFailures {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataBrokerFailuresImpl.class);
+
     private final DataBroker delegate;
     private volatile @Nullable TransactionCommitFailedException submitException;
     private final AtomicInteger howManyFailingSubmits = new AtomicInteger();
+    private boolean submitAndThrowException = false;
 
     public DataBrokerFailuresImpl(DataBroker delegate) {
         this.delegate = delegate;
@@ -63,6 +69,14 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     public void unfailSubmits() {
         this.submitException = null;
         howManyFailingSubmits.set(-1);
+        this.submitAndThrowException = false;
+    }
+
+    @Override
+    public void failButSubmitsAnyways() {
+        unfailSubmits();
+        this.submitException = new TransactionCommitFailedException("caused by simulated AskTimeoutException");
+        this.submitAndThrowException = true;
     }
 
     private void update() {
@@ -80,6 +94,13 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                 if (submitException == null) {
                     return super.submit();
                 } else {
+                    if (submitAndThrowException) {
+                        try {
+                            super.submit().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            LOG.warn("Exception while waiting for submitted transaction", e);
+                        }
+                    }
                     return Futures.immediateFailedCheckedFuture(submitException);
                 }
             }
@@ -100,6 +121,13 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                 if (submitException == null) {
                     return super.submit();
                 } else {
+                    if (submitAndThrowException) {
+                        try {
+                            super.submit().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            LOG.warn("Exception while waiting for submitted transaction", e);
+                        }
+                    }
                     return Futures.immediateFailedCheckedFuture(submitException);
                 }
             }
