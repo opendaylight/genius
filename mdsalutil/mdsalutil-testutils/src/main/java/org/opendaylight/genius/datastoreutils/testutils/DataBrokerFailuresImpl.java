@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -37,6 +38,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     private final DataBroker delegate;
     private volatile @Nullable TransactionCommitFailedException submitException;
     private final AtomicInteger howManyFailingSubmits = new AtomicInteger();
+    private boolean submitAndThrowException = false;
 
     public DataBrokerFailuresImpl(DataBroker delegate) {
         this.delegate = delegate;
@@ -65,6 +67,14 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         howManyFailingSubmits.set(-1);
     }
 
+
+    @Override
+    public void submitButFails(TransactionCommitFailedException exception) {
+        unfailSubmits();
+        this.submitException = Objects.requireNonNull(exception, "exception == null");
+        this.submitAndThrowException = true;
+    }
+
     private void update() {
         if (howManyFailingSubmits.decrementAndGet() == -1) {
             this.submitException = null;
@@ -80,6 +90,13 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                 if (submitException == null) {
                     return super.submit();
                 } else {
+                    if (submitAndThrowException) {
+                        try {
+                            super.submit().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            return Futures.immediateFailedCheckedFuture(submitException);
+                        }
+                    }
                     return Futures.immediateFailedCheckedFuture(submitException);
                 }
             }

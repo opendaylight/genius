@@ -40,6 +40,16 @@ public interface DataBrokerFailures {
     void failSubmits(int howManyTimes, TransactionCommitFailedException exception);
 
     /**
+     * To simulate scenarios where eventhough the transaction throws
+     * exception(AskTimeOut) it eventually succeeds.
+     *
+     * @param exception
+     *            an Exception to throw from a {@link WriteTransaction#submit()}
+     *            (also {@link ReadWriteTransaction#submit()}) method
+     */
+    void submitButFails(TransactionCommitFailedException exception);
+
+    /**
      * Resets any earlier {@link #unfailSubmits()}.
      */
     void unfailSubmits();
