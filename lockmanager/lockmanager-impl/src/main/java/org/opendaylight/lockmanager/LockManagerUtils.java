@@ -8,7 +8,14 @@
 
 package org.opendaylight.lockmanager;
 
+import com.google.common.net.InetAddresses;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.inject.Singleton;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.Locks;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TimeUnits;
@@ -17,13 +24,19 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.LockKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+@Singleton
 public class LockManagerUtils {
 
-    private LockManagerUtils() {
-        throw new IllegalStateException("Utility class");
+    private static final String SEPARATOR = ":";
+    private final AtomicInteger counter;
+    private final int bladeId;
+
+    public LockManagerUtils() throws UnknownHostException {
+        counter = new AtomicInteger(0);
+        bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
     }
 
-    public static TimeUnit convertToTimeUnit(TimeUnits timeUnit) {
+    public TimeUnit convertToTimeUnit(TimeUnits timeUnit) {
         switch (timeUnit) {
             case Days:
                 return TimeUnit.DAYS;
@@ -43,12 +56,20 @@ public class LockManagerUtils {
         }
     }
 
-    public static InstanceIdentifier<Lock> getLockInstanceIdentifier(String lockName) {
+    public InstanceIdentifier<Lock> getLockInstanceIdentifier(String lockName) {
         return InstanceIdentifier.builder(Locks.class).child(Lock.class, new LockKey(lockName)).build();
     }
 
-    public static Lock buildLockData(String lockName) {
+    public Lock buildLockData(String lockName, String owner) {
         return new LockBuilder().setKey(new LockKey(lockName)).setLockName(lockName)
-                .setLockOwner(Thread.currentThread().getName()).build();
+                .setLockOwner(owner).build();
+    }
+
+    public String getLockOwner() {
+        int lockId = counter.incrementAndGet();
+        if (Integer.MAX_VALUE == lockId) {
+            counter.set(0);
+        }
+        return bladeId + SEPARATOR + lockId;
     }
 }
