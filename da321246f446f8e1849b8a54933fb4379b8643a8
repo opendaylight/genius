@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_80541555",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-11T11:14:31Z",
+      "side": 1,
+      "message": "you mean DPN-id as DJC key? in that case inventorylistener also needs the same key for OF Tunnels... In order to determine it is an OFTunnel when southbound event comes, you wll have to go read interface-config DS...which again becomes more complicated",
+      "parentUuid": "ba1f61a0_8072557a",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_eb6337af",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 9
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_60512162",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-11T11:14:31Z",
+      "side": 1,
+      "message": "yes...change both..please confirm that they are writing to config DS",
+      "parentUuid": "ba1f61a0_c06c4d9f",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4b59a3fd",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 9
@@ -101,6 +137,24 @@
       "side": 1,
       "message": "No, for the parent interface to not exist, the job that adds it is still not executed. When it is, it will see the child as that is being added as part of the current job.\nBut I just checked that for this to be true, we need to get rid of BatchingUtils also in InterfaceManagerCommonUtils.java:475",
       "parentUuid": "ba1f61a0_4b59a3fd",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a04b19af",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-11T11:14:31Z",
+      "side": 1,
+      "message": "Yes...Since there is only one OFTunnel port that will get created on the switch in InterfaceManagerCommonUtils.addStateEntry() in your usecase, there is no need for batchingutils there.. Usage of BatchingUtils for tunnels was added only for supporting the default case of full mesh where a lot of tunnel ports will get created on the switch when a transport zone is created..",
+      "parentUuid": "ba1f61a0_80953542",
       "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
