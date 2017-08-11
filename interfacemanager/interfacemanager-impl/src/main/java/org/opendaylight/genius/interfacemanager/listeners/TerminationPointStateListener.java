@@ -85,7 +85,7 @@ public class TerminationPointStateListener extends
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
         if (tpNew.getInterfaceBfdStatus() != null
                 && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
-            LOG.trace("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.", identifier,
+            LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.", identifier,
                     tpOld, tpNew);
             DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, tpNew);

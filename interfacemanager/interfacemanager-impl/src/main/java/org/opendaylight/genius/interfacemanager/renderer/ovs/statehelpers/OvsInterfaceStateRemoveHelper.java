@@ -36,7 +36,7 @@ public class OvsInterfaceStateRemoveHelper {
             NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld, DataBroker dataBroker,
             String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld, boolean isNodePresent,
             String parentInterface) {
-        LOG.debug("Removing interface-state information for interface: {} {}", interfaceName, isNodePresent);
+        LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 

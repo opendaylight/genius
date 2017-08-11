@@ -110,6 +110,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetDpidFromInterfaceOutput>> getDpidFromInterface(GetDpidFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder;
+        LOG.debug("Get dpid for interface {}", input.getIntfName());
         try {
             BigInteger dpId;
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
@@ -138,6 +139,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(dpId);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
+            LOG.debug("Dpid for interface {} is {}", input.getIntfName(), dpId);
         } catch (Exception e) {
             rpcResultBuilder = getRpcErrorResultForGetDpnIdRpc(interfaceName, e.getMessage());
         }
@@ -157,6 +159,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetEndpointIpForDpnOutput>> getEndpointIpForDpn(GetEndpointIpForDpnInput input) {
         RpcResultBuilder<GetEndpointIpForDpnOutput> rpcResultBuilder;
+        LOG.debug("Get endpoint ip for dpn {}", input.getDpid());
         try {
             BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(input.getDpid());
             InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = InterfaceMetaUtils
@@ -174,6 +177,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .setLocalIps(Collections.singletonList(tunnel.getTunnelSource()));
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(endpointIpForDpnOutput.build());
+            LOG.debug("Endpoint ip for dpn {} is {}", input.getDpid(), tunnel.getTunnelSource());
         } catch (Exception e) {
             LOG.error("Retrieval of endpoint of for dpn {} failed due to {}", input.getDpid(), e);
             rpcResultBuilder = RpcResultBuilder.failed();
@@ -186,6 +190,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
         RpcResultBuilder<GetEgressInstructionsForInterfaceOutput> rpcResultBuilder;
+        LOG.debug("Get Egress Instructions for interface {} with key {}", input.getIntfName(), input.getTunnelKey());
         try {
             List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
                     input.getTunnelKey(), dataBroker, false);
@@ -193,6 +198,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .setInstruction(instructions);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
+            LOG.debug("Egress Instructions for interface {} is {}", input.getIntfName(), instructions);
         } catch (Exception e) {
             String errMsg = String.format("Retrieval of egress instructions for the key {%s} failed due to %s",
                     input.getIntfName(), e.getMessage());
@@ -208,6 +214,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetInterfaceTypeOutput>> getInterfaceType(GetInterfaceTypeInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetInterfaceTypeOutput> rpcResultBuilder;
+        LOG.debug("Get interface type for interface {}", input.getIntfName());
         try {
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
@@ -223,6 +230,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .setInterfaceType(interfaceInfo.getType());
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
+            LOG.debug("interface type for interface {} is {}", input.getIntfName(), interfaceInfo.getType());
         } catch (Exception e) {
             LOG.error("Retrieval of interface type for the key {} failed due to {}", interfaceName, e);
             rpcResultBuilder = RpcResultBuilder.failed();
@@ -277,6 +285,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .setAction(actionsList);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
+            LOG.debug("Egress Actions for interface {} is {}", input.getIntfName(), actionsList);
         } catch (Exception e) {
             String errMsg = String.format("Retrieval of egress actions for {%s} failed due to %s", input.getIntfName(),
                     e.getMessage());
@@ -292,6 +301,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
         RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder;
         String interfaceName = input.getIntfName();
+        LOG.debug("Get port from interface {}", input.getIntfName());
         try {
             BigInteger dpId = null;
             long portNo = 0;
@@ -309,6 +319,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                         .setPortname(interfaceName).setPortno(portNo).setPhyAddress(phyAddress);
                 rpcResultBuilder = RpcResultBuilder.success();
                 rpcResultBuilder.withResult(output.build());
+                LOG.debug("port for interface {} is {}", input.getIntfName(), portNo);
             } else {
                 rpcResultBuilder = getRpcErrorResultForGetPortRpc(interfaceName, "missing Interface state");
             }
@@ -333,6 +344,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             GetNodeconnectorIdFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         RpcResultBuilder<GetNodeconnectorIdFromInterfaceOutput> rpcResultBuilder;
+        LOG.debug("Get nodeconnector id from interface {}", input.getIntfName());
         try {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
@@ -344,6 +356,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     .setNodeconnectorId(nodeConnectorId);
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output.build());
+            LOG.debug("nodeconnector id for interface {} is {}", input.getIntfName(), lowerLayerIf);
         } catch (Exception e) {
             LOG.error("Retrieval of nodeconnector id for the key {} failed due to {}", interfaceName, e);
             rpcResultBuilder = RpcResultBuilder.failed();
@@ -357,6 +370,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             GetInterfaceFromIfIndexInput input) {
         Integer ifIndex = input.getIfIndex();
         RpcResultBuilder<GetInterfaceFromIfIndexOutput> rpcResultBuilder = null;
+        LOG.debug("Get interface from ifindex {}", input.getIfIndex());
         try {
             InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                     .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
@@ -373,6 +387,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 new GetInterfaceFromIfIndexOutputBuilder().setInterfaceName(interfaceName).build();
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output);
+            LOG.debug("interface corresponding to ifindex {} is {}", input.getIfIndex(), interfaceName);
         } catch (Exception e) {
             LOG.error("Retrieval of interfaceName for the key {} failed due to {}", ifIndex, e);
             rpcResultBuilder = RpcResultBuilder.failed();
@@ -385,6 +400,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         BigInteger dpnid = input.getDpid();
         RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = null;
+        LOG.debug("Get interface list for dpn {}", input.getDpid());
         try {
             InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
                     .child(DpnToInterface.class, new DpnToInterfaceKey(dpnid)).build();
@@ -405,6 +421,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList).build();
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output);
+            LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfaceList);
         } catch (Exception e) {
             LOG.error("Retrieval of interfaceNameList for the dpnId {} failed due to {}", dpnid, e);
             rpcResultBuilder = RpcResultBuilder.failed();

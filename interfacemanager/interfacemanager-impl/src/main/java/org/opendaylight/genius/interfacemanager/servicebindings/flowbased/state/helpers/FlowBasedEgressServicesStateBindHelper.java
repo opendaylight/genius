@@ -66,7 +66,7 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
     private static void bindServices(List<ListenableFuture<Void>> futures,
                                                              List<BoundServices> allServices, Interface ifState,
                                                              DataBroker dataBroker) {
-        LOG.info("bind all egress services for interface: {}", ifState.getName());
+        LOG.info("binding all egress services on interface: {}", ifState.getName());
 
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);

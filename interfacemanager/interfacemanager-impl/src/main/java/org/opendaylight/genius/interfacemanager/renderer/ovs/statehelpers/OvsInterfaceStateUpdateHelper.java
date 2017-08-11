@@ -35,7 +35,7 @@ public class OvsInterfaceStateUpdateHelper {
             AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker, String interfaceName,
             FlowCapableNodeConnector flowCapableNodeConnectorNew,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        LOG.debug("Update of Interface State for port: {}", interfaceName);
+        LOG.debug("Updating interface state information for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         Interface.OperStatus operStatusNew = InterfaceManagerCommonUtils.getOpState(flowCapableNodeConnectorNew);

@@ -86,6 +86,8 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
                                             DataBroker dataBroker) {
         long portNo = boundServiceState.getPortNo();
         BigInteger dpId = boundServiceState.getDpid();
+        LOG.info("binding ingress service {} for tunnel port: {}", boundServiceNew.getServiceName(),
+                boundServiceState.getInterfaceName());
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
             dataBroker);

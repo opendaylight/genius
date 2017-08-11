@@ -26,7 +26,7 @@ public class OvsVlanMemberConfigAddHelper {
 
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
             Interface interfaceNew, IfL2vlan ifL2vlan, IdManagerService idManager) {
-        LOG.debug("add vlan member configuration {}", interfaceNew.getName());
+        LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName(),
@@ -50,8 +50,6 @@ public class OvsVlanMemberConfigAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
-        LOG.debug("add interface state info for vlan member {}, with ifState for parent {}", interfaceNew.getName(),
-                ifState);
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures, ifState);
         return futures;
     }
