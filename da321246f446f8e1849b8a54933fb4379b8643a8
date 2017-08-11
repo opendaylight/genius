@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_8072557a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-11T10:06:42Z",
+      "side": 1,
+      "message": "I have assumed is not very costly. I can be passed around but in that case I may prefer to use the DPN id as key. It\u0027s already used in the remove job and it would mean to move use it also for the state jobs. Let me know what you think.",
+      "parentUuid": "ba1f61a0_2bf9cfe9",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_eb6337af",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 9
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_c06c4d9f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-11T10:06:42Z",
+      "side": 1,
+      "message": "I think the same, but just a few more lines down a child interface is also being created in the opershard transaction. So I stick to that. Change both?",
+      "parentUuid": "ba1f61a0_eb6337af",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4b59a3fd",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 9
@@ -47,6 +83,24 @@
       "writtenOn": "2017-08-10T18:04:40Z",
       "side": 1,
       "message": "shouldn\u0027t be the read of interface-state also inside the DJC? else how do we ensure that synchronization between interface-child and interface-state is proper? Race condition is still there",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_80953542",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-11T10:06:42Z",
+      "side": 1,
+      "message": "No, for the parent interface to not exist, the job that adds it is still not executed. When it is, it will see the child as that is being added as part of the current job.\nBut I just checked that for this to be true, we need to get rid of BatchingUtils also in InterfaceManagerCommonUtils.java:475",
+      "parentUuid": "ba1f61a0_4b59a3fd",
       "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
