@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_f020384b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-14T14:52:09Z",
+      "side": 1,
+      "message": "Well, the interface configs should already be cached.\nOther option: update the parent-refs interface name of config interfaces to the OF tunnel parent (parent refs are already passed around). It would be consistent but I noticed also that tunnel groups has a use for it so it may have a side effect.\nStill, if neither of this two options are good, let\u0027s pass it around as an added argument.",
+      "parentUuid": "ba1f61a0_80541555",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_eb6337af",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 9
@@ -108,6 +126,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_f072f87a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-14T14:52:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_60512162",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4b59a3fd",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 9
@@ -155,6 +191,24 @@
       "side": 1,
       "message": "Yes...Since there is only one OFTunnel port that will get created on the switch in InterfaceManagerCommonUtils.addStateEntry() in your usecase, there is no need for batchingutils there.. Usage of BatchingUtils for tunnels was added only for supporting the default case of full mesh where a lot of tunnel ports will get created on the switch when a transport zone is created..",
       "parentUuid": "ba1f61a0_80953542",
+      "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d06d349b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-14T14:52:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_a04b19af",
       "revId": "da321246f446f8e1849b8a54933fb4379b8643a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
