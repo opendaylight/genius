@@ -1,0 +1,344 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_e559945c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "Do you think it would be possible to do TDD, and have a unit or component test which illustrates this problem, which this change would then fix?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b70d0f3a",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "nomve this down after DEFAULT_RETRY_COUNT and DEFAULT_WAIT_TIME_IN_MILLIS, and change the name and/or put an inline JavaDoc clarifying that this is (apparently?) another retry count than the existing one?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d7588334",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "nomve this down after DEFAULT_RETRY_COUNT and DEFAULT_WAIT_TIME_IN_MILLIS, and change the name and/or put an inline JavaDoc clarifying that this is (apparently?) another retry count than the existing one?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_37475f4d",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "nomve this down after DEFAULT_RETRY_COUNT and DEFAULT_WAIT_TIME_IN_MILLIS, and change the name and/or put an inline JavaDoc clarifying that this is (apparently?) another retry count than the existing one?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_974e0b6e",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "nomve this down after DEFAULT_RETRY_COUNT and DEFAULT_WAIT_TIME_IN_MILLIS, and change the name and/or put an inline JavaDoc clarifying that this is (apparently?) another retry count than the existing one?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b724efaf",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "nomve this down after DEFAULT_RETRY_COUNT and DEFAULT_WAIT_TIME_IN_MILLIS, and change the name and/or put an inline JavaDoc clarifying that this is (apparently?) another retry count than the existing one?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4507c01c",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "great to see more use of DI! So that training was useful.. ;-)",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_97756b9a",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "this fixed number here (30) probably should best be another constant",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b75b4f2d",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "this fixed number here (30) probably should best be another constant",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_173b3bd2",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "this fixed number here (30) probably should best be another constant",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7751d70d",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "this fixed number here (30) probably should best be another constant",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7778b78f",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "perhaps this log message could end with \"..., going to retry\" - kind of wording?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_17421b3e",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "perhaps this log message could end with \"..., going to retry\" - kind of wording?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d76fe3c3",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "perhaps this log message could end with \"..., giving up\" - kind of wording?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f73ca7c1",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "perhaps this log message could end with \"..., giving up\" - kind of wording?",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b7722fab",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "should this \"return;\" here? Not sure at all, just wondering..",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9700cb02",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "new empty line between static and normal fields, please",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c513b064",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "how about renaming this method to be buildLock(), without *Data suffix?  Clearer, IMHO.",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_050dc83e",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "just for clarify, how about renaming this method to be something like getUniqueID() ? Because that\u0027s what it does.. you then use the returned String as a lock owner - but the implementation knowns nothing about locks..",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_25a60c54",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 1,
+      "message": "Are you sure that we need this? I think it will just \"overflow\" by itself.. without requiring you doing this - or do I misunderstand the point of this? (Try writing a test for it, if you want to be sure.)",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

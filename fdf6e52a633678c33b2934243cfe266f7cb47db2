@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_a5167c53",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-15T12:38:39Z",
+      "side": 0,
+      "message": "+1 to remove this, as thread names are not unique, this probably never was a good idea anyway..",
+      "revId": "fdf6e52a633678c33b2934243cfe266f7cb47db2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
