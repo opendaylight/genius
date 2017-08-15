@@ -66,7 +66,7 @@ public class PMAgentForNodeConnectorCounters {
             mbeanForOFPortBytesReceive = new ObjectName(BEANNAMEFOROFPORTBYTESRECEIVE);
             mbeanForEntriesPerOFTable = new ObjectName(BEANNAMEFORENTRIESPEROFTABLE);
         } catch (MalformedObjectNameException e) {
-            LOG.error("ObjectName instance creation failed with exception {}", e);
+            LOG.error("ObjectName instance creation failed with exception", e);
 
         }
     }
@@ -108,7 +108,7 @@ public class PMAgentForNodeConnectorCounters {
                 LOG.info(REGISTERED_MBEAN_SUCCESSFULLY, mbeanForEntriesPerOFTable);
             }
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed with exception {}", e);
+            LOG.error("Registeration failed with exception", e);
         }
     }
 
@@ -132,11 +132,11 @@ public class PMAgentForNodeConnectorCounters {
             mbServer.invoke(mbeanForOFPortBytesReceive, "invokePMManagedObjects", new Object[] { ofPortBytesReceive },
                     new String[] { Map.class.getName() });
         } catch (InstanceNotFoundException e) {
-            LOG.error(" InstanceNotFoundException ", e);
+            LOG.error("InstanceNotFoundException", e);
         } catch (MBeanException e) {
-            LOG.error(" MBeanException ", e);
+            LOG.error("MBeanException", e);
         } catch (ReflectionException e) {
-            LOG.error(" ReflectionException ", e);
+            LOG.error("ReflectionException", e);
         }
     }
 
@@ -145,11 +145,11 @@ public class PMAgentForNodeConnectorCounters {
             mbServer.invoke(mbeanForEntriesPerOFTable, "invokePMManagedObjects", new Object[] { entriesPerOFTable },
                     new String[] { Map.class.getName() });
         } catch (InstanceNotFoundException e) {
-            LOG.error(" InstanceNotFoundException ", e);
+            LOG.error("InstanceNotFoundException", e);
         } catch (MBeanException e) {
-            LOG.error(" MBeanException ", e);
+            LOG.error("MBeanException", e);
         } catch (ReflectionException e) {
-            LOG.error(" ReflectionException ", e);
+            LOG.error("ReflectionException", e);
         }
     }
 }
