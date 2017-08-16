@@ -50,6 +50,40 @@
       "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_bceb2eaf",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-16T16:06:33Z",
+      "side": 1,
+      "message": "Are the changes you are making here in this test related to the bug you are fixing in this change, or is this test just failing locally for you, and you are including a fix for the test here along with your otherwise unrelated functional fix? FYI we\u0027ve come up with an alternative solution for the problem here over in https://git.opendaylight.org/gerrit/#/c/60313/, which I\u0027m hoping to merge ASAP - would you be willing to remove the changes you made to the test?",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5cdcb212",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-16T16:06:33Z",
+      "side": 1,
+      "message": "PS: Please prefer using http://google.github.io/truth/ assertions over Hamcrest Assert.assertThat - they are very similar, but a it nicer both to read in code and giving better error message in case of match failures at run-time.",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
