@@ -172,5 +172,13 @@
       <artifactId>resourcemanager-impl</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <!-- finalname="etc/opendaylight/datastore/initial/config/genius-itm-config.xml" -->
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>itm-impl</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
+      <classifier>config</classifier>
+    </dependency>
   </dependencies>
 </project>
