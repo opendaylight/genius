@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_fcc9267a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-16T15:39:22Z",
+      "side": 1,
+      "message": "This cannot be removed for all tunnels :) Normal vxlan tunnels still need batching.. it will not scale without that.. I was just suggesting to do it only for OFTunnels",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9ca2aaac",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-16T15:39:22Z",
+      "side": 1,
+      "message": "is opershardTransaction used anywhere else in this method?",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
