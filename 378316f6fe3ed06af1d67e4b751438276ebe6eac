@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_8b2a667c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "The problem here is to get an exception while writing to DS but eventually it succeeds in writing onto the DS. I\u0027m not sure how we can mock such a scenario.",
+      "parentUuid": "ba1f61a0_e559945c",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_b70d0f3a",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
         "patchSetId": 1
@@ -104,6 +122,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_90ef3187",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Will use the existing RETRY",
+      "parentUuid": "ba1f61a0_37475f4d",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_4507c01c",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
         "patchSetId": 1
@@ -115,6 +151,24 @@
       "writtenOn": "2017-08-15T12:38:39Z",
       "side": 1,
       "message": "great to see more use of DI! So that training was useful.. ;-)",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_70f27d70",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Yes, it indeed was. :)",
+      "parentUuid": "ba1f61a0_4507c01c",
       "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -183,6 +237,24 @@
       "writtenOn": "2017-08-15T12:38:39Z",
       "side": 1,
       "message": "this fixed number here (30) probably should best be another constant",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d0e9a981",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_173b3bd2",
       "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -274,6 +346,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_f0fdcd3c",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "This method will be returned only after getting a lock",
+      "parentUuid": "ba1f61a0_b7722fab",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_9700cb02",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
         "patchSetId": 1
@@ -285,6 +375,24 @@
       "writtenOn": "2017-08-15T12:38:39Z",
       "side": 1,
       "message": "new empty line between static and normal fields, please",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_30f80549",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_9700cb02",
       "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -308,6 +416,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_909611ef",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_c513b064",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_050dc83e",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
         "patchSetId": 1
@@ -325,6 +451,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_7099dd1e",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_050dc83e",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_25a60c54",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
         "patchSetId": 1
@@ -336,6 +480,24 @@
       "writtenOn": "2017-08-15T12:38:39Z",
       "side": 1,
       "message": "Are you sure that we need this? I think it will just \"overflow\" by itself.. without requiring you doing this - or do I misunderstand the point of this? (Try writing a test for it, if you want to be sure.)",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_701c3d78",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManagerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-16T06:46:29Z",
+      "side": 1,
+      "message": "Yes, we do not need this check. It goes to -21... to -1 and again 0.",
+      "parentUuid": "ba1f61a0_25a60c54",
       "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
