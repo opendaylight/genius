@@ -6,6 +6,8 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <reference id="dataBrokerRef"
+               interface="org.opendaylight.controller.md.sal.binding.api.DataBroker"/>
     <reference id="rpcRegistryRef" interface="org.opendaylight.controller.sal.binding.api.RpcProviderRegistry"
                availability="optional"/>
     <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
@@ -17,6 +19,11 @@
         <command>
             <action class="org.opendaylight.genius.srm.shell.ReinstallCommand">
                 <property name="rpcRegistry" ref="rpcRegistryRef"/>
+            </action>
+        </command>
+        <command>
+            <action class="org.opendaylight.genius.srm.shell.SrmDebugCommand">
+                <property name="dataBroker" ref="dataBrokerRef"/>
             </action>
         </command>
     </command-bundle>
