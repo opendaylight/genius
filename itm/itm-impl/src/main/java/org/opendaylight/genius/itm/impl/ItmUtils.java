@@ -535,7 +535,7 @@ public class ItmUtils {
     public static void setUpOrRemoveTerminatingServiceTable(BigInteger dpnId, IMdsalApiManager mdsalManager,
                                                             boolean addFlag) {
         String logmsg = addFlag ? "Installing" : "Removing";
-        LOG.trace(logmsg + " PUNT to Controller flow in DPN {} ", dpnId);
+        LOG.trace("{} PUNT to Controller flow in DPN {}", logmsg, dpnId);
         List<ActionInfo> listActionInfo = new ArrayList<>();
         listActionInfo.add(new ActionPuntToController());
 

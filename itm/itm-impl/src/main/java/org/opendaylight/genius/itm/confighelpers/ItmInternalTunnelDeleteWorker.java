@@ -62,17 +62,16 @@ public class ItmInternalTunnelDeleteWorker {
                 return futures ;
             }
             for (DPNTEPsInfo srcDpn : dpnTepsList) {
-                LOG.trace("Processing srcDpn " + srcDpn);
+                LOG.trace("Processing srcDpn {}", srcDpn);
 
                 List<TunnelEndPoints> meshedEndPtCache = ItmUtils.getTEPsForDpn(srcDpn.getDPNID(), meshedDpnList);
                 if (meshedEndPtCache == null) {
                     LOG.debug("No Tunnel End Point configured for this DPN {}", srcDpn.getDPNID());
                     continue ;
                 }
-                LOG.debug("Entries in meshEndPointCache {} for DPN Id{} ",
-                        meshedEndPtCache.size(), srcDpn.getDPNID());
+                LOG.debug("Entries in meshEndPointCache {} for DPN Id {}", meshedEndPtCache.size(), srcDpn.getDPNID());
                 for (TunnelEndPoints srcTep : srcDpn.getTunnelEndPoints()) {
-                    LOG.trace("Processing srcTep " + srcTep);
+                    LOG.trace("Processing srcTep {}", srcTep);
                     List<TzMembership> srcTZones = srcTep.getTzMembership();
                     boolean tepDeleteFlag = false;
                     // First, take care of tunnel removal, so run through all other DPNS other than srcDpn
@@ -113,7 +112,7 @@ public class ItmInternalTunnelDeleteWorker {
                                     List<TzMembership> updatedList =
                                             ItmUtils.removeTransportZoneMembership(dstTep, srcTZones);
                                     if (updatedList.isEmpty()) {
-                                        LOG.debug(" This TEP can be deleted " + srcTep);
+                                        LOG.debug(" This TEP can be deleted {}", srcTep);
                                         tepDeleteFlag = true;
                                     } else {
                                         TunnelEndPointsBuilder modifiedTepBld = new TunnelEndPointsBuilder(dstTep);
@@ -137,8 +136,8 @@ public class ItmInternalTunnelDeleteWorker {
                                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
                                         .child(TunnelEndPoints.class, srcTep.getKey()).build();
 
-                        LOG.trace("Tep Removal of TEP {} from DPNTEPSINFO CONFIG DS with Key {} "
-                                + srcTep, srcTep.getKey());
+                        LOG.trace("Tep Removal of TEP {} from DPNTEPSINFO CONFIG DS with Key {}",
+                                srcTep, srcTep.getKey());
                         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
                         // remove the tep from the cache
                         meshedEndPtCache.remove(srcTep);
@@ -154,7 +153,7 @@ public class ItmInternalTunnelDeleteWorker {
                                 LOG.debug("Removing Terminating Service Table Flow ");
                                 ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpn.getDPNID(), mdsalManager, false);
                             }
-                            LOG.trace("DPN Removal from DPNTEPSINFO CONFIG DS " + srcDpn.getDPNID());
+                            LOG.trace("DPN Removal from DPNTEPSINFO CONFIG DS {}", srcDpn.getDPNID());
                             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, dpnPath);
                             InstanceIdentifier<DpnEndpoints> tnlContainerPath =
                                     InstanceIdentifier.builder(DpnEndpoints.class).build();
@@ -184,12 +183,11 @@ public class ItmInternalTunnelDeleteWorker {
                                              TunnelEndPoints srcTep, TunnelEndPoints dstTep, BigInteger srcDpnId,
                                              BigInteger dstDpnId, WriteTransaction transaction,
                                              List<ListenableFuture<Void>> futures) {
-        String trunkfwdIfName =
-                ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
-                        new String(srcTep.getIpAddress().getValue()),
-                        new String(dstTep.getIpAddress().getValue()),
-                        srcTep.getTunnelType().getName());
-        LOG.trace("Removing forward Trunk Interface " + trunkfwdIfName);
+        String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
+                new String(srcTep.getIpAddress().getValue()),
+                new String(dstTep.getIpAddress().getValue()),
+                srcTep.getTunnelType().getName());
+        LOG.trace("Removing forward Trunk Interface {}", trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
         LOG.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ",
                 trunkfwdIfName, trunkIdentifier) ;
@@ -208,10 +206,10 @@ public class ItmInternalTunnelDeleteWorker {
         removeLogicalGroupTunnel(srcDpnId, dstDpnId, dataBroker);
 
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
-                        new String(dstTep.getIpAddress().getValue()),
-                        new String(srcTep.getIpAddress().getValue()),
-                        srcTep.getTunnelType().getName());
-        LOG.trace("Removing Reverse Trunk Interface " + trunkRevIfName);
+                new String(dstTep.getIpAddress().getValue()),
+                new String(srcTep.getIpAddress().getValue()),
+                srcTep.getTunnelType().getName());
+        LOG.trace("Removing Reverse Trunk Interface {}", trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
         LOG.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ",
                 trunkRevIfName, trunkIdentifier) ;

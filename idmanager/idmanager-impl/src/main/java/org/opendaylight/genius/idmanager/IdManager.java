@@ -303,7 +303,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private <T> ListenableFuture<RpcResult<T>> buildFailedRpcResultFuture(String msg, Exception exception) {
         if (exception instanceof IdDoesNotExistException) {
             // Do not log full stack trace in case ID does not exist
-            LOG.error(msg + " : " + exception.getMessage());
+            LOG.error(msg, exception);
         } else {
             LOG.error(msg, exception);
         }
@@ -424,7 +424,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
             tx.submit().checkedGet();
         } catch (IdManagerException | NullPointerException e) {
-            LOG.error("Error getting id block from parent pool. {}", e.getMessage());
+            LOG.error("Error getting id block from parent pool", e);
         } finally {
             idUtils.unlock(lockManager, parentPoolName);
         }

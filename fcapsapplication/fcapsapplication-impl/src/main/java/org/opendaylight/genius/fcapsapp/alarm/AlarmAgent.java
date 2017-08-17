@@ -40,7 +40,7 @@ public class AlarmAgent {
         try {
             alarmName = new ObjectName(BEANNAME);
         } catch (MalformedObjectNameException e) {
-            LOG.error("ObjectName instance creation failed for BEANAME {} : {}", BEANNAME, e);
+            LOG.error("ObjectName instance creation failed for BEANAME {}", BEANNAME, e);
         }
     }
 
@@ -59,7 +59,7 @@ public class AlarmAgent {
                 LOG.info("Registered Mbean {} successfully", alarmName);
             }
         } catch (InstanceAlreadyExistsException | MBeanRegistrationException | NotCompliantMBeanException e) {
-            LOG.error("Registeration failed for Mbean {} :{}", alarmName, e);
+            LOG.error("Registeration failed for Mbean {}", alarmName, e);
         }
     }
 
@@ -82,7 +82,7 @@ public class AlarmAgent {
                     new String[] { String.class.getName(), String.class.getName(), String.class.getName() });
             LOG.debug("Invoked raiseAlarm function for Mbean {} with source {}", BEANNAME, src);
         } catch (InstanceNotFoundException | ReflectionException | MBeanException e) {
-            LOG.error("Invoking raiseAlarm method failed for Mbean {} :{}", alarmName, e);
+            LOG.error("Invoking raiseAlarm method failed for Mbean {}", alarmName, e);
         }
     }
 
@@ -105,7 +105,7 @@ public class AlarmAgent {
                     new String[] { String.class.getName(), String.class.getName(), String.class.getName() });
             LOG.debug("Invoked clearAlarm function for Mbean {} with source {}", BEANNAME, src);
         } catch (InstanceNotFoundException | ReflectionException | MBeanException e) {
-            LOG.error("Invoking clearAlarm method failed for Mbean {} :{}", alarmName, e);
+            LOG.error("Invoking clearAlarm method failed for Mbean {}", alarmName, e);
         }
     }
 
