@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_d644fab8",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-17T14:33:26Z",
+      "side": 1,
+      "message": "let\u0027s remove this as well",
+      "revId": "67f7f861558222a8864f61c672ff5b2b1f3d6a52",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
