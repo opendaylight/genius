@@ -472,8 +472,8 @@ public final class InterfaceManagerCommonUtils {
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
                 .build();
         if (InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo)) {
-            BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        } else {
+//            BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+//        } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
         if (nodeConnectorId != null) {
