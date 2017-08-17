@@ -60,12 +60,12 @@ public class PMRegistrationListener implements Runnable {
                     String mbean = mbn.toString();
                     if (mbean.contains(DOMAIN)) {
                         beanNames.add(mbn);
-                        LOG.debug("Beans are " + beanNames);
+                        LOG.debug("Beans are {}", beanNames);
                     }
                 }
                 if (MBEAN_UNREGISTERED.equals(notificationType) && mbn.toString().contains(DOMAIN)) {
                     beanNames.remove(mbn);
-                    LOG.error(mbn + " MBean has been unregistered");
+                    LOG.error("{} MBean has been unregistered", mbn);
                 }
             }
         }

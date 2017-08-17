@@ -164,9 +164,9 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     protected void update(InstanceIdentifier<BoundServices> key, BoundServices boundServiceOld,
                           BoundServices boundServiceNew) {
         if (!Objects.equals(boundServiceOld, boundServiceNew)) {
-            LOG.error("Service Binding entry update not allowed for: {}, Data: {}",
-                InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
-                boundServiceNew);
+            LOG.warn("Service Binding entry update not allowed for: {}, Data: {}",
+                    InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
+                    boundServiceNew);
         }
     }
 

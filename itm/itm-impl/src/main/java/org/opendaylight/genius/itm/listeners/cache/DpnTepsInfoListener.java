@@ -56,23 +56,22 @@ public class DpnTepsInfoListener extends AsyncClusteredDataTreeChangeListenerBas
 
     @Override
     protected void remove(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo del) {
-        LOG.debug(" Remove from cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
-                + del.getDPNID() + " String ver " + del.getDPNID().toString());
-        DataStoreCache.remove(ITMConstants.DPN_TEPs_Info_CACHE_NAME, del.getDPNID()) ;
+        LOG.debug("Remove from cache {} Invoked for data Obj {}",
+                ITMConstants.DPN_TEPs_Info_CACHE_NAME, del.getDPNID());
+        DataStoreCache.remove(ITMConstants.DPN_TEPs_Info_CACHE_NAME, del.getDPNID());
     }
 
     @Override
     protected void update(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo original,
                           DPNTEPsInfo update) {
-        LOG.debug(" Update to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
-                + update.getDPNID()) ;
+        LOG.debug("Update to cache {} Invoked for data Obj {}",
+                ITMConstants.DPN_TEPs_Info_CACHE_NAME, update.getDPNID());
         DataStoreCache.add(ITMConstants.DPN_TEPs_Info_CACHE_NAME, update.getDPNID(), update);
     }
 
     @Override
     protected void add(InstanceIdentifier<DPNTEPsInfo> identifier, DPNTEPsInfo add) {
-        LOG.debug(" Add to cache " + ITMConstants.DPN_TEPs_Info_CACHE_NAME + " Invoked for data Obj "
-                + add.getDPNID()) ;
+        LOG.debug("Add to cache {} Invoked for data Obj {}", ITMConstants.DPN_TEPs_Info_CACHE_NAME, add.getDPNID());
         DataStoreCache.add(ITMConstants.DPN_TEPs_Info_CACHE_NAME, add.getDPNID(), add);
     }
 

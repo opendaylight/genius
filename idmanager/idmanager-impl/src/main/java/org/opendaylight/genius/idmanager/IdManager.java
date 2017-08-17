@@ -415,7 +415,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
             tx.submit().checkedGet();
         } catch (IdManagerException | NullPointerException e) {
-            LOG.error("Error getting id block from parent pool. {}", e.getMessage());
+            LOG.error("Error getting id block from parent pool", e);
         } finally {
             idUtils.unlock(lockManager, parentPoolName);
         }
