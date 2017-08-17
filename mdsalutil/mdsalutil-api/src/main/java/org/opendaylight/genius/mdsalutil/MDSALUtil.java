@@ -376,7 +376,7 @@ public class MDSALUtil {
     }
 
     public static BigInteger getDpnIdFromNodeName(String mdsalNodeName) {
-        String dpId = mdsalNodeName.substring(mdsalNodeName.lastIndexOf(":") + 1);
+        String dpId = mdsalNodeName.substring(mdsalNodeName.lastIndexOf(':') + 1);
         return new BigInteger(dpId);
     }
 
@@ -385,7 +385,7 @@ public class MDSALUtil {
     }
 
     public static long getOfPortNumberFromPortName(String mdsalPortName) {
-        String portNumber = mdsalPortName.substring(mdsalPortName.lastIndexOf(":") + 1);
+        String portNumber = mdsalPortName.substring(mdsalPortName.lastIndexOf(':') + 1);
         return Long.parseLong(portNumber);
     }
 
@@ -395,8 +395,8 @@ public class MDSALUtil {
         }
         try {
             String ofPortName = nodeConnectorId.getValue();
-            return Long.parseLong(ofPortName.substring(ofPortName.indexOf(":") + 1,
-                    ofPortName.lastIndexOf(":")));
+            return Long.parseLong(ofPortName.substring(ofPortName.indexOf(':') + 1,
+                    ofPortName.lastIndexOf(':')));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             LOG.error("NodeConnectorId not of expected format openflow:dpnid:portnum");
             return -1;
@@ -513,6 +513,7 @@ public class MDSALUtil {
      * @return the instruction.
      * @deprecated Use buildWriteActionsInstruction
      */
+    @Deprecated
     public static Instruction getWriteActionsInstruction(List<Action> listAction, int instructionKey) {
         return buildWriteActionsInstruction(listAction, instructionKey);
     }
@@ -637,7 +638,7 @@ public class MDSALUtil {
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
         return new NodeId(ncId.getValue().substring(0,
-                ncId.getValue().lastIndexOf(":")));
+                ncId.getValue().lastIndexOf(':')));
     }
 
     public static String getInterfaceName(NodeConnectorRef ref, DataBroker dataBroker) {
