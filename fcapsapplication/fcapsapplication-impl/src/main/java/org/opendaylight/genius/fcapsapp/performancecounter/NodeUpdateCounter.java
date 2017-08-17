@@ -43,7 +43,7 @@ public class NodeUpdateCounter {
 
         if (hostName != null) {
             nodeListEFSCountStr = "Node_" + hostName + "_NumberOfEFS";
-            LOG.debug("NumberOfEFS:" + nodeListEFSCountStr + " dpnList.size " + count);
+            LOG.debug("NumberOfEFS: {} dpnList.size {}", nodeListEFSCountStr, count);
 
             countersMap.put("NumberOfEFS:" + nodeListEFSCountStr, "" + count);
             agent.connectToPMAgent(countersMap);

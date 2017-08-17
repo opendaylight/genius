@@ -70,7 +70,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                 try {
                     hostName = InetAddress.getLocalHost().getHostName();
                 } catch (UnknownHostException e) {
-                    LOG.error("Retrieving hostName failed {}", e);
+                    LOG.error("Retrieving hostName failed", e);
                 }
             }
             LOG.debug("retrieved hostname {}", hostName);
