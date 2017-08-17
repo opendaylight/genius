@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_113b3c9d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-17T15:41:34Z",
+      "side": 1,
+      "message": "That\u0027s less difficult than you think. If you look at the LockManagerTest, see how it uses the LockManagerTestModule to obtain (a real test, not mock), implementation of DataBroker.\n\nNow you could very well write your own class, something like a TestableDelegatingDataBroker, who\u0027s constructor takes another DataBroker (the real test one), but tho which you add some methods like failOnceOnNextSomething(), or failN.. (or maybe you don\u0027t even need such a wrapper class, and can do this with Mockito and a forwarding answer).  \n\nTry it, and let me know if you need help? You can email me also.\n\nSuch a DataBroker wrapper would be useful for some other tests as well, and could eventually be a welcome contribution  e.g. to mdsal (but start writing it as part of a test for this change, then later we can see about moving it).",
+      "parentUuid": "ba1f61a0_8b2a667c",
+      "revId": "378316f6fe3ed06af1d67e4b751438276ebe6eac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_b70d0f3a",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
         "patchSetId": 1
