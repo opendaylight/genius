@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_223558f7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-17T00:10:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_fcc9267a",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_9ca2aaac",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 11
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-16T15:39:22Z",
       "side": 1,
       "message": "is opershardTransaction used anywhere else in this method?",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c2255cc3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-17T00:10:43Z",
+      "side": 1,
+      "message": "Yes, L128.",
+      "parentUuid": "ba1f61a0_9ca2aaac",
       "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_823c04e4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-17T00:10:43Z",
+      "side": 1,
+      "message": "There are two methos in InterfaceManagerCommonUtils, one uses BatchingUtils and the other a write transaction. Previously the BatchingUtils one was being used here, but changed it to the transaction one so that this happens within the job.",
+      "parentUuid": "ba1f61a0_7c8c1636",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_bceb2eaf",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 11
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a259485d",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-17T00:10:43Z",
+      "side": 1,
+      "message": "Reverted the changes. But now we may have a dependency with your change, also in Nitrogen.",
+      "parentUuid": "ba1f61a0_bceb2eaf",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_5cdcb212",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 11
@@ -81,6 +153,24 @@
       "writtenOn": "2017-08-16T16:06:33Z",
       "side": 1,
       "message": "PS: Please prefer using http://google.github.io/truth/ assertions over Hamcrest Assert.assertThat - they are very similar, but a it nicer both to read in code and giving better error message in case of match failures at run-time.",
+      "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0259345a",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 6230
+      },
+      "writtenOn": "2017-08-17T00:10:43Z",
+      "side": 1,
+      "message": "Thanks, I will take look to that next time.",
+      "parentUuid": "ba1f61a0_5cdcb212",
       "revId": "456447953b083f6746d0f76b6bf80d7cc9631034",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
