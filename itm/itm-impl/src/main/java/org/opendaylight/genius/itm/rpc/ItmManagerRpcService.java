@@ -335,7 +335,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public Future<RpcResult<java.lang.Void>>
         removeTerminatingServiceActions(final RemoveTerminatingServiceActionsInput input) {
-        LOG.info("remove terminatingServiceActions called with DpnId = {} and serviceId = {}",
+        LOG.info("Removal of terminatingServiceActions called with DpnId = {} and serviceId = {}",
                 input.getDpnId(), input.getServiceId());
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
@@ -356,7 +356,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             @Override
             public void onFailure(Throwable error) {
                 String msg = String.format("Unable to remove terminating service flow for %s", input.getDpnId());
-                LOG.error("remove terminating service actions failed. {}. {}", msg, error);
+                LOG.error("Removal of terminating service actions failed. {}. {}", msg, error);
                 result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
                         .build());
             }
@@ -446,7 +446,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                         }
                         break;
                     } else {
-                        LOG.error("Tunnel not found for source DPN {} ans destination IP {}", srcDpn, dstIp);
+                        LOG.error("Tunnel not found for source DPN {} and destination IP {}", srcDpn, dstIp);
                     }
                 }
             }

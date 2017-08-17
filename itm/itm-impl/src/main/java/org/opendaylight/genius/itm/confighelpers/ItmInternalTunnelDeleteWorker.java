@@ -174,7 +174,7 @@ public class ItmInternalTunnelDeleteWorker {
             }
             futures.add(writeTransaction.submit());
         } catch (Exception e1) {
-            LOG.error("exception while deleting tep", e1);
+            LOG.error("Exception while deleting teps in the list {}, exception {}", dpnTepsList, e1);
         }
         return futures ;
     }

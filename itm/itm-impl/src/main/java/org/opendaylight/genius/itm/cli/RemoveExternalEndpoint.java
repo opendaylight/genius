@@ -65,7 +65,7 @@ public class RemoveExternalEndpoint extends OsgiCommandSupport {
             System.out.println(e.getMessage());
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            LOG.error("Exception occurred during execution of command \"tep:configure-tunnelType\": ", e);
+            LOG.error("Exception occurred during execution of command \"tep:rem-external-endpoint\": ", e);
         }
         return null;
     }

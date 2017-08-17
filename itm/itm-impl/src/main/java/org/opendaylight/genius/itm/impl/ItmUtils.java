@@ -188,6 +188,7 @@ public class ItmUtils {
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
         } catch (Exception e) {
+            LOG.error("Read failed for path : {}", path);
             throw new RuntimeException(e);
         }
     }
@@ -493,7 +494,7 @@ public class ItmUtils {
                 LOG.warn("RPC Call to Get Unique Id returned with Errors {}", rpcResult.getErrors());
             }
         } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Exception when getting Unique Id",e);
+            LOG.warn("Exception when getting Unique Id for Key {}, exception {}", idKey, e);
         }
         return 0;
     }
@@ -854,7 +855,7 @@ public class ItmUtils {
         try {
             futures.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("ITMUtils:SyncWrite , Error writing to datastore (path, data) : ({}, {})", path, data);
+            LOG.error("Error writing to datastore (path, data) : ({}, {})", path, data);
             throw new RuntimeException(e.getMessage());
         }
     }

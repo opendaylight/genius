@@ -202,7 +202,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                 tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask,
                         gatewayIp, transportZone, session);
             } catch (TepException e) {
-                LOG.error(e.getMessage());
+                LOG.error("Error while creating the in-memory CLI cache {}",e.getMessage());
             }
         } else {
             LOG.trace("tepCommandHelper doesnt exist");
