@@ -7,8 +7,10 @@
  */
 package org.opendaylight.genius.interfacemanager.test;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils.EntityType.DEFAULT_OPERATIONAL;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_1;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_2;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.INTERFACE_NAME;
@@ -49,7 +51,9 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.interfacemanager.test.infra.TestableQueues;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.EgressActionsForInterfaceOutput;
@@ -394,6 +398,7 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel.class);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         Thread.sleep(3000);
+        TestableQueues.awaitEmpty(BatchingUtils.getQueue(DEFAULT_OPERATIONAL), 1, MINUTES);
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the tunnel interface
