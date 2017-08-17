@@ -338,6 +338,7 @@ public class InterfaceManagerConfigurationTest {
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL, ifIndexInterfaceInstanceIdentifier).get());
     }
 
+    @Ignore
     @Test
     public void newTunnelInterface() throws Exception {
 
