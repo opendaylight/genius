@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_760d4e90",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-17T14:40:54Z",
+      "side": 1,
+      "message": "final",
+      "revId": "7253d87b35f2f995935877a76461c926e329d2b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_0ecb4873",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 1
@@ -31,6 +48,24 @@
       "side": 1,
       "message": "This one should be the exception type to be used. I changed it by a comment made by Stephen. Sorry, I\u0027ll change the previous one once it is merged.",
       "parentUuid": "ba1f61a0_0ecb4873",
+      "revId": "7253d87b35f2f995935877a76461c926e329d2b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d6723a10",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-17T14:40:54Z",
+      "side": 1,
+      "message": "remove this, see https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#Utility_classes_with_only_static_methods",
+      "parentUuid": "ba1f61a0_2ef8cc7b",
       "revId": "7253d87b35f2f995935877a76461c926e329d2b1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
