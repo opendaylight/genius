@@ -369,7 +369,7 @@ public class IfmUtil {
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
-        return new NodeId(ncId.getValue().substring(0, ncId.getValue().lastIndexOf(":")));
+        return new NodeId(ncId.getValue().substring(0, ncId.getValue().lastIndexOf(':')));
     }
 
     public static BigInteger[] mergeOpenflowMetadataWriteInstructions(List<Instruction> instructions) {
