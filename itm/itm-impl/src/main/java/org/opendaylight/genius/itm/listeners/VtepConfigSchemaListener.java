@@ -209,7 +209,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
             VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
             addVteps(validatedSchema, vtepIpPool);
         } catch (Exception e) {
-            LOG.error("Failed to handle DCN for add VtepConfigSchema: {}", e);
+            LOG.error("Failed to handle DCN for add VtepConfigSchema", e);
         }
     }
 

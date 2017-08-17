@@ -95,7 +95,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         if (!Strings.isNullOrEmpty(tempString) && tempString.contains("#")) {
             String[] asTmp = tempString.split("#");
             interfaceName = asTmp[0];
-            LOG.debug("Custom LLDP Value on received packet: " + tempString);
+            LOG.debug("Custom LLDP Value on received packet: {}", tempString);
         }
 
         if (!Strings.isNullOrEmpty(interfaceName)) {
@@ -222,7 +222,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
         String customValue = sourceInterface + "#" + getPacketId();
 
-        LOG.debug("Sending LLDP packet, custome value " + customValue);
+        LOG.debug("Sending LLDP packet, custome value {}", customValue);
 
         LLDPTLV lldpTlvCustom = buildLLDTLV(TLVType.Custom, customValue.getBytes(LLDPTLV_CHARSET));
 

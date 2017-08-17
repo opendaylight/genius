@@ -113,7 +113,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                 transaction.cancel();
             }
         } catch (Exception e) {
-            LOG.error("Error initializing TransportZones {}", e);
+            LOG.error("Error initializing TransportZones", e);
         }
     }
 
@@ -160,7 +160,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             List<HwVtep> hwVtepList = createhWVteps(tzOld);
             LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
             if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
-                LOG.trace("Delete: Invoking ItmManager with hwVtep List {} " , hwVtepList);
+                LOG.trace("Delete: Invoking ItmManager with hwVtep List {}" , hwVtepList);
                 DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                 ItmTepRemoveWorker removeWorker =
                         new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker,
@@ -177,21 +177,21 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(tzNew);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
         oldDpnTepsListcopy.addAll(oldDpnTepsList);
-        LOG.trace("oldcopy0" + oldDpnTepsListcopy);
+        LOG.trace("oldcopy0 {}", oldDpnTepsListcopy);
         List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<>();
         newDpnTepsListcopy.addAll(newDpnTepsList);
-        LOG.trace("newcopy0" + newDpnTepsListcopy);
+        LOG.trace("newcopy0 {}", newDpnTepsListcopy);
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         oldDpnTepsList.removeAll(newDpnTepsListcopy);
         newDpnTepsList.removeAll(oldDpnTepsListcopy);
 
-        LOG.trace("oldDpnTepsList" + oldDpnTepsList);
-        LOG.trace("newDpnTepsList" + newDpnTepsList);
-        LOG.trace("oldcopy" + oldDpnTepsListcopy);
-        LOG.trace("newcopy" + newDpnTepsListcopy);
-        LOG.trace("oldcopy Size " + oldDpnTepsList.size());
-        LOG.trace("newcopy Size " + newDpnTepsList.size());
+        LOG.trace("oldDpnTepsList {}", oldDpnTepsList);
+        LOG.trace("newDpnTepsList {}", newDpnTepsList);
+        LOG.trace("oldcopy {}", oldDpnTepsListcopy);
+        LOG.trace("newcopy {}", newDpnTepsListcopy);
+        LOG.trace("oldcopy Size {}", oldDpnTepsList.size());
+        LOG.trace("newcopy Size {}", newDpnTepsList.size());
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
@@ -208,25 +208,25 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         List<HwVtep> newHwList = createhWVteps(tzNew);
         List<HwVtep> oldHwListcopy = new ArrayList<>();
         oldHwListcopy.addAll(oldHwList);
-        LOG.trace("oldHwListcopy0" + oldHwListcopy);
+        LOG.trace("oldHwListcopy0 {}", oldHwListcopy);
         List<HwVtep> newHwListcopy = new ArrayList<>();
         newHwListcopy.addAll(newHwList);
-        LOG.trace("newHwListcopy0" + newHwListcopy);
+        LOG.trace("newHwListcopy0 {}", newHwListcopy);
 
         oldHwList.removeAll(newHwListcopy);
         newHwList.removeAll(oldHwListcopy);
-        LOG.trace("oldHwList" + oldHwList);
-        LOG.trace("newHwList" + newHwList);
-        LOG.trace("oldHwListcopy" + oldHwListcopy);
-        LOG.trace("newHwListcopy" + newHwListcopy);
+        LOG.trace("oldHwList {}", oldHwList);
+        LOG.trace("newHwList {}", newHwList);
+        LOG.trace("oldHwListcopy {}", oldHwListcopy);
+        LOG.trace("newHwListcopy {}", newHwListcopy);
         if (!newHwList.isEmpty()) {
-            LOG.trace("Adding HW TEPs ");
+            LOG.trace("Adding HW TEPs");
             ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
                     idManagerService, mdsalManager, itmConfig);
             coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
         }
         if (!oldHwList.isEmpty()) {
-            LOG.trace("Removing HW TEPs ");
+            LOG.trace("Removing HW TEPs");
             ItmTepRemoveWorker removeWorker = new ItmTepRemoveWorker(Collections.emptyList(), oldHwList,
                     tzOld, dataBroker, idManagerService, mdsalManager);
             coordinator.enqueueJob(tzNew.getZoneName(), removeWorker);
@@ -241,8 +241,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         opDpnList.addAll(getDPNTepInfoFromNotHosted(tzNew));
         LOG.trace("Add: Operational dpnTepInfo - Before invoking ItmManager {}", opDpnList);
         if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
-            LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
-            LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
+            LOG.trace("Add: Invoking ItmManager with DPN List {}", opDpnList);
+            LOG.trace("Add: Invoking ItmManager with hwVtep List {}", hwVtepList);
             DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             ItmTepAddWorker addWorker = new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService,
                     mdsalManager, itmConfig);
@@ -378,10 +378,10 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                             useOfTunnel, vlanID,  ipPrefix, gatewayIP, zones, tunnelType, tos);
                         List<TunnelEndPoints> tunnelEndPointsList = mapDPNToTunnelEndpt.get(dpnID);
                         if (tunnelEndPointsList != null) {
-                            LOG.trace("Existing DPN info list in the Map: {} ", dpnID);
+                            LOG.trace("Existing DPN info list in the Map: {}", dpnID);
                             tunnelEndPointsList.add(tunnelEndPoints);
                         } else {
-                            LOG.trace("Adding new DPN info list to the Map: {} ", dpnID);
+                            LOG.trace("Adding new DPN info list to the Map: {}", dpnID);
                             tunnelEndPointsList = new ArrayList<>();
                             tunnelEndPointsList.add(tunnelEndPoints);
                             mapDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
@@ -393,7 +393,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
 
         if (!mapDPNToTunnelEndpt.isEmpty()) {
             Set<BigInteger> keys = mapDPNToTunnelEndpt.keySet();
-            LOG.trace("List of dpns in the Map: {} ", keys);
+            LOG.trace("List of dpns in the Map: {}", keys);
             for (BigInteger key : keys) {
                 DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(key, mapDPNToTunnelEndpt.get(key));
                 dpnTepInfo.add(newDpnTepsInfo);
@@ -414,7 +414,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                 IpPrefix ipPrefix = subnet.getPrefix();
                 IpAddress gatewayIP = subnet.getGatewayIp();
                 int vlanID = subnet.getVlanId();
-                LOG.trace("IpPrefix: {}, gatewayIP: {}, vlanID: {} ", ipPrefix, gatewayIP, vlanID);
+                LOG.trace("IpPrefix: {}, gatewayIP: {}, vlanID: {}", ipPrefix, gatewayIP, vlanID);
                 List<DeviceVteps> deviceVtepsList = subnet.getDeviceVteps();
                 if (deviceVtepsList != null) {
                     for (DeviceVteps vteps : deviceVtepsList) {
@@ -429,7 +429,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                             LOG.trace("Existing hwVteps");
                             hwVtepsList.add(hwVtep);
                         } else {
-                            LOG.trace("Adding new HwVtep {} info ", hwVtep.getHwIp());
+                            LOG.trace("Adding new HwVtep {} info", hwVtep.getHwIp());
                             hwVtepsList.add(hwVtep);
                         }
                     }
