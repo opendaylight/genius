@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_89a9c4e1",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/ExpectedAllocateIdFromReleasedId.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-18T08:24:49Z",
+      "side": 1,
+      "message": "The local pool name is calculated based on the IP of the machine. Is there any way with which we can avoid hard-coding the name in the xtend file.",
+      "range": {
+        "startLine": 31,
+        "startChar": 37,
+        "endLine": 31,
+        "endChar": 58
+      },
+      "revId": "b47f0ebab59642748e4760f0bd514bc05fad3ab9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6983b056",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/ExpectedAllocateIdFromReleasedId.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-18T08:24:49Z",
+      "side": 1,
+      "message": "There are several fields in id pool that stores the timestamp. Is there any way in which we can avoid such fields while comparing the expected and actual objects.",
+      "range": {
+        "startLine": 32,
+        "startChar": 37,
+        "endLine": 32,
+        "endChar": 48
+      },
+      "revId": "b47f0ebab59642748e4760f0bd514bc05fad3ab9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
