@@ -16,6 +16,23 @@
       "revId": "b9ce7aecd309798a1ef5d95d02601e137b1eb538",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6331590b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-18T08:18:21Z",
+      "side": 1,
+      "message": "Done",
+      "revId": "b9ce7aecd309798a1ef5d95d02601e137b1eb538",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
