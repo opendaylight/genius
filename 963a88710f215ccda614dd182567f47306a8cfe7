@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_49518c0d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-18T08:18:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_16cb321f",
+      "revId": "963a88710f215ccda614dd182567f47306a8cfe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_76d26ed3",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-17T15:33:02Z",
       "side": 1,
       "message": "remove throws, see https://wiki.opendaylight.org/view/BestPractices/Coding_Guidelines#Utility_classes_with_only_static_methods",
+      "revId": "963a88710f215ccda614dd182567f47306a8cfe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a9580833",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-18T08:18:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_76d26ed3",
       "revId": "963a88710f215ccda614dd182567f47306a8cfe7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
