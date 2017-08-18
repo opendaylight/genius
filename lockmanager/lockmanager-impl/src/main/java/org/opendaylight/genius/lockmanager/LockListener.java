@@ -8,7 +8,6 @@
 package org.opendaylight.genius.lockmanager;
 
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -34,12 +33,7 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
         super(Lock.class, LockListener.class);
         this.broker = broker;
         this.lockManager = lockManager;
-    }
-
-    @PostConstruct
-    public void start() throws Exception {
         registerListener(LogicalDatastoreType.OPERATIONAL, broker);
-        LOG.info("LockListener listener Started");
     }
 
     @Override
@@ -71,5 +65,4 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
     protected LockListener getDataTreeChangeListener() {
         return this;
     }
-
 }
