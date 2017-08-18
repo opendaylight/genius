@@ -19,8 +19,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -41,29 +39,20 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class LockManager implements LockManagerService {
 
+    private static final int DEFAULT_NUMBER_LOCKING_ATTEMPS = 30;
+    private static final int DEFAULT_RETRY_COUNT = 3;
+    private static final int DEFAULT_WAIT_TIME_IN_MILLIS = 1000;
+
     private final ConcurrentHashMap<String, CompletableFuture<Void>> lockSynchronizerMap =
             new ConcurrentHashMap<>();
 
     private static final Logger LOG = LoggerFactory.getLogger(LockManager.class);
-
-    private static final int DEFAULT_RETRY_COUNT = 3;
-    private static final int DEFAULT_WAIT_TIME_IN_MILLIS = 1000;
 
     private final DataBroker broker;
 
     @Inject
     public LockManager(final DataBroker dataBroker) {
         this.broker = dataBroker;
-    }
-
-    @PostConstruct
-    public void start() {
-        LOG.info("{} start", getClass().getSimpleName());
-    }
-
-    @PreDestroy
-    public void close() {
-        LOG.info("{} close", getClass().getSimpleName());
     }
 
     @Override
@@ -155,7 +144,7 @@ public class LockManager implements LockManagerService {
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
                     return;
                 } else {
-                    if (retry >= 30) {
+                    if (retry >= DEFAULT_NUMBER_LOCKING_ATTEMPS) {
                         LOG.debug("Already locked for {} after waiting {}ms, try {}",
                                 lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
                     } else {
