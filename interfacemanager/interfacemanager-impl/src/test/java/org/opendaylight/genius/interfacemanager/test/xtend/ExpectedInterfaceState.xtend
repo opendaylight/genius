@@ -29,8 +29,10 @@ class ExpectedInterfaceState {
             operStatus = opState
             physAddress = new PhysAddress("AA:AA:AA:AA:AA:AA")
             type = ifType
+            statistics = new StatisticsBuilder() >> [
+                discontinuityTime = DateAndTime.getDefaultInstance("8330-42-22T79:08:74Z"))
+            ]
         ]
-
     }
 
 }
