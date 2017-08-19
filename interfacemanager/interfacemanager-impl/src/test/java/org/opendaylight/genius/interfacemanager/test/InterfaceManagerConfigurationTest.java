@@ -245,7 +245,8 @@ public class InterfaceManagerConfigurationTest {
                 IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
 
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            INTERFACE_NAME, Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString()), ifaceState);
+            INTERFACE_NAME, Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
 
         // b) check if lport-tag to interface mapping is created
@@ -293,7 +294,8 @@ public class InterfaceManagerConfigurationTest {
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), INTERFACE_NAME, Interface
-            .OperStatus.Down, L2vlan.class, DPN_ID_1.toString()), ifaceState);
+            .OperStatus.Down, L2vlan.class, DPN_ID_1.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         // Restore the opState back to UP for proceeding with further tests
         InterfaceManagerTestUtil.updateInterfaceAdminState(dataBroker, INTERFACE_NAME, true);
@@ -309,7 +311,8 @@ public class InterfaceManagerConfigurationTest {
             IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
         // Verify if operational/ietf-interface-state is marked down
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            INTERFACE_NAME, Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString()), ifaceState);
+            INTERFACE_NAME, Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         // 4. Delete the southbound OF port
         InterfaceManagerTestUtil.removeFlowCapableNodeConnectorState(dataBroker, L2vlan.class);
@@ -412,7 +415,8 @@ public class InterfaceManagerConfigurationTest {
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         // Test all RPCs related to tunnel interfaces
         checkTunnelRpcs();
@@ -437,7 +441,8 @@ public class InterfaceManagerConfigurationTest {
             IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
         // Verify if operational/ietf-interface-state is still up
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         // 2. Make BFD staus of tunnel port as down
         OvsdbSouthboundTestUtil.updateTerminationPoint(dataBroker, TUNNEL_INTERFACE_NAME, InterfaceTypeVxlan.class);
@@ -447,7 +452,8 @@ public class InterfaceManagerConfigurationTest {
             IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
         // Verify if operational/ietf-interface-state is marked down
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Down, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Down, Tunnel.class, DPN_ID_2.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
 
         // 2. Delete the Node
@@ -457,7 +463,8 @@ public class InterfaceManagerConfigurationTest {
             IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
         // Verify if operational/ietf-interface-state is marked unknown
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
-            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Unknown, Tunnel.class, DPN_ID_2.toString()), ifaceState);
+            TUNNEL_INTERFACE_NAME, Interface.OperStatus.Unknown, Tunnel.class, DPN_ID_2.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         // Re-create port to proceed with further tests
         InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel.class);
@@ -837,7 +844,8 @@ public class InterfaceManagerConfigurationTest {
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), TRUNK_INTERFACE_NAME,
-                Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString()), ifaceState);
+                Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         // b) check if lport-tag to interface mapping is created
         InstanceIdentifier<IfIndexInterface> ifIndexInterfaceInstanceIdentifier = InstanceIdentifier.builder(
@@ -857,7 +865,8 @@ public class InterfaceManagerConfigurationTest {
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), TRUNK_INTERFACE_NAME,
-            Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString()), ifaceState);
+            Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString(),
+                ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
 
         InterfaceManagerTestUtil.deleteInterfaceConfig(dataBroker, TRUNK_INTERFACE_NAME);
         InterfaceManagerTestUtil.waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
