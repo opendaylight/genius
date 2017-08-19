@@ -11,6 +11,8 @@ package org.opendaylight.genius.interfacemanager.commons;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,6 +50,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state._interface.StatisticsBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -412,6 +416,8 @@ public final class InterfaceManagerCommonUtils {
             ifaceBuilder.setType(interfaceInfo.getType());
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        ifaceBuilder.setStatistics(new StatisticsBuilder().setDiscontinuityTime(DateAndTime
+                .getDefaultInstance(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))).build());
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceName);
@@ -469,6 +475,8 @@ public final class InterfaceManagerCommonUtils {
             ifaceBuilder.setPhysAddress(physAddress);
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        ifaceBuilder.setStatistics(new StatisticsBuilder().setDiscontinuityTime(DateAndTime
+                .getDefaultInstance(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))).build());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = ifaceBuilder
                 .build();
