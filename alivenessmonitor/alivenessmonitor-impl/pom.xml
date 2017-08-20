@@ -83,13 +83,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <propertyExpansion>checkstyle.violationSeverity=error</propertyExpansion>
-        </configuration>
-      </plugin>
 <!-- TODO HwVtepTunnelsStateHandler should not implements AlivenessProtocolHandler but have NOOP return null handlePacketIn() ...
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
