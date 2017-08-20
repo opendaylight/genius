@@ -16,6 +16,24 @@
       "revId": "6efd5686c25052e8a99cfc409ce74580373e17dc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f84924b8",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-08-20T05:44:58Z",
+      "side": 1,
+      "message": "This is the fix for Bug 8059. Since there is a retry mechanism we need not flood the logs with error logs.",
+      "parentUuid": "ba1f61a0_38d45c46",
+      "revId": "6efd5686c25052e8a99cfc409ce74580373e17dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
