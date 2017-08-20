@@ -49,7 +49,7 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
 
     public static FlowBasedServicesStateAddable getFlowBasedEgressServicesStateBindHelper() {
         if (flowBasedServicesStateAddable == null) {
-            LOG.error("OvsInterfaceConfigAdd Renderer is not initialized");
+            LOG.error("{} is not initialized", FlowBasedEgressServicesStateBindHelper.class.getSimpleName());
         }
         return flowBasedServicesStateAddable;
     }

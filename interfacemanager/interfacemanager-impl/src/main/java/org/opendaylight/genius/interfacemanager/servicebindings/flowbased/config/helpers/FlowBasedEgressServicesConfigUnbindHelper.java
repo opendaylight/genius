@@ -49,7 +49,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper implements FlowBasedServi
 
     public static FlowBasedServicesConfigRemovable getFlowBasedEgressServicesRemoveHelper() {
         if (flowBasedEgressServicesRemovable == null) {
-            LOG.error("FlowBasedIngressBindHelper`` is not initialized");
+            LOG.error("{} is not initialized", FlowBasedEgressServicesConfigUnbindHelper.class.getSimpleName());
         }
         return flowBasedEgressServicesRemovable;
     }

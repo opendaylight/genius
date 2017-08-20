@@ -56,7 +56,7 @@ public class FlowBasedIngressServicesConfigBindHelper implements FlowBasedServic
 
     public static FlowBasedServicesConfigAddable getFlowBasedIngressServicesAddHelper() {
         if (flowBasedIngressServicesAddable == null) {
-            LOG.error("OvsInterfaceConfigAdd Renderer is not initialized");
+            LOG.error("{} is not initialized", FlowBasedIngressServicesConfigBindHelper.class.getSimpleName());
         }
         return flowBasedIngressServicesAddable;
     }
