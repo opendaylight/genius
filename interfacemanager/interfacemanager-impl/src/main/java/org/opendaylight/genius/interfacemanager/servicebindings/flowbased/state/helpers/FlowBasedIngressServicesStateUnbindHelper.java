@@ -52,7 +52,7 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
 
     public static FlowBasedServicesStateRemovable getFlowBasedIngressServicesStateRemoveHelper() {
         if (flowBasedIngressServicesStateRemovable == null) {
-            LOG.error("FlowBasedIngressBindHelper is not initialized");
+            LOG.error("{} is not initialized", FlowBasedIngressServicesStateUnbindHelper.class.getSimpleName());
         }
         return flowBasedIngressServicesStateRemovable;
     }
