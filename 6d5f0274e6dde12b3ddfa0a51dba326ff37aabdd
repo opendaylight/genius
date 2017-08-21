@@ -16,6 +16,24 @@
       "revId": "6d5f0274e6dde12b3ddfa0a51dba326ff37aabdd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d5822293",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-08-21T15:12:28Z",
+      "side": 1,
+      "message": "Why not? The issue is that the first message from the ovsdb node will never have a dpid. After a few messages, ovsdb assigns the dpid. So these are not errors.",
+      "parentUuid": "ba1f61a0_558592ce",
+      "revId": "6d5f0274e6dde12b3ddfa0a51dba326ff37aabdd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
