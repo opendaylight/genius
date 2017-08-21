@@ -16,6 +16,24 @@
       "revId": "a00b6877f332f98b4258c5a93fdff897a6f06207",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_dbab731b",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/lockmanager/LockManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-21T22:06:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_b1afd0e2",
+      "revId": "a00b6877f332f98b4258c5a93fdff897a6f06207",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
