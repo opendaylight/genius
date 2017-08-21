@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_2cb9bfe9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ActionableResourceImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T10:04:47Z",
+      "side": 1,
+      "message": "final",
+      "revId": "de1ee3498cd5b7a4241802fa56299306ac9eb600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2c9edf56",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T10:04:47Z",
+      "side": 1,
+      "message": "perhaps use IllegalArgumentException (or better IllegalStateException?) instead of just Exception base class?",
+      "revId": "de1ee3498cd5b7a4241802fa56299306ac9eb600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4c9b5367",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T10:04:47Z",
+      "side": 1,
+      "message": "nicer to use com.google.common.util.concurrent.Futures.immediateFailedFuture(Throwable) here, just to make it shorter and more easy to read?",
+      "revId": "de1ee3498cd5b7a4241802fa56299306ac9eb600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8ca42ba7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T10:04:47Z",
+      "side": 1,
+      "message": "Futures.immediateFailedFuture",
+      "revId": "de1ee3498cd5b7a4241802fa56299306ac9eb600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6c9f3751",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T10:04:47Z",
+      "side": 1,
+      "message": "Futures.immediateFailedFuture",
+      "revId": "de1ee3498cd5b7a4241802fa56299306ac9eb600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ecba07bf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T10:04:47Z",
+      "side": 1,
+      "message": "what if !txMap.containsKey(object) - would that be a bug?  Should it be detected here, and an error thrown, or at least logged, instead of ignored?  Just wondering.",
+      "revId": "de1ee3498cd5b7a4241802fa56299306ac9eb600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
