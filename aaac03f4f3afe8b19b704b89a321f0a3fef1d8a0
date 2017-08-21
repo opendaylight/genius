@@ -160,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_f7adb889",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-21T15:19:12Z",
+      "side": 1,
+      "message": "I tried that in the previous patch, but it failed consistently, since the blueprint tries to instantiate the listener, which is an abstract classs, and fails. I finally put a remark on the interface Javadoc. I can put that remark in this JavaDoc too.",
+      "parentUuid": "ba1f61a0_117dfce7",
+      "revId": "aaac03f4f3afe8b19b704b89a321f0a3fef1d8a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_0f7eb7ae",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
         "patchSetId": 8
