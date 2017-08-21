@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_40b032f4",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/ExpectedAllocateIdFromReleasedId.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T16:51:19Z",
+      "side": 1,
+      "message": "yes, the important thing to understand here is that Xtend is *CODE* not something like XML.  So you can EITHER pass an argument to the Xtend method, like in Java; see for example how we\u0027re doing that in org.opendaylight.netvirt.aclservice.tests.FlowEntryObjectsBase.remoteIngressFlowsPort(String) ... OR you can directly inline here say something like:\n\n  childPoolName \u003d idUtils.getLocalPoolName(\"test-pool\")\n\nand put on top of this class, as a field like in Java:\n\n   val idUtils \u003d new IdUtils();\n\nNB: Xtend has https://en.wikipedia.org/wiki/Type_inference - you don\u0027t have to say that val idUtils is of type IdUtils - it\u0027s obvious that it is.",
+      "parentUuid": "ba1f61a0_89a9c4e1",
+      "range": {
+        "startLine": 31,
+        "startChar": 37,
+        "endLine": 31,
+        "endChar": 58
+      },
+      "revId": "b47f0ebab59642748e4760f0bd514bc05fad3ab9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_6983b056",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/ExpectedAllocateIdFromReleasedId.xtend",
         "patchSetId": 2
@@ -42,6 +66,47 @@
         "endLine": 32,
         "endChar": 48
       },
+      "revId": "b47f0ebab59642748e4760f0bd514bc05fad3ab9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_80918a54",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/ExpectedAllocateIdFromReleasedId.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T16:51:19Z",
+      "side": 1,
+      "message": "no, unfortunately not - but there is an easy \"trick\" you can use to do it \"the other way around\" - if you don\u0027t want to compare on this, just do not set this here (or do  lastAccessTime \u003d 0L), and then in your \"actual object\" (the one you read from the data store) so a set(0L) *before* you do an xtendbeans assert. Does this make sense and help?",
+      "parentUuid": "ba1f61a0_6983b056",
+      "range": {
+        "startLine": 32,
+        "startChar": 37,
+        "endLine": 32,
+        "endChar": 48
+      },
+      "revId": "b47f0ebab59642748e4760f0bd514bc05fad3ab9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_208a5e1b",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 311,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-21T16:51:19Z",
+      "side": 1,
+      "message": "hey all this was just because of the 2 pending Qs (which I just answered) - and you\u0027ll be able to much simplify / remove all this - am I understanding this correctly?",
       "revId": "b47f0ebab59642748e4760f0bd514bc05fad3ab9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
