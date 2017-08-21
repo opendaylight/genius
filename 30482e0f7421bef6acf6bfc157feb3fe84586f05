@@ -16,6 +16,24 @@
       "revId": "30482e0f7421bef6acf6bfc157feb3fe84586f05",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6eb8cee5",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-21T07:01:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_49086c91",
+      "revId": "30482e0f7421bef6acf6bfc157feb3fe84586f05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
