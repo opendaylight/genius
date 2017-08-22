@@ -69,6 +69,24 @@
       "revId": "770a22d28f6f473a383b8d132aa8153755e5cbe5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_09bb0273",
+        "filename": "srm/api/src/main/yang/srm-types.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-22T14:48:19Z",
+      "side": 1,
+      "message": "I\u0027ll abstrain from further particpating in the design discussion around this.. and just review this for minor Java style type stuff.",
+      "parentUuid": "ba1f61a0_9d73de4c",
+      "revId": "770a22d28f6f473a383b8d132aa8153755e5cbe5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
