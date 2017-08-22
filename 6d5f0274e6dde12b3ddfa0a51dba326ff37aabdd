@@ -52,6 +52,24 @@
       "revId": "6d5f0274e6dde12b3ddfa0a51dba326ff37aabdd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8c726047",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-08-22T18:00:15Z",
+      "side": 1,
+      "message": "The first events from ovsdb-server do not have the dpid. Further events do have the dpid. In the csit we see three logs for br-int and then three for br-physnet. So this is one log per bridge per node. After the first even everything is fine.",
+      "parentUuid": "ba1f61a0_cc30d8a0",
+      "revId": "6d5f0274e6dde12b3ddfa0a51dba326ff37aabdd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
