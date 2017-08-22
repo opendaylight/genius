@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e1304803",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractClusteredAsyncDataTreeChangeListener.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-22T09:56:37Z",
+      "side": 1,
+      "message": "This is not strictly needed, it is based on a Vishal\u0027s suggestion, some weeklies ago, to add some facilities for the users to interact with the EOS when using the clustered versions of the listeners.",
+      "parentUuid": "ba1f61a0_e1c5e83c",
+      "revId": "cf5e21634b2fad6094eaf3e6b2f2fba4b3d151a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_c1c0a42c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
         "patchSetId": 15
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-22T08:41:42Z",
       "side": 1,
       "message": "How is this different from our previous Abstract base classes? I see that this also abstracts out the other functionalities provided by DTCNs",
+      "revId": "cf5e21634b2fad6094eaf3e6b2f2fba4b3d151a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_211a607d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-22T09:56:37Z",
+      "side": 1,
+      "message": "This is very similar to the Abstract listeners that we had. It just extracts the common API to this interface.",
+      "parentUuid": "ba1f61a0_c1c0a42c",
       "revId": "cf5e21634b2fad6094eaf3e6b2f2fba4b3d151a5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
