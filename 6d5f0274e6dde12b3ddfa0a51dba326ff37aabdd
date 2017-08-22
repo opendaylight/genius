@@ -70,6 +70,24 @@
       "revId": "6d5f0274e6dde12b3ddfa0a51dba326ff37aabdd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4c50685e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-08-22T19:49:12Z",
+      "side": 1,
+      "message": "since it can be null for non br-int bridges alone makes this info candidate. my only concern is if this is a sign that we\u0027re missing something in bridge creation logic, which can bee addressed later.",
+      "parentUuid": "ba1f61a0_8c726047",
+      "revId": "6d5f0274e6dde12b3ddfa0a51dba326ff37aabdd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
