@@ -9,7 +9,6 @@
 package org.opendaylight.genius.lockmanager;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 
 import java.util.concurrent.CompletableFuture;
@@ -26,7 +25,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
@@ -128,11 +126,11 @@ public class LockManager implements LockManagerService {
             Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
             if (!result.isPresent()) {
                 LOG.debug("{} is already unlocked", lockName);
-                return;
+                tx.cancel();
+            } else {
+                tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+                tx.submit().get();
             }
-            tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
-            CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-            futures.get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("In unlock unable to unlock: {}. Reason :", lockName, e);
         }
@@ -220,11 +218,12 @@ public class LockManager implements LockManagerService {
             if (!result.isPresent()) {
                 LOG.debug("Writing lock lockData {}", lockData);
                 tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
-                CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
-                futures.get();
+                tx.submit().get();
                 return true;
+            } else {
+                tx.cancel();
+                return false;
             }
-            return false;
         }
     }
 }
