@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Sam Hague <shague@redhat.com>
+Submitted-by: Thanh Ha <thanh.ha@linuxfoundation.org>
+Submitted-at: Mon, 28 Aug 2017 22:21:14 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/62219
+Project: genius
+Branch: refs/heads/stable/nitrogen
