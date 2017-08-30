@@ -8,10 +8,8 @@
 
 package org.opendaylight.genius.itm.impl;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
@@ -26,10 +24,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncDataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -64,7 +60,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -144,7 +139,6 @@ public class ItmInternalTunnelAddTest {
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2;
 
     @Mock DataBroker dataBroker;
-    @Mock ListenerRegistration<DataChangeListener> dataChangeListenerRegistration;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
@@ -158,12 +152,6 @@ public class ItmInternalTunnelAddTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(ITMBatchingUtils.class);
-        when(dataBroker.registerDataChangeListener(
-                any(LogicalDatastoreType.class),
-                any(InstanceIdentifier.class),
-                any(DataChangeListener.class),
-                any(AsyncDataBroker.DataChangeScope.class)))
-                .thenReturn(dataChangeListenerRegistration);
         setupMocks();
         DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
 
