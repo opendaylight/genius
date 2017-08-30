@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
@@ -46,7 +45,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,9 +61,6 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
 
     /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger(VtepConfigSchemaListener.class);
-
-    /** The listener registration. */
-    private ListenerRegistration<DataChangeListener> listenerRegistration;
 
     /** The data broker. */
     private final DataBroker dataBroker;
@@ -102,14 +97,6 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
     @Override
     @PreDestroy
     public void close() {
-        if (this.listenerRegistration != null) {
-            try {
-                this.listenerRegistration.close();
-            } catch (final Exception e) {
-                LOG.error("Error when cleaning up DataChangeListener.", e);
-            }
-            this.listenerRegistration = null;
-        }
         LOG.info("VtepConfigSchemaListener Closed");
     }
 
@@ -118,6 +105,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
      *
      * @return the wild card path
      */
+    @Override
     public InstanceIdentifier<VtepConfigSchema> getWildCardPath() {
         return ItmUtils.getVtepConfigSchemaIdentifier();
     }
@@ -227,9 +215,9 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
      */
     private void handleUpdateOfDpnIds(VtepConfigSchema original, VtepConfigSchema updated) {
         // Handling add/delete DPNs from schema
-        List<DpnIds> originalDpnIds = (original.getDpnIds() == null) ? new ArrayList<>()
+        List<DpnIds> originalDpnIds = original.getDpnIds() == null ? new ArrayList<>()
                 : original.getDpnIds();
-        List<DpnIds> updatedDpnIds = (updated.getDpnIds() == null) ? new ArrayList<>()
+        List<DpnIds> updatedDpnIds = updated.getDpnIds() == null ? new ArrayList<>()
                 : updated.getDpnIds();
 
         handleDeletedDpnsFromSchema(original, originalDpnIds, updatedDpnIds);
@@ -257,7 +245,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
             delnAddRequired = true;
         } else if (!StringUtils.equalsIgnoreCase(original.getTransportZoneName(), updated.getTransportZoneName())) {
             delnAddRequired = true;
-        } else if (!(original.getTunnelType().equals(updated.getTunnelType()))) {
+        } else if (!original.getTunnelType().equals(updated.getTunnelType())) {
             delnAddRequired = true;
         }
         return delnAddRequired;
@@ -393,7 +381,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
      * @return the string
      */
     private String handleGatewayIp(IpAddress gatewayIp) {
-        String strGatewayIp = (gatewayIp == null) ? null : String.valueOf(gatewayIp.getValue());
+        String strGatewayIp = gatewayIp == null ? null : String.valueOf(gatewayIp.getValue());
         if (StringUtils.isBlank(strGatewayIp) || StringUtils.equals(ITMConstants.DUMMY_IP_ADDRESS, strGatewayIp)) {
             // To avoid a validation exception in TepCommandHelper
             strGatewayIp = null;
