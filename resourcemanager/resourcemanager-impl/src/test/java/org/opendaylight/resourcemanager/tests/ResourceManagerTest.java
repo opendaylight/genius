@@ -22,6 +22,7 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.AllocateResourceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.AllocateResourceInputBuilder;
@@ -45,10 +46,11 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
  * Resource Manager Service Test Suite.
  *
  * @author David Suárez
- *
  */
 public class ResourceManagerTest extends AbstractConcurrentDataBrokerTest {
+
     public final @Rule LogRule logRule = new LogRule();
+    public final @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
     public final @Rule MethodRule guice = new GuiceRule(
             new ResourceManagerTestModule());

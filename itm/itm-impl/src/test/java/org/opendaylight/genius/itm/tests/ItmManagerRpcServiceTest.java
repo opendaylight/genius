@@ -30,6 +30,7 @@ import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedExternalTunnelObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedInternalTunnelIdentifierObjects;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -93,6 +94,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class ItmManagerRpcServiceTest {
 
     public @Rule LogRule logRule = new LogRule();
+    public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
     public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class);
 
     String trunkInterfaceName;
