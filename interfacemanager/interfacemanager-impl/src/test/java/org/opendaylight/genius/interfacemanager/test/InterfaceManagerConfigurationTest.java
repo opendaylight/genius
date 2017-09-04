@@ -75,6 +75,7 @@ import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
@@ -170,6 +171,8 @@ public class InterfaceManagerConfigurationTest {
     // public @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(classRepeater);
 
     public @Rule LogRule logRule = new LogRule();
+    public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
+
     public @Rule MethodRule guice = new GuiceRule(new InterfaceManagerTestModule(),
         new TestableDataTreeChangeListenerModule());
 
