@@ -28,8 +28,7 @@ public class OvsInterfaceTopologyStateAddHelper {
     public static List<ListenableFuture<Void>> addPortToBridge(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
             OvsdbBridgeAugmentation bridgeNew, DataBroker dataBroker) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-
+    
         if (bridgeNew.getDatapathId() == null) {
             LOG.warn("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
             return futures;
@@ -37,6 +36,7 @@ public class OvsInterfaceTopologyStateAddHelper {
         BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
         LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
         // create bridge reference entry in interface meta operational DS
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         InterfaceMetaUtils.createBridgeRefEntry(dpnId, bridgeIid, writeTransaction);
 
         // handle pre-provisioning of tunnels for the newly connected dpn
@@ -46,9 +46,8 @@ public class OvsInterfaceTopologyStateAddHelper {
             futures.add(writeTransaction.submit());
             return futures;
         }
-        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
-
         futures.add(writeTransaction.submit());
+        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
         return futures;
     }
 }
