@@ -20,6 +20,7 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.genius.arputil.internal.ArpUtilCounters;
 import org.opendaylight.genius.arputil.internal.ArpUtilImpl;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
@@ -38,6 +39,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class ArpUtilTest {
 
     public @Rule LogRule logRule = new LogRule();
+    public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
     public @Rule MethodRule guice = new GuiceRule(new ArpUtilTestModule());
 
     @Inject ArpUtilImpl arpUtil;
@@ -45,7 +47,6 @@ public class ArpUtilTest {
 
     @Test
     public void testGetMac() throws Exception {
-
         final InterfaceAddress interfaceAddress = new InterfaceAddressBuilder()
                 .setInterface(INTERFACE_NAME)
                 .setIpAddress(new IpAddress(Ipv4Address.getDefaultInstance("192.168.0.1")))
@@ -68,7 +69,6 @@ public class ArpUtilTest {
 
     @Test
     public void testRespRecvdNotification() {
-
         PacketReceived packetReceived = ArpUtilTestUtil.createPayload(1); //response payload
 
         Assert.assertEquals(0,ArpUtilCounters.arp_res_rcv_notification.get());
@@ -80,7 +80,6 @@ public class ArpUtilTest {
 
     @Test
     public void testSendArpResponse() throws Exception {
-
         SendArpResponseInput builder = new SendArpResponseInputBuilder().setInterface(INTERFACE_NAME)
                 .setSrcIpaddress(new IpAddress(Ipv4Address.getDefaultInstance("192.168.0.1")))
                 .setDstIpaddress(new IpAddress(Ipv4Address.getDefaultInstance("192.168.0.2")))
@@ -88,6 +87,5 @@ public class ArpUtilTest {
                 .setDstMacaddress(new PhysAddress("00:01:02:03:04:05")).build();
 
         Assert.assertEquals(true , odlArputilService.sendArpResponse(builder).get().isSuccessful());
-
     }
 }

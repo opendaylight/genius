@@ -93,6 +93,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class ItmManagerRpcServiceTest {
 
     public @Rule LogRule logRule = new LogRule();
+    // TODO public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
     public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class);
 
     String trunkInterfaceName;

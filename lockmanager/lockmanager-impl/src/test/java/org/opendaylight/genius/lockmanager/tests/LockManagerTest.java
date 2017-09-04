@@ -25,6 +25,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.genius.lockmanager.LockManager;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInputBuilder;
@@ -43,6 +44,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
 
     public @Rule LogRule logRule = new LogRule();
+    public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
     public @Rule MethodRule guice = new GuiceRule(new LockManagerTestModule());
 
     @Inject DataBroker dataBroker;
@@ -80,6 +82,8 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     // test re-lock of already locked key using tryLock() RPC.
     // tryLock() RPC will retry only specific number of times, and it will only return after that
     public void testTryLock() throws InterruptedException, ExecutionException, TimeoutException {
+        logCaptureRule.expectError("Failed to get lock testTryLock");
+
         TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3L)
             .setTimeUnit(TimeUnits.Seconds).build();
         assertSuccessfulFutureRpcResult(lockManager.tryLock(lockInput));

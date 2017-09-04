@@ -50,6 +50,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class ItmTepAutoConfigTest {
 
     public @Rule LogRule logRule = new LogRule();
+    // TODO public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
     public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class);
 
     TransportZone transportZone;
