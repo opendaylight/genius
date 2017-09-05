@@ -61,25 +61,25 @@ import org.slf4j.LoggerFactory;
 public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
-    private ITMManager itmManager;
-    private DataBroker dataBroker;
-    private ItmManagerRpcService itmRpcService ;
-    private IdManagerService idManager;
-    private TepCommandHelper tepCommandHelper;
-    private TransportZoneListener tzChangeListener;
-    private TunnelMonitorChangeListener tnlToggleListener;
-    private TunnelMonitorIntervalListener tnlIntervalListener;
-    private VtepConfigSchemaListener vtepConfigSchemaListener;
-    private InterfaceStateListener ifStateListener;
+    private final ITMManager itmManager;
+    private final DataBroker dataBroker;
+    private final ItmManagerRpcService itmRpcService ;
+    private final IdManagerService idManager;
+    private final TepCommandHelper tepCommandHelper;
+    private final TransportZoneListener tzChangeListener;
+    private final TunnelMonitorChangeListener tnlToggleListener;
+    private final TunnelMonitorIntervalListener tnlIntervalListener;
+    private final VtepConfigSchemaListener vtepConfigSchemaListener;
+    private final InterfaceStateListener ifStateListener;
     private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor ITM_STAT_MON = ITMStatusMonitor.getInstance();
-    private ItmTunnelEventListener itmStateListener;
-    private ItmMonitoringListener itmMonitoringListener;
-    private ItmMonitoringIntervalListener itmMonitoringIntervalListener;
-    private OvsdbNodeListener ovsdbChangeListener;
+    private final ItmTunnelEventListener itmStateListener;
+    private final ItmMonitoringListener itmMonitoringListener;
+    private final ItmMonitoringIntervalListener itmMonitoringIntervalListener;
+    private final OvsdbNodeListener ovsdbChangeListener;
     static short flag = 0;
-    private StateTunnelListListener tunnelStateListener ;
-    private DpnTepsInfoListener dpnTepsInfoListener ;
+    private final StateTunnelListListener tunnelStateListener ;
+    private final DpnTepsInfoListener dpnTepsInfoListener ;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -167,7 +167,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                 .build();
         try {
             Future<RpcResult<Void>> result = idManager.createIdPool(createPool);
-            if ((result != null) && (result.get().isSuccessful())) {
+            if (result != null && result.get().isSuccessful()) {
                 LOG.debug("Created IdPool for ITM Service");
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -180,6 +180,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         return dataBroker;
     }
 
+    @Override
     public void addExternalEndpoint(Class<? extends TunnelTypeBase> tunnelType, IpAddress dcgwIP) {
         AddExternalTunnelEndpointInput addExternalTunnelEndpointInput =
                 new AddExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType)
@@ -187,6 +188,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         itmRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
     }
 
+    @Override
     public void remExternalEndpoint(Class<? extends TunnelTypeBase> tunnelType, IpAddress dcgwIP) {
         RemoveExternalTunnelEndpointInput removeExternalTunnelEndpointInput =
                 new RemoveExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType)
@@ -225,6 +227,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
     }
 
+    @Override
     public void showState(List<StateTunnelList> tunnels,CommandSession session) {
         if (tunnels != null) {
             try {
@@ -242,6 +245,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         tepCommandHelper.showCache(cacheName);
     }
 
+    @Override
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
                            String gatewayIp, String transportZone, CommandSession session) {
         try {
@@ -328,14 +332,17 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         LOG.debug("Deleted all Vtep schemas from config DS");
     }
 
+    @Override
     public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol) {
         tepCommandHelper.configureTunnelMonitorParams(monitorEnabled, monitorProtocol);
     }
 
+    @Override
     public void configureTunnelMonitorInterval(int interval) {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
     }
 
+    @Override
     public boolean validateIP(final String ip) {
         if (ip == null || ip.equals("")) {
             return false;
