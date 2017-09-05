@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.statusanddiag;
 
 import java.lang.management.ManagementFactory;
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -41,7 +42,22 @@ public class InterfaceStatusMonitor implements InterfaceStatusMonitorMBean {
         } catch (NotCompliantMBeanException ncmbEx) {
             LOG.error("MXBean registration FAILED with NotCompliantMBeanException", ncmbEx);
         } catch (MalformedObjectNameException monEx) {
-            LOG.error("MXBean registration failed with MalformedObjectNameException", monEx);
+            LOG.error("MXBean registration FAILED with MalformedObjectNameException", monEx);
+        }
+    }
+
+    public void unregisterMbean() {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        try {
+            ObjectName objName = new ObjectName(JMX_INTERFACE_OBJ_NAME);
+            mbs.unregisterMBean(objName);
+            LOG.info("MXBean un-registration SUCCESSFUL!!! {}", JMX_INTERFACE_OBJ_NAME);
+        } catch (MBeanRegistrationException mbrEx) {
+            LOG.error("MXBean un-registration FAILED with MBeanRegistrationException", mbrEx);
+        } catch (MalformedObjectNameException monEx) {
+            LOG.error("MXBean un-registration FAILED with MalformedObjectNameException", monEx);
+        } catch (InstanceNotFoundException e) {
+            LOG.debug("MXBean un-registration FAILED with InstanceNotFoundException", e);
         }
     }
 

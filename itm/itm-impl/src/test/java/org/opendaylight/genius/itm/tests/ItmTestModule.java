@@ -46,7 +46,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
  * @author Michael Vorburger
  * @author Tarun Thakur
  */
-
 public class ItmTestModule extends AbstractGuiceJsr250Module {
 
     @Override
