@@ -132,6 +132,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     @PreDestroy
     public void close() throws Exception {
+        INTERFACE_STATUS_MONITOR.unregisterMbean();
         LOG.info("InterfacemgrProvider Closed");
     }
 

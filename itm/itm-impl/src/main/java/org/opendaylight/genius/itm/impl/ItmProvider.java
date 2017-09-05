@@ -135,6 +135,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     @PreDestroy
     public void close() {
+        ITM_STAT_MON.unregisterMbean();
         if (itmManager != null) {
             itmManager.close();
         }
