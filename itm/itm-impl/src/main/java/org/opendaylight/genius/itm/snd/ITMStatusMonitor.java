@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.snd;
 
 import java.lang.management.ManagementFactory;
 import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
 import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
@@ -40,7 +41,22 @@ public class ITMStatusMonitor implements ITMStatusMonitorMBean {
         } catch (NotCompliantMBeanException ncmbEx) {
             LOG.error("itm MXBean registration FAILED with NotCompliantMBeanException", ncmbEx);
         } catch (MalformedObjectNameException monEx) {
-            LOG.error("itm MXBean registration failed with MalformedObjectNameException", monEx);
+            LOG.error("itm MXBean registration FAILED with MalformedObjectNameException", monEx);
+        }
+    }
+
+    public void unregisterMbean() {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        try {
+            ObjectName objName = new ObjectName(JMX_ITM_OBJ_NAME);
+            mbs.unregisterMBean(objName);
+            LOG.info("itm MXBean un-registration SUCCESSFUL!!! {}", JMX_ITM_OBJ_NAME);
+        } catch (MalformedObjectNameException e) {
+            LOG.error("itm MXBean un-registration FAILED with MalformedObjectNameException", e);
+        } catch (MBeanRegistrationException e) {
+            LOG.warn("itm MXBean un-registration FAILED with MBeanRegistrationException", e);
+        } catch (InstanceNotFoundException e) {
+            LOG.debug("itm MXBean un-registration FAILED with InstanceNotFoundException", e);
         }
     }
 
@@ -53,7 +69,7 @@ public class ITMStatusMonitor implements ITMStatusMonitorMBean {
         return serviceStatus;
     }
 
-    public void reportStatus(String serviceStatus) {
+    public void reportStatus(@SuppressWarnings("hiding") String serviceStatus) {
         this.serviceStatus = serviceStatus;
     }
 }
