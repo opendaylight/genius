@@ -115,7 +115,30 @@ public interface IMdsalApiManager {
 
     void modifyGroup(GroupEntity groupEntity);
 
+    /**
+     * Remove a group.
+     *
+     * @deprecated Use {@link #removeGroup(BigInteger, long)}
+     */
+    @Deprecated
     void removeGroup(GroupEntity groupEntity);
+
+    /**
+     * Remove a group.
+     *
+     * @param dpnId The DP id.
+     * @param groupId The group id.
+     */
+    void removeGroup(BigInteger dpnId, long groupId);
+
+    /**
+     * Remove a group, using an existing transaction.
+     *
+     * @param dpnId The DP id.
+     * @param groupId The group id.
+     * @param tx The transaction.
+     */
+    void removeGroup(BigInteger dpnId, long groupId, WriteTransaction tx);
 
     /**
      * Remove a Group using batched transaction
@@ -125,7 +148,10 @@ public interface IMdsalApiManager {
      *            group being removed
      * @param tx
      *            batched transaction
+     *
+     * @deprecated Use {@link #removeGroup(BigInteger, long, WriteTransaction)}
      */
+    @Deprecated
     void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx);
 
     /**
@@ -138,7 +164,10 @@ public interface IMdsalApiManager {
      *            group being removed
      * @param tx
      *            batched transaction
+     *
+     * @deprecated Use {@link #removeGroup(BigInteger, long, WriteTransaction)}
      */
+    @Deprecated
     void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx);
 
     /**
