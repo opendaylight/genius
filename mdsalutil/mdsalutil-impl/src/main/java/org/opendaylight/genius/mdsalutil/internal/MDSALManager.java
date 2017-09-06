@@ -251,16 +251,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         tx.put(LogicalDatastoreType.CONFIGURATION, groupInstanceId, group, true);
     }
 
-    public void deleteGroupInternal(BigInteger dpId, Group group, WriteTransaction tx) {
-        long groupId = group.getGroupId().getValue();
-        if (groupExists(dpId, groupId)) {
-            InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, buildDpnNode(dpId));
-            tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
-        } else {
-            LOG.warn("Group {} does not exist for dpn {}", groupId, dpId);
-        }
-    }
-
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlowInternal(FlowEntity flowEntity) {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         deleteFlowEntityInternal(flowEntity, tx);
@@ -323,28 +313,24 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    public CheckedFuture<Void, TransactionCommitFailedException> removeGroupInternal(GroupEntity groupEntity) {
+    protected CheckedFuture<Void, TransactionCommitFailedException> removeGroupInternal(BigInteger dpnId,
+            long groupId) {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        removeGroupEntityInternal(groupEntity, tx);
+        removeGroupInternal(dpnId, groupId, tx);
 
         CheckedFuture<Void, TransactionCommitFailedException> submitFuture = tx.submit();
 
         Futures.addCallback(submitFuture, new FutureCallback<Void>() {
             @Override
             public void onSuccess(final Void result) {
-                // Committed successfully
                 LOG.debug("Install Group -- Committedsuccessfully ");
             }
 
             @Override
             public void onFailure(final Throwable throwable) {
-                // Transaction failed
                 if (throwable instanceof OptimisticLockFailedException) {
-                    // Failed because of concurrent transaction modifying same
-                    // data
                     LOG.error("Install Group -- Failed because of concurrent transaction modifying same data");
                 } else {
-                    // Some other type of TransactionCommitFailedException
                     LOG.error("Install Group -- Some other type of TransactionCommitFailedException", throwable);
                 }
             }
@@ -353,15 +339,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return submitFuture;
     }
 
-    public void removeGroupEntityInternal(GroupEntity groupEntity, WriteTransaction tx) {
-        BigInteger dpId = groupEntity.getDpnId();
-        Node nodeDpn = buildDpnNode(dpId);
-        long groupId = groupEntity.getGroupId();
+    public void removeGroupInternal(BigInteger dpnId, long groupId, WriteTransaction tx) {
+        Node nodeDpn = buildDpnNode(dpnId);
         if (groupExists(nodeDpn, groupId)) {
             InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
             tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
-            LOG.warn("Group {} does not exist for dpn {}", groupId, dpId);
+            LOG.warn("Group {} does not exist for dpn {}", groupId, dpnId);
         }
     }
 
@@ -665,7 +649,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public void removeGroup(GroupEntity groupEntity) {
-        removeGroupInternal(groupEntity);
+        removeGroupInternal(groupEntity.getDpnId(), groupEntity.getGroupId());
+    }
+
+    @Override
+    public void removeGroup(BigInteger dpnId, long groupId) {
+        removeGroupInternal(dpnId, groupId);
     }
 
     @Override
@@ -745,12 +734,17 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public void removeGroupToTx(GroupEntity groupEntity, WriteTransaction tx) {
-        removeGroupEntityInternal(groupEntity, tx);
+        removeGroupInternal(groupEntity.getDpnId(), groupEntity.getGroupId(), tx);
     }
 
     @Override
     public void removeGroupToTx(BigInteger dpId, Group group, WriteTransaction tx) {
-        deleteGroupInternal(dpId, group, tx);
+        removeGroupInternal(dpId, group.getGroupId().getValue(), tx);
+    }
+
+    @Override
+    public void removeGroup(BigInteger dpnId, long groupId, WriteTransaction tx) {
+        removeGroupInternal(dpnId, groupId, tx);
     }
 
     @Override
@@ -797,12 +791,10 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return groupExists(buildDpnNode(dpId), groupId);
     }
 
-    private  boolean groupExists(Node nodeDpn, long groupId) {
+    private boolean groupExists(Node nodeDpn, long groupId) {
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
         try {
-            Optional<Group> groupOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
-                    groupInstanceId);
-            return groupOptional.isPresent();
+            return singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, groupInstanceId).isPresent();
         } catch (ReadFailedException e) {
             LOG.warn("Exception while reading group {} for Node {}", groupId, nodeDpn.getKey());
         }
