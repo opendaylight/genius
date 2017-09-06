@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.test;
+package org.opendaylight.genius.mdsalutil.internal;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteActions;
-import org.opendaylight.genius.mdsalutil.internal.MDSALManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -131,7 +130,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         // To test RemoveGroup add and then delete Group
         mdSalMgr.installGroupInternal(grpEntity).get();
         grpFwder.awaitDataChangeCount(1);
-        mdSalMgr.removeGroupInternal(grpEntity).get();
+        mdSalMgr.removeGroupInternal(grpEntity.getDpnId(), grpEntity.getGroupId()).get();
         grpFwder.awaitDataChangeCount(0);
     }
 
