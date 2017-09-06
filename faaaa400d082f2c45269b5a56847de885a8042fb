@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_60409d07",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_49d7babf",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_a9e636b2",
         "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
         "patchSetId": 13
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-22T14:48:19Z",
       "side": 1,
       "message": "as above",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_40459915",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_a9e636b2",
       "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a04d7540",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_69039e42",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_29ea4675",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
         "patchSetId": 13
@@ -64,6 +118,24 @@
       "writtenOn": "2017-08-22T14:48:19Z",
       "side": 1,
       "message": "final",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_804af123",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_29ea4675",
       "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e053eddf",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_e9ef8e85",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_a9fd963c",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
         "patchSetId": 13
@@ -98,6 +188,24 @@
       "writtenOn": "2017-08-22T14:48:19Z",
       "side": 1,
       "message": "use injection by constructor instead of setter for commands; see infrautils/caches/cli for how-to",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c05069d6",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_a9fd963c",
       "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_206185a9",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_e9966eef",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_c999ea20",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
         "patchSetId": 13
@@ -132,6 +258,24 @@
       "writtenOn": "2017-08-22T14:48:19Z",
       "side": 1,
       "message": "not required?",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_006601c1",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_c999ea20",
       "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +299,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_6057fdca",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "I Got bit more descriptive help text coming in next patch, this is more of a placeholder code till then.",
+      "parentUuid": "ba1f61a0_4985faab",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_09edc28b",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
         "patchSetId": 13
@@ -166,6 +328,24 @@
       "writtenOn": "2017-08-22T14:48:19Z",
       "side": 1,
       "message": "private static",
+      "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a0745568",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-06T07:32:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_09edc28b",
       "revId": "faaaa400d082f2c45269b5a56847de885a8042fb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
