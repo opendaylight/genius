@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -43,7 +43,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class InterfaceServiceUtil {
+public final class InterfaceServiceUtil {
+
+    private InterfaceServiceUtil() {
+    }
 
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie, List<Instruction> instructions) {
