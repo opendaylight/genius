@@ -12,7 +12,11 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 
 
-public class IfmConstants {
+public final class  IfmConstants {
+
+    private IfmConstants() {
+    }
+
     public static final String OF_URI_PREFIX = "openflow:";
     public static final String OF_URI_SEPARATOR = ":";
     public static final int DEFAULT_IFINDEX = 65536;
@@ -22,6 +26,7 @@ public class IfmConstants {
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
     public static final int INVALID_PORT_NO = -1;
     public static final BigInteger INVALID_DPID = new BigInteger("-1");
+
     // Id pool
     public static final String IFM_IDPOOL_NAME = "interfaces";
     public static final long IFM_ID_POOL_START = 1L;
@@ -44,7 +49,6 @@ public class IfmConstants {
 
     // TUNNEL TYPE KEYWORDS
     // These are the reserved keywords to be used for service-binding on tunnel-type
-
     public static final String ALL_VXLAN_INTERNAL = "all_vxlan_internal";
     public static final String ALL_VXLAN_EXTERNAL = "all_vxlan_external";
     public static final String ALL_MPLS_OVER_GRE = "all_mpls_over_gre";
