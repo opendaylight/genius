@@ -9,7 +9,7 @@
 package org.opendaylight.genius.idmanager.jobs;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -37,14 +37,12 @@ public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>
 
     @Override
     public List<ListenableFuture<Void>> call() {
-        ArrayList<ListenableFuture<Void>> futures = new ArrayList<>();
         InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
         if (LOG.isDebugEnabled()) {
             LOG.debug("Deleted local pool {}", poolName);
         }
-        futures.add(tx.submit());
-        return futures;
+        return Collections.singletonList(tx.submit());
     }
 }

@@ -8,7 +8,7 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -34,7 +34,6 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
@@ -42,7 +41,6 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
         // remove TEP received from southbound OVSDB from ITM config DS.
         OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, wrTx);
 
-        futures.add(wrTx.submit());
-        return futures;
+        return Collections.singletonList(wrTx.submit());
     }
 }

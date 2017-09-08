@@ -7,9 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -65,7 +63,6 @@ public class InterfaceStateListener
         LOG.debug("Received Tunnel state add event for {}", interfaceStateNew.getName());
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         coordinator.enqueueJob(interfaceStateNew.getName(), () -> {
-            final List<ListenableFuture<Void>> futures = new ArrayList<>();
             Interface.OperStatus bfdState = InterfaceManagerCommonUtils
                     .getBfdStateFromCache(interfaceStateNew.getName());
             if (bfdState != null && bfdState != interfaceStateNew.getOperStatus()
@@ -75,9 +72,9 @@ public class InterfaceStateListener
                 LOG.debug("updating tunnel state for interface {}", interfaceStateNew.getName());
                 WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                 InterfaceManagerCommonUtils.updateOpState(transaction, interfaceStateNew.getName(), bfdState);
-                futures.add(transaction.submit());
+                return Collections.singletonList(transaction.submit());
             }
-            return futures;
+            return Collections.emptyList();
         });
     }
 
