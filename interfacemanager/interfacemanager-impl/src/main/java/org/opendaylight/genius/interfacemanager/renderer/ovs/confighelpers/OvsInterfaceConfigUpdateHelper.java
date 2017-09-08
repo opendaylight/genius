@@ -75,7 +75,7 @@ public class OvsInterfaceConfigUpdateHelper {
         }
 
         if (interfaceNew.isEnabled() != interfaceOld.isEnabled()) {
-            handleInterfaceAdminStateUpdates(futures, transaction, interfaceNew, dataBroker, ifState);
+            handleInterfaceAdminStateUpdates(transaction, interfaceNew, dataBroker, ifState);
         }
 
         futures.add(transaction.submit());
@@ -140,8 +140,8 @@ public class OvsInterfaceConfigUpdateHelper {
         futures.add(transaction.submit());
     }
 
-    private static void handleInterfaceAdminStateUpdates(List<ListenableFuture<Void>> futures,
-            WriteTransaction transaction, Interface interfaceNew, DataBroker dataBroker,
+    private static void handleInterfaceAdminStateUpdates(WriteTransaction transaction, Interface interfaceNew,
+            DataBroker dataBroker,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);

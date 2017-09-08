@@ -246,7 +246,7 @@ public class ItmExternalTunnelDeleteTest {
         externalTunnel = new ExternalTunnelBuilder().setTunnelInterfaceName(parentInterfaceName)
                 .setTransportType(tunnelType1).setDestinationDevice("hwvtep:1").setSourceDevice(dpId2.toString())
                 .setKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNodeId() , tunnelType1)).build();
-        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, parentInterfaceName,
+        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(parentInterfaceName,
                 tunnelEndPointsVxlan.getIpAddress().getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(),
                 tunnelType1.getName());
         trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -261,7 +261,7 @@ public class ItmExternalTunnelDeleteTest {
 
     @Test
     public void testDeleteTunnels() {
-        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker,idManagerService,dpnTepsList,ipAddress1,tunnelType1);
+        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, dpnTepsList,ipAddress1,tunnelType1);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,path);
@@ -309,7 +309,7 @@ public class ItmExternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
                 externalTunnelIdentifier6);
 
-        ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService, dpnTepsList, cfgdHwVtepsList,
+        ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, dpnTepsList, cfgdHwVtepsList,
                 transportZone);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);

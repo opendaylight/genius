@@ -47,20 +47,17 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
 
     @Override
     protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                             Interface ifaceState, Integer ifIndex) {
+                                             Interface ifaceState) {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if (nodeConnectorId == null) {
-            return;
-        }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         Collections.sort(allServices, Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), highestPriority,
+        FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(),
                 writeTransaction, NwConstants.DEFAULT_SERVICE_INDEX);
         for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(), boundService,
+            FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, ifaceState.getName(),
                     writeTransaction, boundService.getServicePriority());
         }
         futures.add(writeTransaction.submit());

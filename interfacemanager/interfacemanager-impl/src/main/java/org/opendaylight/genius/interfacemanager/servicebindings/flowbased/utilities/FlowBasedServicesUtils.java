@@ -157,8 +157,7 @@ public class FlowBasedServicesUtils {
         return matches;
     }
 
-    public static List<MatchInfo> getMatchInfoForDispatcherTable(BigInteger dpId, int interfaceTag,
-            short servicePriority) {
+    public static List<MatchInfo> getMatchInfoForDispatcherTable(int interfaceTag, short servicePriority) {
         List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchMetadata(MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, servicePriority),
                 MetaDataUtil.getMetaDataMaskForLPortDispatcher()));
@@ -220,7 +219,7 @@ public class FlowBasedServicesUtils {
 
         String serviceRef = boundServiceNew.getServiceName();
         String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(),
-                boundServiceNew, boundServiceNew.getServicePriority());
+                boundServiceNew.getServicePriority());
         StypeOpenflow stypeOpenflow = boundServiceNew.getAugmentation(StypeOpenflow.class);
         Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionSet);
@@ -245,7 +244,7 @@ public class FlowBasedServicesUtils {
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
         String serviceRef = boundService.getServiceName();
-        List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(dpId, interfaceTag,
+        List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(interfaceTag,
                 currentServiceIndex);
 
         // Get the metadata and mask from the service's write metadata
@@ -279,7 +278,7 @@ public class FlowBasedServicesUtils {
 
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName,
-            boundService, currentServiceIndex);
+                currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
                 DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
                 instructions);
@@ -356,8 +355,8 @@ public class FlowBasedServicesUtils {
         String serviceRef = boundService.getServiceName();
         List<? extends MatchInfoBase> matches = FlowBasedServicesUtils
                 .getMatchInfoForEgressDispatcherTable(interfaceTag, currentServiceIndex);
-        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName, boundService,
-            currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName,
+                currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie(), matches,
                 instructions);
@@ -389,7 +388,7 @@ public class FlowBasedServicesUtils {
         shInstructions.add(new InstructionApplyActions(actionsInfos));
 
         String flowRef = getSplitHorizonFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName,
-                currentServiceIndex, shFlagSet);
+                shFlagSet);
         String serviceRef = boundService.getServiceName();
         // This must be higher priority than the egress flow
         int splitHorizonFlowPriority = boundService.getServicePriority() + 1;
@@ -479,7 +478,7 @@ public class FlowBasedServicesUtils {
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId,
             WriteTransaction writeTransaction) {
-        String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name, serviceOld,
+        String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name,
                 serviceOld.getServicePriority());
         LOG.debug("Removing Ingress Flow {}", flowKeyStr);
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
@@ -498,8 +497,8 @@ public class FlowBasedServicesUtils {
 
         boundServicesOld.getAugmentation(StypeOpenflow.class);
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
-            currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface,
+                currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -510,18 +509,18 @@ public class FlowBasedServicesUtils {
         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
     }
 
-    public static void removeEgressDispatcherFlows(BigInteger dpId, String iface, BoundServices boundServicesOld,
+    public static void removeEgressDispatcherFlows(BigInteger dpId, String iface,
             WriteTransaction writeTransaction, short currentServiceIndex) {
         LOG.debug("Removing Egress Dispatcher Flows {}, {}", dpId, iface);
-        removeEgressDispatcherFlow(dpId, iface, writeTransaction, currentServiceIndex, boundServicesOld);
-        removeEgressSplitHorizonDispatcherFlow(dpId, iface, writeTransaction, currentServiceIndex);
+        removeEgressDispatcherFlow(dpId, iface, writeTransaction, currentServiceIndex);
+        removeEgressSplitHorizonDispatcherFlow(dpId, iface, writeTransaction);
     }
 
     private static void removeEgressDispatcherFlow(BigInteger dpId, String iface, WriteTransaction writeTransaction,
-            short currentServiceIndex, BoundServices boundServicesOld) {
+            short currentServiceIndex) {
         // build the flow and install it
-        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface, boundServicesOld,
-            currentServiceIndex);
+        String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface,
+                currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -533,11 +532,11 @@ public class FlowBasedServicesUtils {
     }
 
     public static void removeEgressSplitHorizonDispatcherFlow(BigInteger dpId, String iface,
-            WriteTransaction writeTransaction, short currentServiceIndex) {
+            WriteTransaction writeTransaction) {
         // BigInteger.ONE is used for checking the Split-Horizon flag
         BigInteger shFlagSet = BigInteger.ONE;
         String shFlowRef = getSplitHorizonFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface,
-                currentServiceIndex, shFlagSet);
+                shFlagSet);
         FlowKey shFlowKey = new FlowKey(new FlowId(shFlowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> shFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
@@ -552,17 +551,14 @@ public class FlowBasedServicesUtils {
         return String.format("%d:%s:%s", tableId, dpnId, infName);
     }
 
-    private static String getFlowRef(BigInteger dpnId, short tableId, String iface,BoundServices service,
-                                     short currentServiceIndex) {
+    private static String getFlowRef(BigInteger dpnId, short tableId, String iface, short currentServiceIndex) {
         return String.valueOf(dpnId) + NwConstants.FLOWID_SEPARATOR + tableId + NwConstants.FLOWID_SEPARATOR + iface
                 + NwConstants.FLOWID_SEPARATOR + currentServiceIndex;
     }
 
-    private static String getSplitHorizonFlowRef(BigInteger dpnId, short tableId, String iface,
-            short currentServiceIndex, BigInteger shFlag) {
-        return new StringBuffer().append(dpnId).append(NwConstants.FLOWID_SEPARATOR).append(tableId).append(NwConstants
-                .FLOWID_SEPARATOR).append(iface).append(NwConstants.FLOWID_SEPARATOR)
-                .append(shFlag.toString()).toString();
+    private static String getSplitHorizonFlowRef(BigInteger dpnId, short tableId, String iface, BigInteger shFlag) {
+        return String.valueOf(dpnId) + NwConstants.FLOWID_SEPARATOR + tableId + NwConstants.FLOWID_SEPARATOR + iface
+                + NwConstants.FLOWID_SEPARATOR + shFlag.toString();
     }
 
     /**

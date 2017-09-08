@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
@@ -53,24 +52,20 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
 
     @Override
     protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                             Interface ifState, Integer ifIndex) {
+                                             Interface ifState) {
         if (L2vlan.class.equals(ifState.getType())) {
-            unbindServicesOnVlan(futures, allServices, ifState, ifState.getIfIndex(), dataBroker);
+            unbindServicesOnVlan(futures, allServices, ifState, dataBroker);
         } else if (Tunnel.class.equals(ifState.getType())) {
-            unbindServicesOnTunnel(futures, allServices, ifState, ifState.getIfIndex(), dataBroker);
+            unbindServicesOnTunnel(futures, allServices, ifState, dataBroker);
         }
-        return;
     }
 
     protected void unbindServicesOnTunnel(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                          Interface iface, Integer ifIndex, DataBroker dataBroker) {
+                                          Interface iface, DataBroker dataBroker) {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("unbinding all services on tunnel interface {}", iface.getName());
         List<String> ofportIds = iface.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if (nodeConnectorId == null) {
-            return;
-        }
         BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
 
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -87,17 +82,14 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
     protected void unbindServicesOnVlan(List<ListenableFuture<Void>> futures,
-                                        List<BoundServices> allServices, Interface ifaceState, Integer ifIndex,
-                                        DataBroker dataBroker) {
+            List<BoundServices> allServices, Interface ifaceState,
+            DataBroker dataBroker) {
 
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         List<String> ofportIds = ifaceState.getLowerLayerIf();
         NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if (nodeConnectorId == null) {
-            return;
-        }
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        Collections.sort(allServices, Comparator.comparing(BoundServices::getServicePriority));
+        allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
         FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, writeTransaction,
                 NwConstants.DEFAULT_SERVICE_INDEX);

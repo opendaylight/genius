@@ -262,7 +262,7 @@ public class ItmExternalTunnelAddTest {
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
-        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,
+        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(parentInterfaceName,
                 tunnelEndPointsVxlan.getIpAddress().getIpv4Address().getValue(),
                 ipAddress2.getIpv4Address().getValue(),tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -288,7 +288,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
 
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,idManagerService,cfgdDpnListVxlan,
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, cfgdDpnListVxlan,
                 ipAddress2,tunnelType1, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
@@ -300,7 +300,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsFromDpnToExternalEndPoint() {
 
-        externalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker,idManagerService,bigIntegerList,
+        externalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, bigIntegerList,
                 ipAddress2,tunnelType1, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
@@ -393,8 +393,8 @@ public class ItmExternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker,idManagerService,cfgdDpnListVxlan,null);
-        externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker,idManagerService,null,cfgdHwVtepsList);
+        externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, cfgdDpnListVxlan,null);
+        externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, null,cfgdHwVtepsList);
 
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID1,extTunnelIf1,true);
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1,

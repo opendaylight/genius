@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -25,8 +24,7 @@ import org.slf4j.LoggerFactory;
 public class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeTunnel(Interface iface, IInterfaceManager ifaceManager,
-                                                            DataBroker broker) throws Exception {
+    public static List<ListenableFuture<Void>> removeTunnel(Interface iface, DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateRemoveHelper for Interface {} ", iface);
         WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
 

@@ -466,7 +466,7 @@ public class IfmUtil {
         return interfaceType;
     }
 
-    public static VlanInterfaceInfo getVlanInterfaceInfo(String interfaceName, Interface iface, BigInteger dpId) {
+    public static VlanInterfaceInfo getVlanInterfaceInfo(Interface iface, BigInteger dpId) {
         short vlanId = 0;
         String portName = null;
         IfL2vlan vlanIface = iface.getAugmentation(IfL2vlan.class);
