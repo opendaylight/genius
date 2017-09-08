@@ -16,6 +16,24 @@
       "revId": "daa1165ec1192db82018b7b380f0e6764433c574",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_29f04990",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-08T08:40:46Z",
+      "side": 1,
+      "message": "Yeah, even better. Thanks.",
+      "parentUuid": "ba1f61a0_c9708d74",
+      "revId": "daa1165ec1192db82018b7b380f0e6764433c574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
