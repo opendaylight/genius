@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -36,7 +36,6 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         LOG.trace("Remove TEP from TepsNotHosted list task is picked from DataStoreJobCoordinator for execution.");
@@ -44,7 +43,6 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
         // Remove TEP from TepsNotHosted list.
         OvsdbTepRemoveConfigHelper.removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, wrTx);
 
-        futures.add(wrTx.submit());
-        return futures;
+        return Collections.singletonList(wrTx.submit());
     }
 }

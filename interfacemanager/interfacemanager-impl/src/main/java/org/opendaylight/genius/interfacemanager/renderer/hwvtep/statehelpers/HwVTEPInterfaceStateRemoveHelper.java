@@ -8,7 +8,7 @@
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -23,11 +23,9 @@ public class HwVTEPInterfaceStateRemoveHelper {
 
     public static List<ListenableFuture<Void>> removeExternalTunnel(DataBroker dataBroker,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("Removing HwVTEP tunnel entries for tunnel: {}", tunnelsInstanceIdentifier);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         transaction.delete(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier);
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 }

@@ -9,7 +9,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -27,15 +27,14 @@ public class OvsInterfaceTopologyStateRemoveHelper {
     public static List<ListenableFuture<Void>> removePortFromBridge(
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeOld,
             DataBroker dataBroker) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         BigInteger dpnId = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
         if (dpnId == null) {
             LOG.warn("Got Null DPID for Bridge: {}", bridgeOld);
-            return futures;
+            return Collections.emptyList();
         }
 
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeOld,
                 dpnId);
         // delete bridge reference entry in interface meta operational DS
@@ -47,7 +46,6 @@ public class OvsInterfaceTopologyStateRemoveHelper {
         // clean up the topology config DS
         InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(bridgeIid), transaction);
 
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 }

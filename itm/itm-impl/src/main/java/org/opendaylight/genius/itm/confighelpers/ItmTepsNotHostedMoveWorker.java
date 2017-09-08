@@ -10,6 +10,7 @@ package org.opendaylight.genius.itm.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -38,7 +39,6 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
         List<Subnets> subnetList = new ArrayList<>();
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -52,7 +52,6 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
         OvsdbTepAddConfigHelper.addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepsList, tepIpAddress, tzName, dpnId,
                 ITMConstants.DUMMY_PORT, false, wrTx);
 
-        futures.add(wrTx.submit());
-        return futures;
+        return Collections.singletonList(wrTx.submit());
     }
 }
