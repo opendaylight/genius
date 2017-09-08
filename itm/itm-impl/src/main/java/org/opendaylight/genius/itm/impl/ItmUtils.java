@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -1385,7 +1386,7 @@ public class ItmUtils {
     public static Node getOvsdbNode(OvsdbBridgeAugmentation bridgeAugmentation,
         DataBroker dataBroker) {
         Node ovsdbNode = null;
-        Optional<Node> opOvsdbNode = null;
+        Optional<Node> opOvsdbNode = Optional.absent();
         if (bridgeAugmentation != null) {
             InstanceIdentifier<Node> ovsdbNodeIid =
                 (InstanceIdentifier<Node>) bridgeAugmentation.getManagedBy().getValue();
@@ -1555,6 +1556,7 @@ public class ItmUtils {
                 .child(StateTunnelList.class, tlKey).build();
     }
 
+    @Nonnull
     public static  Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger destDpn,
                                                                     Class<? extends TunnelTypeBase> type,
                                                                     DataBroker dataBroker) {

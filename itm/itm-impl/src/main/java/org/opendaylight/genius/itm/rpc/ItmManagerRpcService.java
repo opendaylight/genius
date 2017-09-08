@@ -128,17 +128,17 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
         BigInteger sourceDpn = input.getSourceDpid();
         BigInteger destinationDpn = input.getDestinationDpid();
-        Optional<InternalTunnel> optTunnel = null;
+        Optional<InternalTunnel> optTunnel = Optional.absent();
 
         if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
             optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn,
                                                          TunnelTypeLogicalGroup.class, dataBroker);
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: getTunnelInterfaceName {}", optTunnel);
         }
-        if (optTunnel == null || !optTunnel.isPresent()) {
+        if (!optTunnel.isPresent()) {
             optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn, input.getTunnelType(), dataBroker);
         }
-        if (optTunnel != null && optTunnel.isPresent()) {
+        if (optTunnel.isPresent()) {
             InternalTunnel tunnel = optTunnel.get();
             GetTunnelInterfaceNameOutputBuilder output = new GetTunnelInterfaceNameOutputBuilder() ;
             List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
@@ -420,17 +420,17 @@ public class ItmManagerRpcService implements ItmRpcService {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
-                    Optional<InternalTunnel> optTunnel = null;
+                    Optional<InternalTunnel> optTunnel = Optional.absent();
                     if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
                         optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
                                                                      TunnelTypeLogicalGroup.class, dataBroker);
                         LOG.debug("MULTIPLE_VxLAN_TUNNELS: getInternalOrExternalInterfaceName {}", optTunnel);
                     }
-                    if (optTunnel == null || !optTunnel.isPresent()) {
+                    if (!optTunnel.isPresent()) {
                         optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
                                                                      input.getTunnelType(), dataBroker);
                     }
-                    if (optTunnel != null && optTunnel.isPresent()) {
+                    if (optTunnel.isPresent()) {
                         InternalTunnel tunnel = optTunnel.get();
                         List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
                         if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
