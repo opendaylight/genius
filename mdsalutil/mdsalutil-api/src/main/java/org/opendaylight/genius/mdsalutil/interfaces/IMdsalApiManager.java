@@ -154,25 +154,59 @@ public interface IMdsalApiManager {
 
     void sendPacketOut(BigInteger dpnId, int groupId, byte[] payload);
 
+    /**
+     * Send packet out with actions.
+     *
+     * @deprecated Use {@link #sendPacketOutWithActions(BigInteger, byte[], List)}.
+     */
+    @Deprecated
     void sendPacketOutWithActions(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos);
+
+    void sendPacketOutWithActions(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfos);
 
     void sendARPPacketOutWithActions(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfo);
 
     /**
      * API to remove the flow on Data Plane Node synchronously. It internally waits for
      * Flow Change Notification to confirm flow delete request is being sent with-in delayTime.
+     *
+     * @deprecated Use {@link #syncRemoveFlow(FlowEntity)}.
      */
+    @Deprecated
     void syncRemoveFlow(FlowEntity flowEntity, long delayTime);
 
+    void syncRemoveFlow(FlowEntity flowEntity);
+
+    /**
+     * Install a flow.
+     *
+     * @deprecated Use {@link #syncInstallFlow(FlowEntity)}.
+     */
+    @Deprecated
     void syncInstallFlow(FlowEntity flowEntity, long delayTime);
+
+    void syncInstallFlow(FlowEntity flowEntity);
 
     /**
      * API to install the Group on Data Plane Node synchronously. It internally waits for
      * Group Change Notification to confirm group mod request is being sent with-in delayTime
+     *
+     * @deprecated Use {@link #syncInstallGroup(GroupEntity)}.
      */
+    @Deprecated
     void syncInstallGroup(GroupEntity groupEntity, long delayTime);
 
+    void syncInstallGroup(GroupEntity groupEntity);
+
+    /**
+     * Install a group.
+     *
+     * @deprecated Use {@link #syncInstallGroup(BigInteger, Group)}.
+     */
+    @Deprecated
     void syncInstallGroup(BigInteger dpId, Group group, long delayTime);
+
+    void syncInstallGroup(BigInteger dpId, Group group);
 
     /**
      * API to remove the Group on Data Plane Node synchronously. It internally waits for

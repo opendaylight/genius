@@ -167,7 +167,7 @@ public class OvsInterfaceConfigAddHelper {
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry
                     .getBridgeReference().getValue();
             if (createTunnelPort) {
-                SouthboundUtils.addPortToBridge(bridgeIid, interfaceNew, tunnelName, dataBroker, futures);
+                SouthboundUtils.addPortToBridge(bridgeIid, interfaceNew, tunnelName);
             }
 
             // if TEP is already configured on switch, start LLDP monitoring and
@@ -179,7 +179,7 @@ public class OvsInterfaceConfigAddHelper {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if (ncId != null) {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-                    InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
+                    InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
                             interfaceNew.getName(), ifState.getIfIndex(), NwConstants.ADD_FLOW);
                     FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceNew,
                             Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
@@ -243,7 +243,7 @@ public class OvsInterfaceConfigAddHelper {
                                            MDSALUtil.buildBucketLists(Collections.emptyList()));
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} installed for {} srcDpnId {}",
                 group.getGroupId().getValue(), interfaceName, srcDpnId);
-        mdsalManager.syncInstallGroup(srcDpnId, group, IfmConstants.DELAY_TIME_IN_MILLISECOND);
+        mdsalManager.syncInstallGroup(srcDpnId, group);
         return groupId;
     }
 

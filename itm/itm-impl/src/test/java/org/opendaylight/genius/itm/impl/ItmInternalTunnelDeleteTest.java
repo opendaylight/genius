@@ -189,7 +189,7 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,dpnEndpointsIdentifier);
 
-        itmInternalTunnelDeleteWorker.deleteTunnels(dataBroker,idManagerService, mdsalApiManager,cfgdDpnListVxlan,
+        itmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, mdsalApiManager,cfgdDpnListVxlan,
                 meshDpnListVxlan);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);

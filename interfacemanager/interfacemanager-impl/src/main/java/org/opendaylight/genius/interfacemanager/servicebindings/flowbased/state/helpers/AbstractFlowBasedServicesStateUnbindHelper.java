@@ -58,13 +58,12 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
         }
 
         if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            unbindServicesOnInterface(futures, allServices, ifaceState, ifaceState.getIfIndex());
+            unbindServicesOnInterface(futures, allServices, ifaceState);
         }
     }
 
     protected abstract void unbindServicesOnInterface(List<ListenableFuture<Void>> futures,
-                                                      List<BoundServices> allServices, Interface ifState,
-                                                      Integer ifIndex);
+                                                      List<BoundServices> allServices, Interface ifState);
 
     public abstract void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
                                                        String ifaceName);

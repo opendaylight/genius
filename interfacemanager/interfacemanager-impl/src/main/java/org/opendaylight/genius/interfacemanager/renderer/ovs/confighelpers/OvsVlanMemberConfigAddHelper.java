@@ -25,7 +25,7 @@ public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
 
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-            Interface interfaceNew, IfL2vlan ifL2vlan, IdManagerService idManager) {
+            Interface interfaceNew, IdManagerService idManager) {
         LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();

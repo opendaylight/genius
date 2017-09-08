@@ -95,8 +95,7 @@ public class HwVTEPTunnelsStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(dataBroker, instanceIdentifier, tunnelsOld,
-                    tunnelsNew);
+            return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(dataBroker, instanceIdentifier, tunnelsOld);
         }
     }
 

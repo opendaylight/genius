@@ -375,19 +375,16 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(new ActionGroup(groupId));
 
-        sendPacketOutWithActions(dpnId, groupId, payload, actionInfos);
+        sendPacketOutWithActions(dpnId, payload, actionInfos);
     }
 
-    public void sendPacketOutWithActionsInternal(BigInteger dpnId, long groupId, byte[] payload,
-            List<ActionInfo> actionInfos) {
-
+    public void sendPacketOutWithActionsInternal(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfos) {
         packetProcessingService.transmitPacket(
                 MDSALUtil.getPacketOut(actionInfos, payload, dpnId, getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
     }
 
     public void sendARPPacketOutWithActionsInternal(BigInteger dpnId, byte[] payload, List<ActionInfo> actions) {
-        packetProcessingService.transmitPacket(
-                MDSALUtil.getPacketOut(actions, payload, dpnId, getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
+        sendPacketOutWithActionsInternal(dpnId, payload, actions);
     }
 
     protected InstanceIdentifier<Node> nodeToInstanceId(Node node) {
@@ -429,7 +426,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return synchronizingKey.intern();
     }
 
-    public void syncSetUpFlowInternal(FlowEntity flowEntity, long delay, boolean isRemove) {
+    public void syncSetUpFlowInternal(FlowEntity flowEntity, boolean isRemove) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
         }
@@ -453,7 +450,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    public void syncSetUpGroupInternal(GroupEntity groupEntity, long delayTime, boolean isRemove) {
+    public void syncSetUpGroupInternal(GroupEntity groupEntity, boolean isRemove) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("syncSetUpGroup for groupEntity {} ", groupEntity);
         }
@@ -475,7 +472,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    public void syncSetUpGroupInternal(BigInteger dpId, Group group, long delayTime, boolean isRemove) {
+    public void syncSetUpGroupInternal(BigInteger dpId, Group group, boolean isRemove) {
         LOG.trace("syncSetUpGroup for group {} ", group);
         long groupId = group.getGroupId().getValue();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, buildDpnNode(dpId));
@@ -675,7 +672,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public void sendPacketOutWithActions(BigInteger dpnId, long groupId, byte[] payload, List<ActionInfo> actionInfos) {
-        sendPacketOutWithActionsInternal(dpnId, groupId, payload, actionInfos);
+        sendPacketOutWithActionsInternal(dpnId, payload, actionInfos);
+    }
+
+    @Override
+    public void sendPacketOutWithActions(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfos) {
+        sendPacketOutWithActionsInternal(dpnId, payload, actionInfos);
     }
 
     @Override
@@ -685,32 +687,52 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public void syncRemoveFlow(FlowEntity flowEntity, long delayTime) {
-        syncSetUpFlowInternal(flowEntity, delayTime, true);
+        syncSetUpFlowInternal(flowEntity, true);
+    }
+
+    @Override
+    public void syncRemoveFlow(FlowEntity flowEntity) {
+        syncSetUpFlowInternal(flowEntity, true);
     }
 
     @Override
     public void syncInstallFlow(FlowEntity flowEntity, long delayTime) {
-        syncSetUpFlowInternal(flowEntity, delayTime, false);
+        syncSetUpFlowInternal(flowEntity, false);
+    }
+
+    @Override
+    public void syncInstallFlow(FlowEntity flowEntity) {
+        syncSetUpFlowInternal(flowEntity, false);
     }
 
     @Override
     public void syncInstallGroup(GroupEntity groupEntity, long delayTime) {
-        syncSetUpGroupInternal(groupEntity, delayTime, false);
+        syncSetUpGroupInternal(groupEntity, false);
+    }
+
+    @Override
+    public void syncInstallGroup(GroupEntity groupEntity) {
+        syncSetUpGroupInternal(groupEntity, false);
     }
 
     @Override
     public void syncInstallGroup(BigInteger dpId, Group group, long delayTime) {
-        syncSetUpGroupInternal(dpId, group, delayTime, false);
+        syncSetUpGroupInternal(dpId, group, false);
+    }
+
+    @Override
+    public void syncInstallGroup(BigInteger dpId, Group group) {
+        syncSetUpGroupInternal(dpId, group, false);
     }
 
     @Override
     public void syncRemoveGroup(GroupEntity groupEntity) {
-        syncSetUpGroupInternal(groupEntity, FIXED_DELAY_IN_MILLISECONDS, true);
+        syncSetUpGroupInternal(groupEntity, true);
     }
 
     @Override
     public void syncRemoveGroup(BigInteger dpId, Group group) {
-        syncSetUpGroupInternal(dpId, group, FIXED_DELAY_IN_MILLISECONDS, true);
+        syncSetUpGroupInternal(dpId, group, true);
     }
 
     @Override

@@ -130,7 +130,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             return;
         }
 
-        Optional<byte[]> optSourceMac = getMacAddress(interfaceState, sourceInterface);
+        Optional<byte[]> optSourceMac = getMacAddress(interfaceState);
         if (!optSourceMac.isPresent()) {
             LOG.error("Could not read mac address for the source interface {} from the Inventory. "
                     + "LLDP packet cannot be send.", sourceInterface);
@@ -142,7 +142,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
         long nodeId = Long.parseLong(getDpnFromNodeConnectorId(nodeConnectorId));
         long portNum = Long.parseLong(getPortNoFromNodeConnectorId(nodeConnectorId));
-        Ethernet ethenetLLDPPacket = makeLLDPPacket(Long.toString(nodeId), portNum, 0, sourceMac, sourceInterface);
+        Ethernet ethenetLLDPPacket = makeLLDPPacket(Long.toString(nodeId), portNum, sourceMac, sourceInterface);
 
         try {
             List<ActionInfo> actions = getInterfaceActions(interfaceState, portNum);
@@ -209,7 +209,17 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         return id;
     }
 
+    /**
+     * Build an LLDP packet.
+     *
+     * @deprecated Use {@link #makeLLDPPacket(String, long, byte[], String)}.
+     */
+    @Deprecated
     public Ethernet makeLLDPPacket(String nodeId, long portNum, int serviceId, byte[] srcMac, String sourceInterface) {
+        return makeLLDPPacket(nodeId, portNum, srcMac, sourceInterface);
+    }
+
+    public Ethernet makeLLDPPacket(String nodeId, long portNum, byte[] srcMac, String sourceInterface) {
 
         // Create LLDP TTL TLV
         LLDPTLV lldpTlvTTL = buildLLDTLV(LLDPTLV.TLVType.TTL, new byte[] { (byte) 0, (byte) 120 });

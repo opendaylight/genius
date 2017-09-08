@@ -22,7 +22,6 @@ import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -44,7 +43,7 @@ public class ItmInternalTunnelDeleteWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelDeleteWorker.class) ;
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService,
+    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker,
                                                              IMdsalApiManager mdsalManager,
                                                              List<DPNTEPsInfo> dpnTepsList,
                                                              List<DPNTEPsInfo> meshedDpnList) {
@@ -92,8 +91,8 @@ public class ItmInternalTunnelDeleteWorker {
                                             // remove all trunk interfaces
                                             LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                     + "Destination TEP {} ", srcTep, dstTep);
-                                            removeTrunkInterface(dataBroker, idManagerService, srcTep, dstTep, srcDpn
-                                                    .getDPNID(), dstDpn.getDPNID(), writeTransaction, futures);
+                                            removeTrunkInterface(dataBroker, srcTep, dstTep, srcDpn
+                                                    .getDPNID(), dstDpn.getDPNID(), writeTransaction);
                                         }
                                     }
                                 }
@@ -179,11 +178,10 @@ public class ItmInternalTunnelDeleteWorker {
         return futures ;
     }
 
-    private static void removeTrunkInterface(DataBroker dataBroker, IdManagerService idManagerService,
+    private static void removeTrunkInterface(DataBroker dataBroker,
                                              TunnelEndPoints srcTep, TunnelEndPoints dstTep, BigInteger srcDpnId,
-                                             BigInteger dstDpnId, WriteTransaction transaction,
-                                             List<ListenableFuture<Void>> futures) {
-        String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
+                                             BigInteger dstDpnId, WriteTransaction transaction) {
+        String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
@@ -199,13 +197,13 @@ public class ItmInternalTunnelDeleteWorker {
         transaction.delete(LogicalDatastoreType.CONFIGURATION,path) ;
         ItmUtils.itmCache.removeInternalTunnel(trunkfwdIfName);
         // Release the Ids for the forward trunk interface Name
-        ItmUtils.releaseIdForTrunkInterfaceName(idManagerService,srcTep.getInterfaceName(),
+        ItmUtils.releaseIdForTrunkInterfaceName(srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
         removeLogicalGroupTunnel(srcDpnId, dstDpnId, dataBroker);
 
-        String trunkRevIfName = ItmUtils.getTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
+        String trunkRevIfName = ItmUtils.getTrunkInterfaceName(dstTep.getInterfaceName(),
                 new String(dstTep.getIpAddress().getValue()),
                 new String(srcTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
@@ -221,7 +219,7 @@ public class ItmInternalTunnelDeleteWorker {
         transaction.delete(LogicalDatastoreType.CONFIGURATION,path) ;
 
         // Release the Ids for the reverse trunk interface Name
-        ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, dstTep.getInterfaceName(),
+        ItmUtils.releaseIdForTrunkInterfaceName(dstTep.getInterfaceName(),
                 new String(dstTep.getIpAddress().getValue()),
                 new String(srcTep.getIpAddress().getValue()),
                 dstTep.getTunnelType().getName());

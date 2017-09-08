@@ -218,7 +218,7 @@ public class InterfaceMetaUtils {
         return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker).orNull();
     }
 
-    public static void createLportTagInterfaceMap(WriteTransaction tx, String infName, Integer ifIndex) {
+    public static void createLportTagInterfaceMap(String infName, Integer ifIndex) {
         LOG.debug("creating lport tag to interface map for {} ifIndex {}",infName, ifIndex);
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
@@ -312,7 +312,7 @@ public class InterfaceMetaUtils {
 
     public static void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
             List<BridgeInterfaceEntry> bridgeInterfaceEntries, InstanceIdentifier<BridgeEntry> bridgeEntryIid,
-            WriteTransaction transaction, String interfaceName) {
+            String interfaceName) {
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
                 new BridgeInterfaceEntryKey(interfaceName);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
