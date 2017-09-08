@@ -43,6 +43,8 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.diagstatus.DiagStatusService;
+import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -95,6 +97,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
+    private final DiagStatusService diagStatusService;
     private final EntityOwnershipService entityOwnershipService;
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
@@ -102,18 +105,22 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+                                final DiagStatusService diagStatusService) {
         this.dataBroker = dataBroker;
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
+        this.diagStatusService = diagStatusService;
     }
 
     @PostConstruct
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
+            // TODO remove this mbean registration once all modules migrate to use diagstatus
             INTERFACE_STATUS_MONITOR.registerMbean();
+            diagStatusService.register(IfmConstants.INTERFACE_SERVICE_NAME);
             createIdPool();
             IfmClusterUtils.registerEntityForOwnership(this, this.entityOwnershipService);
             BatchingUtils.registerWithBatchManager(this.dataBroker);
@@ -122,7 +129,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
 
             INTERFACE_STATUS_MONITOR.reportStatus("OPERATIONAL");
+            diagStatusService.report(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.OPERATIONAL, "Bundle started");
         } catch (Exception e) {
+            diagStatusService.report(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.ERROR, "Bundle failed to start");
             INTERFACE_STATUS_MONITOR.reportStatus("ERROR");
             throw e;
         }
