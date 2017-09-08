@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.net.util.SubnetUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -73,9 +74,8 @@ public class ItmExternalTunnelAddWorker {
                                                                               IpAddress extIp,
                                                                               Class<? extends TunnelTypeBase> tunType,
                                                                               ItmConfig itmConfig) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         if (null != cfgDpnList) {
+            WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
             for (DPNTEPsInfo teps : cfgDpnList) {
                 // CHECK -- Assumption -- Only one End Point / Dpn for GRE/Vxlan Tunnels
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
@@ -114,9 +114,9 @@ public class ItmExternalTunnelAddWorker {
                         tunType, trunkInterfaceName);
                 transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
             }
-            futures.add(transaction.submit());
+            return Collections.singletonList(transaction.submit());
         }
-        return futures;
+        return Collections.emptyList();
     }
 
     public static List<ListenableFuture<Void>> buildTunnelsFromDpnToExternalEndPoint(DataBroker dataBroker,
@@ -126,11 +126,9 @@ public class ItmExternalTunnelAddWorker {
                                                                                      Class<? extends TunnelTypeBase>
                                                                                              tunType,
                                                                                      ItmConfig itmConfig) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         List<DPNTEPsInfo> cfgDpnList = dpnId == null ? ItmUtils.getTunnelMeshInfo(dataBroker)
                         : ItmUtils.getDpnTepListFromDpnId(dataBroker, dpnId);
-        futures = buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgDpnList, extIp, tunType, itmConfig);
-        return futures;
+        return buildTunnelsToExternalEndPoint(dataBroker, idManagerService, cfgDpnList, extIp, tunType, itmConfig);
     }
 
     public static List<ListenableFuture<Void>> buildHwVtepsTunnels(DataBroker dataBroker,

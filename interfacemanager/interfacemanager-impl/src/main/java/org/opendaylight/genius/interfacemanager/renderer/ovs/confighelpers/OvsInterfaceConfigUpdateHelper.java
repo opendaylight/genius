@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -187,15 +188,13 @@ public class OvsInterfaceConfigUpdateHelper {
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
                         operShardTransaction);
             }
 
-            futures.add(operShardTransaction.submit());
-            return futures;
+            return Collections.singletonList(operShardTransaction.submit());
         }
 
         @Override

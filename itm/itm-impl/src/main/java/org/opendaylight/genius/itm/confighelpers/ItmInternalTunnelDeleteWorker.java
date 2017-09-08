@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -264,10 +265,9 @@ public class ItmInternalTunnelDeleteWorker {
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
             Collection<InternalTunnel> tunnels = ItmUtils.itmCache.getAllInternalTunnel();
             if (tunnels == null) {
-                return futures;
+                return Collections.emptyList();
             }
             //The logical tunnel interface be removed only when the last tunnel interface on each OVS is deleted
             boolean emptyTunnelGroup = true;
@@ -295,11 +295,11 @@ public class ItmInternalTunnelDeleteWorker {
                                 new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
                 tx.delete(LogicalDatastoreType.CONFIGURATION, path);
                 ItmUtils.itmCache.removeInternalTunnel(logicTunnelName);
-                futures.add(tx.submit());
+                return Collections.singletonList(tx.submit());
             } else if (!emptyTunnelGroup) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not last tunnel in logical tunnel group {}", logicTunnelName);
             }
-            return futures;
+            return Collections.emptyList();
         }
     }
 }
