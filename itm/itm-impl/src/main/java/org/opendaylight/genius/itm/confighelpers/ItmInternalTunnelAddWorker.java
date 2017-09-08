@@ -76,12 +76,12 @@ public final class ItmInternalTunnelAddWorker {
         monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         itmCfg = itmConfig;
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             LOG.error(" Build Tunnels was invoked with empty list");
             return futures;
         }
 
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         for (DPNTEPsInfo dpn : cfgdDpnList) {
             //#####if dpn is not in meshedDpnList
             buildTunnelFrom(dpn, meshedDpnList, dataBroker, idManagerService, mdsalManager, transaction, futures);
