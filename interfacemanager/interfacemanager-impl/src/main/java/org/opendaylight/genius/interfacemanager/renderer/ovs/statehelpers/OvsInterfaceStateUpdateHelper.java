@@ -8,7 +8,7 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -36,7 +36,6 @@ public class OvsInterfaceStateUpdateHelper {
             FlowCapableNodeConnector flowCapableNodeConnectorNew,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         LOG.debug("Updating interface state information for interface: {}", interfaceName);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         Interface.OperStatus operStatusNew = InterfaceManagerCommonUtils.getOpState(flowCapableNodeConnectorNew);
         MacAddress macAddressNew = flowCapableNodeConnectorNew.getHardwareAddress();
@@ -55,7 +54,7 @@ public class OvsInterfaceStateUpdateHelper {
 
         if (!opstateModified && !hardwareAddressModified) {
             LOG.debug("If State entry for port: {} Not Modified.", interfaceName);
-            return futures;
+            return Collections.emptyList();
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
@@ -70,7 +69,7 @@ public class OvsInterfaceStateUpdateHelper {
 
         if (!opstateModified && !hardwareAddressModified) {
             LOG.debug("If State entry for port: {} Not Modified.", interfaceName);
-            return futures;
+            return Collections.emptyList();
         }
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         if (hardwareAddressModified) {
@@ -89,8 +88,7 @@ public class OvsInterfaceStateUpdateHelper {
                     iface.getName(), operStatusNew);
         }
 
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 
     public static void updateInterfaceStateOnNodeRemove(String interfaceName,

@@ -11,7 +11,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -54,9 +54,8 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         cleanupExcessIds();
-        return futures;
+        return Collections.emptyList();
     }
 
     private void cleanupExcessIds()

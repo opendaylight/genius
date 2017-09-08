@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -705,10 +703,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             }
             WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
             IfmUtil.updateInterfaceParentRef(writeTransaction, interfaceName, parentInterfaceName);
-            CheckedFuture<Void, TransactionCommitFailedException> submitFuture = writeTransaction.submit();
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(submitFuture);
-            return futures;
+            return Collections.singletonList(writeTransaction.submit());
         }
     }
 
