@@ -174,7 +174,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
         ItmTunnelUpdateWorker(Interface originalIface, Interface updatedIface) {
             this.updatedIface = updatedIface;
-            this.originalIface = updatedIface;
+            this.originalIface = originalIface;
         }
 
         @Override
