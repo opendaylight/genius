@@ -31,7 +31,7 @@ public class HwVTEPInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceStateUpdateHelper.class);
 
     public static List<ListenableFuture<Void>> updatePhysicalSwitch(DataBroker dataBroker,
-            InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew, Tunnels tunnelsOld) {
+            InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
         LOG.debug("updating physical switch for tunnels");
         String interfaceName = InterfaceMetaUtils
                 .getInterfaceForTunnelInstanceIdentifier(tunnelsInstanceIdentifier.toString(), dataBroker);

@@ -382,11 +382,9 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 byte[] srcMac = ethernet.getSourceMACAddress();
                 byte[] dstMac = ethernet.getDestinationMACAddress();
 
-                NodeConnectorRef ref = packetReceived.getIngress();
-
                 Metadata metadata = packetReceived.getMatch().getMetadata();
 
-                String interfaceName = getInterfaceName(ref, metadata, dataBroker);
+                String interfaceName = getInterfaceName(metadata);
 
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr, srcMac);
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(), NWUtil.toStringMacAddress(srcMac));
@@ -422,7 +420,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         return result;
     }
 
-    private String getInterfaceName(NodeConnectorRef ref, Metadata metadata, DataBroker dataBroker2)
+    private String getInterfaceName(Metadata metadata)
             throws InterruptedException, ExecutionException {
         LOG.debug("metadata received is {} ", metadata);
 

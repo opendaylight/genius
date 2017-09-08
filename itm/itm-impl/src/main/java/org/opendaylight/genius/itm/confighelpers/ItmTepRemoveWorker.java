@@ -50,7 +50,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        futures.addAll(ItmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService, mdsalManager,
+        futures.addAll(ItmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, mdsalManager,
                 delDpnList, meshedDpnList));
         LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",
                 delDpnList, meshedDpnList);
@@ -68,12 +68,12 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
                 }
             }
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
-                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, idManagerService,
+                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker,
                         dpnDeleteList , meshedDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
             }
         }
 
-        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, idManagerService,delDpnList,
+        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, delDpnList,
                 cfgdHwVteps, this.originalTZone));
         return futures ;
     }

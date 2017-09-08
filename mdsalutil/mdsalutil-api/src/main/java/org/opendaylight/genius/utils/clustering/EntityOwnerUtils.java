@@ -72,14 +72,24 @@ public final class EntityOwnerUtils {
         }
     }
 
-    private static String getEntity(String entityType, String entityName) {
+    private static String getEntity(String entityType) {
         return entityType;
     }
 
+    /**
+     * Determine whether we're the entity owner.
+     *
+     * @deprecated Use {@link #amIEntityOwner(String)}.
+     */
+    @Deprecated
     public static boolean amIEntityOwner(String entityType, String entityName) {
+        return amIEntityOwner(entityType);
+    }
+
+    public static boolean amIEntityOwner(String entityType) {
         ConcurrentMap<String, Boolean> entityOwnerCache = (ConcurrentMap<String, Boolean>) CacheUtil
                 .getCache(ENTITY_OWNER_CACHE);
-        String entity = getEntity(entityType, entityName);
+        String entity = getEntity(entityType);
         boolean ret = false;
         if (entityOwnerCache != null) {
             if (entityOwnerCache.get(entity) != null) {
@@ -126,17 +136,17 @@ public final class EntityOwnerUtils {
                     ownershipChange.isOwner()));
             if (ownershipChange.hasOwner() && ownershipChange.isOwner()) {
                 LOG.info("entity ownership change became owner for type {}", entityType);
-                updateEntityOwner(entityType, entityName, Boolean.TRUE);
+                updateEntityOwner(entityType, Boolean.TRUE);
             } else {
                 LOG.info("entity ownership lost ownership for type {} ", entityType);
-                updateEntityOwner(entityType, entityName, Boolean.FALSE);
+                updateEntityOwner(entityType, Boolean.FALSE);
             }
         }
 
-        private void updateEntityOwner(String entityType, String entityName, Boolean isOwner) {
+        private void updateEntityOwner(String entityType, Boolean isOwner) {
             ConcurrentMap<String, Boolean> entityOwnerCache = (ConcurrentMap<String, Boolean>) CacheUtil
                     .getCache(ENTITY_OWNER_CACHE);
-            String entity = getEntity(entityType, entityName);
+            String entity = getEntity(entityType);
             if (entityOwnerCache != null) {
                 LOG.trace("updating entity owner {} {}", isOwner, entity);
                 entityOwnerCache.put(entity, isOwner);

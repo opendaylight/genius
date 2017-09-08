@@ -653,7 +653,7 @@ public class InterfaceManagerConfigurationTest {
             interfaceManager.getInterfaceInfoFromOperationalDSCache(INTERFACE_NAME));
 
         // 16. Test creation of VLAN interface
-        interfaceManager.createVLANInterface(INTERFACE_NAME_1, null, DPN_ID_1, null, INTERFACE_NAME_1,
+        interfaceManager.createVLANInterface(INTERFACE_NAME_1, null, null, INTERFACE_NAME_1,
             IfL2vlan.L2vlanMode.Trunk);
         Thread.sleep(1000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
@@ -672,7 +672,7 @@ public class InterfaceManagerConfigurationTest {
                 .buildId(INTERFACE_NAME_1)).checkedGet().get());
 
         // 18. Test creation of external l2vlan interfaces
-        interfaceManager.createVLANInterface(INTERFACE_NAME_2, null, DPN_ID_1, null, INTERFACE_NAME_2,
+        interfaceManager.createVLANInterface(INTERFACE_NAME_2, null, null, INTERFACE_NAME_2,
             IfL2vlan.L2vlanMode.Trunk, true);
         Thread.sleep(2000);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);

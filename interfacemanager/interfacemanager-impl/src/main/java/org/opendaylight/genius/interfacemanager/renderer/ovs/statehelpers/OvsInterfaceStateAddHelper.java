@@ -91,7 +91,7 @@ public class OvsInterfaceStateAddHelper {
                 .getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
         if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
-                && !validateTunnelPortAttributes(nodeConnectorId, iface, interfaceName)) {
+                && !validateTunnelPortAttributes(nodeConnectorId, iface)) {
             return futures;
         }
 
@@ -129,7 +129,7 @@ public class OvsInterfaceStateAddHelper {
                 .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo,
             String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager,
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex,
                 NwConstants.ADD_FLOW);
         FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
@@ -141,7 +141,7 @@ public class OvsInterfaceStateAddHelper {
 
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface, String interfaceName) {
+                .ietf.interfaces.rev140508.interfaces.Interface iface) {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
             ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);

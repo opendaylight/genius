@@ -163,7 +163,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            return ItmTunnelStateRemoveHelper.removeTunnel(iface,ifaceManager, broker);
+            return ItmTunnelStateRemoveHelper.removeTunnel(iface, broker);
         }
 
     }
@@ -179,7 +179,7 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            return ItmTunnelStateUpdateHelper.updateTunnel(originalIface, updatedIface, ifaceManager, broker);
+            return ItmTunnelStateUpdateHelper.updateTunnel(updatedIface, broker);
         }
 
     }

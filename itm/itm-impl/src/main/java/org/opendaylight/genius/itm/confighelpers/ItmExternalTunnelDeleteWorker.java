@@ -19,7 +19,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
@@ -44,7 +43,7 @@ public class ItmExternalTunnelDeleteWorker {
         throw new IllegalStateException("Utility class");
     }
 
-    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService,
+    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker,
             List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList, IpAddress extIp,
             Class<? extends TunnelTypeBase> tunType) {
         LOG.trace(" Delete Tunnels towards DC Gateway with Ip  {}", extIp);
@@ -62,7 +61,7 @@ public class ItmExternalTunnelDeleteWorker {
                     meshedDpnList);
             if (originalTzMembership.size() == 1) {
                 String interfaceName = firstEndPt.getInterfaceName();
-                String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName,
+                String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
                         new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()),
                         tunType.getName());
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -76,7 +75,7 @@ public class ItmExternalTunnelDeleteWorker {
                 LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
                 ItmUtils.itmCache.removeExternalTunnel(trunkInterfaceName);
                 // Release the Ids for the trunk interface Name
-                ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, interfaceName,
+                ItmUtils.releaseIdForTrunkInterfaceName(interfaceName,
                         new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()),
                         tunType.getName());
             }
@@ -84,7 +83,7 @@ public class ItmExternalTunnelDeleteWorker {
         return Collections.singletonList(transaction.submit());
     }
 
-    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService,
+    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker,
             List<DPNTEPsInfo> dpnTepsList, IpAddress extIp, Class<? extends TunnelTypeBase> tunType) {
         LOG.trace(" Delete Tunnels towards DC Gateway with Ip  {}", extIp);
 
@@ -96,7 +95,7 @@ public class ItmExternalTunnelDeleteWorker {
         for (DPNTEPsInfo teps : dpnTepsList) {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             String interfaceName = firstEndPt.getInterfaceName();
-            String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, interfaceName,
+            String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
                     new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
@@ -109,20 +108,20 @@ public class ItmExternalTunnelDeleteWorker {
             LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
             ItmUtils.itmCache.removeExternalTunnel(trunkInterfaceName);
             // Release the Ids for the trunk interface Name
-            ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, interfaceName,
+            ItmUtils.releaseIdForTrunkInterfaceName(interfaceName,
                     new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());
         }
         return Collections.singletonList(writeTransaction.submit());
     }
 
     public static List<ListenableFuture<Void>> deleteHwVtepsTunnels(DataBroker dataBroker,
-            IdManagerService idManagerService, List<DPNTEPsInfo> delDpnList, List<HwVtep> cfgdHwVteps,
+            List<DPNTEPsInfo> delDpnList, List<HwVtep> cfgdHwVteps,
             TransportZone originalTZone) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
         if (delDpnList != null || cfgdHwVteps != null) {
-            tunnelsDeletion(delDpnList, cfgdHwVteps, originalTZone, idManagerService, futures, writeTransaction,
+            tunnelsDeletion(delDpnList, cfgdHwVteps, originalTZone, writeTransaction,
                     dataBroker);
         }
         futures.add(writeTransaction.submit());
@@ -130,7 +129,7 @@ public class ItmExternalTunnelDeleteWorker {
     }
 
     private static void tunnelsDeletion(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdhwVteps,
-            TransportZone originalTZone, IdManagerService idManagerService, List<ListenableFuture<Void>> futures,
+            TransportZone originalTZone,
             WriteTransaction writeTransaction, DataBroker dataBroker) {
         if (cfgdDpnList != null) {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
@@ -138,7 +137,7 @@ public class ItmExternalTunnelDeleteWorker {
                     for (TunnelEndPoints srcTep : dpn.getTunnelEndPoints()) {
                         for (TzMembership zone : srcTep.getTzMembership()) {
                             deleteTunnelsInTransportZone(zone.getZoneName(), dpn, srcTep, cfgdhwVteps, dataBroker,
-                                    idManagerService, writeTransaction, futures);
+                                    writeTransaction);
                         }
                     }
                 }
@@ -150,9 +149,9 @@ public class ItmExternalTunnelDeleteWorker {
                 LOG.trace("processing hwTep from list {}", hwTep);
                 for (HwVtep hwTepRemote : cfgdhwVteps) {
                     if (!hwTep.getHwIp().equals(hwTepRemote.getHwIp())) {
-                        deleteTrunksTorTor(dataBroker, idManagerService, hwTep.getTopoId(), hwTep.getNodeId(),
+                        deleteTrunksTorTor(dataBroker, hwTep.getTopoId(), hwTep.getNodeId(),
                                 hwTep.getHwIp(), hwTepRemote.getTopoId(), hwTepRemote.getNodeId(),
-                                hwTepRemote.getHwIp(), TunnelTypeVxlan.class, writeTransaction, futures);
+                                hwTepRemote.getHwIp(), TunnelTypeVxlan.class, writeTransaction);
                     }
                 }
                 // do we need to check tunnel type?
@@ -170,10 +169,9 @@ public class ItmExternalTunnelDeleteWorker {
                                 }
                                 // TOR-TOR
                                 LOG.trace("deleting tor-tor {} and {}", hwTep, hwVtepDS);
-                                deleteTrunksTorTor(dataBroker, idManagerService, hwTep.getTopoId(), hwTep.getNodeId(),
+                                deleteTrunksTorTor(dataBroker, hwTep.getTopoId(), hwTep.getNodeId(),
                                         hwTep.getHwIp(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
-                                        hwVtepDS.getIpAddress(), originalTZone.getTunnelType(), writeTransaction,
-                                        futures);
+                                        hwVtepDS.getIpAddress(), originalTZone.getTunnelType(), writeTransaction);
 
                             }
                         }
@@ -183,9 +181,9 @@ public class ItmExternalTunnelDeleteWorker {
                                 LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
                                 String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(),
                                         sub.getVlanId());
-                                deleteTrunksOvsTor(dataBroker, idManagerService, vtep.getDpnId(), parentIf,
+                                deleteTrunksOvsTor(dataBroker, vtep.getDpnId(), parentIf,
                                         vtep.getIpAddress(), hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
-                                        originalTZone.getTunnelType(), writeTransaction, futures);
+                                        originalTZone.getTunnelType(), writeTransaction);
                             }
                         }
                     }
@@ -195,8 +193,7 @@ public class ItmExternalTunnelDeleteWorker {
     }
 
     private static void deleteTunnelsInTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints srcTep,
-            List<HwVtep> cfgdhwVteps, DataBroker dataBroker, IdManagerService idManagerService,
-            WriteTransaction writeTransaction, List<ListenableFuture<Void>> futures) {
+            List<HwVtep> cfgdhwVteps, DataBroker dataBroker, WriteTransaction writeTransaction) {
         InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(zoneName)).build();
         Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
@@ -209,9 +206,9 @@ public class ItmExternalTunnelDeleteWorker {
                     if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
                         for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
                             // OVS-TOR-OVS
-                            deleteTrunksOvsTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
+                            deleteTrunksOvsTor(dataBroker, dpn.getDPNID(), srcTep.getInterfaceName(),
                                     srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
-                                    hwVtepDS.getIpAddress(), tzone.getTunnelType(), writeTransaction, futures);
+                                    hwVtepDS.getIpAddress(), tzone.getTunnelType(), writeTransaction);
 
                         }
                     }
@@ -219,24 +216,23 @@ public class ItmExternalTunnelDeleteWorker {
             }
             if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
                 for (HwVtep hwVtep : cfgdhwVteps) {
-                    deleteTrunksOvsTor(dataBroker, idManagerService, dpn.getDPNID(), srcTep.getInterfaceName(),
+                    deleteTrunksOvsTor(dataBroker, dpn.getDPNID(), srcTep.getInterfaceName(),
                             srcTep.getIpAddress(), hwVtep.getTopoId(), hwVtep.getNodeId(), hwVtep.getHwIp(),
-                            TunnelTypeVxlan.class, writeTransaction, futures);
+                            TunnelTypeVxlan.class, writeTransaction);
 
                 }
             }
         }
     }
 
-    private static void deleteTrunksOvsTor(DataBroker dataBroker, IdManagerService idManagerService, BigInteger dpnid,
+    private static void deleteTrunksOvsTor(DataBroker dataBroker, BigInteger dpnid,
             String interfaceName, IpAddress cssIpAddress, String topologyId, String nodeId, IpAddress hwIpAddress,
-            Class<? extends TunnelTypeBase> tunType, WriteTransaction transaction,
-            List<ListenableFuture<Void>> futures) {
+            Class<? extends TunnelTypeBase> tunType, WriteTransaction transaction) {
         // OVS-TOR
         if (trunkExists(dpnid.toString(), nodeId, tunType, dataBroker)) {
             LOG.trace("deleting tunnel from {} to {} ", dpnid.toString(), nodeId);
             String parentIf = interfaceName;
-            String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
+            String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
                     new String(cssIpAddress.getValue()), new String(hwIpAddress.getValue()), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(fwdTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
@@ -252,7 +248,7 @@ public class ItmExternalTunnelDeleteWorker {
             LOG.trace("deleting tunnel from {} to {} ", nodeId, dpnid.toString());
 
             String parentIf = ItmUtils.getHwParentIf(topologyId, nodeId);
-            String revTrunkIf = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
+            String revTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
                     new String(hwIpAddress.getValue()), new String(cssIpAddress.getValue()), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(revTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
@@ -265,15 +261,14 @@ public class ItmExternalTunnelDeleteWorker {
         }
     }
 
-    private static void deleteTrunksTorTor(DataBroker dataBroker, IdManagerService idManagerService, String topologyId1,
+    private static void deleteTrunksTorTor(DataBroker dataBroker, String topologyId1,
             String nodeId1, IpAddress hwIpAddress1, String topologyId2, String nodeId2, IpAddress hwIpAddress2,
-            Class<? extends TunnelTypeBase> tunType, WriteTransaction transaction,
-            List<ListenableFuture<Void>> futures) {
+            Class<? extends TunnelTypeBase> tunType, WriteTransaction transaction) {
         // TOR1-TOR2
         if (trunkExists(nodeId1, nodeId2, tunType, dataBroker)) {
             LOG.trace("deleting tunnel from {} to {} ", nodeId1, nodeId2);
             String parentIf = ItmUtils.getHwParentIf(topologyId1, nodeId1);
-            String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
+            String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
                     new String(hwIpAddress1.getValue()), new String(hwIpAddress2.getValue()), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(fwdTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
@@ -289,7 +284,7 @@ public class ItmExternalTunnelDeleteWorker {
             LOG.trace("deleting tunnel from {} to {} ", nodeId2, nodeId1);
 
             String parentIf = ItmUtils.getHwParentIf(topologyId2, nodeId2);
-            String revTrunkIf = ItmUtils.getTrunkInterfaceName(idManagerService, parentIf,
+            String revTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
                     new String(hwIpAddress2.getValue()), new String(hwIpAddress1.getValue()), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(revTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);

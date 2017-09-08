@@ -698,7 +698,7 @@ public class AlivenessMonitor
                                 if (protocolType == EtherTypes.Bfd) {
                                     LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
                                     ((HwVtepTunnelsStateHandler) alivenessProtocolHandlerRegistry.get(protocolType))
-                                            .resetMonitoringTask(info, true);
+                                            .resetMonitoringTask(true);
                                 } else {
                                     scheduleMonitoringTask(info, profile.getMonitorInterval());
                                 }
@@ -741,7 +741,7 @@ public class AlivenessMonitor
         if (protocolType == EtherTypes.Bfd) {
             LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
             ((HwVtepTunnelsStateHandler) alivenessProtocolHandlerRegistry.get(protocolType))
-                    .resetMonitoringTask(monitoringInfo, false);
+                    .resetMonitoringTask(false);
             return true;
         }
         ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);

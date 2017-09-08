@@ -19,6 +19,7 @@ import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandl
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -53,9 +54,7 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
     }
     // @formatter:on
 
-    protected Optional<byte[]> getMacAddress(
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                .interfaces.rev140508.interfaces.state.Interface interfaceState, String interfaceName) {
+    protected Optional<byte[]> getMacAddress(Interface interfaceState) {
         String macAddress = interfaceState.getPhysAddress().getValue();
 
         if (!Strings.isNullOrEmpty(macAddress)) {

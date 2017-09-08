@@ -55,10 +55,28 @@ public interface IInterfaceManager {
 
     Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
 
+    /**
+     * Create a VLAN interface.
+     *
+     * @deprecated Use {@link #createVLANInterface(String, String, Integer, String, IfL2vlan.L2vlanMode)}.
+     */
+    @Deprecated
     void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
+    void createVLANInterface(String interfaceName, String portName, Integer vlanId, String description,
+            IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
+
+    /**
+     * Create a VLAN interface.
+     *
+     * @deprecated Use {@link #createVLANInterface(String, String, Integer, String, IfL2vlan.L2vlanMode, boolean)}.
+     */
+    @Deprecated
     void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId, String description,
+            IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
+
+    void createVLANInterface(String interfaceName, String portName, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
     boolean isServiceBoundOnInterfaceForIngress(short servicePriority, String interfaceName);
