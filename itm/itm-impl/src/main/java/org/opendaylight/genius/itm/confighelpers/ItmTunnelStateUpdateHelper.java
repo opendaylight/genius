@@ -8,7 +8,7 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -31,7 +31,6 @@ public class ItmTunnelStateUpdateHelper {
                                                             IInterfaceManager ifaceManager,
                                                             DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
-        final List<ListenableFuture<Void>> futures = new ArrayList<>();
         final WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
 
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(updated);
@@ -63,7 +62,6 @@ public class ItmTunnelStateUpdateHelper {
             ITMBatchingUtils.update(stListId, stList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         }
 
-        futures.add(writeTransaction.submit());
-        return futures;
+        return Collections.singletonList(writeTransaction.submit());
     }
 }

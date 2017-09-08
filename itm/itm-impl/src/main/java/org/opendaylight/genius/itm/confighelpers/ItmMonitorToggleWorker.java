@@ -8,7 +8,7 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -44,12 +44,10 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
     }
 
     @Override public List<ListenableFuture<Void>> call() {
-        List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         LOG.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         toggleTunnelMonitoring(transaction);
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 
     private void toggleTunnelMonitoring(WriteTransaction transaction) {
