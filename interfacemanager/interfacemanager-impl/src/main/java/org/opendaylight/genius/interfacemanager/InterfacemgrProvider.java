@@ -89,7 +89,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
-    private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
+    private final InterfaceStatusMonitor interfaceStatusMonitor;
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
@@ -100,18 +100,21 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+                                final  InterfaceStatusMonitor interfaceStatusMonitor) {
         this.dataBroker = dataBroker;
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
+        this.interfaceStatusMonitor = interfaceStatusMonitor;
     }
 
     @PostConstruct
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            INTERFACE_STATUS_MONITOR.registerMbean();
+            // TODO remove this mbean registration once all modules migrate to use diagstatus
+            interfaceStatusMonitor.registerMbean();
             createIdPool();
             IfmClusterUtils.registerEntityForOwnership(this, this.entityOwnershipService);
             BatchingUtils.registerWithBatchManager(this.dataBroker);
@@ -119,9 +122,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
 
-            INTERFACE_STATUS_MONITOR.reportStatus("OPERATIONAL");
+            interfaceStatusMonitor.reportStatus("OPERATIONAL");
         } catch (Exception e) {
-            INTERFACE_STATUS_MONITOR.reportStatus("ERROR");
+            interfaceStatusMonitor.reportStatus("ERROR");
             throw e;
         }
         LOG.info("InterfacemgrProvider Started");
@@ -130,7 +133,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     @PreDestroy
     public void close() throws Exception {
-        INTERFACE_STATUS_MONITOR.unregisterMbean();
+        interfaceStatusMonitor.unregisterMbean();
         LOG.info("InterfacemgrProvider Closed");
     }
 
