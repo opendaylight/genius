@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,11 +120,10 @@ public class SouthboundUtils {
             }
         };
 
-    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName,
-            DataBroker dataBroker, List<ListenableFuture<Void>> futures) {
+    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
-            addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
+            addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }
     }
 
@@ -134,8 +132,7 @@ public class SouthboundUtils {
      * DS
      */
     public static void addAllPortsToBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
-            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
-            List<ListenableFuture<Void>> futures) {
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew) {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
@@ -147,7 +144,7 @@ public class SouthboundUtils {
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName, dataBroker);
+                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
                     }
                     if (SouthboundUtils.isOfTunnel(ifTunnel)) {
                         LOG.debug("Using OFTunnel. Only one tunnel port will be added");
@@ -161,7 +158,7 @@ public class SouthboundUtils {
     }
 
     private static void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
-            String portName, DataBroker dataBroker) {
+            String portName) {
         LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
 
         Class<? extends InterfaceTypeBase> type = TUNNEL_TYPE_MAP.get(ifTunnel.getTunnelInterfaceType());
@@ -312,8 +309,7 @@ public class SouthboundUtils {
         return terminationPointPath;
     }
 
-    public static void removeTerminationEndPoint(DataBroker dataBroker, InstanceIdentifier<?> bridgeIid,
-            String interfaceName) {
+    public static void removeTerminationEndPoint(InstanceIdentifier<?> bridgeIid, String interfaceName) {
         LOG.debug("removing termination point for {}", interfaceName);
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);

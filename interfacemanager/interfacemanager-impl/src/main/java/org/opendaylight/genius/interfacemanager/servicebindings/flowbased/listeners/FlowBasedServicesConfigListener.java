@@ -108,8 +108,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         switch (dataObjectModification.getModificationType()) {
             case DELETE:
-                remove(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
-                    boundServicesBefore.getKey()), boundServicesBefore, boundServices);
+                remove(servicesInfoKey, boundServicesBefore, boundServices);
                 break;
             case SUBTREE_MODIFIED:
                 update(getBoundServicesInstanceIdentifier(rootIdentifier, boundServicesBefore.getKey()),
@@ -117,8 +116,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 break;
             case WRITE:
                 if (boundServicesBefore == null) {
-                    add(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
-                        boundServicesAfter.getKey()), boundServicesAfter, boundServices);
+                    add(servicesInfoKey, boundServicesAfter, boundServices);
                 }
                 break;
             default:
@@ -128,8 +126,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         }
     }
 
-    protected void remove(ServicesInfoKey serviceKey, InstanceIdentifier<BoundServices> key, BoundServices
-        boundServiceOld, List<BoundServices> boundServicesList) {
+    protected void remove(ServicesInfoKey serviceKey, BoundServices boundServiceOld,
+            List<BoundServices> boundServicesList) {
         if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
@@ -153,8 +151,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         }
     }
 
-    protected void add(ServicesInfoKey serviceKey, InstanceIdentifier<BoundServices> key, BoundServices
-        boundServicesNew, List<BoundServices> boundServicesList) {
+    protected void add(ServicesInfoKey serviceKey, BoundServices boundServicesNew,
+            List<BoundServices> boundServicesList) {
         if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }

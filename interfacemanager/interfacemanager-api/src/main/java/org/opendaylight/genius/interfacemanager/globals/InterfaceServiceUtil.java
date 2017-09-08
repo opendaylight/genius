@@ -45,17 +45,29 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class InterfaceServiceUtil {
 
+    /**
+     * Build a service information structure.
+     *
+     * @deprecated Use {@link #buildServiceInfo(String, int)}.
+     */
+    @Deprecated
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie, List<Instruction> instructions) {
-        List<BoundServices> boundService = new ArrayList<>();
-        boundService.add(new BoundServicesBuilder().setServicePriority((short) servicePriority)
-                .setServiceName(serviceName).build());
-        return new ServicesInfoBuilder().setBoundServices(boundService)
-                .setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
+        return buildServiceInfo(serviceName, servicePriority);
     }
 
+    /**
+     * Build a service information structure.
+     *
+     * @deprecated Use {@link #buildServiceInfo(String, int)}.
+     */
+    @Deprecated
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
             BigInteger cookie) {
+        return buildServiceInfo(serviceName, servicePriority);
+    }
+
+    public static ServicesInfo buildServiceInfo(String serviceName, int servicePriority) {
         List<BoundServices> boundService = new ArrayList<>();
         boundService.add(new BoundServicesBuilder().setServicePriority((short) servicePriority)
                 .setServiceName(serviceName).build());

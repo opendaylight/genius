@@ -225,7 +225,7 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(key,
+            List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(
                     alivenessMonitorService, dataBroker, interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
@@ -284,7 +284,7 @@ public class InterfaceInventoryStateListener
 
             futures = OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager,
                     alivenessMonitorService, nodeConnectorIdNew, nodeConnectorIdOld, dataBroker, interfaceName,
-                    fcNodeConnectorOld, isNodePresent, parentInterface);
+                    fcNodeConnectorOld, isNodePresent);
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {

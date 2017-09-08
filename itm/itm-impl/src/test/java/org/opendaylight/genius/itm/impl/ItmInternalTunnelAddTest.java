@@ -235,14 +235,14 @@ public class ItmInternalTunnelAddTest {
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
-        trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp1,tepIp2,
+        trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType1.getName());
-        trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp2,tepIp1,
+        trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp2,tepIp1,
                 tunnelType1.getName());
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
-        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan,
+        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
                 meshDpnListVxlan, itmConfig);
 
         //Add some verifications
@@ -268,14 +268,14 @@ public class ItmInternalTunnelAddTest {
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
-        trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp1,tepIp2,
+        trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType2.getName());
-        trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp2,tepIp1,
+        trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp2,tepIp1,
                 tunnelType2.getName());
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListGre,
+        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListGre,
                 meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
@@ -301,14 +301,14 @@ public class ItmInternalTunnelAddTest {
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
-        trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp1,tepIp2,
+        trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType1.getName());
-        trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(idManagerService,parentInterfaceName,tepIp2,tepIp1,
+        trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp2,tepIp1,
                 tunnelType2.getName());
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, idManagerService, mdsalApiManager, cfgdDpnListVxlan,
+        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
                 meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,

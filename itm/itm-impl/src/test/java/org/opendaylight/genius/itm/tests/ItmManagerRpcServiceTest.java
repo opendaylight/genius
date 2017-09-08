@@ -170,7 +170,7 @@ public class ItmManagerRpcServiceTest {
         dpId1List.add(ItmTestConstants.DP_ID_1);
         stringList.add(ItmTestConstants.SOURCE_DEVICE_2);
 
-        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, ItmTestConstants.PARENT_INTERFACE_NAME,
+        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME,
                 ItmTestConstants.IP_ADDRESS_3.getIpv4Address().getValue(),
                 ItmTestConstants.IP_ADDRESS_3.getIpv4Address().getValue(),
                 ItmTestConstants.TUNNEL_TYPE_VXLAN.getName());

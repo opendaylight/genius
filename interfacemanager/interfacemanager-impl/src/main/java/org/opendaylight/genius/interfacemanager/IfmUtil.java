@@ -467,7 +467,17 @@ public class IfmUtil {
         return interfaceType;
     }
 
+    /**
+     * Retrieve the VLAN interface information.
+     *
+     * @deprecated Use {@link #getVlanInterfaceInfo(Interface, BigInteger)}.
+     */
+    @Deprecated
     public static VlanInterfaceInfo getVlanInterfaceInfo(String interfaceName, Interface iface, BigInteger dpId) {
+        return getVlanInterfaceInfo(iface, dpId);
+    }
+
+    public static VlanInterfaceInfo getVlanInterfaceInfo(Interface iface, BigInteger dpId) {
         short vlanId = 0;
         String portName = null;
         IfL2vlan vlanIface = iface.getAugmentation(IfL2vlan.class);

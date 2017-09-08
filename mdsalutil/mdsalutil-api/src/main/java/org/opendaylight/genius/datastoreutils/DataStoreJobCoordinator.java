@@ -279,7 +279,7 @@ public class DataStoreJobCoordinator {
             try {
                 futures = jobEntry.getMainWorker().call();
                 long jobExecutionTime = System.currentTimeMillis() - jobStartTimestamp;
-                printJobs(jobEntry.getKey(), jobExecutionTime);
+                printJobs(jobExecutionTime);
             } catch (Throwable e) {
                 LOG.error("Exception when executing jobEntry: {}", jobEntry, e);
             }
@@ -294,7 +294,7 @@ public class DataStoreJobCoordinator {
             jobEntry.setFutures(futures);
         }
 
-        private void printJobs(String key, long jobExecutionTime) {
+        private void printJobs(long jobExecutionTime) {
             if (jobExecutionTime > LONG_JOBS_THRESHOLD) {
                 LOG.warn("Job {} took {}ms to complete", jobEntry.getKey(), jobExecutionTime);
                 return;

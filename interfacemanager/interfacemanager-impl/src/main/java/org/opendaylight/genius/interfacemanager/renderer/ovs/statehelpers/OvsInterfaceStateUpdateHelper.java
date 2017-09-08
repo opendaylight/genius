@@ -31,8 +31,8 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateState(InstanceIdentifier<FlowCapableNodeConnector> key,
-            AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker, String interfaceName,
+    public static List<ListenableFuture<Void>> updateState(AlivenessMonitorService alivenessMonitorService,
+            DataBroker dataBroker, String interfaceName,
             FlowCapableNodeConnector flowCapableNodeConnectorNew,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         LOG.debug("Updating interface state information for interface: {}", interfaceName);
@@ -80,7 +80,7 @@ public class OvsInterfaceStateUpdateHelper {
         }
         // modify the attributes in interface operational DS
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        handleInterfaceStateUpdates(iface, transaction, dataBroker, ifaceBuilder, opstateModified, interfaceName,
+        handleInterfaceStateUpdates(iface, transaction, ifaceBuilder, opstateModified, interfaceName,
                 flowCapableNodeConnectorNew.getName(), operStatusNew);
 
         // start/stop monitoring based on opState
@@ -102,7 +102,7 @@ public class OvsInterfaceStateUpdateHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceName, dataBroker);
-        handleInterfaceStateUpdates(iface, transaction, dataBroker, ifaceBuilder, true, interfaceName,
+        handleInterfaceStateUpdates(iface, transaction, ifaceBuilder, true, interfaceName,
                 flowCapableNodeConnector.getName(), Interface.OperStatus.Unknown);
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
             handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
@@ -113,7 +113,7 @@ public class OvsInterfaceStateUpdateHelper {
     public static void handleInterfaceStateUpdates(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface,
-            WriteTransaction transaction, DataBroker dataBroker, InterfaceBuilder ifaceBuilder, boolean opStateModified,
+            WriteTransaction transaction, InterfaceBuilder ifaceBuilder, boolean opStateModified,
             String interfaceName, String portName, Interface.OperStatus opState) {
         // if interface config DS is null, do the update only for the
         // lower-layer-interfaces

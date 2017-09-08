@@ -219,7 +219,18 @@ public final class InterfaceManagerCommonUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orNull();
     }
 
+    /**
+     * Build the tunnel ingress flow.
+     *
+     * @deprecated Use {@link #makeTunnelIngressFlow(IMdsalApiManager, IfTunnel, BigInteger, long, String, int, int)}.
+     */
+    @Deprecated
     public static void makeTunnelIngressFlow(List<ListenableFuture<Void>> futures, IMdsalApiManager mdsalApiManager,
+            IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
+        makeTunnelIngressFlow(mdsalApiManager, tunnel, dpnId, portNo, interfaceName, ifIndex, addOrRemoveFlow);
+    }
+
+    public static void makeTunnelIngressFlow(IMdsalApiManager mdsalApiManager,
             IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
 
         if (tunnel != null && tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
@@ -382,7 +393,7 @@ public final class InterfaceManagerCommonUtils {
         // on id allocation even when multiple southbound port_up events come in
         // one shot
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
-        InterfaceMetaUtils.createLportTagInterfaceMap(interfaceOperShardTransaction, interfaceName, ifIndex);
+        InterfaceMetaUtils.createLportTagInterfaceMap(interfaceName, ifIndex);
         if (ifState == null) {
             LOG.debug("could not retrieve interface state corresponding to {}, processing will be resumed when "
                     + "interface-state is available", interfaceName);
@@ -436,7 +447,7 @@ public final class InterfaceManagerCommonUtils {
         }
 
         // Update the DpnToInterfaceList OpDS
-        createOrUpdateDpnToInterface(dpId, interfaceName,interfaceOperShardTransaction);
+        createOrUpdateDpnToInterface(dpId, interfaceName);
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -455,7 +466,7 @@ public final class InterfaceManagerCommonUtils {
             // retrieve if-index only for northbound configured interfaces
             ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
             ifaceBuilder.setIfIndex(ifIndex);
-            InterfaceMetaUtils.createLportTagInterfaceMap(transaction, interfaceName, ifIndex);
+            InterfaceMetaUtils.createLportTagInterfaceMap(interfaceName, ifIndex);
         }
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
@@ -492,7 +503,7 @@ public final class InterfaceManagerCommonUtils {
         if (nodeConnectorId != null) {
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
             // Update the DpnToInterfaceList OpDS
-            createOrUpdateDpnToInterface(dpId, interfaceName, transaction);
+            createOrUpdateDpnToInterface(dpId, interfaceName);
         }
         return ifState;
     }
@@ -658,7 +669,17 @@ public final class InterfaceManagerCommonUtils {
         return matcher.matches();
     }
 
+    /**
+     * Create or update a DPN.
+     *
+     * @deprecated Use {@link #createOrUpdateDpnToInterface(BigInteger, String)}.
+     */
+    @Deprecated
     public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName, WriteTransaction transaction) {
+        createOrUpdateDpnToInterface(dpId, infName);
+    }
+
+    public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
         InstanceIdentifier<InterfaceNameEntry> intfid = InstanceIdentifier.builder(DpnToInterfaceList.class)

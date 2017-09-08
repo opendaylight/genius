@@ -29,8 +29,19 @@ import org.slf4j.LoggerFactory;
 public class HwVTEPInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceStateUpdateHelper.class);
 
+    /**
+     * Update the physical switch.
+     *
+     * @deprecated Use {@link #updatePhysicalSwitch(DataBroker, InstanceIdentifier, Tunnels)}.
+     */
+    @Deprecated
     public static List<ListenableFuture<Void>> updatePhysicalSwitch(DataBroker dataBroker,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew, Tunnels tunnelsOld) {
+        return updatePhysicalSwitch(dataBroker, tunnelsInstanceIdentifier, tunnelsNew);
+    }
+
+    public static List<ListenableFuture<Void>> updatePhysicalSwitch(DataBroker dataBroker,
+            InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("updating physical switch for tunnels");
         String interfaceName = InterfaceMetaUtils

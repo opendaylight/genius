@@ -239,7 +239,7 @@ public class ItmManagerRpcServiceTest {
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         when(idManagerService.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder
                 .<Void>success().build()));
-        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(idManagerService, tunnelInterfaceName, ipAddress1
+        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(tunnelInterfaceName, ipAddress1
                 .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)

@@ -217,7 +217,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             portNo = Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId));
         }
         if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
-            interfaceInfo = IfmUtil.getVlanInterfaceInfo(interfaceName, intf, dpId);
+            interfaceInfo = IfmUtil.getVlanInterfaceInfo(intf, dpId);
         } else if (interfaceType == InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE) {
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
@@ -364,11 +364,24 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
-        createVLANInterface(interfaceName, portName, dpId, vlanId, description, l2vlanMode, false);
+        createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode);
+    }
+
+    @Override
+    public void createVLANInterface(String interfaceName, String portName, Integer vlanId,
+            String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
+        createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode, false);
     }
 
     @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
+            String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal)
+            throws InterfaceAlreadyExistsException {
+        createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode, isExternal);
+    }
+
+    @Override
+    public void createVLANInterface(String interfaceName, String portName, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal)
             throws InterfaceAlreadyExistsException {
 

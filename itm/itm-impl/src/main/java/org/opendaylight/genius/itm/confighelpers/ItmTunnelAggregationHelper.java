@@ -27,7 +27,6 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -87,10 +86,10 @@ public class ItmTunnelAggregationHelper {
     }
 
     public void createLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag) {
-        Group group = prepareLogicalTunnelSelectGroup(srcDpnId, interfaceName, lportTag);
+        Group group = prepareLogicalTunnelSelectGroup(interfaceName, lportTag);
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} installed for {} srcDpnId {}",
                 group.getGroupId().getValue(), interfaceName, srcDpnId);
-        mdsalManager.syncInstallGroup(srcDpnId, group, ITMConstants.DELAY_TIME_IN_MILLISECOND);
+        mdsalManager.syncInstallGroup(srcDpnId, group);
     }
 
     public void updateLogicalTunnelSelectGroup(InterfaceParentEntry entry, DataBroker broker) {
@@ -166,23 +165,20 @@ public class ItmTunnelAggregationHelper {
         tunnelAggregationEnabled = tunnelAggregationConfigEnabled;
     }
 
-    private Group prepareLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag) {
+    private Group prepareLogicalTunnelSelectGroup(String interfaceName, int lportTag) {
         long groupId = interfaceManager.getLogicalTunnelSelectGroupId(lportTag);
-        Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
-                                           MDSALUtil.buildBucketLists(Collections.emptyList()));
-        return group;
+        return MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
+                                    MDSALUtil.buildBucketLists(Collections.emptyList()));
     }
 
-    private Bucket createBucket(String interfaceName, IfTunnel ifTunnel, ParentRefs parentRefs,
-                                       Integer ifIndex, int bucketId, int portNumber) {
+    private Bucket createBucket(String interfaceName, IfTunnel ifTunnel, int bucketId, int portNumber) {
         List<ActionInfo> listActionInfo = interfaceManager.getInterfaceEgressActions(interfaceName);
         if (listActionInfo == null || listActionInfo.isEmpty()) {
             LOG.warn("MULTIPLE_VxLAN_TUNNELS: could not build Egress bucket for {}", interfaceName);
         }
         Integer portWeight = ifTunnel.getWeight() != null ? ifTunnel.getWeight() : DEFAULT_WEIGHT;
-        Bucket buckt = MDSALUtil.buildBucket(MDSALUtil.buildActions(listActionInfo), portWeight, bucketId,
-                                             portNumber, MDSALUtil.WATCH_GROUP);
-        return buckt;
+        return MDSALUtil.buildBucket(MDSALUtil.buildActions(listActionInfo), portWeight, bucketId,
+                                     portNumber, MDSALUtil.WATCH_GROUP);
     }
 
     private void updateTunnelAggregationGroup(InterfaceParentEntry parentEntry) {
@@ -227,14 +223,12 @@ public class ItmTunnelAggregationHelper {
             int bucketId = interfaceChildEntries.indexOf(interfaceChildEntry);
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: updateTunnelAggregationGroup - add bucketId {} to groupId {}",
                     bucketId, groupId);
-            Bucket buckt = createBucket(curChildName, ifTunnel, parentRefs, ifInfo.getInterfaceTag(),
-                                        bucketId, ifInfo.getPortNo());
-            listBuckets.add(buckt);
+            listBuckets.add(createBucket(curChildName, ifTunnel, bucketId, ifInfo.getPortNo()));
         }
         if (!listBuckets.isEmpty()) {
             Group group = MDSALUtil.buildGroup(groupId, logicTunnelName, GroupTypes.GroupSelect,
                                                MDSALUtil.buildBucketLists(listBuckets));
-            mdsalManager.syncInstallGroup(srcDpnId, group, ITMConstants.DELAY_TIME_IN_MILLISECOND);
+            mdsalManager.syncInstallGroup(srcDpnId, group);
         }
     }
 
@@ -271,7 +265,7 @@ public class ItmTunnelAggregationHelper {
             if (!mdsalManager.groupExists(srcDpnId, groupId)) {
                 createLogicalTunnelSelectGroup(srcDpnId, logicTunnelName, ifLogicTunnel.getInterfaceTag());
             }
-            Bucket buckt = createBucket(ifaceName, ifTunnel, parentRefs, ifaceState.getIfIndex(), bucketId, portNumber);
+            Bucket buckt = createBucket(ifaceName, ifTunnel, bucketId, portNumber);
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: add bucketId {} to groupId {}", bucketId, groupId);
             mdsalManager.addBucketToTx(srcDpnId, groupId, buckt, tx);
         } else {
