@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_c9708d74",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-08T07:33:06Z",
+      "side": 1,
+      "message": "We might as well simplify all this down to\n\n    return Collections.singletonList(writeTransaction.submit());",
+      "revId": "daa1165ec1192db82018b7b380f0e6764433c574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
