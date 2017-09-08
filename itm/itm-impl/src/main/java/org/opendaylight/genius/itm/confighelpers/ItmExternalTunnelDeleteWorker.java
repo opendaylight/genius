@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -47,13 +48,12 @@ public class ItmExternalTunnelDeleteWorker {
             List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList, IpAddress extIp,
             Class<? extends TunnelTypeBase> tunType) {
         LOG.trace(" Delete Tunnels towards DC Gateway with Ip  {}", extIp);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
 
         if (dpnTepsList == null || dpnTepsList.isEmpty()) {
             LOG.debug("no vtep to delete");
-            return null;
+            return Collections.emptyList();
         }
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         for (DPNTEPsInfo teps : dpnTepsList) {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             // The membership in the listener will always be 1, to get the actual membership
@@ -81,20 +81,18 @@ public class ItmExternalTunnelDeleteWorker {
                         tunType.getName());
             }
         }
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 
     public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService,
             List<DPNTEPsInfo> dpnTepsList, IpAddress extIp, Class<? extends TunnelTypeBase> tunType) {
         LOG.trace(" Delete Tunnels towards DC Gateway with Ip  {}", extIp);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
         if (dpnTepsList == null || dpnTepsList.isEmpty()) {
             LOG.debug("no vtep to delete");
-            return null;
+            return Collections.emptyList();
         }
+        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         for (DPNTEPsInfo teps : dpnTepsList) {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             String interfaceName = firstEndPt.getInterfaceName();
@@ -114,8 +112,7 @@ public class ItmExternalTunnelDeleteWorker {
             ItmUtils.releaseIdForTrunkInterfaceName(idManagerService, interfaceName,
                     new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());
         }
-        futures.add(writeTransaction.submit());
-        return futures;
+        return Collections.singletonList(writeTransaction.submit());
     }
 
     public static List<ListenableFuture<Void>> deleteHwVtepsTunnels(DataBroker dataBroker,

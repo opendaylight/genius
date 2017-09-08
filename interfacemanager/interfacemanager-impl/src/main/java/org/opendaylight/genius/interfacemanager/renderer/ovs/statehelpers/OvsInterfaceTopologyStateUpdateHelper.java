@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -71,14 +72,13 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         final String interfaceName = terminationPointNew.getName();
         InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
         if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
-            return null;
+            return Collections.emptyList();
         }
 
         DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         jobCoordinator.enqueueJob(interfaceName, () -> {
             // update opstate of interface if TEP has gone down/up as a result
             // of BFD monitoring
-            final List<ListenableFuture<Void>> futures = new ArrayList<>();
             final Interface interfaceState = InterfaceManagerCommonUtils
                     .getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
@@ -86,11 +86,11 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
                 WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                 InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName, interfaceBfdStatus);
-                futures.add(transaction.submit());
+                return Collections.singletonList(transaction.submit());
             }
-            return futures;
+            return Collections.emptyList();
         });
-        return null;
+        return Collections.emptyList();
     }
 
     private static Interface.OperStatus getTunnelOpState(List<InterfaceBfdStatus> tunnelBfdStatus) {

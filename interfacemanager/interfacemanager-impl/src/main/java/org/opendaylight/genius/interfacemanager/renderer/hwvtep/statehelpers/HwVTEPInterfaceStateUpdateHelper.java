@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -31,12 +32,11 @@ public class HwVTEPInterfaceStateUpdateHelper {
 
     public static List<ListenableFuture<Void>> updatePhysicalSwitch(DataBroker dataBroker,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew, Tunnels tunnelsOld) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("updating physical switch for tunnels");
         String interfaceName = InterfaceMetaUtils
                 .getInterfaceForTunnelInstanceIdentifier(tunnelsInstanceIdentifier.toString(), dataBroker);
         if (interfaceName == null) {
-            return futures;
+            return Collections.emptyList();
         }
 
         // update opstate of interface if TEP has gone down/up as a result of
@@ -44,8 +44,7 @@ public class HwVTEPInterfaceStateUpdateHelper {
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName,
                 getTunnelOpState(tunnelsNew.getBfdStatus()));
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 
     private static OperStatus getTunnelOpState(List<BfdStatus> tunnelBfdStatus) {
@@ -68,8 +67,6 @@ public class HwVTEPInterfaceStateUpdateHelper {
 
     public static List<ListenableFuture<Void>> startBfdMonitoring(DataBroker dataBroker,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
-        final List<ListenableFuture<Void>> futures = new ArrayList<>();
-
         LOG.debug("starting bfd monitoring for the hwvtep {}", tunnelsInstanceIdentifier);
 
         TunnelsBuilder tunnelsBuilder = new TunnelsBuilder();
@@ -81,7 +78,6 @@ public class HwVTEPInterfaceStateUpdateHelper {
         tunnelsBuilder.setBfdParams(bfdParams);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         transaction.put(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier, tunnelsBuilder.build(), true);
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 }

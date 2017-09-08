@@ -405,41 +405,40 @@ public class ItmTunnelAggregationHelper {
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
             if (ifaceAction == MOD_GROUP_TUNNEL) {
                 updateTunnelAggregationGroup(parentEntry);
-                return futures;
+                return Collections.emptyList();
             }
             IfTunnel ifTunnel = ifaceConfig != null ? ifaceConfig.getAugmentation(IfTunnel.class) : null;
             if (ifTunnel == null) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not tunnel interface {}", ifaceConfig.getName());
-                return futures;
+                return Collections.emptyList();
             }
-            WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
             if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+                WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
                 String logicTunnelIfaceName = ifStateUpdated.getName();
                 InterfaceParentEntry parentEntry = getInterfaceParentEntry(logicTunnelIfaceName);
                 updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, parentEntry, dataBroker, tx);
                 updateLogicalTunnelAdminStatus(logicTunnelIfaceName, ifStateOrigin, ifStateUpdated,
                                                     parentEntry, tx);
-                futures.add(tx.submit());
-                return futures;
+                return Collections.singletonList(tx.submit());
             }
             if (!ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: wrong tunnel type {}", ifTunnel.getTunnelInterfaceType());
-                return futures;
+                return Collections.emptyList();
             }
             ParentRefs parentRefs = ifaceConfig.getAugmentation(ParentRefs.class);
             if (parentRefs == null) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not updated parent ref for {}", ifaceConfig.getName());
-                return futures;
+                return Collections.emptyList();
             }
             String logicTunnelIfaceName = parentRefs.getParentInterface();
             InterfaceParentEntry groupEntry = getInterfaceParentEntry(logicTunnelIfaceName);
             if (groupEntry == null) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not found InterfaceParentEntry for {}", logicTunnelIfaceName);
-                return futures;
+                return Collections.emptyList();
             }
+            WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
             if (ifaceAction == ADD_TUNNEL) {
                 updateInterfaceAdminStatus(logicTunnelIfaceName, ifStateUpdated, tx);
                 updateTunnelAggregationGroupBucket(ifStateUpdated, ifTunnel, parentRefs, groupEntry, ifaceAction, tx);
@@ -447,8 +446,7 @@ public class ItmTunnelAggregationHelper {
                 updateTunnelAggregationGroupBucket(ifStateUpdated, ifTunnel, parentRefs, groupEntry, ifaceAction, tx);
             }
             updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, groupEntry, dataBroker, tx);
-            futures.add(tx.submit());
-            return futures;
+            return Collections.singletonList(tx.submit());
         }
 
         private InterfaceParentEntry getInterfaceParentEntry(String logicalGroupName) {
