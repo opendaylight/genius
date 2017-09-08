@@ -302,16 +302,6 @@ public final class InterfaceManagerCommonUtils {
         writer.accept(Pair.of(interfaceChildEntryIdentifier, interfaceChildEntry));
     }
 
-    @Deprecated
-    public static void createInterfaceChildEntry(String parentInterface, String childInterface,
-                                                 Optional<WriteTransaction> txOptional) {
-        if (txOptional.isPresent()) {
-            createInterfaceChildEntry(parentInterface, childInterface, txOptional.get());
-        } else {
-            createInterfaceChildEntry(parentInterface, childInterface);
-        }
-    }
-
     public static void deleteInterfaceChildEntry(String parentInterface, String childInterface) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
