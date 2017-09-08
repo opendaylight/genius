@@ -15,7 +15,6 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -553,9 +552,7 @@ public class IfmUtil {
         dataStoreJobCoordinator.enqueueJob(interfaceName, () -> {
             WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(writeTransaction.submit());
-            return futures;
+            return Collections.singletonList(writeTransaction.submit());
         });
     }
 

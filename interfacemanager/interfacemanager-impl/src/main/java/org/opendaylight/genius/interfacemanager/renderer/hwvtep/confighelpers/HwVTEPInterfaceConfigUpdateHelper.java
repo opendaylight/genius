@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -33,19 +34,16 @@ public class HwVTEPInterfaceConfigUpdateHelper {
     public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
             Interface interfaceNew, IfTunnel ifTunnel) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("updating hwvtep configuration for {}", interfaceNew.getName());
 
         // Create hwvtep through OVSDB plugin
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         if (globalNodeId != null) {
             updateBfdMonitoring(dataBroker, globalNodeId, physicalSwitchNodeId, ifTunnel);
-
         } else {
             LOG.debug("specified physical switch is not connected {}", physicalSwitchNodeId);
         }
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 
     /*
@@ -53,8 +51,6 @@ public class HwVTEPInterfaceConfigUpdateHelper {
      */
     public static List<ListenableFuture<Void>> updateBfdMonitoring(DataBroker dataBroker,
             InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchId, IfTunnel ifTunnel) {
-        final List<ListenableFuture<Void>> futures = new ArrayList<>();
-
         TunnelsBuilder tunnelsBuilder = new TunnelsBuilder();
         InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier = SouthboundUtils
                 .createTEPInstanceIdentifier(globalNodeId, ifTunnel.getTunnelSource());
@@ -71,7 +67,6 @@ public class HwVTEPInterfaceConfigUpdateHelper {
         tunnelsBuilder.setBfdParams(bfdParams);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         transaction.merge(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier, tunnelsBuilder.build(), true);
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(transaction.submit());
     }
 }
