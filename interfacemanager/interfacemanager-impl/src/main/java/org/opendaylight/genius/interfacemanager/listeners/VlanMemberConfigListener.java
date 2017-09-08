@@ -172,7 +172,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, ifL2vlan,
+            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew,
                     idManager);
         }
     }
@@ -216,7 +216,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld, ifL2vlan,
+            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld,
                     idManager);
         }
     }

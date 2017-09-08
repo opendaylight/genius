@@ -35,7 +35,6 @@ public class HwVTEPInterfaceConfigAddHelper {
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
             Interface interfaceNew, IfTunnel ifTunnel) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
         // create hwvtep through ovsdb plugin
@@ -44,10 +43,11 @@ public class HwVTEPInterfaceConfigAddHelper {
         InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId,
             defaultOperShardTransaction, ifTunnel);
         if (globalNodeId != null) {
-            addTerminationPoints(topologyConfigShardTransaction, futures, globalNodeId,ifTunnel);
+            addTerminationPoints(topologyConfigShardTransaction, globalNodeId,ifTunnel);
             SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.getAugmentation(IfTunnel.class),
                 defaultOperShardTransaction);
         }
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         futures.add(defaultOperShardTransaction.submit());
         futures.add(topologyConfigShardTransaction.submit());
         return futures;
@@ -58,24 +58,24 @@ public class HwVTEPInterfaceConfigAddHelper {
      * of hwvtep schema with destination IP and tunnel-type. The configuration
      * needs to be done for both local endpoint as well as remote endpoint
      */
-    public static void addTerminationPoints(WriteTransaction transaction, List<ListenableFuture<Void>> futures,
+    public static void addTerminationPoints(WriteTransaction transaction,
             InstanceIdentifier<Node> globalNodeId, IfTunnel ifTunnel) {
         // InstanceIdentifier<TerminationPoint> localTEP =
         // createLocalPhysicalLocatorEntryIfNotPresent(futures,
         // dataBroker,transaction, ifTunnel, globalNodeId);
-        createRemotePhysicalLocatorEntry(transaction, futures, globalNodeId, ifTunnel.getTunnelDestination());
+        createRemotePhysicalLocatorEntry(transaction, globalNodeId, ifTunnel.getTunnelDestination());
         // InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier =
         // createTunnelTableEntry(transaction, physicalSwitchNodeId, localTEP,
         // remoteTEP);
     }
 
     private static InstanceIdentifier<TerminationPoint> createRemotePhysicalLocatorEntry(WriteTransaction transaction,
-            List<ListenableFuture<Void>> futures, InstanceIdentifier<Node> nodeIid, IpAddress destIPAddress) {
+            InstanceIdentifier<Node> nodeIid, IpAddress destIPAddress) {
         String remoteIp = destIPAddress.getIpv4Address().getValue();
         LOG.debug("creating remote physical locator entry {}", remoteIp);
         TerminationPointKey tpKey = SouthboundUtils.getTerminationPointKey(remoteIp);
         InstanceIdentifier<TerminationPoint> tpPath = SouthboundUtils.createInstanceIdentifier(nodeIid, tpKey);
-        createPhysicalLocatorEntry(transaction, futures, tpPath, tpKey, destIPAddress);
+        createPhysicalLocatorEntry(transaction, tpPath, tpKey, destIPAddress);
         return tpPath;
     }
 
@@ -83,7 +83,7 @@ public class HwVTEPInterfaceConfigAddHelper {
      * This method writes the termination end point details to the topology
      * Config DS
      */
-    private static void createPhysicalLocatorEntry(WriteTransaction transaction, List<ListenableFuture<Void>> futures,
+    private static void createPhysicalLocatorEntry(WriteTransaction transaction,
             InstanceIdentifier<TerminationPoint> tpPath, TerminationPointKey terminationPointKey,
             IpAddress destIPAddress) {
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();

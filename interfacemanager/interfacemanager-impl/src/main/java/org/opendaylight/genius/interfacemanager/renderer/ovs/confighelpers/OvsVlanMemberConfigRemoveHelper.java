@@ -24,7 +24,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -34,7 +33,7 @@ public class OvsVlanMemberConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigRemoveHelper.class);
 
     public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-            Interface interfaceOld, IfL2vlan ifL2vlan, IdManagerService idManager) {
+            Interface interfaceOld, IdManagerService idManager) {
         LOG.debug("remove vlan member configuration {}", interfaceOld.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();

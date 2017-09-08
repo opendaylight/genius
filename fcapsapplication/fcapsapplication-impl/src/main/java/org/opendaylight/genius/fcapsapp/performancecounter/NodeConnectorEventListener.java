@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public abstract class NodeConnectorEventListener<T extends DataObject>
         implements ClusteredDataTreeChangeListener<T>, AutoCloseable, FlowCapableNodeConnectorCommitter<T> {
-    NodeConnectorEventListener(Class<FlowCapableNodeConnector> flowCapableNodeConnectorClass) {
+    NodeConnectorEventListener() {
     }
 
     @Override

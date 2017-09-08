@@ -34,8 +34,7 @@ public class OvsInterfaceStateRemoveHelper {
     public static List<ListenableFuture<Void>> removeInterfaceStateConfiguration(IdManagerService idManager,
             IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
             NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld, DataBroker dataBroker,
-            String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld, boolean isNodePresent,
-            String parentInterface) {
+            String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld, boolean isNodePresent) {
         LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
@@ -87,7 +86,7 @@ public class OvsInterfaceStateRemoveHelper {
             IfTunnel ifTunnel, WriteTransaction transaction, NodeConnectorId nodeConnectorId,
             List<ListenableFuture<Void>> futures) {
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
+        InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
                 interfaceName, -1, NwConstants.DEL_FLOW);
         FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
         futures.add(transaction.submit());

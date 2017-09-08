@@ -240,7 +240,7 @@ public class ItmUtils {
         return dpnId;
     }
 
-    public static String getTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName,
+    public static String getTrunkInterfaceName(String parentInterfaceName,
                                                String localHostName, String remoteHostName, String tunnelType) {
         String tunnelTypeStr;
         if (tunnelType.contains("TunnelTypeGre")) {
@@ -257,7 +257,7 @@ public class ItmUtils {
         return trunkInterfaceName;
     }
 
-    public static void releaseIdForTrunkInterfaceName(IdManagerService idManager, String parentInterfaceName,
+    public static void releaseIdForTrunkInterfaceName(String parentInterfaceName,
                                                       String localHostName, String remoteHostName, String tunnelType) {
         String tunnelTypeStr;
         if (tunnelType.contains("TunnelTypeGre")) {
@@ -1087,14 +1087,7 @@ public class ItmUtils {
         return null ;
     }
 
-    public static TunnelList getAllInternalTunnels(DataBroker broker) {
-        InstanceIdentifier<TunnelList> tunnelListInstanceIdentifier =
-                InstanceIdentifier.builder(TunnelList.class).build();
-        return read(LogicalDatastoreType.CONFIGURATION, tunnelListInstanceIdentifier, broker).orNull();
-    }
-
-    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker,
-                                                             LogicalDatastoreType datastoreType) {
+    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
         List<InternalTunnel> result = null;
         InstanceIdentifier<TunnelList> iid = InstanceIdentifier.builder(TunnelList.class).build();
         Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
@@ -1127,21 +1120,7 @@ public class ItmUtils {
         return externalTunnel;
     }
 
-    public static List<ExternalTunnel> getAllExternalTunnels(DataBroker broker) {
-        List<ExternalTunnel> result = null;
-        InstanceIdentifier<ExternalTunnelList> id = InstanceIdentifier.builder(ExternalTunnelList.class).build();
-        Optional<ExternalTunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, id, broker);
-        if (tunnelList.isPresent()) {
-            result = tunnelList.get().getExternalTunnel();
-        }
-        if (result == null) {
-            result = Collections.emptyList();
-        }
-        return result;
-    }
-
-    public static List<ExternalTunnel> getAllExternalTunnels(DataBroker dataBroker,
-                                                             LogicalDatastoreType datastoreType) {
+    public static List<ExternalTunnel> getAllExternalTunnels(DataBroker dataBroker) {
         List<ExternalTunnel> result = null;
         InstanceIdentifier<ExternalTunnelList> iid = InstanceIdentifier.builder(ExternalTunnelList.class).build();
         Optional<ExternalTunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
@@ -1183,11 +1162,11 @@ public class ItmUtils {
     }
 
     public static void updateTunnelsCache(DataBroker broker) {
-        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker, LogicalDatastoreType.CONFIGURATION);
+        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
         for (InternalTunnel tunnel : internalTunnels) {
             itmCache.addInternalTunnel(tunnel);
         }
-        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker, LogicalDatastoreType.CONFIGURATION);
+        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
         for (ExternalTunnel tunnel : externalTunnels) {
             itmCache.addExternalTunnel(tunnel);
         }

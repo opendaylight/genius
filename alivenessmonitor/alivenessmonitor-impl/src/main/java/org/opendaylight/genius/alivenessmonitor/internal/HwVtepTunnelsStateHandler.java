@@ -217,7 +217,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         return null;
     }
 
-    void resetMonitoringTask(MonitoringInfo monitorInfo, boolean isEnable) {
+    void resetMonitoringTask(boolean isEnable) {
         // TODO: get the corresponding hwvtep tunnel from the sourceInterface
         // once InterfaceMgr
         // implments renderer for hwvtep vxlan tunnels
@@ -281,7 +281,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         List<BfdLocalConfigs> bfdLocalConfigs = new ArrayList<>();
         fillBfdLocalConfigs(bfdLocalConfigs, tunnelLocalMacAddress, tunnelLocalIpAddress);
         List<BfdRemoteConfigs> bfdRemoteConfigs = new ArrayList<>();
-        fillBfdRemoteConfigs(bfdRemoteConfigs, tunnelRemoteMacAddress, tunnelRemoteIpAddress);
+        fillBfdRemoteConfigs(bfdRemoteConfigs, tunnelRemoteMacAddress);
         TunnelsKey tunnelKey = null;
         Tunnels tunnelWithBfd = new TunnelsBuilder().setKey(tunnelKey).setBfdParams(bfdParams)
                 .setBfdLocalConfigs(bfdLocalConfigs).setBfdRemoteConfigs(bfdRemoteConfigs).build();
@@ -300,8 +300,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
                 getTunnelIdentifier(topologyId, nodeId, new TunnelsKey(localRef, remoteRef)), tunnelWithBfd);
     }
 
-    private void fillBfdRemoteConfigs(List<BfdRemoteConfigs> bfdRemoteConfigs, String tunnelRemoteMacAddress,
-            String tunnelRemoteIpAddress) {
+    private void fillBfdRemoteConfigs(List<BfdRemoteConfigs> bfdRemoteConfigs, String tunnelRemoteMacAddress) {
         bfdRemoteConfigs
                 .add(getBfdRemoteConfig(AlivenessMonitorConstants.BFD_CONFIG_BFD_DST_MAC, tunnelRemoteMacAddress));
     }
