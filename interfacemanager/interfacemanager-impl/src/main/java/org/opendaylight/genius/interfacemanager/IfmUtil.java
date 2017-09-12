@@ -15,7 +15,6 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +45,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
+import org.opendaylight.genius.datastoreutils.TransactionHelper;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -550,13 +550,11 @@ public class IfmUtil {
             InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         LOG.info("Unbinding Service from : {}", interfaceName);
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
-        dataStoreJobCoordinator.enqueueJob(interfaceName, () -> {
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(writeTransaction.submit());
-            return futures;
-        });
+        dataStoreJobCoordinator.enqueueJob(interfaceName,
+                () -> TransactionHelper.applyWriteOnlyTransaction(dataBroker, tx -> {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
+            return Collections.singletonList(tx.submit());
+        }));
     }
 
     public static List<TerminationPoint> getTerminationPointsOnBridge(DataBroker dataBroker, BigInteger dpnId) {
