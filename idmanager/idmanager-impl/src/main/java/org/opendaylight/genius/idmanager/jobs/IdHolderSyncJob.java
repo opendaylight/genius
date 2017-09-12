@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.datastoreutils.TransactionHelper;
 import org.opendaylight.genius.idmanager.IdHolder;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -46,13 +46,14 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
         IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName));
         idHolder.refreshDataStore(idPool);
         InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
-        idUtils.incrementPoolUpdatedMap(localPoolName);
+        return TransactionHelper.applyWriteOnlyTransaction(broker, tx -> {
+            tx.merge(CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
+            idUtils.incrementPoolUpdatedMap(localPoolName);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("IdHolder synced {}", idHolder);
-        }
-        return Collections.singletonList(tx.submit());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("IdHolder synced {}", idHolder);
+            }
+            return Collections.singletonList(tx.submit());
+        });
     }
 }

@@ -414,7 +414,7 @@ public class ItmTunnelAggregationHelper {
                 return Collections.emptyList();
             }
             if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-                return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, tx -> {
+                return TransactionHelper.applyWriteOnlyTransaction(dataBroker, tx -> {
                     String logicTunnelIfaceName = ifStateUpdated.getName();
                     InterfaceParentEntry parentEntry = getInterfaceParentEntry(logicTunnelIfaceName);
                     updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, parentEntry, dataBroker, tx);
@@ -438,7 +438,7 @@ public class ItmTunnelAggregationHelper {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not found InterfaceParentEntry for {}", logicTunnelIfaceName);
                 return Collections.emptyList();
             }
-            return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, tx -> {
+            return TransactionHelper.applyWriteOnlyTransaction(dataBroker, tx -> {
                 if (ifaceAction == ADD_TUNNEL) {
                     updateInterfaceAdminStatus(logicTunnelIfaceName, ifStateUpdated, tx);
                     updateTunnelAggregationGroupBucket(ifStateUpdated, ifTunnel, parentRefs, groupEntry, ifaceAction,
