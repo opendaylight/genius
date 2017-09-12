@@ -15,7 +15,6 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.datastoreutils.TransactionHelper;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -550,13 +550,11 @@ public class IfmUtil {
             InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         LOG.info("Unbinding Service from : {}", interfaceName);
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
-        dataStoreJobCoordinator.enqueueJob(interfaceName, () -> {
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(writeTransaction.submit());
-            return futures;
-        });
+        dataStoreJobCoordinator.enqueueJob(interfaceName,
+            () -> TransactionHelper.applyWriteOnlyTransaction(dataBroker, tx -> {
+                tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
+                return Collections.singletonList(tx.submit());
+            }));
     }
 
     public static List<TerminationPoint> getTerminationPointsOnBridge(DataBroker dataBroker, BigInteger dpnId) {
