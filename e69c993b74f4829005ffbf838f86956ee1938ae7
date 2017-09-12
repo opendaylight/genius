@@ -22,6 +22,30 @@
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ac655d1f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-12T11:15:43Z",
+      "side": 1,
+      "message": "No, we’re implementing WriteTransaction, so we have to implement the methods as they’re defined there (or in the parent interfaces).",
+      "parentUuid": "ba1f61a0_ac7b9df3",
+      "range": {
+        "startLine": 93,
+        "startChar": 15,
+        "endLine": 93,
+        "endChar": 28
+      },
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
