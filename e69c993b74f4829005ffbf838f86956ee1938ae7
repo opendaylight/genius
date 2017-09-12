@@ -46,6 +46,30 @@
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6f8eb77a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-12T12:27:56Z",
+      "side": 1,
+      "message": "I thought there should have been a good reason :)",
+      "parentUuid": "ba1f61a0_ac655d1f",
+      "range": {
+        "startLine": 93,
+        "startChar": 15,
+        "endLine": 93,
+        "endChar": 28
+      },
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
