@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -139,11 +138,15 @@ public class OvsInterfaceConfigAddHelper {
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
             InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
                     defaultConfigShardTransaction);
-            Optional.ofNullable(InterfaceManagerCommonUtils.getInterfaceState(tunnelName, dataBroker))
-                    .ifPresent(anInterfaceState -> DataStoreJobCoordinator.getInstance().enqueueJob(
-                            tunnelName, () -> OvsInterfaceStateAddHelper.addState(
-                                    dataBroker, idManager, mdsalApiManager, alivenessMonitorService,
-                                    interfaceNew.getName(), anInterfaceState)));
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface
+                    interfaceState = InterfaceManagerCommonUtils.getInterfaceState(tunnelName, dataBroker);
+            if (interfaceState != null) {
+                DataStoreJobCoordinator.getInstance().enqueueJob(
+                        tunnelName, () -> OvsInterfaceStateAddHelper.addState(
+                                dataBroker, idManager, mdsalApiManager, alivenessMonitorService,
+                                interfaceNew.getName(), interfaceState));
+            }
         } else {
             tunnelName = interfaceNew.getName();
         }
