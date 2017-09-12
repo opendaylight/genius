@@ -8,11 +8,14 @@
 package org.opendaylight.genius.utils;
 
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
@@ -21,6 +24,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 /**
  * Transaction helper to simplify transaction handling and ensure transactions are closed when no longer necessary.
@@ -38,14 +42,15 @@ public final class TransactionHelper {
      * @param function The function which needs a transaction.
      * @return The futures returned by the function.
      */
-    public static List<ListenableFuture<Void>> applyWriteOnlyTransaction(DataBroker broker,
-            Function<WriteTransaction, List<ListenableFuture<Void>>> function) {
-        WriteTransactionWrapper tx = new WriteTransactionWrapper(broker.newWriteOnlyTransaction());
+    @Nonnull
+    public static List<ListenableFuture<Void>> applyWriteOnlyTransaction(@Nonnull DataBroker broker,
+            @Nonnull Function<WriteTransaction, List<ListenableFuture<Void>>> function) {
+        WriteTransactionWrapper wrapper = new WriteTransactionWrapper(broker.newWriteOnlyTransaction());
         try {
-            return function.apply(tx);
+            return function.apply(wrapper);
         } finally {
-            if (!tx.isSubmitted()) {
-                tx.cancel();
+            if (!wrapper.isSubmitted()) {
+                wrapper.cancel();
             }
         }
     }
@@ -57,13 +62,39 @@ public final class TransactionHelper {
      * @param broker The broker.
      * @param function The function which needs a transaction.
      */
-    public static void consumeWriteOnlyTransaction(DataBroker broker, Consumer<WriteTransaction> function) {
-        WriteTransactionWrapper tx = new WriteTransactionWrapper(broker.newWriteOnlyTransaction());
+    public static void consumeWriteOnlyTransaction(@Nonnull DataBroker broker,
+            @Nonnull Consumer<WriteTransaction> function) {
+        WriteTransactionWrapper wrapper = new WriteTransactionWrapper(broker.newWriteOnlyTransaction());
         try {
-            function.accept(tx);
+            function.accept(wrapper);
         } finally {
-            if (!tx.isSubmitted()) {
-                tx.cancel();
+            if (!wrapper.isSubmitted()) {
+                wrapper.cancel();
+            }
+        }
+    }
+
+    /**
+     * Calls the given function with a single, write-only transaction, and ensures the transaction is closed
+     * appropriately before returning. The transaction might be pre-existing, in which case no new transaction is
+     * created. The callee needs to follow the usual transaction semantics, and submit the transaction if necessary
+     * (this won't actually submit the transaction, we'll wait for the code which created the transaction to submit
+     * it).
+     *
+     * @param broker The broker.
+     * @param existingTransaction The pre-existing transaciton.
+     * @param function The function which needs a transaction.
+     */
+    public static void consumePreExistingWriteTransaction(@Nonnull DataBroker broker,
+            @Nullable WriteTransaction existingTransaction, @Nonnull Consumer<WriteTransaction> function) {
+        WriteTransactionWrapper wrapper =
+                existingTransaction == null ? new WriteTransactionWrapper(broker.newWriteOnlyTransaction())
+                        : new WriteTransactionComposer(existingTransaction);
+        try {
+            function.accept(wrapper);
+        } finally {
+            if (!wrapper.isSubmitted()) {
+                wrapper.cancel();
             }
         }
     }
@@ -127,8 +158,38 @@ public final class TransactionHelper {
             return tx.getIdentifier();
         }
 
+        void setSubmitted(boolean submitted) {
+            this.submitted = submitted;
+        }
+
         private boolean isSubmitted() {
             return submitted;
+        }
+    }
+
+    /**
+     * This wraps a transaction which is intended to be submitted in code further out than the caller. Submissions here
+     * are ignored but flagged, so that the transaction won't be cancelled.
+     */
+    private static class WriteTransactionComposer extends WriteTransactionWrapper {
+        private WriteTransactionComposer(WriteTransaction tx) {
+            super(tx);
+        }
+
+        @Override
+        public CheckedFuture<Void, TransactionCommitFailedException> submit() {
+            // Note that this only makes sense as long as we *don't* wrap other wrappers (we mustn't propagate the
+            // status to the wrapped transaction)
+            setSubmitted(true);
+            return Futures.immediateCheckedFuture(null);
+        }
+
+        @Override
+        public ListenableFuture<RpcResult<TransactionStatus>> commit() {
+            // Note that this only makes sense as long as we *don't* wrap other wrappers (we mustn't propagate the
+            // status to the wrapped transaction)
+            setSubmitted(true);
+            return Futures.immediateFuture(RpcResultBuilder.success(TransactionStatus.SUBMITED).build());
         }
     }
 }
