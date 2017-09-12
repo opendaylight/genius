@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.TransactionHelper;
 import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -53,9 +53,10 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
                 .setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);
         idLocalPool.getReleasedIds().refreshDataStore(idPool);
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
+        return TransactionHelper.applyWriteOnlyTransaction(broker, tx -> {
+            tx.put(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
 
-        return Collections.singletonList(tx.submit());
+            return Collections.singletonList(tx.submit());
+        });
     }
 }

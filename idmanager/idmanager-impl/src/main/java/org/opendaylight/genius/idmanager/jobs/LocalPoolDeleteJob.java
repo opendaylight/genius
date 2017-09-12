@@ -13,8 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.TransactionHelper;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -38,11 +38,12 @@ public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>
     @Override
     public List<ListenableFuture<Void>> call() {
         InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Deleted local pool {}", poolName);
-        }
-        return Collections.singletonList(tx.submit());
+        return TransactionHelper.applyWriteOnlyTransaction(broker, tx -> {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Deleted local pool {}", poolName);
+            }
+            return Collections.singletonList(tx.submit());
+        });
     }
 }
