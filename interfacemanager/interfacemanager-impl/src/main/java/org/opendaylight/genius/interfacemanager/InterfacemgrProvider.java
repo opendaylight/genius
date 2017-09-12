@@ -28,6 +28,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.datastoreutils.TransactionHelper;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
@@ -388,10 +389,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
-                true);
-        writeTransaction.submit();
+        TransactionHelper.consumeWriteOnlyTransaction(dataBroker, tx -> {
+            tx.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(), true);
+            tx.submit();
+        });
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
@@ -425,12 +426,11 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
-            BoundServices serviceInfo, WriteTransaction tx) {
-        WriteTransaction writeTransaction = tx != null ? tx : dataBroker.newWriteOnlyTransaction();
-        IfmUtil.bindService(writeTransaction, interfaceName, serviceInfo, serviceMode);
-        if (tx == null) {
-            writeTransaction.submit();
-        }
+            BoundServices serviceInfo, WriteTransaction existingTransaction) {
+        TransactionHelper.consumePreExistingWriteTransaction(dataBroker, existingTransaction, tx -> {
+            IfmUtil.bindService(tx, interfaceName, serviceInfo, serviceMode);
+            tx.submit();
+        });
     }
 
     @Override
@@ -699,9 +699,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                     return null;
                 }
             }
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            IfmUtil.updateInterfaceParentRef(writeTransaction, interfaceName, parentInterfaceName);
-            return Collections.singletonList(writeTransaction.submit());
+            return TransactionHelper.applyWriteOnlyTransaction(dataBroker, tx -> {
+                IfmUtil.updateInterfaceParentRef(tx, interfaceName, parentInterfaceName);
+                return Collections.singletonList(tx.submit());
+            });
         }
     }
 
