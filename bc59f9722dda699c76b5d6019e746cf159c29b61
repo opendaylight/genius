@@ -105,6 +105,24 @@
       "revId": "bc59f9722dda699c76b5d6019e746cf159c29b61",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0cdc6972",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-09-12T08:41:17Z",
+      "side": 1,
+      "message": "True, I just missed the part that it is being passed over there",
+      "parentUuid": "ba1f61a0_aceb9d11",
+      "revId": "bc59f9722dda699c76b5d6019e746cf159c29b61",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
