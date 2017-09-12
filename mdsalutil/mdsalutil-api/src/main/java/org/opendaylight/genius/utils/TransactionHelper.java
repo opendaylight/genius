@@ -10,6 +10,7 @@ package org.opendaylight.genius.utils;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -37,11 +38,29 @@ public final class TransactionHelper {
      * @param function The function which needs a transaction.
      * @return The futures returned by the function.
      */
-    public static List<ListenableFuture<Void>> callWithWriteOnlyTransaction(DataBroker broker,
+    public static List<ListenableFuture<Void>> applyWriteOnlyTransaction(DataBroker broker,
             Function<WriteTransaction, List<ListenableFuture<Void>>> function) {
         WriteTransactionWrapper tx = new WriteTransactionWrapper(broker.newWriteOnlyTransaction());
         try {
             return function.apply(tx);
+        } finally {
+            if (!tx.isSubmitted()) {
+                tx.cancel();
+            }
+        }
+    }
+
+    /**
+     * Calls the given function with a single, write-only transaction, and ensures the transaction is closed
+     * appropriately before returning.
+     *
+     * @param broker The broker.
+     * @param function The function which needs a transaction.
+     */
+    public static void consumeWriteOnlyTransaction(DataBroker broker, Consumer<WriteTransaction> function) {
+        WriteTransactionWrapper tx = new WriteTransactionWrapper(broker.newWriteOnlyTransaction());
+        try {
+            function.accept(tx);
         } finally {
             if (!tx.isSubmitted()) {
                 tx.cancel();
