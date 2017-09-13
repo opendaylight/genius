@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_83a3ffb0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:44:19Z",
+      "side": 1,
+      "message": "name: adjust as per feedback in c/63027/1 ?",
+      "revId": "5f2549a980160ebaba27c44534e099595795cd58",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_23c33358",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:44:19Z",
+      "side": 1,
+      "message": "name: adjust as per feedback in c/63027/1 ?",
+      "revId": "5f2549a980160ebaba27c44534e099595795cd58",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_43c62769",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:44:19Z",
+      "side": 1,
+      "message": "IMHO this kind of method, given that it returns void not the Future (which is therefore \"lost\"), would be ideal to have to itself add a listener which would log errors for failed submitted transactions.  Of course theoretically clients could do that as well, and in AlivenessMonitor we see an interesting example of how the first usage adds its own Listener to do real smart stuff, ut in the second case there is only a dumb onSuccess LOG.info kinda thing, and a failure would be ignored and lost?  So this method could be a great place to have an onFailure LOG by default?  Even if at the worst that would lead to double logging in some cases, doesn\u0027t matter; better than losses?",
+      "revId": "5f2549a980160ebaba27c44534e099595795cd58",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
