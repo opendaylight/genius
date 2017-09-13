@@ -2,6 +2,142 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_a3f603f7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "thought: How about instead putting this either into org.opendaylight.genius.datastoreutils to be near the SingleTransactionDataBroker or into org.opendaylight.genius.infra as a way of \"hinting\" that this could be something which we\u0027d like to propose moving \"upwards\" (controller/mdsal), in due time?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_832e5f41",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "Q: Have you considered / would you be open to using a design like e.g. in the SingleTransactionDataBroker, with overload method variants non-static without taking a DataBroker argument (implict from constructor) and static ones as you have it which do take one?  This would allow using classes to avoid have to pass the DataBroker into this from each of their methods using the methods here,and IMHO makes code more readable, and is more DI-like.  In fact, perhaps you would even consider making this a \"real\" service, with an interface that can be @Inject into users, and @Singleton Impl class with @Inject DataBroker? (That may have been a better design for SingleTransactionDataBroker as well; at the time I wanted to \"let clients choose\" the style they preferred, and make it easy to use from static methods which have no DI @Inject, yet. But with a trick similar to what I\u0027m doing in c/60303 it should actually even be possible to have a clean nice pure DI design yet have a Util static class with a hack that makes it usable even as static.)\n\nPS re. naming: Changing this would automatically also take care of no longer naming this *Helper, which I\u0027m not a huge fan of.",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_63f08bfe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "nit: Insert empty new line between class and constructor?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c3f17702",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "nit: comment not needed - obvious? (And about to be Checkstyle enforced, anyway.)",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e370fb73",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "doc: how about instead of \"is closed appropriately before returning.\" say specifically \"is cancelled if it was not submitted\", to make it clear that\u0027s what this actually does?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c35697cd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "naming: How about callWithNewWriteOnlyTransaction, or perhaps even just withNewWriteOnlyTransaction? I feel the *New* is important here, à la DataBroker newWriteOnlyTransaction(), because that\u0027s what this does! I understand, from your email to genius-dev, \"initialises the transaction (or wraps a pre-existing transaction)\" but.. that\u0027s not something that could just be change under the hood later, the semantics are different - so let\u0027s name this one clearly?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_23ecd3f2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "Hang on, I *MAY* be missing something, but I don\u0027t think I get your use of List\u003c\u003e here.. that makes no sense to me, sorry. I could see from looking at the matching use of it in this change\u0027s ItmTunnelAggregationHelper how that\u0027s \"convenient\" (there), but IMHO you got this wrong, and got blinded by that particular usage, which has something to do with the DataStoreJobCoordinator\u0027s enqueueJob taking Callable\u003cList\u003cListenableFuture\u003cVoid\u003e\u003e\u003e arguments - but it\u0027s inappropriate here in the general case: Your function receives a (one!) WriteTransaction.  When the lambda does submit() that, it receives in return a (single) ListenableFuture. So with this List\u003c\u003e here your forcing EVERY client of this to use return Collections.singletonList(..) - for no good reason, IMHO.  I think instead of this we would want to just use ListenableFuture\u003cVoid\u003e both as this method\u0027s return type itself and the Function\u0027s R.  In DataStoreJobCoordinator like related usages such as ItmTunnelAggregationHelper (only), you\u0027ll then instead of:\n\n   return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, tx -\u003e {\n      ...                \n      return Collections.singletonList(tx.submit());\n   });\n\nsimply want to do:\n\n   return Collections.singletonList(TransactionHelper.callWithWriteOnlyTransaction(dataBroker, tx -\u003e {\n      ...                \n      return tx.submit();\n   }));\n\nDoes this (too?) lengthy explanation make any sense?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a35ba3f4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "minor: just for clarity, name this \"tx\" the \"delegate\" ?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_ac7b9df3",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -67,6 +203,40 @@
         "endLine": 93,
         "endChar": 28
       },
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c30df7e9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "Just in the (unlikely, I know..) case if tx.submit() were to throw some RuntimeException due to some... bug/problem (not returning a Future with a TransactionCommitFailedException, that\u0027s different), this class would misbehave weirdly, agreed?  So just to be safe how about instead something à la:\n\n   f \u003d tx.submit();\n   this.submitted \u003d true;\n   return f;",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a3128306",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:43:48Z",
+      "side": 1,
+      "message": "as above",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
