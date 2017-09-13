@@ -518,12 +518,6 @@ public class MDSALUtil {
         return buildWriteActionsInstruction(listAction, instructionKey);
     }
 
-    public static Action buildAction(int actionKey, int instruction) {
-        return new ActionBuilder().setAction(
-                new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
-                .setKey(new ActionKey(actionKey)).build();
-    }
-
     public static Instruction buildAndGetWriteMetadaInstruction(BigInteger metadata,
                                                                 BigInteger mask, int instructionKey) {
         return new InstructionBuilder()
