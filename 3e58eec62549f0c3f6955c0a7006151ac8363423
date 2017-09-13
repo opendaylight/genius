@@ -1,0 +1,282 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_d0b2db04",
+        "filename": "alivenessmonitor/alivenessmonitor-impl-protocols/src/main/java/org/opendaylight/genius/alivenessmonitor/protocols/internal/AlivenessProtocolHandlerLLDP.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_10d0f31d",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeConnectorEventListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "range": {
+        "startLine": 25,
+        "startChar": 5,
+        "endLine": 25,
+        "endChar": 15
+      },
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_30ec17f3",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "I\u0027m wondering why there originally was a dpId passed in this public service API (!) method.. I don\u0027t suppose it\u0027s actually an indication of a bug in the implementation that it\u0027s not using this?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_90bce3dd",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f0cc3f8b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_30c37758",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_90a343b1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_70a84f8d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/statehelpers/HwVTEPInterfaceStateUpdateHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d0a93b91",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "put on previous line?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f0939f58",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "ok",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_708faf2a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d0801bf9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b085a708",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 561,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_70968f40",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1096,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "but the method above isn\u0027t used anywhere, so just completely remove it (it\u0027s an -impl; no need for @Deprecated), like you have for getExternalTunnel() later, and then remove the LogicalDatastoreType argument here, because it\u0027s hard-coded to CONFIGURATION 3 lines later",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_30b41734",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "Stephen, this is technically an API breakage... have you carefully checked that this method is not used anymore, including notably all of netvirt?  I\u0027ve done a grep like search using this:\n\nfindx.sh \"buildAction(\" | grep -v \"buildAction()\" | grep \",\"\n\nand found that this doesn\u0027t seem to be used anywhere at all, so how about we instead of removing only the unused argument you found just propose to completely remove this method altogether? So proposed in https://git.opendaylight.org/gerrit/#/c/63106/, conflicting with this of course - so remove here?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b0e007fb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T17:18:16Z",
+      "side": 1,
+      "message": "I\u0027m wondering why there originally was a long groupId here, in this public (!) API.. I don\u0027t suppose it\u0027s actually an indication of a bug in the implementation that it\u0027s not using this?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
