@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_5049cb5e",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T16:12:18Z",
+      "side": 1,
+      "message": "I\u0027m wondering if this could assert on the returned RPC output, that\u0027s it\u0027s valid, at least that it isSuccessful() but perhaps, unless I\u0027m missing something, even the returned ID (unless it\u0027s unpredictable and not 1; but even then we could at least check there is SOME value?), so should this not better do something like this:\n\n    assertThat(idManagerService.allocateId(allocateIdInput).get().getResult().getIdValue()).isEqualsTo(1L);\n\nDue to the get() you can the probably even get rid of this:\n\n    coordinatorEventsWaiter.awaitEventsConsumption()",
+      "revId": "a7431a7e50861e2b4ebfe69cf7ac69aa4e4d6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_3046d74f",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T16:12:18Z",
+      "side": 1,
+      "message": "as above, should this not better assert on the returned AllocateIdOutput?",
+      "revId": "a7431a7e50861e2b4ebfe69cf7ac69aa4e4d6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
