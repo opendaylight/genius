@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_63a88b8d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T22:44:26Z",
+      "side": 1,
+      "message": "Uh uh... while I like the previous 2 changes, this last one here I\u0027m really not at all convinced about (sorry?).\n\nSo a @Nullable WriteTransaction, huh? I\u0027m struggling to see the real use case here... Doesn\u0027t a consumer always know at call time if it has or not an existing Tx?  In your only illustrate usage in InterfacemgrProvider, there is one.  Can you find an example as part of this change when there wouldn\u0027t be? Then why not use one of the methods here?\n\nThe \"intercepted\" submit() looks very \"scary\", to me.  Won\u0027t that ultimately be causing more confusion to people than help with things?  I don\u0027t trust in folks\u0027 sanity to \"wait for the code which created the transaction to submit it\".. they\u0027ll forget - this may well turn into a bigger mess at usage medium term than the problem you set out to solve, I fear.\n\nUnderstand what you\u0027re after here, and agree \"something\" is needed, but am not convinced this as-is is the right answer for what you\u0027re after.",
+      "revId": "c0cb2b28bafa2dcdb0efbb5a41781c5e9bd4570c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
