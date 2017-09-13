@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_9062233c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T18:28:32Z",
+      "side": 1,
+      "message": "IMHO it\u0027s \"nice\" (just \"sugar\") that one can call this with a GroupEntity directly, instead of having to get the dpnId and groupId out of it; so while I think it\u0027s useful that you expose a removeGroup(BigInteger dpnId, long groupId), I would also leave removeGroup(GroupEntity groupEntity).  However I do not feel strongly about this, if you think that makes this API hard to understand instead of simpler to use, then just say so and I\u0027ll remove my objection.",
+      "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_504c2bc8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T18:28:32Z",
+      "side": 1,
+      "message": "I feel more strongly against @deprecating this one.  IMHO it\u0027s GOOD that this API gives you a way to do a number of things together in one Tx (by passing one), instead of internally creating single txs; this should be encouraged, not discouraged.  It\u0027s also good to have a syntactic sugar that does not require it (I\u0027m fine with that), but I would not @Deprecate this (especially because other methods of this API have the WriteTransaction argument).",
+      "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
