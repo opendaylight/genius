@@ -1,0 +1,146 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_ed5c6c4d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateRemoveHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "Having moved this most probably fixes a https://bugs.opendaylight.org/show_bug.cgi?id\u003d9099-like problem as a side effect! ;-)",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2da5e446",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateUpdateHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "I guess theoretically this (and the same below) could change behaviour and is not purely mechanical, but I\u0027m sure it\u0027s completely safe; just say\u0027ng FTR.",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2d7cc4b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "as before, this could theoretically change caller, but in practice I\u0027m pretty sure is very unlikely to be a real problem, so fine with with me - much better!",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_cd39a8f3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "Moving this fixes https://bugs.opendaylight.org/show_bug.cgi?id\u003d9099 like problems which have not even popped up on https://bugs.opendaylight.org/showdependencytree.cgi?id\u003d9096\u0026hide_resolved\u003d0 (maybe because ITM is not used in those tests?)",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ad3ef4d7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "again",
+      "range": {
+        "startLine": 95,
+        "startChar": 55,
+        "endLine": 95,
+        "endChar": 78
+      },
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ed23ccba",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "This move fixes a potential Tx leak; nice.",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6d1fdc6c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "This move again fixes a potential Tx leak; nice.",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2d016406",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-13T15:49:05Z",
+      "side": 1,
+      "message": "and this again",
+      "revId": "ba252342f1cedec383cb80e17a32b5f804d17925",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
