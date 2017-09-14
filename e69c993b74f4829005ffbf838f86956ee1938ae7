@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_26ece1f2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_a3f603f7",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_832e5f41",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -89,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_c6b22505",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_63f08bfe",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_c3f17702",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -124,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_06d0bd1d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_e6dbe979",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e370fb73",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -153,6 +207,24 @@
       "side": 1,
       "message": "Yes, thanks; the docs need more work!",
       "parentUuid": "ba1f61a0_e370fb73",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_46c63569",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_46e59536",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -240,6 +312,24 @@
       "writtenOn": "2017-09-13T22:43:48Z",
       "side": 1,
       "message": "minor: just for clarity, name this \"tx\" the \"delegate\" ?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a6ae1196",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_a35ba3f4",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -334,6 +424,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_469d9565",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_c30df7e9",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_a3128306",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -345,6 +453,24 @@
       "writtenOn": "2017-09-13T22:43:48Z",
       "side": 1,
       "message": "as above",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_269a216e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T08:36:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_a3128306",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
