@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
@@ -152,13 +153,17 @@ public class LockManager implements LockManagerService {
                     }
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
+                // Log anything else than OptimisticLockFailedException as error
+                // (but not OptimisticLockFailedException, those are "normal", and we retry)
+                if (!(e.getCause() instanceof OptimisticLockFailedException)) {
+                    LOG.error("Unable to acquire lock for {}, try {}", lockName, retry, e);
+                }
             }
             CompletableFuture<Void> future = lockSynchronizerMap.get(lockName);
             if (future != null) {
                 try {
                     // Making this as timed get to avoid any missing signal for lock remove notifications
-                    // in LockListener (which does the futue.complete())
+                    // in LockListener (which does the future.complete())
                     future.get(DEFAULT_WAIT_TIME_IN_MILLIS, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Problems in waiting on lock synchronizer {}", lockName, e);
@@ -187,8 +192,12 @@ public class LockManager implements LockManagerService {
                             DEFAULT_WAIT_TIME_IN_MILLIS, retry, retryCount);
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock for {}, try {} of {}", lockName, retry,
-                        retryCount);
+                // Log anything else than OptimisticLockFailedException as error
+                // (but not OptimisticLockFailedException, those are "normal", and we retry)
+                if (!(e.getCause() instanceof OptimisticLockFailedException)) {
+                    LOG.error("Unable to acquire lock for {}, try {} of {}", lockName, retry,
+                            retryCount, e);
+                }
             }
             Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }

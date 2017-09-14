@@ -9,8 +9,6 @@ package org.opendaylight.genius.lockmanager.tests;
 
 import java.net.UnknownHostException;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.lockmanager.LockListener;
 import org.opendaylight.genius.lockmanager.LockManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
@@ -20,8 +18,6 @@ public class LockManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
     protected void configureBindings() throws UnknownHostException {
-        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
-        bind(DataBroker.class).toInstance(dataBroker);
         bind(LockManagerService.class).to(LockManager.class);
         bind(LockListener.class);
     }
