@@ -91,7 +91,7 @@ public class LockManager implements LockManagerService {
                 LOG.debug("Acquired lock {}", lockName);
             } else {
                 lockRpcBuilder = RpcResultBuilder.failed();
-                LOG.error("Failed to get lock {}", lockName);
+                LOG.error("Failed to get lock {} after {} retries", lockName, retryCount);
             }
         } catch (InterruptedException e) {
             lockRpcBuilder = RpcResultBuilder.failed();

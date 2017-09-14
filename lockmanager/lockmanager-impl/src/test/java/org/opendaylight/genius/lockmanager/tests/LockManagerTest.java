@@ -82,7 +82,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     // test re-lock of already locked key using tryLock() RPC.
     // tryLock() RPC will retry only specific number of times, and it will only return after that
     public void testTryLock() throws InterruptedException, ExecutionException, TimeoutException {
-        logCaptureRule.expectError("Failed to get lock testTryLock");
+        logCaptureRule.expectError("Failed to get lock testTryLock after 3 retries");
 
         TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3L)
             .setTimeUnit(TimeUnits.Seconds).build();
