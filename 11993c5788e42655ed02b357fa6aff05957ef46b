@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_86d5cd1d",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2017-09-14T08:23:48Z",
+      "side": 1,
+      "message": "it seems this is duplicated code. I do believe there should be an explanation as to why these are \"normal\" -- in my mind they are indicative of misusing the data store for a purpose it was never intended for and silencing it when it fights back...",
+      "range": {
+        "startLine": 156,
+        "startChar": 0,
+        "endLine": 160,
+        "endChar": 17
+      },
+      "revId": "11993c5788e42655ed02b357fa6aff05957ef46b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
