@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
@@ -152,13 +153,13 @@ public class LockManager implements LockManagerService {
                     }
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock for {}, try {}", lockName, retry);
+                logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
             }
             CompletableFuture<Void> future = lockSynchronizerMap.get(lockName);
             if (future != null) {
                 try {
                     // Making this as timed get to avoid any missing signal for lock remove notifications
-                    // in LockListener (which does the futue.complete())
+                    // in LockListener (which does the future.complete())
                     future.get(DEFAULT_WAIT_TIME_IN_MILLIS, TimeUnit.MILLISECONDS);
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Problems in waiting on lock synchronizer {}", lockName, e);
@@ -187,12 +188,23 @@ public class LockManager implements LockManagerService {
                             DEFAULT_WAIT_TIME_IN_MILLIS, retry, retryCount);
                 }
             } catch (ExecutionException e) {
-                LOG.error("Unable to acquire lock for {}, try {} of {}", lockName, retry,
-                        retryCount);
+                logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
             }
             Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
         }
         return false;
+    }
+
+    private void logUnlessCauseIsOptimisticLockFailedException(String name, int retry, ExecutionException exception) {
+        // Log anything else than OptimisticLockFailedException with level error.
+        // Bug 8059: We do not log OptimisticLockFailedException, as those are "normal" in the current design,
+        //           and this class is explicitly designed to retry obtained a lock in case of an
+        //           OptimisticLockFailedException, so we do not flood the log with events in case it's "just" that.
+        // TODO This class may be completely reviewed in the future to work entirely differently;
+        //      e.g. using an EntityOwnershipService, as proposed in Bug 8975.
+        if (!(exception.getCause() instanceof OptimisticLockFailedException)) {
+            LOG.error("Unable to acquire lock for {}, try {}", name, retry, exception);
+        }
     }
 
     /**
