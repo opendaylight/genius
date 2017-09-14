@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_21e20b2f",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-14T11:48:11Z",
+      "side": 1,
+      "message": "I\u0027m planning to get rid of this method in Oxygen so this will make that difficult. Any chance you can derive from AbstractForwardedDataBroker or BindingDOMDataBrokerAdapter and override what you need?  If those are problematic, can we add a simple ForwardingDataBroker in controller? The other option here is to use a mock.",
+      "revId": "0e010e97076813805805e5995da2f1a1f61ba05a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
