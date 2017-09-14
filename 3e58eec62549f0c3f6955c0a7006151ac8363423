@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_c10a0f78",
+        "filename": "alivenessmonitor/alivenessmonitor-impl-protocols/src/main/java/org/opendaylight/genius/alivenessmonitor/protocols/internal/AlivenessProtocolHandlerLLDP.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_d0b2db04",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_10d0f31d",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeConnectorEventListener.java",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2017-09-13T17:18:16Z",
       "side": 1,
       "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "range": {
+        "startLine": 25,
+        "startChar": 5,
+        "endLine": 25,
+        "endChar": 15
+      },
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a10f1b87",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeConnectorEventListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_10d0f31d",
       "range": {
         "startLine": 25,
         "startChar": 5,
@@ -77,6 +119,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_0128a7e0",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "The old variants are still present (just deprecated), so nothing will break.",
+      "parentUuid": "ba1f61a0_a301e36b",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_90bce3dd",
         "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
         "patchSetId": 2
@@ -111,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e124730e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 475,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_f0cc3f8b",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_30c37758",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 2
@@ -122,6 +200,24 @@
       "writtenOn": "2017-09-13T17:18:16Z",
       "side": 1,
       "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_211b2bcb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_30c37758",
       "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -145,6 +241,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_817bf7f3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPInterfaceConfigAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_90a343b1",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_70a84f8d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/statehelpers/HwVTEPInterfaceStateUpdateHelper.java",
         "patchSetId": 2
@@ -162,6 +276,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_618083c0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/statehelpers/HwVTEPInterfaceStateUpdateHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_70a84f8d",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_d0a93b91",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
         "patchSetId": 2
@@ -173,6 +305,24 @@
       "writtenOn": "2017-09-13T17:18:16Z",
       "side": 1,
       "message": "put on previous line?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c1816fc4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_d0a93b91",
       "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -207,6 +357,24 @@
       "writtenOn": "2017-09-13T17:18:16Z",
       "side": 1,
       "message": "Stephen, as this is in an -impl- I personally wouldn\u0027t bother to @Deprecated in this particular case (unlike API) and would just clean this up directly.. not super important, but do you want to change it?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a186fbd8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_708faf2a",
       "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -264,6 +432,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e16bd31b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1096,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_70968f40",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_30b41734",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 2
@@ -275,6 +461,24 @@
       "writtenOn": "2017-09-13T17:18:16Z",
       "side": 1,
       "message": "Stephen, this is technically an API breakage... have you carefully checked that this method is not used anymore, including notably all of netvirt?  I\u0027ve done a grep like search using this:\n\nfindx.sh \"buildAction(\" | grep -v \"buildAction()\" | grep \",\"\n\nand found that this doesn\u0027t seem to be used anywhere at all, so how about we instead of removing only the unused argument you found just propose to completely remove this method altogether? So proposed in https://git.opendaylight.org/gerrit/#/c/63106/, conflicting with this of course - so remove here?",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_61cec32f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T13:15:23Z",
+      "side": 1,
+      "message": "I had done a careful check, by rebuilding all the dependent projects. Your change has been merged, so rebasing this on top will get rid of this.",
+      "parentUuid": "ba1f61a0_30b41734",
       "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
