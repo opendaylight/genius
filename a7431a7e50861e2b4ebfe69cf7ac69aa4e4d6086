@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_81f01768",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-09-14T13:20:02Z",
+      "side": 1,
+      "message": "Yes, assert on the RPC result can be done. But we will still need the jobs to be completed before the datastore is validated.\n\nI have updated the review with that change.",
+      "parentUuid": "ba1f61a0_5049cb5e",
+      "revId": "a7431a7e50861e2b4ebfe69cf7ac69aa4e4d6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_3046d74f",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
         "patchSetId": 10
