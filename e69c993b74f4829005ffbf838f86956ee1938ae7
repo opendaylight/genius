@@ -231,6 +231,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_218e8bd0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-14T13:38:02Z",
+      "side": 1,
+      "message": "I can see how you\u0027re trying hard to avoid saying something like \"within a new single\" here which I think would be clearer... but see next point re. naming.",
+      "parentUuid": "ba1f61a0_46c63569",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_c35697cd",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -266,6 +284,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_81be5763",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-14T13:38:02Z",
+      "side": 1,
+      "message": "TBH I\u0027m a little doubtful we\u0027ll be able to just change the semantics later, so personally I would prefer to have this change introduce a utility with a have clear *New* semantics, and then revisit the whole \"implicit Tx\" idea separately after - but up to you!",
+      "parentUuid": "ba1f61a0_26e2212f",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_23ecd3f2",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -295,6 +331,24 @@
       "side": 1,
       "message": "Your explanation makes sense, but for now I don’t want to limit our options. So far in the code I’m changing (and by so far, I mean in this commit), the callers return collections of futures, so that’s what I’m handling here.\n\nI have thought of how the design would look going forward, and one thing I *do* want to enable (for now) is the use of multiple transactions, since a fair amount of code in Genius and NetVirt does that (and whether that’s a good idea or not is a question for another patch series). With the current design we can do this:\n\n    return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, interfaceTx -\u003e {\n        return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, flowTx -\u003e {\n            ...\n            return Arrays.asList(interfaceTx.submit(), flowTx.submit());\n        }\n    }\n\nwhich becomes impossible if we limit this barrier to returning a single future.\n\n(I also don’t want this helper to end up managing a map of transactions...)",
       "parentUuid": "ba1f61a0_23ecd3f2",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_01b26793",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-14T13:38:02Z",
+      "side": 1,
+      "message": "Urgh!  Now only I see what you are trying to leave the door open to here.. the double nested callWithWriteOnlyTransaction looks ugly to me - I hope that will be the exception rather than the rule, in typical usage.  How would you feel about adding some \"sugar\" to make what I hope will be the more typical usage easier by offering two alternatives, and add something such as:\n\n    public static ListenableFuture\u003cVoid\u003e callWithWriteOnlyTransaction(DataBroker broker,\n            Function\u003cWriteTransaction, ListenableFuture\u003cVoid\u003e\u003e function) {\n        return callsWithWriteOnlyTransaction(broker, tx -\u003e singletonList(function.apply(tx))).get(0);\n    }\n\nwhich delegates to this method, which I\u0027ve renamed calls* with an S (because they won\u0027t be able to have the same name due to type erasure) ?",
+      "parentUuid": "ba1f61a0_66d7f94b",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -436,6 +490,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "ba1f61a0_c30df7e9",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_616a43ef",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-14T13:38:02Z",
+      "side": 1,
+      "message": "Tx!",
+      "parentUuid": "ba1f61a0_469d9565",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
