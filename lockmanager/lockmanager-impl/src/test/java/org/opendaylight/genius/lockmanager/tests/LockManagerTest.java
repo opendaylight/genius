@@ -23,6 +23,9 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
+import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailures;
+import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresModule;
 import org.opendaylight.genius.lockmanager.LockManager;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
@@ -36,6 +39,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInputBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test for {@link LockManager}.
@@ -43,11 +48,14 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
  */
 public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LockManagerTest.class);
+
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(new LockManagerTestModule());
+    public @Rule MethodRule guice = new GuiceRule(LockManagerTestModule.class, DataBrokerFailuresModule.class);
 
     @Inject DataBroker dataBroker;
+    @Inject DataBrokerFailures dbFailureSimulator;
     @Inject LockManagerService lockManager;
 
     @Test
@@ -103,6 +111,13 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         assertSuccessfulFutureRpcResult(lockManager.tryLock(lockInput));
     }
 
+    @Test
+    public void testOptimisticLockFailedException() throws InterruptedException, ExecutionException, TimeoutException {
+        dbFailureSimulator.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
+        LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
+        runUnfailSubmitsTimerTask(3000); // see other tests above
+        assertSuccessfulFutureRpcResult(lockManager.lock(lockInput));
+    }
 
     private void assertSuccessfulFutureRpcResult(Future<RpcResult<Void>> futureRpcResult)
             throws InterruptedException, ExecutionException, TimeoutException {
@@ -124,9 +139,21 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
                 try {
                     assertSuccessfulFutureRpcResult(lockManager.unlock(unlockInput));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    throw new RuntimeException(e);
+                    LOG.error("runUnlockTimerTask() failed", e);
+                    // throw new RuntimeException(e) is useless here, as this in a BG Thread, and it would go nowhere
                 }
             }
         }, delay);
     }
+
+    private void runUnfailSubmitsTimerTask(long delay) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dbFailureSimulator.unfailSubmits();
+            }
+        }, delay);
+    }
+
 }
