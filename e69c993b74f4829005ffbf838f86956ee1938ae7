@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a6f611f7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T07:54:42Z",
+      "side": 1,
+      "message": "Yes, I wasn’t sure where the best place in Genius was. I want to iterate on the design and get it right in Genius before pushing it up.\n\nIt’s probably worth expanding a bit on my design process here: with this patch set I want to show, per-commit, the uses of the changes I’m proposing (which is why there are always related code changes in users of the new methods). I also want to restrict each commit to a small change, knowing full well that this will result in later refactoring — but since I’m only changing Genius for now, the refactoring will be contained.",
+      "parentUuid": "ba1f61a0_a3f603f7",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_832e5f41",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-13T22:43:48Z",
       "side": 1,
       "message": "Q: Have you considered / would you be open to using a design like e.g. in the SingleTransactionDataBroker, with overload method variants non-static without taking a DataBroker argument (implict from constructor) and static ones as you have it which do take one?  This would allow using classes to avoid have to pass the DataBroker into this from each of their methods using the methods here,and IMHO makes code more readable, and is more DI-like.  In fact, perhaps you would even consider making this a \"real\" service, with an interface that can be @Inject into users, and @Singleton Impl class with @Inject DataBroker? (That may have been a better design for SingleTransactionDataBroker as well; at the time I wanted to \"let clients choose\" the style they preferred, and make it easy to use from static methods which have no DI @Inject, yet. But with a trick similar to what I\u0027m doing in c/60303 it should actually even be possible to have a clean nice pure DI design yet have a Util static class with a hack that makes it usable even as static.)\n\nPS re. naming: Changing this would automatically also take care of no longer naming this *Helper, which I\u0027m not a huge fan of.",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_06df1d6a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T07:54:42Z",
+      "side": 1,
+      "message": "Yes, I am considering making this a service, or opening up both static and service uses. For the time being though, I want to keep the impact on users minimal, to facilitate iterating on the design itself. I think that the impact of switching to a service model is minimal *on the design itself*, and can be done relatively easily later.\n\nMy *main aim* with this patch series is to ensure that all transactions in Genius have barriers. Once we’ve got that, we’ll know what transaction users look like in Genius, and we can refine the design of this or its successor.",
+      "parentUuid": "ba1f61a0_832e5f41",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_e6dbe979",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T07:54:42Z",
+      "side": 1,
+      "message": "Old habits die hard — I’m used to projects which enforce the “no uncommented empty block” rule ;-).",
+      "parentUuid": "ba1f61a0_c3f17702",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e370fb73",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -81,6 +135,24 @@
       "writtenOn": "2017-09-13T22:43:48Z",
       "side": 1,
       "message": "doc: how about instead of \"is closed appropriately before returning.\" say specifically \"is cancelled if it was not submitted\", to make it clear that\u0027s what this actually does?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_46e59536",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T07:54:42Z",
+      "side": 1,
+      "message": "Yes, thanks; the docs need more work!",
+      "parentUuid": "ba1f61a0_e370fb73",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_26e2212f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T07:54:42Z",
+      "side": 1,
+      "message": "That’s just the thing: I don’t necessarily want the semantics here to ensure that the code is called with a new transaction. I think the semantics should be that the code is called with a write transaction, which it can use however it sees fit, regardless of where that transaction comes from (because eventually it might just come from a thread-local, Spring-style).",
+      "parentUuid": "ba1f61a0_c35697cd",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_23ecd3f2",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
         "patchSetId": 1
@@ -115,6 +205,24 @@
       "writtenOn": "2017-09-13T22:43:48Z",
       "side": 1,
       "message": "Hang on, I *MAY* be missing something, but I don\u0027t think I get your use of List\u003c\u003e here.. that makes no sense to me, sorry. I could see from looking at the matching use of it in this change\u0027s ItmTunnelAggregationHelper how that\u0027s \"convenient\" (there), but IMHO you got this wrong, and got blinded by that particular usage, which has something to do with the DataStoreJobCoordinator\u0027s enqueueJob taking Callable\u003cList\u003cListenableFuture\u003cVoid\u003e\u003e\u003e arguments - but it\u0027s inappropriate here in the general case: Your function receives a (one!) WriteTransaction.  When the lambda does submit() that, it receives in return a (single) ListenableFuture. So with this List\u003c\u003e here your forcing EVERY client of this to use return Collections.singletonList(..) - for no good reason, IMHO.  I think instead of this we would want to just use ListenableFuture\u003cVoid\u003e both as this method\u0027s return type itself and the Function\u0027s R.  In DataStoreJobCoordinator like related usages such as ItmTunnelAggregationHelper (only), you\u0027ll then instead of:\n\n   return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, tx -\u003e {\n      ...                \n      return Collections.singletonList(tx.submit());\n   });\n\nsimply want to do:\n\n   return Collections.singletonList(TransactionHelper.callWithWriteOnlyTransaction(dataBroker, tx -\u003e {\n      ...                \n      return tx.submit();\n   }));\n\nDoes this (too?) lengthy explanation make any sense?",
+      "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_66d7f94b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/TransactionHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T07:54:42Z",
+      "side": 1,
+      "message": "Your explanation makes sense, but for now I don’t want to limit our options. So far in the code I’m changing (and by so far, I mean in this commit), the callers return collections of futures, so that’s what I’m handling here.\n\nI have thought of how the design would look going forward, and one thing I *do* want to enable (for now) is the use of multiple transactions, since a fair amount of code in Genius and NetVirt does that (and whether that’s a good idea or not is a question for another patch series). With the current design we can do this:\n\n    return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, interfaceTx -\u003e {\n        return TransactionHelper.callWithWriteOnlyTransaction(dataBroker, flowTx -\u003e {\n            ...\n            return Arrays.asList(interfaceTx.submit(), flowTx.submit());\n        }\n    }\n\nwhich becomes impossible if we limit this barrier to returning a single future.\n\n(I also don’t want this helper to end up managing a map of transactions...)",
+      "parentUuid": "ba1f61a0_23ecd3f2",
       "revId": "e69c993b74f4829005ffbf838f86956ee1938ae7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
