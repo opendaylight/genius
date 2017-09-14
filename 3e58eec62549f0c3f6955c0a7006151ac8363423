@@ -59,6 +59,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a301e36b",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-09-14T02:12:59Z",
+      "side": 1,
+      "message": "I think in our older releases when we had infinispan caches, there was a secondary key for each interface by dpnId:portName:vlanId.. Which is no longer valid now.. But this cannot be removed just like that, as we might have some downstream dependancies, and compilation will break.. Let me give a heads up internally",
+      "parentUuid": "ba1f61a0_30ec17f3",
+      "revId": "3e58eec62549f0c3f6955c0a7006151ac8363423",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_90bce3dd",
         "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
         "patchSetId": 2
