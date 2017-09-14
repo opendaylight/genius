@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_5c80c4bf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T16:55:20Z",
+      "side": 1,
+      "message": "Currently, *all* callers of removeGroup() construct a GroupEntity instance just for the purpose of calling this method. So I don’t think there’s much point in keeping it...\n\nPersonally I like being able to use entity objects too, but I also think it’s better to have methods expose the minimum they require to do their job — from an OO perspective it’s not as nice, but it lead to better performance and easier long-term maintenance.",
+      "parentUuid": "ba1f61a0_9062233c",
+      "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_504c2bc8",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-13T18:28:32Z",
       "side": 1,
       "message": "I feel more strongly against @deprecating this one.  IMHO it\u0027s GOOD that this API gives you a way to do a number of things together in one Tx (by passing one), instead of internally creating single txs; this should be encouraged, not discouraged.  It\u0027s also good to have a syntactic sugar that does not require it (I\u0027m fine with that), but I would not @Deprecate this (especially because other methods of this API have the WriteTransaction argument).",
+      "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7c62e83e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-14T16:55:20Z",
+      "side": 1,
+      "message": "This deprecation is just the reflection of the removeGroup() deprecation above. We still have a transaction-provided variant with ids below. (Actually I need to provide a groupId-based variant of *that*, the current variant suffers from the same issue that callers create instances of Group just to delete them...)",
+      "parentUuid": "ba1f61a0_504c2bc8",
       "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
