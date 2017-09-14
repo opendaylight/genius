@@ -16,6 +16,24 @@
       "revId": "0e010e97076813805805e5995da2f1a1f61ba05a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e193d358",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-14T12:17:16Z",
+      "side": 1,
+      "message": "I like the idea of proposing simple ForwardingDataBroker in controller (and then making this thing extend that). I\u0027ve found the org.opendaylight.controller.md.sal.dom.spi.ForwardingDOMDataBroker, so this would be very similar, right?  I can raise a controller Gerrit for that, but can you provide guidance exactly where (artifact and package) that should best go?",
+      "parentUuid": "ba1f61a0_21e20b2f",
+      "revId": "0e010e97076813805805e5995da2f1a1f61ba05a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
