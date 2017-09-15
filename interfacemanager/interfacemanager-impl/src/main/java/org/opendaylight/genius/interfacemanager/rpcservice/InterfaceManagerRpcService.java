@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -83,6 +82,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.Interfaces;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.InterfacesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -411,6 +412,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         BigInteger dpnid = input.getDpid();
+        List<Interfaces> interfacesList = new ArrayList<>();
         LOG.debug("Get interface list for dpn {}", input.getDpid());
         try {
             InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
@@ -426,14 +428,19 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 LOG.debug("No Interface list found in Operational for DPN {}", dpnid);
                 return buildEmptyInterfaceListResult();
             }
-            List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName)
-                    .collect(Collectors.toList());
+            interfaceNameEntries.stream().forEach(
+                (interfaceNameEntry) -> {
+                    InterfacesBuilder intf = new InterfacesBuilder()
+                            .setInterfaceName(interfaceNameEntry.getInterfaceName())
+                            .setInterfaceType(interfaceNameEntry.getInterfaceType());
+                    interfacesList.add(intf.build());
+                });
             GetDpnInterfaceListOutput output =
-                new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList).build();
+                new GetDpnInterfaceListOutputBuilder().setInterfaces(interfacesList).build();
             // TODO as above, simplify the success case later, as we have the failure case below
             RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output);
-            LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfaceList);
+            LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfacesList);
             return Futures.immediateFuture(rpcResultBuilder.build());
         } catch (Exception e) {
             return newRpcErrorResultWithErrorLog(
@@ -443,7 +450,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
 
     protected Future<RpcResult<GetDpnInterfaceListOutput>> buildEmptyInterfaceListResult() {
         GetDpnInterfaceListOutput emptyListResult =
-            new GetDpnInterfaceListOutputBuilder().setInterfacesList(Collections.emptyList()).build();
+            new GetDpnInterfaceListOutputBuilder().setInterfaces(Collections.emptyList()).build();
         return Futures.immediateFuture(RpcResultBuilder.<GetDpnInterfaceListOutput>success()
                                            .withResult(emptyListResult).build());
     }
