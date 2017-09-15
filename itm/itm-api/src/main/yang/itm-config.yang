@@ -17,7 +17,6 @@ module itm-config {
     import odl-interface {
             prefix odlif;
     }
-    import config { prefix config; revision-date 2013-04-05; }
 
     description "This YANG module defines automatic tunnel configuration.";
     revision "2016-04-06";
