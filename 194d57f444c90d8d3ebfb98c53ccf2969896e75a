@@ -16,6 +16,24 @@
       "revId": "194d57f444c90d8d3ebfb98c53ccf2969896e75a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_92b343e8",
+        "filename": "resourcemanager/resourcemanager-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-15T14:06:29Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_b2b2c703",
+      "revId": "194d57f444c90d8d3ebfb98c53ccf2969896e75a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
