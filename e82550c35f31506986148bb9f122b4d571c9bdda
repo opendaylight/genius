@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_b2076717",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-09-15T09:54:36Z",
+      "side": 1,
+      "message": "If we are using EntityOwnershipService, is there a way to have something similar to clustered listeners for RPCs?",
+      "range": {
+        "startLine": 204,
+        "startChar": 30,
+        "endLine": 204,
+        "endChar": 52
+      },
+      "revId": "e82550c35f31506986148bb9f122b4d571c9bdda",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
