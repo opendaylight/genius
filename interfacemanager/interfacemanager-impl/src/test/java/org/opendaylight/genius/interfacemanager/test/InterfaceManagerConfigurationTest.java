@@ -136,6 +136,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
@@ -742,11 +743,11 @@ public class InterfaceManagerConfigurationTest {
                 .setDpid(DPN_ID_1).build();
         Future<RpcResult<GetDpnInterfaceListOutput>> dpnInterfaceListOutput = odlInterfaceRpcService
             .getDpnInterfaceList(dpnInterfaceListInput);
-        List<String> expectedDpnInterfaceList = new ArrayList(DpnInterfaceListOutput.newDpnInterfaceListOutput()
-            .getInterfacesList());
-        List<String> actualDpnInterfaceList = dpnInterfaceListOutput.get().getResult().getInterfacesList();
-        Collections.sort(expectedDpnInterfaceList);
-        Collections.sort(actualDpnInterfaceList);
+        List<Interfaces> expectedDpnInterfaceList = new ArrayList(DpnInterfaceListOutput.newDpnInterfaceListOutput()
+            .getInterfaces());
+        List<Interfaces> actualDpnInterfaceList = dpnInterfaceListOutput.get().getResult().getInterfaces();
+//        Collections.sort(expectedDpnInterfaceList);
+//        Collections.sort(actualDpnInterfaceList);
         assertEqualBeans(expectedDpnInterfaceList, actualDpnInterfaceList);
 
         //3. Test egress actions fetching for interface
