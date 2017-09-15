@@ -9,16 +9,17 @@ package org.opendaylight.genius.interfacemanager.test.xtend
 
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutputBuilder;
-
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.InterfacesBuilder;
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
 class DpnInterfaceListOutput {
 
     static def newDpnInterfaceListOutput() {
         new GetDpnInterfaceListOutputBuilder >> [
-            interfacesList = #[
-                "23701c04-7e58-4c65-9425-78a80d49a218",
-                "tap23701c04-7e"
+            interfaces = #[
+                new InterfacesBuilder >> [
+
+                ]
             ]
         ]
     }

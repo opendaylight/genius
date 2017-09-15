@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -71,6 +72,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.Interfaces;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.InterfacesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -255,6 +258,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     @Override
     public ListenableFuture<GetDpnInterfaceListOutput> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         BigInteger dpnid = input.getDpid();
+        List<Interfaces> interfaceList = new ArrayList<>();
         InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, new DpnToInterfaceKey(dpnid)).build();
         Optional<DpnToInterface> entry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);
@@ -268,16 +272,22 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
             LOG.debug("No Interface list found in Operational for DPN {}", dpnid);
             return buildEmptyInterfaceListResult();
         }
-        List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName)
-                .collect(Collectors.toList());
+
+        interfaceNameEntries.stream().forEach(
+                (interfaceNameEntry) -> {
+                    InterfacesBuilder intf = new InterfacesBuilder()
+                            .setInterfaceName(interfaceNameEntry.getInterfaceName())
+                            .setInterfaceType(interfaceNameEntry.getInterfaceType());
+                    interfaceList.add(intf.build());
+                });
         // TODO as above, simplify the success case later, as we have the failure case below
         return Futures
-                .immediateFuture(new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList).build());
+                .immediateFuture(new GetDpnInterfaceListOutputBuilder().setInterfaces(interfaceList).build());
     }
 
     private ListenableFuture<GetDpnInterfaceListOutput> buildEmptyInterfaceListResult() {
         GetDpnInterfaceListOutput emptyListResult =
-            new GetDpnInterfaceListOutputBuilder().setInterfacesList(Collections.emptyList()).build();
+            new GetDpnInterfaceListOutputBuilder().setInterfaces(Collections.emptyList()).build();
         return Futures.immediateFuture(emptyListResult);
     }
 }
