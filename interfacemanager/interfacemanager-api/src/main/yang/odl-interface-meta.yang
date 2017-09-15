@@ -6,6 +6,10 @@ module odl-interface-meta {
         prefix southbound; revision-date "2015-01-05";
     }
 
+    import odl-interface {
+        prefix odlif; revision-date 2016-04-06;
+    }
+
     revision "2016-04-06" {
         description "ODL rendering specific Interface Manager Meta Module";
     }
@@ -131,6 +135,11 @@ module odl-interface-meta {
                 key interface-name;
                 leaf interface-name {
                     type string;
+                }
+                leaf interface-type {
+                    type identityref {
+                        base if:interface-type;
+                    }
                 }
             }
         }
