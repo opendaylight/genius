@@ -190,8 +190,15 @@ module odl-interface-rpc {
             }
         }
         output {
-            leaf-list interfaces-list {
-               type string;
+            list interfaces {
+                leaf interface-name {
+                    type string;
+                }
+                leaf interface-type {
+                    type identityref {
+                        base if:interface-type;
+                    }
+                }
             }
         }
     }
