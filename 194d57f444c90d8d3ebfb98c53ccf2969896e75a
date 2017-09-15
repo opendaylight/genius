@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_b2b2c703",
+        "filename": "resourcemanager/resourcemanager-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-15T13:13:31Z",
+      "side": 0,
+      "message": "I prefer keeping the groupId explicit: it avoids issues when moving modules around...",
+      "revId": "194d57f444c90d8d3ebfb98c53ccf2969896e75a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
