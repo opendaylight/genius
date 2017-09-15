@@ -26,17 +26,8 @@ module odl-interface {
 
     import opendaylight-l2-types { prefix ethertype; revision-date "2013-08-27";}
 
-    import config {
-        prefix config; revision-date 2013-04-05;
-    }
-
     revision "2016-04-06" {
         description "ODL Interface Manager Module";
-    }
-
-    identity odl-interface {
-        base "config:service-type";
-        config:java-class "org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager";
     }
 
     identity stacked-vlan {
