@@ -30,7 +30,6 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -43,6 +42,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
@@ -58,7 +58,6 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingU
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.test.infra.TestableQueues;
 import org.opendaylight.genius.interfacemanager.test.xtend.DpnFromInterfaceOutput;
-import org.opendaylight.genius.interfacemanager.test.xtend.DpnInterfaceListOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.EgressActionsForInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.EgressInstructionsForInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.EndPointIpFromDpn;
@@ -77,6 +76,7 @@ import org.opendaylight.genius.interfacemanager.test.xtend.InterfaceTypeOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.NodeconnectorIdFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.PortFromInterfaceOutput;
 import org.opendaylight.genius.interfacemanager.test.xtend.TunnelTypeOutput;
+import org.opendaylight.genius.interfacemanager.test.xtend.ExpectedInterfaceListFromDpn;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
@@ -84,6 +84,8 @@ import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -102,6 +104,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
@@ -137,6 +145,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetTunnelTypeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeEgress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
@@ -740,18 +749,6 @@ public class InterfaceManagerConfigurationTest {
         Assert.assertEquals(DpnFromInterfaceOutput.newDpnFromInterfaceOutput(),
                 dpidFromInterfaceOutput.get().getResult());
 
-        //2. Test interface list fetching from dpnId
-        GetDpnInterfaceListInput dpnInterfaceListInput = new GetDpnInterfaceListInputBuilder()
-                .setDpid(DPN_ID_1).build();
-        Future<RpcResult<GetDpnInterfaceListOutput>> dpnInterfaceListOutput = odlInterfaceRpcService
-            .getDpnInterfaceList(dpnInterfaceListInput);
-        List<String> expectedDpnInterfaceList = new ArrayList(DpnInterfaceListOutput.newDpnInterfaceListOutput()
-            .getInterfacesList());
-        List<String> actualDpnInterfaceList = dpnInterfaceListOutput.get().getResult().getInterfacesList();
-        Collections.sort(expectedDpnInterfaceList);
-        Collections.sort(actualDpnInterfaceList);
-        assertEqualBeans(expectedDpnInterfaceList, actualDpnInterfaceList);
-
         //3. Test egress actions fetching for interface
         GetEgressActionsForInterfaceInput egressActionsForInterfaceInput = new
             GetEgressActionsForInterfaceInputBuilder().setIntfName(INTERFACE_NAME).build();
@@ -893,5 +890,39 @@ public class InterfaceManagerConfigurationTest {
         // c) check if lport-tag to interface mapping is deleted
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             ifIndexInterfaceInstanceIdentifier).get());
+    }
+
+    @Ignore
+    @Test
+    public void testDpnToInterfaceList() throws  Exception {
+        //Write into DpnToInterfaceList
+        createDpnToInterface(DPN_ID_1, "abc", Other.class);
+
+        //Test interface list fetching from dpnId
+        GetDpnInterfaceListInput dpnInterfaceListInput = new GetDpnInterfaceListInputBuilder()
+                .setDpid(DPN_ID_1).build();
+        Future<RpcResult<GetDpnInterfaceListOutput>> dpnInterfaceListOutput = odlInterfaceRpcService
+                .getDpnInterfaceList(dpnInterfaceListInput);
+
+        List<Interfaces> actualDpnInterfaceList = dpnInterfaceListOutput.get().getResult().getInterfaces();
+        assertEqualBeans(ExpectedInterfaceListFromDpn.checkDpnToInterfaceList(), actualDpnInterfaceList.get(0));
+    }
+
+    private void createDpnToInterface(BigInteger dpId, String infName,
+                                      Class<? extends InterfaceType> interfaceType) throws  Exception {
+        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
+        InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
+        InstanceIdentifier<InterfaceNameEntry> intfid = InstanceIdentifier.builder(DpnToInterfaceList.class)
+                .child(DpnToInterface.class, dpnToInterfaceKey)
+                .child(InterfaceNameEntry.class, interfaceNameEntryKey)
+                .build();
+        InterfaceNameEntryBuilder entryBuilder =
+                new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
+        if (interfaceType != null) {
+            entryBuilder.setInterfaceType(interfaceType);
+        }
+        tx.put(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build(), true);
+        tx.submit().checkedGet();
     }
 }
