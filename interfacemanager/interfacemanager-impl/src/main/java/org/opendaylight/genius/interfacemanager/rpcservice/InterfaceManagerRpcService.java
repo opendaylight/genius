@@ -58,6 +58,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpnInterfaceListOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.Interfaces;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.InterfacesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutputBuilder;
@@ -400,6 +402,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         BigInteger dpnid = input.getDpid();
         RpcResultBuilder<GetDpnInterfaceListOutput> rpcResultBuilder = null;
+        List<Interfaces> interfacesList = new ArrayList<>();
         LOG.debug("Get interface list for dpn {}", input.getDpid());
         try {
             InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
@@ -415,13 +418,18 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 LOG.debug("No Interface list found in Operational for DPN {}", dpnid);
                 return buildEmptyInterfaceListResult();
             }
-            List<String> interfaceList = interfaceNameEntries.stream().map(InterfaceNameEntry::getInterfaceName)
-                    .collect(Collectors.toList());
+            interfaceNameEntries.stream().forEach(
+                    (interfaceNameEntry) -> {
+                        InterfacesBuilder intf = new InterfacesBuilder()
+                                .setInterfaceName(interfaceNameEntry.getInterfaceName())
+                                .setInterfaceType(interfaceNameEntry.getInterfaceType());
+                        interfacesList.add(intf.build());
+                    });
             GetDpnInterfaceListOutput output =
-                new GetDpnInterfaceListOutputBuilder().setInterfacesList(interfaceList).build();
+                new GetDpnInterfaceListOutputBuilder().setInterfaces(interfacesList).build();
             rpcResultBuilder = RpcResultBuilder.success();
             rpcResultBuilder.withResult(output);
-            LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfaceList);
+            LOG.debug("interface list for dpn {} is {}", input.getDpid(), interfacesList);
         } catch (Exception e) {
             LOG.error("Retrieval of interfaceNameList for the dpnId {}", dpnid, e);
             rpcResultBuilder = RpcResultBuilder.failed();
@@ -431,7 +439,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
 
     protected Future<RpcResult<GetDpnInterfaceListOutput>> buildEmptyInterfaceListResult() {
         GetDpnInterfaceListOutput emptyListResult =
-            new GetDpnInterfaceListOutputBuilder().setInterfacesList(Collections.emptyList()).build();
+            new GetDpnInterfaceListOutputBuilder().setInterfaces(Collections.emptyList()).build();
         return Futures.immediateFuture(RpcResultBuilder.<GetDpnInterfaceListOutput>success()
                                            .withResult(emptyListResult).build());
     }

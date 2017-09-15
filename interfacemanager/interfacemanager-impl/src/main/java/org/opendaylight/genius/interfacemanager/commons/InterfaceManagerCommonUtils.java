@@ -44,6 +44,7 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelSourceIp;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -413,9 +414,10 @@ public final class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setAdminStatus(adminStatus).setOperStatus(operStatus)
                 .setPhysAddress(physAddress).setLowerLayerIf(childLowerLayerIfList);
         ifaceBuilder.setIfIndex(ifIndex).setType(Other.class);
-
+        Class<? extends InterfaceType> interfaceType = null;
         if (interfaceInfo != null) {
-            ifaceBuilder.setType(interfaceInfo.getType());
+            interfaceType = interfaceInfo.getType();
+            ifaceBuilder.setType(interfaceType);
         }
         ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         ifaceBuilder.setStatistics(new StatisticsBuilder().setDiscontinuityTime(DateAndTime
@@ -437,7 +439,7 @@ public final class InterfaceManagerCommonUtils {
         }
 
         // Update the DpnToInterfaceList OpDS
-        createOrUpdateDpnToInterface(dpId, interfaceName);
+        createOrUpdateDpnToInterface(dpId, interfaceName, interfaceType);
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -448,11 +450,13 @@ public final class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setType(Other.class)
                 .setIfIndex(IfmConstants.DEFAULT_IFINDEX);
         Integer ifIndex;
+        Class<? extends InterfaceType> interfaceType = null;
         if (interfaceInfo != null) {
             if (!interfaceInfo.isEnabled()) {
                 operStatus = OperStatus.Down;
             }
-            ifaceBuilder.setType(interfaceInfo.getType());
+            interfaceType = interfaceInfo.getType();
+            ifaceBuilder.setType(interfaceType);
             // retrieve if-index only for northbound configured interfaces
             ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
             ifaceBuilder.setIfIndex(ifIndex);
@@ -493,7 +497,7 @@ public final class InterfaceManagerCommonUtils {
         if (nodeConnectorId != null) {
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
             // Update the DpnToInterfaceList OpDS
-            createOrUpdateDpnToInterface(dpId, interfaceName);
+            createOrUpdateDpnToInterface(dpId, interfaceName, interfaceType);
         }
         return ifState;
     }
@@ -659,7 +663,8 @@ public final class InterfaceManagerCommonUtils {
         return matcher.matches();
     }
 
-    public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName) {
+    public static void createOrUpdateDpnToInterface(BigInteger dpId, String infName,
+                                                    Class<? extends InterfaceType> interfaceType) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
         InstanceIdentifier<InterfaceNameEntry> intfid = InstanceIdentifier.builder(DpnToInterfaceList.class)
@@ -668,6 +673,9 @@ public final class InterfaceManagerCommonUtils {
                                                         .build();
         InterfaceNameEntryBuilder entryBuilder =
                 new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
+        if (interfaceType != null) {
+            entryBuilder.setInterfaceType(interfaceType);
+        }
         BatchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
