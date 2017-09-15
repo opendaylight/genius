@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 Red Hat, Inc. and others.
+ * Copyright © 2016, 2017 Red Hat, Inc. and others.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
+import java.lang.Long;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +22,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.NxConntrackBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.nx.conntrack.CtActions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.conntrack.grouping.nx.conntrack.CtActionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.ofpact.actions.ofpact.actions.NxActionCtMarkCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.ofpact.actions.ofpact.actions.NxActionNatCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.ofpact.actions.ofpact.actions.nx.action.ct.mark._case.NxActionCtMarkBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.ofpact.actions.ofpact.actions.nx.action.nat._case.NxActionNatBuilder;
 
 /**
@@ -213,6 +216,45 @@ public class ActionNxConntrack extends ActionInfo {
             result = 31 * result + portMin;
             result = 31 * result + portMax;
             return result;
+        }
+    }
+    
+    public static class NxCtMark implements NxCtAction {
+        private final int ctMark;
+
+        public NxCtMark(int ctMark) {
+            this.ctMark = ctMark;
+        }
+
+        @Override
+        public CtActions buildCtActions() {
+            NxActionCtMarkBuilder nxActionCtMarkBuilder = new NxActionCtMarkBuilder()
+                    .setCtMark(Long.valueOf(ctMark));
+
+            CtActionsBuilder ctActionsBuilder = new CtActionsBuilder();
+            NxActionCtMarkCaseBuilder caseBuilder = new NxActionCtMarkCaseBuilder();
+            caseBuilder.setNxActionCtMark(nxActionCtMarkBuilder.build());
+            ctActionsBuilder.setOfpactActions(caseBuilder.build());
+            return ctActionsBuilder.build();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null || getClass() != other.getClass()) {
+                return false;
+            }
+
+            NxCtMark that = (NxCtMark) other;
+
+            return ctMark == that.ctMark;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * ctMark;
         }
     }
 }
