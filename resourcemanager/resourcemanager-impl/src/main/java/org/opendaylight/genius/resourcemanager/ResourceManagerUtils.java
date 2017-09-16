@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class ResourceManagerUtils {
+public final class ResourceManagerUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceManagerUtils.class);
 
     private static Integer localHostAddress;
