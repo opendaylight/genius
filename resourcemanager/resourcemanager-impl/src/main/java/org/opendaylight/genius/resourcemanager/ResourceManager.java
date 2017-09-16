@@ -17,12 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
@@ -59,7 +59,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ResourceManager implements ResourceManagerService, AutoCloseable {
+public class ResourceManager implements ResourceManagerService {
     // Property names
     private static final String RESOURCE_TABLES_NAME_PROPERTY = "resource.tables.name";
     private static final String RESOURCE_GROUPS_NAME_PROPERTY = "resource.groups.name";
@@ -88,8 +88,8 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     private static final String RESOURCE_SIZE_CANNOT_BE_NULL = "Resource size cannot be null";
 
     // Other services
-    private final DataBroker dataBroker;
     private final IdManagerService idManager;
+    private final SingleTransactionDataBroker transactionDataBroker;
 
     // Cache of resources
     private final ConcurrentMap<Class<? extends ResourceTypeBase>, String> resourcesCache;
@@ -98,20 +98,20 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
     @Inject
     public ResourceManager(final DataBroker dataBroker, final IdManagerService idManager) {
-        this.dataBroker = dataBroker;
+        this.transactionDataBroker = new SingleTransactionDataBroker(dataBroker);
         this.idManager = idManager;
         this.resourcesCache = loadCache();
-        createIdpools();
+        createIdPools();
     }
 
     private ConcurrentMap<Class<? extends ResourceTypeBase>, String> loadCache() {
         ConcurrentMap<Class<? extends ResourceTypeBase>, String> cache = new ConcurrentHashMap<>();
         cache.put(ResourceTypeTableIds.class,
-                System.getProperty(RESOURCE_TABLES_NAME_PROPERTY, RESOURCE_TABLES_DEFAULT_NAME));
+                  System.getProperty(RESOURCE_TABLES_NAME_PROPERTY, RESOURCE_TABLES_DEFAULT_NAME));
         cache.put(ResourceTypeGroupIds.class,
-                System.getProperty(RESOURCE_GROUPS_NAME_PROPERTY, RESOURCE_GROUPS_DEFAULT_NAME));
+                  System.getProperty(RESOURCE_GROUPS_NAME_PROPERTY, RESOURCE_GROUPS_DEFAULT_NAME));
         cache.put(ResourceTypeMeterIds.class,
-                System.getProperty(RESOURCE_METERS_NAME_PROPERTY, RESOURCE_METERS_DEFAULT_NAME));
+                  System.getProperty(RESOURCE_METERS_NAME_PROPERTY, RESOURCE_METERS_DEFAULT_NAME));
         return cache;
     }
 
@@ -129,7 +129,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
         Future<RpcResult<AllocateIdRangeOutput>> output = idManager.allocateIdRange(allocateIdRangeBuilder.build());
         AllocateResourceOutputBuilder allocateResourceOutputBuilder = new AllocateResourceOutputBuilder();
         RpcResultBuilder<AllocateResourceOutput> allocateResourceOutputRpcBuilder = null;
-        List<Long> idValues = new ArrayList<>();
+        List<Long> idValues;
         try {
             if (output.get().isSuccessful()) {
                 AllocateIdRangeOutput allocateIdRangeOutput = output.get().getResult();
@@ -159,54 +159,72 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
         long currentTimeSec = System.currentTimeMillis() / 1000;
         List<AvailableIds> availableIdsList = new ArrayList<>();
         List<DelayedResourceEntries> delayedIdEntriesList = new ArrayList<>();
+
         InstanceIdentifier<IdPool> parentId = ResourceManagerUtils
                 .getIdPoolInstance(resourcesCache.get(input.getResourceType()));
-        Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId,
-                dataBroker);
-        if (optionalParentIdPool != null && optionalParentIdPool.isPresent()) {
-            IdPool parentIdPool = optionalParentIdPool.get();
-            AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
-            if (availableParentIdsHolder.getStart() < availableParentIdsHolder.getEnd()) {
-                availableIdsList.add(new AvailableIdsBuilder().setStart(availableParentIdsHolder.getStart())
-                        .setEnd(availableParentIdsHolder.getEnd()).build());
-            }
-            ReleasedIdsHolder releasedParentIdsHolder = parentIdPool.getReleasedIdsHolder();
-            if (releasedParentIdsHolder != null) {
-                List<DelayedIdEntries> delayedIdParentList = releasedParentIdsHolder.getDelayedIdEntries();
-                if (delayedIdParentList != null && !delayedIdParentList.isEmpty()) {
-                    for (DelayedIdEntries delayedParentEntry : delayedIdParentList) {
-                        delayedIdEntriesList.add(new DelayedResourceEntriesBuilder().setId(delayedParentEntry.getId())
-                                .setReadyTimeSec(delayedParentEntry.getReadyTimeSec()).build());
+        try {
+            Optional<IdPool> optionalParentIdPool = transactionDataBroker
+                    .syncReadOptional(LogicalDatastoreType.CONFIGURATION, parentId);
+
+            if (optionalParentIdPool.isPresent()) {
+                IdPool parentIdPool = optionalParentIdPool.get();
+                AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
+
+                if (availableParentIdsHolder.getStart() < availableParentIdsHolder.getEnd()) {
+                    availableIdsList.add(new AvailableIdsBuilder().setStart(availableParentIdsHolder.getStart())
+                                                 .setEnd(availableParentIdsHolder.getEnd()).build());
+                }
+
+                ReleasedIdsHolder releasedParentIdsHolder = parentIdPool.getReleasedIdsHolder();
+                if (releasedParentIdsHolder != null) {
+                    List<DelayedIdEntries> delayedIdParentList = releasedParentIdsHolder.getDelayedIdEntries();
+                    if (delayedIdParentList != null && !delayedIdParentList.isEmpty()) {
+                        for (DelayedIdEntries delayedParentEntry : delayedIdParentList) {
+                            delayedIdEntriesList
+                                    .add(new DelayedResourceEntriesBuilder().setId(delayedParentEntry.getId())
+                                                 .setReadyTimeSec(delayedParentEntry.getReadyTimeSec()).build());
+                        }
                     }
                 }
             }
+        } catch (ReadFailedException e) {
+            LOG.error("Cannot read data for path {}", parentId);
         }
 
         String localPool = ResourceManagerUtils.getLocalPoolName(resourcesCache.get(input.getResourceType()));
         InstanceIdentifier<IdPool> localId = ResourceManagerUtils.getIdPoolInstance(localPool);
-        Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId, dataBroker);
-        if (optionalLocalId != null && optionalLocalId.isPresent()) {
-            IdPool localIdPool = optionalLocalId.get();
-            AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
-            if (availableLocalIdsHolder != null
-                    && availableLocalIdsHolder.getStart() < availableLocalIdsHolder.getEnd()) {
-                availableIdsList.add(new AvailableIdsBuilder().setStart(availableLocalIdsHolder.getStart())
-                        .setEnd(availableLocalIdsHolder.getEnd()).build());
-            }
-            ReleasedIdsHolder releasedLocalIdsHolder = localIdPool.getReleasedIdsHolder();
-            if (releasedLocalIdsHolder != null) {
-                List<DelayedIdEntries> delayedIdLocalList = releasedLocalIdsHolder.getDelayedIdEntries();
-                if (delayedIdLocalList != null && !delayedIdLocalList.isEmpty()) {
-                    for (DelayedIdEntries delayedLocalEntry : delayedIdLocalList) {
-                        if (delayedLocalEntry.getReadyTimeSec() > currentTimeSec) {
-                            break;
+        try {
+            Optional<IdPool> optionalLocalId = transactionDataBroker
+                    .syncReadOptional(LogicalDatastoreType.CONFIGURATION, localId);
+
+            if (optionalLocalId.isPresent()) {
+                IdPool localIdPool = optionalLocalId.get();
+                AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
+
+                if (availableLocalIdsHolder != null && availableLocalIdsHolder.getStart() < availableLocalIdsHolder
+                        .getEnd()) {
+                    availableIdsList.add(new AvailableIdsBuilder().setStart(availableLocalIdsHolder.getStart())
+                                                 .setEnd(availableLocalIdsHolder.getEnd()).build());
+                }
+                ReleasedIdsHolder releasedLocalIdsHolder = localIdPool.getReleasedIdsHolder();
+                if (releasedLocalIdsHolder != null) {
+                    List<DelayedIdEntries> delayedIdLocalList = releasedLocalIdsHolder.getDelayedIdEntries();
+                    if (delayedIdLocalList != null && !delayedIdLocalList.isEmpty()) {
+                        for (DelayedIdEntries delayedLocalEntry : delayedIdLocalList) {
+                            if (delayedLocalEntry.getReadyTimeSec() > currentTimeSec) {
+                                break;
+                            }
+                            delayedIdEntriesList
+                                    .add(new DelayedResourceEntriesBuilder().setId(delayedLocalEntry.getId())
+                                                 .setReadyTimeSec(delayedLocalEntry.getReadyTimeSec()).build());
                         }
-                        delayedIdEntriesList.add(new DelayedResourceEntriesBuilder().setId(delayedLocalEntry.getId())
-                                .setReadyTimeSec(delayedLocalEntry.getReadyTimeSec()).build());
                     }
                 }
             }
+        } catch (ReadFailedException e) {
+            LOG.error("Cannot read data for path {}", localId);
         }
+
         GetResourcePoolOutput output = new GetResourcePoolOutputBuilder().setAvailableIds(availableIdsList)
                 .setDelayedResourceEntries(delayedIdEntriesList).build();
         return RpcResultBuilder.success(output).buildFuture();
@@ -221,54 +239,61 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
         long currentTimeSec = System.currentTimeMillis() / 1000;
         InstanceIdentifier<IdPool> parentId = ResourceManagerUtils
                 .getIdPoolInstance(resourcesCache.get(input.getResourceType()));
-        Optional<IdPool> optionalParentIdPool = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, parentId,
-                dataBroker);
-        if (optionalParentIdPool != null && optionalParentIdPool.isPresent()) {
-            IdPool parentIdPool = optionalParentIdPool.get();
-            AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
-            totalIdsAvailableForAllocation = availableParentIdsHolder.getEnd() - availableParentIdsHolder.getCursor();
-            ReleasedIdsHolder releasedParentIdsHolder = parentIdPool.getReleasedIdsHolder();
-            if (releasedParentIdsHolder != null) {
-                List<DelayedIdEntries> delayedIdParentList = releasedParentIdsHolder.getDelayedIdEntries();
-                if (delayedIdParentList != null && !delayedIdParentList.isEmpty()) {
-                    totalIdsAvailableForAllocation += delayedIdParentList.size();
+        try {
+            Optional<IdPool> optionalParentIdPool = transactionDataBroker
+                    .syncReadOptional(LogicalDatastoreType.CONFIGURATION, parentId);
+            if (optionalParentIdPool.isPresent()) {
+                IdPool parentIdPool = optionalParentIdPool.get();
+                AvailableIdsHolder availableParentIdsHolder = parentIdPool.getAvailableIdsHolder();
+                totalIdsAvailableForAllocation = availableParentIdsHolder.getEnd() - availableParentIdsHolder
+                        .getCursor();
+                ReleasedIdsHolder releasedParentIdsHolder = parentIdPool.getReleasedIdsHolder();
+                if (releasedParentIdsHolder != null) {
+                    List<DelayedIdEntries> delayedIdParentList = releasedParentIdsHolder.getDelayedIdEntries();
+                    if (delayedIdParentList != null && !delayedIdParentList.isEmpty()) {
+                        totalIdsAvailableForAllocation += delayedIdParentList.size();
+                    }
                 }
             }
+        } catch (ReadFailedException e) {
+            LOG.error("Cannot read data for path {}", parentId);
         }
 
         String localPool = ResourceManagerUtils.getLocalPoolName(resourcesCache.get(input.getResourceType()));
         InstanceIdentifier<IdPool> localId = ResourceManagerUtils.getIdPoolInstance(localPool);
-        Optional<IdPool> optionalLocalId = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, localId, dataBroker);
-        if (optionalLocalId != null && optionalLocalId.isPresent()) {
-            IdPool localIdPool = optionalLocalId.get();
-            AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
-            if (availableLocalIdsHolder != null) {
-                totalIdsAvailableForAllocation += availableLocalIdsHolder.getEnd()
-                        - availableLocalIdsHolder.getCursor();
-            }
-            ReleasedIdsHolder releasedLocalIdsHolder = localIdPool.getReleasedIdsHolder();
-            if (releasedLocalIdsHolder != null) {
-                long count = 0;
-                List<DelayedIdEntries> delayedIdLocalList = releasedLocalIdsHolder.getDelayedIdEntries();
-                if (delayedIdLocalList != null && !delayedIdLocalList.isEmpty()) {
-                    for (DelayedIdEntries delayedLocalEntry : delayedIdLocalList) {
-                        if (delayedLocalEntry.getReadyTimeSec() > currentTimeSec) {
-                            break;
-                        }
-                    }
-                    count++;
+
+        try {
+            Optional<IdPool> optionalLocalId = transactionDataBroker
+                    .syncReadOptional(LogicalDatastoreType.CONFIGURATION, localId);
+            if (optionalLocalId.isPresent()) {
+                IdPool localIdPool = optionalLocalId.get();
+                AvailableIdsHolder availableLocalIdsHolder = localIdPool.getAvailableIdsHolder();
+                if (availableLocalIdsHolder != null) {
+                    totalIdsAvailableForAllocation += availableLocalIdsHolder.getEnd() - availableLocalIdsHolder
+                            .getCursor();
                 }
-                totalIdsAvailableForAllocation += count;
+                ReleasedIdsHolder releasedLocalIdsHolder = localIdPool.getReleasedIdsHolder();
+                if (releasedLocalIdsHolder != null) {
+                    long count = 0;
+                    List<DelayedIdEntries> delayedIdLocalList = releasedLocalIdsHolder.getDelayedIdEntries();
+                    if (delayedIdLocalList != null && !delayedIdLocalList.isEmpty()) {
+                        for (DelayedIdEntries delayedLocalEntry : delayedIdLocalList) {
+                            if (delayedLocalEntry.getReadyTimeSec() > currentTimeSec) {
+                                break;
+                            }
+                        }
+                        count++;
+                    }
+                    totalIdsAvailableForAllocation += count;
+                }
             }
+        } catch (ReadFailedException e) {
+            LOG.error("Cannot read data for path {}", parentId);
         }
 
-        GetAvailableResourcesOutputBuilder outputBuilder = new GetAvailableResourcesOutputBuilder()
-                .setTotalAvailableIdCount(totalIdsAvailableForAllocation);
-        RpcResultBuilder<GetAvailableResourcesOutput> rpcOutputBuilder = null;
-        rpcOutputBuilder = RpcResultBuilder.success();
-        rpcOutputBuilder.withResult(outputBuilder.build());
-
-        return Futures.immediateFuture(rpcOutputBuilder.build());
+        GetAvailableResourcesOutput output = new GetAvailableResourcesOutputBuilder()
+                .setTotalAvailableIdCount(totalIdsAvailableForAllocation).build();
+        return RpcResultBuilder.success(output).buildFuture();
     }
 
     @Override
@@ -280,43 +305,36 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
         ReleaseIdInputBuilder releaseIdInputBuilder = new ReleaseIdInputBuilder();
         releaseIdInputBuilder.setIdKey(input.getIdKey()).setPoolName(resourcesCache.get(input.getResourceType()));
-        RpcResultBuilder<Void> releaseIdRpcBuilder;
+
         try {
             idManager.releaseId(releaseIdInputBuilder.build());
-            releaseIdRpcBuilder = RpcResultBuilder.success();
+            return Futures.immediateFuture(RpcResultBuilder.<Void>success().build());
         } catch (NullPointerException e) {
             LOG.error("Release resource failed for resource {} due to ", input.getResourceType(), e);
-            releaseIdRpcBuilder = RpcResultBuilder.failed();
-            releaseIdRpcBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
+            return Futures.immediateFuture(
+                    RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, e.getMessage()).build());
         }
-        return Futures.immediateFuture(releaseIdRpcBuilder.build());
+    }
+
+    private void createIdPools() {
+        // Create Tables Id Pool
+        createIdPool(RESOURCE_TABLES_NAME_PROPERTY, RESOURCE_TABLES_START_ID_PROPERTY, RESOURCE_TABLES_END_ID_PROPERTY,
+                     RESOURCE_TABLES_DEFAULT_NAME);
+
+        // Create Groups Id Pool
+        createIdPool(RESOURCE_GROUPS_NAME_PROPERTY, RESOURCE_GROUPS_START_ID_PROPERTY, RESOURCE_GROUPS_END_ID_PROPERTY,
+                     RESOURCE_GROUPS_DEFAULT_NAME);
+
+        // Create Meters Id Pool
+        createIdPool(RESOURCE_METERS_NAME_PROPERTY, RESOURCE_METERS_START_ID_PROPERTY, RESOURCE_METERS_END_ID_PROPERTY,
+                     RESOURCE_METERS_DEFAULT_NAME);
     }
 
     private void createIdPool(String poolNameProperty, String lowIdProperty, String highIdProperty,
-            String poolDefaultName) {
+                              String poolDefaultName) {
         idManager.createIdPool(
                 new CreateIdPoolInputBuilder().setPoolName(System.getProperty(poolNameProperty, poolDefaultName))
                         .setLow(Long.valueOf(System.getProperty(lowIdProperty, DEFAULT_LOW_RANGE)))
                         .setHigh(Long.valueOf(System.getProperty(highIdProperty, DEFAULT_HIGH_RANGE))).build());
-    }
-
-    private void createIdpools() {
-        // Create Tables Id Pool
-        createIdPool(RESOURCE_TABLES_NAME_PROPERTY, RESOURCE_TABLES_START_ID_PROPERTY, RESOURCE_TABLES_END_ID_PROPERTY,
-                RESOURCE_TABLES_DEFAULT_NAME);
-
-        // Create Groups Id Pool
-        createIdPool(RESOURCE_GROUPS_NAME_PROPERTY, RESOURCE_GROUPS_START_ID_PROPERTY, RESOURCE_GROUPS_END_ID_PROPERTY,
-                RESOURCE_GROUPS_DEFAULT_NAME);
-
-        // Create Meters Id Pool
-        createIdPool(RESOURCE_METERS_NAME_PROPERTY, RESOURCE_METERS_START_ID_PROPERTY, RESOURCE_METERS_END_ID_PROPERTY,
-                RESOURCE_METERS_DEFAULT_NAME);
-    }
-
-    @Override
-    @PreDestroy
-    public void close() {
-        LOG.debug("{} close", getClass().getSimpleName());
     }
 }
