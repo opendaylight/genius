@@ -9,11 +9,20 @@ package org.opendaylight.genius.testutils;
 
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.mockito.Mockito;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.testutils.interfacemanager.InterfaceHelper;
+import org.opendaylight.genius.testutils.interfacemanager.InterfaceStateHelper;
+import org.opendaylight.genius.testutils.interfacemanager.TunnelInterfaceDetails;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 
 /**
@@ -23,24 +32,61 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
  */
 public abstract class TestInterfaceManager implements IInterfaceManager {
 
-    // Implementation similar to e.g. the org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager
+    private Map<String, InterfaceInfo> interfaceInfos;
+    private Map<String, Interface> interfaces;
+    private Map<String, Boolean> externalInterfaces;
+    private DataBroker dataBroker;
 
-    public static TestInterfaceManager newInstance() {
+    public static TestInterfaceManager newInstance(DataBroker dataBroker) {
         TestInterfaceManager testInterfaceManager = Mockito.mock(TestInterfaceManager.class, realOrException());
         testInterfaceManager.interfaceInfos = new ConcurrentHashMap<>();
         testInterfaceManager.interfaces = new ConcurrentHashMap<>();
+        testInterfaceManager.externalInterfaces = new ConcurrentHashMap<>();
+        testInterfaceManager.dataBroker = dataBroker;
         return testInterfaceManager;
     }
 
-    private Map<String, InterfaceInfo> interfaceInfos;
-    private Map<String, Interface> interfaces;
-
-    public void addInterfaceInfo(InterfaceInfo interfaceInfo) {
+    public void addInterfaceInfo(InterfaceInfo interfaceInfo)
+            throws TransactionCommitFailedException {
         interfaceInfos.put(interfaceInfo.getInterfaceName(), interfaceInfo);
+        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+
+        Interface iface = InterfaceHelper.buildVlanInterfaceFromInfo(interfaceInfo);
+        //Add the interface to config ds so that if the application reads from configds it finds it there
+        tx.put(LogicalDatastoreType.CONFIGURATION,
+                InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
+                iface);
+
+        //Add the interface to oper ds so that if the application reads from configds it finds it there
+        tx.put(LogicalDatastoreType.OPERATIONAL,
+                InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
+                InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
+        tx.submit().checkedGet();
+        addInterface(iface);
     }
 
     public void addInterface(Interface iface) {
         interfaces.put(iface.getName(), iface);
+    }
+
+    public void addTunnelInterface(TunnelInterfaceDetails tunnelInterfaceDetails)
+            throws TransactionCommitFailedException {
+        InterfaceInfo interfaceInfo = tunnelInterfaceDetails.getInterfaceInfo();
+        interfaceInfos.put(interfaceInfo.getInterfaceName(), interfaceInfo);
+
+        Interface iface = InterfaceHelper.buildVxlanTunnelInterfaceFromInfo(tunnelInterfaceDetails);
+
+        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+        tx.put(LogicalDatastoreType.CONFIGURATION,
+                InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
+                iface);
+
+        tx.put(LogicalDatastoreType.OPERATIONAL,
+                InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
+                InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
+        tx.submit().checkedGet();
+        externalInterfaces.put(interfaceInfo.getInterfaceName(), true);
+        addInterface(iface);
     }
 
     @Override
@@ -59,6 +105,12 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
     }
 
     @Override
+    public InterfaceInfo getInterfaceInfoFromOperationalDataStore(
+            String interfaceName, InterfaceInfo.InterfaceType interfaceType) {
+        return interfaceInfos.get(interfaceName);
+    }
+
+    @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName) {
         return getInterfaceInfo(interfaceName);
     }
@@ -72,6 +124,21 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
                     + interfaceName);
         }
         return iface;
-
     }
+
+    @Override
+    public BigInteger getDpnForInterface(String interfaceName) {
+        return interfaceInfos.get(interfaceName).getDpId();
+    }
+
+    @Override
+    public BigInteger getDpnForInterface(Interface intrface) {
+        return interfaceInfos.get(intrface.getName()).getDpId();
+    }
+
+    @Override
+    public boolean isExternalInterface(String interfaceName) {
+        return externalInterfaces.containsKey(interfaceName);
+    }
+
 }

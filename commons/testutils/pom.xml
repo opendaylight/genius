@@ -88,5 +88,15 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <type>test-jar</type>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>idmanager-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>itm-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
