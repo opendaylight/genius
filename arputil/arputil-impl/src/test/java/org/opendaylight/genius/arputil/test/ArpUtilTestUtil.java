@@ -22,37 +22,35 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class ArpUtilTestUtil {
 
-
     public static final BigInteger DPN_ID = BigInteger.ONE;
     public static final BigInteger META_DATA = BigInteger.TEN;
     public static final long PORT_NUMBER = 2;
     public static final String URI = "2";
     public static final String INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a218";
-    public static final String[] OP_CODE = new String[]{"0 1", "0 2"}; //array to store opCodes
+    private static final String[] OP_CODE = new String[]{"0 1", "0 2"}; //array to store opCodes
 
-    private ArpUtilTestUtil() {}
+    private ArpUtilTestUtil() {
+    }
 
     public static PacketReceived createPayload(int oc) {
 
         final short ID = 2;
-        byte [] payload = bytePayload(
-                "1F 1F 1F 1F 1F 1F",                               // Destination MAC
-                "00 01 02 03 04 05",                               // Source MAC
-                "08 06",                                           // Ethernet type
-                "0 1",                                             // Hardware type
-                "8 0",                                             // Protocol type
-                "6",                                               // Hardware size
-                "4",                                               // Protocol size
-                OP_CODE[oc],                                       // Opcode
-                "00 01 02 03 04 05",                               // Sender MAC Address
-                "C0 A8 0 2",                                       // Sender IP Address
-                "00 01 02 03 04 05",                               // Target MAC Address
-                "C0 A8 0 2"                                        // Target IP Address
-                );
+        byte[] payload = bytePayload("1F 1F 1F 1F 1F 1F",                               // Destination MAC
+                                     "00 01 02 03 04 05",                               // Source MAC
+                                     "08 06",                                           // Ethernet type
+                                     "0 1",                                             // Hardware type
+                                     "8 0",                                             // Protocol type
+                                     "6",                                               // Hardware size
+                                     "4",                                               // Protocol size
+                                     OP_CODE[oc],                                       // Opcode
+                                     "00 01 02 03 04 05",                               // Sender MAC Address
+                                     "C0 A8 0 2",                                       // Sender IP Address
+                                     "00 01 02 03 04 05",                               // Target MAC Address
+                                     "C0 A8 0 2"                                        // Target IP Address
+        );
 
-        return new PacketReceivedBuilder().setPacketInReason(SendToController.class)
-                .setTableId(new TableId(ID)).setPayload(payload)
-                .setIngress(new NodeConnectorRef(InstanceIdentifier.create(Node.class)))
+        return new PacketReceivedBuilder().setPacketInReason(SendToController.class).setTableId(new TableId(ID))
+                .setPayload(payload).setIngress(new NodeConnectorRef(InstanceIdentifier.create(Node.class)))
                 .setMatch(new MatchBuilder().setMetadata(new MetadataBuilder().setMetadata(META_DATA).build()).build())
                 .build();
     }

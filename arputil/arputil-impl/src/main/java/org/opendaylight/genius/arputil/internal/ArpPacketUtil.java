@@ -18,37 +18,18 @@ public final class ArpPacketUtil {
     private ArpPacketUtil() {
     }
 
-    protected static final byte[] ETHERNET_BROADCAST_DESTINATION = new byte[] { (byte) 0xFF,
-                                                                                (byte) 0xFF,
-                                                                                (byte) 0xFF,
-                                                                                (byte) 0xFF,
-                                                                                (byte) 0xFF,
-                                                                                (byte) 0xFF };
-    protected static final byte[] BROADCAST_MAC = new byte[] { (byte) 0,
-                                                               (byte) 0,
-                                                               (byte) 0,
-                                                               (byte) 0,
-                                                               (byte) 0,
-                                                               (byte) 0 };
+    static final byte[] ETHERNET_BROADCAST_DESTINATION
+            = new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
 
-    public static byte[] getPayload(
-                                    short opCode,
-                                        byte[] senderMacAddress,
-                                        byte[] senderIP,
-                                        byte[] targetMacAddress,
-                                        byte[] targetIP)
-                                    throws PacketException {
+    static byte[] getPayload(short opCode, byte[] senderMacAddress, byte[] senderIP, byte[] targetMacAddress,
+                                     byte[] targetIP) throws PacketException {
         ARP arp = createARPPacket(opCode, senderMacAddress, senderIP, targetMacAddress, targetIP);
         Ethernet ethernet = createEthernetPacket(senderMacAddress, targetMacAddress, arp);
         return ethernet.serialize();
     }
 
-    public static ARP createARPPacket(
-                                    short opCode,
-                                        byte[] senderMacAddress,
-                                        byte[] senderIP,
-                                        byte[] targetMacAddress,
-                                        byte[] targetIP) {
+    private static ARP createARPPacket(short opCode, byte[] senderMacAddress, byte[] senderIP, byte[] targetMacAddress,
+                                       byte[] targetIP) {
         ARP arp = new ARP();
         arp.setHardwareType(ARP.HW_TYPE_ETHERNET);
         arp.setProtocolType(EtherTypes.IPv4.shortValue());
@@ -62,7 +43,7 @@ public final class ArpPacketUtil {
         return arp;
     }
 
-    public static Ethernet createEthernetPacket(byte[] sourceMAC, byte[] targetMAC, ARP arp) throws PacketException {
+    private static Ethernet createEthernetPacket(byte[] sourceMAC, byte[] targetMAC, ARP arp) throws PacketException {
         Ethernet ethernet = new Ethernet();
         ethernet.setSourceMACAddress(sourceMAC);
         ethernet.setDestinationMACAddress(targetMAC);
