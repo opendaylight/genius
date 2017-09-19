@@ -34,6 +34,24 @@
       "revId": "4d76dfacd6256295648e933b120b005812219223",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7aae612f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-09-19T08:36:12Z",
+      "side": 1,
+      "message": "Yes, for add, remove and update. Though I\u0027d prefer, if possible, to have both an let consumers pick which ones they want. Not sure how to do that, is it possible to have interface with optional methods? Also, don\u0027t we want to pass on the instanceIdentifier for add/update/remove? Most current listeners do use it.",
+      "parentUuid": "ba1f61a0_e11e330b",
+      "revId": "4d76dfacd6256295648e933b120b005812219223",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
