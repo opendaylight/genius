@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_200957de",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 443,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-20T08:16:09Z",
+      "side": 1,
+      "message": "Wow that’s a weird one to review (because of the macAddrs name)!",
+      "revId": "47a1a7d591b11eb17b913aa30ef298ef19b7074c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
