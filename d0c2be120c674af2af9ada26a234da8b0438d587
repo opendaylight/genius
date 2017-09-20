@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_766e75ca",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-20T17:44:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_9baeb42c",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_fba9b024",
         "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-20T13:18:42Z",
       "side": 1,
       "message": "Two problems here: (a) add , e to log root cause, and (b) shold return here? With RpcFailure failure (ideally including this cause, see e.g. c/53998 for a util you could move and use here, if you like)",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_917a1322",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-20T17:44:26Z",
+      "side": 1,
+      "message": "Ok, thanks for the pointer. Should I wait until you put thos e convenience methods somewhere or maybe just copy the one I need to finish this?",
+      "parentUuid": "ba1f61a0_fba9b024",
       "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -64,6 +100,24 @@
       "writtenOn": "2017-09-20T13:18:42Z",
       "side": 1,
       "message": "minor, nit: why are you reformatting in this change?",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f1754f32",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-20T17:44:26Z",
+      "side": 1,
+      "message": "You know, sometimes I push too much the CTRL+F :)",
+      "parentUuid": "ba1f61a0_5b70bcdb",
       "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -115,6 +169,24 @@
       "writtenOn": "2017-09-20T13:18:42Z",
       "side": 1,
       "message": "this is super weird (but not the problem of this change; but if you have time, IMHO it would interesting to raise a separate patch to propose removing this)",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d1700b42",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-20T17:44:26Z",
+      "side": 1,
+      "message": "I\u0027ll try to fix it as well.",
+      "parentUuid": "ba1f61a0_3b4ea897",
       "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
