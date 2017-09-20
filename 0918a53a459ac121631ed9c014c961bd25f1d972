@@ -33,6 +33,24 @@
       "revId": "0918a53a459ac121631ed9c014c961bd25f1d972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5b29dc35",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 375,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T11:27:50Z",
+      "side": 1,
+      "message": "Done; well spotted, thanks.  (And this happening is actually a very good reason why NOT to return the Builder; I\u0027ll change that!)",
+      "parentUuid": "fafc7978_102afd2b",
+      "revId": "0918a53a459ac121631ed9c014c961bd25f1d972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
