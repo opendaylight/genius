@@ -159,6 +159,7 @@ public class ItmManagerRpcServiceTest {
     DeleteL2GwMlagDeviceInput deleteL2GwMlagDeviceInput = null;
     GetTunnelInterfaceNameInput getTunnelInterfaceNameInput = null;
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
+    java.lang.Class<? extends TunnelTypeBase> tunnelType2 = TunnelTypeMplsOverGre.class;
     AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1 ;
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
@@ -271,7 +272,7 @@ public class ItmManagerRpcServiceTest {
                 .setSourceDPN(dpId1).setTransportType(tunnelType1)
                 .setKey(new InternalTunnelKey(dpId2, dpId1, tunnelType1)).build();
         getInternalOrExternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
-                .setDestinationIp(ipAddress1).setSourceDpid(dpId1).setTunnelType(tunnelType1).build();
+                .setDestinationIp(ipAddress1).setSourceDpid(dpId1).setTunnelType(tunnelType2).build();
         addExternalTunnelEndpointInput = new AddExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType1)
                 .setDestinationIp(ipAddress1).build();
         addL2GwDeviceInput = new AddL2GwDeviceInputBuilder().setIpAddress(ipAddress1).setNodeId(sourceDevice)
