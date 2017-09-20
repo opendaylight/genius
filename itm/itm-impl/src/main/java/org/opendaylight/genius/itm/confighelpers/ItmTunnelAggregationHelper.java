@@ -23,6 +23,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
@@ -301,9 +303,9 @@ public class ItmTunnelAggregationHelper {
     }
 
     private boolean isLogicalTunnelStateUpdateNeeded(OperStatus newOperStatus, InterfaceInfo ifLogicInfo) {
-        return ifLogicInfo != null && ((ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.UP
-                && newOperStatus == OperStatus.Down)
-                || (ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.DOWN && newOperStatus == OperStatus.Up));
+        return ifLogicInfo != null && (ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.UP
+                && newOperStatus == OperStatus.Down
+                || ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.DOWN && newOperStatus == OperStatus.Up);
     }
 
     private OperStatus getAggregatedOperStatus(Interface ifaceState, InterfaceParentEntry parentEntry) {
@@ -381,6 +383,7 @@ public class ItmTunnelAggregationHelper {
         private final Interface ifStateOrigin;
         private final Interface ifStateUpdated;
         private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
         private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                                                     .interfaces.rev140508.interfaces.Interface ifaceConfig;
         private final int ifaceAction;
@@ -394,6 +397,7 @@ public class ItmTunnelAggregationHelper {
             this.ifaceConfig = iface;
             this.ifaceAction = action;
             this.dataBroker  = broker;
+            this.txRunner = new ManagedNewTransactionRunnerImpl(broker);
             this.parentEntry = entry;
         }
 
@@ -409,13 +413,14 @@ public class ItmTunnelAggregationHelper {
                 return Collections.emptyList();
             }
             if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-                WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
                 String logicTunnelIfaceName = ifStateUpdated.getName();
-                InterfaceParentEntry parentEntry = getInterfaceParentEntry(logicTunnelIfaceName);
-                updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, parentEntry, dataBroker, tx);
-                updateLogicalTunnelAdminStatus(logicTunnelIfaceName, ifStateOrigin, ifStateUpdated,
-                                                    parentEntry, tx);
-                return Collections.singletonList(tx.submit());
+                final InterfaceParentEntry parentEntry = getInterfaceParentEntry(logicTunnelIfaceName);
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                    updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, parentEntry, dataBroker,
+                            tx);
+                    updateLogicalTunnelAdminStatus(logicTunnelIfaceName, ifStateOrigin, ifStateUpdated,
+                                                        parentEntry, tx);
+                }));
             }
             if (!ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: wrong tunnel type {}", ifTunnel.getTunnelInterfaceType());
