@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 
 public interface ItmTestConstants {
@@ -36,6 +37,7 @@ public interface ItmTestConstants {
     IpAddress IP_ADDRESS_3 = IpAddressBuilder.getDefaultInstance(TEP_IP_3);
     IpAddress GTWY_IP_1 = IpAddressBuilder.getDefaultInstance(GWY_IP_1);
     Class<? extends TunnelTypeBase> TUNNEL_TYPE_VXLAN = TunnelTypeVxlan.class;
+    Class<? extends TunnelTypeBase> TUNNEL_TYPE_MPLS_OVER_GRE = TunnelTypeMplsOverGre.class;
     Class<? extends TunnelMonitoringTypeBase> MONITOR_PROTOCOL = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     String  DPID_STR_ONE = "1";
     String EXTERNAL_ID_TEP_IP_KEY = "tep-ip";

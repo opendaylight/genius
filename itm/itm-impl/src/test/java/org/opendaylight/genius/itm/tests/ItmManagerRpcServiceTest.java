@@ -196,10 +196,10 @@ public class ItmManagerRpcServiceTest {
                 .build();
         getExternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
                 .setDestinationIp(ItmTestConstants.IP_ADDRESS_3).setSourceDpid(ItmTestConstants.DP_ID_1)
-                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_MPLS_OVER_GRE).build();
         getInternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
                 .setDestinationIp(ItmTestConstants.IP_ADDRESS_3).setSourceDpid(ItmTestConstants.DP_ID_1)
-                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).build();
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_MPLS_OVER_GRE).build();
         addExternalTunnelEndpointInput = new AddExternalTunnelEndpointInputBuilder()
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                 .setDestinationIp(ItmTestConstants.IP_ADDRESS_3).build();
