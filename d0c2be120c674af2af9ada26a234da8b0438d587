@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_9baeb42c",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "can we call this field singleTransactionDataBroker (or something like SingleTxDB, if you want to keep it shorter) ?  It\u0027s important to have *single* in here, because single Tx are actually bad for perf - and we should change that - Stephen and I have ongoing discussions how.  (Having said that, I\u0027m not against this change; more as a clean up, for now.)",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_fba9b024",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "Two problems here: (a) add , e to log root cause, and (b) shold return here? With RpcFailure failure (ideally including this cause, see e.g. c/53998 for a util you could move and use here, if you like)",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7b6dc003",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "NOK - same as above",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5b70bcdb",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "minor, nit: why are you reformatting in this change?",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_bb7a98ba",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "NOK - same as above",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_fb80908c",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "NOK - see above",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_3b4ea897",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T13:18:42Z",
+      "side": 1,
+      "message": "this is super weird (but not the problem of this change; but if you have time, IMHO it would interesting to raise a separate patch to propose removing this)",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
