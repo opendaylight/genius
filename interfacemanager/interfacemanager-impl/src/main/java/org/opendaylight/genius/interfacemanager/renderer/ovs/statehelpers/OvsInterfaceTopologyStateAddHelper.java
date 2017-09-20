@@ -30,7 +30,7 @@ public class OvsInterfaceTopologyStateAddHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         if (bridgeNew.getDatapathId() == null) {
-            LOG.warn("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
+            LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
             return futures;
         }
         BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());

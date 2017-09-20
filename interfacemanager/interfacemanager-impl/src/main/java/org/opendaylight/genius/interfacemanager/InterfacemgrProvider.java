@@ -194,7 +194,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 .getInterfaceState(interfaceName, dataBroker);
 
         if (ifState == null) {
-            LOG.error("Interface {} is not present", interfaceName);
+            LOG.debug("Interface {} is not present", interfaceName);
             return null;
         }
 
@@ -255,7 +255,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 InterfaceManagerCommonUtils
                 .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
-            LOG.error("Interface {} is not present", interfaceName);
+            LOG.debug("Interface {} is not present", interfaceName);
             return null;
         }
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
@@ -292,7 +292,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
-            LOG.error("Interface {} is not present", interfaceName);
+            LOG.debug("Interface {} is not present", interfaceName);
             return null;
         }
 
