@@ -202,7 +202,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             FlowBatchingUtils.delete(flowInstanceId);
         } else {
-            LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
+            LOG.debug("Flow {} does not exist for dpn {}", flowKey, dpId);
         }
     }
 
@@ -290,7 +290,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
         } else {
-            LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
+            LOG.debug("Flow {} does not exist for dpn {}", flowKey, dpId);
         }
     }
 
@@ -309,7 +309,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
         } else {
-            LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
+            LOG.debug("Flow {} does not exist for dpn {}", flowKey, dpId);
         }
     }
 
@@ -345,7 +345,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
             tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
-            LOG.warn("Group {} does not exist for dpn {}", groupId, dpnId);
+            LOG.debug("Group {} does not exist for dpn {}", groupId, dpnId);
         }
     }
 
@@ -426,7 +426,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                 if (flowExists(dpId, tableId, flowKey)) {
                     MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
                 } else {
-                    LOG.warn("Flow {} does not exist for dpn {}", flowKey, dpId);
+                    LOG.debug("Flow {} does not exist for dpn {}", flowKey, dpId);
                 }
             }
         } else {
@@ -448,7 +448,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                 if (groupExists(dpId, groupId)) {
                     MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
                 } else {
-                    LOG.warn("Group {} does not exist for dpn {}", groupId, dpId);
+                    LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
                 }
             }
         } else {
@@ -466,7 +466,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                 if (groupExists(dpId, groupId)) {
                     MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
                 } else {
-                    LOG.warn("Group {} does not exist for dpn {}", groupId, dpId);
+                    LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
                 }
             }
         } else {
@@ -795,7 +795,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId, bucketId, nodeDpn);
             tx.delete(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
         } else {
-            LOG.warn("Group {} does not exist for dpn {}", groupId, dpId);
+            LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
         }
     }
 
