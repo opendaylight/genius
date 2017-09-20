@@ -247,7 +247,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
                 dataBroker, interfaceName, serviceMode);
             if (boundServiceState == null) {
-                LOG.error("bound-service-state is not present for interface:{}, service-mode:{}, "
+                LOG.info("bound-service-state is not present for interface:{}, service-mode:{}, "
                         + "service-name:{}, service-priority:{}", interfaceName, serviceMode,
                     boundServicesNew.getServiceName(), boundServicesNew.getServicePriority());
                 return null;

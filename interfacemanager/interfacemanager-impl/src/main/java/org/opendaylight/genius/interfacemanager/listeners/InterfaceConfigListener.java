@@ -94,7 +94,7 @@ public class InterfaceConfigListener
             ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
             if (parentRefs == null
                     || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceOld.getName());
+                LOG.debug("parent refs not specified for {}", interfaceOld.getName());
                 return;
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
@@ -152,7 +152,7 @@ public class InterfaceConfigListener
             String ifName = interfaceNew.getName();
             if (parentRefs == null
                     || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.warn("parent refs not specified for {}", interfaceNew.getName());
+                LOG.debug("parent refs not specified for {}", interfaceNew.getName());
                 return;
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew);
