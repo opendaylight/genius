@@ -12,6 +12,7 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,4 +48,20 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
         }
     }
 
+    @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
+            CheckedConsumer<ReadWriteTransaction> txRunner) {
+        ReadWriteTransaction realTx = broker.newReadWriteTransaction();
+        ReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
+        try {
+            txRunner.accept(wrappedTx);
+            return realTx.submit();
+        } catch (Exception e) {
+            if (!realTx.cancel()) {
+                LOG.error("Transaction.cancel() returned false, which should never happen here");
+            }
+            return immediateFailedFuture(e);
+        }
+    }
 }
