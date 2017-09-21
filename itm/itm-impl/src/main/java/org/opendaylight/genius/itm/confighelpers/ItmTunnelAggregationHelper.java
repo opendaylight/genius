@@ -301,9 +301,9 @@ public class ItmTunnelAggregationHelper {
     }
 
     private boolean isLogicalTunnelStateUpdateNeeded(OperStatus newOperStatus, InterfaceInfo ifLogicInfo) {
-        return ifLogicInfo != null && ((ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.UP
-                && newOperStatus == OperStatus.Down)
-                || (ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.DOWN && newOperStatus == OperStatus.Up));
+        return ifLogicInfo != null && (ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.UP
+                && newOperStatus == OperStatus.Down
+                || ifLogicInfo.getOpState() == InterfaceInfo.InterfaceOpState.DOWN && newOperStatus == OperStatus.Up);
     }
 
     private OperStatus getAggregatedOperStatus(Interface ifaceState, InterfaceParentEntry parentEntry) {
