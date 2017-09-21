@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_956b1c84",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-09-21T09:01:44Z",
+      "side": 1,
+      "message": "i would still say that this will be solved by ACL update patch. The error is showing up currently because ACL is unbinding twice.",
+      "revId": "c5a12a8c5830e6b9a846b6a28084b36020822db7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
