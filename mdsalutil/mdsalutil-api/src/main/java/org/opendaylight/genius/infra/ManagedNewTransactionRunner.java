@@ -20,7 +20,10 @@ import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
  * Managed transactions utility to simplify handling of new transactions and ensure they are always closed.
  *
  * <p>This should typically be used (only) in code which really must be creating its own new transactions,
- * such as RPC entry points, or background jobs.
+ * such as RPC entry points, or background jobs.  For "inner" code which "just needs to have a transaction
+ * from somewhere", consider using the {@link ManagedTransactionRunner} instead.
+ *
+ * @see ManagedTransactionRunner
  */
 public interface ManagedNewTransactionRunner {
 
