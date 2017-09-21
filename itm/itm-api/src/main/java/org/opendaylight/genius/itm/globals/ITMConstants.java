@@ -13,6 +13,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 
 public class ITMConstants {
+    public static final String ITM_SERVICE_NAME = "ITM";
     public static final BigInteger COOKIE_ITM = new BigInteger("9000000", 16);
     public static final BigInteger COOKIE_ITM_EXTERNAL = new BigInteger("9050000", 16);
 
