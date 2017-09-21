@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_067c2471",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T16:25:51Z",
+      "side": 1,
+      "message": "So perhaps not, see https://git.opendaylight.org/gerrit/63414",
+      "parentUuid": "ba1f61a0_7bb81911",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_d84dcb9b",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingWriteTransaction.java",
         "patchSetId": 5
