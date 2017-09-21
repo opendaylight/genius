@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -46,4 +46,5 @@ public interface IfmConstants {
 
     String INTERFACE_CONFIG_ENTITY = "interface_config";
     String INTERFACE_SERVICE_BINDING_ENTITY = "interface_service_binding";
+    String INTERFACE_SERVICE_NAME = "IFM";
 }
