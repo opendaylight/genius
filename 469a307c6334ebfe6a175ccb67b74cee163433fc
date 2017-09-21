@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_55b36497",
+        "filename": "commons/binding-parent/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-21T11:31:34Z",
+      "side": 1,
+      "message": "we could probably remove a lot of the *.version by adding more dependencyManagement here... but let\u0027s leave that for another change",
+      "revId": "469a307c6334ebfe6a175ccb67b74cee163433fc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
