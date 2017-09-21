@@ -22,6 +22,30 @@
       "revId": "446da41fb0f9f6419950dcce143767304f59154b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c607ac80",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-21T19:21:13Z",
+      "side": 1,
+      "message": "please don\u0027t copy/paste but have a look at and help getting the follow-on https://git.opendaylight.org/gerrit/#/c/63413/ merged - then use that instead of this!",
+      "parentUuid": "ba1f61a0_b17f5714",
+      "range": {
+        "startLine": 157,
+        "startChar": 1,
+        "endLine": 183,
+        "endChar": 5
+      },
+      "revId": "446da41fb0f9f6419950dcce143767304f59154b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
