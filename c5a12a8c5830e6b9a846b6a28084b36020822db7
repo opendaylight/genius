@@ -16,6 +16,24 @@
       "revId": "c5a12a8c5830e6b9a846b6a28084b36020822db7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_98c7d363",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-09-21T12:31:13Z",
+      "side": 1,
+      "message": "Ok, moved it back to higher priority. We will continue working on the aclservice side. Is there anything else we can do with this log since in the current csit runs it is dumping the log 300 times, so it is effectively ignored.",
+      "parentUuid": "ba1f61a0_956b1c84",
+      "revId": "c5a12a8c5830e6b9a846b6a28084b36020822db7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
