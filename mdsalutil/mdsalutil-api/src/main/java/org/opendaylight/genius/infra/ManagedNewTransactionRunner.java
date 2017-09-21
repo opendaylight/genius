@@ -14,6 +14,7 @@ import io.netty.util.concurrent.Future;
 import java.util.concurrent.CompletionStage;
 import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 
@@ -54,7 +55,33 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction> txRunner);
 
-    // TODO ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction> ...);
+    /**
+     * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
+     * returns the Future from that submission, or cancels it if an exception was thrown and returns a failed
+     * future with that exception. Thus when this method returns, that transaction is guaranteed to have
+     * been either submitted or cancelled, and will never "leak" and waste memory.
+     *
+     * <p>The consumer should not (cannot) itself use
+     * {@link ReadWriteTransaction#cancel()}, {@link ReadWriteTransaction#commit()} or
+     * {@link ReadWriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
+     *
+     * <p>This is an asynchronous API, like {@link DataBroker}'s own;
+     * when returning from this method, the operation of the Transaction may well still be ongoing in the background,
+     * or pending;
+     * calling code therefore <b>must</b> handle the returned future, e.g. by passing it onwards (return),
+     * or by itself adding callback listeners to it using {@link Futures}' methods, or by transforming it into a
+     * {@link CompletionStage} using {@link ListenableFutures#toCompletionStage(ListenableFuture)} and chaining on
+     * that, or at the very least simply by using
+     * {@link ListenableFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
+     * (but better NOT by using the blocking {@link Future#get()} on it).
+     *
+     * @param txRunner the {@link CheckedConsumer} that needs a new read-write transaction
+     *
+     * @return the {@link ListenableFuture} returned by {@link ReadWriteTransaction#submit()},
+     *         or a failed future with an application specific exception (not from submit())
+     */
+    @CheckReturnValue
+    ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction> txRunner);
 
     // TODO void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner);
 
