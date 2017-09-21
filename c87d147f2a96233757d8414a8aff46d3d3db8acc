@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_c6eccc2c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T16:26:35Z",
+      "side": 1,
+      "message": "I’ve since changed my mind, let’s go for it.",
+      "parentUuid": "ba1f61a0_380a2726",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_98051316",
         "filename": "/COMMIT_MSG",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-21T13:29:47Z",
       "side": 1,
       "message": "Tough, since that hasn\u0027t been committed.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_06f3840a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T16:26:35Z",
+      "side": 1,
+      "message": "But hey never mind.",
+      "parentUuid": "ba1f61a0_98051316",
       "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
