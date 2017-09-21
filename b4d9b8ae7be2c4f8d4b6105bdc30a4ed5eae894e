@@ -69,6 +69,24 @@
       "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_38006733",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-21T13:03:36Z",
+      "side": 1,
+      "message": "\u003e This deprecation is just the reflection of the removeGroup() deprecation above.\n\nOh I see - somehow when I first looked at this change I didn\u0027t \"connect the dots\" between the two.. fine for me, then.",
+      "parentUuid": "ba1f61a0_7c62e83e",
+      "revId": "b4d9b8ae7be2c4f8d4b6105bdc30a4ed5eae894e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
