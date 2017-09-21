@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_d8630b40",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-21T12:53:33Z",
+      "side": 1,
+      "message": "If you like c/53998 perhaps you could +1 it so that we can get that in ASAP?  I\u0027ll start working on a re-usable generalization of it now...",
+      "parentUuid": "ba1f61a0_917a1322",
+      "revId": "d0c2be120c674af2af9ada26a234da8b0438d587",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_7b6dc003",
         "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
         "patchSetId": 4
