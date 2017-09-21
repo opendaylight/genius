@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_380a2726",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T13:29:47Z",
+      "side": 1,
+      "message": "I disagree that it\u0027s better: in the long run perhaps (although since we don\u0027t have the final design that\u0027s hard to judge at this point), but in the short term it means that more code needs to be changed for this to be useful.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_98051316",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T13:29:47Z",
+      "side": 1,
+      "message": "Tough, since that hasn\u0027t been committed.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d84dcb9b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingWriteTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T13:29:47Z",
+      "side": 1,
+      "message": "This should extend ForwardingObject.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
