@@ -1,0 +1,8 @@
+Code-Review+1: David Suarez <david.suarez.fuentes@gmail.com>
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Sam Hague <shague@redhat.com>
+Submitted-by: Sam Hague <shague@redhat.com>
+Submitted-at: Thu, 21 Sep 2017 15:20:05 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/63379
+Project: genius
+Branch: refs/heads/stable/carbon
