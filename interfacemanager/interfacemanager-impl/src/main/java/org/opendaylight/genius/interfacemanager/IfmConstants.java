@@ -43,4 +43,6 @@ public class IfmConstants {
     public static final Integer MAC_STRING_LENGTH = 17;
 
     public static final long INVALID_PORT_NO = -1;
+
+    public static final String INTERFACE_SERVICE_NAME = "IFM";
 }
