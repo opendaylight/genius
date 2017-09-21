@@ -50,6 +50,91 @@
       "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_db85c55a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T14:17:43Z",
+      "side": 1,
+      "message": "Missing @author? :-P",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_fb7ec968",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T14:17:43Z",
+      "side": 1,
+      "message": "No, it\u0027s not obviously, we\u0027re defining it that way.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_bb88d171",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T14:17:43Z",
+      "side": 1,
+      "message": "or not even have started",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5b99d5c2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T14:17:43Z",
+      "side": 1,
+      "message": "\"passing\"",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5be0b528",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-21T14:17:43Z",
+      "side": 1,
+      "message": "Not sure about this — I think it would be better as\n\n    boolean submitted \u003d false;\n    try {\n        txCnsmr.accept(wrappedTx);\n        ListenableFuture\u003cVoid\u003e result \u003d realTx.submit();\n        submitted \u003d true;\n    } catch (Exception e) {\n        return immediateFailedFuture(e);\n    } finally {\n        if (!submitted \u0026\u0026 !realTx.cancel()) {\n            LOG.error(\"Transaction.cancel() returned false, which should never happen here\");\n        }\n    }",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
