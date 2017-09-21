@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.FutureRpcResults;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -111,12 +112,12 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     public Future<RpcResult<GetDpidFromInterfaceOutput>> getDpidFromInterface(GetDpidFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         LOG.debug("Get dpid for interface {}", input.getIntfName());
-        try {
+        return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
             BigInteger dpId;
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
             Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
             if (interfaceInfo == null) {
-                return newRpcErrorResultFutureWithoutLogging(
+                throw new IllegalArgumentException(
                         getDpidFromInterfaceErrorMessage(interfaceName, "missing Interface in Config DataStore"));
             }
             if (Tunnel.class.equals(interfaceInfo.getType())) {
@@ -131,21 +132,13 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
                     dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 } else {
-                    return newRpcErrorResultFutureWithoutLogging(
+                    throw new IllegalArgumentException(
                             getDpidFromInterfaceErrorMessage(interfaceName, "missing Interface-state"));
                 }
             }
             GetDpidFromInterfaceOutputBuilder output = new GetDpidFromInterfaceOutputBuilder().setDpid(dpId);
-            // TODO build a similar abstraction for successful immediate Future RpcResult as for failures (below)
-            RpcResultBuilder<GetDpidFromInterfaceOutput> rpcResultBuilder;
-            rpcResultBuilder = RpcResultBuilder.success();
-            rpcResultBuilder.withResult(output.build());
-            LOG.debug("Dpid for interface {} is {}", input.getIntfName(), dpId);
-            return Futures.immediateFuture(rpcResultBuilder.build());
-        } catch (Exception e) {
-            return newRpcErrorResultFutureWithoutLogging(
-                    getDpidFromInterfaceErrorMessage(interfaceName, e.getMessage()), e);
-        }
+            return Futures.immediateFuture(output.build());
+        }).withRpcErrorMessage(e -> getDpidFromInterfaceErrorMessage(interfaceName, e.getMessage())).build();
     }
 
     private String getDpidFromInterfaceErrorMessage(final String interfaceName, final String dueTo) {
