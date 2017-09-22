@@ -10,9 +10,7 @@ package org.opendaylight.genius.interfacemanager.rpcservice;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -21,23 +19,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
-import org.opendaylight.genius.mdsalutil.InstructionInfo;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
-import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.genius.mdsalutil.matches.MatchEthernetType;
-import org.opendaylight.genius.mdsalutil.matches.MatchMplsLabel;
-import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.IfIndexesInterfaceMap;
@@ -98,12 +86,10 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerRpcService.class);
 
     private final DataBroker dataBroker;
-    private final IMdsalApiManager mdsalMgr;
 
     @Inject
-    public InterfaceManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalApiManager) {
+    public InterfaceManagerRpcService(final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
-        this.mdsalMgr = mdsalApiManager;
     }
 
     @Override
@@ -441,60 +427,10 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         }
     }
 
-    protected Future<RpcResult<GetDpnInterfaceListOutput>> buildEmptyInterfaceListResult() {
+    private Future<RpcResult<GetDpnInterfaceListOutput>> buildEmptyInterfaceListResult() {
         GetDpnInterfaceListOutput emptyListResult =
             new GetDpnInterfaceListOutputBuilder().setInterfacesList(Collections.emptyList()).build();
         return Futures.immediateFuture(RpcResultBuilder.<GetDpnInterfaceListOutput>success()
                                            .withResult(emptyListResult).build());
-    }
-
-    protected static List<Instruction> buildInstructions(List<InstructionInfo> listInstructionInfo) {
-        if (listInstructionInfo != null) {
-            List<Instruction> instructions = new ArrayList<>();
-            int instructionKey = 0;
-
-            for (InstructionInfo instructionInfo : listInstructionInfo) {
-                instructions.add(instructionInfo.buildInstruction(instructionKey));
-                instructionKey++;
-            }
-            return instructions;
-        }
-        return null;
-    }
-
-    private ListenableFuture<Void> makeTerminatingServiceFlow(IfTunnel tunnelInfo, BigInteger dpnId,
-            BigInteger tunnelKey, List<Instruction> instruction, int addOrRemove) {
-        List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(new MatchTunnelId(tunnelKey));
-        short tableId = tunnelInfo.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.EXTERNAL_TUNNEL_TABLE;
-        final String flowRef = getFlowRef(dpnId, tableId, tunnelKey);
-        Flow terminatingSerFlow = MDSALUtil.buildFlowNew(tableId, flowRef, 5, "TST Flow Entry", 0, 0,
-                IfmConstants.TUNNEL_TABLE_COOKIE.add(tunnelKey), mkMatches, instruction);
-        if (addOrRemove == NwConstants.ADD_FLOW) {
-            return mdsalMgr.installFlow(dpnId, terminatingSerFlow);
-        }
-
-        return mdsalMgr.removeFlow(dpnId, terminatingSerFlow);
-    }
-
-    private ListenableFuture<Void> makeLFIBFlow(BigInteger dpnId, BigInteger tunnelKey, List<Instruction> instruction,
-            int addOrRemove) {
-        List<MatchInfo> mkMatches = new ArrayList<>();
-        mkMatches.add(MatchEthernetType.MPLS_UNICAST);
-        mkMatches.add(new MatchMplsLabel(tunnelKey.longValue()));
-        // Install the flow entry in L3_LFIB_TABLE
-        String flowRef = getFlowRef(dpnId, NwConstants.L3_LFIB_TABLE, tunnelKey);
-
-        Flow lfibFlow = MDSALUtil.buildFlowNew(NwConstants.L3_LFIB_TABLE, flowRef, IfmConstants.DEFAULT_FLOW_PRIORITY,
-                "LFIB Entry", 0, 0, IfmConstants.COOKIE_VM_LFIB_TABLE, mkMatches, instruction);
-        if (addOrRemove == NwConstants.ADD_FLOW) {
-            return mdsalMgr.installFlow(dpnId, lfibFlow);
-        }
-        return mdsalMgr.removeFlow(dpnId, lfibFlow);
-    }
-
-    private String getFlowRef(BigInteger dpnId, short tableId, BigInteger tunnelKey) {
-        return IfmConstants.TUNNEL_TABLE_FLOWID_PREFIX + dpnId + NwConstants.FLOWID_SEPARATOR + tableId
-                + NwConstants.FLOWID_SEPARATOR + tunnelKey;
     }
 }
