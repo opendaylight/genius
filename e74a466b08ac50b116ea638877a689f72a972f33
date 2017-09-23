@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_79d49eeb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:04:19Z",
+      "side": 1,
+      "message": "Use https://git.opendaylight.org/gerrit/#/c/63468/ ?",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f9152e9c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:04:19Z",
+      "side": 1,
+      "message": "read-write (not \"write only\")",
+      "range": {
+        "startLine": 75,
+        "startChar": 72,
+        "endLine": 75,
+        "endChar": 73
+      },
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b91f36b6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:04:19Z",
+      "side": 1,
+      "message": "but here you\u0027re yourself not (yet?) doing what you suggested to me in over in c/63372 .. let\u0027s sorted that out, with TDD, then align this - amending the test I\u0027ll write for the new method?",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_398346cd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:04:19Z",
+      "side": 1,
+      "message": "this would disappear",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d97f8ade",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:04:19Z",
+      "side": 1,
+      "message": "ReadWriteTransaction x3 instead of WriteTransaction",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
