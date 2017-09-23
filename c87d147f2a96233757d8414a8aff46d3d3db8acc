@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_39ab468a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "OK, cool!! BTW: I meant this as a basis for discussion together.. you didn\u0027t have to close yours - but seeing that you did, I\u0027ll pursue this, next week.",
+      "parentUuid": "ba1f61a0_c6eccc2c",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_98051316",
         "filename": "/COMMIT_MSG",
         "patchSetId": 5
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_19ae4298",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "Erm, possible misunderstanding here - what I meant with this TODO was to remind me (or you, if maybe you want to jump on and help with this?  That would be cool!) that all the places which you\u0027ve changed to use the new util in your changes on topic:transaction-helper should be changed to use this util as well - to learn from using it in practice, and as an illustration (there will obviously be more places).  I\u0027m all for \"see this in use, in the same patch\" - we\u0027re on the same page on that.",
+      "parentUuid": "ba1f61a0_06f3840a",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_9bbd0d05",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
         "patchSetId": 5
@@ -83,6 +119,24 @@
       "writtenOn": "2017-09-21T14:21:28Z",
       "side": 1,
       "message": "Automated clean-up cluttering the patch?",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_1b0c7d93",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "gone thanks to https://git.opendaylight.org/gerrit/#/c/63411/",
+      "parentUuid": "ba1f61a0_9bbd0d05",
       "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -124,6 +178,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_59f6fa8f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelAggregationHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "I have some pretty serious skin allergy against using static methods only, for things such as this at least.. I *LOVE* your c/63414, where you\u0027re starting to REMOVE the DataBroker - NOW we\u0027re talking! I think one sign that what we\u0027re starting here is successful will be when we start seeing a lot more DataBroker that are internally passed around all over the place disappear, agreed? ;-) So then I\u0027ll ignore this - please shout if you disagree / I misunderstood you.",
+      "parentUuid": "ba1f61a0_067c2471",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_d84dcb9b",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingWriteTransaction.java",
         "patchSetId": 5
@@ -135,6 +207,24 @@
       "writtenOn": "2017-09-21T13:29:47Z",
       "side": 1,
       "message": "This should extend ForwardingObject.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b99e1661",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingWriteTransaction.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "yeah.. actually, let me propose to contribute this straight into controller already.. see https://git.opendaylight.org/gerrit/#/c/63468/ - I\u0027ll remove this from here if that gets accepted",
+      "parentUuid": "ba1f61a0_d84dcb9b",
       "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -158,6 +248,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_9999927b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "Nope, not missing, but intentionally omitted .. as this is directly inspired by thoughts I had while further pondering your https://git.opendaylight.org/gerrit/#/c/63027/, I actually meant to to ask if I may put both you and me as @author on this one - would that work for you? Please? ;-)",
+      "parentUuid": "ba1f61a0_db85c55a",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_fb7ec968",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 5
@@ -169,6 +277,24 @@
       "writtenOn": "2017-09-21T14:17:43Z",
       "side": 1,
       "message": "No, it\u0027s not obviously, we\u0027re defining it that way.",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_39b066dc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_fb7ec968",
       "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -192,6 +318,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_19b3e2e9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "Done, by inserting \"or pending;\" as you have in c/63414",
+      "parentUuid": "ba1f61a0_bb88d171",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_5b99d5c2",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 5
@@ -209,6 +353,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_59c8ba54",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_5b99d5c2",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_5be0b528",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
         "patchSetId": 5
@@ -220,6 +382,24 @@
       "writtenOn": "2017-09-21T14:17:43Z",
       "side": 1,
       "message": "Not sure about this — I think it would be better as\n\n    boolean submitted \u003d false;\n    try {\n        txCnsmr.accept(wrappedTx);\n        ListenableFuture\u003cVoid\u003e result \u003d realTx.submit();\n        submitted \u003d true;\n    } catch (Exception e) {\n        return immediateFailedFuture(e);\n    } finally {\n        if (!submitted \u0026\u0026 !realTx.cancel()) {\n            LOG.error(\"Transaction.cancel() returned false, which should never happen here\");\n        }\n    }",
+      "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d9e30ad7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:03:16Z",
+      "side": 1,
+      "message": "It occurred to me that we REALLY should be practising TDD between us on this one - agreed?  I\u0027ve made a start with the ManagedNewTransactionRunnerImplTest added to this change - do you like?\n\nIf you would be willing to review my https://git.opendaylight.org/gerrit/#/c/63120/, then, based on that perhaps we could simulate submit() failures and with that maybe you would like to extend ManagedNewTransactionRunnerImplTest in a new change to illustrate why above is needed?\n\nJust trying to practice real software engineering here... ;-)",
+      "parentUuid": "ba1f61a0_5be0b528",
       "revId": "c87d147f2a96233757d8414a8aff46d3d3db8acc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
