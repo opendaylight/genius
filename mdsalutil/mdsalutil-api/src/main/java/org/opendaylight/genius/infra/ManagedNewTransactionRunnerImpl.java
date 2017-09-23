@@ -9,6 +9,7 @@ package org.opendaylight.genius.infra;
 
 import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
+import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -20,7 +21,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of {@link ManagedNewTransactionRunner}.
  */
-// Do *NOT* mark this as @Singleton, even though it technically is, as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
+@Beta
+// Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
 public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManagedNewTransactionRunnerImpl.class);

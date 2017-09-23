@@ -44,14 +44,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class ManagedNewTransactionRunnerImplTest {
 
-    private static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
+    protected static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
-    private DataBrokerFailuresImpl testableDataBroker;
-    private SingleTransactionDataBroker singleTransactionDataBroker;
-    private ManagedNewTransactionRunner managedNewTransactionRunner;
+    protected DataBrokerFailuresImpl testableDataBroker;
+    protected SingleTransactionDataBroker singleTransactionDataBroker;
+    protected ManagedNewTransactionRunner managedNewTransactionRunner;
 
     protected ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(DataBroker dataBroker) {
         return new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -79,7 +79,7 @@ public class ManagedNewTransactionRunnerImplTest {
         // Nothing to assert here: Failure in *Runner will cause Exception which will fail this test
     }
 
-    private TopLevelList newTestDataObject() {
+    protected TopLevelList newTestDataObject() {
         TreeComplexUsesAugment fooAugment = new TreeComplexUsesAugmentBuilder()
                 .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build()).build();
         return topLevelList(TOP_FOO_KEY, fooAugment);
@@ -117,7 +117,7 @@ public class ManagedNewTransactionRunnerImplTest {
     @Test
     public void testCallWithNewWriteOnlyTransactionOptimisticLockFailedException() throws Exception {
         try {
-            testableDataBroker.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
+            testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
             managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
                 writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
             }).get();

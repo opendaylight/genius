@@ -19,10 +19,14 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 
 /**
- * Managed transactions utility to simplify handling of new transactions and ensure they are always closed.
+ * Managed transactions utility to simplify handling of new transactions and ensure they are always closed
+ * (see {@link ManagedNewTransactionRunnerImpl}). One of the implementations of this API can, optionally, do
+ * retries (see {@link RetryingManagedNewTransactionRunnerImpl}).  When you want both together (which is typical),
+ * it is recommended to use the {@link RetryingManagedNewTransactionRunner}.
  *
- * <p>This should typically be used (only) in code which really must be creating its own new transactions,
- * such as RPC entry points, or background jobs.
+ * <p>This should typically be used (only) directly in code which really must be creating its own new transactions,
+ * such as RPC entry points, or background jobs.  Other lower level code "behind" such entry points should
+ * just get handed over the transaction provided by this API.
  */
 @Beta
 public interface ManagedNewTransactionRunner {
