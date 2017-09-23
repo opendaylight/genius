@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_3c09742c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-23T02:49:34Z",
+      "side": 1,
+      "message": "add @param javadoc",
+      "range": {
+        "startLine": 48,
+        "startChar": 97,
+        "endLine": 48,
+        "endChar": 110
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_1c0c703a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-23T02:49:34Z",
+      "side": 1,
+      "message": "Correct ordering is before private",
+      "range": {
+        "startLine": 55,
+        "startChar": 23,
+        "endLine": 55,
+        "endChar": 31
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7c164c4d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-23T02:49:34Z",
+      "side": 1,
+      "message": "Should catch RuntimeException",
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_dc05b811",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-23T02:49:34Z",
+      "side": 1,
+      "message": "newOnFailureConsumer",
+      "range": {
+        "startLine": 128,
+        "startChar": 73,
+        "endLine": 128,
+        "endChar": 93
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_fc023c08",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-09-23T02:49:34Z",
+      "side": 1,
+      "message": "Should be called onFailureLogLevel. Also should have javadoc",
+      "range": {
+        "startLine": 133,
+        "startChar": 43,
+        "endLine": 133,
+        "endChar": 55
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
