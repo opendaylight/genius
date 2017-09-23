@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners;
 
-import java.io.Closeable;
 import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
@@ -22,19 +21,16 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * methods (add, update, remove) depending on their action type. The listeners
  * implementing this interface will need to be annotated as {@link Singleton}.
  *
+ * @param <T> type of the data object the listener is registered to.
  * @author David Suárez (david.suarez.fuentes@gmail.com)
- *
- * @param <T>
- *            type of the data object the listener is registered to.
  */
-public interface DataTreeChangeListenerActions<T extends DataObject> extends Closeable {
+interface DataTreeChangeListenerActions<T extends DataObject> {
 
     /**
      * Default method invoked upon data tree change, in turn it calls the
      * appropriate method (add, update, remove) depending on the type of change.
      *
-     * @param collection
-     *            collection of changes
+     * @param collection collection of changes
      */
     default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
         for (final DataTreeModification<T> dataTreeModification : collection) {
@@ -62,26 +58,22 @@ public interface DataTreeChangeListenerActions<T extends DataObject> extends Clo
     /**
      * Invoked when new data object added.
      *
-     * @param newDataObject
-     *            newly added object
+     * @param newDataObject newly added object
      */
     void add(@Nonnull T newDataObject);
 
     /**
      * Invoked when the data object has been removed.
      *
-     * @param removedDataObject
-     *            existing object being removed
+     * @param removedDataObject existing object being removed
      */
     void remove(@Nonnull T removedDataObject);
 
     /**
      * Invoked when there is a change in the data object.
      *
-     * @param originalDataObject
-     *            existing object being modified
-     * @param updatedDataObject
-     *            modified data object
+     * @param originalDataObject existing object being modified
+     * @param updatedDataObject  modified data object
      */
     void update(@Nonnull T originalDataObject, T updatedDataObject);
 }
