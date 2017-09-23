@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 @Beta
 public final class FutureRpcResults {
 
+    // NB: The FutureRpcResultsTest unit test for this util is in mdsalutil-testutils's src/test, not this project's
+
     // TODO Once matured in genius, this class should be proposed to org.opendaylight.yangtools.yang.common
 
     private FutureRpcResults() {}
