@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_59755ac9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-23T00:08:05Z",
+      "side": 1,
+      "message": "would it worth adding a line or two for other reviewers here stating that in this change, we\u0027re actually starting to change the transaction management - with this, the ItmTunnelAggregationHelper now uses a combined ReadWriteTransaction instead of separate small new single write and new read transactions? That is IMHO a Good (Great!) Thing - but worth to spell out that we\u0027re intending to start proposing more changes like this...",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_79d49eeb",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingReadWriteTransaction.java",
         "patchSetId": 1
