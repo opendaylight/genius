@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_52524f67",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-25T18:57:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_3c09742c",
+      "range": {
+        "startLine": 48,
+        "startChar": 97,
+        "endLine": 48,
+        "endChar": 110
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_1c0c703a",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2017-09-23T02:49:34Z",
       "side": 1,
       "message": "Correct ordering is before private",
+      "range": {
+        "startLine": 55,
+        "startChar": 23,
+        "endLine": 55,
+        "endChar": 31
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_32d19bcd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-25T18:57:51Z",
+      "side": 1,
+      "message": "Says who? IMHO that looks very ugly. If you look at this and the next line together, what it should evidence when reading this code is that it\u0027s an annotated type - it\u0027s a Nullable (!) I, not a Nullable private part.. I know this is different from method annotations such as e.g. @Test, but it\u0027s better like this here IMHO.  (PS: Anything like this we should have in CS anyway, to save you time to review!)",
+      "parentUuid": "ba1f61a0_1c0c703a",
       "range": {
         "startLine": 55,
         "startChar": 23,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_b2e46bac",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-25T18:57:51Z",
+      "side": 1,
+      "message": "as in https://git.opendaylight.org/gerrit/#/c/63466/ ? ;-) But here, callable.call() in line 98 throws Exception, so we have/want to catch Exception here, not RuntimeException.  (And the use of java.util.concurrent.Callable with its call() throws Exception is intentional; that\u0027s one of the points of this utility.)",
+      "parentUuid": "ba1f61a0_7c164c4d",
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_dc05b811",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 6
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_92dfa7d5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-25T18:57:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_dc05b811",
+      "range": {
+        "startLine": 128,
+        "startChar": 73,
+        "endLine": 128,
+        "endChar": 93
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_fc023c08",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 6
@@ -99,6 +189,30 @@
       "writtenOn": "2017-09-23T02:49:34Z",
       "side": 1,
       "message": "Should be called onFailureLogLevel. Also should have javadoc",
+      "range": {
+        "startLine": 133,
+        "startChar": 43,
+        "endLine": 133,
+        "endChar": 55
+      },
+      "revId": "666b8496b306d0535aaacab5f974eff2081d560e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f2f1c36b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-25T18:57:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_fc023c08",
       "range": {
         "startLine": 133,
         "startChar": 43,
