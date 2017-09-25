@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_8d666cb9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-09-25T18:15:43Z",
+      "side": 1,
+      "message": "are we not adding one extra switching here?",
+      "revId": "04ebfb8f6ce5c42b6649c14db3bda798f4ddc4a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
