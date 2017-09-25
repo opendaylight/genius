@@ -16,6 +16,24 @@
       "revId": "04ebfb8f6ce5c42b6649c14db3bda798f4ddc4a4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_edb9e8cc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-25T18:57:51Z",
+      "side": 1,
+      "message": "erm, what do you mean by \"one extra switching\" ? This new Callable and call() is just another method call. it\u0027s not \"expensive\". This does not add e.g. extra threading, if that\u0027s your concern.\n\nIf this addressed your concern, will you remove the -1 ?\n\nPerhaps even +1 if you like the change?  Or ask for more clarifications...",
+      "parentUuid": "ba1f61a0_8d666cb9",
+      "revId": "04ebfb8f6ce5c42b6649c14db3bda798f4ddc4a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
