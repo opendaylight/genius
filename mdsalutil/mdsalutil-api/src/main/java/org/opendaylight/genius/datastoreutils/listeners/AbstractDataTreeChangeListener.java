@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
@@ -38,7 +39,10 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
     }
 
     @Override
-    public void close() {
+    @PreDestroy
+    public final void close() {
+        // ^^^ final to avoid @Override without @PreDestroy
+        // JSR 250: "the method is called unless a subclass overrides the method without repeating the annotation"
         dataChangeListenerRegistration.close();
     }
 }
