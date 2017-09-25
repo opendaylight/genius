@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_2f265868",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-25T09:17:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_79d49eeb",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_f9152e9c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 1
@@ -47,6 +65,30 @@
       "writtenOn": "2017-09-23T00:04:19Z",
       "side": 1,
       "message": "read-write (not \"write only\")",
+      "range": {
+        "startLine": 75,
+        "startChar": 72,
+        "endLine": 75,
+        "endChar": 73
+      },
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4f1e2c0d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-25T09:17:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_f9152e9c",
       "range": {
         "startLine": 75,
         "startChar": 72,
@@ -76,6 +118,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_9c71800e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-25T09:17:44Z",
+      "side": 1,
+      "message": "Yes, I was waiting on agreement on c/63372 before changing the code to match here ;-).",
+      "parentUuid": "ba1f61a0_b91f36b6",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_398346cd",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableReadWriteTransaction.java",
         "patchSetId": 1
@@ -93,6 +153,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_0f29d436",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-25T09:17:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_398346cd",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_d97f8ade",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableReadWriteTransaction.java",
         "patchSetId": 1
@@ -104,6 +182,24 @@
       "writtenOn": "2017-09-23T00:04:19Z",
       "side": 1,
       "message": "ReadWriteTransaction x3 instead of WriteTransaction",
+      "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6f233056",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-25T09:17:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ba1f61a0_d97f8ade",
       "revId": "e74a466b08ac50b116ea638877a689f72a972f33",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
