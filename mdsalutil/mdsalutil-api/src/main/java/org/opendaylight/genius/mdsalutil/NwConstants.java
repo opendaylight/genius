@@ -155,8 +155,9 @@ public final class NwConstants {
     public static final short QOS_DSCP_TABLE = 90;
     public static final short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     public static final short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
-    public static final short INGRESS_ACL_TABLE = 211;
-    public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 212;
+    public static final short INGRESS_ACL_TABLE = 210;
+    public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 211;
+    public static final short INGRESS_ACL_REFLECTION_TABLE = 212;
     public static final short INGRESS_ACL_FILTER_TABLE = 213;
     public static final short INGRESS_LEARN_TABLE = 212;
     public static final short INGRESS_LEARN_ACL_REMOTE_ACL_TABLE = 213;
@@ -168,8 +169,9 @@ public final class NwConstants {
     public static final short EGRESS_SFC_CLASSIFIER_EGRESS_TABLE = 223;
     public static final short EGRESS_POLICY_CLASSIFIER_TABLE = 230;
     public static final short EGRESS_POLICY_ROUTING_TABLE = 231;
-    public static final short EGRESS_ACL_TABLE = 241;
-    public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 242;
+    public static final short EGRESS_ACL_TABLE = 240;
+    public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 241;
+    public static final short EGRESS_ACL_REFLECTION_TABLE = 242;
     public static final short EGRESS_ACL_FILTER_TABLE = 243;
     public static final short EGRESS_LEARN_TABLE = 242;
     public static final short EGRESS_LEARN_ACL_REMOTE_ACL_TABLE = 243;
