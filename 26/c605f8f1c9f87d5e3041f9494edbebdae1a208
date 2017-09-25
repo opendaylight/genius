@@ -1,0 +1,9 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: David Suarez <david.suarez.fuentes@gmail.com>
+Code-Review+1: Timothy Rozet <trozet@redhat.com>
+Code-Review+2: Sam Hague <shague@redhat.com>
+Submitted-by: Sam Hague <shague@redhat.com>
+Submitted-at: Mon, 25 Sep 2017 18:44:06 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/63497
+Project: genius
+Branch: refs/heads/master
