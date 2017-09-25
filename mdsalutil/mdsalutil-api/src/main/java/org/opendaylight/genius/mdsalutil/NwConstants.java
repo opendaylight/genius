@@ -155,11 +155,10 @@ public final class NwConstants {
     public static final short QOS_DSCP_TABLE = 90;
     public static final short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     public static final short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
-    public static final short INGRESS_ACL_TABLE = 211;
-    public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 212;
+    public static final short INGRESS_ACL_TABLE = 210;
+    public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 211;
+    public static final short INGRESS_ACL_STATEFUL_APPLY_CHANGE_EXIST_TRAFFIC_TABLE = 212;
     public static final short INGRESS_ACL_FILTER_TABLE = 213;
-    public static final short INGRESS_LEARN_TABLE = 212;
-    public static final short INGRESS_LEARN_ACL_REMOTE_ACL_TABLE = 213;
     public static final short INGRESS_LEARN_ACL_FILTER_TABLE = 214;
     public static final short INGRESS_COUNTERS_TABLE = 219;
     public static final short EGRESS_LPORT_DISPATCHER_TABLE = 220;
@@ -168,8 +167,9 @@ public final class NwConstants {
     public static final short EGRESS_SFC_CLASSIFIER_EGRESS_TABLE = 223;
     public static final short EGRESS_POLICY_CLASSIFIER_TABLE = 230;
     public static final short EGRESS_POLICY_ROUTING_TABLE = 231;
-    public static final short EGRESS_ACL_TABLE = 241;
-    public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 242;
+    public static final short EGRESS_ACL_TABLE = 240;
+    public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 241;
+    public static final short EGRESS_ACL_STATEFUL_APPLY_CHANGE_EXIST_TRAFFIC_TABLE = 242;
     public static final short EGRESS_ACL_FILTER_TABLE = 243;
     public static final short EGRESS_LEARN_TABLE = 242;
     public static final short EGRESS_LEARN_ACL_REMOTE_ACL_TABLE = 243;
