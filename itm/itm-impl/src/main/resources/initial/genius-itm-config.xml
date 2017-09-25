@@ -6,4 +6,5 @@
         <enabled>false</enabled>
     </tunnel-aggregation>
     <default-tunnel-tos>0</default-tunnel-tos>
+    <gpe-extension-enabled>false</gpe-extension-enabled>
 </itm-config>
