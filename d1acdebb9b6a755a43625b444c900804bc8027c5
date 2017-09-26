@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_c3f4b35c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DelegatingWriteTransaction.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-26T12:33:10Z",
+      "side": 1,
+      "message": "This can use ForwardingWriteTransaction now.",
+      "revId": "d1acdebb9b6a755a43625b444c900804bc8027c5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e3f1f76b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-26T12:33:10Z",
+      "side": 1,
+      "message": "@Beta annotation here?",
+      "revId": "d1acdebb9b6a755a43625b444c900804bc8027c5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_03d40bbb",
         "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/infra/tests/ManagedNewTransactionRunnerImplTest.java",
         "patchSetId": 6
