@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_3c8a0d64",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-26T18:51:50Z",
+      "side": 1,
+      "message": "I agree, it is better to use that builder. I just wanted to migrate one of the existing listeners to see what else we might need. So I think we could merge it with that TODO while I work on the shared executor for infrautils.",
+      "parentUuid": "ba1f61a0_dc1f7159",
+      "revId": "ff980f413a789e0d1f81c4f169bad745627841af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e3ec572c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
         "patchSetId": 2
