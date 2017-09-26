@@ -90,7 +90,6 @@ public class IPv4 extends Packet {
      * random number and the remaining fields are set to 0.
      */
     public IPv4() {
-        super();
         fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;

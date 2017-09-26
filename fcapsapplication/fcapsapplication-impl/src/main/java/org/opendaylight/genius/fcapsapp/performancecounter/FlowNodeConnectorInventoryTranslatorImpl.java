@@ -60,7 +60,6 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     @SuppressWarnings("checkstyle:IllegalCatch")
     public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,
             final EntityOwnershipService entityOwnershipService, final PMAgent agent) {
-        super();
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
         this.entityOwnershipService = entityOwnershipService;
         this.agent = agent;

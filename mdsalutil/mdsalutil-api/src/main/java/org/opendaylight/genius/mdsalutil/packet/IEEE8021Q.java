@@ -35,7 +35,6 @@ public class IEEE8021Q extends Ethernet {
      * Default constructor that creates and sets the HashMap.
      */
     public IEEE8021Q() {
-        super();
         fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;

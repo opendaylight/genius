@@ -37,7 +37,6 @@ public class MockFlowForwarder extends AbstractMockForwardingRulesManager<Flow> 
     private ListenerRegistration<MockFlowForwarder> listenerRegistration;
 
     public MockFlowForwarder(final DataBroker db) {
-        super();
         registerListener(db);
     }
 

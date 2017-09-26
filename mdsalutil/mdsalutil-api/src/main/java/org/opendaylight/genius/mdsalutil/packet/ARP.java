@@ -58,7 +58,6 @@ public class ARP extends Packet {
      * Default constructor that creates and sets the HashMap.
      */
     public ARP() {
-        super();
         fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;

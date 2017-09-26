@@ -22,7 +22,6 @@ public class MatchInPort extends MatchInfo {
     private final long portNumber;
 
     public MatchInPort(BigInteger dpId, long portNumber) {
-        super();
         this.dpId = dpId;
         this.portNumber = portNumber;
     }

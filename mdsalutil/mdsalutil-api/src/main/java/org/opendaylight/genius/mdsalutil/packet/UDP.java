@@ -38,7 +38,6 @@ public class UDP extends Packet {
         };
 
     public UDP() {
-        super();
         fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;
