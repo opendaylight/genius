@@ -15,7 +15,6 @@ public abstract class NodeEvent extends DebugEvent {
     protected final String nodeId;
 
     public NodeEvent(String nodeId) {
-        super();
         this.nodeId = nodeId;
     }
 

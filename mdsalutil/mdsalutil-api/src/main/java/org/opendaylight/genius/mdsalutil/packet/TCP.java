@@ -54,7 +54,6 @@ public class TCP extends Packet {
      * Default constructor that sets all the header fields to zero.
      */
     public TCP() {
-        super();
         fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;

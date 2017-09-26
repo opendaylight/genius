@@ -223,7 +223,6 @@ public class OvsInterfaceConfigRemoveHelper {
 
         VlanMemberStateRemoveWorker(DataBroker dataBroker, IdManagerService idManager, BigInteger dpId,
                 String interfaceName, InterfaceParentEntry interfaceParentEntry) {
-            super();
             this.dataBroker = dataBroker;
             this.idManager = idManager;
             this.dpId = dpId;

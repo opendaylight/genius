@@ -44,7 +44,6 @@ public class ICMP extends Packet {
      * Default constructor that creates and sets the hash map values.
      */
     public ICMP() {
-        super();
         fieldValues = new HashMap<>();
         hdrFieldCoordMap = fieldCoordinates;
         hdrFieldsMap = fieldValues;

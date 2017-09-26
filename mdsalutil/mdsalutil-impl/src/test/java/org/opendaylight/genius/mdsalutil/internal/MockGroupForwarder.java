@@ -35,7 +35,6 @@ public class MockGroupForwarder extends AbstractMockForwardingRulesManager<Group
     private ListenerRegistration<MockGroupForwarder> listenerRegistration;
 
     public MockGroupForwarder(final DataBroker db) {
-        super();
         registerListener(db);
     }
 
