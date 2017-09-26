@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_de50080d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-09-26T14:13:31Z",
+      "side": 1,
+      "message": "This should be highlighted more IMO — the caller can just throw its exceptions, it shouldn’t care about wrapping them in a Future (as I understand it). This is what creates a disconnect here and risks causing misunderstandings...",
+      "range": {
+        "startLine": 46,
+        "startChar": 84,
+        "endLine": 46,
+        "endChar": 107
+      },
+      "revId": "8369124be47f73b8e13cd8da28c6ffddd9a371c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
