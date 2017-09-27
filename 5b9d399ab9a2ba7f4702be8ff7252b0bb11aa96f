@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_a58b801d",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 6154
+      },
+      "writtenOn": "2017-09-27T08:08:05Z",
+      "side": 1,
+      "message": "Earlier it was list of Strings which was sorted by Collections.sort(). With list of interfaces , this Collections.sort() doesnt work.\n\nFor list of Interfaces,we may need to write new comparison/sort method. If its required let me know , i will write it.",
+      "parentUuid": "ba1f61a0_a561c0aa",
+      "revId": "5b9d399ab9a2ba7f4702be8ff7252b0bb11aa96f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e55738c8",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceListFromDpn.xtend",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2017-09-27T07:47:54Z",
       "side": 1,
       "message": "this does not have any entries??",
+      "revId": "5b9d399ab9a2ba7f4702be8ff7252b0bb11aa96f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e581f8fb",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceListFromDpn.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 6154
+      },
+      "writtenOn": "2017-09-27T08:08:05Z",
+      "side": 1,
+      "message": "I didnt know how to populate it. Hence i have kept it empty time being.",
+      "parentUuid": "ba1f61a0_e55738c8",
       "revId": "5b9d399ab9a2ba7f4702be8ff7252b0bb11aa96f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
