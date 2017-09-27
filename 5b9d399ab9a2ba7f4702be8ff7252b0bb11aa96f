@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_a561c0aa",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 748,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-09-27T07:47:54Z",
+      "side": 1,
+      "message": "why is this commented out?",
+      "revId": "5b9d399ab9a2ba7f4702be8ff7252b0bb11aa96f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e55738c8",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceListFromDpn.xtend",
+        "patchSetId": 6
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-09-27T07:47:54Z",
+      "side": 1,
+      "message": "this does not have any entries??",
+      "revId": "5b9d399ab9a2ba7f4702be8ff7252b0bb11aa96f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
