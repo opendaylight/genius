@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: David Suarez <david.suarez.fuentes@gmail.com>
+Code-Review+2: Sam Hague <shague@redhat.com>
+Submitted-by: David Suarez <david.suarez.fuentes@gmail.com>
+Submitted-at: Wed, 27 Sep 2017 12:54:27 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/63498
+Project: genius
+Branch: refs/heads/stable/nitrogen
