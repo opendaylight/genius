@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_08ded8dc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T16:11:59Z",
+      "side": 1,
+      "message": "David, I\u0027m not 100% sure there is going to be a an \"OSGi service to be included in infrautils\", and will post to genius-dev about it - perhaps we could await the outcome of that discussion, before we merge this with the TODO?",
+      "revId": "bf156075b7e9cb4791e95a5446f52cedf1dcc1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0857f858",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T16:11:59Z",
+      "side": 1,
+      "message": "David, have you seen that in org.opendaylight.infrautils.utils.concurrent.Executors there is already a \"sugar\" shortcut method doing exactly this, just to this it a bit shorter and more readable?  Perhaps you would like to use that here as well?",
+      "revId": "bf156075b7e9cb4791e95a5446f52cedf1dcc1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
