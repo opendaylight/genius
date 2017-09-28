@@ -34,7 +34,7 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
     }
 
-    public DataBroker getDataBroker() {
+    protected DataBroker getDataBroker() {
         return dataBroker;
     }
 
