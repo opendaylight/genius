@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_0e1421e7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T16:50:47Z",
+      "side": 1,
+      "message": "\u003d\u003d\u003e https://lists.opendaylight.org/pipermail/genius-dev/2017-September/001910.html",
+      "parentUuid": "ba1f61a0_08ded8dc",
+      "revId": "bf156075b7e9cb4791e95a5446f52cedf1dcc1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_0857f858",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
         "patchSetId": 4
