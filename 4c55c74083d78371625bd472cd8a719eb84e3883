@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_52f19d93",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T11:38:18Z",
+      "side": 1,
+      "message": "you need to pass whatever information you need into here as part of a key.  I suspect your \"key\" is going to have to be more than a simple String?  Just create a simple new composite value holder class, and use that as your key:\n\n   class Something { \n      private final String thisThing; \n      private final String thatThing; \n\n      Something(String thisThing, String thatThat) {\n          this.thingThing \u003d thisThing;\n          that.thingThing \u003d thatThing;\n      }\n\n      String thatThing() { return thatThing; }\n\nIf you find you have to write a lot of these, then you can start looking at using http://immutables.github.io for it (later!).",
+      "revId": "4c55c74083d78371625bd472cd8a719eb84e3883",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
