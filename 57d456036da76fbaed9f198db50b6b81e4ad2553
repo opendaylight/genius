@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_e8c1c480",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T15:10:41Z",
+      "side": 1,
+      "message": "keep an empty new line here after class before fields",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_28b8fc0f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T15:10:41Z",
+      "side": 1,
+      "message": "move this non static field after static Logger field, before or after DiagStatusService, with a empty new line between static and non-static fields",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_883ac896",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T15:10:41Z",
+      "side": 1,
+      "message": "as per https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Guidelines just put this into the constructor, not into a separate @PostConstruct.  This will also allow you to make serviceDescriptor final, which is better \u0026 clearer anyway.",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_485450c9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T15:10:41Z",
+      "side": 1,
+      "message": "as discussed yesterday, this won\u0027t really work, because it could report Operational even if there was an Exception from another @Singleton within this BP bundle.  I believe the approach proposed in https://git.opendaylight.org/gerrit/#/c/63509/ will be better, which in https://git.opendaylight.org/gerrit/#/c/63509/4/diagstatus/impl/src/main/java/org/opendaylight/infrautils/diagstatus/internal/DiagStatusServiceImpl.java onSystemBootReady() sets all services to Operational... do you want to get that in, and then remove this here?  As discussed, that\u0027s only a first version, as it\u0027s \"global\" - future work will hopefully make that more granular, per bundle.  (And if you think that is absolutely needed first, then please let me know.)",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
