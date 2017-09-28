@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_5164f8b7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T20:14:19Z",
+      "side": 1,
+      "message": "TODO wait for result of discussion in https://git.opendaylight.org/gerrit/#/c/63439/1/sfc-sb-rest/src/main/resources/org/opendaylight/blueprint/sfc-sb-rest.xml@18",
+      "revId": "ecfe5624d6e5f6bf7afe497b634f7d88a00c9827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b15734c9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T20:14:19Z",
+      "side": 1,
+      "message": "wait for conclusion in https://lists.opendaylight.org/pipermail/genius-dev/2017-September/001911.html re. SpecialExecutors newBoundedSingleThreadExecutor ?",
+      "revId": "ecfe5624d6e5f6bf7afe497b634f7d88a00c9827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
