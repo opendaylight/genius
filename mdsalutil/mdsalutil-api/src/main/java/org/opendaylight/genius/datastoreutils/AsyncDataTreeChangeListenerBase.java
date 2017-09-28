@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.datastoreutils;
 
+import static org.opendaylight.infrautils.utils.concurrent.Executors.newSingleThreadExecutor;
+
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
@@ -20,7 +22,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.SuperTypeUtil;
-import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -31,22 +32,30 @@ import org.slf4j.LoggerFactory;
 public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener<T>>
         implements DataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
+    private static final String THREAD_NAME_PREFIX = "AsyncDataTreeChangeListenerBase-DataTreeChangeHandler";
+
     private static final Logger LOG = LoggerFactory.getLogger(AsyncDataTreeChangeListenerBase.class);
 
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
 
-    private final ExecutorService dataTreeChangeHandlerExecutor =
-            Executors.newSingleThreadExecutor("AsyncDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
+    private final ExecutorService dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
 
     protected AsyncDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+        this.dataTreeChangeHandlerExecutor = newSingleThreadExecutor(THREAD_NAME_PREFIX, LOG);
+    }
+
+    protected AsyncDataTreeChangeListenerBase(ExecutorService executorService) {
+        this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+        this.dataTreeChangeHandlerExecutor = executorService;
     }
 
     @Deprecated
     public AsyncDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+        this.dataTreeChangeHandlerExecutor = newSingleThreadExecutor(THREAD_NAME_PREFIX, LOG);
     }
 
     @Override
