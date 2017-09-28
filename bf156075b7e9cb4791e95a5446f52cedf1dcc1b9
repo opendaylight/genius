@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_917030a5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T19:03:45Z",
+      "side": 1,
+      "message": "based on that discussion, I now think this TODO should be removed.  Especially because any shared executor would change the behaviour of this listener to be multi instead of single threaded (whereas this change as it is now will NOT), so that should be done separately, if ever.",
+      "parentUuid": "ba1f61a0_0e1421e7",
+      "revId": "bf156075b7e9cb4791e95a5446f52cedf1dcc1b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_0857f858",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
         "patchSetId": 4
