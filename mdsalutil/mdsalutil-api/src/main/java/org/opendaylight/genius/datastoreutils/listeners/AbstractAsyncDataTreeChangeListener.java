@@ -16,14 +16,32 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.yangtools.util.concurrent.SpecialExecutors;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Abstract class providing some common functionality to specific listeners. This listener launches the received
- * notifications in a different thread by using the an {@link ExecutorService}.
+ * notifications by using an {@link ExecutorService}.
+ *
+ * <p>The {@link ExecutorService} passed to the constructor will depend on the use case. Here we have some examples:
+ *
+ * <p>- If the listener is fast enough and non-blocking: MoreExecutors.directExecutor might be used, or even better,
+ *  just use the {@link AbstractSyncDataTreeChangeListener}.
+ *
+ * <p>- If the listener is heavy or could be blocked: use the multi-thereaded executor.
+ *
+ * <p>- If the listener needs to preserve the order of notifications: use a single thread executor typically an
+ * {@link org.opendaylight.infrautils.utils.concurrent.Executors#newSingleThreadExecutor(String, org.slf4j.Logger)}.
+ *
+ * <p>- If there are multiple listeners: they could even share a executor as the ones in {@link SpecialExecutors},
+ *
+ * <p>Subclasses are also encouraged to, in addition to passing the ExecutorService for use in
+ * production (by Blueprint wiring) based on above via super(), expose a public constructor letting tests specify
+ * an alternative ExecutorService; this is useful e.g. to inject infrautils' AwaitableExecutorService for testing.
  *
  * @param <T> type of the data object the listener is registered to.
+ *
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> extends
@@ -51,6 +69,12 @@ public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> 
         executorService.execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
     }
 
+    /**
+     * Returns the ExecutorService provided when constructing this instance. If the subclass owns the
+     * ExecutorService, it should be shut down when closing the listener using this getter.
+     *
+     * @return executor service
+     */
     protected ExecutorService getExecutorService() {
         return executorService;
     }
