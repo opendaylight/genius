@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_2dc2ce52",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T13:15:49Z",
+      "side": 1,
+      "message": "Thanks for having changed it anyway.  I\u0027m always scared of people copy/pasting, so prefer to get it right straight away.",
+      "parentUuid": "ba1f61a0_3c8a0d64",
+      "revId": "ff980f413a789e0d1f81c4f169bad745627841af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_e3ec572c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
         "patchSetId": 2
