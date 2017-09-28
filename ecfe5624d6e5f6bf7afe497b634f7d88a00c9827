@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_71b93ccb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-28T22:02:04Z",
+      "side": 1,
+      "message": "and only recommend this when https://git.opendaylight.org/gerrit/#/c/63805/ gets in",
+      "parentUuid": "ba1f61a0_5164f8b7",
+      "revId": "ecfe5624d6e5f6bf7afe497b634f7d88a00c9827",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_116600bb",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
         "patchSetId": 1
