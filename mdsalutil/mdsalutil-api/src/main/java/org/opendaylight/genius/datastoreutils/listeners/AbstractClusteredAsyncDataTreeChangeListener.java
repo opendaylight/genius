@@ -25,6 +25,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * using an {@link ExecutorService}. This listener should be used in clustered deployments.
  *
  * @param <T> type of the data object the listener is registered to.
+ *
+ * @see AbstractAsyncDataTreeChangeListener
+ *
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractClusteredAsyncDataTreeChangeListener<T extends DataObject> extends
