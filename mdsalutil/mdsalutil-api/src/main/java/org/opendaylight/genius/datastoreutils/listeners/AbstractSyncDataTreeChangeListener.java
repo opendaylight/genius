@@ -19,9 +19,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Abstract class providing some common functionality to specific listeners.
+ * Abstract class providing some common functionality to specific listeners. This should be the most common parent
+ * class for any listener that does not need to be either cluster-aware (see
+ * {@link AbstractClusteredSyncDataTreeChangeListener}) or to process notifications asynchronously
+ * (see @link {@link AbstractAsyncDataTreeChangeListener}) or even both characteristics.
  *
  * @param <T> type of the data object the listener is registered to.
+ *
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> extends

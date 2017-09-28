@@ -20,11 +20,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Abstract class providing some common functionality to specific listeners.
- * This listener launches the received notifications in a different thread by
- * using an {@link ExecutorService}. This listener should be used in clustered deployments.
+ * Abstract class providing some common functionality to specific listeners. This is the clustered version of the
+ * {@link AbstractAsyncDataTreeChangeListener}.
  *
  * @param <T> type of the data object the listener is registered to.
+ *
+ * @see AbstractAsyncDataTreeChangeListener
+ *
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractClusteredAsyncDataTreeChangeListener<T extends DataObject> extends
@@ -53,6 +55,12 @@ public abstract class AbstractClusteredAsyncDataTreeChangeListener<T extends Dat
         executorService.execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
     }
 
+    /**
+     * Getter for the subclasses to access the ExecutorService provided when constructing the object. It is typically
+     * used to shut it down when stopping the listener.
+     *
+     * @return executor service
+     */
     protected ExecutorService getExecutorService() {
         return executorService;
     }
