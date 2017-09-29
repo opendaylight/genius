@@ -16,6 +16,24 @@
       "revId": "62ac8a8cbb09b09db15c52feed12f73bd6a64612",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f76fdc28",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-09-29T09:32:16Z",
+      "side": 1,
+      "message": "That\u0027s really weird, I\u0027ll remove it.",
+      "parentUuid": "ba1f61a0_88076881",
+      "revId": "62ac8a8cbb09b09db15c52feed12f73bd6a64612",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
