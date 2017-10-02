@@ -16,6 +16,24 @@
       "revId": "3252de8884e5d3f85249b8823ce1e2ea1ee0a297",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3b05cfc2",
+        "filename": "features/odl-genius/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-02T21:17:19Z",
+      "side": 1,
+      "message": "OK, tx; I\u0027ll clean up after we\u0027ve clarifed with Stephen if we move forward with this..",
+      "parentUuid": "9a245df4_30884e22",
+      "revId": "3252de8884e5d3f85249b8823ce1e2ea1ee0a297",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
