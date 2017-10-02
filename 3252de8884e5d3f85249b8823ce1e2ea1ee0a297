@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_30884e22",
+        "filename": "features/odl-genius/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-10-02T16:38:26Z",
+      "side": 1,
+      "message": "this isn\u0027t need either",
+      "revId": "3252de8884e5d3f85249b8823ce1e2ea1ee0a297",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
