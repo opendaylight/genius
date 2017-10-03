@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_5cb999e8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-03T10:19:40Z",
+      "side": 1,
+      "message": "Vampire! :). Done.",
+      "parentUuid": "9a245df4_5cf879e5",
+      "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_bcdc1576",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-10-03T09:23:21Z",
       "side": 1,
       "message": "As above (or below).",
+      "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bccd3589",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-03T10:19:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_bcdc1576",
       "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_3ca145aa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-03T10:19:40Z",
+      "side": 1,
+      "message": "We might do that, but changing that I realized we already had that constant defined in ITMConstants, so I decided to replace it.",
+      "parentUuid": "9a245df4_9cd95186",
+      "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_fce68d43",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 2
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_5cb079f4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-03T10:19:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_fce68d43",
+      "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_dce3c931",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 2
@@ -81,6 +153,24 @@
       "writtenOn": "2017-10-03T09:23:21Z",
       "side": 1,
       "message": "As above...",
+      "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7c829d01",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 866,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-03T10:19:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_dce3c931",
       "revId": "d124cb925151cbbe5be0713336e60cd53edbc026",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
