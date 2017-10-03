@@ -16,6 +16,24 @@
       "revId": "fc3970c1c6eac02ba7c5852fe156285bedcda3d6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7c573d03",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-03T09:02:46Z",
+      "side": 1,
+      "message": "Well seen, thanks.",
+      "parentUuid": "ba1f61a0_31f18495",
+      "revId": "fc3970c1c6eac02ba7c5852fe156285bedcda3d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
