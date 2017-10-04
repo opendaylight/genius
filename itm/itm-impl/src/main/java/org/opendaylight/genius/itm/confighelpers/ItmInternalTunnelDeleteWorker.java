@@ -191,12 +191,12 @@ public class ItmInternalTunnelDeleteWorker {
         LOG.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ",
                 trunkfwdIfName, trunkIdentifier) ;
         transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-        ItmUtils.itmCache.removeInterface(trunkfwdIfName);
+        ItmUtils.ITM_CACHE.removeInterface(trunkfwdIfName);
         // also update itm-state ds -- Delete the forward tunnel-interface from the tunnel list
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, srcTep.getTunnelType()));
         transaction.delete(LogicalDatastoreType.CONFIGURATION,path) ;
-        ItmUtils.itmCache.removeInternalTunnel(trunkfwdIfName);
+        ItmUtils.ITM_CACHE.removeInternalTunnel(trunkfwdIfName);
         // Release the Ids for the forward trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()),
@@ -213,7 +213,7 @@ public class ItmInternalTunnelDeleteWorker {
         LOG.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ",
                 trunkRevIfName, trunkIdentifier) ;
         transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-        ItmUtils.itmCache.removeInternalTunnel(trunkRevIfName);
+        ItmUtils.ITM_CACHE.removeInternalTunnel(trunkRevIfName);
         // also update itm-state ds -- Delete the reverse tunnel-interface from the tunnel list
         path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(srcDpnId, dstDpnId, dstTep.getTunnelType()));
@@ -263,7 +263,7 @@ public class ItmInternalTunnelDeleteWorker {
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            Collection<InternalTunnel> tunnels = ItmUtils.itmCache.getAllInternalTunnel();
+            Collection<InternalTunnel> tunnels = ItmUtils.ITM_CACHE.getAllInternalTunnel();
             if (tunnels == null) {
                 return Collections.emptyList();
             }
@@ -287,12 +287,12 @@ public class ItmInternalTunnelDeleteWorker {
                     + " interface on srcDpnId {} dstDpnId {} is removed", logicTunnelName, srcDpnId, dstDpnId);
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(logicTunnelName);
                 tx.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-                ItmUtils.itmCache.removeInterface(logicTunnelName);
+                ItmUtils.ITM_CACHE.removeInterface(logicTunnelName);
                 InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                         .child(InternalTunnel.class,
                                 new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
                 tx.delete(LogicalDatastoreType.CONFIGURATION, path);
-                ItmUtils.itmCache.removeInternalTunnel(logicTunnelName);
+                ItmUtils.ITM_CACHE.removeInternalTunnel(logicTunnelName);
                 return Collections.singletonList(tx.submit());
             } else if (!emptyTunnelGroup) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not last tunnel in logical tunnel group {}", logicTunnelName);

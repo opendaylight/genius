@@ -309,7 +309,7 @@ public class ItmExternalTunnelAddWorker {
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, hwTunnelIf);
-        ItmUtils.itmCache.addInterface(hwTunnelIf);
+        ItmUtils.ITM_CACHE.addInterface(hwTunnelIf);
         transaction.merge(LogicalDatastoreType.CONFIGURATION, ifIID, hwTunnelIf, true);
         // also update itm-state ds?
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
@@ -318,7 +318,7 @@ public class ItmExternalTunnelAddWorker {
         ExternalTunnel tnl = ItmUtils.buildExternalTunnel(getExternalTunnelKey(srcNodeid),
                 getExternalTunnelKey(dstNodeId), tunType, tunnelIfName);
         transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
-        ItmUtils.itmCache.addExternalTunnel(tnl);
+        ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
         return true;
     }
 
@@ -344,7 +344,7 @@ public class ItmExternalTunnelAddWorker {
                 new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, extTunnelIf);
         transaction.merge(LogicalDatastoreType.CONFIGURATION, ifIID, extTunnelIf, true);
-        ItmUtils.itmCache.addInterface(extTunnelIf);
+        ItmUtils.ITM_CACHE.addInterface(extTunnelIf);
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, new ExternalTunnelKey(getExternalTunnelKey(dstNodeId),
                         dpnId.toString(), tunType));
@@ -352,7 +352,7 @@ public class ItmExternalTunnelAddWorker {
                 getExternalTunnelKey(dstNodeId),
                 tunType, tunnelIfName);
         transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
-        ItmUtils.itmCache.addExternalTunnel(tnl);
+        ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
         return true;
     }
 

@@ -49,18 +49,18 @@ public class ExternalTunnelListener extends
 
     @Override
     protected void remove(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel del) {
-        ItmUtils.itmCache.removeExternalTunnelfromExternalTunnelKeyCache(del.getKey());
+        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(del.getKey());
     }
 
     @Override
     protected void update(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel original,
                           ExternalTunnel update) {
-        ItmUtils.itmCache.addExternalTunnelKeyToExternalTunnelCache(update);
+        ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(update);
     }
 
     @Override
     protected void add(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel add) {
-        ItmUtils.itmCache.addExternalTunnelKeyToExternalTunnelCache(add);
+        ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(add);
     }
 
     @Override

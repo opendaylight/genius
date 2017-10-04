@@ -17,6 +17,6 @@ public final class ItmTestUtils {
     private ItmTestUtils() { }
 
     public static void clearAllItmCaches() {
-        ItmUtils.itmCache.clear();
+        ItmUtils.ITM_CACHE.clear();
     }
 }

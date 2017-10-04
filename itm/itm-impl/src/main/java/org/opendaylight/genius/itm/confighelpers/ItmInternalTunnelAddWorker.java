@@ -216,7 +216,7 @@ public final class ItmInternalTunnelAddWorker {
         LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
         ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        ItmUtils.itmCache.addInterface(iface);
+        ItmUtils.ITM_CACHE.addInterface(iface);
     }
 
     private static void createLogicalTunnelInterface(BigInteger srcDpnId,
@@ -225,7 +225,7 @@ public final class ItmInternalTunnelAddWorker {
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Interface"), true);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(interfaceName);
         ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        ItmUtils.itmCache.addInterface(iface);
+        ItmUtils.ITM_CACHE.addInterface(iface);
     }
 
     private static void createInternalTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
@@ -238,7 +238,7 @@ public final class ItmInternalTunnelAddWorker {
         // Will revert when ELAN can handle this.
         // ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
         transaction.merge(LogicalDatastoreType.CONFIGURATION,path, tnl, true) ;
-        ItmUtils.itmCache.addInternalTunnel(tnl);
+        ItmUtils.ITM_CACHE.addInternalTunnel(tnl);
     }
 
     private static String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId, DataBroker dataBroker) {
@@ -273,7 +273,7 @@ public final class ItmInternalTunnelAddWorker {
         public List<ListenableFuture<Void>> call() throws Exception {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             //The logical tunnel interface be created only when the first tunnel interface on each OVS is created
-            InternalTunnel tunnel = ItmUtils.itmCache.getInternalTunnel(logicTunnelGroupName);
+            InternalTunnel tunnel = ItmUtils.ITM_CACHE.getInternalTunnel(logicTunnelGroupName);
             if (tunnel == null) {
                 WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
                 LOG.info("MULTIPLE_VxLAN_TUNNELS: add the logical tunnel group {} because a first tunnel"

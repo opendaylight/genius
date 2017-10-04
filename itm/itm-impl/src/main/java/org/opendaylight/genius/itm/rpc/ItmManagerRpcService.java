@@ -767,9 +767,9 @@ public class ItmManagerRpcService implements ItmRpcService {
         IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder()
                         .setTunnelType(tunVal);
 
-        if (ItmUtils.itmCache.getInternalTunnel(tunIfName) != null) {
+        if (ItmUtils.ITM_CACHE.getInternalTunnel(tunIfName) != null) {
             tunVal = 1;
-        } else if (ItmUtils.itmCache.getExternalTunnel(tunIfName) != null) {
+        } else if (ItmUtils.ITM_CACHE.getExternalTunnel(tunIfName) != null) {
             tunVal = 2;
         }
         output.setTunnelType(tunVal);
