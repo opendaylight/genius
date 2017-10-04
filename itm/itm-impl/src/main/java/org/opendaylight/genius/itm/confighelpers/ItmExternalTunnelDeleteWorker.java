@@ -66,14 +66,14 @@ public class ItmExternalTunnelDeleteWorker {
                         tunType.getName());
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
                 transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-                ItmUtils.itmCache.removeInterface(trunkInterfaceName);
+                ItmUtils.ITM_CACHE.removeInterface(trunkInterfaceName);
 
                 InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class).child(
                         ExternalTunnel.class,
                         ItmUtils.getExternalTunnelKey(extIp.toString(), teps.getDPNID().toString(), tunType));
                 transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
                 LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
-                ItmUtils.itmCache.removeExternalTunnel(trunkInterfaceName);
+                ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
                 // Release the Ids for the trunk interface Name
                 ItmUtils.releaseIdForTrunkInterfaceName(interfaceName,
                         new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()),
@@ -99,14 +99,14 @@ public class ItmExternalTunnelDeleteWorker {
                     new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-            ItmUtils.itmCache.removeInterface(trunkInterfaceName);
+            ItmUtils.ITM_CACHE.removeInterface(trunkInterfaceName);
 
             InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class).child(
                     ExternalTunnel.class,
                     ItmUtils.getExternalTunnelKey(extIp.toString(), teps.getDPNID().toString(), tunType));
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
             LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
-            ItmUtils.itmCache.removeExternalTunnel(trunkInterfaceName);
+            ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
             // Release the Ids for the trunk interface Name
             ItmUtils.releaseIdForTrunkInterfaceName(interfaceName,
                     new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());

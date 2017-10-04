@@ -183,7 +183,7 @@ public class ItmTunnelAggregationHelper {
 
     private void updateTunnelAggregationGroup(InterfaceParentEntry parentEntry) {
         String logicTunnelName = parentEntry.getParentInterface();
-        InternalTunnel logicInternalTunnel = ItmUtils.itmCache.getInternalTunnel(logicTunnelName);
+        InternalTunnel logicInternalTunnel = ItmUtils.ITM_CACHE.getInternalTunnel(logicTunnelName);
         if (logicInternalTunnel == null) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: {} not found in internal tunnels list", logicTunnelName);
             return;

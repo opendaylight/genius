@@ -153,11 +153,10 @@ import org.slf4j.LoggerFactory;
 
 public final class ItmUtils {
 
-    public static final String TUNNEL_TYPE_VXLAN = "VXLAN";
     private static final String TUNNEL = "tun";
     private static final IpPrefix DUMMY_IP_PREFIX = new IpPrefix(ITMConstants.DUMMY_PREFIX.toCharArray());
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
-    public static ItmCache itmCache = new ItmCache();
+    public static final ItmCache ITM_CACHE = new ItmCache();
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
@@ -761,13 +760,11 @@ public final class ItmUtils {
         }
         List<BigInteger> existingDpnIds = getDpnIdList(schema.getDpnIds());
         if (isNotEmpty(lstDpnsForAdd)) {
-            //  if (isNotEmpty(existingDpnIds)) {
             List<BigInteger> lstAlreadyExistingDpns = new ArrayList<>(existingDpnIds);
             lstAlreadyExistingDpns.retainAll(lstDpnsForAdd);
             Preconditions.checkArgument(lstAlreadyExistingDpns.isEmpty(),
                     "DPN ID's " + lstAlreadyExistingDpns
                             + " already exists in VTEP schema [" + schemaName + "]");
-            //    }
             if (schema.getTunnelType().equals(TunnelTypeGre.class)) {
                 validateForSingleGreTep(schema.getSchemaName(), lstDpnsForAdd, itmProvider.getAllVtepConfigSchemas());
             }
@@ -907,10 +904,10 @@ public final class ItmUtils {
 
     public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
         List<String> tunnelList = new ArrayList<>();
-        Collection<String> internalInterfaces = itmCache.getAllInternalInterfaces();
+        Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
         if (internalInterfaces == null) {
             updateTunnelsCache(dataBroker);
-            internalInterfaces = itmCache.getAllInternalInterfaces();
+            internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
         }
         LOG.debug("ItmUtils.getTunnelList Cache Internal Interfaces size: {} ", internalInterfaces.size());
         tunnelList.addAll(internalInterfaces);
@@ -1055,7 +1052,7 @@ public final class ItmUtils {
                 return dpn.getTunnelEndPoints() ;
             }
         }
-        return null ;
+        return null;
     }
 
     private static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
@@ -1072,19 +1069,19 @@ public final class ItmUtils {
     }
 
     public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
-        InternalTunnel internalTunnel = itmCache.getInternalTunnel(interfaceName);
+        InternalTunnel internalTunnel = ITM_CACHE.getInternalTunnel(interfaceName);
         if (internalTunnel == null) {
             updateTunnelsCache(broker);
-            internalTunnel = itmCache.getInternalTunnel(interfaceName);
+            internalTunnel = ITM_CACHE.getInternalTunnel(interfaceName);
         }
         return internalTunnel;
     }
 
     public static ExternalTunnel getExternalTunnel(String interfaceName, DataBroker broker) {
-        ExternalTunnel externalTunnel = itmCache.getExternalTunnel(interfaceName);
+        ExternalTunnel externalTunnel = ITM_CACHE.getExternalTunnel(interfaceName);
         if (externalTunnel == null) {
             updateTunnelsCache(broker);
-            externalTunnel = itmCache.getExternalTunnel(interfaceName);
+            externalTunnel = ITM_CACHE.getExternalTunnel(interfaceName);
         }
         return externalTunnel;
     }
@@ -1133,21 +1130,21 @@ public final class ItmUtils {
     private static void updateTunnelsCache(DataBroker broker) {
         List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
         for (InternalTunnel tunnel : internalTunnels) {
-            itmCache.addInternalTunnel(tunnel);
+            ITM_CACHE.addInternalTunnel(tunnel);
         }
         List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
         for (ExternalTunnel tunnel : externalTunnels) {
-            itmCache.addExternalTunnel(tunnel);
+            ITM_CACHE.addExternalTunnel(tunnel);
         }
     }
 
     public static Interface getInterface(
             String name, IInterfaceManager ifaceManager) {
-        Interface result = itmCache.getInterface(name);
+        Interface result = ITM_CACHE.getInterface(name);
         if (result == null) {
             result = ifaceManager.getInterfaceInfoFromConfigDataStore(name);
             if (result != null) {
-                itmCache.addInterface(result);
+                ITM_CACHE.addInterface(result);
             }
         }
         return result;
@@ -1461,13 +1458,13 @@ public final class ItmUtils {
         dstInfoBuilder.setTepIp(ifTunnel.getTunnelDestination());
         srcInfoBuilder.setTepIp(ifTunnel.getTunnelSource());
         // TODO: Add/Improve logic for device type
-        InternalTunnel internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
-        ExternalTunnel externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
+        InternalTunnel internalTunnel = ItmUtils.ITM_CACHE.getInternalTunnel(name);
+        ExternalTunnel externalTunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
         if (internalTunnel == null && externalTunnel == null) {
             // both not present in cache. let us update and try again.
             ItmUtils.updateTunnelsCache(broker);
-            internalTunnel = ItmUtils.itmCache.getInternalTunnel(name);
-            externalTunnel = ItmUtils.itmCache.getExternalTunnel(name);
+            internalTunnel = ItmUtils.ITM_CACHE.getInternalTunnel(name);
+            externalTunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
         }
         if (internalTunnel != null) {
             srcInfoBuilder.setTepDeviceId(internalTunnel.getSourceDPN().toString())
@@ -1476,7 +1473,7 @@ public final class ItmUtils {
                     .setTepDeviceType(TepTypeInternal.class);
             stlBuilder.setTransportType(internalTunnel.getTransportType());
         } else if (externalTunnel != null) {
-            ExternalTunnel tunnel = ItmUtils.itmCache.getExternalTunnel(name);
+            ExternalTunnel tunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
             srcInfoBuilder.setTepDeviceId(tunnel.getSourceDevice())
                     .setTepDeviceType(getDeviceType(tunnel.getSourceDevice()));
             dstInfoBuilder.setTepDeviceId(tunnel.getDestinationDevice())
@@ -1551,7 +1548,7 @@ public final class ItmUtils {
     public static ExternalTunnel getExternalTunnelbyExternalTunnelKey(ExternalTunnelKey externalTunnelKey,
                                              InstanceIdentifier<ExternalTunnel> path,
                                              DataBroker dataBroker) {
-        ExternalTunnel exTunnel = itmCache.getExternalTunnelKeyToExternalTunnels().get(externalTunnelKey);
+        ExternalTunnel exTunnel = ITM_CACHE.getExternalTunnelKeyToExternalTunnels().get(externalTunnelKey);
         if (exTunnel == null) {
             Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
             if (ext.isPresent()) {

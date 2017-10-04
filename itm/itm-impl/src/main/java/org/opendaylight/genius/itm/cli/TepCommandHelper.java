@@ -516,10 +516,10 @@ public class TepCommandHelper {
             Collection<String> cacheContent = null;
             switch (cacheName) {
                 case ITMConstants.INTERNAL_TUNNEL_CACHE_NAME:
-                    cacheContent = ItmUtils.itmCache.getAllInternalInterfaces();
+                    cacheContent = ItmUtils.ITM_CACHE.getAllInternalInterfaces();
                     break;
                 case ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME:
-                    cacheContent = ItmUtils.itmCache.getAllExternalInterfaces();
+                    cacheContent = ItmUtils.ITM_CACHE.getAllExternalInterfaces();
                     break;
                 default:
                     cacheContent = null;
