@@ -25,6 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.concurrent.GuardedBy;
 import org.opendaylight.infrautils.utils.concurrent.LoggingThreadUncaughtExceptionHandler;
+import org.opendaylight.infrautils.utils.concurrent.LoggingUncaughtThreadDeathContextRunnable;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,16 +228,17 @@ public class DataStoreJobCoordinator {
      * RollbackTask is used to execute the RollbackCallable provided by the
      * application in the eventuality of a failure.
      */
-    private class RollbackTask implements Runnable {
+    private class RollbackTask extends LoggingUncaughtThreadDeathContextRunnable {
         private final JobEntry jobEntry;
 
         RollbackTask(JobEntry jobEntry) {
+            super(LOG, jobEntry::toString);
             this.jobEntry = jobEntry;
         }
 
         @Override
         @SuppressWarnings("checkstyle:IllegalCatch")
-        public void run() {
+        public void runWithUncheckedExceptionLogging() {
             RollbackCallable callable = jobEntry.getRollbackWorker();
             callable.setFutures(jobEntry.getFutures());
             List<ListenableFuture<Void>> futures = null;
@@ -261,17 +263,18 @@ public class DataStoreJobCoordinator {
     /**
      * Execute the MainWorker callable.
      */
-    private class MainTask implements Runnable {
+    private class MainTask extends LoggingUncaughtThreadDeathContextRunnable {
         private static final int LONG_JOBS_THRESHOLD = 1000; // MS
         private final JobEntry jobEntry;
 
         MainTask(JobEntry jobEntry) {
+            super(LOG, jobEntry::toString);
             this.jobEntry = jobEntry;
         }
 
         @Override
         @SuppressWarnings("checkstyle:illegalcatch")
-        public void run() {
+        public void runWithUncheckedExceptionLogging() {
             List<ListenableFuture<Void>> futures = null;
             long jobStartTimestamp = System.currentTimeMillis();
             LOG.trace("Running job {}", jobEntry.getKey());
