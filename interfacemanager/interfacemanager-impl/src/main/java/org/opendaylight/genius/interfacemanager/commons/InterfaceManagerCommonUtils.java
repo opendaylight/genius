@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -367,9 +368,8 @@ public final class InterfaceManagerCommonUtils {
                                      IdManagerService idManager, List<ListenableFuture<Void>> futures,
                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                                      .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        WriteTransaction interfaceOperShardTransaction = dataBroker.newWriteOnlyTransaction();
-        addStateEntry(interfaceName, dataBroker, interfaceOperShardTransaction, idManager, futures, ifState);
-        futures.add(interfaceOperShardTransaction.submit());
+        futures.add(new ManagedNewTransactionRunnerImpl(dataBroker).callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> addStateEntry(interfaceName, dataBroker, tx, idManager, futures, ifState)));
     }
 
     public static void addStateEntry(String interfaceName, DataBroker dataBroker,

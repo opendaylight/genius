@@ -28,6 +28,8 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
@@ -91,6 +93,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
     private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
@@ -102,6 +105,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
             final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
@@ -401,10 +405,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
-                true);
-        writeTransaction.submit();
+        // TODO Do something with the future...
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
+                    WriteTransaction.CREATE_MISSING_PARENTS));
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
@@ -449,7 +453,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo) {
-        IfmUtil.unbindService(dataBroker, interfaceName,
+        IfmUtil.unbindService(txRunner, interfaceName,
                 FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
     }
 
@@ -712,9 +716,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                     return null;
                 }
             }
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            IfmUtil.updateInterfaceParentRef(writeTransaction, interfaceName, parentInterfaceName);
-            return Collections.singletonList(writeTransaction.submit());
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> IfmUtil.updateInterfaceParentRef(tx, interfaceName, parentInterfaceName)));
         }
     }
 
