@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -77,9 +78,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FlowBasedServicesUtils {
+public final class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
     private static final int DEFAULT_DISPATCHER_PRIORITY = 10;
+
+    private FlowBasedServicesUtils() {
+    }
 
     public enum ServiceMode {
         INGRESS, EGRESS
@@ -423,6 +427,13 @@ public class FlowBasedServicesUtils {
 
     public static void unbindDefaultEgressDispatcherService(DataBroker dataBroker, String interfaceName) {
         IfmUtil.unbindService(dataBroker, interfaceName,
+                buildServiceId(interfaceName, ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                        NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), ServiceModeEgress.class));
+    }
+
+    public static void unbindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            String interfaceName) {
+        IfmUtil.unbindService(txRunner, interfaceName,
                 buildServiceId(interfaceName, ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                         NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), ServiceModeEgress.class));
     }

@@ -27,6 +27,8 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -98,7 +100,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IfmUtil {
+public final class IfmUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final int INVALID_ID = 0;
@@ -547,13 +549,17 @@ public class IfmUtil {
 
     public static void unbindService(DataBroker dataBroker, String interfaceName,
             InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
+        unbindService(new ManagedNewTransactionRunnerImpl(dataBroker), interfaceName, boundServicesInstanceIdentifier);
+    }
+
+    public static void unbindService(ManagedNewTransactionRunner txRunner, String interfaceName,
+            InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         LOG.info("Unbinding Service from : {}", interfaceName);
         DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
-        dataStoreJobCoordinator.enqueueJob(interfaceName, () -> {
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
-            return Collections.singletonList(writeTransaction.submit());
-        });
+        dataStoreJobCoordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                    tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier)
+                )));
     }
 
     public static List<TerminationPoint> getTerminationPointsOnBridge(DataBroker dataBroker, BigInteger dpnId) {

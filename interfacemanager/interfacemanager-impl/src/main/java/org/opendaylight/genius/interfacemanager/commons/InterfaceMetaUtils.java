@@ -11,8 +11,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
@@ -52,10 +54,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfaceMetaUtils {
+public final class InterfaceMetaUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceMetaUtils.class);
     private static ConcurrentHashMap<BigInteger, BridgeEntry> bridgeEntryMap = new ConcurrentHashMap();
     private static ConcurrentHashMap<BigInteger, BridgeRefEntry> bridgeRefEntryMap = new ConcurrentHashMap();
+
+    private InterfaceMetaUtils() {
+    }
 
     public static InstanceIdentifier<BridgeRefEntry> getBridgeRefEntryIdentifier(BridgeRefEntryKey bridgeRefEntryKey) {
         InstanceIdentifier.InstanceIdentifierBuilder<BridgeRefEntry> bridgeRefEntryInstanceIdentifierBuilder =
@@ -303,10 +308,10 @@ public class InterfaceMetaUtils {
     }
 
     public static String getInterfaceForTunnelInstanceIdentifier(String tunnelInstanceId,
-                                                                 DataBroker dataBroker) {
+                                                                 ReadTransaction tx) throws ReadFailedException {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).toJavaUtil().map(
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().toJavaUtil().map(
                 TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
