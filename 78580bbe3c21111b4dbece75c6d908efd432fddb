@@ -39,6 +39,24 @@
       "revId": "78580bbe3c21111b4dbece75c6d908efd432fddb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c2d11acf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-05T17:59:22Z",
+      "side": 1,
+      "message": "No, I just left them in if they are used (during the transition). In this case the new variant is unused in this patch, I should drop it or extend the patch to use it...",
+      "parentUuid": "9a245df4_62094e95",
+      "revId": "78580bbe3c21111b4dbece75c6d908efd432fddb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
