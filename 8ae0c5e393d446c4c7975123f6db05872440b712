@@ -16,6 +16,24 @@
       "revId": "8ae0c5e393d446c4c7975123f6db05872440b712",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1f90a9eb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-05T15:17:44Z",
+      "side": 1,
+      "message": "exactly, this is a pure clean-up type change which should not have any impact, as per the Commit Message, copy/paste:\n\nThis is JUST a clean-up, to make this class more easy to understand. This should (AFAIK) NOT change anything in its behaviour, so safe.\n\nThis is also to align it with e.g. https://git.opendaylight.org/gerrit/#/c/63505/ (and perhaps more changed like that to come) - seeing the exact same ExecutorService used in both IMHO makes it clearer how similar this old and that new async DTCL are.",
+      "parentUuid": "9a245df4_1f46e9bf",
+      "revId": "8ae0c5e393d446c4c7975123f6db05872440b712",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
