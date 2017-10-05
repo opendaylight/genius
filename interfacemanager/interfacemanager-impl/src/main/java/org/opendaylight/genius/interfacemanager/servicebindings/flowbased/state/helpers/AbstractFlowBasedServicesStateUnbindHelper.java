@@ -11,6 +11,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -30,6 +32,7 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
     private static final Logger LOG = LoggerFactory.getLogger(AbstractFlowBasedServicesStateUnbindHelper.class);
 
     protected final DataBroker dataBroker;
+    protected final ManagedNewTransactionRunner txRunner;
 
     /**
      * Create instance.
@@ -37,6 +40,7 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
      */
     public AbstractFlowBasedServicesStateUnbindHelper(final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @Override

@@ -16,6 +16,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
@@ -32,12 +34,12 @@ import org.slf4j.LoggerFactory;
 public class HwVTEPTunnelsStateListener
         extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public HwVTEPTunnelsStateListener(final DataBroker dataBroker) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -95,7 +97,7 @@ public class HwVTEPTunnelsStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(dataBroker, instanceIdentifier, tunnelsOld);
+            return HwVTEPInterfaceStateUpdateHelper.updatePhysicalSwitch(txRunner, instanceIdentifier, tunnelsOld);
         }
     }
 
@@ -110,7 +112,7 @@ public class HwVTEPTunnelsStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPInterfaceStateUpdateHelper.startBfdMonitoring(dataBroker, instanceIdentifier, tunnelsNew);
+            return HwVTEPInterfaceStateUpdateHelper.startBfdMonitoring(txRunner, instanceIdentifier, tunnelsNew);
         }
     }
 
@@ -125,7 +127,7 @@ public class HwVTEPTunnelsStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPInterfaceStateRemoveHelper.removeExternalTunnel(dataBroker, instanceIdentifier);
+            return HwVTEPInterfaceStateRemoveHelper.removeExternalTunnel(txRunner, instanceIdentifier);
         }
     }
 }
