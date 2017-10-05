@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_5f2b4182",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunner.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-10-05T12:30:10Z",
+      "side": 1,
+      "message": "i think retries should be optional, and apps should be allowed to pass this. In many places we use DJC were DJC retries itself.",
+      "revId": "faa896299e5b775d46782dfec7b93910cee0443b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
