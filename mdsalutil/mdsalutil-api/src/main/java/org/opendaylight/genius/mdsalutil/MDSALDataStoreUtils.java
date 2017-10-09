@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -19,7 +20,10 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
-public class MDSALDataStoreUtils {
+public final class MDSALDataStoreUtils {
+
+    private MDSALDataStoreUtils() {
+    }
 
     /**
      * Deprecated read.
@@ -41,7 +45,7 @@ public class MDSALDataStoreUtils {
            FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
+        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
     }
 
     public static <T extends DataObject> void asyncUpdate(final DataBroker broker,
@@ -49,14 +53,13 @@ public class MDSALDataStoreUtils {
             FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
+        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
     }
 
     public static <T extends DataObject> void asyncRemove(final DataBroker broker,
             final LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback);
+        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
     }
-
 }
