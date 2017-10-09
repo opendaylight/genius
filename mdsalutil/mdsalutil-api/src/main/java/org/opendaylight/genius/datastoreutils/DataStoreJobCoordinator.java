@@ -11,6 +11,7 @@ package org.opendaylight.genius.datastoreutils;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -255,7 +256,7 @@ public class DataStoreJobCoordinator {
             }
 
             ListenableFuture<List<Void>> listenableFuture = Futures.allAsList(futures);
-            Futures.addCallback(listenableFuture, new JobCallback(jobEntry));
+            Futures.addCallback(listenableFuture, new JobCallback(jobEntry), MoreExecutors.directExecutor());
             jobEntry.setFutures(futures);
         }
     }
@@ -293,7 +294,7 @@ public class DataStoreJobCoordinator {
             }
 
             ListenableFuture<List<Void>> listenableFuture = Futures.allAsList(futures);
-            Futures.addCallback(listenableFuture, new JobCallback(jobEntry));
+            Futures.addCallback(listenableFuture, new JobCallback(jobEntry), MoreExecutors.directExecutor());
             jobEntry.setFutures(futures);
         }
 
