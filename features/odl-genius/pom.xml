@@ -13,27 +13,27 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>single-feature-parent</artifactId>
-    <version>1.8.2-SNAPSHOT</version>
+    <version>1.8.2-Carbon</version>
     <relativePath />
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius</artifactId>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.2-Carbon</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: Impls</name>
 
   <!-- TODO Replace all <properties> by dependencyManagement <scope>import of respective upstream project -->
   <properties>
-    <openflowplugin.version>0.4.2-SNAPSHOT</openflowplugin.version>
-    <ovsdb.version>1.4.2-SNAPSHOT</ovsdb.version>
-    <mdsal.model.version>0.10.2-SNAPSHOT</mdsal.model.version>
-    <mdsal.version>1.5.2-SNAPSHOT</mdsal.version>
-    <restconf.version>1.5.2-SNAPSHOT</restconf.version>
-    <yangtools.version>1.1.2-SNAPSHOT</yangtools.version>
-    <dluxapps.version>0.5.2-SNAPSHOT</dluxapps.version>
-    <liblldp.version>0.12.2-SNAPSHOT</liblldp.version>
-    <infrautils.version>1.1.2-SNAPSHOT</infrautils.version>
+    <openflowplugin.version>0.4.2-Carbon</openflowplugin.version>
+    <ovsdb.version>1.4.2-Carbon</ovsdb.version>
+    <mdsal.model.version>0.10.2-Carbon</mdsal.model.version>
+    <mdsal.version>1.5.2-Carbon</mdsal.version>
+    <restconf.version>1.5.2-Carbon</restconf.version>
+    <yangtools.version>1.1.2-Carbon</yangtools.version>
+    <dluxapps.version>0.5.2-Carbon</dluxapps.version>
+    <liblldp.version>0.12.2-Carbon</liblldp.version>
+    <infrautils.version>1.1.2-Carbon</infrautils.version>
   </properties>
 
   <dependencyManagement>
