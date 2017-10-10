@@ -18,6 +18,12 @@ import org.opendaylight.genius.utils.cache.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Deprecated.
+ *
+ * @deprecated Use {@link EntityOwnershipUtils} instead.
+ */
+@Deprecated
 public final class EntityOwnerUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(EntityOwnerUtils.class);
