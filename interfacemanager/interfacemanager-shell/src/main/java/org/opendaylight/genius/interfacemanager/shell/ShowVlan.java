@@ -34,7 +34,7 @@ public class ShowVlan extends OsgiCommandSupport {
             IfmCLIUtil.showVlanHeaderOutput(session);
         }
         for (Interface iface : vlanList) {
-            InterfaceInfo ifaceState = interfaceManager.getInterfaceInfoFromOperationalDataStore(iface.getName());
+            InterfaceInfo ifaceState = interfaceManager.getInterfaceInfoFromOperationalDSCache(iface.getName());
             IfmCLIUtil.showVlanOutput(ifaceState, iface, session);
         }
         return null;
