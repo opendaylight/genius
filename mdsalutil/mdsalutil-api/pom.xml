@@ -50,6 +50,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>sal-binding-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-binding-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>openflowplugin-extension-nicira</artifactId>
       <version>${openflowplugin.version}</version>
@@ -77,6 +81,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>inject</artifactId>
+      <version>${genius.infrautils.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>jobcoordinator-api</artifactId>
       <version>${genius.infrautils.version}</version>
     </dependency>
     <dependency>

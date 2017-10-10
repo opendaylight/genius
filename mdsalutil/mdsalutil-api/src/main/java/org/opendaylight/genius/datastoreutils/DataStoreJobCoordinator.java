@@ -23,8 +23,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
-
 import javax.annotation.concurrent.GuardedBy;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.LoggingThreadUncaughtExceptionHandler;
 import org.opendaylight.infrautils.utils.concurrent.LoggingUncaughtThreadDeathContextRunnable;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *             (must) {@literal @}Inject into your class using it.
  */
 @Deprecated
-public class DataStoreJobCoordinator {
+public class DataStoreJobCoordinator implements JobCoordinator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataStoreJobCoordinator.class);
 
@@ -92,8 +92,9 @@ public class DataStoreJobCoordinator {
         scheduledExecutorService.shutdownNow();
     }
 
+    @Override
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker) {
-        enqueueJob(key, mainWorker, null, 0);
+        enqueueJob(key, mainWorker, (RollbackCallable)null, 0);
     }
 
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker,
@@ -101,8 +102,31 @@ public class DataStoreJobCoordinator {
         enqueueJob(key, mainWorker, rollbackWorker, 0);
     }
 
+    @Override
+    public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker,
+            org.opendaylight.infrautils.jobcoordinator.RollbackCallable rollbackWorker) {
+        enqueueJob(key, mainWorker, new RollbackCallable() {
+            @Override
+            public List<ListenableFuture<Void>> call() throws Exception {
+                return rollbackWorker.call();
+            }
+        }, 0);
+    }
+
+    @Override
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker, int maxRetries) {
-        enqueueJob(key, mainWorker, null, maxRetries);
+        enqueueJob(key, mainWorker, (RollbackCallable)null, maxRetries);
+    }
+
+    @Override
+    public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker,
+            org.opendaylight.infrautils.jobcoordinator.RollbackCallable rollbackWorker, int maxRetries) {
+        enqueueJob(key, mainWorker, new RollbackCallable() {
+            @Override
+            public List<ListenableFuture<Void>> call() throws Exception {
+                return rollbackWorker.call();
+            }
+        }, maxRetries);
     }
 
     /**
