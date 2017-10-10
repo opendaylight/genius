@@ -23,6 +23,12 @@ import org.opendaylight.yangtools.yang.data.api.YangInstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Deprecated.
+ *
+ * @deprecated Use {@link EntityOwnershipUtils} instead.
+ */
+@Deprecated
 public class ClusteringUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClusteringUtils.class);
