@@ -34,16 +34,24 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
     }
 
-    protected DataBroker getDataBroker() {
-        return dataBroker;
-    }
-
     @Override
     @PreDestroy
-    public final void close() {
+    public void close() {
         // ^^^ final to avoid @Override without @PreDestroy
         // JSR 250: "the method is called unless a subclass overrides the method without repeating the annotation"
+        shutdown();
         dataChangeListenerRegistration.close();
+    }
+
+    /**
+     * Sub-classes can override this method to add their own close behaviours.
+     */
+    protected void shutdown() {
+        // Nothing by default
+    }
+
+    protected DataBroker getDataBroker() {
+        return dataBroker;
     }
 }
 
