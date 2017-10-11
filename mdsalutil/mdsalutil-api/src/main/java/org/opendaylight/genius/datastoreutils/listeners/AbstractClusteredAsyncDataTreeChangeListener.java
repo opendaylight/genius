@@ -52,4 +52,8 @@ public abstract class AbstractClusteredAsyncDataTreeChangeListener<T extends Dat
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
         executorService.execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
     }
+
+    protected ExecutorService getExecutorService() {
+        return executorService;
+    }
 }
