@@ -16,6 +16,24 @@
       "revId": "544c984265a1c17f82f41e0a4cb6b6a4910591b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9203deb7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-11T18:46:00Z",
+      "side": 1,
+      "message": "yes - it\u0027s the same implementation under the hood - just a different external API. Actually CDS was changed to implement the MDSAL APIs a while ago. The controller API is just an adapter on top of it.",
+      "parentUuid": "9a245df4_72690a8b",
+      "revId": "544c984265a1c17f82f41e0a4cb6b6a4910591b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
