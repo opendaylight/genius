@@ -9,7 +9,6 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,11 +27,11 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -53,10 +52,13 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-    public FlowBasedServicesConfigListener(final DataBroker dataBroker) {
+    public FlowBasedServicesConfigListener(final DataBroker dataBroker,
+            final EntityOwnershipUtils entityOwnershipUtils) {
         this.dataBroker = dataBroker;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -128,7 +130,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     protected void remove(ServicesInfoKey serviceKey, BoundServices boundServiceOld,
             List<BoundServices> boundServicesList) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
         LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
@@ -153,7 +156,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     protected void add(ServicesInfoKey serviceKey, BoundServices boundServicesNew,
             List<BoundServices> boundServicesList) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
         LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
