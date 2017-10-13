@@ -14,7 +14,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                odl:type="default"/>
 
     <reference id="entityOwnershipService"
-               interface="org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService"/>
+               interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService"/>
 
     <reference id="notificationService"
                interface="org.opendaylight.controller.md.sal.binding.api.NotificationService"/>
