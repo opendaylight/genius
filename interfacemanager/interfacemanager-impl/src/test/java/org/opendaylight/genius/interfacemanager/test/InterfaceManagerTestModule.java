@@ -12,8 +12,6 @@ import static org.mockito.Mockito.mock;
 import java.net.UnknownHostException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
-import org.opendaylight.controller.md.sal.common.api.clustering.testutil.TestEntityOwnershipService;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
@@ -38,6 +36,7 @@ import org.opendaylight.genius.lockmanager.LockManager;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
@@ -74,7 +73,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
 
-        EntityOwnershipService entityOwnershipService = TestEntityOwnershipService.newInstance();
+        EntityOwnershipService entityOwnershipService = mock(EntityOwnershipService.class);
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
 
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));
