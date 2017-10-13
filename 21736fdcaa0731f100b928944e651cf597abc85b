@@ -52,6 +52,24 @@
       "revId": "21736fdcaa0731f100b928944e651cf597abc85b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_452cfdab",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-13T11:17:43Z",
+      "side": 1,
+      "message": "Ah the class is package-protected... OK, but I suggest you add a comment to that effect (both at the top of the class, so no one changes it to non-package-protected, and on the method).",
+      "parentUuid": "9a245df4_c540ed58",
+      "revId": "21736fdcaa0731f100b928944e651cf597abc85b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
