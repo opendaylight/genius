@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +26,8 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -61,15 +60,18 @@ public class InterfaceInventoryStateListener
     private final IdManagerService idManager;
     private final IMdsalApiManager mdsalApiManager;
     private final AlivenessMonitorService alivenessMonitorService;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
+            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
+            final EntityOwnershipUtils entityOwnershipUtils) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -87,7 +89,8 @@ public class InterfaceInventoryStateListener
     @Override
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
@@ -112,7 +115,8 @@ public class InterfaceInventoryStateListener
     @Override
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
             FlowCapableNodeConnector fcNodeConnectorNew) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
@@ -130,7 +134,8 @@ public class InterfaceInventoryStateListener
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
-        if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
