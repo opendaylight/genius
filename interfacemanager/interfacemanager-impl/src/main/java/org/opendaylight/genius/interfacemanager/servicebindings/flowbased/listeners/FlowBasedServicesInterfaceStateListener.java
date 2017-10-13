@@ -19,11 +19,11 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -41,11 +41,14 @@ public class FlowBasedServicesInterfaceStateListener
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
     private final DataBroker dataBroker;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-    public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker) {
+    public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
+            final EntityOwnershipUtils entityOwnershipUtils) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -64,7 +67,8 @@ public class FlowBasedServicesInterfaceStateListener
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
         if (Other.class.equals(interfaceStateOld.getType())
-                || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+                || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                        IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 
@@ -86,7 +90,8 @@ public class FlowBasedServicesInterfaceStateListener
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
         if (interfaceStateNew.getType() == null
-            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_SERVICE_BINDING_ENTITY)) {
+            || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                    IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 

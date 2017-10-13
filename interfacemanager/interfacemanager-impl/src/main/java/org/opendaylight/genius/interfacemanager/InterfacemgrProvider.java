@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
@@ -37,12 +36,15 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.mdsal.eos.binding.api.Entity;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -92,6 +94,7 @@ import org.slf4j.LoggerFactory;
 public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
     private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
+
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
@@ -100,6 +103,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
+    private EntityOwnershipCandidateRegistration configEntityCandidate;
+    private EntityOwnershipCandidateRegistration bindingEntityCandidate;
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
@@ -117,7 +122,17 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             INTERFACE_STATUS_MONITOR.registerMbean();
             createIdPool();
-            IfmClusterUtils.registerEntityForOwnership(this, this.entityOwnershipService);
+
+            try {
+                configEntityCandidate = entityOwnershipService.registerCandidate(
+                        new Entity(IfmConstants.INTERFACE_CONFIG_ENTITY, IfmConstants.INTERFACE_CONFIG_ENTITY));
+                bindingEntityCandidate = entityOwnershipService.registerCandidate(
+                        new Entity(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY));
+            } catch (CandidateAlreadyRegisteredException e) {
+                LOG.error("Failed to register entity {} with EntityOwnershipService", e.getEntity());
+            }
+
             BatchingUtils.registerWithBatchManager(this.dataBroker);
             this.ifaceToTpMap = new ConcurrentHashMap<>();
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
@@ -135,6 +150,15 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @PreDestroy
     public void close() throws Exception {
         INTERFACE_STATUS_MONITOR.unregisterMbean();
+
+        if (configEntityCandidate != null) {
+            configEntityCandidate.close();
+        }
+
+        if (bindingEntityCandidate != null) {
+            bindingEntityCandidate.close();
+        }
+
         LOG.info("InterfacemgrProvider Closed");
     }
 

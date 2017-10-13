@@ -26,7 +26,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                interface="org.opendaylight.controller.md.sal.binding.api.DataBroker" />
 
     <reference id="entityOwnershipService"
-               interface="org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService" />
+               interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService" />
 
     <reference id="iMdsalApiManager"
                interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
@@ -39,4 +39,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <service ref="interfacemgrProvider"
              interface="org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager" />
 
+    <bean id="entityOwnershipUtils" class="org.opendaylight.genius.utils.clustering.EntityOwnershipUtils">
+      <argument ref="entityOwnershipService"/>
+    </bean>
 </blueprint>
