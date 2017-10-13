@@ -51,6 +51,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>ietf-interfaces</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-binding-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>mdsalutil-api</artifactId>
       <version>${genius.mdsalutil.version}</version>
