@@ -16,8 +16,9 @@ import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListen
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -30,10 +31,12 @@ public class InterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
     private final ManagedNewTransactionRunner txRunner;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-    public InterfaceStateListener(DataBroker dataBroker) {
+    public InterfaceStateListener(DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.entityOwnershipUtils = entityOwnershipUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -58,7 +61,8 @@ public class InterfaceStateListener
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
         InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         if (!Tunnel.class.equals(interfaceStateNew.getType())
-            || !IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                    IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
         LOG.debug("Received Tunnel state add event for {}", interfaceStateNew.getName());
