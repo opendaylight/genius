@@ -20,7 +20,7 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -37,13 +37,14 @@ public class TerminationPointStateListener extends
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private final DataBroker dataBroker;
     private final InterfacemgrProvider interfaceMgrProvider;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-
-    public TerminationPointStateListener(DataBroker dataBroker,
-                                         final InterfacemgrProvider interfaceMgrProvider) {
+    public TerminationPointStateListener(DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
+            final EntityOwnershipUtils entityOwnershipUtils) {
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
     }
 
@@ -104,7 +105,8 @@ public class TerminationPointStateListener extends
         // skip parent-refs updation for interfaces with external-id for tunnels
         if (!org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils.isInterfaceTypeTunnel(
             tpNew.getInterfaceType())) {
-            if (!IfmClusterUtils.isEntityOwner(IfmClusterUtils.INTERFACE_CONFIG_ENTITY)) {
+            if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                    IfmConstants.INTERFACE_CONFIG_ENTITY)) {
                 return;
             }
             String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName, nodeIid);
@@ -138,7 +140,8 @@ public class TerminationPointStateListener extends
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, terminationPointNew);
+            return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, entityOwnershipUtils,
+                    terminationPointNew);
         }
     }
 

@@ -23,9 +23,9 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -49,17 +49,19 @@ public class InterfaceConfigListener
     private final AlivenessMonitorService alivenessMonitorService;
     private final IMdsalApiManager mdsalApiManager;
     private final InterfacemgrProvider interfaceMgrProvider;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
             final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
-            final AlivenessMonitorService alivenessMonitorService) {
+            final AlivenessMonitorService alivenessMonitorService, final EntityOwnershipUtils entityOwnershipUtils) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.mdsalApiManager = mdsalApiManager;
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.alivenessMonitorService = alivenessMonitorService;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -87,12 +89,16 @@ public class InterfaceConfigListener
         return;
     }
 
+    private void runOnlyInOwnerNode(String jobDesc, Runnable job) {
+        entityOwnershipUtils.runOnlyInOwnerNode(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY, DataStoreJobCoordinator.getInstance(), jobDesc, job);
+    }
+
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
         InterfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+        runOnlyInOwnerNode("Remove Config Interface If Entity Owner", () -> {
             LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
-            String ifName = interfaceOld.getName();
             ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
             if (parentRefs == null
                     || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
@@ -106,13 +112,13 @@ public class InterfaceConfigListener
             String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
                     : parentRefs.getParentInterface();
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        });
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
         InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+        runOnlyInOwnerNode("Update Config Interface If Entity Owner", () -> {
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs == null || parentRefs.getParentInterface() == null
@@ -135,13 +141,13 @@ public class InterfaceConfigListener
             String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
 
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        });
     }
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
         InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
-        IfmClusterUtils.runOnlyInLeaderNode(() -> {
+        runOnlyInOwnerNode("Add Config Interface If Entity Owner", () -> {
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
             if (parentRefs == null || parentRefs.getParentInterface() == null) {
@@ -162,7 +168,7 @@ public class InterfaceConfigListener
                     interfaceNew.getName());
             String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
             coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
-        }, IfmClusterUtils.INTERFACE_CONFIG_ENTITY);
+        });
     }
 
     private String getSynchronizationKey(Interface theInterface, ParentRefs theParentRefs) {
