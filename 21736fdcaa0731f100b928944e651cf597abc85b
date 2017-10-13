@@ -16,6 +16,24 @@
       "revId": "21736fdcaa0731f100b928944e651cf597abc85b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_257749d6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-13T11:07:02Z",
+      "side": 1,
+      "message": "Specific listeners will not inherit directly from this class, but from their children classes, that have the @PreDestroy and call this method via super.close().",
+      "parentUuid": "9a245df4_e56d3106",
+      "revId": "21736fdcaa0731f100b928944e651cf597abc85b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
