@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_a5633919",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-13T10:55:39Z",
+      "side": 1,
+      "message": "As pointed out in https://git.opendaylight.org/gerrit/64182 this needs to be shut down in a close method in this class.",
+      "revId": "8a695c15e4a19f85a1c9f461ca219db561ee50c6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
