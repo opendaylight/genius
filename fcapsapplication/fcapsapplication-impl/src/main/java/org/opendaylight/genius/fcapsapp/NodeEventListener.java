@@ -17,12 +17,12 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
-import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.genius.fcapsapp.alarm.AlarmAgent;
 import org.opendaylight.genius.fcapsapp.performancecounter.NodeUpdateCounter;
 import org.opendaylight.genius.fcapsapp.performancecounter.PacketInCounterHandler;
+import org.opendaylight.mdsal.eos.binding.api.Entity;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -130,7 +130,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
      */
     public boolean isNodeOwner(String nodeId) {
         Entity entity = new Entity("openflow", nodeId);
-        // EntityOwnershipState::isOwner never returns null and is thus safe for transform()
-        return this.entityOwnershipService.getOwnershipState(entity).transform(EntityOwnershipState::isOwner).or(false);
+        return entityOwnershipService.getOwnershipState(entity).transform(
+            state -> state == EntityOwnershipState.IS_OWNER).or(false);
     }
 }

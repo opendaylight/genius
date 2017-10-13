@@ -19,11 +19,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.common.api.clustering.Entity;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
-import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipState;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
+import org.opendaylight.mdsal.eos.binding.api.Entity;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -173,8 +173,8 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
      */
     public boolean isNodeOwner(String nodeId) {
         Entity entity = new Entity("openflow", nodeId);
-        // EntityOwnershipState::isOwner never returns null and is thus safe for transform()
-        return this.entityOwnershipService.getOwnershipState(entity).transform(EntityOwnershipState::isOwner).or(false);
+        return entityOwnershipService.getOwnershipState(entity).transform(
+            state -> state == EntityOwnershipState.IS_OWNER).or(false);
     }
 
     private boolean compareInstanceIdentifierTail(InstanceIdentifier<?> identifier1,
