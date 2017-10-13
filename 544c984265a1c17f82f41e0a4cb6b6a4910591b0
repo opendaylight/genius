@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_dbf8cae7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-13T16:20:11Z",
+      "side": 1,
+      "message": "However if the consensus is to not have DataStoreJobCoordinator implement JobCoordinator then I\u0027m OK with that. Either way I\u0027d like to get this patch reviewed/merged asap as I have a lot of other patches dependent on it.",
+      "parentUuid": "9a245df4_3b964695",
+      "revId": "544c984265a1c17f82f41e0a4cb6b6a4910591b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_72690a8b",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
         "patchSetId": 5
