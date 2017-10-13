@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_e56d3106",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-13T10:57:29Z",
+      "side": 1,
+      "message": "Shouldn’t this still be @PreDestroy, for cases where a sub-class doesn’t override close()?",
+      "revId": "21736fdcaa0731f100b928944e651cf597abc85b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
