@@ -44,8 +44,8 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
     }
 
     @Override
-    protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                             Interface ifaceState) {
+    public void unbindServicesFromInterface(List<ListenableFuture<Void>> futures, Interface ifaceState,
+                                               List<BoundServices> allServices) {
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             List<String> ofportIds = ifaceState.getLowerLayerIf();
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
@@ -65,8 +65,22 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
     }
 
     @Override
-    public void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                              String ifaceName) {
-        LOG.info("unbindServicesOnInterfaceType Egress - WIP");
+    public void unbindServicesFromInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                                String ifaceName, List<BoundServices> allServices) {
+
+        LOG.info("unbinding all egress services for interface type: {}", ifaceName);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
+            allServices.remove(0);
+            FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, tx, ifaceName,
+                    NwConstants.DEFAULT_SERVICE_INDEX);
+            for (BoundServices boundService : allServices) {
+                FlowBasedServicesUtils.removeTypeBasedEgressDispatcherFlows(dpnId, tx, ifaceName,
+                        boundService.getServicePriority());
+            }
+        }));
+        // remove the default egress service bound on the interface, once all
+        // flows are removed
+        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceName);
     }
 }
