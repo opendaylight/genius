@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
@@ -78,6 +81,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private static final Logger LOG = LoggerFactory.getLogger(MDSALManager.class);
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     private final PacketProcessingService packetProcessingService;
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
@@ -99,6 +103,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @Inject
     public MDSALManager(DataBroker db, PacketProcessingService pktProcService) {
         this.dataBroker = db;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(db);
         this.packetProcessingService = pktProcService;
         singleTxDb = new SingleTransactionDataBroker(dataBroker);
         LOG.info("MDSAL Manager Initialized ");
@@ -286,6 +291,40 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         BigInteger dpId = flowEntity.getDpnId();
         short tableId = flowEntity.getTableId();
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
+        deleteFlow(dpId, tableId, flowKey, tx);
+    }
+
+    @Override
+    public ListenableFuture<Void> removeFlow(BigInteger dpId, short tableId, FlowId flowId) {
+        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> deleteFlow(dpId, tableId, new FlowKey(flowId), tx));
+
+        Futures.addCallback(future, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(final Void result) {
+                // Committed successfully
+                LOG.debug("Delete Flow -- Committed successfully");
+            }
+
+            @Override
+            public void onFailure(final Throwable throwable) {
+                // Transaction failed
+                if (throwable instanceof OptimisticLockFailedException) {
+                    // Failed because of concurrent transaction modifying same
+                    // data
+                    LOG.error("Delete Flow -- Failed because of concurrent transaction modifying same data");
+                } else {
+                    // Some other type of TransactionCommitFailedException
+                    LOG.error("Delete Flow -- Some other type of TransactionCommitFailedException", throwable);
+                }
+            }
+
+        });
+
+        return future;
+    }
+
+    private void deleteFlow(BigInteger dpId, short tableId, FlowKey flowKey, WriteTransaction tx) {
         if (flowExists(dpId, tableId, flowKey)) {
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
@@ -305,12 +344,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     public void deleteFlowInternal(BigInteger dpId, Flow flow, WriteTransaction tx) {
         FlowKey flowKey = new FlowKey(flow.getId());
         short tableId = flow.getTableId();
-        if (flowExists(dpId, tableId, flowKey)) {
-            InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-        } else {
-            LOG.debug("Flow {} does not exist for dpn {}", flowKey, dpId);
-        }
+        deleteFlow(dpId, tableId, flowKey, tx);
     }
 
     protected CheckedFuture<Void, TransactionCommitFailedException> removeGroupInternal(BigInteger dpnId,
