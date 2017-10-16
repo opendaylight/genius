@@ -28,8 +28,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.re
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,23 +122,8 @@ public class FlowBasedServicesInterfaceStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
-                serviceMode, dataBroker);
-            if (servicesInfo == null) {
-                LOG.trace("service info is null for interface {}", iface.getName());
-                return null;
-            }
-
-            List<BoundServices> allServices = servicesInfo.getBoundServices();
-            if (allServices == null || allServices.isEmpty()) {
-                LOG.trace("bound services is empty for interface {}", iface.getName());
-                return null;
-            }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
-                FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
-            flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
+            flowBasedServicesStateAddable.bindServices(futures, iface, iface.getName(), serviceMode, null);
             return futures;
         }
     }
@@ -160,7 +143,7 @@ public class FlowBasedServicesInterfaceStateListener
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateRemovable.unbindServices(futures, iface, serviceMode);
+            flowBasedServicesStateRemovable.unbindServices(futures, iface, iface.getName(), serviceMode, null);
             return futures;
         }
     }

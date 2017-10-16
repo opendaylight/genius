@@ -13,6 +13,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 
 public interface FlowBasedServicesConfigAddable {
+
     void bindService(List<ListenableFuture<Void>> futures, String interfaceName, BoundServices boundServiceNew,
                      List<BoundServices> allServices, Class<? extends ServiceModeBase> serviceMode);
 }

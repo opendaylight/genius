@@ -46,8 +46,10 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
     }
 
     @Override
-    protected void unbindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
-                                           List<BoundServices> boundServices, BoundServicesState boundServicesState) {
+    protected void unbindServiceFromInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+                                              List<BoundServices> boundServices,
+                                              BoundServicesState boundServicesState) {
+
         LOG.info("unbinding egress service {} for interface: {}", boundServiceOld.getServiceName(), boundServicesState
             .getInterfaceName());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
@@ -111,8 +113,8 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
     }
 
     @Override
-    protected void unbindServiceOnInterfaceType(List<ListenableFuture<Void>> futures, String interfaceType,
-                                                BoundServices boundServiceOld, List<BoundServices> boundServices) {
+    protected void unbindServiceFromInterfaceType(List<ListenableFuture<Void>> futures, String interfaceType,
+                                                  BoundServices boundServiceOld, List<BoundServices> boundServices) {
 
         LOG.info("type based binding egress service {} for : {}", boundServiceOld.getServiceName(), interfaceType);
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
