@@ -14,8 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 
 public interface FlowBasedServicesStateRemovable {
-    void unbindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
-                        Class<? extends ServiceModeBase> serviceMode);
 
-    void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName);
+    void unbindServices(List<ListenableFuture<Void>> futures, Interface ifaceState, String ifaceName,
+                        Class<? extends ServiceModeBase> serviceMode, BigInteger dpnId);
 }
