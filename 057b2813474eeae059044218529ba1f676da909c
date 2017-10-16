@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_9bf92dcb",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "\"recover\" just like RPC method name IMHO better than \"SRM recover()\" - I\u0027m already adding the postfix in the implementation..",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_db03a5b6",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "\"reinstall\"",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bb0071ab",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "do not do this in Shell commands, just let it propagate, note it \"throws Exception\" ...",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1b2d3d47",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "did you know you do not need this - Karaf does this for free for you on help (or -h, I think) for any command - try!",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fb3149a3",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "just remove all this and just let it propagate",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5b27b564",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "never, ever catch NPE!",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_db1a8516",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "private static",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bb17d1ec",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "final",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7b1d590f",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "don\u0027t you just want to make this required \u003d true here?",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5bde9540",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "please do not hand write Tx related code anymore; either use the SingleTransactionDataBroker or (better) the new ManagedNewTransactionRunner I presented last week",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9b200d4b",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "don\u0027t do this, just let it propagate",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3b2c8147",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T19:05:21Z",
+      "side": 1,
+      "message": "remove, not needed, you get this for free",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
