@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_fbd5c943",
+        "filename": "features/odl-genius/pom.xml",
+        "patchSetId": 14
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T18:52:49Z",
+      "side": 1,
+      "message": "${infrautils.version} instead of hard-coded 1.3...",
+      "revId": "16a9b2194942ea1f21f4d4d7f13bc3cfb55591ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bbbb510d",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 14
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T18:52:49Z",
+      "side": 1,
+      "message": "you\u0027re not actually using this?  perhaps you meant to use @OsgiService instead of chagnging the BP XML?  Anyway, that can come later, so good to already have this in here anyway... don\u0027t remove, I\u0027m just say\u0027in.",
+      "revId": "16a9b2194942ea1f21f4d4d7f13bc3cfb55591ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
