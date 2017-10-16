@@ -16,6 +16,23 @@
       "revId": "68aa06098a53db18009c1de3ba721057aa463b51",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b10537c4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-10-16T06:55:43Z",
+      "side": 1,
+      "message": "Can you please indicate why  the below thing was removed? if (!Objects.equals(boundServiceOld, boundServiceNew))\n\nIt is needed.  there are cases where update was getting triggered with old and new data equal..so let us retain the check and move your logic inside.",
+      "revId": "68aa06098a53db18009c1de3ba721057aa463b51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
