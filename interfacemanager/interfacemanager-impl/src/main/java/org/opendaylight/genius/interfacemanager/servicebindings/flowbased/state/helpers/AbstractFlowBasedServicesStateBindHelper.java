@@ -40,23 +40,31 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
     }
 
     @Override
-    public final void bindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
-                                   List<BoundServices> allServices, Class<? extends ServiceModeBase> serviceMode) {
+    public final void bindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,  String ifaceName,
+                                   Class<? extends ServiceModeBase> serviceMode, BigInteger dpnId) {
 
-        LOG.debug("binding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-            serviceMode, dataBroker);
+        LOG.debug("binding services on interface {}", ifaceName);
+        ServicesInfo servicesInfo =
+                FlowBasedServicesUtils.getServicesInfoForInterface(ifaceName, serviceMode, dataBroker);
         if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return;
-        }
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
+            LOG.trace("service info is null for interface {}", ifaceName);
             return;
         }
 
-        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            bindServicesOnInterface(futures, allServices, ifaceState);
+        List<BoundServices> allServices = servicesInfo.getBoundServices();
+        if (allServices == null || allServices.isEmpty()) {
+            LOG.trace("bound services is empty for interface {}", ifaceName);
+            return;
+        }
+
+        if (FlowBasedServicesUtils.isInterfaceTypeBasedServiceBinding(ifaceName)) {
+            bindServicesOnInterfaceType(futures, dpnId, ifaceName, allServices);
+        } else {
+            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, ifaceState.getName(),
+                    FlowBasedServicesUtils.buildBoundServicesState(ifaceState, serviceMode));
+            if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
+                bindServicesOnInterface(futures, allServices, ifaceState);
+            }
         }
     }
 
@@ -64,7 +72,7 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
                                                     List<BoundServices> allServices, Interface ifState);
 
     public abstract void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                                     String ifaceName);
+                                                     String ifaceName, List<BoundServices> allServices);
 }
 
 

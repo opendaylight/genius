@@ -90,7 +90,8 @@ public class FlowBasedServicesNodeStateListener
                         .getFlowBasedServicesStateRendererFactory(serviceMode)
                         .getFlowBasedServicesStateAddRenderer();
                 DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName,
-                        new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId, interfaceName));
+                        new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId, interfaceName,
+                                serviceMode));
             }
         }
     }
@@ -103,7 +104,8 @@ public class FlowBasedServicesNodeStateListener
                         .getFlowBasedServicesStateRendererFactory(serviceMode)
                         .getFlowBasedServicesStateRemoveRenderer();
                 DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName,
-                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId, interfaceName));
+                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId, interfaceName,
+                                serviceMode));
             }
         }
     }
@@ -112,18 +114,20 @@ public class FlowBasedServicesNodeStateListener
         private final String iface;
         BigInteger dpnId;
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable, BigInteger dpnId,
-                                         String iface) {
+                                         String iface, Class<? extends ServiceModeBase> serviceMode) {
             this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
             this.dpnId = dpnId;
             this.iface = iface;
+            this.serviceMode = serviceMode;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateAddable.bindServicesOnInterfaceType(futures, dpnId, iface);
+            flowBasedServicesStateAddable.bindServices(futures, null, iface, serviceMode, dpnId);
             return futures;
         }
     }
@@ -132,18 +136,21 @@ public class FlowBasedServicesNodeStateListener
         private final String iface;
         BigInteger dpnId;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+        Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
-                                           BigInteger dpnId, String iface) {
+                                           BigInteger dpnId, String iface,
+                                           Class<? extends ServiceModeBase> serviceMode) {
             this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
             this.dpnId = dpnId;
             this.iface = iface;
+            this.serviceMode = serviceMode;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            flowBasedServicesStateRemovable.unbindServicesOnInterfaceType(futures, dpnId, iface);
+            flowBasedServicesStateRemovable.unbindServices(futures, null, iface, serviceMode, dpnId);
             return futures;
         }
     }
