@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_db5565c7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T18:52:49Z",
+      "side": 1,
+      "message": "But have you really tested this, or was just an idea/hope? ;) If it does work like that then great (and let\u0027s document it more?). But if it does not.. would you terribly mind to just fold this @PostConstruct right into the constructor?  \n\nI actually suspect that BP probably just calls this right after the constructor anyway, so this is just a (little bit) harder to read, but probably otherwise doesn\u0027t add much real value.. plus, you\u0027ll be able to make serviceDescriptor final if you do this, which is nice. Anyway, not super important.",
+      "parentUuid": "9a245df4_624f8e93",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_485450c9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
         "patchSetId": 10
