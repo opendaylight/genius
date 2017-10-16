@@ -9,6 +9,7 @@ package org.opendaylight.genius.mdsalutil.interfaces;
 
 import com.google.common.util.concurrent.CheckedFuture;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
@@ -56,6 +58,8 @@ public interface IMdsalApiManager {
     void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity);
 
     void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity);
+
+    ListenableFuture<Void> removeFlow(BigInteger dpId, short tableId, FlowId flowId);
 
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(FlowEntity flowEntity);
 
