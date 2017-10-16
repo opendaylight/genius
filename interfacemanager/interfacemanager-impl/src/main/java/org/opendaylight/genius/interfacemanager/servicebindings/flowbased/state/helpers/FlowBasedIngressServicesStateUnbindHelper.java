@@ -36,8 +36,9 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
     @Override
-    protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
-                                             Interface ifState) {
+    public void unbindServicesFromInterface(List<ListenableFuture<Void>> futures, Interface ifState,
+                                            List<BoundServices> allServices) {
+        LOG.info("unbinding all ingress services for interface type: {}", ifState.getName());
         if (L2vlan.class.equals(ifState.getType())) {
             unbindServicesOnVlan(futures, allServices, ifState);
         } else if (Tunnel.class.equals(ifState.getType())) {
@@ -83,8 +84,18 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
     }
 
     @Override
-    public void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                              String ifaceName) {
-        LOG.info("unbindServicesFromInterfaceType Ingree - WIP");
+    public void unbindServicesFromInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                                String ifaceName, List<BoundServices> allServices) {
+        LOG.info("unbinding all ingress services for interface type: {}", ifaceName);
+        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
+            BoundServices highestPriority = allServices.remove(0);
+            FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, highestPriority, tx,
+                    ifaceName, NwConstants.DEFAULT_SERVICE_INDEX);
+            for (BoundServices boundService : allServices) {
+                FlowBasedServicesUtils.removeTypeBasedLPortDispatcherFlow(dpnId, boundService, tx,
+                        ifaceName, boundService.getServicePriority());
+            }
+        }));
     }
 }

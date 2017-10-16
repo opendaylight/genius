@@ -106,7 +106,29 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
     }
 
     @Override
-    public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName) {
-        LOG.info("bindServicesOnInterfaceType Ingress - WIP");
+    public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                            String ifaceName, List<BoundServices> allServices) {
+
+        LOG.info("bind all ingress services for interface type: {}", ifaceName);
+        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
+            BoundServices highestPriority = allServices.remove(0);
+            short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
+                    : highestPriority.getServicePriority() + 1);
+            FlowBasedServicesUtils.installTypeBasedLPortDispatcherFlow(dpnId, highestPriority, tx,
+                    ifaceName, NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex);
+            BoundServices prev = null;
+            for (BoundServices boundService : allServices) {
+                if (prev != null) {
+                    FlowBasedServicesUtils.installTypeBasedLPortDispatcherFlow(dpnId, prev, tx,
+                            ifaceName, prev.getServicePriority(), boundService.getServicePriority());
+                }
+                prev = boundService;
+            }
+            if (prev != null) {
+                FlowBasedServicesUtils.installTypeBasedLPortDispatcherFlow(dpnId, prev, tx,
+                        ifaceName, prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
+            }
+        }));
     }
 }

@@ -53,34 +53,37 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
 
 
     @Override
-    public final void unbindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
-                                     Class<? extends ServiceModeBase> serviceMode) {
+    public final void unbindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,  String ifaceName,
+                                     Class<? extends ServiceModeBase> serviceMode, BigInteger dpnId) {
 
-        LOG.debug("unbinding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-                serviceMode, dataBroker);
+        LOG.debug("unbinding services on interface {}", ifaceName);
+        ServicesInfo servicesInfo =
+                FlowBasedServicesUtils.getServicesInfoForInterface(ifaceName, serviceMode, dataBroker);
         if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
+            LOG.trace("service info is null for interface {}", ifaceName);
             return;
         }
 
         List<BoundServices> allServices = servicesInfo.getBoundServices();
         if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
+            LOG.trace("bound services is empty for interface {}", ifaceName);
             return;
         }
 
-        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            unbindServicesOnInterface(futures, allServices, ifaceState);
+        if (FlowBasedServicesUtils.isInterfaceTypeBasedServiceBinding(ifaceName)) {
+            unbindServicesFromInterfaceType(futures, dpnId, ifaceName, allServices);
+        } else {
+            if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
+                unbindServicesFromInterface(futures, ifaceState, allServices);
+            }
         }
     }
 
-    protected abstract void unbindServicesOnInterface(List<ListenableFuture<Void>> futures,
-                                                      List<BoundServices> allServices, Interface ifState);
+    protected abstract void unbindServicesFromInterface(List<ListenableFuture<Void>> futures, Interface ifState,
+                                                     List<BoundServices> allServices);
 
-    @Override
-    public abstract void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
-                                                       String ifaceName);
+    protected abstract void unbindServicesFromInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+                                                         String ifaceName, List<BoundServices> allServices);
 }
 
 
