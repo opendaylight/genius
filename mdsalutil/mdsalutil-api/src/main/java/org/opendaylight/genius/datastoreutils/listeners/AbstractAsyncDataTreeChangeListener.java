@@ -8,6 +8,7 @@
 package org.opendaylight.genius.datastoreutils.listeners;
 
 import java.util.Collection;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -27,26 +28,21 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> extends
-        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T>, DataTreeChangeListener<T> {
-    private final ExecutorService executorService;
-
+        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T>, DataTreeChangeListener<T>,
+        Executor {
     @Inject
-    public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier,
-                                               ExecutorService executorService) {
+    public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         super(dataBroker, dataTreeIdentifier);
-        this.executorService = executorService;
     }
 
     @Inject
     public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
-                                               InstanceIdentifier<T> instanceIdentifier,
-                                               ExecutorService executorService) {
+                                               InstanceIdentifier<T> instanceIdentifier) {
         super(dataBroker, datastoreType, instanceIdentifier);
-        this.executorService = executorService;
     }
 
     @Override
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        executorService.execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
+        execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
     }
 }
