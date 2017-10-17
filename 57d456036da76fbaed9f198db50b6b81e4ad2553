@@ -143,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_210f2f32",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-10-17T18:55:21Z",
+      "side": 1,
+      "message": "As you suggested i think this will get called immediately after this constructor, i have not tested it to check otherwise. In either case, serviceDescriptor cannot be final, as the close() is changing its value.",
+      "parentUuid": "9a245df4_0f4e976f",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_485450c9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
         "patchSetId": 10
