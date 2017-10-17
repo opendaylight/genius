@@ -8,6 +8,7 @@
 package org.opendaylight.genius.datastoreutils.listeners;
 
 import java.util.Collection;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -28,25 +29,26 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> extends
         AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T>, DataTreeChangeListener<T> {
-    private final ExecutorService executorService;
-
     @Inject
-    public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier,
-                                               ExecutorService executorService) {
+    public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         super(dataBroker, dataTreeIdentifier);
-        this.executorService = executorService;
     }
 
     @Inject
     public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
-                                               InstanceIdentifier<T> instanceIdentifier,
-                                               ExecutorService executorService) {
+                                               InstanceIdentifier<T> instanceIdentifier) {
         super(dataBroker, datastoreType, instanceIdentifier);
-        this.executorService = executorService;
     }
 
     @Override
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        executorService.execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
+        execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection));
     }
+
+    /**
+     * Run the given command in a different thread (the implementation details are up to the sub-class implementing
+     * this).
+     * @param command The command to run.
+     */
+    protected abstract void execute(@Nonnull Runnable command);
 }

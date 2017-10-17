@@ -8,6 +8,7 @@
 
 package org.opendaylight.genius.itm.listeners;
 
+import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,14 +29,20 @@ public class InterfaceChildInfoListener extends AbstractAsyncDataTreeChangeListe
 
     private final DataBroker dataBroker;
     private final ItmTunnelAggregationHelper tunnelAggregationHelper;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor(getClass().getSimpleName(), LOG);
 
     @Inject
     public InterfaceChildInfoListener(DataBroker dataBroker, ItmTunnelAggregationHelper tunnelAggregation) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
-              InstanceIdentifier.create(InterfaceChildInfo.class).child(InterfaceParentEntry.class),
-              Executors.newSingleThreadExecutor("InterfaceChildInfoListener", LOG));
+              InstanceIdentifier.create(InterfaceChildInfo.class).child(InterfaceParentEntry.class));
         this.dataBroker = dataBroker;
         this.tunnelAggregationHelper = tunnelAggregation;
+    }
+
+    @Override
+    public void overridableClose() {
+        super.overridableClose();
+        executorService.shutdown();
     }
 
     @Override
@@ -63,5 +70,10 @@ public class InterfaceChildInfoListener extends AbstractAsyncDataTreeChangeListe
                       updatedDataObject.getParentInterface());
             tunnelAggregationHelper.updateLogicalTunnelSelectGroup(updatedDataObject, dataBroker);
         }
+    }
+
+    @Override
+    public void execute(@Nonnull Runnable command) {
+        executorService.execute(command);
     }
 }
