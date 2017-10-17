@@ -125,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_0f4e976f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-10-17T07:56:34Z",
+      "side": 1,
+      "message": "Don\u0027t remember where I read this, but this is what I have kept locally in my notes, while reading around DI :\n\nDependency injection always occurs when the bean instance is first instantiated by the container. Simplifying just a little, things happen in this order:\n\nFirst, the container calls the bean constructor (the default constructor or the one annotated @Inject), to obtain an instance of the bean.\nNext, the container initializes the values of all injected fields of the bean.\nNext, the container calls all initializer methods of bean (the call order is not portable, don’t rely on it).\nFinally, the @PostConstruct method, if any, is called.",
+      "parentUuid": "9a245df4_db5565c7",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_485450c9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
         "patchSetId": 10
