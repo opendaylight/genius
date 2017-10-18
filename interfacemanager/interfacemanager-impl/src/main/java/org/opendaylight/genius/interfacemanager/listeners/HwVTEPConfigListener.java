@@ -15,12 +15,12 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPInterfaceConfigUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -35,12 +35,15 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interface, HwVTEPConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPConfigListener.class);
+
     private final DataBroker dataBroker;
+    private final JobCoordinator coordinator;
 
     @Inject
-    public HwVTEPConfigListener(final DataBroker dataBroker) {
+    public HwVTEPConfigListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
         super(Interface.class, HwVTEPConfigListener.class);
         this.dataBroker = dataBroker;
+        this.coordinator = coordinator;
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -60,7 +63,6 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                 LOG.trace("Received HwVTEP Interface Remove Event: {}, {}", key, interfaceOld);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
-                        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()));
@@ -82,7 +84,6 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                 LOG.trace("Received HwVTEP Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
-                        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                         RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
@@ -105,7 +106,6 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                 LOG.trace("Received HwVTEP Interface Add Event: {}, {}", key, interfaceNew);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
-                        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
                         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),

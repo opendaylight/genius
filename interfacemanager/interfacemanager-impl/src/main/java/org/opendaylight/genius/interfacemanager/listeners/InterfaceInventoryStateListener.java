@@ -16,24 +16,28 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
@@ -61,17 +65,19 @@ public class InterfaceInventoryStateListener
     private final IMdsalApiManager mdsalApiManager;
     private final AlivenessMonitorService alivenessMonitorService;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
-            final EntityOwnershipUtils entityOwnershipUtils) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -106,7 +112,6 @@ public class InterfaceInventoryStateListener
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
             FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
         boolean isNodePresent = InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorIdNew);
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
@@ -125,7 +130,6 @@ public class InterfaceInventoryStateListener
             .getId();
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
             fcNodeConnectorNew, portName);
@@ -172,7 +176,7 @@ public class InterfaceInventoryStateListener
                 }
             }
         }
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+
         InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
             fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
@@ -201,7 +205,7 @@ public class InterfaceInventoryStateListener
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
                         nodeConnectorId, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
-                DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, interfaceStateAddWorker);
+                coordinator.enqueueJob(interfaceName, interfaceStateAddWorker);
             }
             return futures;
         }
@@ -236,7 +240,7 @@ public class InterfaceInventoryStateListener
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
                         fcNodeConnectorOld, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
-                DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, interfaceStateUpdateWorker);
+                coordinator.enqueueJob(interfaceName, interfaceStateUpdateWorker);
             }
             return futures;
         }
@@ -287,8 +291,7 @@ public class InterfaceInventoryStateListener
                 }
             }
 
-            futures = OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager,
-                    alivenessMonitorService, nodeConnectorIdNew, nodeConnectorIdOld, dataBroker, interfaceName,
+            futures = removeInterfaceStateConfiguration(nodeConnectorIdNew, nodeConnectorIdOld, interfaceName,
                     fcNodeConnectorOld, isNodePresent);
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
@@ -298,9 +301,71 @@ public class InterfaceInventoryStateListener
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                         nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld,
                         interfaceChildEntry.getChildInterface(), interfaceName, isNodePresent, isNetworkEvent, false);
-                DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, interfaceStateRemoveWorker);
+                coordinator.enqueueJob(interfaceName, interfaceStateRemoveWorker);
             }
             return futures;
+        }
+
+        private List<ListenableFuture<Void>> removeInterfaceStateConfiguration(NodeConnectorId nodeConnectorIdNew,
+                NodeConnectorId nodeConnectorIdOld, String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld,
+                boolean isNodePresent) {
+            LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
+
+            //VM Migration: Use old nodeConnectorId to delete the interface entry
+            NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
+                    && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ? nodeConnectorIdOld : nodeConnectorIdNew;
+            // delete the port entry from interface operational DS
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+
+            //VM Migration: Update the interface state to unknown only if remove event received for same switch
+            if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+                //Remove event is because of connection lost between controller and switch, or switch shutdown.
+                // Hence, don't remove the interface but set the status as "unknown"
+                OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
+                        dataBroker, alivenessMonitorService, defaultOperationalShardTransaction);
+            } else {
+                InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                    .Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+
+                if (iface != null) {
+                    // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP monitoring
+                    if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                        InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction,
+                                interfaceName);
+                        handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.getAugmentation(IfTunnel.class),
+                                defaultOperationalShardTransaction, nodeConnectorId, futures);
+                        return futures;
+                    }
+                }
+                // remove ingress flow only for northbound configured interfaces
+                // skip this check for non-unique ports(Ex: br-int,br-ex)
+                if (iface != null || iface == null && !interfaceName.contains(fcNodeConnectorOld.getName())) {
+                    FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
+                }
+
+                // Delete the Vpn Interface from DpnToInterface Op DS.
+                InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName,
+                        defaultOperationalShardTransaction);
+            }
+            futures.add(defaultOperationalShardTransaction.submit());
+            return futures;
+        }
+
+        private void handleTunnelMonitoringRemoval(BigInteger dpId, String interfaceName,
+                IfTunnel ifTunnel, WriteTransaction transaction, NodeConnectorId nodeConnectorId,
+                List<ListenableFuture<Void>> futures) {
+            long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
+            InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
+                    interfaceName, -1, NwConstants.DEL_FLOW);
+
+            IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
+                    FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
+
+            futures.add(transaction.submit());
+            AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
         }
 
         @Override

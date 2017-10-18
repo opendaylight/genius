@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -26,6 +25,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -50,19 +50,51 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker,
-            AlivenessMonitorService alivenessMonitorService, Interface interfaceOld, IdManagerService idManager,
-            IMdsalApiManager mdsalApiManager, ParentRefs parentRefs) {
+    private final DataBroker dataBroker;
+    private final AlivenessMonitorService alivenessMonitorService;
+    private final IMdsalApiManager mdsalApiManager;
+    private final IdManagerService idManager;
+    private final JobCoordinator coordinator;
+
+    public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+            IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator) {
+        this.dataBroker = dataBroker;
+        this.alivenessMonitorService = alivenessMonitorService;
+        this.mdsalApiManager = mdsalApiManager;
+        this.idManager = idManager;
+        this.coordinator = coordinator;
+    }
+
+    public DataBroker getDataBroker() {
+        return dataBroker;
+    }
+
+    public AlivenessMonitorService getAlivenessMonitorService() {
+        return alivenessMonitorService;
+    }
+
+    public IMdsalApiManager getMdsalApiManager() {
+        return mdsalApiManager;
+    }
+
+    public IdManagerService getIdManager() {
+        return idManager;
+    }
+
+    public JobCoordinator getCoordinator() {
+        return coordinator;
+    }
+
+    public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
-            removeTunnelConfiguration(alivenessMonitorService, parentRefs, dataBroker, interfaceOld.getName(), ifTunnel,
-                    idManager, mdsalApiManager, defaultOperationalShardTransaction);
+            removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, defaultOperationalShardTransaction);
         } else {
-            removeVlanConfiguration(dataBroker, parentRefs, interfaceOld.getName(),
+            removeVlanConfiguration(parentRefs, interfaceOld.getName(),
                     interfaceOld.getAugmentation(IfL2vlan.class), defaultOperationalShardTransaction,
                     futures, idManager);
         }
@@ -71,7 +103,7 @@ public class OvsInterfaceConfigRemoveHelper {
         return futures;
     }
 
-    private static void removeVlanConfiguration(DataBroker dataBroker, ParentRefs parentRefs, String interfaceName,
+    private void removeVlanConfiguration(ParentRefs parentRefs, String interfaceName,
             IfL2vlan ifL2vlan, WriteTransaction defaultOperationalShardTransaction,
             List<ListenableFuture<Void>> futures, IdManagerService idManagerService) {
         if (parentRefs == null || ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
@@ -107,16 +139,13 @@ public class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         VlanMemberStateRemoveWorker vlanMemberStateRemoveWorker = new VlanMemberStateRemoveWorker(dataBroker,
                 idManagerService, dpId, interfaceName, interfaceParentEntry);
         coordinator.enqueueJob(interfaceName, vlanMemberStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
 
     }
 
-    private static void removeTunnelConfiguration(AlivenessMonitorService alivenessMonitorService,
-            ParentRefs parentRefs, DataBroker dataBroker, String interfaceName, IfTunnel ifTunnel,
-            IdManagerService idManager, IMdsalApiManager mdsalApiManager,
+    private void removeTunnelConfiguration(ParentRefs parentRefs, String interfaceName, IfTunnel ifTunnel,
             WriteTransaction defaultOperationalShardTransaction) {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
         BigInteger dpId = null;
@@ -156,7 +185,7 @@ public class OvsInterfaceConfigRemoveHelper {
         }
 
         // delete tunnel ingress flow
-        removeTunnelIngressFlow(dataBroker, interfaceName, ifTunnel, mdsalApiManager, dpId);
+        removeTunnelIngressFlow(interfaceName, ifTunnel, dpId);
 
         // delete bridge to tunnel interface mappings
         InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
@@ -172,8 +201,7 @@ public class OvsInterfaceConfigRemoveHelper {
             removeMultipleVxlanTunnelsConfiguration(interfaceName, parentRefs);
 
         } else if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            removeLogicalTunnelGroup(dpId, interfaceName, lportTag, idManager, mdsalApiManager, dataBroker,
-                                     defaultOperationalShardTransaction);
+            removeLogicalTunnelGroup(dpId, interfaceName, lportTag, defaultOperationalShardTransaction);
         }
     }
 
@@ -182,8 +210,7 @@ public class OvsInterfaceConfigRemoveHelper {
                 || bridgeInterfaceEntries.size() <= 1;
     }
 
-    public static void removeTunnelIngressFlow(DataBroker dataBroker,
-            String interfaceName, IfTunnel ifTunnel, IMdsalApiManager mdsalApiManager, BigInteger dpId) {
+    public void removeTunnelIngressFlow(String interfaceName, IfTunnel ifTunnel, BigInteger dpId) {
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
         if (ncId == null) {
             LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
@@ -191,7 +218,9 @@ public class OvsInterfaceConfigRemoveHelper {
             long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
             InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
                     interfaceName, -1, NwConstants.DEL_FLOW);
-            FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
+
+            IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
+                    FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
         }
     }
 
@@ -254,23 +283,22 @@ public class OvsInterfaceConfigRemoveHelper {
         }
     }
 
-    private static void removeLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag,
-                                                       IMdsalApiManager mdsalManager) {
+    private void removeLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag) {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
         Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
                                            MDSALUtil.buildBucketLists(Collections.emptyList()));
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} removed for {} srcDpnId {}",
                 group.getGroupId().getValue(), interfaceName, srcDpnId);
-        mdsalManager.syncRemoveGroup(srcDpnId, group);
+        mdsalApiManager.syncRemoveGroup(srcDpnId, group);
     }
 
-    private static void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag,
-            IdManagerService idManager, IMdsalApiManager mdsalApiManager, DataBroker dataBroker, WriteTransaction tx) {
+    private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag, WriteTransaction tx) {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
-        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, ifaceName);
+        IfmUtil.unbindService(dataBroker, coordinator, ifaceName,
+                FlowBasedServicesUtils.buildDefaultServiceId(ifaceName));
         InterfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, tx, idManager);
         InterfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);
-        removeLogicalTunnelSelectGroup(dpnId, ifaceName, lportTag, mdsalApiManager);
+        removeLogicalTunnelSelectGroup(dpnId, ifaceName, lportTag);
     }
 
     private static void removeMultipleVxlanTunnelsConfiguration(String ifaceName, ParentRefs parentRef) {
