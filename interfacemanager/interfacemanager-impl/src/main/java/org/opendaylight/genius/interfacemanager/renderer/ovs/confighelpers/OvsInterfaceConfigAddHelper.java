@@ -27,7 +27,6 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -50,8 +49,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsInterfaceConfigAddHelper {
+public final class OvsInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigAddHelper.class);
+
+    private OvsInterfaceConfigAddHelper() {
+    }
 
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
             Interface interfaceNew, IdManagerService idManager, AlivenessMonitorService alivenessMonitorService,
@@ -182,8 +184,8 @@ public class OvsInterfaceConfigAddHelper {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if (ncId != null) {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-                    InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
-                            interfaceNew.getName(), ifState.getIfIndex(), NwConstants.ADD_FLOW);
+                    InterfaceManagerCommonUtils.addTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
+                            interfaceNew.getName(), ifState.getIfIndex());
                     FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceNew,
                             Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
                     // start LLDP monitoring for the tunnel interface

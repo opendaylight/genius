@@ -18,7 +18,6 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -38,8 +37,11 @@ import org.slf4j.LoggerFactory;
  * entries in Interface-State OperDS. Create the entries in Inventory OperDS.
  */
 
-public class OvsInterfaceStateAddHelper {
+public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
+
+    private OvsInterfaceStateAddHelper() {
+    }
 
     public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
                                                         IMdsalApiManager mdsalApiManager,
@@ -129,9 +131,8 @@ public class OvsInterfaceStateAddHelper {
                 .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo,
             String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager,
-                interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex,
-                NwConstants.ADD_FLOW);
+        InterfaceManagerCommonUtils.addTunnelIngressFlow(mdsalApiManager,
+                interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
         FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);
         futures.add(transaction.submit());
