@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_f712f5b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-18T11:18:07Z",
+      "side": 1,
+      "message": "Really sorry to be a PITA, but I would like to have one more last attempt at concinving you to change this (then I\u0027ll give up!), because re. \"read this\" \u0026 \"@PostConstruct method is called\" my assumption is that doc means \"per bean\" and not \"per bundle\", so this probably really is useles and just (a bit) harder to read than directly in the constructor.  From a little bit of online searching I\u0027ve done, I think this is correct, see e.g. http://forum.spring.io/forum/spring-projects/container/90073-how-to-execute-a-method-after-all-beans-are-initialized although that is about Spring and not BP (which is inspird by Spring).  Let me fire off an email to Tom asking him also.\n\nRe. \"serviceDescriptor cannot be final, as the close() is changing its value\" I agree so forget that argument.  \n\nPS: At first I thought that\u0027s because ServiceDescriptor is @Immutable anyway, we could even just rm the private ServiceDescriptor field, and just did a report(new ServiceDescriptor(...)) in the constructor and close(), but of course you need it in getServiceDescriptor for pull model, so forget that.\n\nPPS: Sorry to be a pain, I\u0027m just trying to find the right \"pattern\" here, because I fear what you do here will (quickly and soon) be copy/pasted all over into many services, starting with c/64000 and more.",
+      "parentUuid": "9a245df4_210f2f32",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_485450c9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
         "patchSetId": 10
