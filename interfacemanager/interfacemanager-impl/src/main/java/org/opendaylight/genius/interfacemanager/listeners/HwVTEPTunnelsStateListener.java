@@ -14,13 +14,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -34,12 +34,15 @@ import org.slf4j.LoggerFactory;
 public class HwVTEPTunnelsStateListener
         extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
+
     private final ManagedNewTransactionRunner txRunner;
+    private final JobCoordinator coordinator;
 
     @Inject
-    public HwVTEPTunnelsStateListener(final DataBroker dataBroker) {
+    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.coordinator = coordinator;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -58,40 +61,33 @@ public class HwVTEPTunnelsStateListener
     protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels tunnel) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, physicalSwitchAugmentation: {}",
                 identifier, tunnel);
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, tunnel);
-        jobCoordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker,
+        RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier);
+        coordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld, Tunnels tunnelNew) {
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelNew,
-                tunnelOld);
-        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker,
+        RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelOld);
+        coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}", identifier, tunnelNew);
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, tunnelNew);
-        jobCoordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker,
+        coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<Tunnels> instanceIdentifier;
-        Tunnels tunnelsNew;
         Tunnels tunnelsOld;
 
-        RendererStateUpdateWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnelsNew,
-                Tunnels tunnelsOld) {
+        RendererStateUpdateWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnelsOld) {
             this.instanceIdentifier = instanceIdentifier;
-            this.tunnelsNew = tunnelsNew;
             this.tunnelsOld = tunnelsOld;
         }
 
@@ -118,11 +114,9 @@ public class HwVTEPTunnelsStateListener
 
     private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<Tunnels> instanceIdentifier;
-        Tunnels tunnel;
 
-        RendererStateRemoveWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnel) {
+        RendererStateRemoveWorker(InstanceIdentifier<Tunnels> instanceIdentifier) {
             this.instanceIdentifier = instanceIdentifier;
-            this.tunnel = tunnel;
         }
 
         @Override

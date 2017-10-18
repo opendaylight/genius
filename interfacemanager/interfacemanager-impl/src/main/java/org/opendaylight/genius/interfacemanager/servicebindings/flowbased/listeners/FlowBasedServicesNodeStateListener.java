@@ -15,19 +15,16 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataChangeListener;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +35,11 @@ public class FlowBasedServicesNodeStateListener
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesNodeStateListener.class);
 
-    private final IMdsalApiManager mdsalManager;
-    private final DataBroker broker;
-    private ListenerRegistration<DataChangeListener> listenerRegistration;
+    private final JobCoordinator coordinator;
 
     @Inject
-    public FlowBasedServicesNodeStateListener(final DataBroker dataBroker, final IMdsalApiManager mdsalManager) {
-        this.broker = dataBroker;
-        this.mdsalManager = mdsalManager;
+    public FlowBasedServicesNodeStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
+        this.coordinator = coordinator;
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -54,6 +48,7 @@ public class FlowBasedServicesNodeStateListener
         return FlowBasedServicesNodeStateListener.this;
     }
 
+    @Override
     public InstanceIdentifier<Node> getWildCardPath() {
         return InstanceIdentifier.create(Nodes.class).child(Node.class);
     }
@@ -89,7 +84,7 @@ public class FlowBasedServicesNodeStateListener
                 FlowBasedServicesStateAddable flowBasedServicesStateAddable = FlowBasedServicesStateRendererFactory
                         .getFlowBasedServicesStateRendererFactory(serviceMode)
                         .getFlowBasedServicesStateAddRenderer();
-                DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName,
+                coordinator.enqueueJob(interfaceName,
                         new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId, interfaceName));
             }
         }
@@ -102,7 +97,7 @@ public class FlowBasedServicesNodeStateListener
                 FlowBasedServicesStateRemovable flowBasedServicesStateRemovable = FlowBasedServicesStateRendererFactory
                         .getFlowBasedServicesStateRendererFactory(serviceMode)
                         .getFlowBasedServicesStateRemoveRenderer();
-                DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName,
+                coordinator.enqueueJob(interfaceName,
                         new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId, interfaceName));
             }
         }

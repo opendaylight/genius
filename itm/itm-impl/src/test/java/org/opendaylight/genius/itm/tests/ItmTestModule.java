@@ -34,6 +34,8 @@ import org.opendaylight.genius.lockmanager.LockManager;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.jobcoordinator.internal.JobCoordinatorImpl;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
@@ -85,6 +87,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
+        bind(JobCoordinator.class).toInstance(new JobCoordinatorImpl());
     }
 
 }

@@ -14,13 +14,13 @@ import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
@@ -33,13 +33,24 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
 
+    private final DataBroker dataBroker;
+    private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
+
+    public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
+            JobCoordinator coordinator) {
+        this.dataBroker = dataBroker;
+        this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
+    }
+
     /*
      * This code is used to handle only a dpnId change scenario for a particular
      * change, which is not expected to happen in usual cases.
      */
-    public static List<ListenableFuture<Void>> updateBridgeRefEntry(
+    public List<ListenableFuture<Void>> updateBridgeRefEntry(
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
-            OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker) {
+            OvsdbBridgeAugmentation bridgeOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
@@ -67,8 +78,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         return futures;
     }
 
-    public static List<ListenableFuture<Void>> updateTunnelState(final DataBroker dataBroker,
-            EntityOwnershipUtils entityOwnershipUtils, OvsdbTerminationPointAugmentation terminationPointNew) {
+    public List<ListenableFuture<Void>> updateTunnelState(OvsdbTerminationPointAugmentation terminationPointNew) {
         final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         final String interfaceName = terminationPointNew.getName();
         InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
@@ -77,8 +87,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             return Collections.emptyList();
         }
 
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
-        jobCoordinator.enqueueJob(interfaceName, () -> {
+        coordinator.enqueueJob(interfaceName, () -> {
             // update opstate of interface if TEP has gone down/up as a result
             // of BFD monitoring
             final Interface interfaceState = InterfaceManagerCommonUtils
