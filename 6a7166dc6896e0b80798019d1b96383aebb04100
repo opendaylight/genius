@@ -60,6 +60,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_523caf2f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T14:16:42Z",
+      "side": 1,
+      "message": "The shutdown contract doesn’t say much about its behaviour, and with this approach, if for whatever reason we end up with multiple instances of the listener, we’ll shut the executor service down several times (admittedly, this shouldn’t happen, but the listener *implementation* doesn’t prevent it). So unless all executor services are idempotent on shutdown, we need to handle shared instances properly, with a reference count probably.",
+      "parentUuid": "9a245df4_b2becbfd",
+      "range": {
+        "startLine": 106,
+        "startChar": 3,
+        "endLine": 107,
+        "endChar": 36
+      },
+      "revId": "6a7166dc6896e0b80798019d1b96383aebb04100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_d2a09ff6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
         "patchSetId": 4
