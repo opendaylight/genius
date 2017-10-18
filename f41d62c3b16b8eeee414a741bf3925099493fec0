@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_08f968e9",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmManagerRpcServiceTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-10-18T18:54:46Z",
+      "side": 1,
+      "message": "what is this line used for then?",
+      "revId": "f41d62c3b16b8eeee414a741bf3925099493fec0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
