@@ -19,7 +19,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.yangtools.concepts.Builder;
+import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -35,7 +37,8 @@ public final class FutureRpcResults {
 
     // NB: The FutureRpcResultsTest unit test for this util is in mdsalutil-testutils's src/test, not this project's
 
-    // TODO Once matured in genius, this class should be proposed to org.opendaylight.yangtools.yang.common
+    // TODO Once matured in genius, this class could be proposed to org.opendaylight.yangtools.yang.common
+    // (This was proposed in Oct on yangtools-dev list, but there little interest due to plans to change RpcResult.)
 
     private FutureRpcResults() {}
 
@@ -52,7 +55,7 @@ public final class FutureRpcResults {
      *        does not have to do any exception handling (specifically it does NOT have to catch and
      *        wrap any exception into a failed Future); this utility does that for you.
      *
-     * @return a new Builder
+     * @return a new FutureRpcResultBuilder
      */
     @CheckReturnValue
     public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
@@ -86,24 +89,32 @@ public final class FutureRpcResults {
         }
     }
 
+    @CheckReturnValue
+    public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
+            @Nullable I input, Callable<Builder<O>> builder) {
+        Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
+        return fromListenableFuture(logger, rpcMethodName, input, callable);
+    }
+
+    @NotThreadSafe
     public static final class FutureRpcResultBuilder<I, O> implements Builder<Future<RpcResult<O>>> {
 
+        private final Logger logger;
+        private final String rpcMethodName;
         @Nullable private final I input;
         private final Callable<ListenableFuture<O>> callable;
         private Function<Throwable, String> rpcErrorMessageFunction = Throwable::getMessage;
         private Consumer<O> onSuccessConsumer;
-        private Consumer<Throwable> onFailureConsumer;
-        private final Logger logger;
-        private final String rpcMethodName;
+        private final Consumer<Throwable> onFailureConsumer;
         private LogLevel onFailureLogLevel = LogLevel.ERROR;
         private LogLevel onSuccessLogLevel = LogLevel.DEBUG;
 
         private FutureRpcResultBuilder(Logger logger, String rpcMethodName, @Nullable I input,
                 Callable<ListenableFuture<O>> callable) {
-            this.input = input;
-            this.callable = callable;
             this.logger = logger;
             this.rpcMethodName = rpcMethodName;
+            this.input = input;
+            this.callable = callable;
             // Default methods which can be overridden by users:
             this.onSuccessConsumer = result -> { };
             this.onFailureConsumer = throwable -> { };
@@ -127,25 +138,22 @@ public final class FutureRpcResults {
                 public void onFailure(Throwable cause) {
                     onFailureLogLevel.log(logger, "RPC {}() failed; input = {}", rpcMethodName, input, cause);
                     onFailureConsumer.accept(cause);
-                    futureRpcResult.set(RpcResultBuilder.<O>failed().withError(
-                            RpcError.ErrorType.APPLICATION, rpcErrorMessageFunction.apply(cause), cause).build());
+                    RpcResultBuilder<O> rpcResultBuilder = RpcResultBuilder.<O>failed().withError(
+                            RpcError.ErrorType.APPLICATION, rpcErrorMessageFunction.apply(cause), cause);
+                    // IdManager's buildFailedRpcResultFuture() had this, and it seems a nice idea in general:
+                    if (cause instanceof OperationFailedException) {
+                        rpcResultBuilder.withRpcErrors(((OperationFailedException) cause).getErrorList());
+                    }
+                    futureRpcResult.set(rpcResultBuilder.build());
                 }
             };
             try {
+                logger.trace("RPC {}() entered; input = {}", rpcMethodName, input);
                 Futures.addCallback(callable.call(), callback, MoreExecutors.directExecutor());
             } catch (Exception cause) {
                 callback.onFailure(cause);
             }
-
             return futureRpcResult;
-        }
-
-        /**
-         * Sets a custom on-failure action, for a given exception.
-         */
-        public FutureRpcResultBuilder<I,O> onFailure(Consumer<Throwable> newOnFailureConsumer) {
-            this.onFailureConsumer = newOnFailureConsumer;
-            return this;
         }
 
         /**
@@ -169,7 +177,7 @@ public final class FutureRpcResults {
         }
 
         /**
-         * Set a custom {@link RpcError} message (function), for a given exception.
+         * Set a custom {@link RpcError} message function, for a given exception.
          * By default, the message is just {@link Throwable#getMessage()}.
          */
         public FutureRpcResultBuilder<I,O> withRpcErrorMessage(Function<Throwable, String> newRpcErrorMessageFunction) {
@@ -184,6 +192,6 @@ public final class FutureRpcResults {
             this.onSuccessConsumer = newOnSuccessFunction;
             return this;
         }
-    }
 
+    }
 }

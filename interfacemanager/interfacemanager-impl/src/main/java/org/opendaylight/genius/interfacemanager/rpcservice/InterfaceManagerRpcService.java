@@ -122,7 +122,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             }
             return Futures.immediateFuture(new GetDpidFromInterfaceOutputBuilder().setDpid(dpId).build());
         }).withRpcErrorMessage(e -> getDpidFromInterfaceErrorMessage(interfaceName, e.getMessage()))
-          .onFailure(e -> { /* do not LOG error here */ }).build();
+          .onFailureInsteadLog(e -> { /* do not LOG error here */ }).build();
     }
 
     private String getDpidFromInterfaceErrorMessage(final String interfaceName, final String dueTo) {
