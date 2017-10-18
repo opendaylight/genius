@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
@@ -58,12 +57,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -147,7 +140,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -457,41 +449,8 @@ public final class ItmUtils {
         return dpnTepsInfo;
     }
 
-    public static int getUniqueId(IdManagerService idManager, String idKey) {
-        AllocateIdInput getIdInput = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey(idKey).build();
-
-        try {
-            Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(getIdInput);
-            RpcResult<AllocateIdOutput> rpcResult = result.get();
-            if (rpcResult.isSuccessful()) {
-                return rpcResult.getResult().getIdValue().intValue();
-            } else {
-                LOG.warn("RPC Call to Get Unique Id returned with Errors {}", rpcResult.getErrors());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Exception when getting Unique Id",e);
-        }
-        return 0;
-    }
-
     private static String getUniqueIdString(String idKey) {
         return UUID.nameUUIDFromBytes(idKey.getBytes()).toString().substring(0, 12).replace("-", "");
-    }
-
-    public static void releaseId(IdManagerService idManager, String idKey) {
-        ReleaseIdInput idInput =
-                new ReleaseIdInputBuilder().setPoolName(ITMConstants.ITM_IDPOOL_NAME).setIdKey(idKey).build();
-        try {
-            Future<RpcResult<Void>> result = idManager.releaseId(idInput);
-            RpcResult<Void> rpcResult = result.get();
-            if (!rpcResult.isSuccessful()) {
-                LOG.warn("RPC Call to Get Unique Id returned with Errors {}", rpcResult.getErrors());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Exception when getting Unique Id for key {}", idKey, e);
-        }
     }
 
     public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DataBroker dataBroker, List<BigInteger> dpnIds) {
@@ -1513,9 +1472,9 @@ public final class ItmUtils {
     }
 
     public static boolean isTunnelAggregationUsed(Class<? extends TunnelTypeBase> tunType) {
-        return (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()
+        return ItmTunnelAggregationHelper.isTunnelAggregationEnabled()
                 && (tunType.isAssignableFrom(TunnelTypeVxlan.class)
-                        || tunType.isAssignableFrom(TunnelTypeLogicalGroup.class)));
+                        || tunType.isAssignableFrom(TunnelTypeLogicalGroup.class));
     }
 
     public static List<TunnelOptions> buildTunnelOptions(TunnelEndPoints tep, ItmConfig itmConfig) {

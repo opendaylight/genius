@@ -32,7 +32,6 @@ import org.opendaylight.genius.itm.tests.xtend.ExpectedInternalTunnelIdentifierO
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
@@ -157,7 +156,6 @@ public class ItmManagerRpcServiceTest {
             .child(DeviceVteps.class, deviceVtep2Key).build();
 
     @Inject DataBroker dataBroker;
-    @Inject IdManagerService idManagerService;
     @Inject ItmManagerRpcService itmManagerRpcService ;
 
     @Before
