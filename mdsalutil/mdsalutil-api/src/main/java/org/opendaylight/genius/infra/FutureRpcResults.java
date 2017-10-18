@@ -7,20 +7,25 @@
  */
 package org.opendaylight.genius.infra;
 
+import static org.opendaylight.yangtools.yang.common.RpcError.ErrorType.APPLICATION;
+
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import org.opendaylight.infrautils.utils.StackTraces;
 import org.opendaylight.yangtools.concepts.Builder;
+import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -36,7 +41,8 @@ public final class FutureRpcResults {
 
     // NB: The FutureRpcResultsTest unit test for this util is in mdsalutil-testutils's src/test, not this project's
 
-    // TODO Once matured in genius, this class should be proposed to org.opendaylight.yangtools.yang.common
+    // TODO Once matured in genius, this class could be proposed to org.opendaylight.yangtools.yang.common
+    // (This was proposed in Oct on yangtools-dev list, but there little interest due to plans to change RpcResult.)
 
     private FutureRpcResults() {}
 
@@ -78,7 +84,7 @@ public final class FutureRpcResults {
      *        does not have to do any exception handling (specifically it does NOT have to catch and
      *        wrap any exception into a failed Future); this utility does that for you.
      *
-     * @return a new Builder
+     * @return a new FutureRpcResultBuilder
      */
     @CheckReturnValue
     public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
@@ -112,27 +118,38 @@ public final class FutureRpcResults {
         }
     }
 
+    @CheckReturnValue
+    public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
+            @Nullable I input, Callable<Builder<O>> builder) {
+        Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
+        return fromListenableFuture(logger, rpcMethodName, input, callable);
+    }
+
+    @NotThreadSafe
     public static final class FutureRpcResultBuilder<I, O> implements Builder<Future<RpcResult<O>>> {
 
-        @Nullable private final I input;
-        private final Callable<ListenableFuture<O>> callable;
-        private Function<Throwable, String> rpcErrorMessageFunction = Throwable::getMessage;
-        private Consumer<O> onSuccessConsumer;
-        private Consumer<Throwable> onFailureConsumer;
+        // fixed (final) builder values
         private final Logger logger;
         private final String rpcMethodName;
-        private LogLevel onFailureLogLevel = LogLevel.ERROR;
+        @Nullable private final I input;
+        private final Callable<ListenableFuture<O>> callable;
+
+        // optional builder values, which can be overridden by users
+        private Optional<Function<Throwable, String>> optRpcErrorMessageFunction = Optional.empty();
+        private Optional<Consumer<O>> optOnSuccessConsumer = Optional.empty();
+        private Optional<Consumer<Throwable>> optOnFailureConsumer = Optional.empty();
+
+        // defaulted builder values, which can be overridden by users
+        private LogLevel onEnterLogLevel = LogLevel.TRACE;
         private LogLevel onSuccessLogLevel = LogLevel.DEBUG;
+        private LogLevel onFailureLogLevel = LogLevel.ERROR;
 
         private FutureRpcResultBuilder(Logger logger, String rpcMethodName, @Nullable I input,
                 Callable<ListenableFuture<O>> callable) {
-            this.input = input;
-            this.callable = callable;
             this.logger = logger;
             this.rpcMethodName = rpcMethodName;
-            // Default methods which can be overridden by users:
-            this.onSuccessConsumer = result -> { };
-            this.onFailureConsumer = throwable -> { };
+            this.input = input;
+            this.callable = callable;
         }
 
         @Override
@@ -145,24 +162,29 @@ public final class FutureRpcResults {
                 public void onSuccess(O result) {
                     onSuccessLogLevel.log(logger, "RPC {}() successful; input = {}, output = {}", rpcMethodName,
                             input, result);
-                    onSuccessConsumer.accept(result);
+                    optOnSuccessConsumer.ifPresent(onSuccessConsumer -> onSuccessConsumer.accept(result));
                     futureRpcResult.set(RpcResultBuilder.success(result).build());
                 }
 
                 @Override
                 public void onFailure(Throwable cause) {
                     onFailureLogLevel.log(logger, "RPC {}() failed; input = {}", rpcMethodName, input, cause);
-                    onFailureConsumer.accept(cause);
-                    futureRpcResult.set(RpcResultBuilder.<O>failed().withError(
-                            RpcError.ErrorType.APPLICATION, rpcErrorMessageFunction.apply(cause), cause).build());
+                    optOnFailureConsumer.ifPresent(onFailureConsumer -> onFailureConsumer.accept(cause));
+                    RpcResultBuilder<O> rpcResultBuilder = RpcResultBuilder.<O>failed().withError(APPLICATION,
+                            optRpcErrorMessageFunction.orElse(Throwable::getMessage).apply(cause), cause);
+                    // IdManager's buildFailedRpcResultFuture() had this, and it seems a nice idea in general:
+                    if (cause instanceof OperationFailedException) {
+                        rpcResultBuilder.withRpcErrors(((OperationFailedException) cause).getErrorList());
+                    }
+                    futureRpcResult.set(rpcResultBuilder.build());
                 }
             };
             try {
+                onEnterLogLevel.log(logger, "RPC {}() entered; input = {}", rpcMethodName, input);
                 Futures.addCallback(callable.call(), callback, MoreExecutors.directExecutor());
             } catch (Exception cause) {
                 callback.onFailure(cause);
             }
-
             return futureRpcResult;
         }
 
@@ -170,14 +192,17 @@ public final class FutureRpcResults {
          * Sets a custom on-failure action, for a given exception.
          */
         public FutureRpcResultBuilder<I,O> onFailure(Consumer<Throwable> newOnFailureConsumer) {
-            this.onFailureConsumer = newOnFailureConsumer;
+            this.optOnFailureConsumer.ifPresent(f -> {
+                throw new IllegalStateException("OnFailure can only be set once");
+            });
+            this.optOnFailureConsumer = Optional.of(newOnFailureConsumer);
             return this;
         }
 
         /**
          * Sets a custom on-failure SLF4J logging level, in case of an exception. The log message mentions the RPC
          * method name, the provided input, the exception and its stack trace (depending on logger settings).
-         * By default, it is {@code LOG.error}. Setting {@code NONE} will disable logging.
+         * By default, it is {@code LOG.error}. Setting {@code NONE} will disable this logging.
          */
         public FutureRpcResultBuilder<I,O> onFailureLogLevel(LogLevel level) {
             this.onFailureLogLevel = level;
@@ -187,7 +212,7 @@ public final class FutureRpcResults {
         /**
          * Sets a custom on-success SLF4J logging level. The log message mentions the RPC method name, the provided
          * input, and the resulting output.
-         * By default, it is {@code LOG.debug}. Setting {@code NONE} will disable logging.
+         * By default, it is {@code LOG.debug}. Setting {@code NONE} will disable this logging.
          */
         public FutureRpcResultBuilder<I,O> onSuccessLogLevel(LogLevel level) {
             this.onSuccessLogLevel = level;
@@ -195,11 +220,24 @@ public final class FutureRpcResults {
         }
 
         /**
-         * Set a custom {@link RpcError} message (function), for a given exception.
+         * Sets a custom on-enter SLF4J logging level. The log message mentions the RPC method name and the provided
+         * input.
+         * By default, it is {@code LOG.trace}. Setting {@code NONE} will disable this logging.
+         */
+        public FutureRpcResultBuilder<I,O> onEnterLogLevel(LogLevel level) {
+            this.onEnterLogLevel = level;
+            return this;
+        }
+
+        /**
+         * Set a custom {@link RpcError} message function, for a given exception.
          * By default, the message is just {@link Throwable#getMessage()}.
          */
         public FutureRpcResultBuilder<I,O> withRpcErrorMessage(Function<Throwable, String> newRpcErrorMessageFunction) {
-            this.rpcErrorMessageFunction = newRpcErrorMessageFunction;
+            this.optRpcErrorMessageFunction.ifPresent(f -> {
+                throw new IllegalStateException("withRpcErrorMessage can only be set once");
+            });
+            this.optRpcErrorMessageFunction = Optional.of(newRpcErrorMessageFunction);
             return this;
         }
 
@@ -207,9 +245,12 @@ public final class FutureRpcResults {
          * Sets a custom on-success action, for a given output.
          */
         public FutureRpcResultBuilder<I,O> onSuccess(Consumer<O> newOnSuccessFunction) {
-            this.onSuccessConsumer = newOnSuccessFunction;
+            this.optOnSuccessConsumer.ifPresent(f -> {
+                throw new IllegalStateException("OnSuccess can only be set once");
+            });
+            this.optOnSuccessConsumer = Optional.of(newOnSuccessFunction);
             return this;
         }
-    }
 
+    }
 }
