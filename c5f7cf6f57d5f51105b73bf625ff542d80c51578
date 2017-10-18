@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_d731b1a3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T10:38:19Z",
+      "side": 1,
+      "message": "Ah yes, good idea!",
+      "parentUuid": "9a245df4_b7b99d30",
+      "revId": "c5f7cf6f57d5f51105b73bf625ff542d80c51578",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_57dae178",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPConfigRemoveHelper.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2017-10-18T10:16:04Z",
       "side": 1,
       "message": "this makes the previously separate transactions per shard into a single one.  Personally I do think we want to go that route, but I would love to first see more people sign off on this before merging a change to this.. ideally clarify the overall point re. single shard discussions, started at the DDF.",
+      "revId": "c5f7cf6f57d5f51105b73bf625ff542d80c51578",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f72cb54c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPConfigRemoveHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T10:38:19Z",
+      "side": 1,
+      "message": "No, it doesn’t (yet): I’m using two separate calls to callWithNewWriteOnlyTransactionAndSubmit(), so two separate transactions.",
+      "parentUuid": "9a245df4_57dae178",
       "revId": "c5f7cf6f57d5f51105b73bf625ff542d80c51578",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
