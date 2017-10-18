@@ -19,13 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InterfaceStatusMonitor implements InterfaceStatusMonitorMBean {
-
-    private String serviceStatus;
-    private static InterfaceStatusMonitor interfaceStatusMonitor = new InterfaceStatusMonitor();
     private static final String JMX_INTERFACE_OBJ_NAME = "com.ericsson.sdncp.services.status:type=SvcInterfaceService";
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStatusMonitor.class);
 
-    private InterfaceStatusMonitor() {
+    private String serviceStatus;
+
+    public InterfaceStatusMonitor() {
     }
 
     public void registerMbean() {
@@ -33,7 +32,7 @@ public class InterfaceStatusMonitor implements InterfaceStatusMonitorMBean {
         try {
             ObjectName objName = new ObjectName(JMX_INTERFACE_OBJ_NAME);
             LOG.debug("MXBean Object-Name framed");
-            mbs.registerMBean(interfaceStatusMonitor, objName);
+            mbs.registerMBean(this, objName);
             LOG.info("MXBean registration SUCCESSFUL!!! {}", JMX_INTERFACE_OBJ_NAME);
         } catch (InstanceAlreadyExistsException iaeEx) {
             LOG.error("MXBean registration FAILED with InstanceAlreadyExistsException", iaeEx);
@@ -61,16 +60,12 @@ public class InterfaceStatusMonitor implements InterfaceStatusMonitorMBean {
         }
     }
 
-    public static InterfaceStatusMonitor getInstance() {
-        return interfaceStatusMonitor;
-    }
-
     @Override
     public String acquireServiceStatus() {
         return serviceStatus;
     }
 
-    public void reportStatus(String serviceStatus) {
-        this.serviceStatus = serviceStatus;
+    public void reportStatus(String newServiceStatus) {
+        this.serviceStatus = newServiceStatus;
     }
 }
