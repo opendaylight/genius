@@ -179,6 +179,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_cda002f7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-10-18T15:41:51Z",
+      "side": 1,
+      "message": "No problem..I understood that right after I posted the comment itself ;) No point in making another start method, if it is per bean.. But Stephen had some inputs in the mail about registering listeners and all in postConstruct? Does that bring in any value in this case? If not I am ready to change this..",
+      "parentUuid": "9a245df4_f712f5b2",
+      "revId": "57d456036da76fbaed9f198db50b6b81e4ad2553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_485450c9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
         "patchSetId": 10
