@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_5265cfdf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T12:31:52Z",
+      "side": 1,
+      "message": "Since this is managed (at shutdown) by the instance, not the class, it should really be an instance field. I realise you’re doing this so that it can be provided to the superclass, and perhaps that’s a better compromise (it’s certainly closer to what I’d like with DI-managed executor services), but you need to deal with the fallout in shutdown().",
+      "revId": "6a7166dc6896e0b80798019d1b96383aebb04100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_d2a09ff6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T12:31:52Z",
+      "side": 1,
+      "message": "Is this needed?",
+      "revId": "6a7166dc6896e0b80798019d1b96383aebb04100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
