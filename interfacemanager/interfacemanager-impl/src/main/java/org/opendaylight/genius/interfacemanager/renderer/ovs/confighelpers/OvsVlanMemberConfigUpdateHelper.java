@@ -17,12 +17,9 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
@@ -36,10 +33,17 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
-            AlivenessMonitorService alivenessMonitorService, ParentRefs parentRefsNew, Interface interfaceOld,
-            IfL2vlan ifL2vlanNew, Interface interfaceNew, IdManagerService idManager,
-            IMdsalApiManager mdsalApiManager) {
+    private final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper;
+    private final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper;
+
+    public OvsVlanMemberConfigUpdateHelper(OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
+            OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper) {
+        this.ovsVlanMemberConfigAddHelper = ovsVlanMemberConfigAddHelper;
+        this.ovsVlanMemberConfigRemoveHelper = ovsVlanMemberConfigRemoveHelper;
+    }
+
+    public List<ListenableFuture<Void>> updateConfiguration(ParentRefs parentRefsNew, Interface interfaceOld,
+            IfL2vlan ifL2vlanNew, Interface interfaceNew) {
         LOG.info("updating interface configuration for vlan memeber {} with parent-interface {}", interfaceNew
             .getName(), parentRefsNew.getParentInterface());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -49,12 +53,12 @@ public class OvsVlanMemberConfigUpdateHelper {
                 parentRefsOld.getParentInterface());
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
         InterfaceChildEntry interfaceChildEntry = InterfaceMetaUtils
-                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey, dataBroker);
+                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey,
+                        ovsVlanMemberConfigAddHelper.getDataBroker());
 
         if (interfaceChildEntry == null) {
-            futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
-                    interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
-                    mdsalApiManager));
+            futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
+                    interfaceNew));
             return futures;
         }
 
@@ -68,10 +72,8 @@ public class OvsVlanMemberConfigUpdateHelper {
         if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId())
                 || !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
             LOG.info("vlan-id modified for interface {}", interfaceNew.getName());
-            futures.addAll(OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefsOld, interfaceOld,
-                    idManager));
-            futures.addAll(OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefsNew, interfaceNew,
-                    idManager));
+            futures.addAll(ovsVlanMemberConfigRemoveHelper.removeConfiguration(parentRefsOld, interfaceOld));
+            futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(parentRefsNew, interfaceNew));
             return futures;
         }
 
@@ -79,6 +81,7 @@ public class OvsVlanMemberConfigUpdateHelper {
             return futures;
         }
 
+        DataBroker dataBroker = ovsVlanMemberConfigAddHelper.getDataBroker();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
             .interfaces.rev140508.interfaces.state.Interface pifState = InterfaceManagerCommonUtils
                 .getInterfaceState(parentRefsNew.getParentInterface(), dataBroker);

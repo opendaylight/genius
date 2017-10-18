@@ -26,7 +26,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -47,6 +46,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -547,16 +547,16 @@ public final class IfmUtil {
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
     }
 
-    public static void unbindService(DataBroker dataBroker, String interfaceName,
+    public static void unbindService(DataBroker dataBroker, JobCoordinator coordinator, String interfaceName,
             InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
-        unbindService(new ManagedNewTransactionRunnerImpl(dataBroker), interfaceName, boundServicesInstanceIdentifier);
+        unbindService(new ManagedNewTransactionRunnerImpl(dataBroker), coordinator, interfaceName,
+                boundServicesInstanceIdentifier);
     }
 
-    public static void unbindService(ManagedNewTransactionRunner txRunner, String interfaceName,
-            InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
+    public static void unbindService(ManagedNewTransactionRunner txRunner, JobCoordinator coordinator,
+            String interfaceName, InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         LOG.info("Unbinding Service from : {}", interfaceName);
-        DataStoreJobCoordinator dataStoreJobCoordinator = DataStoreJobCoordinator.getInstance();
-        dataStoreJobCoordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
+        coordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier)
                 )));

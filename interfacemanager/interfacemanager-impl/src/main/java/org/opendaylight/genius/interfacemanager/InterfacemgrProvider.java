@@ -25,7 +25,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -41,6 +40,7 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -93,13 +93,14 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
-    private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
 
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
+    private final JobCoordinator coordinator;
+    private final InterfaceStatusMonitor interfaceStatusMonitor = new InterfaceStatusMonitor();
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
@@ -108,19 +109,21 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
+            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+            final JobCoordinator coordinator) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
+        this.coordinator = coordinator;
     }
 
     @PostConstruct
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            INTERFACE_STATUS_MONITOR.registerMbean();
+            interfaceStatusMonitor.registerMbean();
             createIdPool();
 
             try {
@@ -138,9 +141,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
 
-            INTERFACE_STATUS_MONITOR.reportStatus("OPERATIONAL");
+            interfaceStatusMonitor.reportStatus("OPERATIONAL");
         } catch (Exception e) {
-            INTERFACE_STATUS_MONITOR.reportStatus("ERROR");
+            interfaceStatusMonitor.reportStatus("ERROR");
             throw e;
         }
         LOG.info("InterfacemgrProvider Started");
@@ -149,7 +152,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     @PreDestroy
     public void close() throws Exception {
-        INTERFACE_STATUS_MONITOR.unregisterMbean();
+        interfaceStatusMonitor.unregisterMbean();
 
         if (configEntityCandidate != null) {
             configEntityCandidate.close();
@@ -477,7 +480,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo) {
-        IfmUtil.unbindService(txRunner, interfaceName,
+        IfmUtil.unbindService(txRunner, coordinator, interfaceName,
                 FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
     }
 
@@ -713,10 +716,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return;
         }
 
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         ParentRefUpdateWorker parentRefUpdateWorker = new ParentRefUpdateWorker(interfaceName, parentInterface,
                 readInterfaceBeforeWrite);
-        jobCoordinator.enqueueJob(interfaceName, parentRefUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
+        coordinator.enqueueJob(interfaceName, parentRefUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     public class ParentRefUpdateWorker implements Callable<List<ListenableFuture<Void>>> {

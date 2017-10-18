@@ -16,7 +16,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -26,6 +25,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsIn
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -50,11 +50,16 @@ public class InterfaceConfigListener
     private final IMdsalApiManager mdsalApiManager;
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
+    private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
+    private final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper;
+    private final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper;
 
     @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
             final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
-            final AlivenessMonitorService alivenessMonitorService, final EntityOwnershipUtils entityOwnershipUtils) {
+            final AlivenessMonitorService alivenessMonitorService, final EntityOwnershipUtils entityOwnershipUtils,
+            final JobCoordinator coordinator) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManager;
@@ -62,6 +67,13 @@ public class InterfaceConfigListener
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.alivenessMonitorService = alivenessMonitorService;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
+        this.ovsInterfaceConfigRemoveHelper = new OvsInterfaceConfigRemoveHelper(dataBroker, alivenessMonitorService,
+                mdsalApiManager, idManager, coordinator);
+        this.ovsInterfaceConfigAddHelper = new OvsInterfaceConfigAddHelper(dataBroker, alivenessMonitorService,
+                mdsalApiManager, idManager, coordinator);
+        this.ovsInterfaceConfigUpdateHelper = new OvsInterfaceConfigUpdateHelper(ovsInterfaceConfigAddHelper,
+                ovsInterfaceConfigRemoveHelper);
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -91,7 +103,7 @@ public class InterfaceConfigListener
 
     private void runOnlyInOwnerNode(String jobDesc, Runnable job) {
         entityOwnershipUtils.runOnlyInOwnerNode(IfmConstants.INTERFACE_CONFIG_ENTITY,
-                IfmConstants.INTERFACE_CONFIG_ENTITY, DataStoreJobCoordinator.getInstance(), jobDesc, job);
+                IfmConstants.INTERFACE_CONFIG_ENTITY, coordinator, jobDesc, job);
     }
 
     @Override
@@ -106,7 +118,6 @@ public class InterfaceConfigListener
                 return;
             }
             boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
                     interfaceOld.getName(), parentRefs);
             String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
@@ -135,7 +146,6 @@ public class InterfaceConfigListener
                         interfaceNew.getName(), parentRefs);
                 return;
             }
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew,
                     interfaceNew.getName());
             String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
@@ -163,7 +173,6 @@ public class InterfaceConfigListener
                 return;
             }
 
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs,
                     interfaceNew.getName());
             String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
@@ -201,8 +210,7 @@ public class InterfaceConfigListener
         public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg: another OpenFlow based switch) needs to be supported, check
             // can be performed here to call the respective helpers.
-            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, idManager,
-                    alivenessMonitorService, mdsalApiManager);
+            return ovsInterfaceConfigAddHelper.addConfiguration(parentRefs, interfaceNew);
         }
 
         @Override
@@ -230,8 +238,7 @@ public class InterfaceConfigListener
         public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg: another OpenFlow based switch) needs to be supported, check
             // can be performed here to call the respective helpers.
-            return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService, idManager,
-                    mdsalApiManager, interfaceNew, interfaceOld);
+            return ovsInterfaceConfigUpdateHelper.updateConfiguration(interfaceNew, interfaceOld);
         }
 
         @Override
@@ -259,8 +266,7 @@ public class InterfaceConfigListener
         public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg: HWVTEP) needs to be supported, check
             // can be performed here to call the respective helpers.
-            return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService, interfaceOld,
-                    idManager, mdsalApiManager, parentRefs);
+            return ovsInterfaceConfigRemoveHelper.removeConfiguration(interfaceOld, parentRefs);
         }
 
         @Override
