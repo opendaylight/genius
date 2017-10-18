@@ -15,13 +15,13 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -38,14 +38,19 @@ public class InterfaceTopologyStateListener
     private final DataBroker dataBroker;
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
+    private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
 
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
-            final EntityOwnershipUtils entityOwnershipUtils) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
+        this.ovsInterfaceTopologyStateUpdateHelper = new OvsInterfaceTopologyStateUpdateHelper(dataBroker,
+                entityOwnershipUtils, coordinator);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -62,7 +67,7 @@ public class InterfaceTopologyStateListener
 
     private void runOnlyInOwnerNode(String jobDesc, Runnable job) {
         entityOwnershipUtils.runOnlyInOwnerNode(IfmConstants.INTERFACE_CONFIG_ENTITY,
-                IfmConstants.INTERFACE_CONFIG_ENTITY, DataStoreJobCoordinator.getInstance(), jobDesc, job);
+                IfmConstants.INTERFACE_CONFIG_ENTITY, coordinator, jobDesc, job);
     }
 
     @Override
@@ -74,9 +79,8 @@ public class InterfaceTopologyStateListener
         interfaceMgrProvider.removeBridgeForNodeIid(nodeIid);
 
         runOnlyInOwnerNode("OVSDB bridge removed", () -> {
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
-            jobCoordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker,
+            coordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker,
                 IfmConstants.JOB_MAX_RETRIES);
         });
     }
@@ -95,15 +99,13 @@ public class InterfaceTopologyStateListener
             DatapathId oldDpid = bridgeOld.getDatapathId();
             DatapathId newDpid = bridgeNew.getDatapathId();
             if (oldDpid == null && newDpid != null) {
-                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
                 RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-                jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                         IfmConstants.JOB_MAX_RETRIES);
             } else if (oldDpid != null && !oldDpid.equals(newDpid)) {
-                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
                 RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew,
                         bridgeOld);
-                jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+                coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                         IfmConstants.JOB_MAX_RETRIES);
             }
         });
@@ -118,9 +120,8 @@ public class InterfaceTopologyStateListener
         interfaceMgrProvider.addBridgeForNodeIid(nodeIid, bridgeNew);
 
         runOnlyInOwnerNode("OVSDB bridge added", () -> {
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
-            jobCoordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
+            coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                 IfmConstants.JOB_MAX_RETRIES);
         });
     }
@@ -172,8 +173,7 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld,
-                    dataBroker);
+            return ovsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld);
         }
     }
 }

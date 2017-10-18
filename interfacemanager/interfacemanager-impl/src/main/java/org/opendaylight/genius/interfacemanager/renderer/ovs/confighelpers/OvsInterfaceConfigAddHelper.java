@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -28,6 +26,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.Southboun
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -52,21 +51,31 @@ import org.slf4j.LoggerFactory;
 public final class OvsInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigAddHelper.class);
 
-    private OvsInterfaceConfigAddHelper() {
+    private final DataBroker dataBroker;
+    private final AlivenessMonitorService alivenessMonitorService;
+    private final IMdsalApiManager mdsalApiManager;
+    private final IdManagerService idManager;
+    private final JobCoordinator coordinator;
+
+    public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+            IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator) {
+        this.dataBroker = dataBroker;
+        this.alivenessMonitorService = alivenessMonitorService;
+        this.mdsalApiManager = mdsalApiManager;
+        this.idManager = idManager;
+        this.coordinator = coordinator;
     }
 
-    public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-            Interface interfaceNew, IdManagerService idManager, AlivenessMonitorService alivenessMonitorService,
-            IMdsalApiManager mdsalApiManager) {
+    public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
-            addTunnelConfiguration(dataBroker, parentRefs, interfaceNew, idManager, alivenessMonitorService, ifTunnel,
-                    mdsalApiManager, defaultConfigShardTransaction, defaultOperShardTransaction, futures);
+            addTunnelConfiguration(parentRefs, interfaceNew, ifTunnel, defaultConfigShardTransaction,
+                    defaultOperShardTransaction, futures);
         } else {
-            addVlanConfiguration(interfaceNew, parentRefs, dataBroker, idManager, defaultConfigShardTransaction,
+            addVlanConfiguration(interfaceNew, parentRefs, defaultConfigShardTransaction,
                     defaultOperShardTransaction, futures);
         }
         futures.add(defaultConfigShardTransaction.submit());
@@ -74,9 +83,9 @@ public final class OvsInterfaceConfigAddHelper {
         return futures;
     }
 
-    private static void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs, DataBroker dataBroker,
-            IdManagerService idManager, WriteTransaction defaultConfigShardTransaction,
-            WriteTransaction defaultOperShardTransaction, List<ListenableFuture<Void>> futures) {
+    private void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs,
+            WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
+            List<ListenableFuture<Void>> futures) {
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
@@ -95,19 +104,14 @@ public final class OvsInterfaceConfigAddHelper {
         InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, defaultOperShardTransaction,
                 idManager, futures, ifState);
 
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(dataBroker, idManager,
                 interfaceNew.getName(), ifState);
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private static void addTunnelConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-                                               Interface interfaceNew, IdManagerService idManager,
-                                               AlivenessMonitorService alivenessMonitorService,
-                                               IfTunnel ifTunnel, IMdsalApiManager mdsalApiManager,
-                                               WriteTransaction defaultConfigShardTransaction,
-                                               WriteTransaction defaultOperShardTransaction,
-                                               List<ListenableFuture<Void>> futures) {
+    private void addTunnelConfiguration(ParentRefs parentRefs, Interface interfaceNew, IfTunnel ifTunnel,
+            WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
+            List<ListenableFuture<Void>> futures) {
         if (parentRefs == null) {
             LOG.warn(
                     "ParentRefs for interface: {} Not Found. "
@@ -144,10 +148,8 @@ public final class OvsInterfaceConfigAddHelper {
                     .Interface
                     interfaceState = InterfaceManagerCommonUtils.getInterfaceState(tunnelName, dataBroker);
             if (interfaceState != null) {
-                DataStoreJobCoordinator.getInstance().enqueueJob(
-                        tunnelName, () -> OvsInterfaceStateAddHelper.addState(
-                                dataBroker, idManager, mdsalApiManager, alivenessMonitorService,
-                                interfaceNew.getName(), interfaceState));
+                coordinator.enqueueJob(tunnelName, () -> OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
+                        mdsalApiManager, alivenessMonitorService, interfaceNew.getName(), interfaceState));
             }
         } else {
             tunnelName = interfaceNew.getName();

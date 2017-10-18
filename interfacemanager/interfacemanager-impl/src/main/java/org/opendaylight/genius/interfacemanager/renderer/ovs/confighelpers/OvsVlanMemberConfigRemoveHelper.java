@@ -32,8 +32,15 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-            Interface interfaceOld, IdManagerService idManager) {
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+
+    public OvsVlanMemberConfigRemoveHelper(DataBroker dataBroker, IdManagerService idManager) {
+        this.dataBroker = dataBroker;
+        this.idManager = idManager;
+    }
+
+    public List<ListenableFuture<Void>> removeConfiguration(ParentRefs parentRefs, Interface interfaceOld) {
         LOG.debug("remove vlan member configuration {}", interfaceOld.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();

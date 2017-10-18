@@ -34,6 +34,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="notificationService"
                interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
 
+    <reference id="jobCoordinator"
+             interface="org.opendaylight.infrautils.jobcoordinator.JobCoordinator"/>
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <service ref="interfacemgrProvider"
