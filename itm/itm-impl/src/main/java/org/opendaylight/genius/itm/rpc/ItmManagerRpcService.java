@@ -34,7 +34,6 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
@@ -101,14 +100,12 @@ public class ItmManagerRpcService implements ItmRpcService {
     private static final Logger LOG = LoggerFactory.getLogger(ItmManagerRpcService.class);
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalManager;
-    private final IdManagerService idManagerService;
     private final ItmConfig itmConfig;
 
     @Inject
-    public ItmManagerRpcService(final DataBroker dataBroker,final IdManagerService idManagerService,
+    public ItmManagerRpcService(final DataBroker dataBroker,
                                 final IMdsalApiManager mdsalManager, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
-        this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
     }
@@ -474,7 +471,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 for (TransportZone tzone : transportZones.getTransportZone()) {
-                    if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class))) {
+                    if (!tzone.getTunnelType().equals(TunnelTypeVxlan.class)) {
                         continue;
                     }
                     foundVxlanTzone = true;
@@ -554,7 +551,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 for (TransportZone tzone : transportZones.getTransportZone()) {
-                    if (!(tzone.getTunnelType().equals(TunnelTypeVxlan.class))) {
+                    if (!tzone.getTunnelType().equals(TunnelTypeVxlan.class)) {
                         continue;
                     }
                     String transportZone = tzone.getZoneName();
@@ -787,9 +784,9 @@ public class ItmManagerRpcService implements ItmRpcService {
         IpAddress dcgwIpAddr = new IpAddress(dcgwIpStr.toCharArray());
         long retVal;
 
-        if ((dcGatewayIpList != null)
-                && (!dcGatewayIpList.isEmpty())
-                && (dcGatewayIpList.contains(dcgwIpAddr))) {
+        if (dcGatewayIpList != null
+                && !dcGatewayIpList.isEmpty()
+                && dcGatewayIpList.contains(dcgwIpAddr)) {
             //Match found
             retVal = 1;
             IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
