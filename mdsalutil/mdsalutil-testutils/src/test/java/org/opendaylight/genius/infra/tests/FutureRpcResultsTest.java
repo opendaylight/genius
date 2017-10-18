@@ -10,13 +10,17 @@ package org.opendaylight.genius.infra.tests;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
+import static org.opendaylight.genius.infra.FutureRpcResults.LogLevel.NONE;
 import static org.opendaylight.genius.infra.FutureRpcResults.fromListenableFuture;
 
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Rule;
 import org.junit.Test;
 import org.opendaylight.genius.infra.FutureRpcResults;
+import org.opendaylight.genius.infra.FutureRpcResults.LogLevel;
 import org.opendaylight.genius.infra.testutils.TestFutureRpcResults;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
@@ -32,6 +36,7 @@ public class FutureRpcResultsTest {
     private static final Logger LOG = LoggerFactory.getLogger(FutureRpcResultsTest.class);
 
     public @Rule LogRule logRule = new LogRule();
+    public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
     @Test
     public void testListenableFutureSuccess() throws Exception {
@@ -42,6 +47,7 @@ public class FutureRpcResultsTest {
 
     @Test
     public void testFailedListenableFuture() throws Exception {
+        logCaptureRule.expectError("RPC testFailedListenableFuture() failed; input = null");
         TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, null, () ->
                 immediateFailedFuture(new IllegalArgumentException("boum"))).build(),
                     IllegalArgumentException.class, "boum");
@@ -49,6 +55,7 @@ public class FutureRpcResultsTest {
 
     @Test
     public void testFromListenableFutureException() throws Exception {
+        logCaptureRule.expectError("RPC testFromListenableFutureException() failed; input = null");
         TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(
             LOG, null, () -> {
                 throw new IllegalArgumentException("bam");
@@ -56,7 +63,37 @@ public class FutureRpcResultsTest {
     }
 
     @Test
+    public void testFromListenableFutureExceptionWarnInsteadError() throws Exception {
+        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(
+            LOG, "testFromListenableFutureException", null, () -> {
+                throw new IllegalArgumentException("bam");
+            }).onFailureLogLevel(LogLevel.WARN).build(), IllegalArgumentException.class, "bam");
+    }
+
+    @Test
+    public void testFromListenableFutureExceptionNoLog() throws Exception {
+        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(
+            LOG, "testFromListenableFutureException", null, () -> {
+                throw new IllegalArgumentException("bam");
+            }).onFailureLogLevel(NONE).build(), IllegalArgumentException.class, "bam");
+    }
+
+    @Test
+    public void testFromListenableFutureExceptionAlsoLog() throws Exception {
+        final AtomicBoolean afterLogActionCalled = new AtomicBoolean(false);
+        logCaptureRule.expectError("RPC testFromListenableFutureException() failed; input = null");
+        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(
+            LOG, "testFromListenableFutureException", null, () -> {
+                throw new IllegalArgumentException("bam");
+            }).onFailure(e -> {
+                afterLogActionCalled.set(true);
+            }).build(), IllegalArgumentException.class, "bam");
+        assertThat(afterLogActionCalled.get()).isTrue();
+    }
+
+    @Test
     public void testFromListenableFutureExceptionCustomMessage() throws Exception {
+        logCaptureRule.expectError("RPC testFromListenableFutureExceptionCustomMessage() failed; input = null");
         TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, null, () -> {
             throw new IllegalArgumentException("bam");
         }).withRpcErrorMessage(e -> "tra la la").build(), IllegalArgumentException.class, "tra la la");
