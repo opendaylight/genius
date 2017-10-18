@@ -18,7 +18,6 @@ import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -28,8 +27,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsInterfaceStateRemoveHelper {
+public final class OvsInterfaceStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateRemoveHelper.class);
+
+    private OvsInterfaceStateRemoveHelper() {
+    }
 
     public static List<ListenableFuture<Void>> removeInterfaceStateConfiguration(IdManagerService idManager,
             IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
@@ -63,7 +65,7 @@ public class OvsInterfaceStateRemoveHelper {
                             interfaceName);
                     handleTunnelMonitoringRemoval(alivenessMonitorService, mdsalApiManager, dataBroker, dpId,
                             iface.getName(), iface.getAugmentation(IfTunnel.class), defaultOperationalShardTransaction,
-                            nodeConnectorId, futures);
+                            futures);
                     return futures;
                 }
             }
@@ -83,11 +85,10 @@ public class OvsInterfaceStateRemoveHelper {
 
     public static void handleTunnelMonitoringRemoval(AlivenessMonitorService alivenessMonitorService,
             IMdsalApiManager mdsalApiManager, DataBroker dataBroker, BigInteger dpId, String interfaceName,
-            IfTunnel ifTunnel, WriteTransaction transaction, NodeConnectorId nodeConnectorId,
+            IfTunnel ifTunnel, WriteTransaction transaction,
             List<ListenableFuture<Void>> futures) {
-        long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
-        InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
-                interfaceName, -1, NwConstants.DEL_FLOW);
+        InterfaceManagerCommonUtils.removeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId,
+                interfaceName);
         FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
         futures.add(transaction.submit());
         AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);

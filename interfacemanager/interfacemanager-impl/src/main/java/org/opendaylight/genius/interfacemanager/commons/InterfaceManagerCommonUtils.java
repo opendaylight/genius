@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -219,54 +220,52 @@ public final class InterfaceManagerCommonUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orNull();
     }
 
-    /**
-     * Build the tunnel ingress flow.
-     *
-     * @deprecated Use {@link #makeTunnelIngressFlow(IMdsalApiManager, IfTunnel, BigInteger, long, String, int, int)}.
-     */
-    @Deprecated
-    public static void makeTunnelIngressFlow(List<ListenableFuture<Void>> futures, IMdsalApiManager mdsalApiManager,
-            IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
-        makeTunnelIngressFlow(mdsalApiManager, tunnel, dpnId, portNo, interfaceName, ifIndex, addOrRemoveFlow);
-    }
-
-    public static void makeTunnelIngressFlow(IMdsalApiManager mdsalApiManager,
-            IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex, int addOrRemoveFlow) {
-
+    public static void addTunnelIngressFlow(IMdsalApiManager mdsalApiManager,
+            IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName, int ifIndex) {
         if (tunnel != null && tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
             return;
         }
-        LOG.debug("make tunnel ingress flow for {}", interfaceName);
-        String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
-                NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
-        List<MatchInfoBase> matches = new ArrayList<>();
-        List<InstructionInfo> mkInstructions = new ArrayList<>();
-        if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            matches.add(new MatchInPort(dpnId, portNo));
-            if (BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
-                matches.add(new NxMatchTunnelSourceIp(tunnel.getTunnelDestination().getIpv4Address()));
-            }
-            if (BooleanUtils.isTrue(tunnel.isTunnelSourceIpFlow())) {
-                matches.add(new NxMatchTunnelDestinationIp(tunnel.getTunnelSource().getIpv4Address()));
-            }
+        LOG.debug("add tunnel ingress flow for {}", interfaceName);
 
-            mkInstructions.add(
-                    new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
-                            MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
-            short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
-                    ? NwConstants.L3_LFIB_TABLE
-                    : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
-            mkInstructions.add(new InstructionGotoTable(tableId));
+        List<MatchInfoBase> matches = new ArrayList<>();
+        matches.add(new MatchInPort(dpnId, portNo));
+        if (BooleanUtils.isTrue(tunnel.isTunnelRemoteIpFlow())) {
+            matches.add(new NxMatchTunnelSourceIp(tunnel.getTunnelDestination().getIpv4Address()));
+        }
+        if (BooleanUtils.isTrue(tunnel.isTunnelSourceIpFlow())) {
+            matches.add(new NxMatchTunnelDestinationIp(tunnel.getTunnelSource().getIpv4Address()));
         }
 
+        List<InstructionInfo> mkInstructions = new ArrayList<>();
+        mkInstructions.add(
+                new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
+                        MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
+        short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
+                ? NwConstants.L3_LFIB_TABLE
+                : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
+        mkInstructions.add(new InstructionGotoTable(tableId));
+
+        String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
+                NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
         FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,
                 IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
                 mkInstructions);
-        if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            mdsalApiManager.batchedAddFlow(dpnId, flowEntity);
-        } else {
-            mdsalApiManager.batchedRemoveFlow(dpnId, flowEntity);
+        mdsalApiManager.batchedAddFlow(dpnId, flowEntity);
+    }
+
+    public static void removeTunnelIngressFlow(IMdsalApiManager mdsalApiManager,
+            IfTunnel tunnel, BigInteger dpnId, String interfaceName) {
+        if (tunnel != null && tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+            return;
         }
+        LOG.debug("remove tunnel ingress flow for {}", interfaceName);
+        String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
+                NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
+
+        FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,
+                IfmConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE,
+                Collections.emptyList(), Collections.emptyList());
+        mdsalApiManager.batchedRemoveFlow(dpnId, flowEntity);
     }
 
     public static String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
