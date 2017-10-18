@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_f2604337",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-18T14:39:48Z",
+      "side": 1,
+      "message": "With the current approach, the listeners fw hands over the shutdown policy to the specific listeners, so I\u0027d say we are done (by now) with the fw and with this change in particular, right?",
+      "parentUuid": "9a245df4_523caf2f",
+      "range": {
+        "startLine": 106,
+        "startChar": 3,
+        "endLine": 107,
+        "endChar": 36
+      },
+      "revId": "6a7166dc6896e0b80798019d1b96383aebb04100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_d2a09ff6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
         "patchSetId": 4
