@@ -48,7 +48,7 @@ public final class FutureRpcResults {
      *        does not have to do any exception handling (specifically it does NOT have to catch and
      *        wrap any exception into a failed Future); this utility does that for you.
      *
-     * @return a new Builder
+     * @return a new FutureRpcResultBuilder
      */
     @CheckReturnValue
     public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
@@ -56,10 +56,28 @@ public final class FutureRpcResults {
         return new FutureRpcResultBuilder<>(logger, rpcMethodName, input, callable);
     }
 
+    @CheckReturnValue
+    public static <I> FutureRpcResultBuilder<I, Void> fromListenableFuture(Logger logger, String rpcMethodName,
+            @Nullable I input, final CheckedRunnable runnable) {
+        return new FutureRpcResultBuilder<>(logger, rpcMethodName, input, () -> {
+            runnable.run();
+            return Futures.immediateFuture(null);
+        });
+    }
+
+    @CheckReturnValue
+    public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
+            @Nullable I input, Callable<Builder<O>> builder) {
+        Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
+        return fromListenableFuture(logger, rpcMethodName, input, callable);
+    }
+
     public enum LogLevel { ERROR, WARN, INFO, DEBUG, TRACE }
 
     public static class FutureRpcResultBuilder<I, O> implements Builder<Future<RpcResult<O>>> {
 
+        private final Logger logger;
+        private final String rpcMethodName;
         @Nullable private final I input;
         private final Callable<ListenableFuture<O>> callable;
         private Function<Throwable, String> rpcErrorMessageFunction = e -> e.getMessage();
@@ -69,6 +87,8 @@ public final class FutureRpcResults {
 
         private FutureRpcResultBuilder(Logger logger, String rpcMethodName, I input,
                 Callable<ListenableFuture<O>> callable) {
+            this.logger = logger;
+            this.rpcMethodName = rpcMethodName;
             this.input = input;
             this.callable = callable;
             // Default methods which can be overwritten by users:
@@ -102,7 +122,9 @@ public final class FutureRpcResults {
         public Future<RpcResult<O>> build() {
             SettableFuture<RpcResult<O>> futureRpcResult = SettableFuture.create();
             try {
-                Futures.addCallback(callable.call(), new FutureCallback<O>() {
+                logger.trace("RPC {}() entered; input = {}", rpcMethodName, input);
+                ListenableFuture<O> output = callable.call();
+                Futures.addCallback(output, new FutureCallback<O>() {
                     @Override
                     public void onSuccess(O result) {
                         onSuccessConsumer.accept(result);

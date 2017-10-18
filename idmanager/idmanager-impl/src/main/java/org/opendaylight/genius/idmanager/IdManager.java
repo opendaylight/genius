@@ -13,6 +13,7 @@ import static java.util.stream.Collectors.toCollection;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -51,6 +51,7 @@ import org.opendaylight.genius.idmanager.jobs.IdHolderSyncJob;
 import org.opendaylight.genius.idmanager.jobs.LocalPoolCreateJob;
 import org.opendaylight.genius.idmanager.jobs.LocalPoolDeleteJob;
 import org.opendaylight.genius.idmanager.jobs.UpdateIdEntryJob;
+import org.opendaylight.genius.infra.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
@@ -186,55 +187,42 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     @Override
     public Future<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
         LOG.info("createIdPool called with input {}", input);
-        String poolName = input.getPoolName();
         long low = input.getLow();
         long high = input.getHigh();
         long blockSize = idUtils.computeBlockSize(low, high);
-        Future<RpcResult<Void>> futureResult;
-        try {
-            idUtils.lock(lockManager, poolName);
-            WriteTransaction tx = broker.newWriteOnlyTransaction();
-            poolName = poolName.intern();
-            IdPool idPool;
-            idPool = createGlobalPool(tx, poolName, low, high, blockSize);
-            String localPoolName = idUtils.getLocalPoolName(poolName);
-            IdLocalPool idLocalPool = localPool.get(poolName);
-            if (idLocalPool == null) {
-                createLocalPool(tx, localPoolName, idPool);
-                idUtils.updateChildPool(tx, idPool.getPoolName(), localPoolName);
+        return FutureRpcResults.fromListenableFuture(LOG, "createIdPool", input, () -> {
+            String poolName = input.getPoolName().intern();
+            try {
+                idUtils.lock(lockManager, poolName);
+                WriteTransaction tx = broker.newWriteOnlyTransaction();
+                IdPool idPool;
+                idPool = createGlobalPool(tx, poolName, low, high, blockSize);
+                String localPoolName = idUtils.getLocalPoolName(poolName);
+                IdLocalPool idLocalPool = localPool.get(poolName);
+                if (idLocalPool == null) {
+                    createLocalPool(tx, localPoolName, idPool);
+                    idUtils.updateChildPool(tx, idPool.getPoolName(), localPoolName);
+                }
+                return tx.submit();
+            } finally {
+                idUtils.unlock(lockManager, poolName);
             }
-            tx.submit().checkedGet();
-            futureResult = RpcResultBuilder.<Void>success().buildFuture();
-        } catch (OperationFailedException | IdManagerException e) {
-            futureResult = buildFailedRpcResultFuture("createIdPool failed: " + input.toString(), e);
-        } finally {
-            idUtils.unlock(lockManager, poolName);
-        }
-        return futureResult;
+        }).build();
     }
 
     @Override
     public Future<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
-        LOG.debug("AllocateId called with input {}", input);
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
-        String localPoolName = idUtils.getLocalPoolName(poolName);
-        long newIdValue = -1;
-        AllocateIdOutputBuilder output = new AllocateIdOutputBuilder();
-        Future<RpcResult<AllocateIdOutput>> futureResult;
-        try {
-            //allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
-            newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
-            output.setIdValue(newIdValue);
-            futureResult = RpcResultBuilder.<AllocateIdOutput>success().withResult(output.build()).buildFuture();
-        } catch (OperationFailedException | IdManagerException e) {
-            completeExceptionallyIfPresent(poolName, idKey, e);
-            futureResult = buildFailedRpcResultFuture("allocateId failed: " + input.toString(), e);
-        }
-        return futureResult;
+        return FutureRpcResults.fromBuilder(LOG, "allocateId", input, () -> {
+            String localPoolName = idUtils.getLocalPoolName(poolName);
+            // allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
+            long newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
+            return new AllocateIdOutputBuilder().setIdValue(newIdValue);
+        }).onFailure(e -> completeExceptionallyIfPresent(poolName, idKey, e)).build();
     }
 
-    private void completeExceptionallyIfPresent(String poolName, String idKey, Exception exception) {
+    private void completeExceptionallyIfPresent(String poolName, String idKey, Throwable exception) {
         CompletableFuture<List<Long>> completableFuture =
                 idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey));
         if (completableFuture != null) {
@@ -244,38 +232,24 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Override
     public Future<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("AllocateIdRange called with input {}", input);
-        }
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         long size = input.getSize();
         String localPoolName = idUtils.getLocalPoolName(poolName);
-        List<Long> newIdValuesList = new ArrayList<>();
         AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
-        Future<RpcResult<AllocateIdRangeOutput>> futureResult;
-        try {
-            newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
+        return FutureRpcResults.fromBuilder(LOG, "allocateIdRange", input, () -> {
+            List<Long> newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
             Collections.sort(newIdValuesList);
             output.setIdValues(newIdValuesList);
-            futureResult = RpcResultBuilder.<AllocateIdRangeOutput>success().withResult(output.build()).buildFuture();
-        } catch (OperationFailedException | IdManagerException e) {
-            completeExceptionallyIfPresent(poolName, idKey, e);
-            futureResult = buildFailedRpcResultFuture("allocateIdRange failed: " + input.toString(), e);
-        }
-        return futureResult;
+            return output;
+        }).onFailure(e -> completeExceptionallyIfPresent(poolName, idKey, e)).build();
     }
 
     @Override
     public Future<RpcResult<Void>> deleteIdPool(DeleteIdPoolInput input) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("DeleteIdPool called with input {}", input);
-        }
-        String poolName = input.getPoolName();
-        Future<RpcResult<Void>> futureResult;
-        try {
+        return FutureRpcResults.fromListenableFuture(LOG, "deleteIdPool", input, () -> {
+            String poolName = input.getPoolName().intern();
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
-            poolName = poolName.intern();
             synchronized (poolName) {
                 IdPool idPool = singleTxDB.syncRead(CONFIGURATION, idPoolToBeDeleted);
                 List<ChildPools> childPoolList = idPool.getChildPools();
@@ -287,33 +261,27 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     LOG.debug("Deleted id pool {}", poolName);
                 }
             }
-            futureResult = RpcResultBuilder.<Void>success().buildFuture();
-        } catch (OperationFailedException e) {
-            futureResult = buildFailedRpcResultFuture("deleteIdPool failed: " + input.toString(), e);
-        }
-        return futureResult;
+            // TODO return the Future from a TBD asyncDelete instead.. BUT check that all callers @CheckReturnValue
+            return Futures.immediateFuture((Void) null);
+        }).build();
     }
 
     @Override
     public Future<RpcResult<Void>> releaseId(ReleaseIdInput input) {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
-        LOG.info("Releasing ID {} from pool {}", idKey, poolName);
-        Future<RpcResult<Void>> futureResult;
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
-        try {
+        return FutureRpcResults.fromListenableFuture(LOG, "releaseId", input, () -> {
             idUtils.lock(lockManager, uniqueKey);
             releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
-            futureResult = RpcResultBuilder.<Void>success().buildFuture();
-        } catch (ReadFailedException | IdManagerException e) {
-            futureResult = buildFailedRpcResultFuture("releaseId failed: " + input.toString(), e);
-            idUtils.unlock(lockManager, uniqueKey);
-        }
-        return futureResult;
+            // TODO return the Future from releaseIdFromLocalPool() instead.. check all callers @CheckReturnValue
+            return Futures.immediateFuture((Void) null);
+        }).onFailure(e -> idUtils.unlock(lockManager, uniqueKey)).build();
     }
 
     private <T> ListenableFuture<RpcResult<T>> buildFailedRpcResultFuture(String msg, Exception exception) {
         if (exception instanceof IdDoesNotExistException) {
+            // TODO Huh? WTF - it's the same in ?!
             // Do not log full stack trace in case ID does not exist
             LOG.error(msg, exception);
         } else {
