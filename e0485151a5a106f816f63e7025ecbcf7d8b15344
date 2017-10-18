@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_b4499bd2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T08:34:50Z",
+      "side": 1,
+      "message": "Very, very minor: “Owner” ;-).",
+      "revId": "e0485151a5a106f816f63e7025ecbcf7d8b15344",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f412f3b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T08:34:50Z",
+      "side": 1,
+      "message": "Same here.",
+      "revId": "e0485151a5a106f816f63e7025ecbcf7d8b15344",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
