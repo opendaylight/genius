@@ -11,19 +11,18 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -42,21 +41,16 @@ public class FlowBasedServicesInterfaceStateListener
 
     private final DataBroker dataBroker;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
 
     @Inject
     public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
-            final EntityOwnershipUtils entityOwnershipUtils) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-    }
-
-    @Override
-    @PreDestroy
-    public void close() {
-        LOG.info("FlowBasedServicesInterfaceStateListener closed");
-
     }
 
     @Override
@@ -73,7 +67,6 @@ public class FlowBasedServicesInterfaceStateListener
         }
 
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
                 .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
                         new RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRendererFactory
@@ -96,7 +89,6 @@ public class FlowBasedServicesInterfaceStateListener
         }
 
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
                 interfaceStateNew.getName(),
                 new RendererStateInterfaceBindWorker(FlowBasedServicesStateRendererFactory

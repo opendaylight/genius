@@ -13,12 +13,12 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -32,11 +32,14 @@ public class InterfaceStateListener
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
 
     @Inject
-    public InterfaceStateListener(DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils) {
+    public InterfaceStateListener(DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
+            final JobCoordinator coordinator) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -66,7 +69,6 @@ public class InterfaceStateListener
             return;
         }
         LOG.debug("Received Tunnel state add event for {}", interfaceStateNew.getName());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         coordinator.enqueueJob(interfaceStateNew.getName(), () -> {
             Interface.OperStatus bfdState = InterfaceManagerCommonUtils
                     .getBfdStateFromCache(interfaceStateNew.getName());
