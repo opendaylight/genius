@@ -24,8 +24,23 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
 
-    public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
-            Interface interfaceNew, IdManagerService idManager) {
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+
+    public OvsVlanMemberConfigAddHelper(DataBroker dataBroker, IdManagerService idManager) {
+        this.dataBroker = dataBroker;
+        this.idManager = idManager;
+    }
+
+    public DataBroker getDataBroker() {
+        return dataBroker;
+    }
+
+    public IdManagerService getIdManager() {
+        return idManager;
+    }
+
+    public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();

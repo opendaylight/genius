@@ -24,7 +24,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
@@ -32,6 +31,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesRendererFactory;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -53,12 +53,14 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final JobCoordinator coordinator;
 
     @Inject
     public FlowBasedServicesConfigListener(final DataBroker dataBroker,
-            final EntityOwnershipUtils entityOwnershipUtils) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.coordinator = coordinator;
         registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -139,7 +141,6 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = FlowBasedServicesRendererFactory
             .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode())
             .getFlowBasedServicesRemoveRenderer();
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(serviceKey.getInterfaceName(),
             serviceKey.getServiceMode(), flowBasedServicesConfigRemovable, boundServiceOld, boundServicesList);
         coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
@@ -164,7 +165,6 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             boundServicesNew);
         FlowBasedServicesConfigAddable flowBasedServicesAddable = FlowBasedServicesRendererFactory
             .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesAddRenderer();
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         RendererConfigAddWorker configWorker = new RendererConfigAddWorker(serviceKey.getInterfaceName(),
             serviceKey.getServiceMode(), flowBasedServicesAddable, boundServicesNew, boundServicesList);
         coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);

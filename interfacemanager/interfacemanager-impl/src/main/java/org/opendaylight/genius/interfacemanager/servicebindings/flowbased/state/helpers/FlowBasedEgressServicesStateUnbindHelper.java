@@ -18,6 +18,7 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -30,10 +31,13 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateUnbindHelper.class);
     private static volatile FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
+    private final JobCoordinator coordinator;
+
     @Inject
-    public FlowBasedEgressServicesStateUnbindHelper(final DataBroker dataBroker) {
+    public FlowBasedEgressServicesStateUnbindHelper(final DataBroker dataBroker, final JobCoordinator coordinator) {
         super(dataBroker);
         flowBasedServicesStateRemovable = this;
+        this.coordinator = coordinator;
     }
 
     public static FlowBasedServicesStateRemovable getFlowBasedEgressServicesStateRemoveHelper() {
@@ -61,7 +65,8 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
         }));
         // remove the default egress service bound on the interface, once all
         // flows are removed
-        FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(txRunner, ifaceState.getName());
+        IfmUtil.unbindService(txRunner, coordinator, ifaceState.getName(),
+                FlowBasedServicesUtils.buildDefaultServiceId(ifaceState.getName()));
     }
 
     @Override
