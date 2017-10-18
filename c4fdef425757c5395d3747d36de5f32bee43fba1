@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_e14fd790",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T03:12:35Z",
+      "side": 1,
+      "message": "2016, 2017",
+      "range": {
+        "startLine": 2,
+        "startChar": 19,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "c4fdef425757c5395d3747d36de5f32bee43fba1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_014b0b88",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T03:12:35Z",
+      "side": 1,
+      "message": "IFM_SERVICE_NAME or INTRFACEMGR_SERVICE_NAME. INTERFACE is not a \u0027service\u0027, will cause confusion with SRM.",
+      "range": {
+        "startLine": 47,
+        "startChar": 31,
+        "endLine": 47,
+        "endChar": 40
+      },
+      "revId": "c4fdef425757c5395d3747d36de5f32bee43fba1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a17e7fac",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/statusanddiag/InterfaceMgrStatusMonitor.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T03:12:35Z",
+      "side": 1,
+      "message": "2017",
+      "range": {
+        "startLine": 2,
+        "startChar": 20,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "c4fdef425757c5395d3747d36de5f32bee43fba1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
