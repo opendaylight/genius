@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_4d86d2ba",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-18T17:40:00Z",
+      "side": 1,
+      "message": "add \", MoreExecutors.directExecutor()\", to use the new version of the addCallback method.",
+      "range": {
+        "startLine": 651,
+        "startChar": 8,
+        "endLine": 651,
+        "endChar": 11
+      },
+      "revId": "d1ddf3bfb8025e84083874d8b014f6becdb5b92b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
