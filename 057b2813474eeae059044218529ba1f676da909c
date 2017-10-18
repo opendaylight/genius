@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_37de4d40",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-18T10:47:16Z",
+      "side": 1,
+      "message": "sorry to be a PITA but for a pretty log it really should be \"recover\" as I said and not \"recover()\" - I\u0027m already adding the postfix in the implementation.. PS: NB https://git.opendaylight.org/gerrit/#/c/64436/ - I\u0027ll offer a variant where you won\u0027t have to specify this.",
+      "parentUuid": "9a245df4_14ab47d9",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_db03a5b6",
         "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
         "patchSetId": 11
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "9a245df4_db03a5b6",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_17e34908",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-18T10:47:16Z",
+      "side": 1,
+      "message": "\"reinstall\" (not \"reinstall()\")",
+      "parentUuid": "9a245df4_74af23e4",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
