@@ -8,10 +8,8 @@
 
 package org.opendaylight.genius.itm.impl;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
@@ -19,7 +17,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,12 +36,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
@@ -102,8 +95,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmManagerRpcServiceTest {
@@ -129,7 +120,6 @@ public class ItmManagerRpcServiceTest {
     DpnEndpoints dpnEndpoints = null;
     DPNTEPsInfo dpntePsInfoVxlan = null;
     TunnelEndPoints tunnelEndPointsVxlan = null;
-    AllocateIdInput getIdInput1 = null;
     Interface iface = null;
     Subnets subnetsTest = null;
     TransportZones transportZones = null;
@@ -157,7 +147,6 @@ public class ItmManagerRpcServiceTest {
     GetTunnelInterfaceNameInput getTunnelInterfaceNameInput = null;
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
-    Future<RpcResult<AllocateIdOutput>> idOutputOptional1 ;
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
@@ -184,7 +173,6 @@ public class ItmManagerRpcServiceTest {
     @Mock DataBroker dataBroker;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
-    @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock ItmConfig itmConfig;
 
@@ -217,7 +205,7 @@ public class ItmManagerRpcServiceTest {
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        itmManagerRpcService = new ItmManagerRpcService(dataBroker,idManagerService, mdsalApiManager, itmConfig);
+        itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig);
     }
 
     @After
@@ -225,20 +213,12 @@ public class ItmManagerRpcServiceTest {
     }
 
     private void setupMocks() {
-
         deviceVteps = new DeviceVtepsBuilder().setIpAddress(ipAddress1).setKey(new DeviceVtepsKey(ipAddress1,"abc"))
                 .setNodeId(sourceDevice).setTopologyId(destinationDevice).build();
         deviceVtepsList.add(deviceVteps);
         stringList.add(sourceDevice);
         dpId1List.add(dpId1);
         stringList.add("def");
-        idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
-        getIdInput1 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
-        when(idManagerService.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder
-                .<Void>success().build()));
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(tunnelInterfaceName, ipAddress1
                 .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
