@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_0dbcda68",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-18T17:42:34Z",
+      "side": 1,
+      "message": "I am - I\u0027ve been converting other bundles in genius/netvirt to non-static. I\u0027ll work on this one.",
+      "revId": "7d7168419faee88403a1ab283af9aa53b8e1fc5d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
