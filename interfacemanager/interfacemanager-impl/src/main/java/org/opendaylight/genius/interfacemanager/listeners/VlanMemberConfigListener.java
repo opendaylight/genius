@@ -15,12 +15,12 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigUpdateHelper;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -34,19 +34,21 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<Interface, VlanMemberConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(VlanMemberConfigListener.class);
-    private final DataBroker dataBroker;
-    private final IdManagerService idManager;
-    private final AlivenessMonitorService alivenessMonitorService;
-    private final IMdsalApiManager mdsalApiManager;
+    private final JobCoordinator coordinator;
+    public OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper;
+    public OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper;
+    public OvsVlanMemberConfigUpdateHelper ovsVlanMemberConfigUpdateHelper;
 
     @Inject
     public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
+            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
+            final JobCoordinator coordinator) {
         super(Interface.class, VlanMemberConfigListener.class);
-        this.dataBroker = dataBroker;
-        this.idManager = idManagerService;
-        this.mdsalApiManager = mdsalApiManager;
-        this.alivenessMonitorService = alivenessMonitorService;
+        this.coordinator = coordinator;
+        this.ovsVlanMemberConfigAddHelper = new OvsVlanMemberConfigAddHelper(dataBroker, idManagerService);
+        this.ovsVlanMemberConfigRemoveHelper = new OvsVlanMemberConfigRemoveHelper(dataBroker, idManagerService);
+        this.ovsVlanMemberConfigUpdateHelper = new OvsVlanMemberConfigUpdateHelper(ovsVlanMemberConfigAddHelper,
+                ovsVlanMemberConfigRemoveHelper);
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -65,7 +67,6 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
     }
 
     private void removeVlanMember(InstanceIdentifier<Interface> key, Interface deleted) {
-        IfL2vlan ifL2vlan = deleted.getAugmentation(IfL2vlan.class);
         ParentRefs parentRefs = deleted.getAugmentation(ParentRefs.class);
         if (parentRefs == null) {
             LOG.error("Attempt to remove Vlan Trunk-Member {} without a parent interface", deleted);
@@ -78,8 +79,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
             return;
         }
 
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigRemoveWorker removeWorker = new RendererConfigRemoveWorker(key, deleted, parentRefs, ifL2vlan);
+        RendererConfigRemoveWorker removeWorker = new RendererConfigRemoveWorker(deleted, parentRefs);
         coordinator.enqueueJob(lowerLayerIf, removeWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -118,8 +118,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
             return;
         }
 
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigUpdateWorker updateWorker = new RendererConfigUpdateWorker(key, interfaceNew, interfaceOld,
+        RendererConfigUpdateWorker updateWorker = new RendererConfigUpdateWorker(interfaceNew, interfaceOld,
                 parentRefsNew, ifL2vlanNew);
         coordinator.enqueueJob(lowerLayerIf, updateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
@@ -134,7 +133,6 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
     }
 
     private void addVlanMember(InstanceIdentifier<Interface> key, Interface added) {
-        IfL2vlan ifL2vlan = added.getAugmentation(IfL2vlan.class);
         ParentRefs parentRefs = added.getAugmentation(ParentRefs.class);
         if (parentRefs == null) {
             return;
@@ -146,8 +144,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
             return;
         }
 
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, added, parentRefs, ifL2vlan);
+        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(added, parentRefs);
         coordinator.enqueueJob(lowerLayerIf, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -157,36 +154,28 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
-        InstanceIdentifier<Interface> key;
         Interface interfaceNew;
-        IfL2vlan ifL2vlan;
         ParentRefs parentRefs;
 
-        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, ParentRefs parentRefs,
-                IfL2vlan ifL2vlan) {
-            this.key = key;
+        RendererConfigAddWorker(Interface interfaceNew, ParentRefs parentRefs) {
             this.interfaceNew = interfaceNew;
-            this.ifL2vlan = ifL2vlan;
             this.parentRefs = parentRefs;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew,
-                    idManager);
+            return ovsVlanMemberConfigAddHelper.addConfiguration(parentRefs, interfaceNew);
         }
     }
 
     private class RendererConfigUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
-        InstanceIdentifier<Interface> key;
         Interface interfaceNew;
         Interface interfaceOld;
         IfL2vlan ifL2vlanNew;
         ParentRefs parentRefsNew;
 
-        RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, Interface interfaceOld,
-                ParentRefs parentRefsNew, IfL2vlan ifL2vlanNew) {
-            this.key = key;
+        RendererConfigUpdateWorker(Interface interfaceNew, Interface interfaceOld, ParentRefs parentRefsNew,
+                IfL2vlan ifL2vlanNew) {
             this.interfaceNew = interfaceNew;
             this.interfaceOld = interfaceOld;
             this.ifL2vlanNew = ifL2vlanNew;
@@ -195,29 +184,23 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService,
-                    parentRefsNew, interfaceOld, ifL2vlanNew, interfaceNew, idManager, mdsalApiManager);
+            return ovsVlanMemberConfigUpdateHelper.updateConfiguration(parentRefsNew, interfaceOld, ifL2vlanNew,
+                    interfaceNew);
         }
     }
 
     private class RendererConfigRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-        InstanceIdentifier<Interface> key;
         Interface interfaceOld;
-        IfL2vlan ifL2vlan;
         ParentRefs parentRefs;
 
-        RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld, ParentRefs parentRefs,
-                IfL2vlan ifL2vlan) {
-            this.key = key;
+        RendererConfigRemoveWorker(Interface interfaceOld, ParentRefs parentRefs) {
             this.interfaceOld = interfaceOld;
-            this.ifL2vlan = ifL2vlan;
             this.parentRefs = parentRefs;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld,
-                    idManager);
+            return ovsVlanMemberConfigRemoveHelper.removeConfiguration(parentRefs, interfaceOld);
         }
     }
 }
