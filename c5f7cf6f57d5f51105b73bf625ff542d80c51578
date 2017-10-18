@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_b7b99d30",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-18T10:16:04Z",
+      "side": 1,
+      "message": "how about (at least) just using my ListenableFutures.addErrorLogging() here?",
+      "revId": "c5f7cf6f57d5f51105b73bf625ff542d80c51578",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_57dae178",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPConfigRemoveHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-18T10:16:04Z",
+      "side": 1,
+      "message": "this makes the previously separate transactions per shard into a single one.  Personally I do think we want to go that route, but I would love to first see more people sign off on this before merging a change to this.. ideally clarify the overall point re. single shard discussions, started at the DDF.",
+      "revId": "c5f7cf6f57d5f51105b73bf625ff542d80c51578",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
