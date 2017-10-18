@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_f7631518",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T12:05:39Z",
+      "side": 1,
+      "message": "If we rely on people “knowing” what’s in the parent implementation, we can just rely on everyone getting @PostConstruct right and have a non-final close(), can’t we?\n\nRemember that if this goes in, it will end up being copy-pasted everywhere, so it should err on the safe side (think chained implementations).",
+      "parentUuid": "9a245df4_b7e51daa",
+      "revId": "cd7d6cacf399d56d60007cf94aedc01716053b4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_97e2999d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
         "patchSetId": 1
@@ -53,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_b7819d91",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T12:05:39Z",
+      "side": 1,
+      "message": "This class wants to be able to execute something, it doesn’t really care about there being an executor of any kind (ExecutorService or whatever). This is represented by requiring an execute() method, which is itself represented by the Executor interface... Admittedly it would perhaps be better to just have an abstract execute() method since we don’t want to advertise externally that we’re doing this.",
+      "parentUuid": "9a245df4_17d7c9c2",
+      "revId": "cd7d6cacf399d56d60007cf94aedc01716053b4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_b7fcfd3f",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
         "patchSetId": 1
@@ -64,6 +100,24 @@
       "writtenOn": "2017-10-18T11:53:13Z",
       "side": 1,
       "message": "Not a huge fan of internal* naming.. how about.. maybe closeMore() ?",
+      "revId": "cd7d6cacf399d56d60007cf94aedc01716053b4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_977e19ad",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-18T12:05:39Z",
+      "side": 1,
+      "message": "To me, closeMore() suggests that close() should be used in certain circumstances, and closeMore() in others (sort of like a closeHarder() maybe). overridableClose() perhaps?",
+      "parentUuid": "9a245df4_b7fcfd3f",
       "revId": "cd7d6cacf399d56d60007cf94aedc01716053b4b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
