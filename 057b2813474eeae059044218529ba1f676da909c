@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_14ab47d9",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_9bf92dcb",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_db03a5b6",
         "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
         "patchSetId": 11
@@ -30,6 +48,24 @@
       "writtenOn": "2017-10-16T19:05:21Z",
       "side": 1,
       "message": "\"reinstall\"",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_74af23e4",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_db03a5b6",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_54ac9fed",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_bb0071ab",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_1b2d3d47",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
         "patchSetId": 11
@@ -64,6 +118,24 @@
       "writtenOn": "2017-10-16T19:05:21Z",
       "side": 1,
       "message": "did you know you do not need this - Karaf does this for free for you on help (or -h, I think) for any command - try!",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b4b99b30",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/RecoverCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_1b2d3d47",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_94b6173c",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_fb3149a3",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_5b27b564",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
         "patchSetId": 11
@@ -98,6 +188,24 @@
       "writtenOn": "2017-10-16T19:05:21Z",
       "side": 1,
       "message": "never, ever catch NPE!",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f482f350",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/ReinstallCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_5b27b564",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +263,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_2141ef5a",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "plan to add more options in future. but yeah, should make it true as long as it is only option.",
+      "parentUuid": "9a245df4_7b1d590f",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_5bde9540",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
         "patchSetId": 11
@@ -166,6 +292,24 @@
       "writtenOn": "2017-10-16T19:05:21Z",
       "side": 1,
       "message": "please do not hand write Tx related code anymore; either use the SingleTransactionDataBroker or (better) the new ManagedNewTransactionRunner I presented last week",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_d487ef5f",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_5bde9540",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -189,6 +333,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_347dab6f",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_9b200d4b",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_3b2c8147",
         "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
         "patchSetId": 11
@@ -200,6 +362,24 @@
       "writtenOn": "2017-10-16T19:05:21Z",
       "side": 1,
       "message": "remove, not needed, you get this for free",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1482274f",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-18T06:23:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_3b2c8147",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
