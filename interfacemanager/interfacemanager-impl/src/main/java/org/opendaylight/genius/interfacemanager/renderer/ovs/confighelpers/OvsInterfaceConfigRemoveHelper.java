@@ -24,7 +24,6 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -47,8 +46,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsInterfaceConfigRemoveHelper {
+public final class OvsInterfaceConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigRemoveHelper.class);
+
+    private OvsInterfaceConfigRemoveHelper() {
+    }
 
     public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker,
             AlivenessMonitorService alivenessMonitorService, Interface interfaceOld, IdManagerService idManager,
@@ -188,9 +190,7 @@ public class OvsInterfaceConfigRemoveHelper {
         if (ncId == null) {
             LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
         } else {
-            long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-            InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
-                    interfaceName, -1, NwConstants.DEL_FLOW);
+            InterfaceManagerCommonUtils.removeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, interfaceName);
             FlowBasedServicesUtils.unbindDefaultEgressDispatcherService(dataBroker, interfaceName);
         }
     }
