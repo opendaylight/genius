@@ -61,9 +61,7 @@ public class ClusteringUtils {
                                                                  Entity entity, long sleepBetweenRetries,
                                                                  int maxRetries) {
         SettableFuture<Boolean> checkNodeEntityfuture = SettableFuture.create();
-        CheckEntityOwnerTask checkEntityOwnerTask = new CheckEntityOwnerTask(entityOwnershipService, entity,
-                checkNodeEntityfuture, sleepBetweenRetries, maxRetries);
-        getDataStoreJobCoordinator().enqueueJob(entityOwnershipService.toString(), checkEntityOwnerTask);
+        checkNodeEntityfuture.set(isEntityOwner(entityOwnershipService, entity, sleepBetweenRetries, maxRetries));
         return checkNodeEntityfuture;
     }
 
