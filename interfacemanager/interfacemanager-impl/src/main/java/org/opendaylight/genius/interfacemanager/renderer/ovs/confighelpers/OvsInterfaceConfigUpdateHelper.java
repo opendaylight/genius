@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
-import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
@@ -135,9 +134,8 @@ public class OvsInterfaceConfigUpdateHelper {
         } else {
             // update lldp tunnel monitoring attributes for an internal vxlan
             // tunnel interface
-            AlivenessMonitorUtils.handleTunnelMonitorUpdates(
-                    ovsInterfaceConfigRemoveHelper.getAlivenessMonitorService(), dataBroker, interfaceOld,
-                    interfaceNew);
+            ovsInterfaceConfigRemoveHelper.getAlivenessMonitorUtils().handleTunnelMonitorUpdates(
+                    interfaceOld, interfaceNew);
         }
         futures.add(transaction.submit());
     }
