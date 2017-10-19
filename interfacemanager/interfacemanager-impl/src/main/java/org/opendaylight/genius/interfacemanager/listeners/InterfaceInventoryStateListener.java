@@ -62,9 +62,9 @@ public class InterfaceInventoryStateListener
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
-    private final IMdsalApiManager mdsalApiManager;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
@@ -72,18 +72,19 @@ public class InterfaceInventoryStateListener
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
-        this.mdsalApiManager = mdsalApiManager;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
-        this.ovsInterfaceStateUpdateHelper = new OvsInterfaceStateUpdateHelper(dataBroker, idManagerService,
-                mdsalApiManager, alivenessMonitorService);
-        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker, idManagerService, mdsalApiManager,
-                alivenessMonitorService);
+        this.ovsInterfaceStateUpdateHelper = new OvsInterfaceStateUpdateHelper(dataBroker, alivenessMonitorService,
+                interfaceManagerCommonUtils);
+        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker,
+                alivenessMonitorService, interfaceManagerCommonUtils);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -117,7 +118,7 @@ public class InterfaceInventoryStateListener
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
             FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
-        boolean isNodePresent = InterfaceManagerCommonUtils.isNodePresent(dataBroker, nodeConnectorIdNew);
+        boolean isNodePresent = interfaceManagerCommonUtils.isNodePresent(nodeConnectorIdNew);
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
@@ -156,7 +157,8 @@ public class InterfaceInventoryStateListener
             fcNodeConnectorNew.getName());
 
         if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
-            NodeConnectorId nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(portName, dataBroker);
+            NodeConnectorId nodeConnectorIdOld =
+                    FlowBasedServicesUtils.getNodeConnectorIdFromInterface(portName, interfaceManagerCommonUtils);
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                 BigInteger dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
                 BigInteger dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -289,7 +291,8 @@ public class InterfaceInventoryStateListener
             // VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD
             // for same interface from Older DPN
             if (isParentInterface && isNetworkEvent) {
-                nodeConnectorIdOld = IfmUtil.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
+                nodeConnectorIdOld = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName,
+                        interfaceManagerCommonUtils);
                 if (nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                     LOG.debug("Dropping the NodeConnector Remove Event for the interface: {}, {}, {}", interfaceName,
                             nodeConnectorIdNew, nodeConnectorIdOld);
@@ -334,7 +337,7 @@ public class InterfaceInventoryStateListener
             } else {
                 InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
-                    .Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
+                    .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
 
                 if (iface != null) {
                     // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP monitoring
@@ -353,7 +356,7 @@ public class InterfaceInventoryStateListener
                 }
 
                 // Delete the Vpn Interface from DpnToInterface Op DS.
-                InterfaceManagerCommonUtils.deleteDpnToInterface(dataBroker, dpId, interfaceName,
+                interfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName,
                         defaultOperationalShardTransaction);
             }
             futures.add(defaultOperationalShardTransaction.submit());
@@ -364,8 +367,8 @@ public class InterfaceInventoryStateListener
                 IfTunnel ifTunnel, WriteTransaction transaction, NodeConnectorId nodeConnectorId,
                 List<ListenableFuture<Void>> futures) {
             long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
-            InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
-                    interfaceName, -1, NwConstants.DEL_FLOW);
+            interfaceManagerCommonUtils.makeTunnelIngressFlow(ifTunnel, dpId, portNo, interfaceName,
+                    -1, NwConstants.DEL_FLOW);
 
             IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
                     FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));

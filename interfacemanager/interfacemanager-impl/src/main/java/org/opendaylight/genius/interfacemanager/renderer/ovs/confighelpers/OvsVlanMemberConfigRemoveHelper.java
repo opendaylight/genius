@@ -19,7 +19,6 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -33,11 +32,12 @@ public class OvsVlanMemberConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigRemoveHelper.class);
 
     private final DataBroker dataBroker;
-    private final IdManagerService idManager;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
-    public OvsVlanMemberConfigRemoveHelper(DataBroker dataBroker, IdManagerService idManager) {
+    public OvsVlanMemberConfigRemoveHelper(DataBroker dataBroker,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
-        this.idManager = idManager;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     public List<ListenableFuture<Void>> removeConfiguration(ParentRefs parentRefs, Interface interfaceOld) {
@@ -68,13 +68,13 @@ public class OvsVlanMemberConfigRemoveHelper {
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .getInterfaceState(parentRefs.getParentInterface());
         if (ifState != null) {
             LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
-            InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(),
-                defaultOperShardTransaction,idManager);
+            interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(),
+                defaultOperShardTransaction);
             FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, dataBroker, futures);
         }
 

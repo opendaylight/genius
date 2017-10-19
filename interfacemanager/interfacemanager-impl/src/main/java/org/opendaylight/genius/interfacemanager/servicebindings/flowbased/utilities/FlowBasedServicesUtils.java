@@ -108,10 +108,11 @@ public final class FlowBasedServicesUtils {
                 .orNull();
     }
 
-    public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName, DataBroker dataBroker) {
+    public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceName, dataBroker);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .getInterfaceState(interfaceName);
         if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
             return new NodeConnectorId(ofportIds.get(0));
