@@ -33,9 +33,13 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
 
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+
     @Inject
-    public FlowBasedIngressServicesConfigUnbindHelper(final DataBroker dataBroker) {
+    public FlowBasedIngressServicesConfigUnbindHelper(final DataBroker dataBroker,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(dataBroker);
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -151,8 +155,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
 
         BoundServices toBeMoved = tmpServicesMap.get(highestPriority);
-        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName(),
-                getDataBroker());
+        Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName());
         FlowBasedServicesUtils.removeIngressFlow(iface.getName(), boundServiceOld, dpId, tx);
         FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, toBeMoved, tx, matches,
             boundServicesState.getIfIndex(), NwConstants.VLAN_INTERFACE_INGRESS_TABLE);

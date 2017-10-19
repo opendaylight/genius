@@ -29,7 +29,6 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -53,20 +52,21 @@ public final class OvsInterfaceConfigAddHelper {
 
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalApiManager;
-    private final IdManagerService idManager;
     private final JobCoordinator coordinator;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
 
     public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
-            IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator) {
+            IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
         this.mdsalApiManager = mdsalApiManager;
-        this.idManager = idManager;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
-        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker, idManager, mdsalApiManager,
-                alivenessMonitorService);
+        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker, alivenessMonitorService,
+                interfaceManagerCommonUtils);
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
@@ -94,21 +94,20 @@ public final class OvsInterfaceConfigAddHelper {
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
-        if (!InterfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(dataBroker,
-                defaultConfigShardTransaction, parentRefs.getParentInterface(), interfaceNew.getName(),
-                ifL2vlan.getL2vlanMode())) {
+        if (!interfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(defaultConfigShardTransaction,
+                parentRefs.getParentInterface(), interfaceNew.getName(), ifL2vlan.getL2vlanMode())) {
             return;
         }
         LOG.info("adding vlan configuration for interface {}", interfaceNew.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .getInterfaceState(parentRefs.getParentInterface());
 
-        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, defaultOperShardTransaction,
-                idManager, futures, ifState);
+        interfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), defaultOperShardTransaction, futures,
+                ifState);
 
-        VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(dataBroker, idManager,
-                interfaceNew.getName(), ifState);
+        VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(dataBroker,
+                interfaceManagerCommonUtils, interfaceNew.getName(), ifState);
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -132,8 +131,7 @@ public final class OvsInterfaceConfigAddHelper {
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
 
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            addLogicalTunnelGroup(interfaceNew, idManager, mdsalApiManager, dataBroker,
-                                  defaultOperShardTransaction, futures);
+            addLogicalTunnelGroup(interfaceNew, defaultOperShardTransaction, futures);
             return;
         }
 
@@ -145,11 +143,11 @@ public final class OvsInterfaceConfigAddHelper {
                     || bridgeEntry.getBridgeInterfaceEntry() == null
                     || bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
+            interfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
                     defaultConfigShardTransaction);
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
                     .Interface
-                    interfaceState = InterfaceManagerCommonUtils.getInterfaceState(tunnelName, dataBroker);
+                    interfaceState = interfaceManagerCommonUtils.getInterfaceState(tunnelName);
             if (interfaceState != null) {
                 coordinator.enqueueJob(tunnelName, () -> ovsInterfaceStateAddHelper.addState(interfaceNew.getName(),
                         interfaceState));
@@ -163,7 +161,7 @@ public final class OvsInterfaceConfigAddHelper {
                 && !Strings.isNullOrEmpty(parentInterface)) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: createInterfaceChildEntry for {} in logical group {}",
                     tunnelName, parentInterface);
-            InterfaceManagerCommonUtils.createInterfaceChildEntry(parentInterface, tunnelName,
+            interfaceManagerCommonUtils.createInterfaceChildEntry(parentInterface, tunnelName,
                     defaultConfigShardTransaction);
         }
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
@@ -183,13 +181,13 @@ public final class OvsInterfaceConfigAddHelper {
             // if TEP is already configured on switch, start LLDP monitoring and
             // program tunnel ingress flow
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceState(interfaceNew.getName(), dataBroker);
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                    .getInterfaceState(interfaceNew.getName());
             if (ifState != null) {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if (ncId != null) {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-                    InterfaceManagerCommonUtils.addTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
+                    interfaceManagerCommonUtils.addTunnelIngressFlow(ifTunnel, dpId, portNo,
                             interfaceNew.getName(), ifState.getIfIndex());
                     FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceNew,
                             Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
@@ -202,16 +200,16 @@ public final class OvsInterfaceConfigAddHelper {
 
     private static class VlanMemberStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
         private final DataBroker dataBroker;
-        private final IdManagerService idManager;
         private final String interfaceName;
+        private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
         private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState;
 
-        VlanMemberStateAddWorker(DataBroker dataBroker, IdManagerService idManager, String interfaceName,
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+        VlanMemberStateAddWorker(DataBroker dataBroker, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                    .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
             this.dataBroker = dataBroker;
-            this.idManager = idManager;
+            this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
             this.interfaceName = interfaceName;
             this.ifState = ifState;
         }
@@ -231,8 +229,8 @@ public final class OvsInterfaceConfigAddHelper {
             // updates in batches of 100.
             for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
                 LOG.debug("adding interface state for vlan trunk member {}", interfaceChildEntry.getChildInterface());
-                InterfaceManagerCommonUtils.addStateEntry(interfaceChildEntry.getChildInterface(), dataBroker,
-                        operShardTransaction, idManager, futures, ifState);
+                interfaceManagerCommonUtils.addStateEntry(interfaceChildEntry.getChildInterface(), operShardTransaction,
+                        futures, ifState);
             }
 
             futures.add(operShardTransaction.submit());
@@ -245,33 +243,29 @@ public final class OvsInterfaceConfigAddHelper {
         }
     }
 
-    private static long createLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName,
-                                                int lportTag, IMdsalApiManager mdsalManager) {
+    private long createLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag) {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
         Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
                                            MDSALUtil.buildBucketLists(Collections.emptyList()));
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} installed for {} srcDpnId {}",
                 group.getGroupId().getValue(), interfaceName, srcDpnId);
-        mdsalManager.syncInstallGroup(srcDpnId, group);
+        mdsalApiManager.syncInstallGroup(srcDpnId, group);
         return groupId;
     }
 
-    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager,
-                                              IMdsalApiManager mdsalApiManager, DataBroker broker,
-                                              WriteTransaction tx, List<ListenableFuture<Void>> futures) {
+    private void addLogicalTunnelGroup(Interface itfNew, WriteTransaction tx, List<ListenableFuture<Void>> futures) {
         String ifaceName = itfNew.getName();
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifState = InterfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, tx,
-                    idManager, null /*physAddress*/,
-                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .Interface ifState = interfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, tx,
+                    null /*physAddress*/, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                     .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                     .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
                     null /*nodeConnectorId*/);
         long groupId = createLogicalTunnelSelectGroup(IfmUtil.getDpnFromInterface(ifState),
-                                                      itfNew.getName(), ifState.getIfIndex(), mdsalApiManager);
-        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(broker, futures, itfNew,
+                                                      itfNew.getName(), ifState.getIfIndex());
+        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, itfNew,
                                                                   ifaceName, ifState.getIfIndex(), groupId);
     }
 
