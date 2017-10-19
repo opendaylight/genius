@@ -132,6 +132,7 @@ public class SouthboundUtils {
      * DS
      */
     public static void addAllPortsToBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew) {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
@@ -140,7 +141,7 @@ public class SouthboundUtils {
             for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
                 String portName = bridgeInterfaceEntry.getInterfaceName();
                 InterfaceKey interfaceKey = new InterfaceKey(portName);
-                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+                Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {

@@ -32,7 +32,6 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
@@ -209,9 +208,9 @@ public final class IfmUtil {
     }
 
     public static List<Action> getEgressActionsForInterface(String interfaceName, Long tunnelKey, Integer actionKey,
-            DataBroker dataBroker, Boolean isDefaultEgress) {
+            InterfaceManagerCommonUtils interfaceUtils, Boolean isDefaultEgress) {
         List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey,
-                actionKey == null ? 0 : actionKey, dataBroker, isDefaultEgress);
+                actionKey == null ? 0 : actionKey, interfaceUtils, isDefaultEgress);
         List<Action> actionsList = new ArrayList<>();
         for (ActionInfo actionInfo : listActionInfo) {
             actionsList.add(actionInfo.buildAction());
@@ -220,10 +219,10 @@ public final class IfmUtil {
     }
 
     public static List<Instruction> getEgressInstructionsForInterface(String interfaceName, Long tunnelKey,
-            DataBroker dataBroker, Boolean isDefaultEgress) {
+            InterfaceManagerCommonUtils interfaceUtils, Boolean isDefaultEgress) {
         List<Instruction> instructions = new ArrayList<>();
         List<Action> actionList = MDSALUtil.buildActions(
-                getEgressActionInfosForInterface(interfaceName, tunnelKey, 0, dataBroker, isDefaultEgress));
+                getEgressActionInfosForInterface(interfaceName, tunnelKey, 0, interfaceUtils, isDefaultEgress));
         instructions.add(MDSALUtil.buildApplyActionsInstruction(actionList));
         return instructions;
     }
@@ -241,8 +240,8 @@ public final class IfmUtil {
     }
 
     public static List<ActionInfo> getEgressActionInfosForInterface(String interfaceName, int actionKeyStart,
-            DataBroker dataBroker, Boolean isDefaultEgress) {
-        return getEgressActionInfosForInterface(interfaceName, null, actionKeyStart, dataBroker, isDefaultEgress);
+            InterfaceManagerCommonUtils interfaceUtils, Boolean isDefaultEgress) {
+        return getEgressActionInfosForInterface(interfaceName, null, actionKeyStart, interfaceUtils, isDefaultEgress);
     }
 
     /**
@@ -255,20 +254,19 @@ public final class IfmUtil {
      *            Optional.
      * @param actionKeyStart
      *            action key
-     * @param dataBroker
-     *            databroker
+     * @param interfaceUtils
+     *            InterfaceManagerCommonUtils
      * @return list of actions
      */
     public static List<ActionInfo> getEgressActionInfosForInterface(String interfaceName, Long tunnelKey,
-            int actionKeyStart, DataBroker dataBroker, Boolean isDefaultEgress) {
-        Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
-                dataBroker);
+            int actionKeyStart, InterfaceManagerCommonUtils interfaceUtils, Boolean isDefaultEgress) {
+        Interface interfaceInfo = interfaceUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName));
         if (interfaceInfo == null) {
             throw new NullPointerException("Interface information not present in config DS for " + interfaceName);
         }
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceName, dataBroker);
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+            interfaceUtils.getInterfaceState(interfaceName);
         if (ifState == null) {
             throw new NullPointerException("Interface information not present in oper DS for " + interfaceName);
         }
@@ -291,6 +289,7 @@ public final class IfmUtil {
      * @param actionKeyStart the start for the first key assigned for the new actions
      * @param isDefaultEgress if it is the default egress
      * @param ifIndex interface index
+     * @param groupId group Id
      * @return list of actions for the interface
      */
     // The following suppression is for javac, not for checkstyle
@@ -432,10 +431,6 @@ public final class IfmUtil {
             return new BigInteger(dpIdStr, 16);
         }
         return null;
-    }
-
-    public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName, DataBroker dataBroker) {
-        return FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
     }
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(

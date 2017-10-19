@@ -33,13 +33,15 @@ public class InterfaceStateListener
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
     public InterfaceStateListener(DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
-            final JobCoordinator coordinator) {
+            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -50,19 +52,19 @@ public class InterfaceStateListener
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
-        InterfaceManagerCommonUtils.removeFromInterfaceStateCache(interfaceStateOld);
+        interfaceManagerCommonUtils.removeFromInterfaceStateCache(interfaceStateOld);
         LOG.debug("Received interface state remove event for {}, ignoring", interfaceStateOld.getName());
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
-        InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
+        interfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
     }
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        InterfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
+        interfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         if (!Tunnel.class.equals(interfaceStateNew.getType())
             || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                     IfmConstants.INTERFACE_CONFIG_ENTITY)) {
@@ -70,7 +72,7 @@ public class InterfaceStateListener
         }
         LOG.debug("Received Tunnel state add event for {}", interfaceStateNew.getName());
         coordinator.enqueueJob(interfaceStateNew.getName(), () -> {
-            Interface.OperStatus bfdState = InterfaceManagerCommonUtils
+            Interface.OperStatus bfdState = interfaceManagerCommonUtils
                     .getBfdStateFromCache(interfaceStateNew.getName());
             if (bfdState != null && bfdState != interfaceStateNew.getOperStatus()
                     && interfaceStateNew.getOperStatus() != Interface.OperStatus.Unknown) {

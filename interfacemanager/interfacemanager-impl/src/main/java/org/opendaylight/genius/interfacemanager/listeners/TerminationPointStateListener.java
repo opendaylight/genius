@@ -38,16 +38,19 @@ public class TerminationPointStateListener extends
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
 
     @Inject
     public TerminationPointStateListener(DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = new OvsInterfaceTopologyStateUpdateHelper(dataBroker,
-                entityOwnershipUtils, coordinator);
+                entityOwnershipUtils, coordinator, interfaceManagerCommonUtils);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -152,7 +155,7 @@ public class TerminationPointStateListener extends
         @Override
         public List<ListenableFuture<Void>> call() {
             LOG.debug("Removing bfd state from cache, if any, for {}", terminationPointOld.getName());
-            InterfaceManagerCommonUtils.removeBfdStateFromCache(terminationPointOld.getName());
+            interfaceManagerCommonUtils.removeBfdStateFromCache(terminationPointOld.getName());
             return null;
         }
     }
