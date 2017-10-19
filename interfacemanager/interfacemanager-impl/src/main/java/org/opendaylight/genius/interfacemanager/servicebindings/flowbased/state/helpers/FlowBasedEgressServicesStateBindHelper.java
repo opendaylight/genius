@@ -29,9 +29,13 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateBindHelper.class);
 
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+
     @Inject
-    public FlowBasedEgressServicesStateBindHelper(final DataBroker dataBroker) {
+    public FlowBasedEgressServicesStateBindHelper(final DataBroker dataBroker,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(dataBroker);
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -46,8 +50,8 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
             short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
                     : highestPriority.getServicePriority() + 1);
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                    .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
-                    .getInterfaceFromConfigDS(ifState.getName(), getDataBroker());
+                    .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
+                    .getInterfaceFromConfigDS(ifState.getName());
             FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), tx,
                     ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
             BoundServices prev = null;

@@ -32,9 +32,13 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateBindHelper.class);
 
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+
     @Inject
-    public FlowBasedIngressServicesStateBindHelper(final DataBroker dataBroker) {
+    public FlowBasedIngressServicesStateBindHelper(final DataBroker dataBroker,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(dataBroker);
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -51,8 +55,8 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
     private void bindServiceOnTunnel(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
                                      Interface ifState) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
-                .getInterfaceFromConfigDS(ifState.getName(), getDataBroker());
+                .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
+                .getInterfaceFromConfigDS(ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
