@@ -17,7 +17,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -33,23 +32,10 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedServicesConfigBindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigBindHelper.class);
-    private static volatile FlowBasedServicesConfigAddable flowBasedIngressServicesAddable;
 
     @Inject
     public FlowBasedIngressServicesConfigBindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        flowBasedIngressServicesAddable = this;
-    }
-
-    public static void clearFlowBasedIngressServicesConfigAddHelper() {
-        flowBasedIngressServicesAddable = null;
-    }
-
-    public static FlowBasedServicesConfigAddable getFlowBasedIngressServicesAddHelper() {
-        if (flowBasedIngressServicesAddable == null) {
-            LOG.error("{} is not initialized", FlowBasedIngressServicesConfigBindHelper.class.getSimpleName());
-        }
-        return flowBasedIngressServicesAddable;
     }
 
     @Override
@@ -73,9 +59,9 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
         BigInteger dpId = boundServiceState.getDpid();
         LOG.info("binding ingress service {} for tunnel port: {}", boundServiceNew.getServiceName(),
                 boundServiceState.getInterfaceName());
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction transaction = getDataBroker().newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
-            dataBroker);
+            getDataBroker());
         if (allServices.size() == 1) {
             // If only one service present, install instructions in table 0.
             List<MatchInfo> matches = null;
@@ -116,12 +102,12 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
             List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
 
             if (matches != null) {
-                WriteTransaction removeFlowTransaction = dataBroker.newWriteOnlyTransaction();
+                WriteTransaction removeFlowTransaction = getDataBroker().newWriteOnlyTransaction();
                 FlowBasedServicesUtils.removeIngressFlow(iface.getName(), serviceToReplace, dpId,
                         removeFlowTransaction);
                 futures.add(removeFlowTransaction.submit());
 
-                WriteTransaction installFlowTransaction = dataBroker.newWriteOnlyTransaction();
+                WriteTransaction installFlowTransaction = getDataBroker().newWriteOnlyTransaction();
                 FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, boundServiceNew, installFlowTransaction,
                         matches, boundServiceState.getIfIndex(), NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
                 futures.add(installFlowTransaction.submit());
@@ -136,7 +122,7 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
     private void bindServiceOnVlan(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                    List<BoundServices> allServices, BoundServicesState boundServiceState) {
         BigInteger dpId = boundServiceState.getDpid();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction transaction = getDataBroker().newWriteOnlyTransaction();
         LOG.info("binding ingress service {} for vlan port: {}", boundServiceNew.getServiceName(), boundServiceState
             .getInterfaceName());
         if (allServices.size() == 1) {
