@@ -19,7 +19,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -36,10 +36,13 @@ public class FlowBasedServicesNodeStateListener
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesNodeStateListener.class);
 
     private final JobCoordinator coordinator;
+    private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
-    public FlowBasedServicesNodeStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
+    public FlowBasedServicesNodeStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
+            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
         this.coordinator = coordinator;
+        this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -81,9 +84,9 @@ public class FlowBasedServicesNodeStateListener
         LOG.debug("Received node add event for {}", dpId);
         for (Class<?extends ServiceModeBase> serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
             for (String interfaceName : FlowBasedServicesUtils.INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS) {
-                FlowBasedServicesStateAddable flowBasedServicesStateAddable = FlowBasedServicesStateRendererFactory
-                        .getFlowBasedServicesStateRendererFactory(serviceMode)
-                        .getFlowBasedServicesStateAddRenderer();
+                FlowBasedServicesStateAddable flowBasedServicesStateAddable =
+                    flowBasedServicesStateRendererFactoryResolver
+                        .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer();
                 coordinator.enqueueJob(interfaceName,
                         new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId, interfaceName));
             }
@@ -94,8 +97,8 @@ public class FlowBasedServicesNodeStateListener
         LOG.debug("Received node add event for {}", dpId);
         for (Class<?extends ServiceModeBase> serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
             for (String interfaceName : FlowBasedServicesUtils.INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS) {
-                FlowBasedServicesStateRemovable flowBasedServicesStateRemovable = FlowBasedServicesStateRendererFactory
-                        .getFlowBasedServicesStateRendererFactory(serviceMode)
+                FlowBasedServicesStateRemovable flowBasedServicesStateRemovable =
+                    flowBasedServicesStateRendererFactoryResolver.getFlowBasedServicesStateRendererFactory(serviceMode)
                         .getFlowBasedServicesStateRemoveRenderer();
                 coordinator.enqueueJob(interfaceName,
                         new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId, interfaceName));
