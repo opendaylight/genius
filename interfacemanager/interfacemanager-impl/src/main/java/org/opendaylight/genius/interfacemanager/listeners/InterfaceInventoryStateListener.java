@@ -62,9 +62,11 @@ public class InterfaceInventoryStateListener
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
     private final IMdsalApiManager mdsalApiManager;
-    private final AlivenessMonitorService alivenessMonitorService;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
+    private final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper;
+    private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
@@ -74,9 +76,13 @@ public class InterfaceInventoryStateListener
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
-        this.alivenessMonitorService = alivenessMonitorService;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+        this.ovsInterfaceStateUpdateHelper = new OvsInterfaceStateUpdateHelper(dataBroker, idManagerService,
+                mdsalApiManager, alivenessMonitorService);
+        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker, idManagerService, mdsalApiManager,
+                alivenessMonitorService);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -198,8 +204,8 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
-                    mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName, fcNodeConnectorNew);
+            List<ListenableFuture<Void>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId, interfaceName,
+                    fcNodeConnectorNew);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
@@ -233,8 +239,8 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(
-                    alivenessMonitorService, dataBroker, interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
+            List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
+                    interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
@@ -322,8 +328,8 @@ public class InterfaceInventoryStateListener
             if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                 //Remove event is because of connection lost between controller and switch, or switch shutdown.
                 // Hence, don't remove the interface but set the status as "unknown"
-                OvsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
-                        dataBroker, alivenessMonitorService, defaultOperationalShardTransaction);
+                ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
+                        defaultOperationalShardTransaction);
             } else {
                 InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
@@ -361,7 +367,7 @@ public class InterfaceInventoryStateListener
                     FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
 
             futures.add(transaction.submit());
-            AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+            alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
         }
 
         @Override
