@@ -22,14 +22,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
  */
 public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
 
-    protected final DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
     /**
      * Create instance.
      * @param dataBroker instance of interfaceMgrProvider
      */
-    public AbstractFlowBasedServicesConfigUnbindHelper(final DataBroker dataBroker) {
+    protected AbstractFlowBasedServicesConfigUnbindHelper(final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
+    }
+
+    protected DataBroker getDataBroker() {
+        return dataBroker;
     }
 
     @Override
@@ -53,7 +57,6 @@ public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements Flo
     protected abstract void unbindServiceOnInterfaceType(List<ListenableFuture<Void>> futures,
                                                          BoundServices boundServiceOld,
                                                          List<BoundServices> allServices);
-
 }
 
 

@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -29,28 +28,19 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedServicesStateUnbindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateUnbindHelper.class);
-    private static volatile FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
     private final JobCoordinator coordinator;
 
     @Inject
     public FlowBasedEgressServicesStateUnbindHelper(final DataBroker dataBroker, final JobCoordinator coordinator) {
         super(dataBroker);
-        flowBasedServicesStateRemovable = this;
         this.coordinator = coordinator;
-    }
-
-    public static FlowBasedServicesStateRemovable getFlowBasedEgressServicesStateRemoveHelper() {
-        if (flowBasedServicesStateRemovable == null) {
-            LOG.error("{} is not initialized", FlowBasedEgressServicesStateUnbindHelper.class.getSimpleName());
-        }
-        return flowBasedServicesStateRemovable;
     }
 
     @Override
     protected void unbindServicesOnInterface(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
                                              Interface ifaceState) {
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             List<String> ofportIds = ifaceState.getLowerLayerIf();
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -65,7 +55,7 @@ public class FlowBasedEgressServicesStateUnbindHelper extends AbstractFlowBasedS
         }));
         // remove the default egress service bound on the interface, once all
         // flows are removed
-        IfmUtil.unbindService(txRunner, coordinator, ifaceState.getName(),
+        IfmUtil.unbindService(getTxRunner(), coordinator, ifaceState.getName(),
                 FlowBasedServicesUtils.buildDefaultServiceId(ifaceState.getName()));
     }
 

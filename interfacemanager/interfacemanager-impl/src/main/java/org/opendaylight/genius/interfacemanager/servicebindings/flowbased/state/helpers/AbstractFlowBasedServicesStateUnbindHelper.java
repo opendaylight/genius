@@ -31,17 +31,26 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractFlowBasedServicesStateUnbindHelper.class);
 
-    protected final DataBroker dataBroker;
-    protected final ManagedNewTransactionRunner txRunner;
+    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     /**
      * Create instance.
      * @param dataBroker instance of interfaceMgerProvider
      */
-    public AbstractFlowBasedServicesStateUnbindHelper(final DataBroker dataBroker) {
+    protected AbstractFlowBasedServicesStateUnbindHelper(final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
+
+    protected DataBroker getDataBroker() {
+        return dataBroker;
+    }
+
+    protected ManagedNewTransactionRunner getTxRunner() {
+        return txRunner;
+    }
+
 
     @Override
     public final void unbindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
@@ -69,6 +78,7 @@ public abstract class AbstractFlowBasedServicesStateUnbindHelper implements Flow
     protected abstract void unbindServicesOnInterface(List<ListenableFuture<Void>> futures,
                                                       List<BoundServices> allServices, Interface ifState);
 
+    @Override
     public abstract void unbindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
                                                        String ifaceName);
 }
