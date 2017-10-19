@@ -17,7 +17,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -33,23 +32,10 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigUnbindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigUnbindHelper.class);
-    private static volatile FlowBasedServicesConfigRemovable flowBasedIngressServicesRemovable;
 
     @Inject
     public FlowBasedIngressServicesConfigUnbindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        flowBasedIngressServicesRemovable = this;
-    }
-
-    public static FlowBasedServicesConfigRemovable getFlowBasedIngressServicesRemoveHelper() {
-        if (flowBasedIngressServicesRemovable == null) {
-            LOG.error("{} is not initialized", FlowBasedIngressServicesConfigUnbindHelper.class.getSimpleName());
-        }
-        return flowBasedIngressServicesRemovable;
-    }
-
-    public static void clearFlowBasedIngressServicesConfigUnbindHelper() {
-        flowBasedIngressServicesRemovable = null;
     }
 
     @Override
@@ -67,7 +53,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
                                             List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 boundServicesState.getInterfaceName());
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         BigInteger dpId = boundServicesState.getDpid();
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
@@ -127,7 +113,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
 
     private void unbindServiceOnTunnel(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
                                        List<BoundServices> boundServices, BoundServicesState boundServicesState) {
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         BigInteger dpId = boundServicesState.getDpid();
 
         LOG.info("unbinding ingress service {} for tunnel port: {}", boundServiceOld.getServiceName(),
@@ -165,8 +151,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
 
         BoundServices toBeMoved = tmpServicesMap.get(highestPriority);
-        Interface iface =
-                InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName(), dataBroker);
+        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName(),
+                getDataBroker());
         FlowBasedServicesUtils.removeIngressFlow(iface.getName(), boundServiceOld, dpId, tx);
         FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface, toBeMoved, tx, matches,
             boundServicesState.getIfIndex(), NwConstants.VLAN_INTERFACE_INGRESS_TABLE);

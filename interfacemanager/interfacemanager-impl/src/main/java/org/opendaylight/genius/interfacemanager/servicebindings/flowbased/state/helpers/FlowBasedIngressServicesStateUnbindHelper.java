@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -30,23 +29,10 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBasedServicesStateUnbindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesStateUnbindHelper.class);
-    private static volatile FlowBasedServicesStateRemovable flowBasedIngressServicesStateRemovable;
 
     @Inject
     public FlowBasedIngressServicesStateUnbindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        flowBasedIngressServicesStateRemovable = this;
-    }
-
-    public static FlowBasedServicesStateRemovable getFlowBasedIngressServicesStateRemoveHelper() {
-        if (flowBasedIngressServicesStateRemovable == null) {
-            LOG.error("{} is not initialized", FlowBasedIngressServicesStateUnbindHelper.class.getSimpleName());
-        }
-        return flowBasedIngressServicesStateRemovable;
-    }
-
-    public static void clearFlowBasedIngressServicesStateUnbindHelper() {
-        flowBasedIngressServicesStateRemovable = null;
     }
 
     @Override
@@ -61,7 +47,7 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
 
     protected void unbindServicesOnTunnel(List<ListenableFuture<Void>> futures, List<BoundServices> allServices,
                                           Interface iface) {
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             LOG.info("unbinding all services on tunnel interface {}", iface.getName());
             List<String> ofportIds = iface.getLowerLayerIf();
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
@@ -81,7 +67,7 @@ public class FlowBasedIngressServicesStateUnbindHelper extends AbstractFlowBased
 
     protected void unbindServicesOnVlan(List<ListenableFuture<Void>> futures,
             List<BoundServices> allServices, Interface ifaceState) {
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             List<String> ofportIds = ifaceState.getLowerLayerIf();
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
