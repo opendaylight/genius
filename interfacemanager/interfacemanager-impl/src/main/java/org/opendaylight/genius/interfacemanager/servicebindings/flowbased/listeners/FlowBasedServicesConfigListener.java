@@ -56,15 +56,18 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
     public FlowBasedServicesConfigListener(final DataBroker dataBroker,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver) {
+            final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesRendererFactoryResolver = flowBasedServicesRendererFactoryResolver;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -213,7 +216,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             // if service-binding state is not present, construct the same using ifstate
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             if (boundServicesState == null) {
-                Interface ifState = InterfaceManagerCommonUtils.getInterfaceState(interfaceName, dataBroker);
+                Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
                 if (ifState == null) {
                     LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
                         interfaceName);

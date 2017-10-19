@@ -60,8 +60,8 @@ public class OvsInterfaceConfigUpdateHelper {
         // create
         final DataBroker dataBroker = ovsInterfaceConfigRemoveHelper.getDataBroker();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceNew.getName(), dataBroker);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = ovsInterfaceConfigRemoveHelper
+                .getInterfaceManagerCommonUtils().getInterfaceState(interfaceNew.getName());
         if (ifState == null) {
             futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
                     interfaceNew));
@@ -150,8 +150,8 @@ public class OvsInterfaceConfigUpdateHelper {
         }
         LOG.info("admin-state modified for interface {}", interfaceNew.getName());
         DataBroker dataBroker = ovsInterfaceConfigRemoveHelper.getDataBroker();
-        OperStatus operStatus = InterfaceManagerCommonUtils.updateStateEntry(interfaceNew, dataBroker , transaction,
-            ifState);
+        OperStatus operStatus = ovsInterfaceConfigRemoveHelper.getInterfaceManagerCommonUtils()
+                .updateStateEntry(interfaceNew, transaction , ifState);
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
         InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
