@@ -156,6 +156,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_12b51231",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-19T08:57:26Z",
+      "side": 1,
+      "message": "The framework changes are OK, we just need to handle shutdown properly in InterfaceStateListener.",
+      "parentUuid": "9a245df4_2d455e70",
+      "range": {
+        "startLine": 106,
+        "startChar": 3,
+        "endLine": 107,
+        "endChar": 36
+      },
+      "revId": "6a7166dc6896e0b80798019d1b96383aebb04100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_d2a09ff6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
         "patchSetId": 4
