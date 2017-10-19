@@ -7,25 +7,31 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers.FlowBasedEgressServicesConfigUnbindHelper;
 
+@Singleton
 public class FlowBasedEgressServicesRendererFactory extends FlowBasedServicesRendererFactory {
+    private final FlowBasedEgressServicesConfigBindHelper flowBasedServicesConfigAddable;
+    private final FlowBasedEgressServicesConfigUnbindHelper flowBasedServicesConfigRemovable;
 
-    private static final FlowBasedEgressServicesRendererFactory
-        EGRESS_SERVICES_RENDERER_FACTORY = new FlowBasedEgressServicesRendererFactory();
+    @Inject
+    public FlowBasedEgressServicesRendererFactory(
+            FlowBasedEgressServicesConfigBindHelper flowBasedServicesConfigAddable,
+            FlowBasedEgressServicesConfigUnbindHelper flowBasedServicesConfigRemovable) {
+        this.flowBasedServicesConfigAddable = flowBasedServicesConfigAddable;
+        this.flowBasedServicesConfigRemovable = flowBasedServicesConfigRemovable;
+    }
 
     @Override
     public FlowBasedServicesConfigAddable getFlowBasedServicesAddRenderer() {
-        return FlowBasedEgressServicesConfigBindHelper.getFlowBasedEgressServicesAddHelper();
+        return flowBasedServicesConfigAddable;
     }
 
     @Override
     public FlowBasedServicesConfigRemovable getFlowBasedServicesRemoveRenderer() {
-        return FlowBasedEgressServicesConfigUnbindHelper.getFlowBasedEgressServicesRemoveHelper();
-    }
-
-    public static FlowBasedServicesRendererFactory getFlowBasedServicesRendererFactory() {
-        return EGRESS_SERVICES_RENDERER_FACTORY;
+        return flowBasedServicesConfigRemovable;
     }
 }
