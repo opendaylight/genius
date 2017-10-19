@@ -59,11 +59,15 @@ public final class AlivenessMonitorUtils {
     private static final long MONITORING_INTERVAL = 10000;
     private static final long MONITORING_WINDOW = 4;
 
-    private AlivenessMonitorUtils() {
+    private final AlivenessMonitorService alivenessMonitorService;
+    private final DataBroker dataBroker;
+
+    public AlivenessMonitorUtils(AlivenessMonitorService alivenessMonitor, DataBroker dataBroker) {
+        this.alivenessMonitorService = alivenessMonitor;
+        this.dataBroker = dataBroker;
     }
 
-    public static void startLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-            IfTunnel ifTunnel, String trunkInterfaceName) {
+    public void startLLDPMonitoring(IfTunnel ifTunnel, String trunkInterfaceName) {
         // LLDP monitoring for the tunnel interface
         if (lldpMonitoringEnabled(ifTunnel)) {
             MonitorStartInput lldpMonitorInput = new MonitorStartInputBuilder()
@@ -73,7 +77,7 @@ public final class AlivenessMonitorUtils {
                                             getInterfaceForMonitoring(trunkInterfaceName, ifTunnel.getTunnelSource()))
                                     .build())
                             .setMode(MonitoringMode.OneOne)
-                            .setProfileId(allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD,
+                            .setProfileId(allocateProfile(FAILURE_THRESHOLD,
                                     ifTunnel.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp))
                             .build())
                     .build();
@@ -83,8 +87,8 @@ public final class AlivenessMonitorUtils {
                 long monitorId;
                 if (rpcResult.isSuccessful()) {
                     monitorId = rpcResult.getResult().getMonitorId();
-                    createOrUpdateInterfaceMonitorIdMap(dataBroker, trunkInterfaceName, monitorId);
-                    createOrUpdateMonitorIdInterfaceMap(dataBroker, trunkInterfaceName, monitorId);
+                    createOrUpdateInterfaceMonitorIdMap(trunkInterfaceName, monitorId);
+                    createOrUpdateMonitorIdInterfaceMap(trunkInterfaceName, monitorId);
                     LOG.trace("Started LLDP monitoring with id {}", monitorId);
                 } else {
                     LOG.warn("RPC Call to start monitoring returned with Errors {}", rpcResult.getErrors());
@@ -95,49 +99,50 @@ public final class AlivenessMonitorUtils {
         }
     }
 
-    public static void stopLLDPMonitoring(AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
-            IfTunnel ifTunnel, String trunkInterface) {
+    public void stopLLDPMonitoring(IfTunnel ifTunnel, String trunkInterface) {
         if (!lldpMonitoringEnabled(ifTunnel)) {
             return;
         }
         LOG.debug("stop LLDP monitoring for {}", trunkInterface);
-        List<Long> monitorIds = getMonitorIdForInterface(dataBroker, trunkInterface);
+        List<Long> monitorIds = getMonitorIdForInterface(trunkInterface);
         if (monitorIds == null) {
             LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
             return;
         }
         for (Long monitorId : monitorIds) {
-            String interfaceName = getInterfaceFromMonitorId(dataBroker, monitorId);
+            String interfaceName = getInterfaceFromMonitorId(monitorId);
             if (interfaceName != null) {
                 MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
                 alivenessMonitorService.monitorStop(input);
-                removeMonitorIdInterfaceMap(dataBroker, monitorId);
-                removeMonitorIdFromInterfaceMonitorIdMap(dataBroker, interfaceName, monitorId);
+                removeMonitorIdInterfaceMap(monitorId);
+                removeMonitorIdFromInterfaceMonitorIdMap(interfaceName, monitorId);
                 return;
             }
         }
     }
 
-    public static String getInterfaceFromMonitorId(DataBroker broker, Long monitorId) {
+    public String getInterfaceFromMonitorId(Long monitorId) {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker)
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker)
                 .toJavaUtil().map(MonitorIdInterface::getInterfaceName).orElse(null);
     }
 
-    private static void removeMonitorIdInterfaceMap(DataBroker broker, long monitorId) {
+    private void removeMonitorIdInterfaceMap(long monitorId) {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
+        Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                id, dataBroker);
         if (monitorIdInterfaceMap.isPresent()) {
-            MDSALUtil.syncDelete(broker, LogicalDatastoreType.OPERATIONAL, id);
+            MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.OPERATIONAL, id);
         }
     }
 
-    private static void removeMonitorIdFromInterfaceMonitorIdMap(DataBroker broker, String infName, long monitorId) {
+    private void removeMonitorIdFromInterfaceMonitorIdMap(String infName, long monitorId) {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
+        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                id, dataBroker);
         if (interfaceMonitorIdMap.isPresent()) {
             InterfaceMonitorId interfaceMonitorIdInstance = interfaceMonitorIdMap.get();
             List<Long> existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
@@ -146,7 +151,7 @@ public final class AlivenessMonitorUtils {
                 InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
-                MDSALUtil.syncWrite(broker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
+                MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
             }
         }
     }
@@ -161,8 +166,7 @@ public final class AlivenessMonitorUtils {
                 .setInterfaceIp(ipAddress).setInterfaceName(interfaceName).build();
     }
 
-    public static void handleTunnelMonitorUpdates(AlivenessMonitorService alivenessMonitorService,
-            DataBroker dataBroker, Interface interfaceOld, Interface interfaceNew) {
+    public void handleTunnelMonitorUpdates(Interface interfaceOld, Interface interfaceNew) {
         String interfaceName = interfaceNew.getName();
         IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
         if (!lldpMonitoringEnabled(ifTunnelNew)) {
@@ -170,16 +174,16 @@ public final class AlivenessMonitorUtils {
         }
         LOG.debug("handling tunnel monitoring updates for interface {}", interfaceName);
 
-        stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnelNew, interfaceOld.getName());
+        stopLLDPMonitoring(ifTunnelNew, interfaceOld.getName());
         if (ifTunnelNew.isMonitorEnabled()) {
-            startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnelNew, interfaceName);
+            startLLDPMonitoring(ifTunnelNew, interfaceName);
 
             // Delete old profile from Aliveness Manager
             IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
             if (!ifTunnelNew.getMonitorInterval().equals(ifTunnelOld.getMonitorInterval())) {
                 LOG.debug("deleting older monitor profile for interface {}", interfaceName);
-                long profileId = allocateProfile(alivenessMonitorService, FAILURE_THRESHOLD,
-                        ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp);
+                long profileId = allocateProfile(FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW,
+                        EtherTypes.Lldp);
                 MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder()
                         .setProfileId(profileId).build();
                 alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
@@ -187,13 +191,14 @@ public final class AlivenessMonitorUtils {
         }
     }
 
-    public static void createOrUpdateInterfaceMonitorIdMap(DataBroker broker, String infName, long monitorId) {
+    public void createOrUpdateInterfaceMonitorIdMap(String infName, long monitorId) {
         InterfaceMonitorId interfaceMonitorIdInstance;
         List<Long> existingMonitorIds;
         InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
+        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                id, dataBroker);
         if (interfaceMonitorIdMap.isPresent()) {
             interfaceMonitorIdInstance = interfaceMonitorIdMap.get();
             existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
@@ -204,50 +209,50 @@ public final class AlivenessMonitorUtils {
                 existingMonitorIds.add(monitorId);
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
-                MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
+                MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
             }
         } else {
             existingMonitorIds = new ArrayList<>();
             existingMonitorIds.add(monitorId);
             interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setMonitorId(existingMonitorIds)
                     .setKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
-            MDSALUtil.syncWrite(broker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
+            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
         }
     }
 
-    public static void createOrUpdateMonitorIdInterfaceMap(DataBroker broker, String infName, long monitorId) {
+    public void createOrUpdateMonitorIdInterfaceMap(String infName, long monitorId) {
         MonitorIdInterface monitorIdInterfaceInstance;
         String existinginterfaceName;
         MonitorIdInterfaceBuilder monitorIdInterfaceBuilder = new MonitorIdInterfaceBuilder();
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker);
+        Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                id, dataBroker);
         if (monitorIdInterfaceMap.isPresent()) {
             monitorIdInterfaceInstance = monitorIdInterfaceMap.get();
             existinginterfaceName = monitorIdInterfaceInstance.getInterfaceName();
             if (!existinginterfaceName.equals(infName)) {
                 monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setKey(new MonitorIdInterfaceKey(monitorId))
                         .setInterfaceName(infName).build();
-                MDSALUtil.syncUpdate(broker, LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance);
+                MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance);
             }
         } else {
             monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setMonitorId(monitorId)
                     .setKey(new MonitorIdInterfaceKey(monitorId)).setInterfaceName(infName).build();
-            MDSALUtil.syncWrite(broker, LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance);
+            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance);
         }
     }
 
-    public static List<Long> getMonitorIdForInterface(DataBroker broker, String infName) {
+    public List<Long> getMonitorIdForInterface(String infName) {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, broker).toJavaUtil().map(
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).toJavaUtil().map(
                 InterfaceMonitorId::getMonitorId).orElse(null);
     }
 
-    public static long createMonitorProfile(AlivenessMonitorService alivenessMonitor,
-            MonitorProfileCreateInput monitorProfileCreateInput) {
+    public long createMonitorProfile(MonitorProfileCreateInput monitorProfileCreateInput) {
         try {
-            Future<RpcResult<MonitorProfileCreateOutput>> result = alivenessMonitor
+            Future<RpcResult<MonitorProfileCreateOutput>> result = alivenessMonitorService
                     .monitorProfileCreate(monitorProfileCreateInput);
             RpcResult<MonitorProfileCreateOutput> rpcResult = result.get();
             if (rpcResult.isSuccessful()) {
@@ -256,7 +261,7 @@ public final class AlivenessMonitorUtils {
                 LOG.warn("RPC Call to Get Profile Id Id returned with Errors {}.. Trying to fetch existing profile ID",
                         rpcResult.getErrors());
                 Profile createProfile = monitorProfileCreateInput.getProfile();
-                Future<RpcResult<MonitorProfileGetOutput>> existingProfile = alivenessMonitor.monitorProfileGet(
+                Future<RpcResult<MonitorProfileGetOutput>> existingProfile = alivenessMonitorService.monitorProfileGet(
                         buildMonitorGetProfile(createProfile.getMonitorInterval(), createProfile.getMonitorWindow(),
                                 createProfile.getFailureThreshold(), createProfile.getProtocolType()));
                 RpcResult<MonitorProfileGetOutput> rpcGetResult = existingProfile.get();
@@ -288,13 +293,13 @@ public final class AlivenessMonitorUtils {
         return buildGetProfile.build();
     }
 
-    public static long allocateProfile(AlivenessMonitorService alivenessMonitor, long failureThreshold,
-            long monitoringInterval, long monitoringWindow, EtherTypes etherTypes) {
+    public long allocateProfile(long failureThreshold, long monitoringInterval, long monitoringWindow,
+            EtherTypes etherTypes) {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder().setProfile(
                 new ProfileBuilder().setFailureThreshold(failureThreshold).setMonitorInterval(monitoringInterval)
                         .setMonitorWindow(monitoringWindow).setProtocolType(etherTypes).build())
                 .build();
-        return createMonitorProfile(alivenessMonitor, input);
+        return createMonitorProfile(input);
     }
 
     public static boolean lldpMonitoringEnabled(IfTunnel ifTunnel) {
