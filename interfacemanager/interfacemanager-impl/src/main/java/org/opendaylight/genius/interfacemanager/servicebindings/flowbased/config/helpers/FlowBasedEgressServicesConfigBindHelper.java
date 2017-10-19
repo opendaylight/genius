@@ -29,9 +29,13 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigBindHelper.class);
 
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+
     @Inject
-    public FlowBasedEgressServicesConfigBindHelper(final DataBroker dataBroker) {
+    public FlowBasedEgressServicesConfigBindHelper(final DataBroker dataBroker,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(dataBroker);
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -39,8 +43,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                                           List<BoundServices> allServices, BoundServicesState boundServiceState) {
         BigInteger dpId = boundServiceState.getDpid();
         WriteTransaction transaction = getDataBroker().newWriteOnlyTransaction();
-        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
-                getDataBroker());
+        Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName());
         LOG.info("binding egress service {} for interface: {}", boundServiceNew.getServiceName(),
             boundServiceState.getInterfaceName());
         if (allServices.size() == 1) {

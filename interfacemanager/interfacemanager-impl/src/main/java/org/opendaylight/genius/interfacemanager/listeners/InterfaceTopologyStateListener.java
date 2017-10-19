@@ -8,20 +8,27 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateAddHelper;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -39,18 +46,21 @@ public class InterfaceTopologyStateListener
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
 
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = new OvsInterfaceTopologyStateUpdateHelper(dataBroker,
-                entityOwnershipUtils, coordinator);
+                entityOwnershipUtils, coordinator, interfaceManagerCommonUtils);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -138,7 +148,29 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier, bridgeNew, dataBroker);
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+
+            if (bridgeNew.getDatapathId() == null) {
+                LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
+                return futures;
+            }
+            BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+            LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+            // create bridge reference entry in interface meta operational DS
+            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+            InterfaceMetaUtils.createBridgeRefEntry(dpnId, instanceIdentifier, writeTransaction);
+
+            // handle pre-provisioning of tunnels for the newly connected dpn
+            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
+            if (bridgeEntry == null) {
+                LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
+                futures.add(writeTransaction.submit());
+                return futures;
+            }
+            futures.add(writeTransaction.submit());
+            SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, interfaceManagerCommonUtils,
+                    instanceIdentifier, bridgeNew);
+            return futures;
         }
     }
 
