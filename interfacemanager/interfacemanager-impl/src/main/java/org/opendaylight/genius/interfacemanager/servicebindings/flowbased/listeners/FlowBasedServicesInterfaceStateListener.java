@@ -19,7 +19,7 @@ import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListen
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactory;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -42,14 +42,17 @@ public class FlowBasedServicesInterfaceStateListener
     private final DataBroker dataBroker;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
     public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator) {
+            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
+            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -69,8 +72,8 @@ public class FlowBasedServicesInterfaceStateListener
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
                 .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
-                        new RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRendererFactory
-                                .getFlowBasedServicesStateRendererFactory(serviceMode)
+                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRendererFactoryResolver
+                            .getFlowBasedServicesStateRendererFactory(serviceMode)
                                 .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld, serviceMode),
                         IfmConstants.JOB_MAX_RETRIES));
     }
@@ -91,7 +94,7 @@ public class FlowBasedServicesInterfaceStateListener
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
         FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
                 interfaceStateNew.getName(),
-                new RendererStateInterfaceBindWorker(FlowBasedServicesStateRendererFactory
+                new RendererStateInterfaceBindWorker(flowBasedServicesStateRendererFactoryResolver
                         .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer(),
                         interfaceStateNew, serviceMode),
                 IfmConstants.JOB_MAX_RETRIES));
