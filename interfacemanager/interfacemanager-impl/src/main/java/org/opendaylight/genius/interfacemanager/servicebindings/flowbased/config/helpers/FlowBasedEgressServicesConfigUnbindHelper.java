@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -28,19 +27,10 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBasedServicesConfigUnbindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigUnbindHelper.class);
-    private static volatile FlowBasedServicesConfigRemovable flowBasedEgressServicesRemovable;
 
     @Inject
     public FlowBasedEgressServicesConfigUnbindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        flowBasedEgressServicesRemovable = this;
-    }
-
-    public static FlowBasedServicesConfigRemovable getFlowBasedEgressServicesRemoveHelper() {
-        if (flowBasedEgressServicesRemovable == null) {
-            LOG.error("{} is not initialized", FlowBasedEgressServicesConfigUnbindHelper.class.getSimpleName());
-        }
-        return flowBasedEgressServicesRemovable;
     }
 
     @Override
@@ -48,9 +38,9 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
                                            List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         LOG.info("unbinding egress service {} for interface: {}", boundServiceOld.getServiceName(), boundServicesState
             .getInterfaceName());
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName(),
-            dataBroker);
+            getDataBroker());
         BigInteger dpId = boundServicesState.getDpid();
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
