@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
 import org.slf4j.Logger;
@@ -30,11 +31,15 @@ import org.slf4j.LoggerFactory;
 public class AlivenessMonitorListener implements
         org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener {
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorListener.class);
+
     private final DataBroker dataBroker;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
 
     @Inject
-    public AlivenessMonitorListener(final DataBroker dataBroker, final NotificationService notificationService) {
+    public AlivenessMonitorListener(final DataBroker dataBroker, final NotificationService notificationService,
+            final AlivenessMonitorService alivenessMonitorService) {
         this.dataBroker = dataBroker;
+        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
         notificationService.registerNotificationListener(this);
     }
 
@@ -51,7 +56,7 @@ public class AlivenessMonitorListener implements
     @Override
     public void onMonitorEvent(MonitorEvent notification) {
         Long monitorId = notification.getEventData().getMonitorId();
-        String tunnelInterface = AlivenessMonitorUtils.getInterfaceFromMonitorId(dataBroker, monitorId);
+        String tunnelInterface = alivenessMonitorUtils.getInterfaceFromMonitorId(monitorId);
         if (tunnelInterface == null) {
             LOG.debug("Either monitoring for interface - {} not started by Interfacemgr or it is not LLDP monitoring",
                     tunnelInterface);

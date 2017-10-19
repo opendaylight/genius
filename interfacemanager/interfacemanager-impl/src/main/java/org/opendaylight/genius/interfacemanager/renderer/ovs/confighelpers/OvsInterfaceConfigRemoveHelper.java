@@ -55,6 +55,7 @@ public class OvsInterfaceConfigRemoveHelper {
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
     private final JobCoordinator coordinator;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
 
     public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
             IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator) {
@@ -63,6 +64,7 @@ public class OvsInterfaceConfigRemoveHelper {
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
         this.coordinator = coordinator;
+        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
     }
 
     public DataBroker getDataBroker() {
@@ -83,6 +85,10 @@ public class OvsInterfaceConfigRemoveHelper {
 
     public JobCoordinator getCoordinator() {
         return coordinator;
+    }
+
+    public AlivenessMonitorUtils getAlivenessMonitorUtils() {
+        return alivenessMonitorUtils;
     }
 
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
@@ -195,7 +201,7 @@ public class OvsInterfaceConfigRemoveHelper {
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, dataBroker,
                 defaultOperationalShardTransaction, idManager);
         // stop LLDP monitoring for the tunnel interface
-        AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+        alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
 
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
             removeMultipleVxlanTunnelsConfiguration(interfaceName, parentRefs);
