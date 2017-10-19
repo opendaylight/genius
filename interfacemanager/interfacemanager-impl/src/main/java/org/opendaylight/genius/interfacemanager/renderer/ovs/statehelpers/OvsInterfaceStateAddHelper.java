@@ -40,13 +40,20 @@ import org.slf4j.LoggerFactory;
 public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
-    private OvsInterfaceStateAddHelper() {
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final IMdsalApiManager mdsalApiManager;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
+
+    public OvsInterfaceStateAddHelper(DataBroker dataBroker, IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService) {
+        this.dataBroker = dataBroker;
+        this.idManager = idManager;
+        this.mdsalApiManager = mdsalApiManager;
+        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
     }
 
-    public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
-                                                        IMdsalApiManager mdsalApiManager,
-                                                        AlivenessMonitorService alivenessMonitorService,
-                                                        String interfaceName, Interface parentInterface) {
+    public List<ListenableFuture<Void>> addState(String interfaceName, Interface parentInterface) {
         if (parentInterface.getLowerLayerIf() == null || parentInterface.getLowerLayerIf().isEmpty()) {
             LOG.trace("Cannot obtain lower layer if, not proceeding with Interface State addition for interface: {}",
                     interfaceName);
@@ -54,24 +61,20 @@ public final class OvsInterfaceStateAddHelper {
         NodeConnectorId nodeConnectorId = new NodeConnectorId(parentInterface.getLowerLayerIf().get(0));
         PhysAddress physAddress = parentInterface.getPhysAddress();
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
-        return addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName,
-                portNo, physAddress);
+        return addState(nodeConnectorId, interfaceName, portNo, physAddress);
     }
 
 
 
-    public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
-            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
-            NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
+    public List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
+            FlowCapableNodeConnector fcNodeConnectorNew) {
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
-        return addState(dataBroker, idManager, mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName,
-                portNo, physAddress);
+        return addState(nodeConnectorId, interfaceName, portNo, physAddress);
     }
 
-    private static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
-            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
-            NodeConnectorId nodeConnectorId, String interfaceName, long portNo, PhysAddress physAddress) {
+    private List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
+            long portNo, PhysAddress physAddress) {
         LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
 
         if (portNo == IfmConstants.INVALID_PORT_NO) {
@@ -103,9 +106,8 @@ public final class OvsInterfaceStateAddHelper {
         // If this interface is a tunnel interface, create the tunnel ingress
         // flow,and start tunnel monitoring
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-            handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
-                    nodeConnectorId, defaultOperationalShardTransaction, ifState.getIfIndex(), iface, interfaceName,
-                    portNo);
+            handleTunnelMonitoringAddition(futures, nodeConnectorId, defaultOperationalShardTransaction,
+                    ifState.getIfIndex(), iface, interfaceName, portNo);
             return futures;
         }
 
@@ -124,20 +126,17 @@ public final class OvsInterfaceStateAddHelper {
         return futures;
     }
 
-    public static void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
-            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
-            NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifIndex,
+    public void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, NodeConnectorId nodeConnectorId,
+            WriteTransaction transaction, Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo,
-            String interfaceName, long portNo) {
+                .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         InterfaceManagerCommonUtils.addTunnelIngressFlow(mdsalApiManager,
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
         FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);
         futures.add(transaction.submit());
-        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
-                interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
+        alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
     }
 
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,

@@ -52,18 +52,21 @@ public final class OvsInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigAddHelper.class);
 
     private final DataBroker dataBroker;
-    private final AlivenessMonitorService alivenessMonitorService;
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
     private final JobCoordinator coordinator;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
+    private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
 
     public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
             IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator) {
         this.dataBroker = dataBroker;
-        this.alivenessMonitorService = alivenessMonitorService;
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
         this.coordinator = coordinator;
+        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker, idManager, mdsalApiManager,
+                alivenessMonitorService);
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
@@ -148,8 +151,8 @@ public final class OvsInterfaceConfigAddHelper {
                     .Interface
                     interfaceState = InterfaceManagerCommonUtils.getInterfaceState(tunnelName, dataBroker);
             if (interfaceState != null) {
-                coordinator.enqueueJob(tunnelName, () -> OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
-                        mdsalApiManager, alivenessMonitorService, interfaceNew.getName(), interfaceState));
+                coordinator.enqueueJob(tunnelName, () -> ovsInterfaceStateAddHelper.addState(interfaceNew.getName(),
+                        interfaceState));
             }
         } else {
             tunnelName = interfaceNew.getName();
@@ -191,8 +194,7 @@ public final class OvsInterfaceConfigAddHelper {
                     FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceNew,
                             Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
                     // start LLDP monitoring for the tunnel interface
-                    AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel,
-                            interfaceNew.getName());
+                    alivenessMonitorUtils.startLLDPMonitoring(ifTunnel, interfaceNew.getName());
                 }
             }
         }
