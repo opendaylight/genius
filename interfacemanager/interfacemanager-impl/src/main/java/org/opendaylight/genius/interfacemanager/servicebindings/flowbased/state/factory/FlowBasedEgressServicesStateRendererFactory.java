@@ -7,25 +7,31 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedEgressServicesStateBindHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers.FlowBasedEgressServicesStateUnbindHelper;
 
+@Singleton
 public class FlowBasedEgressServicesStateRendererFactory extends FlowBasedServicesStateRendererFactory {
-    private static FlowBasedEgressServicesStateRendererFactory
-            egressServicesRendererFactory = new FlowBasedEgressServicesStateRendererFactory();
+    private final FlowBasedEgressServicesStateBindHelper flowBasedServicesStateAddable;
+    private final FlowBasedEgressServicesStateUnbindHelper flowBasedServicesStateRemovable;
+
+    @Inject
+    public FlowBasedEgressServicesStateRendererFactory(
+            FlowBasedEgressServicesStateBindHelper flowBasedServicesStateAddable,
+            FlowBasedEgressServicesStateUnbindHelper flowBasedServicesStateRemovable) {
+        this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
+        this.flowBasedServicesStateRemovable = flowBasedServicesStateRemovable;
+    }
 
     @Override
     public FlowBasedServicesStateAddable getFlowBasedServicesStateAddRenderer() {
-        return FlowBasedEgressServicesStateBindHelper.getFlowBasedEgressServicesStateBindHelper();
+        return flowBasedServicesStateAddable;
     }
 
     @Override
     public FlowBasedServicesStateRemovable getFlowBasedServicesStateRemoveRenderer() {
-        return FlowBasedEgressServicesStateUnbindHelper.getFlowBasedEgressServicesStateRemoveHelper();
+        return flowBasedServicesStateRemovable;
     }
-
-    public static FlowBasedServicesStateRendererFactory getFlowBasedServicesRendererFactory() {
-        return egressServicesRendererFactory;
-    }
-
 }

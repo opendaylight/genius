@@ -15,7 +15,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.ServiceIndex;
@@ -29,29 +28,19 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedServicesConfigBindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigBindHelper.class);
-    private static volatile FlowBasedServicesConfigAddable flowBasedEgressServicesAddable;
-
 
     @Inject
     public FlowBasedEgressServicesConfigBindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        flowBasedEgressServicesAddable = this;
-    }
-
-    public static FlowBasedServicesConfigAddable getFlowBasedEgressServicesAddHelper() {
-        if (flowBasedEgressServicesAddable == null) {
-            LOG.error("{} is not initialized", FlowBasedEgressServicesConfigBindHelper.class.getSimpleName());
-        }
-        return flowBasedEgressServicesAddable;
     }
 
     @Override
     protected void bindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                           List<BoundServices> allServices, BoundServicesState boundServiceState) {
         BigInteger dpId = boundServiceState.getDpid();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        WriteTransaction transaction = getDataBroker().newWriteOnlyTransaction();
         Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
-            dataBroker);
+                getDataBroker());
         LOG.info("binding egress service {} for interface: {}", boundServiceNew.getServiceName(),
             boundServiceState.getInterfaceName());
         if (allServices.size() == 1) {
