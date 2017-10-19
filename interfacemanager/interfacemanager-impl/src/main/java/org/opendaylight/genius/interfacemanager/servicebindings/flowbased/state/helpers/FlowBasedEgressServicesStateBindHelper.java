@@ -16,7 +16,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -29,19 +28,10 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedServicesStateBindHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesStateBindHelper.class);
-    private static volatile FlowBasedServicesStateAddable flowBasedServicesStateAddable;
 
     @Inject
     public FlowBasedEgressServicesStateBindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        flowBasedServicesStateAddable = this;
-    }
-
-    public static FlowBasedServicesStateAddable getFlowBasedEgressServicesStateBindHelper() {
-        if (flowBasedServicesStateAddable == null) {
-            LOG.error("{} is not initialized", FlowBasedEgressServicesStateBindHelper.class.getSimpleName());
-        }
-        return flowBasedServicesStateAddable;
     }
 
     @Override
@@ -50,14 +40,14 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
         LOG.info("bind all egress services for interface: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(getTxRunner().callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
             BoundServices highestPriority = allServices.remove(0);
             short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
                     : highestPriority.getServicePriority() + 1);
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
-                    .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
+                    .getInterfaceFromConfigDS(ifState.getName(), getDataBroker());
             FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), tx,
                     ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
             BoundServices prev = null;

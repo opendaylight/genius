@@ -26,15 +26,20 @@ public abstract class AbstractFlowBasedServicesConfigBindHelper implements FlowB
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractFlowBasedServicesConfigBindHelper.class);
 
-    protected final DataBroker dataBroker;
+    private final DataBroker dataBroker;
 
     /**
      * Create instance.
      * @param dataBroker instance of interfaceMgrProvider
      */
-    public AbstractFlowBasedServicesConfigBindHelper(final DataBroker dataBroker) {
+    protected AbstractFlowBasedServicesConfigBindHelper(final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
     }
+
+    protected DataBroker getDataBroker() {
+        return dataBroker;
+    }
+
 
     @Override
     public final void bindService(List<ListenableFuture<Void>> futures, String interfaceName,
