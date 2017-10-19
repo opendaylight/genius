@@ -55,15 +55,18 @@ public class OvsInterfaceConfigRemoveHelper {
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
     private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
     public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
-            IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator) {
+            IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
         this.alivenessMonitorService = alivenessMonitorService;
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
     }
 
@@ -89,6 +92,10 @@ public class OvsInterfaceConfigRemoveHelper {
 
     public AlivenessMonitorUtils getAlivenessMonitorUtils() {
         return alivenessMonitorUtils;
+    }
+
+    public InterfaceManagerCommonUtils getInterfaceManagerCommonUtils() {
+        return interfaceManagerCommonUtils;
     }
 
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
@@ -117,12 +124,11 @@ public class OvsInterfaceConfigRemoveHelper {
             return;
         }
         LOG.info("removing vlan configuration for interface {}", interfaceName);
-        InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, defaultOperationalShardTransaction,
-                idManagerService);
+        interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, defaultOperationalShardTransaction);
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceName, dataBroker);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .getInterfaceState(interfaceName);
 
         if (ifState == null) {
             LOG.debug("could not fetch interface state corresponding to {}, probably already removed as part of port "
@@ -134,7 +140,7 @@ public class OvsInterfaceConfigRemoveHelper {
         BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
         FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
 
-        InterfaceManagerCommonUtils.deleteParentInterfaceEntry(parentRefs.getParentInterface());
+        interfaceManagerCommonUtils.deleteParentInterfaceEntry(parentRefs.getParentInterface());
 
         // For Vlan-Trunk Interface, remove the trunk-member operstates as
         // well...
@@ -146,7 +152,7 @@ public class OvsInterfaceConfigRemoveHelper {
         }
 
         VlanMemberStateRemoveWorker vlanMemberStateRemoveWorker = new VlanMemberStateRemoveWorker(dataBroker,
-                idManagerService, dpId, interfaceName, interfaceParentEntry);
+                interfaceManagerCommonUtils, dpId, interfaceName, interfaceParentEntry);
         coordinator.enqueueJob(interfaceName, vlanMemberStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
 
     }
@@ -184,9 +190,9 @@ public class OvsInterfaceConfigRemoveHelper {
         }
         if (SouthboundUtils.isOfTunnel(ifTunnel)) {
             if (deleteTunnel) {
-                InterfaceManagerCommonUtils.deleteParentInterfaceEntry(tunnelName);
+                interfaceManagerCommonUtils.deleteParentInterfaceEntry(tunnelName);
             } else {
-                InterfaceManagerCommonUtils.deleteInterfaceChildEntry(tunnelName, interfaceName);
+                interfaceManagerCommonUtils.deleteInterfaceChildEntry(tunnelName, interfaceName);
             }
         }
 
@@ -217,13 +223,14 @@ public class OvsInterfaceConfigRemoveHelper {
     }
 
     public void removeTunnelIngressFlow(String interfaceName, IfTunnel ifTunnel, BigInteger dpId) {
-        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(interfaceName, dataBroker);
+        NodeConnectorId ncId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName,
+                interfaceManagerCommonUtils);
         if (ncId == null) {
             LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
         } else {
             long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-            InterfaceManagerCommonUtils.makeTunnelIngressFlow(mdsalApiManager, ifTunnel, dpId, portNo,
-                    interfaceName, -1, NwConstants.DEL_FLOW);
+            interfaceManagerCommonUtils.makeTunnelIngressFlow(ifTunnel, dpId, portNo, interfaceName,
+                    -1, NwConstants.DEL_FLOW);
 
             IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
                     FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
@@ -232,34 +239,33 @@ public class OvsInterfaceConfigRemoveHelper {
 
     // if the node is shutdown, there will be stale interface state entries,
     // with unknown op-state, clear them.
-    public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+    public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
             String interfaceName, ParentRefs parentRefs, IfTunnel ifTunnel, DataBroker dataBroker,
             WriteTransaction transaction, IdManagerService idManagerService) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
-            .interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                .getInterfaceState(interfaceName, dataBroker);
+            .interfaces.state.Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
         if (ifState != null && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown) {
             String staleInterface = ifTunnel != null ? interfaceName : parentRefs.getParentInterface();
             LOG.debug("cleaning up parent-interface for {}, since the oper-status is UNKNOWN", interfaceName);
-            InterfaceManagerCommonUtils.deleteInterfaceStateInformation(staleInterface, transaction, idManagerService);
+            interfaceManagerCommonUtils.deleteInterfaceStateInformation(staleInterface, transaction);
         }
         return ifState;
     }
 
     private static class VlanMemberStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final DataBroker dataBroker;
-        private final IdManagerService idManager;
+        private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
         private final BigInteger dpId;
         private final String interfaceName;
         private final InterfaceParentEntry interfaceParentEntry;
 
-        VlanMemberStateRemoveWorker(DataBroker dataBroker, IdManagerService idManager, BigInteger dpId,
-                String interfaceName, InterfaceParentEntry interfaceParentEntry) {
+        VlanMemberStateRemoveWorker(DataBroker dataBroker, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                BigInteger dpId, String interfaceName, InterfaceParentEntry interfaceParentEntry) {
             this.dataBroker = dataBroker;
-            this.idManager = idManager;
+            this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
             this.dpId = dpId;
             this.interfaceName = interfaceName;
             this.interfaceParentEntry = interfaceParentEntry;
@@ -273,8 +279,8 @@ public class OvsInterfaceConfigRemoveHelper {
             // updates in batches of 100.
             for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
                 LOG.debug("removing interface state for vlan trunk member {}", interfaceChildEntry.getChildInterface());
-                InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),
-                        operShardTransaction, idManager);
+                interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),
+                        operShardTransaction);
                 FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker,
                         futures);
             }
@@ -302,12 +308,12 @@ public class OvsInterfaceConfigRemoveHelper {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
         IfmUtil.unbindService(dataBroker, coordinator, ifaceName,
                 FlowBasedServicesUtils.buildDefaultServiceId(ifaceName));
-        InterfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, tx, idManager);
-        InterfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);
+        interfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, tx);
+        interfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);
         removeLogicalTunnelSelectGroup(dpnId, ifaceName, lportTag);
     }
 
-    private static void removeMultipleVxlanTunnelsConfiguration(String ifaceName, ParentRefs parentRef) {
+    private void removeMultipleVxlanTunnelsConfiguration(String ifaceName, ParentRefs parentRef) {
         //Remove the individual tunnel from interface-child-info model of the tunnel group members
         String parentInterface = parentRef.getParentInterface();
         if (parentInterface == null) {
@@ -315,6 +321,6 @@ public class OvsInterfaceConfigRemoveHelper {
         }
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: removeMultipleVxlanTunnelsConfiguration for {} in logical group {}",
                     ifaceName, parentInterface);
-        InterfaceManagerCommonUtils.deleteInterfaceChildEntry(parentInterface, ifaceName);
+        interfaceManagerCommonUtils.deleteInterfaceChildEntry(parentInterface, ifaceName);
     }
 }

@@ -87,10 +87,13 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerRpcService.class);
 
     private final DataBroker dataBroker;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public InterfaceManagerRpcService(final DataBroker dataBroker) {
+    public InterfaceManagerRpcService(final DataBroker dataBroker,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -99,7 +102,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return FutureRpcResults.fromListenableFuture(LOG, "getDpidFromInterface", input, () -> {
             BigInteger dpId;
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-            Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+            Interface interfaceInfo = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
             if (interfaceInfo == null) {
                 throw new IllegalArgumentException(
                         getDpidFromInterfaceErrorMessage(interfaceName, "missing Interface in Config DataStore"));
@@ -109,8 +112,8 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 dpId = parentRefs.getDatapathNodeIdentifier();
             } else {
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                    .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                        .getInterfaceState(interfaceName, dataBroker);
+                    .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                        .getInterfaceState(interfaceName);
                 if (ifState != null) {
                     String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                     NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -142,7 +145,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             // point ip
             BridgeInterfaceEntry bridgeInterfaceEntry = bridgeEntry.getBridgeInterfaceEntry().get(0);
             InterfaceKey interfaceKey = new InterfaceKey(bridgeInterfaceEntry.getInterfaceName());
-            Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+            Interface interfaceInfo = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
             IfTunnel tunnel = interfaceInfo.getAugmentation(IfTunnel.class);
             return Futures.immediateFuture(new GetEndpointIpForDpnOutputBuilder()
                     .setLocalIps(Collections.singletonList(tunnel.getTunnelSource())).build());
@@ -154,7 +157,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             GetEgressInstructionsForInterfaceInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "getEgressInstructionsForInterface", input, () -> {
             List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
-                    input.getTunnelKey(), dataBroker, false);
+                    input.getTunnelKey(), interfaceManagerCommonUtils, false);
             return Futures.immediateFuture(
                     new GetEgressInstructionsForInterfaceOutputBuilder().setInstruction(instructions).build());
         }).onFailureLogLevel(DEBUG).build();
@@ -165,7 +168,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return FutureRpcResults.fromListenableFuture(LOG, "getInterfaceType", input, () -> {
             String interfaceName = input.getIntfName();
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-            Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+            Interface interfaceInfo = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
             if (interfaceInfo == null) {
                 throw new IllegalStateException(String.format("getInterfaceType() Retrieval of Interface Type for "
                         + "the key {%s} failed due to missing Interface in Config DataStore", interfaceName));
@@ -180,7 +183,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return FutureRpcResults.fromListenableFuture(LOG, "getTunnelType", input, () -> {
             String interfaceName = input.getIntfName();
             InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-            Interface interfaceInfo = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
+            Interface interfaceInfo = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
             if (interfaceInfo == null) {
                 throw new IllegalArgumentException(String.format(
                         "Retrieval of Tunnel Type for the key {%s} failed due to missing Interface in Config DataStore",
@@ -201,7 +204,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             GetEgressActionsForInterfaceInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "getEgressActionsForInterface", input, () -> {
             List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(), input.getTunnelKey(),
-                    input.getActionKey(), dataBroker, false);
+                    input.getActionKey(), interfaceManagerCommonUtils, false);
             // TODO as above, simplify the success case later, as we have the failure case below
             return Futures
                     .immediateFuture(new GetEgressActionsForInterfaceOutputBuilder().setAction(actionsList).build());
@@ -215,8 +218,8 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             BigInteger dpId = null;
             long portNo = 0;
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceState(interfaceName, dataBroker);
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                    .getInterfaceState(interfaceName);
             if (ifState != null) {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
                 NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
@@ -240,8 +243,8 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
         return FutureRpcResults.fromListenableFuture(LOG, "getNodeconnectorIdFromInterface", input, () -> {
             String interfaceName = input.getIntfName();
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
-                    .getInterfaceState(interfaceName, dataBroker);
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                    .getInterfaceState(interfaceName);
             String lowerLayerIf = ifState.getLowerLayerIf().get(0);
             NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);
             // TODO as above, simplify the success case later, as we have the failure case below
