@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey;
@@ -23,6 +24,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -31,8 +33,20 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateUpdateHelper.class);
 
-    public static List<ListenableFuture<Void>> updateState(AlivenessMonitorService alivenessMonitorService,
-            DataBroker dataBroker, String interfaceName,
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final IMdsalApiManager mdsalApiManager;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
+
+    public OvsInterfaceStateUpdateHelper(DataBroker dataBroker, IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService) {
+        this.dataBroker = dataBroker;
+        this.idManager = idManager;
+        this.mdsalApiManager = mdsalApiManager;
+        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+    }
+
+    public List<ListenableFuture<Void>> updateState(String interfaceName,
             FlowCapableNodeConnector flowCapableNodeConnectorNew,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         LOG.debug("Updating interface state information for interface: {}", interfaceName);
@@ -84,16 +98,14 @@ public class OvsInterfaceStateUpdateHelper {
 
         // start/stop monitoring based on opState
         if (isTunnelInterface(iface) && opstateModified) {
-            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
-                    iface.getName(), operStatusNew);
+            handleTunnelMonitoringUpdates(iface.getAugmentation(IfTunnel.class), iface.getName(), operStatusNew);
         }
 
         return Collections.singletonList(transaction.submit());
     }
 
-    public static void updateInterfaceStateOnNodeRemove(String interfaceName,
-            FlowCapableNodeConnector flowCapableNodeConnector, DataBroker dataBroker,
-            AlivenessMonitorService alivenessMonitorService, WriteTransaction transaction) {
+    public void updateInterfaceStateOnNodeRemove(String interfaceName,
+            FlowCapableNodeConnector flowCapableNodeConnector, WriteTransaction transaction) {
         LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
 
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
@@ -103,8 +115,8 @@ public class OvsInterfaceStateUpdateHelper {
         handleInterfaceStateUpdates(iface, transaction, ifaceBuilder, true, interfaceName,
                 flowCapableNodeConnector.getName(), Interface.OperStatus.Unknown);
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
-                    interfaceName, Interface.OperStatus.Unknown);
+            handleTunnelMonitoringUpdates(iface.getAugmentation(IfTunnel.class), interfaceName,
+                    Interface.OperStatus.Unknown);
         }
     }
 
@@ -129,13 +141,13 @@ public class OvsInterfaceStateUpdateHelper {
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
     }
 
-    public static void handleTunnelMonitoringUpdates(AlivenessMonitorService alivenessMonitorService,
-            DataBroker dataBroker, IfTunnel ifTunnel, String interfaceName, Interface.OperStatus operStatus) {
+    public void handleTunnelMonitoringUpdates(IfTunnel ifTunnel,
+            String interfaceName, Interface.OperStatus operStatus) {
         LOG.debug("handling tunnel monitoring updates for {} due to opstate modification", interfaceName);
         if (operStatus == Interface.OperStatus.Down || operStatus == Interface.OperStatus.Unknown) {
-            AlivenessMonitorUtils.stopLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+            alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
         } else {
-            AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel, interfaceName);
+            alivenessMonitorUtils.startLLDPMonitoring(ifTunnel, interfaceName);
         }
     }
 
