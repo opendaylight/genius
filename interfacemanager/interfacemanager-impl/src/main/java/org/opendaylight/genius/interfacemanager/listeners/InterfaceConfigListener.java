@@ -44,13 +44,10 @@ import org.slf4j.LoggerFactory;
 public class InterfaceConfigListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
-    private final DataBroker dataBroker;
-    private final IdManagerService idManager;
-    private final AlivenessMonitorService alivenessMonitorService;
-    private final IMdsalApiManager mdsalApiManager;
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
     private final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper;
     private final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper;
@@ -59,19 +56,16 @@ public class InterfaceConfigListener
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
             final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
             final AlivenessMonitorService alivenessMonitorService, final EntityOwnershipUtils entityOwnershipUtils,
-            final JobCoordinator coordinator) {
+            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(Interface.class, InterfaceConfigListener.class);
-        this.dataBroker = dataBroker;
-        this.idManager = idManager;
-        this.mdsalApiManager = mdsalApiManager;
         this.interfaceMgrProvider = interfaceMgrProvider;
-        this.alivenessMonitorService = alivenessMonitorService;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceConfigRemoveHelper = new OvsInterfaceConfigRemoveHelper(dataBroker, alivenessMonitorService,
-                mdsalApiManager, idManager, coordinator);
+                mdsalApiManager, idManager, coordinator, interfaceManagerCommonUtils);
         this.ovsInterfaceConfigAddHelper = new OvsInterfaceConfigAddHelper(dataBroker, alivenessMonitorService,
-                mdsalApiManager, idManager, coordinator);
+                mdsalApiManager, coordinator, interfaceManagerCommonUtils);
         this.ovsInterfaceConfigUpdateHelper = new OvsInterfaceConfigUpdateHelper(ovsInterfaceConfigAddHelper,
                 ovsInterfaceConfigRemoveHelper);
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
@@ -108,7 +102,7 @@ public class InterfaceConfigListener
 
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
-        InterfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
+        interfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
         runOnlyInOwnerNode("Remove Interface", () -> {
             LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
             ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
@@ -128,7 +122,7 @@ public class InterfaceConfigListener
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
-        InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
+        interfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
         runOnlyInOwnerNode("Update Interface", () -> {
             LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
@@ -156,7 +150,7 @@ public class InterfaceConfigListener
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
-        InterfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
+        interfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
         runOnlyInOwnerNode("Add Interface", () -> {
             LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
             ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
@@ -166,7 +160,6 @@ public class InterfaceConfigListener
                 updateInterfaceParentRefs(interfaceNew);
             }
 
-            String ifName = interfaceNew.getName();
             if (parentRefs == null
                     || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
                 LOG.debug("parent refs not specified for {}", interfaceNew.getName());

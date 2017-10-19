@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigUpdateHelper;
@@ -42,11 +43,13 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
     @Inject
     public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManagerService,
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
-            final JobCoordinator coordinator) {
+            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(Interface.class, VlanMemberConfigListener.class);
         this.coordinator = coordinator;
-        this.ovsVlanMemberConfigAddHelper = new OvsVlanMemberConfigAddHelper(dataBroker, idManagerService);
-        this.ovsVlanMemberConfigRemoveHelper = new OvsVlanMemberConfigRemoveHelper(dataBroker, idManagerService);
+        this.ovsVlanMemberConfigAddHelper = new OvsVlanMemberConfigAddHelper(dataBroker, idManagerService,
+                interfaceManagerCommonUtils);
+        this.ovsVlanMemberConfigRemoveHelper = new OvsVlanMemberConfigRemoveHelper(dataBroker,
+                interfaceManagerCommonUtils);
         this.ovsVlanMemberConfigUpdateHelper = new OvsVlanMemberConfigUpdateHelper(ovsVlanMemberConfigAddHelper,
                 ovsVlanMemberConfigRemoveHelper);
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
