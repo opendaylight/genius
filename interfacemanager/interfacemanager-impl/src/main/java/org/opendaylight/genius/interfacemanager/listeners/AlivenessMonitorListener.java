@@ -32,14 +32,15 @@ public class AlivenessMonitorListener implements
         org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener {
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorListener.class);
 
-    private final DataBroker dataBroker;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
     public AlivenessMonitorListener(final DataBroker dataBroker, final NotificationService notificationService,
-            final AlivenessMonitorService alivenessMonitorService) {
-        this.dataBroker = dataBroker;
+            final AlivenessMonitorService alivenessMonitorService,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         notificationService.registerNotificationListener(this);
     }
 
@@ -65,6 +66,6 @@ public class AlivenessMonitorListener implements
         LivenessState livenessState = notification.getEventData().getMonitorState();
         LOG.debug("received monitor event for {} with livenessstate {}", tunnelInterface, livenessState);
         OperStatus opState = livenessState == LivenessState.Up ? OperStatus.Up : OperStatus.Down;
-        InterfaceManagerCommonUtils.setOpStateForInterface(dataBroker, tunnelInterface, opState);
+        interfaceManagerCommonUtils.setOpStateForInterface(tunnelInterface, opState);
     }
 }

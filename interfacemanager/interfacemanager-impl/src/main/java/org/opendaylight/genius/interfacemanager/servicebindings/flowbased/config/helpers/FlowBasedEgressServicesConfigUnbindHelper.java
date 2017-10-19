@@ -28,9 +28,13 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedEgressServicesConfigUnbindHelper.class);
 
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+
     @Inject
-    public FlowBasedEgressServicesConfigUnbindHelper(final DataBroker dataBroker) {
+    public FlowBasedEgressServicesConfigUnbindHelper(final DataBroker dataBroker,
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(dataBroker);
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -39,8 +43,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
         LOG.info("unbinding egress service {} for interface: {}", boundServiceOld.getServiceName(), boundServicesState
             .getInterfaceName());
         WriteTransaction tx = getDataBroker().newWriteOnlyTransaction();
-        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName(),
-            getDataBroker());
+        Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName());
         BigInteger dpId = boundServicesState.getDpid();
         if (boundServices.isEmpty()) {
             // Remove default entry from Lport Dispatcher Table.
