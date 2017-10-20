@@ -33,6 +33,24 @@
       "revId": "57928af74a6bd50ae8bd128f2ba6474cdef3a3d2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_89def50f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-20T13:19:08Z",
+      "side": 1,
+      "message": "I could but it\u0027s not just an EOS check. I guess it would be \"Update config Interface if entity owner\".",
+      "parentUuid": "9a245df4_3e045dbf",
+      "revId": "57928af74a6bd50ae8bd128f2ba6474cdef3a3d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
