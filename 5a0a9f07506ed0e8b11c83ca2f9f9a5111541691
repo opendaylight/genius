@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_bbecda90",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-21T15:37:25Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/#/c/64544/ makes this class non-static so we\u0027ll have a little conflict.",
+      "revId": "5a0a9f07506ed0e8b11c83ca2f9f9a5111541691",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9bef5687",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-21T15:37:25Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/#/c/64492/ makes this and the other related classes non-static",
+      "revId": "5a0a9f07506ed0e8b11c83ca2f9f9a5111541691",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
