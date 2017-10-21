@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_1b552650",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/ClusteringUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-21T15:10:32Z",
+      "side": 1,
+      "message": "This class is deprecated and all current users are being migrated to EntityOwnershipUtils which leaves the decision to enqueue the check up to the caller.",
+      "revId": "0575cf66a657e9b8c8142b3d88c6e83e7c017582",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
