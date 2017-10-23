@@ -7,7 +7,9 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils.tests;
 
+import static org.junit.Assert.fail;
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
 import javax.inject.Inject;
 import org.junit.FixMethodOrder;
@@ -31,7 +33,7 @@ import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 @FixMethodOrder(NAME_ASCENDING)
 public class DataBrokerFailuresTest {
 
-    private final DataBroker mockDataBroker = Mockito.mock(DataBroker.class);
+    private final DataBroker mockDataBroker = Mockito.mock(DataBroker.class, RETURNS_DEEP_STUBS);
 
     public @Rule MethodRule guice = new GuiceRule(
             new DataBrokerFailuresModule(mockDataBroker), new AnnotationsModule());
@@ -39,15 +41,42 @@ public class DataBrokerFailuresTest {
     @Inject DataBrokerFailures dbFailures;
     @Inject DataBroker dataBroker;
 
-    @Test(expected = OptimisticLockFailedException.class)
+    @Test
     public void testFailReadWriteTransactionSubmit() throws TransactionCommitFailedException {
         dbFailures.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
+        checkSubmitFails();
+        // Now make sure that it still fails, and not just once:
+        checkSubmitFails();
+        // and still:
+        checkSubmitFails();
+    }
+
+    private void checkSubmitFails() {
+        try {
+            dataBroker.newReadWriteTransaction().submit().checkedGet();
+            fail("This should have lead to a TransactionCommitFailedException!");
+        } catch (TransactionCommitFailedException e) {
+            // as expected!
+        }
+    }
+
+    @Test
+    public void testFailReadWriteTransactionSubmitNext() throws TransactionCommitFailedException {
+        // This must pass (the failSubmits from previous test cannot affect this)
+        // (It's a completely new instance of DataBroker & DataBrokerFailures anyways, but just to be to sure.)
         dataBroker.newReadWriteTransaction().submit().checkedGet();
     }
 
     @Test
-    public void testFailReadWriteTransactionSubmitNext() {
-        // This must pass (the failSubmits from previous test cannot affect this)
+    public void testFailTwoReadWriteTransactionSubmit() throws TransactionCommitFailedException {
+        dbFailures.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
+        checkSubmitFails();
+        // Now make sure that it still fails again a 2nd time, and not just once:
+        checkSubmitFails();
+        // But now it should pass.. because we specified howManyTimes = 2 above
+        dataBroker.newReadWriteTransaction().submit().checkedGet();
+        dataBroker.newWriteOnlyTransaction().submit().checkedGet();
+        dataBroker.newReadWriteTransaction().submit().checkedGet();
     }
 
     @Test(expected = OptimisticLockFailedException.class)
@@ -56,9 +85,12 @@ public class DataBrokerFailuresTest {
         dataBroker.newWriteOnlyTransaction().submit().checkedGet();
     }
 
+    @Test
     public void testUnfailSubmits() throws TransactionCommitFailedException {
         dbFailures.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
+        checkSubmitFails();
         dbFailures.unfailSubmits();
+        dataBroker.newReadWriteTransaction().submit().checkedGet();
         dataBroker.newWriteOnlyTransaction().submit().checkedGet();
         dataBroker.newReadWriteTransaction().submit().checkedGet();
     }

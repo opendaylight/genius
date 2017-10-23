@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ForwardingDataBroker;
@@ -35,6 +36,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
 
     private final DataBroker delegate;
     private volatile @Nullable TransactionCommitFailedException submitException;
+    private final AtomicInteger howManyFailingSubmits = new AtomicInteger();
 
     public DataBrokerFailuresImpl(DataBroker delegate) {
         this.delegate = delegate;
@@ -46,13 +48,27 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     }
 
     @Override
-    public void failSubmits(@Nullable TransactionCommitFailedException exception) {
+    public void failSubmits(TransactionCommitFailedException exception) {
+        unfailSubmits();
+        this.submitException = Objects.requireNonNull(exception, "exception == null");
+    }
+
+    @Override
+    public void failSubmits(int howManyTimes, TransactionCommitFailedException exception) {
+        howManyFailingSubmits.set(howManyTimes);
         this.submitException = Objects.requireNonNull(exception, "exception == null");
     }
 
     @Override
     public void unfailSubmits() {
         this.submitException = null;
+        howManyFailingSubmits.set(-1);
+    }
+
+    private void update() {
+        if (howManyFailingSubmits.decrementAndGet() == -1) {
+            this.submitException = null;
+        }
     }
 
     @Override
@@ -60,6 +76,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         return new ForwardingReadWriteTransaction(delegate.newReadWriteTransaction()) {
             @Override
             public CheckedFuture<Void, TransactionCommitFailedException> submit() {
+                update();
                 if (submitException == null) {
                     return super.submit();
                 } else {
@@ -79,6 +96,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         return new ForwardingWriteTransaction(delegate.newWriteOnlyTransaction()) {
             @Override
             public CheckedFuture<Void, TransactionCommitFailedException> submit() {
+                update();
                 if (submitException == null) {
                     return super.submit();
                 } else {

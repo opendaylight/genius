@@ -28,6 +28,18 @@ public interface DataBrokerFailures {
     void failSubmits(TransactionCommitFailedException exception);
 
     /**
+     * Fails N future Transaction submits.
+     *
+     * @param howManyTimes
+     *               how many times to throw the passed exception, until it resets
+     *
+     * @param exception
+     *            an Exception to throw from a {@link WriteTransaction#submit()}
+     *            (also {@link ReadWriteTransaction#submit()}) method
+     */
+    void failSubmits(int howManyTimes, TransactionCommitFailedException exception);
+
+    /**
      * Resets any earlier {@link #unfailSubmits()}.
      */
     void unfailSubmits();
