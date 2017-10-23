@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_116ea72f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-23T13:16:15Z",
+      "side": 1,
+      "message": "Probably but I\u0027m just preserving prior behavior where IfmClusterUtils.registerEntityForOwnership just caught the ex and logged. In this patch i\u0027m just converting to the new EOS APIs so I was avoiding changing such behavior.",
+      "parentUuid": "9a245df4_d1836f02",
+      "revId": "420761b9d09345fd6129895d44bc6ee02661143c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_f1779339",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2017-10-23T12:37:14Z",
       "side": 1,
       "message": "you wouldn\u0027t want to straight go for the JobCoordinator here instead of adding another new use of DataStoreJobCoordinator here when you migrate off it elsewhere?",
+      "revId": "420761b9d09345fd6129895d44bc6ee02661143c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_51781ff2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-23T13:16:15Z",
+      "side": 1,
+      "message": "I\u0027m just trying to convert to the new EOS API here - I have a follow-up patch to convert to JobCoordinator as it\u0027s pretty involved.",
+      "parentUuid": "9a245df4_f1779339",
       "revId": "420761b9d09345fd6129895d44bc6ee02661143c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
