@@ -22,7 +22,10 @@ import org.junit.Test;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresImpl;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
@@ -34,7 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controll
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Unit test for {@link ManagedNewTransactionRunnerImpl}.
+ * Test for {@link ManagedNewTransactionRunnerImpl}.
  *
  * @author Michael Vorburger.ch
  * @author Stephen Kitt
@@ -46,14 +49,19 @@ public class ManagedNewTransactionRunnerImplTest {
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
+    private DataBrokerFailuresImpl testableDataBroker;
     private SingleTransactionDataBroker singleTransactionDataBroker;
     private ManagedNewTransactionRunner managedNewTransactionRunner;
 
+    protected ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(DataBroker dataBroker) {
+        return new ManagedNewTransactionRunnerImpl(dataBroker);
+    }
+
     @Before
     public void beforeTest() {
-        DataBroker dataBroker = new DataBrokerTestModule(true).getDataBroker();
-        managedNewTransactionRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-        singleTransactionDataBroker = new SingleTransactionDataBroker(dataBroker);
+        testableDataBroker = new DataBrokerFailuresImpl(new DataBrokerTestModule(true).getDataBroker());
+        managedNewTransactionRunner = createManagedNewTransactionRunnerToTest(testableDataBroker);
+        singleTransactionDataBroker = new SingleTransactionDataBroker(testableDataBroker);
     }
 
     @Test
@@ -92,6 +100,34 @@ public class ManagedNewTransactionRunnerImplTest {
         assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
+    @Test
+    public void testCallWithNewWriteOnlyTransactionCommitFailedException() throws Exception {
+        try {
+            testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
+            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
+                writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
+            }).get();
+            fail("This should have lead to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof TransactionCommitFailedException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
+    public void testCallWithNewWriteOnlyTransactionOptimisticLockFailedException() throws Exception {
+        try {
+            testableDataBroker.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
+            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
+                writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
+            }).get();
+            fail("This should have lead to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof OptimisticLockFailedException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
     @Test(expected = ExecutionException.class)
     public void testCallWithNewWriteOnlyTransactionAndSubmitCannotSubmit() throws Exception {
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
@@ -113,7 +149,5 @@ public class ManagedNewTransactionRunnerImplTest {
             writeTx.commit();
         }).get();
     }
-
-    // TODO test failed submit using DataBrokerFailures from https://git.opendaylight.org/gerrit/#/c/63120/
 
 }

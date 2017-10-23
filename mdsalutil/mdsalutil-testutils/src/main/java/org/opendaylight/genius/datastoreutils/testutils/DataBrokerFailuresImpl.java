@@ -25,16 +25,18 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 /**
  * DataBroker with methods to simulate failures, useful for tests.
  *
+ * <p>If you use this from a Guice-based component test, consider just binding it
+ * via the {@link DataBrokerFailuresModule}.
+ *
  * @author Michael Vorburger.ch
  */
 @SuppressWarnings("deprecation")
-// Intentionally only package local, as only ever supposed to be used via DataBrokerFailuresModule
-class DataBrokerFailuresImpl extends ForwardingDataBroker implements DataBrokerFailures {
+public class DataBrokerFailuresImpl extends ForwardingDataBroker implements DataBrokerFailures {
 
     private final DataBroker delegate;
-    private @Nullable TransactionCommitFailedException submitException;
+    private volatile @Nullable TransactionCommitFailedException submitException;
 
-    DataBrokerFailuresImpl(DataBroker delegate) {
+    public DataBrokerFailuresImpl(DataBroker delegate) {
         this.delegate = delegate;
     }
 
