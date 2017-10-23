@@ -64,4 +64,9 @@ public class InterfaceChildInfoListener extends AbstractAsyncDataTreeChangeListe
             tunnelAggregationHelper.updateLogicalTunnelSelectGroup(updatedDataObject, dataBroker);
         }
     }
+
+    @Override
+    protected void shutdown() {
+        getExecutorService().shutdown();
+    }
 }
