@@ -39,6 +39,24 @@
       "revId": "f205e85e8f84442c6309c67363c44e3ad36c351b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_d1d24fd1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T13:23:39Z",
+      "side": 1,
+      "message": "PS: How about moving this method way up, right after the constructor?",
+      "parentUuid": "9a245df4_f1683323",
+      "revId": "f205e85e8f84442c6309c67363c44e3ad36c351b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
