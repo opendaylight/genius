@@ -19,6 +19,81 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_ac4e626d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T13:43:11Z",
+      "side": 1,
+      "message": "I would resolve any such \"concurrency\" ;) issues normally just date based, so I would let Stephen go in first here, and then you Tom with the other one (which needs to wait for my stuff anyway).",
+      "parentUuid": "9a245df4_bbecda90",
+      "revId": "5a0a9f07506ed0e8b11c83ca2f9f9a5111541691",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ec0a1a20",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T13:43:11Z",
+      "side": 1,
+      "message": "I\u0027m wondering if this condition would be worth to have in a private boolean isAddOrRemoveTunnelIngressFlowIgnored(Tunnnel tunnel), just on the off chance that someone ever changes one but forgets the others of this line which was copy/pasted from above?",
+      "revId": "5a0a9f07506ed0e8b11c83ca2f9f9a5111541691",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_6c358ad9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T13:43:11Z",
+      "side": 1,
+      "message": "This could go away into the buildAddOrRemoveTunnelIngressFlowEntity proposed below.",
+      "range": {
+        "startLine": 262,
+        "startChar": 21,
+        "endLine": 262,
+        "endChar": 22
+      },
+      "revId": "5a0a9f07506ed0e8b11c83ca2f9f9a5111541691",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0c368ee7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T13:43:11Z",
+      "side": 1,
+      "message": "similarly to above - wouldn\u0027t it worth to have a private FlowEntity buildAddOrRemoveTunnelIngressFlowEntity(BigInteger dpnId, String interfaceName, List\u003cMatchInfoBase\u003e matches, List\u003cInstructionInfo\u003e mkInstructions) method, again just on the off chance someone modifies this above where it\u0027s copy/pasted from but forgets it here?  Such private helper methods also make the code easier to read, IMHO.",
+      "revId": "5a0a9f07506ed0e8b11c83ca2f9f9a5111541691",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_9bef5687",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
         "patchSetId": 1
