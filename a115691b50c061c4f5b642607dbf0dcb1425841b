@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_8ce1ded2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/snd/ItmDiagStatusMonitor.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T15:11:39Z",
+      "side": 1,
+      "message": "volatile",
+      "revId": "a115691b50c061c4f5b642607dbf0dcb1425841b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
