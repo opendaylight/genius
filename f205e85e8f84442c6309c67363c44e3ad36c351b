@@ -22,6 +22,23 @@
       "revId": "f205e85e8f84442c6309c67363c44e3ad36c351b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f1683323",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T13:22:01Z",
+      "side": 1,
+      "message": "@Override missing (FYI you can configure an IDE to automatically add this on every save; my config does this)",
+      "revId": "f205e85e8f84442c6309c67363c44e3ad36c351b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
