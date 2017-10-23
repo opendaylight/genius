@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_d1836f02",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T12:37:14Z",
+      "side": 1,
+      "message": "can this BP Bean function under this condition? Would it not be better to let start() have a throws CandidateAlreadyRegisteredException, or rethrow as a Unchecked RTE if you must (I don\u0027t think it\u0027s neccessary), to prevent this entire \"service\" (in the diagstatus sense) from starting in case of such a problem?\n\nPS: Minor, and goes anyway with above: Are you intentionally no LOG.error(\"...\", e) here? It just stands out as unusual.",
+      "revId": "420761b9d09345fd6129895d44bc6ee02661143c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f1779339",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T12:37:14Z",
+      "side": 1,
+      "message": "you wouldn\u0027t want to straight go for the JobCoordinator here instead of adding another new use of DataStoreJobCoordinator here when you migrate off it elsewhere?",
+      "revId": "420761b9d09345fd6129895d44bc6ee02661143c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_51777f3a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-23T12:37:14Z",
+      "side": 1,
+      "message": "dito, as in the other class",
+      "revId": "420761b9d09345fd6129895d44bc6ee02661143c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
