@@ -13,9 +13,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.listeners.AbstractAsyncDataTreeChangeListener;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
-import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.InterfaceChildInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -23,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class InterfaceChildInfoListener extends AbstractAsyncDataTreeChangeListener<InterfaceParentEntry> {
+public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListener<InterfaceParentEntry> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceChildInfoListener.class);
 
     private final DataBroker dataBroker;
@@ -32,8 +31,7 @@ public class InterfaceChildInfoListener extends AbstractAsyncDataTreeChangeListe
     @Inject
     public InterfaceChildInfoListener(DataBroker dataBroker, ItmTunnelAggregationHelper tunnelAggregation) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
-              InstanceIdentifier.create(InterfaceChildInfo.class).child(InterfaceParentEntry.class),
-              Executors.newSingleThreadExecutor("InterfaceChildInfoListener", LOG));
+              InstanceIdentifier.create(InterfaceChildInfo.class).child(InterfaceParentEntry.class));
         this.dataBroker = dataBroker;
         this.tunnelAggregationHelper = tunnelAggregation;
     }
