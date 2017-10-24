@@ -16,6 +16,24 @@
       "revId": "741adef041a2309a9720eb38ffd1e157ef306e98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a70e7830",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunner.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-24T15:14:33Z",
+      "side": 1,
+      "message": "It\u0027s just a reminder to myself, and anyone else who may be tempted to do this, to add an @Singleton annotation here.. and explains the two reasons why that\u0027s NOK.",
+      "parentUuid": "9a245df4_c46d6a34",
+      "revId": "741adef041a2309a9720eb38ffd1e157ef306e98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
