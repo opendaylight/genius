@@ -11,8 +11,8 @@ import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrExc
 
 import java.math.BigInteger;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -35,34 +35,49 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
     private Map<String, InterfaceInfo> interfaceInfos;
     private Map<String, Interface> interfaces;
     private Map<String, Boolean> externalInterfaces;
-    private DataBroker dataBroker;
+    private Optional<DataBroker> optDataBroker;
 
-    public static TestInterfaceManager newInstance(DataBroker dataBroker) {
+    /**
+     * Deprecated factory method.
+     * @deprecated Use {@link TestInterfaceManager#newInstance(DataBroker)} instead now.
+     */
+    @Deprecated
+    public static TestInterfaceManager newInstance() {
         TestInterfaceManager testInterfaceManager = Mockito.mock(TestInterfaceManager.class, realOrException());
         testInterfaceManager.interfaceInfos = new ConcurrentHashMap<>();
         testInterfaceManager.interfaces = new ConcurrentHashMap<>();
         testInterfaceManager.externalInterfaces = new ConcurrentHashMap<>();
-        testInterfaceManager.dataBroker = dataBroker;
+        testInterfaceManager.optDataBroker = Optional.empty();
+        return testInterfaceManager;
+    }
+
+    public static TestInterfaceManager newInstance(DataBroker dataBroker) {
+        TestInterfaceManager testInterfaceManager = newInstance();
+        testInterfaceManager.optDataBroker = Optional.of(dataBroker);
         return testInterfaceManager;
     }
 
     public void addInterfaceInfo(InterfaceInfo interfaceInfo)
             throws TransactionCommitFailedException {
         interfaceInfos.put(interfaceInfo.getInterfaceName(), interfaceInfo);
-        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+        if (optDataBroker.isPresent()) {
+            // Can't use ifPresent() here because of checked exception from tx.submit().checkedGet();
+            DataBroker dataBroker = optDataBroker.get();
+            ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
 
-        Interface iface = InterfaceHelper.buildVlanInterfaceFromInfo(interfaceInfo);
-        //Add the interface to config ds so that if the application reads from configds it finds it there
-        tx.put(LogicalDatastoreType.CONFIGURATION,
-                InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
-                iface);
+            Interface iface = InterfaceHelper.buildVlanInterfaceFromInfo(interfaceInfo);
+            //Add the interface to config ds so that if the application reads from configds it finds it there
+            tx.put(LogicalDatastoreType.CONFIGURATION,
+                    InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
+                    iface);
 
-        //Add the interface to oper ds so that if the application reads from configds it finds it there
-        tx.put(LogicalDatastoreType.OPERATIONAL,
-                InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
-                InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
-        tx.submit().checkedGet();
-        addInterface(iface);
+            //Add the interface to oper ds so that if the application reads from configds it finds it there
+            tx.put(LogicalDatastoreType.OPERATIONAL,
+                    InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
+                    InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
+            tx.submit().checkedGet();
+            addInterface(iface);
+        }
     }
 
     public void addInterface(Interface iface) {
@@ -74,19 +89,24 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
         InterfaceInfo interfaceInfo = tunnelInterfaceDetails.getInterfaceInfo();
         interfaceInfos.put(interfaceInfo.getInterfaceName(), interfaceInfo);
 
-        Interface iface = InterfaceHelper.buildVxlanTunnelInterfaceFromInfo(tunnelInterfaceDetails);
+        if (optDataBroker.isPresent()) {
+            // Can't use ifPresent() here because of checked exception from tx.submit().checkedGet();
+            DataBroker dataBroker = optDataBroker.get();
 
-        ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
-        tx.put(LogicalDatastoreType.CONFIGURATION,
-                InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
-                iface);
+            Interface iface = InterfaceHelper.buildVxlanTunnelInterfaceFromInfo(tunnelInterfaceDetails);
 
-        tx.put(LogicalDatastoreType.OPERATIONAL,
-                InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
-                InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
-        tx.submit().checkedGet();
-        externalInterfaces.put(interfaceInfo.getInterfaceName(), true);
-        addInterface(iface);
+            ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+            tx.put(LogicalDatastoreType.CONFIGURATION,
+                    InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
+                    iface);
+
+            tx.put(LogicalDatastoreType.OPERATIONAL,
+                    InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
+                    InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
+            tx.submit().checkedGet();
+            externalInterfaces.put(interfaceInfo.getInterfaceName(), true);
+            addInterface(iface);
+        }
     }
 
     @Override
