@@ -46,6 +46,30 @@
       "revId": "a81d55048f8d4d07f204592b7a46b00af6bef802",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_64b8fee5",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-24T13:26:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_c4728a7b",
+      "range": {
+        "startLine": 51,
+        "startChar": 28,
+        "endLine": 51,
+        "endChar": 60
+      },
+      "revId": "a81d55048f8d4d07f204592b7a46b00af6bef802",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
