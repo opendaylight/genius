@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_2226fbce",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceChildInfoListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-24T00:13:05Z",
+      "side": 1,
+      "message": "This change is fine per se.  However do you think this class needs a dedicated single-threaded executor? If you look at the ItmTunnelAggregationHelper, updateLogicalTunnelSelectGroup enqueues a TunnelAggregationUpdateWorker. So similar to the listener in the other patch (InterfaceStateListener I believe), I thinks it\u0027s overkill to off-load on 2 threads.",
+      "revId": "b3a7cc3d2e5b068dc7f576cbf296d8aaab2c12b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
