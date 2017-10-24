@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_55392240",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-24T23:22:47Z",
+      "side": 1,
+      "message": "Is this method used anywhere?",
+      "range": {
+        "startLine": 135,
+        "startChar": 1,
+        "endLine": 140,
+        "endChar": 5
+      },
+      "revId": "53a15983f1c024723431c7a2da043e1fc06eaa53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b53fbe24",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 656,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-24T23:22:47Z",
+      "side": 1,
+      "message": "Could we remove these \"statics\" as well?",
+      "range": {
+        "startLine": 643,
+        "startChar": 4,
+        "endLine": 656,
+        "endChar": 5
+      },
+      "revId": "53a15983f1c024723431c7a2da043e1fc06eaa53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_953a7a32",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 729,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-24T23:22:47Z",
+      "side": 1,
+      "message": "Could we remove these \"static\" as well?",
+      "range": {
+        "startLine": 706,
+        "startChar": 4,
+        "endLine": 729,
+        "endChar": 5
+      },
+      "revId": "53a15983f1c024723431c7a2da043e1fc06eaa53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f52016f9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-10-24T23:22:47Z",
+      "side": 1,
+      "message": "Can we remove it?",
+      "range": {
+        "startLine": 247,
+        "startChar": 12,
+        "endLine": 247,
+        "endChar": 18
+      },
+      "revId": "53a15983f1c024723431c7a2da043e1fc06eaa53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
