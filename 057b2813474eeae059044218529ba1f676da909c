@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_5d4f8ebd",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-24T08:50:50Z",
+      "side": 1,
+      "message": "I thought I did this, probably forgot to wq:",
+      "parentUuid": "9a245df4_37de4d40",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_db03a5b6",
         "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
         "patchSetId": 11
@@ -102,6 +120,24 @@
       "side": 1,
       "message": "\"reinstall\" (not \"reinstall()\")",
       "parentUuid": "9a245df4_74af23e4",
+      "revId": "057b2813474eeae059044218529ba1f676da909c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3d4a9aac",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/SrmRpcProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-10-24T08:50:50Z",
+      "side": 1,
+      "message": "same as above",
+      "parentUuid": "9a245df4_17e34908",
       "revId": "057b2813474eeae059044218529ba1f676da909c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
