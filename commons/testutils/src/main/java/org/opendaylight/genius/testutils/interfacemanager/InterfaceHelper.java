@@ -45,10 +45,10 @@ public final class InterfaceHelper {
 
     public static Interface readInterfaceFromConfigDs(String interfaceName,
                                                       DataBroker dataBroker) throws ReadFailedException {
-        return SingleTransactionDataBroker.syncReadOptional(
+        return SingleTransactionDataBroker.syncRead(
                 dataBroker,
                 LogicalDatastoreType.CONFIGURATION,
-                buildIId(interfaceName)).orNull();
+                buildIId(interfaceName));
     }
 
     public static Interface buildVlanInterfaceFromInfo(InterfaceInfo interfaceInfo) {
