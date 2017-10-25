@@ -12,10 +12,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdUtils;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -26,23 +25,23 @@ public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolDeleteJob.class);
 
     private final String poolName;
-    private final DataBroker broker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdUtils idUtils;
 
-    public LocalPoolDeleteJob(String poolName, DataBroker broker, IdUtils idUtils) {
+    public LocalPoolDeleteJob(String poolName, ManagedNewTransactionRunner txRunner, IdUtils idUtils) {
         this.poolName = poolName;
-        this.broker = broker;
+        this.txRunner = txRunner;
         this.idUtils = idUtils;
     }
 
     @Override
     public List<ListenableFuture<Void>> call() {
         InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Deleted local pool {}", poolName);
-        }
-        return Collections.singletonList(tx.submit());
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Deleted local pool {}", poolName);
+            }
+        }));
     }
 }

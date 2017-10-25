@@ -24,6 +24,7 @@ import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdManagerException;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -36,15 +37,17 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger LOG = LoggerFactory.getLogger(CleanUpJob.class);
 
     private final IdLocalPool idLocalPool;
+    private final ManagedNewTransactionRunner txRunner;
     private final DataBroker broker;
     private final String parentPoolName;
     private final int blockSize;
     private final LockManagerService lockManager;
     private final IdUtils idUtils;
 
-    public CleanUpJob(IdLocalPool idLocalPool, DataBroker broker,
+    public CleanUpJob(IdLocalPool idLocalPool, ManagedNewTransactionRunner txRunner, DataBroker broker,
             String parentPoolName, int blockSize, LockManagerService lockManager, IdUtils idUtils) {
         this.idLocalPool = idLocalPool;
+        this.txRunner = txRunner;
         this.broker = broker;
         this.parentPoolName = parentPoolName;
         this.blockSize = blockSize;
@@ -88,7 +91,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                 ReleasedIdHolder releasedIds = (ReleasedIdHolder) idLocalPool.getReleasedIds();
                 ReleasedIdsHolderBuilder releasedIdsParent = new ReleasedIdsHolderBuilder(releasedIdsHolder.get());
                 idUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - blockSize * 2);
-                IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker, idUtils);
+                IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, txRunner, idUtils);
                 DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
                 SingleTransactionDataBroker.syncWrite(broker, LogicalDatastoreType.CONFIGURATION,
                         releasedIdInstanceIdentifier, releasedIdsParent.build());
