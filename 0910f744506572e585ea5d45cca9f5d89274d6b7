@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_fb55a5c6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T10:15:09Z",
+      "side": 1,
+      "message": "you mean remove the static here?  How? Because getInstance() is static and that can\u0027t (easily) be changed, right?",
+      "parentUuid": "9a245df4_101cd876",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_b00cec43",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
         "patchSetId": 16
@@ -30,6 +48,24 @@
       "writtenOn": "2017-10-25T09:19:04Z",
       "side": 1,
       "message": "it\u0027s not threadsafe here.",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5b13110d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T10:15:09Z",
+      "side": 1,
+      "message": "yeah.. so shall I just mark this getInstance() method as \"synchronized\", would that work for you? Tom, OK?  PS: I did just briefly try to make the field pre-initialized:\n\n  private static DataStoreJobCoordinator instance \u003d new DataStoreJobCoordinator(Activator.getJobCoordinator(), Activator.getJobCoordinatorMonitor());\n\n  public static DataStoreJobCoordinator getInstance() {\n        if (instance \u003d\u003d null) {\n            throw new IllegalStateException(\"...\");\n        }\n        return instance;\n    }\n\nbut that\u0027s not that easy, and will fail e.g. TestableJobCoordinatorEventsWaiterTest (and others), because JobCoordinatorTestModule expects to be able to \"control\" DataStoreJobCoordinator, so it should not already have an instance set by itself.\n\nBTW: Peri please remember that this is intended to be very temporary; Tom is already actively working on patches to get all static usages of DataStoreJobCoordinator replaced by real JobCoordinator di use, so we\u0027re hoping to completely removed DataStoreJobCoordinator... soon-ish.",
+      "parentUuid": "9a245df4_b00cec43",
       "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
