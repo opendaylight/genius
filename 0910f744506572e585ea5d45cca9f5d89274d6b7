@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_b6ca244d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T14:31:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_bb020d3c",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_5645a815",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
         "patchSetId": 16
@@ -119,6 +137,24 @@
       "writtenOn": "2017-10-25T13:43:06Z",
       "side": 1,
       "message": "Sorry - I meant this method has no implementation",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_36b754da",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T14:31:46Z",
+      "side": 1,
+      "message": "Oh sh*# .. ;) Thanks for spotting!! Done now.",
+      "parentUuid": "9a245df4_5645a815",
       "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -177,6 +213,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_d6d6b8f0",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T14:31:46Z",
+      "side": 1,
+      "message": "Done (removed SuppressWarnings)",
+      "parentUuid": "9a245df4_1b99991f",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_7ba09543",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
         "patchSetId": 16
@@ -224,6 +278,24 @@
       "side": 1,
       "message": "I\u0027m new to this Inject stuff but when I pushed my patch to add this ctor with @Inject I recall some tests failed - I think for tests that didn\u0027t setup a JobCoordinatorMonitor, ie ones that inject a TestableJobCoordinatorEventsWaiter which invoke the default ctor b/c it doesn\u0027t have @Inject I think.  Maybe it was just tests in genius which you\u0027ve changed. This should be tested with netvirt and whatever else uses it.",
       "parentUuid": "9a245df4_9691e09c",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_56392840",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T14:31:46Z",
+      "side": 1,
+      "message": "On https://jenkins.opendaylight.org/releng/job/integration-multipatch-test-oxygen/13/console all genius and netvirt tests passed, so I think we\u0027re good re this",
+      "parentUuid": "9a245df4_b6f984ca",
       "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
