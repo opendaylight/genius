@@ -43,7 +43,8 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
 
     public static FlowBasedServicesConfigRemovable getFlowBasedIngressServicesRemoveHelper() {
         if (flowBasedIngressServicesRemovable == null) {
-            LOG.error("{} is not initialized", FlowBasedIngressServicesConfigUnbindHelper.class.getSimpleName());
+            throw new IllegalStateException(
+                    FlowBasedIngressServicesConfigUnbindHelper.class.getSimpleName() + " is not initialized");
         }
         return flowBasedIngressServicesRemovable;
     }

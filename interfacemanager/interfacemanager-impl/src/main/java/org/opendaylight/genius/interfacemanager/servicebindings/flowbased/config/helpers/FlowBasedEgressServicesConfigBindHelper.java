@@ -40,7 +40,8 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
 
     public static FlowBasedServicesConfigAddable getFlowBasedEgressServicesAddHelper() {
         if (flowBasedEgressServicesAddable == null) {
-            LOG.error("{} is not initialized", FlowBasedEgressServicesConfigBindHelper.class.getSimpleName());
+            throw new IllegalStateException(
+                    FlowBasedEgressServicesConfigBindHelper.class.getSimpleName() + " is not initialized");
         }
         return flowBasedEgressServicesAddable;
     }

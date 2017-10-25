@@ -47,7 +47,8 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
 
     public static FlowBasedServicesConfigAddable getFlowBasedIngressServicesAddHelper() {
         if (flowBasedIngressServicesAddable == null) {
-            LOG.error("{} is not initialized", FlowBasedIngressServicesConfigBindHelper.class.getSimpleName());
+            throw new IllegalStateException(
+                    FlowBasedIngressServicesConfigBindHelper.class.getSimpleName() + " is not initialized");
         }
         return flowBasedIngressServicesAddable;
     }
