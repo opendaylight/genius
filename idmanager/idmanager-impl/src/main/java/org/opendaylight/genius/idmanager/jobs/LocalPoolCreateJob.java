@@ -11,11 +11,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdUtils;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
@@ -28,15 +28,15 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolCreateJob.class);
 
     private final IdLocalPool idLocalPool;
-    private final DataBroker broker;
+    private final ManagedNewTransactionRunner txRunner;
     private final String parentPoolName;
     private final int blockSize;
     private final IdUtils idUtils;
 
-    public LocalPoolCreateJob(IdLocalPool idLocalPool, DataBroker broker,
+    public LocalPoolCreateJob(IdLocalPool idLocalPool, ManagedNewTransactionRunner txRunner,
             String parentPoolName, int blockSize, IdUtils idUtils) {
         this.idLocalPool = idLocalPool;
-        this.broker = broker;
+        this.txRunner = txRunner;
         this.parentPoolName = parentPoolName;
         this.blockSize = blockSize;
         this.idUtils = idUtils;
@@ -53,9 +53,8 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
                 .setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);
         idLocalPool.getReleasedIds().refreshDataStore(idPool);
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(), true);
-
-        return Collections.singletonList(tx.submit());
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(),
+                    WriteTransaction.CREATE_MISSING_PARENTS)));
     }
 }
