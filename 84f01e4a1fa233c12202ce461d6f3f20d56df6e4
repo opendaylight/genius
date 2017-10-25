@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_9b3c69c1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T09:33:22Z",
+      "side": 0,
+      "message": "OMG, so this clear actually isn\u0027t used anywhere - then why was it designed like this?!",
+      "revId": "84f01e4a1fa233c12202ce461d6f3f20d56df6e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fb4be556",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedIngressServicesStateBindHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T09:33:22Z",
+      "side": 0,
+      "message": "OMG, so this clear actually isn\u0027t used anywhere - then why was it designed like this?!",
+      "revId": "84f01e4a1fa233c12202ce461d6f3f20d56df6e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_db46e14e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedIngressServicesStateUnbindHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T09:33:22Z",
+      "side": 0,
+      "message": "OMG, so this clear actually isn\u0027t used anywhere - then why was it designed like this?!",
+      "revId": "84f01e4a1fa233c12202ce461d6f3f20d56df6e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

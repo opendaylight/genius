@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_3b00dd00",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/factory/FlowBasedServicesRendererFactoryResolver.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-25T09:33:22Z",
+      "side": 1,
+      "message": "I would have probably called this a *Provider instead of a *Resolver, in line with typicaly javax.inject.Provider, Guice and Spring DI terminology..",
+      "revId": "bd860360f371067f8653c2902324dd7269185b72",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
