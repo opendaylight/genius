@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_101cd876",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-10-25T09:19:04Z",
+      "side": 1,
+      "message": "shouldn\u0027t it be still keep instance as singleton though it has reference to same infrautils jc delegate.",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b00cec43",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-10-25T09:19:04Z",
+      "side": 1,
+      "message": "it\u0027s not threadsafe here.",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
