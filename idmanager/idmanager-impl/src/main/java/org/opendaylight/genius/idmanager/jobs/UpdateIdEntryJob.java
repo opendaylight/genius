@@ -16,10 +16,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.IdUtils;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
@@ -32,17 +32,17 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     private final String localPoolName;
     private final String idKey;
     private final List<Long> newIdValues = new ArrayList<>();
-    private final DataBroker broker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdUtils idUtils;
     private final LockManagerService lockManager;
 
     public UpdateIdEntryJob(String parentPoolName, String localPoolName, String idKey,
-            List<Long> newIdValues, DataBroker broker, IdUtils idUtils,
+            List<Long> newIdValues, ManagedNewTransactionRunner txRunner, IdUtils idUtils,
             LockManagerService lockManager) {
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
         this.idKey = idKey;
-        this.broker = broker;
+        this.txRunner = txRunner;
         this.idUtils = idUtils;
         this.lockManager = lockManager;
         if (newIdValues != null) {
@@ -53,17 +53,19 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     @Override
     public List<ListenableFuture<Void>> call() throws TransactionCommitFailedException {
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
         try {
-            idUtils.updateChildPool(tx, parentPoolName, localPoolName);
-            if (!newIdValues.isEmpty()) {
-                IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
-                tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
-            } else {
-                tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
-            }
-            tx.submit().checkedGet();
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                idUtils.updateChildPool(tx, parentPoolName, localPoolName);
+                if (!newIdValues.isEmpty()) {
+                    IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
+                    tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
+                } else {
+                    tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
+                }
+            }).get();
             LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Error updating id entry job", e);
         } finally {
             CountDownLatch latch = idUtils.getReleaseIdLatch(uniqueIdKey);
             if (latch != null) {

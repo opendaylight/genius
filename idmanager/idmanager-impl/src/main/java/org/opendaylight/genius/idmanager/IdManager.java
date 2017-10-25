@@ -48,6 +48,8 @@ import org.opendaylight.genius.idmanager.jobs.LocalPoolDeleteJob;
 import org.opendaylight.genius.idmanager.jobs.UpdateIdEntryJob;
 import org.opendaylight.genius.infra.FutureRpcResults;
 import org.opendaylight.genius.infra.FutureRpcResults.LogLevel;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -85,6 +87,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private static final long DEFAULT_IDLE_TIME = 24 * 60 * 60;
 
     private final DataBroker broker;
+    private final ManagedNewTransactionRunner txRunner;
     private final SingleTransactionDataBroker singleTxDB;
     private final LockManagerService lockManager;
     private final IdUtils idUtils;
@@ -98,6 +101,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             @OsgiService DataImportBootReady dataImportBootReady, JobCoordinator jobCoordinator)
                     throws ReadFailedException {
         this.broker = db;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(db);
         this.singleTxDB = new SingleTransactionDataBroker(db);
         this.lockManager = lockManager;
         this.idUtils = idUtils;
@@ -163,8 +167,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         ReleasedIdHolder releasedIdHolder = new ReleasedIdHolder(idUtils, releasedIdsHolder.getDelayedTimeSec());
         releasedIdHolder.setAvailableIdCount(releasedIdsHolder.getAvailableIdCount());
         List<DelayedIdEntries> delayedEntries = releasedIdsHolder.getDelayedIdEntries();
-        List<DelayedIdEntry> delayedIdEntryInCache = new CopyOnWriteArrayList<>();
-        delayedIdEntryInCache = delayedEntries
+        List<DelayedIdEntry> delayedIdEntryInCache = delayedEntries
                 .stream()
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                         .getId(), delayedIdEntry.getReadyTimeSec()))
@@ -193,18 +196,15 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             String poolName = input.getPoolName().intern();
             try {
                 idUtils.lock(lockManager, poolName);
-                WriteTransaction tx = broker.newWriteOnlyTransaction();
-                IdPool idPool;
-                idPool = createGlobalPool(tx, poolName, low, high, blockSize);
-                String localPoolName = idUtils.getLocalPoolName(poolName);
-                IdLocalPool idLocalPool = localPool.get(poolName);
-                if (idLocalPool == null) {
-                    createLocalPool(tx, localPoolName, idPool);
-                    idUtils.updateChildPool(tx, idPool.getPoolName(), localPoolName);
-                }
-                // TODO just "return tx.submit()" instead.. BUT check that all callers @CheckReturnValue
-                tx.submit().checkedGet();
-                return Futures.immediateFuture((Void) null);
+                return txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                    IdPool idPool = createGlobalPool(tx, poolName, low, high, blockSize);
+                    String localPoolName = idUtils.getLocalPoolName(poolName);
+                    IdLocalPool idLocalPool = localPool.get(poolName);
+                    if (idLocalPool == null) {
+                        createLocalPool(tx, localPoolName, idPool);
+                        idUtils.updateChildPool(tx, idPool.getPoolName(), localPoolName);
+                    }
+                });
             } finally {
                 idUtils.unlock(lockManager, poolName);
             }
@@ -321,7 +321,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
             idUtils.putReleaseIdLatch(uniqueIdKey, new CountDownLatch(1));
-            UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
+            UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, txRunner,
                     idUtils, lockManager);
             jobCoordinator.enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
             futureIdValues.complete(newIdValuesList);
@@ -336,23 +336,21 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             throws OperationFailedException, IdManagerException {
         while (true) {
             IdHolder releasedIds = localIdPool.getReleasedIds();
-            Optional<Long> releasedId = Optional.absent();
-            releasedId = releasedIds.allocateId();
+            Optional<Long> releasedId = releasedIds.allocateId();
             if (releasedId.isPresent()) {
                 IdHolderSyncJob poolSyncJob =
-                        new IdHolderSyncJob(localIdPool.getPoolName(), localIdPool.getReleasedIds(), broker,
+                        new IdHolderSyncJob(localIdPool.getPoolName(), localIdPool.getReleasedIds(), txRunner,
                                 idUtils);
                 jobCoordinator.enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
                 return releasedId.get();
             }
-            Optional<Long> availableId = Optional.absent();
             IdHolder availableIds = localIdPool.getAvailableIds();
             if (availableIds != null) {
-                availableId = availableIds.allocateId();
+                Optional<Long> availableId = availableIds.allocateId();
                 if (availableId.isPresent()) {
                     IdHolderSyncJob poolSyncJob =
                             new IdHolderSyncJob(localIdPool.getPoolName(), localIdPool.getAvailableIds(),
-                                    broker, idUtils);
+                    txRunner, idUtils);
                     jobCoordinator.enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
                     return availableId.get();
                 }
@@ -565,13 +563,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         boolean isRemoved = newIdEntries.remove(existingIdEntry);
         LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
         updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
-        IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), broker,
+        IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), txRunner,
                 idUtils);
         jobCoordinator.enqueueJob(localPoolName, poolSyncJob, IdUtils.RETRY_COUNT);
         scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize());
         LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
         // Updating id entries in the parent pool. This will be used for restart scenario
-        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, broker, idUtils,
+        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, txRunner, idUtils,
                         lockManager);
         jobCoordinator.enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
     }
@@ -581,8 +579,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         TimerTask scheduledTask = new TimerTask() {
             @Override
             public void run() {
-                CleanUpJob job = new CleanUpJob(localIdPoolCache, broker, parentPoolName, blockSize, lockManager,
-                        idUtils, jobCoordinator);
+                CleanUpJob job =
+                        new CleanUpJob(localIdPoolCache, txRunner, broker, parentPoolName, blockSize, lockManager,
+                                idUtils, jobCoordinator);
                 jobCoordinator.enqueueJob(localIdPoolCache.getPoolName(), job, IdUtils.RETRY_COUNT);
             }
         };
@@ -616,14 +615,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         allocateIdBlockFromParentPool(idLocalPool, idPool, tx);
         String parentPool = idPool.getPoolName();
         localPool.put(parentPool, idLocalPool);
-        LocalPoolCreateJob job = new LocalPoolCreateJob(idLocalPool, broker, idPool.getPoolName(),
+        LocalPoolCreateJob job = new LocalPoolCreateJob(idLocalPool, txRunner, idPool.getPoolName(),
                 idPool.getBlockSize(), idUtils);
         jobCoordinator.enqueueJob(localPoolName, job, IdUtils.RETRY_COUNT);
         return idLocalPool;
     }
 
     private void deletePool(String poolName) {
-        LocalPoolDeleteJob job = new LocalPoolDeleteJob(poolName, broker, idUtils);
+        LocalPoolDeleteJob job = new LocalPoolDeleteJob(poolName, txRunner, idUtils);
         jobCoordinator.enqueueJob(poolName, job, IdUtils.RETRY_COUNT);
     }
 
