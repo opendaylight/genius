@@ -69,6 +69,24 @@
       "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5becb18f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/DataStoreJobCoordinator.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-10-25T11:56:26Z",
+      "side": 1,
+      "message": "okay, i see test modules need its own DataStoreJobCoordinator. \nThen let us go ahead with making getInstance() method as \"synchronized\".",
+      "parentUuid": "9a245df4_5b13110d",
+      "revId": "0910f744506572e585ea5d45cca9f5d89274d6b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
