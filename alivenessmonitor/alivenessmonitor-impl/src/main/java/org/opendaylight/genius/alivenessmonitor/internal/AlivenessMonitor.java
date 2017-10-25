@@ -24,6 +24,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.ArrayList;
@@ -52,10 +53,11 @@ import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -131,6 +133,7 @@ public class AlivenessMonitor
     private static final int INVALID_ID = 0;
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final NotificationPublishService notificationPublishService;
     private final NotificationService notificationService;
@@ -181,6 +184,7 @@ public class AlivenessMonitor
             final NotificationService notificationService,
             AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManager;
         this.notificationPublishService = notificationPublishService;
         this.notificationService = notificationService;
@@ -526,32 +530,29 @@ public class AlivenessMonitor
                 handler = alivenessProtocolHandlerRegistry.get(ethType);
                 final String monitoringKey = handler.getUniqueMonitoringKey(monitoringInfo);
 
-                MonitoringState monitoringState = null;
-                if (ethType == EtherTypes.Bfd) {
-                    monitoringState = new MonitoringStateBuilder().setMonitorKey(monitoringKey).setMonitorId(monitorId)
-                            .setState(LivenessState.Unknown).setStatus(MonitorStatus.Started).build();
-                } else {
-                    monitoringState = new MonitoringStateBuilder().setMonitorKey(monitoringKey).setMonitorId(monitorId)
-                            .setState(LivenessState.Unknown).setStatus(MonitorStatus.Started)
-                            .setRequestCount(INITIAL_COUNT).setResponsePendingCount(INITIAL_COUNT).build();
+                MonitoringStateBuilder monitoringStateBuilder =
+                        new MonitoringStateBuilder().setMonitorKey(monitoringKey).setMonitorId(monitorId)
+                                .setState(LivenessState.Unknown).setStatus(MonitorStatus.Started);
+                if (ethType != EtherTypes.Bfd) {
+                    monitoringStateBuilder.setRequestCount(INITIAL_COUNT).setResponsePendingCount(INITIAL_COUNT);
                 }
+                MonitoringState monitoringState = monitoringStateBuilder.build();
 
-                WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
+                Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId), monitoringInfo,
+                            CREATE_MISSING_PARENT);
+                    LOG.debug("adding oper monitoring info {}", monitoringInfo);
 
-                tx.put(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId), monitoringInfo,
-                        CREATE_MISSING_PARENT);
-                LOG.debug("adding oper monitoring info {}", monitoringInfo);
+                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitoringKey), monitoringState,
+                            CREATE_MISSING_PARENT);
+                    LOG.debug("adding oper monitoring state {}", monitoringState);
 
-                tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitoringKey), monitoringState,
-                        CREATE_MISSING_PARENT);
-                LOG.debug("adding oper monitoring state {}", monitoringState);
-
-                MonitoridKeyEntry mapEntry = new MonitoridKeyEntryBuilder().setMonitorId(monitorId)
-                        .setMonitorKey(monitoringKey).build();
-                tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId), mapEntry, CREATE_MISSING_PARENT);
-                LOG.debug("adding oper map entry {}", mapEntry);
-
-                Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
+                    MonitoridKeyEntry mapEntry = new MonitoridKeyEntryBuilder().setMonitorId(monitorId)
+                            .setMonitorKey(monitoringKey).build();
+                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId), mapEntry,
+                            CREATE_MISSING_PARENT);
+                    LOG.debug("adding oper map entry {}", mapEntry);
+                }), new FutureCallback<Void>() {
                     @Override
                     public void onFailure(Throwable error) {
                         String errorMsg = String.format("Adding Monitoring info: %s in Datastore failed",
@@ -571,7 +572,7 @@ public class AlivenessMonitor
                         LOG.debug("Scheduling monitor task for config: {}", in);
                         scheduleMonitoringTask(monitoringInfo, profile.getMonitorInterval());
                     }
-                });
+                }, MoreExecutors.directExecutor());
             }
 
             associateMonitorIdWithInterface(monitorId, interfaceName);
@@ -1074,17 +1075,17 @@ public class AlivenessMonitor
             // Stop the monitoring task
             stopMonitoringTask(monitorId);
 
-            // Cleanup the Data store
-            WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
             String monitorKey = monitorIdKeyCache.getUnchecked(monitorId);
-            if (monitorKey != null) {
-                tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey));
-                monitorIdKeyCache.invalidate(monitorId);
-            }
 
-            tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
-            Futures.addCallback(tx.submit(),
-                    new FutureCallbackImpl(String.format("Delete monitor state with Id %d", monitorId)));
+            // Cleanup the Data store
+            Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                if (monitorKey != null) {
+                    tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey));
+                    monitorIdKeyCache.invalidate(monitorId);
+                }
+
+                tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
+            }), new FutureCallbackImpl(String.format("Delete monitor state with Id %d", monitorId)));
 
             MonitoringInfo info = optInfo.get();
             String interfaceName = getInterfaceName(info.getSource().getEndpointType());
