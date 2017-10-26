@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_d9ca644e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-26T13:59:45Z",
+      "side": 1,
+      "message": "Not trying to be nitpicky but I think we should keep the original text as well. ie \"Returns the ExecutorService provided when constructing this instance. If the subclass owns the ExecutorService, ...\"",
+      "revId": "db767c09baf6c0edcee72f01fd1f166b9cc815fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f9bf68a8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractClusteredAsyncDataTreeChangeListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-26T13:59:45Z",
+      "side": 1,
+      "message": "Same here",
+      "revId": "db767c09baf6c0edcee72f01fd1f166b9cc815fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
