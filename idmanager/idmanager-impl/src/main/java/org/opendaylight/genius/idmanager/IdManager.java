@@ -130,6 +130,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @PreDestroy
     public void close() {
+        cleanJobTimer.cancel();
+
         LOG.info("{} close", getClass().getSimpleName());
     }
 
@@ -163,15 +165,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         releasedIdHolder.setAvailableIdCount(releasedIdsHolder.getAvailableIdCount());
         List<DelayedIdEntries> delayedEntries = releasedIdsHolder.getDelayedIdEntries();
         List<DelayedIdEntry> delayedIdEntryInCache = new CopyOnWriteArrayList<>();
-        if (delayedEntries != null) {
-            delayedIdEntryInCache = delayedEntries
-                    .stream()
-                    .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
-                            .getId(), delayedIdEntry.getReadyTimeSec()))
-                            .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
-                            .collect(toCollection(CopyOnWriteArrayList::new));
-        }
-        releasedIdHolder.setDelayedEntries(delayedIdEntryInCache);
+        delayedIdEntryInCache = delayedEntries
+                .stream()
+                .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
+                        .getId(), delayedIdEntry.getReadyTimeSec()))
+                .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
+                .collect(toCollection(ArrayList::new));
+
+        releasedIdHolder.replaceDelayedEntries(delayedIdEntryInCache);
 
         IdLocalPool idLocalPool = new IdLocalPool(idUtils, idPool.getPoolName());
         idLocalPool.setAvailableIds(availableIdHolder);
@@ -236,7 +237,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private void completeExceptionallyIfPresent(String poolName, String idKey, Exception exception) {
         CompletableFuture<List<Long>> completableFuture =
-                idUtils.allocatedIdMap.remove(idUtils.getUniqueKey(poolName, idKey));
+                idUtils.removeAllocatedIds(idUtils.getUniqueKey(poolName, idKey));
         if (completableFuture != null) {
             completableFuture.completeExceptionally(exception);
         }
@@ -333,7 +334,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
         CompletableFuture<List<Long>> existingFutureIdValue =
-                idUtils.allocatedIdMap.putIfAbsent(uniqueIdKey, futureIdValues);
+                idUtils.putAllocatedIdsIfAbsent(uniqueIdKey, futureIdValues);
         if (existingFutureIdValue != null) {
             try {
                 return existingFutureIdValue.get();
@@ -361,7 +362,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 getRangeOfIds(parentPoolName, localPoolName, size, newIdValuesList, localIdPool, newIdValue);
             }
             LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
-            idUtils.releaseIdLatchMap.put(uniqueIdKey, new CountDownLatch(1));
+            idUtils.putReleaseIdLatch(uniqueIdKey, new CountDownLatch(1));
             UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, broker,
                     idUtils, lockManager);
             jobCoordinator.enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
@@ -525,9 +526,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                         .getId(), delayedIdEntry.getReadyTimeSec()))
                 .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
-                .collect(toCollection(CopyOnWriteArrayList::new));
+                .collect(toCollection(ArrayList::new));
         delayedIdEntriesFromParentPool.addAll(delayedIdEntriesLocalCache);
-        releasedIds.setDelayedEntries(delayedIdEntriesFromParentPool);
+        releasedIds.replaceDelayedEntries(delayedIdEntriesFromParentPool);
         releasedIds.setAvailableIdCount(releasedIds.getAvailableIdCount() + idCount);
         localIdPool.setReleasedIds(releasedIds);
         delayedIdEntriesParent.removeAll(idEntriesToBeRemoved);
@@ -575,14 +576,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             throws ReadFailedException, IdManagerException {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
         LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
-        CountDownLatch latch = idUtils.releaseIdLatchMap.get(idLatchKey);
+        CountDownLatch latch = idUtils.getReleaseIdLatch(idLatchKey);
         if (latch != null) {
             try {
                 latch.await(10, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
                 LOG.warn("Thread interrupted while releasing id {} from id pool {}", idKey, parentPoolName);
             } finally {
-                idUtils.releaseIdLatchMap.remove(idLatchKey);
+                idUtils.removeReleaseIdLatch(idLatchKey);
             }
         }
         localPoolName = localPoolName.intern();
@@ -705,7 +706,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             // This is to avoid stale entries in the map. If this thread had populated the map,
             // then the entry should be removed.
             if (existingFutureIdValue == null) {
-                idUtils.allocatedIdMap.remove(uniqueIdKey);
+                idUtils.removeAllocatedIds(uniqueIdKey);
             }
             idUtils.unlock(lockManager, uniqueIdKey);
             return newIdValuesList;

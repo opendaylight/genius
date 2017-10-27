@@ -11,12 +11,10 @@ package org.opendaylight.genius.idmanager.jobs;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import java.util.concurrent.CountDownLatch;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -67,12 +65,12 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             tx.submit().checkedGet();
             LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
         } finally {
-            CountDownLatch latch = idUtils.releaseIdLatchMap.get(uniqueIdKey);
+            CountDownLatch latch = idUtils.getReleaseIdLatch(uniqueIdKey);
             if (latch != null) {
                 latch.countDown();
             }
             // Once the id is written to DS, removing the id value from map.
-            idUtils.allocatedIdMap.remove(uniqueIdKey);
+            idUtils.removeAllocatedIds(uniqueIdKey);
             idUtils.unlock(lockManager, uniqueIdKey);
         }
         return Collections.emptyList();
