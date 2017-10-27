@@ -58,44 +58,53 @@ public final class FutureRpcResults {
         return new FutureRpcResultBuilder<>(logger, rpcMethodName, input, callable);
     }
 
-    public enum LogLevel { ERROR, WARN, INFO, DEBUG, TRACE }
+    public enum LogLevel {
+        ERROR, WARN, INFO, DEBUG, TRACE, NONE;
+
+        public void log(Logger logger, String format, Object... arguments) {
+            switch(this) {
+                case NONE:
+                    break;
+                case TRACE:
+                    logger.trace(format, arguments);
+                    break;
+                case DEBUG:
+                    logger.debug(format, arguments);
+                    break;
+                case INFO:
+                    logger.info(format, arguments);
+                    break;
+                case WARN:
+                    logger.warn(format, arguments);
+                    break;
+                default: // including ERROR
+                    logger.error(format, arguments);
+                    break;
+            }
+        }
+    }
 
     public static class FutureRpcResultBuilder<I, O> implements Builder<Future<RpcResult<O>>> {
 
         @Nullable private final I input;
         private final Callable<ListenableFuture<O>> callable;
-        private Function<Throwable, String> rpcErrorMessageFunction = e -> e.getMessage();
+        private Function<Throwable, String> rpcErrorMessageFunction = Throwable::getMessage;
         private Consumer<O> onSuccessConsumer;
         private Consumer<Throwable> onFailureConsumer;
+        private final Logger logger;
+        private final String rpcMethodName;
         private LogLevel onFailureLogLevel = LogLevel.ERROR;
+        private LogLevel onSuccessLogLevel = LogLevel.DEBUG;
 
-        private FutureRpcResultBuilder(Logger logger, String rpcMethodName, I input,
+        private FutureRpcResultBuilder(Logger logger, String rpcMethodName, @Nullable I input,
                 Callable<ListenableFuture<O>> callable) {
             this.input = input;
             this.callable = callable;
-            // Default methods which can be overwritten by users:
-            this.onSuccessConsumer = result -> {
-                logger.debug("RPC {}() successful; input = {}, output = {}", rpcMethodName, input, result);
-            };
-            this.onFailureConsumer = throwable -> {
-                switch (onFailureLogLevel) {
-                    case TRACE:
-                        logger.trace("RPC {}() failed; input = {}", rpcMethodName, input, throwable);
-                        break;
-                    case DEBUG:
-                        logger.debug("RPC {}() failed; input = {}", rpcMethodName, input, throwable);
-                        break;
-                    case INFO:
-                        logger.info("RPC {}() failed; input = {}", rpcMethodName, input, throwable);
-                        break;
-                    case WARN:
-                        logger.warn("RPC {}() failed; input = {}", rpcMethodName, input, throwable);
-                        break;
-                    default: // including ERROR
-                        logger.error("RPC {}() failed; input = {}", rpcMethodName, input, throwable);
-                        break;
-                }
-            };
+            this.logger = logger;
+            this.rpcMethodName = rpcMethodName;
+            // Default methods which can be overridden by users:
+            this.onSuccessConsumer = result -> {};
+            this.onFailureConsumer = throwable -> {};
         }
 
         @Override
@@ -103,32 +112,30 @@ public final class FutureRpcResults {
         @SuppressWarnings("checkstyle:IllegalCatch")
         public Future<RpcResult<O>> build() {
             SettableFuture<RpcResult<O>> futureRpcResult = SettableFuture.create();
+            FutureCallback<O> callback = new FutureCallback<O>() {
+                @Override
+                public void onSuccess(O result) {
+                    onSuccessLogLevel.log(logger, "RPC {}() successful; input = {}, output = {}", rpcMethodName,
+                            input, result);
+                    onSuccessConsumer.accept(result);
+                    futureRpcResult.set(RpcResultBuilder.success(result).build());
+                }
+
+                @Override
+                public void onFailure(Throwable cause) {
+                    onFailureLogLevel.log(logger, "RPC {}() failed; input = {}", rpcMethodName, input, cause);
+                    onFailureConsumer.accept(cause);
+                    futureRpcResult.set(RpcResultBuilder.<O>failed().withError(
+                            RpcError.ErrorType.APPLICATION, rpcErrorMessageFunction.apply(cause), cause).build());
+                }
+            };
             try {
-                Futures.addCallback(callable.call(), new FutureCallback<O>() {
-                    @Override
-                    public void onSuccess(O result) {
-                        onSuccessConsumer.accept(result);
-                        futureRpcResult.set(RpcResultBuilder.success(result).build());
-                    }
-
-                    @Override
-                    public void onFailure(Throwable cause) {
-                        futureRpcResult.set(getRpcResultOnFailure(cause));
-                    }
-                }, MoreExecutors.directExecutor());
-
-                return futureRpcResult;
-
+                Futures.addCallback(callable.call(), callback, MoreExecutors.directExecutor());
             } catch (Exception cause) {
-                return Futures.immediateFuture(getRpcResultOnFailure(cause));
+                callback.onFailure(cause);
             }
-        }
 
-        private RpcResult<O> getRpcResultOnFailure(Throwable cause) {
-            onFailureConsumer.accept(cause);
-            RpcResultBuilder<O> rpcResultBuilder = RpcResultBuilder.<O>failed().withError(
-                    RpcError.ErrorType.APPLICATION, rpcErrorMessageFunction.apply(cause), cause);
-            return rpcResultBuilder.build();
+            return futureRpcResult;
         }
 
         /**
@@ -141,11 +148,20 @@ public final class FutureRpcResults {
         }
 
         /**
-         * Sets a custom on-failure slf4j logging level, in case of an exception.
-         * By default, it is LOG.error.
+         * Sets a custom on-failure SLF4J logging level, in case of an exception.
+         * By default, it is LOG.error. Setting {@code NONE} will disable logging.
          */
         public FutureRpcResultBuilder<I,O> onFailureLogLevel(LogLevel level) {
             this.onFailureLogLevel = level;
+            return this;
+        }
+
+        /**
+         * Sets a custom on-success SLF4J logging level, in case of an exception.
+         * By default, it is LOG.debug. Setting {@code NONE} will disable logging.
+         */
+        public FutureRpcResultBuilder<I,O> onSuccessLogLevel(LogLevel level) {
+            this.onSuccessLogLevel = level;
             return this;
         }
 
