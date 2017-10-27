@@ -18,12 +18,12 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdManagerException;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -41,15 +41,17 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
     private final int blockSize;
     private final LockManagerService lockManager;
     private final IdUtils idUtils;
+    private final JobCoordinator jobCoordinator;
 
-    public CleanUpJob(IdLocalPool idLocalPool, DataBroker broker,
-            String parentPoolName, int blockSize, LockManagerService lockManager, IdUtils idUtils) {
+    public CleanUpJob(IdLocalPool idLocalPool, DataBroker broker, String parentPoolName, int blockSize,
+            LockManagerService lockManager, IdUtils idUtils, JobCoordinator jobCoordinator) {
         this.idLocalPool = idLocalPool;
         this.broker = broker;
         this.parentPoolName = parentPoolName;
         this.blockSize = blockSize;
         this.lockManager = lockManager;
         this.idUtils = idUtils;
+        this.jobCoordinator = jobCoordinator;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
                 ReleasedIdsHolderBuilder releasedIdsParent = new ReleasedIdsHolderBuilder(releasedIdsHolder.get());
                 idUtils.freeExcessAvailableIds(releasedIds, releasedIdsParent, totalAvailableIdCount - blockSize * 2);
                 IdHolderSyncJob job = new IdHolderSyncJob(idLocalPool.getPoolName(), releasedIds, broker, idUtils);
-                DataStoreJobCoordinator.getInstance().enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
+                jobCoordinator.enqueueJob(idLocalPool.getPoolName(), job, IdUtils.RETRY_COUNT);
                 SingleTransactionDataBroker.syncWrite(broker, LogicalDatastoreType.CONFIGURATION,
                         releasedIdInstanceIdentifier, releasedIdsParent.build());
             } finally {
