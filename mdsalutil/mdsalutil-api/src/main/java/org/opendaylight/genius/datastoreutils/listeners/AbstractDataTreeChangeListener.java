@@ -54,7 +54,9 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
         // ^^^ final to avoid @Override without @PreDestroy
         // JSR 250: "the method is called unless a subclass overrides the method without repeating the annotation"
         shutdown();
-        dataChangeListenerRegistration.close();
+        if (dataChangeListenerRegistration != null) {
+            dataChangeListenerRegistration.close();
+        }
     }
 
     /**
