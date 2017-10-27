@@ -125,4 +125,9 @@ public class DataStoreJobCoordinator implements JobCoordinator {
             return geniusRollbackCallable.call();
         }
     }
+
+    @Override
+    public String toString() {
+        return "DataStoreJobCoordinator: " + infrautilsJobCoordinatorDelegate.toString();
+    }
 }

@@ -27,6 +27,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
     private static final Logger LOG = LoggerFactory.getLogger(TestableJobCoordinatorEventsWaiter.class);
 
     private final Supplier<Long> incompleteTaskCountSupplier;
+    private final Object incompleteTaskCountDetailsToStringer;
 
     /**
      * Constructs an instance that uses the deprecated DataStoreJobCoordinator.
@@ -38,23 +39,30 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
     @Deprecated
     public TestableJobCoordinatorEventsWaiter() {
         incompleteTaskCountSupplier = () -> DataStoreJobCoordinator.getInstance().getIncompleteTaskCount();
+        incompleteTaskCountDetailsToStringer = DataStoreJobCoordinator.getInstance();
     }
 
     @Inject
     public TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor coordinatorMonitor) {
         incompleteTaskCountSupplier = () -> coordinatorMonitor.getIncompleteTaskCount();
+        incompleteTaskCountDetailsToStringer = coordinatorMonitor;
     }
 
     @Override
     public boolean awaitEventsConsumption() throws ConditionTimeoutException {
-        Awaitility.await("TestableJobCoordinatorEventsWaiter")
-            .atMost(30, SECONDS)
-            .pollDelay(0, MILLISECONDS)
-            .conditionEvaluationListener(condition -> LOG.info(
-                    "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; incompleteTaskCount: {}",
-                        condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
-                        condition.getValue()))
-            .until(() -> incompleteTaskCountSupplier.get(), is(0L));
+        try {
+            Awaitility.await("TestableJobCoordinatorEventsWaiter")
+                .atMost(120, SECONDS)
+                .pollDelay(0, MILLISECONDS)
+                .conditionEvaluationListener(condition -> LOG.info(
+                        "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; incompleteTaskCount: {}",
+                            condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
+                            condition.getValue()))
+                .until(() -> incompleteTaskCountSupplier.get(), is(0L));
+        } catch (ConditionTimeoutException e) {
+            LOG.error("Details about stuck JobCoordinator: " + incompleteTaskCountDetailsToStringer.toString());
+            throw e;
+        }
         return true;
     }
 
