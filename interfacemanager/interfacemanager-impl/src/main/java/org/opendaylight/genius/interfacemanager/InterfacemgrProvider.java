@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -431,12 +435,12 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (isExternal) {
             interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
         }
-        InstanceIdentifier<Interface> interfaceInstanceIdentifier = interfaceManagerCommonUtils
+        InstanceIdentifier<Interface> interfaceIId = interfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        // TODO Do something with the future...
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
-                    WriteTransaction.CREATE_MISSING_PARENTS));
+        ListenableFutures.addErrorLogging(
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> tx.put(CONFIGURATION, interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS)),
+            LOG, "Failed to (async) write {}", interfaceIId);
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
