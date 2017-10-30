@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_235c2125",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T21:40:57Z",
+      "side": 1,
+      "message": "as discussed elsewhere, this should be avoided IMHO - but I\u0027m OK if you want to fix this up later as discussed elsewhere, so won\u0027t -1 just because of this..",
+      "revId": "5be778b8e7ba6e4a9e01e14fa78174d8acffc24d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
