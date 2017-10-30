@@ -38,8 +38,9 @@ public class AlivenessMonitorListener implements
     @Inject
     public AlivenessMonitorListener(final DataBroker dataBroker, final NotificationService notificationService,
             final AlivenessMonitorService alivenessMonitorService,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
-        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final AlivenessMonitorUtils alivenessMonitorUtils) {
+        this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         notificationService.registerNotificationListener(this);
     }

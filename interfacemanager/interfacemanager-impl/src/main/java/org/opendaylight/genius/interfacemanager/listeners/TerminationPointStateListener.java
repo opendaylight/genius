@@ -44,13 +44,13 @@ public class TerminationPointStateListener extends
     @Inject
     public TerminationPointStateListener(DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper) {
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.ovsInterfaceTopologyStateUpdateHelper = new OvsInterfaceTopologyStateUpdateHelper(dataBroker,
-                entityOwnershipUtils, coordinator, interfaceManagerCommonUtils);
+        this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 

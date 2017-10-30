@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -28,7 +30,6 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -47,6 +48,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public final class OvsInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigAddHelper.class);
 
@@ -57,16 +59,17 @@ public final class OvsInterfaceConfigAddHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
 
-    public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+    @Inject
+    public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper) {
         this.dataBroker = dataBroker;
+        this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.mdsalApiManager = mdsalApiManager;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
-        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker, alivenessMonitorService,
-                interfaceManagerCommonUtils);
+        this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {

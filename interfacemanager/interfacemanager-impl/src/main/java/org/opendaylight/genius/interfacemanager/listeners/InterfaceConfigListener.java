@@ -56,18 +56,18 @@ public class InterfaceConfigListener
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
             final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
             final AlivenessMonitorService alivenessMonitorService, final EntityOwnershipUtils entityOwnershipUtils,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
+            final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
+            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper) {
         super(Interface.class, InterfaceConfigListener.class);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.ovsInterfaceConfigRemoveHelper = new OvsInterfaceConfigRemoveHelper(dataBroker, alivenessMonitorService,
-                mdsalApiManager, idManager, coordinator, interfaceManagerCommonUtils);
-        this.ovsInterfaceConfigAddHelper = new OvsInterfaceConfigAddHelper(dataBroker, alivenessMonitorService,
-                mdsalApiManager, coordinator, interfaceManagerCommonUtils);
-        this.ovsInterfaceConfigUpdateHelper = new OvsInterfaceConfigUpdateHelper(ovsInterfaceConfigAddHelper,
-                ovsInterfaceConfigRemoveHelper);
+        this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
+        this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
+        this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 

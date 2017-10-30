@@ -10,41 +10,30 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
 
     private final DataBroker dataBroker;
-    private final IdManagerService idManager;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
-    public OvsVlanMemberConfigAddHelper(DataBroker dataBroker, IdManagerService idManager,
+    @Inject
+    public OvsVlanMemberConfigAddHelper(DataBroker dataBroker,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
-        this.idManager = idManager;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-    }
-
-    public DataBroker getDataBroker() {
-        return dataBroker;
-    }
-
-    public IdManagerService getIdManager() {
-        return idManager;
-    }
-
-    public InterfaceManagerCommonUtils getInterfaceManagerCommonUtils() {
-        return interfaceManagerCommonUtils;
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
