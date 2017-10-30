@@ -40,14 +40,17 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
-            JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     /*
@@ -73,7 +76,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         InterfaceMetaUtils.createBridgeRefEntry(dpnIdNew, bridgeIid, writeTransaction);
 
         // handle pre-provisioning of tunnels for the newly connected dpn
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnIdNew, dataBroker);
+        BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(dpnIdNew);
         if (bridgeEntry == null) {
             futures.add(writeTransaction.submit());
             return futures;

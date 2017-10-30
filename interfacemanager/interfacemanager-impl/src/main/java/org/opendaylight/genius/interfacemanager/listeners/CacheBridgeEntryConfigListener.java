@@ -35,13 +35,16 @@ import org.slf4j.LoggerFactory;
 public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheBridgeEntryConfigListener.class);
+
+    private final InterfaceMetaUtils interfaceMetaUtils;
     private final ListenerRegistration<CacheBridgeEntryConfigListener> registration;
     private final DataTreeIdentifier<BridgeEntry> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION,
             getWildcardPath());
 
     @Inject
-    public CacheBridgeEntryConfigListener(final DataBroker dataBroker) {
+    public CacheBridgeEntryConfigListener(final DataBroker dataBroker, final InterfaceMetaUtils interfaceMetaUtils) {
         LOG.trace("Registering on path: {}", treeId);
+        this.interfaceMetaUtils = interfaceMetaUtils;
         registration = dataBroker.registerDataTreeChangeListener(treeId, CacheBridgeEntryConfigListener.this);
     }
 
@@ -62,11 +65,11 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
             final DataObjectModification<BridgeEntry> mod = change.getRootNode();
             switch (mod.getModificationType()) {
                 case DELETE:
-                    InterfaceMetaUtils.removeFromBridgeEntryCache(mod.getDataBefore());
+                    interfaceMetaUtils.removeFromBridgeEntryCache(mod.getDataBefore());
                     break;
                 case SUBTREE_MODIFIED:
                 case WRITE:
-                    InterfaceMetaUtils.addBridgeEntryToCache(mod.getDataAfter());
+                    interfaceMetaUtils.addBridgeEntryToCache(mod.getDataAfter());
                     break;
                 default:
                     throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());

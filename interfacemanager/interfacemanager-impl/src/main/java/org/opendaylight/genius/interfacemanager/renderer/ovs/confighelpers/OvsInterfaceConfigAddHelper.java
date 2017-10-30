@@ -58,18 +58,21 @@ public final class OvsInterfaceConfigAddHelper {
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper) {
+            OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
+            InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.mdsalApiManager = mdsalApiManager;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
@@ -110,7 +113,7 @@ public final class OvsInterfaceConfigAddHelper {
                 ifState);
 
         VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(dataBroker,
-                interfaceManagerCommonUtils, interfaceNew.getName(), ifState);
+                interfaceManagerCommonUtils, interfaceMetaUtils, interfaceNew.getName(), ifState);
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -141,7 +144,7 @@ public final class OvsInterfaceConfigAddHelper {
         boolean createTunnelPort = true;
         final String tunnelName;
         if (SouthboundUtils.isOfTunnel(ifTunnel)) {
-            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpId, dataBroker);
+            BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(dpId);
             createTunnelPort = bridgeEntry == null
                     || bridgeEntry.getBridgeInterfaceEntry() == null
                     || bridgeEntry.getBridgeInterfaceEntry().isEmpty();
@@ -171,7 +174,7 @@ public final class OvsInterfaceConfigAddHelper {
         InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
 
         // create bridge on switch, if switch is connected
-        BridgeRefEntry bridgeRefEntry = InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId, dataBroker);
+        BridgeRefEntry bridgeRefEntry = interfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId);
         if (bridgeRefEntry != null && bridgeRefEntry.getBridgeReference() != null) {
             LOG.debug("creating bridge interface on dpn {}", dpId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
@@ -203,16 +206,19 @@ public final class OvsInterfaceConfigAddHelper {
 
     private static class VlanMemberStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
         private final DataBroker dataBroker;
+        private final InterfaceMetaUtils interfaceMetaUtils;
         private final String interfaceName;
         private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
         private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState;
 
         VlanMemberStateAddWorker(DataBroker dataBroker, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-                String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                InterfaceMetaUtils interfaceMetaUtils, String interfaceName,
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
             this.dataBroker = dataBroker;
             this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+            this.interfaceMetaUtils = interfaceMetaUtils;
             this.interfaceName = interfaceName;
             this.ifState = ifState;
         }
@@ -220,8 +226,8 @@ public final class OvsInterfaceConfigAddHelper {
         @Override
         public List<ListenableFuture<Void>> call() {
             InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
-            InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                    .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
+            InterfaceParentEntry interfaceParentEntry = interfaceMetaUtils
+                    .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey);
             if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
                 return null;
             }

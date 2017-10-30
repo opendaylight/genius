@@ -187,6 +187,7 @@ public class InterfaceManagerConfigurationTest {
     @Inject IInterfaceManager interfaceManager;
     @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     @Inject AsyncEventsWaiter asyncEventsWaiter;
+    @Inject InterfaceMetaUtils interfaceMetaUtils;
 
     @Before
     public void start() throws InterruptedException, TransactionCommitFailedException {
@@ -203,7 +204,7 @@ public class InterfaceManagerConfigurationTest {
     private void setupAndAssertBridgeDeletion() throws InterruptedException {
         OvsdbSouthboundTestUtil.deleteBridge(dataBroker);
         Thread.sleep(2000);
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromOperDS(DPN_ID_1, dataBroker), null);
+        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromOperDS(DPN_ID_1), null);
     }
 
     private void setupAndAssertBridgeCreation() throws InterruptedException, TransactionCommitFailedException {
@@ -216,7 +217,7 @@ public class InterfaceManagerConfigurationTest {
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
                 .orNull();
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_1), bridgeRefEntry);
+        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_1), bridgeRefEntry);
         assertEqualBeans(bridgeRefEntry.getDpid(), DPN_ID_1);
     }
 
@@ -374,7 +375,7 @@ public class InterfaceManagerConfigurationTest {
         // Verify if DPN-ID is updated in corresponding DS and cache
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
             .orNull();
-        assertEqualBeans(InterfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_2), bridgeRefEntry);
+        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_2), bridgeRefEntry);
 
         // 1. Given
         // 2. When

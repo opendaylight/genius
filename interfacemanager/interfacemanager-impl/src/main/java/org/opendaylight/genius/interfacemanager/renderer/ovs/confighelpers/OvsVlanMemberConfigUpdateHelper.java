@@ -40,16 +40,19 @@ public class OvsVlanMemberConfigUpdateHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper;
     private final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public OvsVlanMemberConfigUpdateHelper(DataBroker dataBroker,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
-            OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper) {
+            OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper,
+            InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsVlanMemberConfigAddHelper = ovsVlanMemberConfigAddHelper;
         this.ovsVlanMemberConfigRemoveHelper = ovsVlanMemberConfigRemoveHelper;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     public List<ListenableFuture<Void>> updateConfiguration(ParentRefs parentRefsNew, Interface interfaceOld,
@@ -62,8 +65,8 @@ public class OvsVlanMemberConfigUpdateHelper {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(
                 parentRefsOld.getParentInterface());
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
-        InterfaceChildEntry interfaceChildEntry = InterfaceMetaUtils
-                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey, dataBroker);
+        InterfaceChildEntry interfaceChildEntry = interfaceMetaUtils
+                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey);
 
         if (interfaceChildEntry == null) {
             futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),

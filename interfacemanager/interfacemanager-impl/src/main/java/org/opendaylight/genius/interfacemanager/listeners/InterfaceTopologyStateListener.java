@@ -49,12 +49,14 @@ public class InterfaceTopologyStateListener
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper) {
+            final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
+            final InterfaceMetaUtils interfaceMetaUtils) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -62,6 +64,7 @@ public class InterfaceTopologyStateListener
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
+        this.interfaceMetaUtils = interfaceMetaUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -162,7 +165,7 @@ public class InterfaceTopologyStateListener
             InterfaceMetaUtils.createBridgeRefEntry(dpnId, instanceIdentifier, writeTransaction);
 
             // handle pre-provisioning of tunnels for the newly connected dpn
-            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
+            BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId);
             if (bridgeEntry == null) {
                 LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
                 futures.add(writeTransaction.submit());
