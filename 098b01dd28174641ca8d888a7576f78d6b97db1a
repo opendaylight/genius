@@ -46,6 +46,30 @@
       "revId": "098b01dd28174641ca8d888a7576f78d6b97db1a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_8821aa4f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-30T19:06:28Z",
+      "side": 1,
+      "message": "I don\u0027t know how fast it is now. I\u0027ve never bench-marked it but if Stephen has or has seen published results then fine. Maybe we should at least say that this method does carry extra cost.",
+      "parentUuid": "9a245df4_a8ff4ea9",
+      "range": {
+        "startLine": 59,
+        "startChar": 64,
+        "endLine": 59,
+        "endChar": 90
+      },
+      "revId": "098b01dd28174641ca8d888a7576f78d6b97db1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
