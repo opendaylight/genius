@@ -67,6 +67,7 @@ public class InterfaceInventoryStateListener
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
@@ -75,7 +76,8 @@ public class InterfaceInventoryStateListener
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
             final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
-            final AlivenessMonitorUtils alivenessMonitorUtils) {
+            final AlivenessMonitorUtils alivenessMonitorUtils,
+            final InterfaceMetaUtils interfaceMetaUtils) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -85,6 +87,7 @@ public class InterfaceInventoryStateListener
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.ovsInterfaceStateUpdateHelper = ovsInterfaceStateUpdateHelper;
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
+        this.interfaceMetaUtils = interfaceMetaUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -209,7 +212,7 @@ public class InterfaceInventoryStateListener
         public Object call() {
             List<ListenableFuture<Void>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId, interfaceName,
                     fcNodeConnectorNew);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
                         nodeConnectorId, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
@@ -244,7 +247,7 @@ public class InterfaceInventoryStateListener
         public Object call() {
             List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
                         fcNodeConnectorOld, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
@@ -303,7 +306,7 @@ public class InterfaceInventoryStateListener
             futures = removeInterfaceStateConfiguration(nodeConnectorIdNew, nodeConnectorIdOld, interfaceName,
                     fcNodeConnectorOld, isNodePresent);
 
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
+            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 // Fetch all interfaces on this port and trigger remove worker
                 // for each of them
@@ -342,7 +345,7 @@ public class InterfaceInventoryStateListener
                 if (iface != null) {
                     // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP monitoring
                     if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                        InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction,
+                        interfaceMetaUtils.removeLportTagInterfaceMap(defaultOperationalShardTransaction,
                                 interfaceName);
                         handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.getAugmentation(IfTunnel.class),
                                 defaultOperationalShardTransaction, futures);
@@ -382,9 +385,9 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    public static List<InterfaceChildEntry> getInterfaceChildEntries(DataBroker dataBroker, String interfaceName) {
-        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                .getInterfaceParentEntryFromConfigDS(interfaceName, dataBroker);
+    public List<InterfaceChildEntry> getInterfaceChildEntries(String interfaceName) {
+        InterfaceParentEntry interfaceParentEntry =
+                interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceName);
         if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
             return interfaceParentEntry.getInterfaceChildEntry();
         }

@@ -35,13 +35,15 @@ import org.slf4j.LoggerFactory;
 public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListener<BridgeRefEntry> {
     private static final Logger LOG = LoggerFactory.getLogger(CacheBridgeRefEntryListener.class);
 
+    private final InterfaceMetaUtils interfaceMetaUtils;
     private final ListenerRegistration<CacheBridgeRefEntryListener> registration;
     private final DataTreeIdentifier<BridgeRefEntry> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
             getWildcardPath());
 
     @Inject
-    public CacheBridgeRefEntryListener(DataBroker dataBroker) {
+    public CacheBridgeRefEntryListener(DataBroker dataBroker, InterfaceMetaUtils interfaceMetaUtils) {
         LOG.trace("Registering on path: {}", treeId);
+        this.interfaceMetaUtils = interfaceMetaUtils;
         registration = dataBroker.registerDataTreeChangeListener(treeId, CacheBridgeRefEntryListener.this);
     }
 
@@ -70,11 +72,11 @@ public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListe
                      * Removing for now, can consider this as future optimization.
                      *
                      */
-                    InterfaceMetaUtils.removeFromBridgeRefEntryCache(mod.getDataBefore());
+                    interfaceMetaUtils.removeFromBridgeRefEntryCache(mod.getDataBefore());
                     break;
                 case SUBTREE_MODIFIED:
                 case WRITE:
-                    InterfaceMetaUtils.addBridgeRefEntryToCache(mod.getDataAfter());
+                    interfaceMetaUtils.addBridgeRefEntryToCache(mod.getDataAfter());
                     break;
                 default:
                     throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());

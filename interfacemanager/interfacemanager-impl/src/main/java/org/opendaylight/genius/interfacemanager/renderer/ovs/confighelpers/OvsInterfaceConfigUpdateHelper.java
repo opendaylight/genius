@@ -44,18 +44,20 @@ public class OvsInterfaceConfigUpdateHelper {
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
     private final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public OvsInterfaceConfigUpdateHelper(DataBroker dataBroker, JobCoordinator coordinator,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils, AlivenessMonitorUtils alivenessMonitorUtils,
             OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
-            OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper) {
+            OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper, InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
         this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     public List<ListenableFuture<Void>> updateConfiguration(Interface interfaceNew, Interface interfaceOld) {
@@ -139,10 +141,10 @@ public class OvsInterfaceConfigUpdateHelper {
             Interface interfaceNew, Interface interfaceOld) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
         // update termination point on switch, if switch is connected
-        BridgeRefEntry bridgeRefEntry = InterfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew, dataBroker);
+        BridgeRefEntry bridgeRefEntry = interfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew);
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
         if (SouthboundUtils.isMonitorProtocolBfd(ifTunnel)
-                && InterfaceMetaUtils.bridgeExists(bridgeRefEntry, dataBroker)) {
+                && interfaceMetaUtils.bridgeExists(bridgeRefEntry)) {
             SouthboundUtils.updateBfdParamtersForTerminationPoint(bridgeRefEntry.getBridgeReference().getValue(),
                     interfaceNew.getAugmentation(IfTunnel.class), interfaceNew.getName(), transaction);
         } else {
@@ -164,8 +166,8 @@ public class OvsInterfaceConfigUpdateHelper {
         LOG.info("admin-state modified for interface {}", interfaceNew.getName());
         OperStatus operStatus = interfaceManagerCommonUtils.updateStateEntry(interfaceNew, transaction , ifState);
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
-        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
+        InterfaceParentEntry interfaceParentEntry = interfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey);
         if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
             return;
         }
