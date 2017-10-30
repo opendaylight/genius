@@ -109,13 +109,15 @@ public final class InterfaceManagerCommonUtils {
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public InterfaceManagerCommonUtils(DataBroker dataBroker, IMdsalApiManager mdsalApiManager,
-            IdManagerService idManager) {
+            IdManagerService idManager, InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     public NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId) {
@@ -514,7 +516,7 @@ public final class InterfaceManagerCommonUtils {
             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
-        InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, transaction, interfaceName);
+        interfaceMetaUtils.removeLportTagInterfaceMap(transaction, interfaceName);
     }
 
     // For trunk interfaces, binding to a parent interface which is already
@@ -525,8 +527,8 @@ public final class InterfaceManagerCommonUtils {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIdentifier, dataBroker);
+        InterfaceParentEntry interfaceParentEntry = interfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIdentifier);
 
         if (interfaceParentEntry != null) {
             List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();

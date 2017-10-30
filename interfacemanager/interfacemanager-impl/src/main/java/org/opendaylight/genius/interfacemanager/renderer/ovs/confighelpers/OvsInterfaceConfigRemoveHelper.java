@@ -57,17 +57,19 @@ public final class OvsInterfaceConfigRemoveHelper {
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils, InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
@@ -117,8 +119,8 @@ public final class OvsInterfaceConfigRemoveHelper {
         // For Vlan-Trunk Interface, remove the trunk-member operstates as
         // well...
 
-        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                .getInterfaceParentEntryFromConfigDS(interfaceName, dataBroker);
+        InterfaceParentEntry interfaceParentEntry = interfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceName);
         if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
             return;
         }
@@ -141,10 +143,10 @@ public final class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
-        OvsdbBridgeRef ovsdbBridgeRef = InterfaceMetaUtils.getOvsdbBridgeRef(dpId, dataBroker);
+        OvsdbBridgeRef ovsdbBridgeRef = interfaceMetaUtils.getOvsdbBridgeRef(dpId);
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         InstanceIdentifier<BridgeEntry> bridgeEntryIid = InterfaceMetaUtils.getBridgeEntryIdentifier(bridgeEntryKey);
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryIid, dataBroker);
+        BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryIid);
         if (bridgeEntry == null) {
             LOG.debug("Bridge Entry not present for dpn: {}", dpId);
             return;
@@ -174,8 +176,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         // delete bridge to tunnel interface mappings
         InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
                 interfaceName);
-        int lportTag = InterfaceMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction,
-                                                                     interfaceName);
+        int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(defaultOperationalShardTransaction, interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, dataBroker,
                 defaultOperationalShardTransaction, idManager);
         // stop LLDP monitoring for the tunnel interface

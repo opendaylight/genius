@@ -36,12 +36,14 @@ public class OvsVlanMemberConfigRemoveHelper {
 
     private final DataBroker dataBroker;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public OvsVlanMemberConfigRemoveHelper(DataBroker dataBroker,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils, InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     public List<ListenableFuture<Void>> removeConfiguration(ParentRefs parentRefs, Interface interfaceOld) {
@@ -53,8 +55,8 @@ public class OvsVlanMemberConfigRemoveHelper {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentRefs.getParentInterface());
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
-                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIid, dataBroker);
+        InterfaceParentEntry interfaceParentEntry = interfaceMetaUtils
+                .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIid);
 
         if (interfaceParentEntry == null) {
             return futures;

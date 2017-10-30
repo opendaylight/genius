@@ -89,12 +89,15 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
 
     private final DataBroker dataBroker;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
     public InterfaceManagerRpcService(final DataBroker dataBroker,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     @Override
@@ -146,8 +149,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(input.getDpid());
             InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = InterfaceMetaUtils
                     .getBridgeEntryIdentifier(bridgeEntryKey);
-            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryInstanceIdentifier,
-                    dataBroker);
+            BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(bridgeEntryInstanceIdentifier);
             // local ip of any of the bridge interface entry will be the dpn end
             // point ip
             BridgeInterfaceEntry bridgeInterfaceEntry = bridgeEntry.getBridgeInterfaceEntry().get(0);

@@ -29,7 +29,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -68,7 +67,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan.L2vlanMode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -90,8 +88,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
-import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
@@ -555,22 +551,6 @@ public final class IfmUtil {
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier)
                 )));
-    }
-
-    public static List<TerminationPoint> getTerminationPointsOnBridge(DataBroker dataBroker, BigInteger dpnId) {
-        BridgeRefEntry bridgeRefEntry = InterfaceMetaUtils.getBridgeRefEntryFromOperDS(dpnId, dataBroker);
-        if (bridgeRefEntry == null || bridgeRefEntry.getBridgeReference() == null) {
-            LOG.debug("BridgeRefEntry for DPNID {} not found", dpnId);
-            return Collections.emptyList();
-        }
-        InstanceIdentifier<Node> nodeIid =
-                        bridgeRefEntry.getBridgeReference().getValue().firstIdentifierOf(Node.class);
-        com.google.common.base.Optional<Node> optNode =
-            IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeIid,  dataBroker);
-        if (optNode.isPresent()) {
-            return optNode.get().getTerminationPoint();
-        }
-        return Collections.emptyList();
     }
 
     public static long getLogicalTunnelSelectGroupId(int lportTag) {

@@ -101,6 +101,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final EntityOwnershipService entityOwnershipService;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final InterfaceMetaUtils interfaceMetaUtils;
     private final InterfaceStatusMonitor interfaceStatusMonitor = new InterfaceStatusMonitor();
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
@@ -111,7 +112,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
             final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final InterfaceMetaUtils interfaceMetaUtils) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
@@ -119,6 +121,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         this.interfaceManagerRpcService = interfaceManagerRpcService;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+        this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
     @PostConstruct
@@ -540,8 +543,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public List<Interface> getChildInterfaces(String parentInterface) {
-        InterfaceParentEntry parentEntry = InterfaceMetaUtils.getInterfaceParentEntryFromConfigDS(parentInterface,
-                dataBroker);
+        InterfaceParentEntry parentEntry = interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(parentInterface);
         if (parentEntry == null) {
             LOG.debug("No parent entry found for {}", parentInterface);
             return Collections.emptyList();
@@ -777,7 +779,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      */
     public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId) {
         List<OvsdbTerminationPointAugmentation> ports = new ArrayList<>();
-        List<TerminationPoint> portList = IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId);
+        List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         for (TerminationPoint ovsPort : portList) {
             if (ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class) != null) {
                 ports.add(ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class));
@@ -799,7 +801,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId) {
         List<OvsdbTerminationPointAugmentation> tunnelPorts = new ArrayList<>();
-        List<TerminationPoint> portList = IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId);
+        List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         for (TerminationPoint ovsPort : portList) {
             OvsdbTerminationPointAugmentation portAug =
                     ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
@@ -827,7 +829,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
         Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>> portMap;
         portMap = new ConcurrentHashMap<>();
-        List<TerminationPoint> ovsPorts = IfmUtil.getTerminationPointsOnBridge(dataBroker, dpnId);
+        List<TerminationPoint> ovsPorts = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         if (ovsPorts != null) {
             for (TerminationPoint ovsPort : ovsPorts) {
                 OvsdbTerminationPointAugmentation portAug =
