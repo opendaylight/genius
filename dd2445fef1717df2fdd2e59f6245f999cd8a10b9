@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_aac5863d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "Question: would you be willing to also contribute respective amendments to the (existing) FutureRpcResultsTest, like I have in my c/64450, to which this is an (interesting!) counter proposal?  Or were you hoping I\u0027ll do that when I pick up and adapt c/64450? ;) Fine also - just asking to clarify.",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_aadc6613",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "Question: have you intentionally or by mistake not used this line from my c/64450, which I thought could be useful in some cases in the future:\n\nlogger.trace(\"RPC {}() entered; input \u003d {}\", rpcMethodName, input);\n\nperhaps it would be best/clearest/most flexible to have, continuing your design, a corresponding LogLevel, incl. the setter w. JavaDoc for:\n\nprivate LogLevel on[Invoke|Start|Begin|Enter]LogLevel \u003d LogLevel.DEBUG;\n\nOr I could add that on top of this over in c/64450 if you just +1 this?",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0aec92c6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "Idea: while you are at factoring this out from my initial all-inlined code, how about going further and having a private static final class RpcFutureCallback instead? Just a thought, but would perhaps be easier to understand by others, and look a bit nicer in future stack traces than the anon inner class?",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_aa4aa6c2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "OK: changing confused me for a 7s, but now I get it.. nice!",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ea7adeef",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "NOK: so.. you\u0027ve changed this, actually, right? Adapt JavaDoc accordingly? ;)",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ca16faa6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "NOK: waat? This is not \"in case of an exception\", man.. ;)",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ca7d5ae9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T13:40:31Z",
+      "side": 1,
+      "message": "NOK: so.. you\u0027ve changed this, actually, right? Adapt JavaDoc accordingly? ;)",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
