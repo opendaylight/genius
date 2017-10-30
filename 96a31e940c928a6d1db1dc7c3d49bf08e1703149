@@ -34,6 +34,24 @@
       "revId": "96a31e940c928a6d1db1dc7c3d49bf08e1703149",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ca1c3a7a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T14:41:09Z",
+      "side": 0,
+      "message": "no no worries, I was more talking to myself, and let other reviewers now, here ;)",
+      "parentUuid": "9a245df4_aa91069b",
+      "revId": "96a31e940c928a6d1db1dc7c3d49bf08e1703149",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_cd03b40b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T14:41:09Z",
+      "side": 1,
+      "message": "This and the other places like I feel somewhat strongly about, yes.. I would love to see these changed to proper @Singleton with @Inject, where used. I don\u0027t think it\u0027s a problem / or that we need to \"keep the number of injections down\" - on the contrary, I think uniformity and nobody wondering \"but how do I need to do it in this case\" is more important, here.",
+      "parentUuid": "9a245df4_eaeade0d",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_179e7b56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 8
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "yes - I should\u0027ve commented that. This was the only user of OvsInterfaceStateRemoveHelper so rather than modifying it to add injections and making it a field here, I took a shortcut and inlined here.  I\u0027 fine either way - I can move it back to the class.",
       "parentUuid": "9a245df4_179e7b56",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_6a0d4e3e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T14:41:09Z",
+      "side": 1,
+      "message": "No no, forget about it - I don\u0027t care/feel strongly about this at all",
+      "parentUuid": "9a245df4_8ae36232",
       "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
