@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_379bbf68",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "erm OK, but while you are at this, why not keep it consistent and just also mark OvsInterfaceConfigAddHelper \u0026 Co. as @Singleton class and @Inject on their respective constructors, and then let it be injected in this constructor here, instead of having to manually do the new here, and make it look different from all the other dependant services?",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_179e7b56",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "FTR: This seems to have been moved here from OvsInterfaceStateRemoveHelper.",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_579f5350",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "similar to previous comment, why not just let this be @Inject\u0027d?  (And make @Singleton class OvsInterfaceTopologyStateUpdateHelper { @Inject OvsInterfaceTopologyStateUpdateHelper(...) { ..",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b7ae8f83",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "@Inject, as per previous comments",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_97a9cb7d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "@Inject, as per previous comments",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_d7ba23bf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "in general I think this is a bad anti-pattern - why does this helper have to have getters to expose it\u0027s dependant services?  Anything that needs this shold just get the same @Inject into itself, instead of obtaining it by these...",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_37b29fe6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigAddHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T10:09:01Z",
+      "side": 1,
+      "message": "as above, why these two getters - remove?",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
