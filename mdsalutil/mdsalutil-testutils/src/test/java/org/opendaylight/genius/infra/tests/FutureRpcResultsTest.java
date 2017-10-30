@@ -36,13 +36,13 @@ public class FutureRpcResultsTest {
     @Test
     public void testListenableFutureSuccess() throws Exception {
         Future<RpcResult<String>> future = FutureRpcResults.fromListenableFuture(
-                LOG, "testListenableFutureSuccess", null, () -> immediateFuture("hello, world")).build();
+                LOG, null, () -> immediateFuture("hello, world")).build();
         assertThat(TestFutureRpcResults.getResult(future)).isEqualTo("hello, world");
     }
 
     @Test
     public void testFailedListenableFuture() throws Exception {
-        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, "testFailedListenableFuture", null, () ->
+        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, null, () ->
                 immediateFailedFuture(new IllegalArgumentException("boum"))).build(),
                     IllegalArgumentException.class, "boum");
     }
@@ -50,14 +50,14 @@ public class FutureRpcResultsTest {
     @Test
     public void testFromListenableFutureException() throws Exception {
         TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(
-            LOG, "testFromListenableFutureException", null, () -> {
+            LOG, null, () -> {
                 throw new IllegalArgumentException("bam");
             }).build(), IllegalArgumentException.class, "bam");
     }
 
     @Test
     public void testFromListenableFutureExceptionCustomMessage() throws Exception {
-        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, "assertRpcErrorCause", null, () -> {
+        TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, null, () -> {
             throw new IllegalArgumentException("bam");
         }).withRpcErrorMessage(e -> "tra la la").build(), IllegalArgumentException.class, "tra la la");
     }

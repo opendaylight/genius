@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
+import org.opendaylight.infrautils.utils.StackTraces;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -38,6 +39,25 @@ public final class FutureRpcResults {
     // TODO Once matured in genius, this class should be proposed to org.opendaylight.yangtools.yang.common
 
     private FutureRpcResults() {}
+
+    /**
+     * Create a Builder for a ListenableFuture to Future&lt;RpcResult&lt;O&gt;&gt; transformer.
+     * The RPC's method name is automatically obtained using {@link StackTraces}.
+     *
+     * @param logger the slf4j Logger of the caller
+     * @param input the RPC input DataObject of the caller (may be null)
+     * @param callable the Callable (typically lambda) creating a ListenableFuture.  Note that the
+     *        functional interface Callable's call() method declares throws Exception, so your lambda
+     *        does not have to do any exception handling (specifically it does NOT have to catch and
+     *        wrap any exception into a failed Future); this utility does that for you.
+     *
+     * @return a new Builder
+     */
+    @CheckReturnValue
+    public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger,
+            @Nullable I input, Callable<ListenableFuture<O>> callable) {
+        return new FutureRpcResultBuilder<>(logger, StackTraces.getCallersCallerMethodName(), input, callable);
+    }
 
     /**
      * Create a Builder for a ListenableFuture to Future&lt;RpcResult&lt;O&gt;&gt; transformer.
