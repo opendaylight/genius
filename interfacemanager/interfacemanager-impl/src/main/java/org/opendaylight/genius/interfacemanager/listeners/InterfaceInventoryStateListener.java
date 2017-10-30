@@ -72,18 +72,19 @@ public class InterfaceInventoryStateListener
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
+            final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
+            final AlivenessMonitorUtils alivenessMonitorUtils) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
-        this.ovsInterfaceStateUpdateHelper = new OvsInterfaceStateUpdateHelper(dataBroker, alivenessMonitorService,
-                interfaceManagerCommonUtils);
-        this.ovsInterfaceStateAddHelper = new OvsInterfaceStateAddHelper(dataBroker,
-                alivenessMonitorService, interfaceManagerCommonUtils);
+        this.alivenessMonitorUtils = alivenessMonitorUtils;
+        this.ovsInterfaceStateUpdateHelper = ovsInterfaceStateUpdateHelper;
+        this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 

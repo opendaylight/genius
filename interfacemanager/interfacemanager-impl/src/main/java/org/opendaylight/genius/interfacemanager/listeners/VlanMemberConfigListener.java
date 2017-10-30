@@ -43,15 +43,15 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
     @Inject
     public VlanMemberConfigListener(final DataBroker dataBroker, final IdManagerService idManagerService,
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
+            final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper,
+            final OvsVlanMemberConfigUpdateHelper ovsVlanMemberConfigUpdateHelper) {
         super(Interface.class, VlanMemberConfigListener.class);
         this.coordinator = coordinator;
-        this.ovsVlanMemberConfigAddHelper = new OvsVlanMemberConfigAddHelper(dataBroker, idManagerService,
-                interfaceManagerCommonUtils);
-        this.ovsVlanMemberConfigRemoveHelper = new OvsVlanMemberConfigRemoveHelper(dataBroker,
-                interfaceManagerCommonUtils);
-        this.ovsVlanMemberConfigUpdateHelper = new OvsVlanMemberConfigUpdateHelper(ovsVlanMemberConfigAddHelper,
-                ovsVlanMemberConfigRemoveHelper);
+        this.ovsVlanMemberConfigAddHelper = ovsVlanMemberConfigAddHelper;
+        this.ovsVlanMemberConfigRemoveHelper = ovsVlanMemberConfigRemoveHelper;
+        this.ovsVlanMemberConfigUpdateHelper = ovsVlanMemberConfigUpdateHelper;
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 

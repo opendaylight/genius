@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
@@ -23,7 +24,6 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -31,6 +31,7 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -52,15 +53,15 @@ public class InterfaceTopologyStateListener
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.ovsInterfaceTopologyStateUpdateHelper = new OvsInterfaceTopologyStateUpdateHelper(dataBroker,
-                entityOwnershipUtils, coordinator, interfaceManagerCommonUtils);
+        this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -186,8 +187,26 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsInterfaceTopologyStateRemoveHelper.removePortFromBridge(instanceIdentifier, bridgeNew,
-                    dataBroker);
+            BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+
+            if (dpnId == null) {
+                LOG.warn("Got Null DPID for Bridge: {}", bridgeNew);
+                return Collections.emptyList();
+            }
+
+            WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+            LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+            // delete bridge reference entry in interface meta operational DS
+            InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, transaction);
+
+            // the bridge reference is copied to dpn-tunnel interfaces map, so that
+            // whenever a northbound delete
+            // happens when bridge is not connected, we need the bridge reference to
+            // clean up the topology config DS
+            InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(instanceIdentifier),
+                    transaction);
+
+            return Collections.singletonList(transaction.submit());
         }
     }
 

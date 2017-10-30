@@ -10,6 +10,8 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -22,12 +24,12 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class OvsInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateUpdateHelper.class);
 
@@ -35,11 +37,12 @@ public class OvsInterfaceStateUpdateHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
-    public OvsInterfaceStateUpdateHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+    @Inject
+    public OvsInterfaceStateUpdateHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
         this.interfaceManagerCommonUtils =  interfaceManagerCommonUtils;
-        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+        this.alivenessMonitorUtils = alivenessMonitorUtils;
     }
 
     public List<ListenableFuture<Void>> updateState(String interfaceName,

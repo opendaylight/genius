@@ -11,6 +11,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -22,7 +24,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * entries in Interface-State OperDS. Create the entries in Inventory OperDS.
  */
 
+@Singleton
 public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
@@ -42,11 +44,12 @@ public final class OvsInterfaceStateAddHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
-    public OvsInterfaceStateAddHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
+    @Inject
+    public OvsInterfaceStateAddHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
+        this.alivenessMonitorUtils = alivenessMonitorUtils;
     }
 
     public List<ListenableFuture<Void>> addState(String interfaceName, Interface parentInterface) {

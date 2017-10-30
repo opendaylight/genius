@@ -12,6 +12,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -30,6 +32,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
 
@@ -38,6 +41,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
+    @Inject
     public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
             JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;

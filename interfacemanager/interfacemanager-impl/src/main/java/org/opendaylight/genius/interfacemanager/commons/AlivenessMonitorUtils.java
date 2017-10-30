@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -52,16 +54,17 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public final class AlivenessMonitorUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorUtils.class);
     private static final long FAILURE_THRESHOLD = 4;
-    private static final long MONITORING_INTERVAL = 10000;
     private static final long MONITORING_WINDOW = 4;
 
     private final AlivenessMonitorService alivenessMonitorService;
     private final DataBroker dataBroker;
 
+    @Inject
     public AlivenessMonitorUtils(AlivenessMonitorService alivenessMonitor, DataBroker dataBroker) {
         this.alivenessMonitorService = alivenessMonitor;
         this.dataBroker = dataBroker;
