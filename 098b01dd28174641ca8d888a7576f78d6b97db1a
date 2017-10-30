@@ -22,6 +22,30 @@
       "revId": "098b01dd28174641ca8d888a7576f78d6b97db1a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a8ff4ea9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-30T18:56:56Z",
+      "side": 1,
+      "message": "yeah that was the kind of idea of https://git.opendaylight.org/gerrit/#/c/64436/ ... which you +1 and where I said it was for using it here.. ;-)\n\nStephen opined (in private email) that \"Thread.currentThread().getStackTrace() is quite fast nowadays, I’m measuring 0.00005s per stack trace\" ... with everything else going on when an RPC is called, local or remote, is this really an issue?",
+      "parentUuid": "9a245df4_285d1eea",
+      "range": {
+        "startLine": 59,
+        "startChar": 64,
+        "endLine": 59,
+        "endChar": 90
+      },
+      "revId": "098b01dd28174641ca8d888a7576f78d6b97db1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
