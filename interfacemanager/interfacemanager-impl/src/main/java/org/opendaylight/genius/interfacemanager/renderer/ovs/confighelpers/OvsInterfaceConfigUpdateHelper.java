@@ -12,12 +12,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
@@ -30,16 +34,28 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class OvsInterfaceConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
 
+    private final DataBroker dataBroker;
+    private final JobCoordinator coordinator;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
     private final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper;
 
-    public OvsInterfaceConfigUpdateHelper(OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
-            OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper) {
-        this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
+    @Inject
+    public OvsInterfaceConfigUpdateHelper(DataBroker dataBroker, JobCoordinator coordinator,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils, AlivenessMonitorUtils alivenessMonitorUtils,
+            OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
+            OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper) {
+        this.dataBroker = dataBroker;
+        this.coordinator = coordinator;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+        this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
+        this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
     }
 
     public List<ListenableFuture<Void>> updateConfiguration(Interface interfaceNew, Interface interfaceOld) {
@@ -58,10 +74,9 @@ public class OvsInterfaceConfigUpdateHelper {
 
         // If there is no operational state entry for the interface, treat it as
         // create
-        final DataBroker dataBroker = ovsInterfaceConfigRemoveHelper.getDataBroker();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = ovsInterfaceConfigRemoveHelper
-                .getInterfaceManagerCommonUtils().getInterfaceState(interfaceNew.getName());
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .getInterfaceState(interfaceNew.getName());
         if (ifState == null) {
             futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
                     interfaceNew));
@@ -123,7 +138,6 @@ public class OvsInterfaceConfigUpdateHelper {
     private void handleTunnelMonitorUpdates(List<ListenableFuture<Void>> futures, WriteTransaction transaction,
             Interface interfaceNew, Interface interfaceOld) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
-        DataBroker dataBroker = ovsInterfaceConfigRemoveHelper.getDataBroker();
         // update termination point on switch, if switch is connected
         BridgeRefEntry bridgeRefEntry = InterfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew, dataBroker);
         IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
@@ -134,8 +148,7 @@ public class OvsInterfaceConfigUpdateHelper {
         } else {
             // update lldp tunnel monitoring attributes for an internal vxlan
             // tunnel interface
-            ovsInterfaceConfigRemoveHelper.getAlivenessMonitorUtils().handleTunnelMonitorUpdates(
-                    interfaceOld, interfaceNew);
+            alivenessMonitorUtils.handleTunnelMonitorUpdates(interfaceOld, interfaceNew);
         }
         futures.add(transaction.submit());
     }
@@ -149,9 +162,7 @@ public class OvsInterfaceConfigUpdateHelper {
             return;
         }
         LOG.info("admin-state modified for interface {}", interfaceNew.getName());
-        DataBroker dataBroker = ovsInterfaceConfigRemoveHelper.getDataBroker();
-        OperStatus operStatus = ovsInterfaceConfigRemoveHelper.getInterfaceManagerCommonUtils()
-                .updateStateEntry(interfaceNew, transaction , ifState);
+        OperStatus operStatus = interfaceManagerCommonUtils.updateStateEntry(interfaceNew, transaction , ifState);
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceNew.getName());
         InterfaceParentEntry interfaceParentEntry = InterfaceMetaUtils
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey, dataBroker);
@@ -161,8 +172,7 @@ public class OvsInterfaceConfigUpdateHelper {
 
         VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(dataBroker,
                 operStatus, interfaceParentEntry.getInterfaceChildEntry());
-        ovsInterfaceConfigRemoveHelper.getCoordinator().enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker,
-                IfmConstants.JOB_MAX_RETRIES);
+        coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private static <T> boolean checkAugmentations(T oldAug, T newAug) {

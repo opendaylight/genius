@@ -11,10 +11,13 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -29,14 +32,22 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class OvsVlanMemberConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigUpdateHelper.class);
 
+    private final DataBroker dataBroker;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper;
     private final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper;
 
-    public OvsVlanMemberConfigUpdateHelper(OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
+    @Inject
+    public OvsVlanMemberConfigUpdateHelper(DataBroker dataBroker,
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
             OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper) {
+        this.dataBroker = dataBroker;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsVlanMemberConfigAddHelper = ovsVlanMemberConfigAddHelper;
         this.ovsVlanMemberConfigRemoveHelper = ovsVlanMemberConfigRemoveHelper;
     }
@@ -52,8 +63,7 @@ public class OvsVlanMemberConfigUpdateHelper {
                 parentRefsOld.getParentInterface());
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
         InterfaceChildEntry interfaceChildEntry = InterfaceMetaUtils
-                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey,
-                        ovsVlanMemberConfigAddHelper.getDataBroker());
+                .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey, dataBroker);
 
         if (interfaceChildEntry == null) {
             futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
@@ -80,10 +90,9 @@ public class OvsVlanMemberConfigUpdateHelper {
             return futures;
         }
 
-        DataBroker dataBroker = ovsVlanMemberConfigAddHelper.getDataBroker();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.state.Interface pifState = ovsVlanMemberConfigAddHelper
-                .getInterfaceManagerCommonUtils().getInterfaceState(parentRefsNew.getParentInterface());
+            .interfaces.rev140508.interfaces.state.Interface pifState = interfaceManagerCommonUtils.getInterfaceState(
+                    parentRefsNew.getParentInterface());
         if (pifState != null) {
             OperStatus operStatus = OperStatus.Down;
             if (interfaceNew.isEnabled()) {
