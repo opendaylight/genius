@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_eaeade0d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-30T12:06:42Z",
+      "side": 1,
+      "message": "yeah I could do that but I was trying to keep the number of injections down - only create a reused singleton if necessary, ie if it keeps state. These are simple helpers. I\u0027m fine either way but I can make them singletons if you feel strongly.",
+      "parentUuid": "9a245df4_379bbf68",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_179e7b56",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_8ae36232",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-30T12:06:42Z",
+      "side": 1,
+      "message": "yes - I should\u0027ve commented that. This was the only user of OvsInterfaceStateRemoveHelper so rather than modifying it to add injections and making it a field here, I took a shortcut and inlined here.  I\u0027 fine either way - I can move it back to the class.",
+      "parentUuid": "9a245df4_179e7b56",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_579f5350",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
         "patchSetId": 8
@@ -47,6 +83,24 @@
       "writtenOn": "2017-10-30T10:09:01Z",
       "side": 1,
       "message": "similar to previous comment, why not just let this be @Inject\u0027d?  (And make @Singleton class OvsInterfaceTopologyStateUpdateHelper { @Inject OvsInterfaceTopologyStateUpdateHelper(...) { ..",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_cad43a49",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-30T12:06:42Z",
+      "side": 1,
+      "message": "See previous reply...",
+      "parentUuid": "9a245df4_579f5350",
       "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -98,6 +152,24 @@
       "writtenOn": "2017-10-30T10:09:01Z",
       "side": 1,
       "message": "in general I think this is a bad anti-pattern - why does this helper have to have getters to expose it\u0027s dependant services?  Anything that needs this shold just get the same @Inject into itself, instead of obtaining it by these...",
+      "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_6a4c2e43",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-30T12:06:42Z",
+      "side": 1,
+      "message": "It\u0027s used by the Update class which has the Add and Remove classes injected so I got lazy and just used the dependent services from thus one instead of injecting all the same stuff into this one. But I can change it if you feel strongly about it...",
+      "parentUuid": "9a245df4_d7ba23bf",
       "revId": "a79e4f4329f1843d628697b3f54f1213c5679130",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
