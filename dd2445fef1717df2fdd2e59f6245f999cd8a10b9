@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_2aa19647",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-30T14:25:32Z",
+      "side": 1,
+      "message": "I reckoned since you’d already done the work in your patch, it could just as well stay there and be credited appropriately.",
+      "parentUuid": "9a245df4_aac5863d",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_aadc6613",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_0aa49255",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-30T14:25:32Z",
+      "side": 1,
+      "message": "I don’t really like tracing method entry/exit etc. IMO that belongs somewhere else. I’d also rather keep this patch focused...",
+      "parentUuid": "9a245df4_aadc6613",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_0aec92c6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2017-10-30T13:40:31Z",
       "side": 1,
       "message": "Idea: while you are at factoring this out from my initial all-inlined code, how about going further and having a private static final class RpcFutureCallback instead? Just a thought, but would perhaps be easier to understand by others, and look a bit nicer in future stack traces than the anon inner class?",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ea649e23",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-30T14:25:32Z",
+      "side": 1,
+      "message": "It needs access to onSuccessLogLevel, logger, rpcMethodName, input, onSuccessConsumer, futureRpcResult, onFailureLogLevel, and onFailureConsumer; it could be a non-static inner-class of FutureRpcResultBuilder, with special handling for futureRpcResult, but that’s still more complicated than an anonymous inner class IMO.",
+      "parentUuid": "9a245df4_0aec92c6",
       "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_ca99da20",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-30T14:25:32Z",
+      "side": 1,
+      "message": "Indeed...",
+      "parentUuid": "9a245df4_ea7adeef",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_ca16faa6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 2
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_ea965eef",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-30T14:25:32Z",
+      "side": 1,
+      "message": "Oops, copy-paste thinko there :-(. Thanks for catching this it!",
+      "parentUuid": "9a245df4_ca16faa6",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_ca7d5ae9",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
         "patchSetId": 2
@@ -115,6 +205,24 @@
       "writtenOn": "2017-10-30T13:40:31Z",
       "side": 1,
       "message": "NOK: so.. you\u0027ve changed this, actually, right? Adapt JavaDoc accordingly? ;)",
+      "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_6a5f0e42",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-10-30T14:25:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_ca7d5ae9",
       "revId": "dd2445fef1717df2fdd2e59f6245f999cd8a10b9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
