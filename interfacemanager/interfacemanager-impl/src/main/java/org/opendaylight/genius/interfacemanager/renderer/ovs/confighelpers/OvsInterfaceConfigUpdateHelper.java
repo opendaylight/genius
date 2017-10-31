@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -91,7 +92,7 @@ public class OvsInterfaceConfigUpdateHelper {
             return futures;
         }
 
-        if (interfaceNew.isEnabled() != interfaceOld.isEnabled()) {
+        if (!Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
             handleInterfaceAdminStateUpdates(transaction, interfaceNew, ifState);
         }
 

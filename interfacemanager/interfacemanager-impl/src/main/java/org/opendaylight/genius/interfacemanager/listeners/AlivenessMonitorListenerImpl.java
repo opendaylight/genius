@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
@@ -28,15 +29,14 @@ import org.slf4j.LoggerFactory;
  * This is used to handle interfaces for base of-ports.
  */
 @Singleton
-public class AlivenessMonitorListener implements
-        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener {
-    private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorListener.class);
+public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
+    private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorListenerImpl.class);
 
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public AlivenessMonitorListener(final DataBroker dataBroker, final NotificationService notificationService,
+    public AlivenessMonitorListenerImpl(final DataBroker dataBroker, final NotificationService notificationService,
             final AlivenessMonitorService alivenessMonitorService,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final AlivenessMonitorUtils alivenessMonitorUtils) {
@@ -60,8 +60,7 @@ public class AlivenessMonitorListener implements
         Long monitorId = notification.getEventData().getMonitorId();
         String tunnelInterface = alivenessMonitorUtils.getInterfaceFromMonitorId(monitorId);
         if (tunnelInterface == null) {
-            LOG.debug("Either monitoring for interface - {} not started by Interfacemgr or it is not LLDP monitoring",
-                    tunnelInterface);
+            LOG.debug("Either monitoring for interface not started by Interfacemgr or it is not LLDP monitoring");
             return;
         }
         LivenessState livenessState = notification.getEventData().getMonitorState();
