@@ -18,11 +18,17 @@ import org.opendaylight.genius.utils.batching.SubTransactionImpl;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class InterfaceBatchHandler implements ResourceHandler {
-    LogicalDatastoreType dataStoreType;
+class InterfaceBatchHandler implements ResourceHandler {
+    private final DataBroker dataBroker;
+    private final LogicalDatastoreType dataStoreType;
+    private final int batchSize;
+    private final int batchInterval;
 
-    public InterfaceBatchHandler(LogicalDatastoreType datastoreType) {
-        this.dataStoreType = datastoreType;
+    InterfaceBatchHandler(DataBroker dataBroker, LogicalDatastoreType dataStoreType, int batchSize, int batchInterval) {
+        this.dataBroker = dataBroker;
+        this.dataStoreType = dataStoreType;
+        this.batchSize = batchSize;
+        this.batchInterval = batchInterval;
     }
 
     @Override
@@ -69,17 +75,17 @@ public class InterfaceBatchHandler implements ResourceHandler {
 
     @Override
     public DataBroker getResourceBroker() {
-        return BatchingUtils.getBroker();
+        return dataBroker;
     }
 
     @Override
     public int getBatchSize() {
-        return BatchingUtils.batchSize;
+        return batchSize;
     }
 
     @Override
     public int getBatchInterval() {
-        return BatchingUtils.batchInterval;
+        return batchInterval;
     }
 
     @Override

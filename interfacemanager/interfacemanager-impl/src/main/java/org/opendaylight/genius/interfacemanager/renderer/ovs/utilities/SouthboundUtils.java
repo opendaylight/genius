@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -61,26 +62,19 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
 
-    public static final String BFD_PARAM_ENABLE = "enable";
-    static final String BFD_PARAM_MIN_TX = "min_tx";
-    static final String BFD_PARAM_MIN_RX = "min_rx";
-    static final String BFD_PARAM_DECAY_MIN_RX = "decay_min_rx";
-    static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
-    static final String BFD_PARAM_CPATH_DOWN = "cpath_down";
-    static final String BFD_PARAM_CHECK_TNL_KEY = "check_tnl_key";
+    private static final String BFD_PARAM_ENABLE = "enable";
+    private static final String BFD_PARAM_MIN_TX = "min_tx";
+    private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
 
     // BFD parameters
     public static final String BFD_OP_STATE = "state";
     public static final String BFD_STATE_UP = "up";
-    private static final String BFD_MIN_RX_VAL = "1000";
     private static final String BFD_MIN_TX_VAL = "100";
-    private static final String BFD_DECAY_MIN_RX_VAL = "200";
     private static final String BFD_FORWARDING_IF_RX_VAL = "true";
-    private static final String BFD_CPATH_DOWN_VAL = "false";
-    private static final String BFD_CHECK_TNL_KEY_VAL = "false";
 
     // Tunnel options
     private static final String TUNNEL_OPTIONS_KEY = "key";
@@ -120,7 +114,14 @@ public class SouthboundUtils {
             }
         };
 
-    public static void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
+    private final BatchingUtils batchingUtils;
+
+    @Inject
+    public SouthboundUtils(BatchingUtils batchingUtils) {
+        this.batchingUtils = batchingUtils;
+    }
+
+    public void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
             addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
@@ -128,12 +129,11 @@ public class SouthboundUtils {
     }
 
     /*
-     * Add all tunnels ports corresponding to the bridge to the topology config
-     * DS
+     * Add all tunnels ports corresponding to the bridge to the topology config DS.
      */
-    public static void addAllPortsToBridge(BridgeEntry bridgeEntry, DataBroker dataBroker,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew) {
+    public void addAllPortsToBridge(BridgeEntry bridgeEntry, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+            OvsdbBridgeAugmentation bridgeNew) {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
@@ -158,7 +158,7 @@ public class SouthboundUtils {
         }
     }
 
-    private static void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
+    private void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
             String portName) {
         LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
 
@@ -239,7 +239,7 @@ public class SouthboundUtils {
         transaction.merge(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
     }
 
-    private static void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
+    private void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
             Class<? extends InterfaceTypeBase> type, Map<String, String> options, IfTunnel ifTunnel) {
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
 
@@ -280,7 +280,7 @@ public class SouthboundUtils {
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-        BatchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
+        batchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
@@ -310,11 +310,11 @@ public class SouthboundUtils {
         return terminationPointPath;
     }
 
-    public static void removeTerminationEndPoint(InstanceIdentifier<?> bridgeIid, String interfaceName) {
+    public void removeTerminationEndPoint(InstanceIdentifier<?> bridgeIid, String interfaceName) {
         LOG.debug("removing termination point for {}", interfaceName);
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
-        BatchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
+        batchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {

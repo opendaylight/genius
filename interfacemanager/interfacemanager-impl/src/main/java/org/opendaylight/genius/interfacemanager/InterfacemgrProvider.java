@@ -34,7 +34,6 @@ import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExist
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -141,7 +140,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 LOG.error("Failed to register entity {} with EntityOwnershipService", e.getEntity());
             }
 
-            BatchingUtils.registerWithBatchManager(this.dataBroker);
             this.ifaceToTpMap = new ConcurrentHashMap<>();
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();

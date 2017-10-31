@@ -110,14 +110,16 @@ public final class InterfaceManagerCommonUtils {
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final BatchingUtils batchingUtils;
 
     @Inject
     public InterfaceManagerCommonUtils(DataBroker dataBroker, IMdsalApiManager mdsalApiManager,
-            IdManagerService idManager, InterfaceMetaUtils interfaceMetaUtils) {
+            IdManagerService idManager, InterfaceMetaUtils interfaceMetaUtils, BatchingUtils batchingUtils) {
         this.dataBroker = dataBroker;
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.batchingUtils = batchingUtils;
     }
 
     public NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId) {
@@ -300,7 +302,7 @@ public final class InterfaceManagerCommonUtils {
 
     public void createInterfaceChildEntry(String parentInterface, String childInterface) {
         createInterfaceChildEntry(parentInterface, childInterface,
-            pair -> BatchingUtils.write(pair.getKey(), pair.getValue(), BatchingUtils.EntityType.DEFAULT_CONFIG));
+            pair -> batchingUtils.write(pair.getKey(), pair.getValue(), BatchingUtils.EntityType.DEFAULT_CONFIG));
     }
 
     public void createInterfaceChildEntry(String parentInterface, String childInterface,
@@ -327,7 +329,7 @@ public final class InterfaceManagerCommonUtils {
         InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
         InstanceIdentifier<InterfaceChildEntry> intfId = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-        BatchingUtils.delete(intfId, BatchingUtils.EntityType.DEFAULT_CONFIG);
+        batchingUtils.delete(intfId, BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     public OperStatus updateStateEntry(Interface interfaceNew, WriteTransaction transaction,
@@ -387,7 +389,7 @@ public final class InterfaceManagerCommonUtils {
         // on id allocation even when multiple southbound port_up events come in
         // one shot
         Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
-        InterfaceMetaUtils.createLportTagInterfaceMap(interfaceName, ifIndex);
+        interfaceMetaUtils.createLportTagInterfaceMap(interfaceName, ifIndex);
         if (ifState == null) {
             LOG.debug("could not retrieve interface state corresponding to {}, processing will be resumed when "
                     + "interface-state is available", interfaceName);
@@ -459,7 +461,7 @@ public final class InterfaceManagerCommonUtils {
             // retrieve if-index only for northbound configured interfaces
             ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, interfaceName);
             ifaceBuilder.setIfIndex(ifIndex);
-            InterfaceMetaUtils.createLportTagInterfaceMap(interfaceName, ifIndex);
+            interfaceMetaUtils.createLportTagInterfaceMap(interfaceName, ifIndex);
         }
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
@@ -489,7 +491,7 @@ public final class InterfaceManagerCommonUtils {
         boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceInfo);
         boolean isOfTunnelInterface = InterfaceManagerCommonUtils.isOfTunnelInterface(interfaceInfo);
         if (isTunnelInterface && !isOfTunnelInterface) {
-            BatchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+            batchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         } else {
             transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
         }
@@ -574,7 +576,7 @@ public final class InterfaceManagerCommonUtils {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
-        BatchingUtils.delete(interfaceParentEntryIdentifier, BatchingUtils.EntityType.DEFAULT_CONFIG);
+        batchingUtils.delete(interfaceParentEntryIdentifier, BatchingUtils.EntityType.DEFAULT_CONFIG);
         return true;
     }
 
@@ -669,7 +671,7 @@ public final class InterfaceManagerCommonUtils {
                                                         .build();
         InterfaceNameEntryBuilder entryBuilder =
                 new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
-        BatchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        batchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
     public List<InterfaceNameEntry> getAllInterfaces(BigInteger dpnId) {

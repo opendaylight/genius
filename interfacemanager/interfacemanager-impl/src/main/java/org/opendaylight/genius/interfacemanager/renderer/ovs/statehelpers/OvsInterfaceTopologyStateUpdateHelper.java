@@ -41,16 +41,18 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final SouthboundUtils southboundUtils;
 
     @Inject
     public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
             JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            InterfaceMetaUtils interfaceMetaUtils) {
+            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.southboundUtils = southboundUtils;
     }
 
     /*
@@ -81,7 +83,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             futures.add(writeTransaction.submit());
             return futures;
         }
-        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, interfaceManagerCommonUtils, bridgeIid, bridgeNew);
+        southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, bridgeIid, bridgeNew);
 
         futures.add(writeTransaction.submit());
         return futures;
