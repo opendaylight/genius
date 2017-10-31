@@ -335,7 +335,7 @@ public final class InterfaceManagerCommonUtils {
     public OperStatus updateStateEntry(Interface interfaceNew, WriteTransaction transaction,
            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
                                                   .rev140508.interfaces.state.Interface ifState) {
-        OperStatus operStatus = ifState.getOperStatus();
+        final OperStatus operStatus;
         if (!interfaceNew.isEnabled()) {
             operStatus = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Down;
@@ -534,16 +534,16 @@ public final class InterfaceManagerCommonUtils {
 
         if (interfaceParentEntry != null) {
             List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
-            if (interfaceChildEntries != null && interfaceChildEntries.contains(childInterface)) {
-                LOG.trace("Child entry for interface {} already exists", childInterface);
-                return false;
-            }
-
-            if (l2vlanMode == IfL2vlan.L2vlanMode.Trunk && interfaceChildEntries != null) {
+            if (interfaceChildEntries != null) {
                 for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                     String curChildInterface = interfaceChildEntry.getChildInterface();
+                    if (childInterface.equals(curChildInterface)) {
+                        LOG.trace("Child entry for interface {} already exists", childInterface);
+                        return false;
+                    }
+
                     Interface iface = getInterfaceFromConfigDS(curChildInterface);
-                    if (isTrunkInterface(iface)) {
+                    if (l2vlanMode == IfL2vlan.L2vlanMode.Trunk && isTrunkInterface(iface)) {
                         LOG.error(
                                 "Trying to bind child interface {} of type Trunk to parent interface {},"
                                         + "but it is already bound to a trunk interface {}",

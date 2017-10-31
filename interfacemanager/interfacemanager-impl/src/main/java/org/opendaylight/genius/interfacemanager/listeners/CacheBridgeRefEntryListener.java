@@ -38,7 +38,7 @@ public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListe
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final ListenerRegistration<CacheBridgeRefEntryListener> registration;
     private final DataTreeIdentifier<BridgeRefEntry> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
-            getWildcardPath());
+            InstanceIdentifier.create(BridgeRefInfo.class).child(BridgeRefEntry.class));
 
     @Inject
     public CacheBridgeRefEntryListener(DataBroker dataBroker, InterfaceMetaUtils interfaceMetaUtils) {
@@ -52,10 +52,6 @@ public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListe
         if (registration != null) {
             registration.close();
         }
-    }
-
-    protected InstanceIdentifier<BridgeRefEntry> getWildcardPath() {
-        return InstanceIdentifier.create(BridgeRefInfo.class).child(BridgeRefEntry.class);
     }
 
     @Override

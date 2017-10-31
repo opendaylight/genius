@@ -15,6 +15,7 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -290,6 +291,7 @@ public final class IfmUtil {
      */
     // The following suppression is for javac, not for checkstyle
     @SuppressWarnings("fallthrough")
+    @SuppressFBWarnings("SF_SWITCH_FALLTHROUGH")
     public static List<ActionInfo> getEgressActionInfosForInterface(Interface interfaceInfo, String portNo,
             InterfaceInfo.InterfaceType ifaceType, Long tunnelKey, int actionKeyStart, boolean isDefaultEgress,
             int ifIndex, long groupId) {
@@ -363,7 +365,7 @@ public final class IfmUtil {
         long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex, NwConstants.DEFAULT_SERVICE_INDEX);
         result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, IfmConstants.REG6_START_INDEX,
                 IfmConstants.REG6_END_INDEX, regValue));
-        result.add(new ActionNxResubmit(actionKeyStart++, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
+        result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {

@@ -40,6 +40,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -432,12 +433,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (isExternal) {
             interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
         }
-        InstanceIdentifier<Interface> interfaceInstanceIdentifier = interfaceManagerCommonUtils
+        InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
         // TODO Do something with the future...
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+        final ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
             tx -> tx.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
                     WriteTransaction.CREATE_MISSING_PARENTS));
+        ListenableFutures.addErrorLogging(future, LOG, "Create VLAN interface {}", interfaceName);
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
@@ -600,8 +602,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     public void addTerminationPointForInterface(String interfaceName,
             OvsdbTerminationPointAugmentation terminationPoint) {
-        LOG.debug("Adding TerminationPoint {} to cache for Interface {}", terminationPoint.getName(), interfaceName);
         if (interfaceName != null && terminationPoint != null) {
+            LOG.debug("Adding TerminationPoint {} to cache for Interface {}", terminationPoint.getName(),
+                    interfaceName);
             ifaceToTpMap.put(interfaceName, terminationPoint);
         }
     }
