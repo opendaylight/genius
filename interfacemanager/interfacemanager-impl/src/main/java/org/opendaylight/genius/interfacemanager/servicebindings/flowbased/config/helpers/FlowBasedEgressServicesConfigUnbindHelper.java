@@ -49,9 +49,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
             // Remove default entry from Lport Dispatcher Table.
             FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, boundServicesState.getInterfaceName(),
                     tx, NwConstants.DEFAULT_SERVICE_INDEX);
-            if (tx != null) {
-                futures.add(tx.submit());
-            }
+            futures.add(tx.submit());
             return;
         }
         BoundServices[] highLow = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, boundServiceOld);

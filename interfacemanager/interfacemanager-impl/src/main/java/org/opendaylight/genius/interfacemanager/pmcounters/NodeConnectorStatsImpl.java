@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
+import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInputBuilder;
@@ -135,8 +137,14 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
             }
             for (BigInteger node : nodes) {
                 LOG.trace("Requesting AllNodeConnectorStatistics for node - {}", node);
-                statPortService.getAllNodeConnectorsStatistics(buildGetAllNodeConnectorStatistics(node));
-                opendaylightFlowTableStatisticsService.getFlowTablesStatistics(buildGetFlowTablesStatistics(node));
+
+                ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(statPortService
+                        .getAllNodeConnectorsStatistics(buildGetAllNodeConnectorStatistics(node))),
+                        LOG, "Get node connector stats");
+
+                ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(
+                        opendaylightFlowTableStatisticsService.getFlowTablesStatistics(
+                                buildGetFlowTablesStatistics(node))), LOG, "Get flow table stats");
             }
         }
 

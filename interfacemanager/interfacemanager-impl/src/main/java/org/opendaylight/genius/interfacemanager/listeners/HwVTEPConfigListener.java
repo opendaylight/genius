@@ -63,7 +63,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                 LOG.trace("Received HwVTEP Interface Remove Event: {}, {}", key, interfaceOld);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
-                        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
+                        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(interfaceOld,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()));
                         coordinator.enqueueJob(interfaceOld.getName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
@@ -84,7 +84,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                 LOG.trace("Received HwVTEP Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
-                        RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceNew,
+                        RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 ifTunnel);
@@ -106,7 +106,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
                 LOG.trace("Received HwVTEP Interface Add Event: {}, {}", key, interfaceNew);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
-                        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew,
+                        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(interfaceNew,
                                 SouthboundUtils.createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 SouthboundUtils.createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
                                 ifTunnel);
@@ -123,16 +123,13 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
     }
 
     private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
-        InstanceIdentifier<Interface> key;
         Interface interfaceNew;
         InstanceIdentifier<Node> physicalSwitchNodeId;
         InstanceIdentifier<Node> globalNodeId;
         IfTunnel ifTunnel;
 
-        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew,
-                InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
-                IfTunnel ifTunnel) {
-            this.key = key;
+        RendererConfigAddWorker(Interface interfaceNew, InstanceIdentifier<Node> physicalSwitchNodeId,
+                InstanceIdentifier<Node> globalNodeId, IfTunnel ifTunnel) {
             this.interfaceNew = interfaceNew;
             this.physicalSwitchNodeId = physicalSwitchNodeId;
             this.globalNodeId = globalNodeId;
@@ -147,16 +144,13 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
     }
 
     private class RendererConfigUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
-        InstanceIdentifier<Interface> key;
         Interface interfaceNew;
         InstanceIdentifier<Node> globalNodeId;
         InstanceIdentifier<Node> physicalSwitchNodeId;
         IfTunnel ifTunnel;
 
-        RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceNew,
-                InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
-                IfTunnel ifTunnel) {
-            this.key = key;
+        RendererConfigUpdateWorker(Interface interfaceNew, InstanceIdentifier<Node> physicalSwitchNodeId,
+                InstanceIdentifier<Node> globalNodeId, IfTunnel ifTunnel) {
             this.interfaceNew = interfaceNew;
             this.physicalSwitchNodeId = physicalSwitchNodeId;
             this.ifTunnel = ifTunnel;
@@ -171,14 +165,12 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
     }
 
     private class RendererConfigRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-        InstanceIdentifier<Interface> key;
         Interface interfaceOld;
         InstanceIdentifier<Node> physicalSwitchNodeId;
         InstanceIdentifier<Node> globalNodeId;
 
-        RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld,
-                InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId) {
-            this.key = key;
+        RendererConfigRemoveWorker(Interface interfaceOld, InstanceIdentifier<Node> physicalSwitchNodeId,
+                InstanceIdentifier<Node> globalNodeId) {
             this.interfaceOld = interfaceOld;
             this.physicalSwitchNodeId = physicalSwitchNodeId;
             this.globalNodeId = globalNodeId;
