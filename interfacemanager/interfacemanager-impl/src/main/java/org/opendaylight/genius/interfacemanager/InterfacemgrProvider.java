@@ -604,8 +604,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     public void addTerminationPointForInterface(String interfaceName,
             OvsdbTerminationPointAugmentation terminationPoint) {
-        LOG.debug("Adding TerminationPoint {} to cache for Interface {}", terminationPoint.getName(), interfaceName);
         if (interfaceName != null && terminationPoint != null) {
+            LOG.debug("Adding TerminationPoint {} to cache for Interface {}", terminationPoint.getName(),
+                    interfaceName);
             ifaceToTpMap.put(interfaceName, terminationPoint);
         }
     }
