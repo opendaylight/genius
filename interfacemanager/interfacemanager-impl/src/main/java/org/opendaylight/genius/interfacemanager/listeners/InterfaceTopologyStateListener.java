@@ -50,13 +50,14 @@ public class InterfaceTopologyStateListener
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final SouthboundUtils southboundUtils;
 
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
-            final InterfaceMetaUtils interfaceMetaUtils) {
+            final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -65,6 +66,7 @@ public class InterfaceTopologyStateListener
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.southboundUtils = southboundUtils;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -172,8 +174,8 @@ public class InterfaceTopologyStateListener
                 return futures;
             }
             futures.add(writeTransaction.submit());
-            SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, interfaceManagerCommonUtils,
-                    instanceIdentifier, bridgeNew);
+            southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, instanceIdentifier,
+                    bridgeNew);
             return futures;
         }
     }

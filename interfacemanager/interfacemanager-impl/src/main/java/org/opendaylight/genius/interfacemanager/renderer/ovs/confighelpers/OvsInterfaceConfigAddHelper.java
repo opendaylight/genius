@@ -59,13 +59,14 @@ public final class OvsInterfaceConfigAddHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final SouthboundUtils southboundUtils;
 
     @Inject
     public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
-            InterfaceMetaUtils interfaceMetaUtils) {
+            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils) {
         this.dataBroker = dataBroker;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.mdsalApiManager = mdsalApiManager;
@@ -73,6 +74,7 @@ public final class OvsInterfaceConfigAddHelper {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.southboundUtils = southboundUtils;
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
@@ -171,7 +173,7 @@ public final class OvsInterfaceConfigAddHelper {
                     defaultConfigShardTransaction);
         }
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
-        InterfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
+        interfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
 
         // create bridge on switch, if switch is connected
         BridgeRefEntry bridgeRefEntry = interfaceMetaUtils.getBridgeRefEntryFromOperDS(dpId);
@@ -181,7 +183,7 @@ public final class OvsInterfaceConfigAddHelper {
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry
                     .getBridgeReference().getValue();
             if (createTunnelPort) {
-                SouthboundUtils.addPortToBridge(bridgeIid, interfaceNew, tunnelName);
+                southboundUtils.addPortToBridge(bridgeIid, interfaceNew, tunnelName);
             }
 
             // if TEP is already configured on switch, start LLDP monitoring and
