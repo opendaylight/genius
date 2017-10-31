@@ -106,7 +106,7 @@ public class FlowBasedServicesNodeStateListener
         }
     }
 
-    private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
         private final String iface;
         BigInteger dpnId;
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
@@ -126,7 +126,7 @@ public class FlowBasedServicesNodeStateListener
         }
     }
 
-    private class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         private final String iface;
         BigInteger dpnId;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
