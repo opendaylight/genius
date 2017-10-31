@@ -9,12 +9,15 @@
 package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
 import org.opendaylight.infrautils.jobcoordinator.workaround.Activator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DataStoreJobCoordinator.
@@ -27,6 +30,8 @@ import org.opendaylight.infrautils.jobcoordinator.workaround.Activator;
 @Deprecated
 @SuppressWarnings("deprecation")
 public class DataStoreJobCoordinator implements JobCoordinator {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DataStoreJobCoordinator.class);
 
     private static DataStoreJobCoordinator instance;
 
@@ -77,12 +82,7 @@ public class DataStoreJobCoordinator implements JobCoordinator {
     @Override
     public void enqueueJob(String key, Callable<List<ListenableFuture<Void>>> mainWorker,
             org.opendaylight.infrautils.jobcoordinator.RollbackCallable rollbackWorker) {
-        enqueueJob(key, mainWorker, new RollbackCallable() {
-            @Override
-            public List<ListenableFuture<Void>> call() throws Exception {
-                return rollbackWorker.call();
-            }
-        }, 0);
+        enqueueJob(key, mainWorker, rollbackWorker, 0);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class DataStoreJobCoordinator implements JobCoordinator {
     }
 
     private static class InfrautilsRollbackCallableDelegate
-        extends org.opendaylight.infrautils.jobcoordinator.RollbackCallable {
+        implements org.opendaylight.infrautils.jobcoordinator.RollbackCallable {
 
         private final RollbackCallable geniusRollbackCallable;
 
@@ -121,8 +121,14 @@ public class DataStoreJobCoordinator implements JobCoordinator {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            return geniusRollbackCallable.call();
+        public List<ListenableFuture<Void>> apply(List<ListenableFuture<Void>> failedFutures) {
+            geniusRollbackCallable.setFutures(failedFutures);
+            try {
+                return geniusRollbackCallable.call();
+            } catch (Exception e) {
+                LOG.error("Error running rollback task", e);
+                return Collections.emptyList();
+            }
         }
     }
 
