@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -30,18 +31,24 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 abstract class AbstractDataTreeChangeListener<T extends DataObject> implements DataTreeChangeListener<T>,
         AutoCloseable {
     private final DataBroker dataBroker;
-    private final ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
+    private final DataTreeIdentifier<T> dataTreeIdentifier;
+    private ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
 
     @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         this.dataBroker = dataBroker;
-        dataChangeListenerRegistration = dataBroker.registerDataTreeChangeListener(dataTreeIdentifier, this);
+        this.dataTreeIdentifier = dataTreeIdentifier;
     }
 
     @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                    InstanceIdentifier<T> instanceIdentifier) {
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
+    }
+
+    @PostConstruct
+    public final void register() {
+        this.dataChangeListenerRegistration = dataBroker.registerDataTreeChangeListener(dataTreeIdentifier, this);
     }
 
     protected DataBroker getDataBroker() {
