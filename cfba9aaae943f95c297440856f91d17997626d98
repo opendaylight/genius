@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_fd390142",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 1,
+      "message": "I trust all the fall-throughs below are intentional :) plus the compiler warning is suppressed.",
+      "revId": "cfba9aaae943f95c297440856f91d17997626d98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ddc87d24",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/AbstractCounterMBeanImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 1,
+      "message": "New base class to reuse duplicated code",
+      "range": {
+        "startLine": 19,
+        "startChar": 15,
+        "endLine": 19,
+        "endChar": 39
+      },
+      "revId": "cfba9aaae943f95c297440856f91d17997626d98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1dd335d7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/AbstractCounterMBeanImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 1,
+      "message": "counterCache has value type Integer so convert to Map with String",
+      "revId": "cfba9aaae943f95c297440856f91d17997626d98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7df87149",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 342,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 1,
+      "message": "\"Found reliance on default encoding\" - not sure what the alternative would be and it doesn\u0027t appear this method uses byte -\u003e String encoding so suppress it",
+      "range": {
+        "startLine": 342,
+        "startChar": 30,
+        "endLine": 342,
+        "endChar": 47
+      },
+      "revId": "cfba9aaae943f95c297440856f91d17997626d98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

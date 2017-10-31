@@ -1,0 +1,900 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_3d3b9939",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Dead store to actionKeyStart in addEgressActionInfosForInterface\" - no need for ++ at the end",
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bd1669a5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 438,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Return value of org.opendaylight.genius.infra.ManagedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer) ignored in createVLANInterface\" - use ListenableFutures.addErrorLogging",
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5d276d12",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 603,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of terminationPoint at line 604 of value previously dereferenced\" - move debug log into if block",
+      "range": {
+        "startLine": 603,
+        "startChar": 74,
+        "endLine": 603,
+        "endChar": 90
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3d227901",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Dead store to operStatus in updateStateEntry\" - no need to initialize here",
+      "range": {
+        "startLine": 338,
+        "startChar": 19,
+        "endLine": 338,
+        "endChar": 29
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7d1cf1c1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"String is incompatible with expected argument type InterfaceChildEntry\" - contains lookup doesn\u0027t work. Move the check inside loop below and move the IfL2vlan.L2vlanMode.Trunk  check appropriately",
+      "range": {
+        "startLine": 537,
+        "startChar": 80,
+        "endLine": 537,
+        "endChar": 94
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fd8741d5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/AlivenessMonitorListenerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"The class name AlivenessMonitorListener shadows the simple name of implemented interface org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener\" - rename this class to Impl",
+      "range": {
+        "startLine": 31,
+        "startChar": 13,
+        "endLine": 31,
+        "endChar": 37
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5d6e4d30",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/AlivenessMonitorListenerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Load of known null value in onMonitorEvent\" - don\u0027t log tunnelInterface as it\u0027s null",
+      "range": {
+        "startLine": 64,
+        "startChar": 20,
+        "endLine": 64,
+        "endChar": 35
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3d69d925",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Confusing to have methods getWildcardPath() and HwVTEPConfigListener.getWildCardPath()\" - this is method is only called on initialization above so inline it",
+      "range": {
+        "startLine": 58,
+        "startChar": 46,
+        "endLine": 58,
+        "endChar": 61
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9d78c5f3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeRefEntryListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Confusing to have methods getWildcardPath() and HwVTEPConfigListener.getWildCardPath()\" - this is method is only called on initialization above so inline it",
+      "range": {
+        "startLine": 57,
+        "startChar": 49,
+        "endLine": 57,
+        "endChar": 64
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7d735115",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Unread field: key\" - remove",
+      "range": {
+        "startLine": 126,
+        "startChar": 38,
+        "endLine": 126,
+        "endChar": 41
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_dd619d3a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Unread field: key\" - remove",
+      "range": {
+        "startLine": 150,
+        "startChar": 38,
+        "endLine": 150,
+        "endChar": 41
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bd64a949",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Unread field: key\" - remove",
+      "range": {
+        "startLine": 174,
+        "startChar": 38,
+        "endLine": 174,
+        "endChar": 41
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5d55ad4e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Unread field: parentInterface\" - remove",
+      "range": {
+        "startLine": 271,
+        "startChar": 29,
+        "endLine": 271,
+        "endChar": 44
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9d4f25bd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Repeated conditional test in removeInterfaceStateConfiguration\" - iface is already known to be null here due to prior check",
+      "range": {
+        "startLine": 357,
+        "startChar": 37,
+        "endLine": 357,
+        "endChar": 49
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3dd719c1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/CounterForEntriesPerOFTable.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"counterMap should be package protected\" - ie should not be oublic.  However it doesn\u0027t need to be an instance field at all - it\u0027s only set in retrieveCounterMap and immediately returned. Furthermore it\u0027s set to counterCache and its only purpose is to erase the incompatible value type param so it can be returned as a Map\u003cString, String\u003e. This is fishy. It\u0027s also odd that the interface has methods to return the Map as both \u003cString, Integer\u003e and \u003cString, String\u003e.",
+      "range": {
+        "startLine": 16,
+        "startChar": 22,
+        "endLine": 16,
+        "endChar": 32
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fdd581b9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/CounterForEntriesPerOFTable.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "Moved all this duplicated common code to AbstractCounterMBeanImpl. Same for the other related classes.",
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9de605b3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Possible null pointer dereference of interfaceInfo\" - don\u0027t dereference here - let toString do the work.",
+      "range": {
+        "startLine": 178,
+        "startChar": 55,
+        "endLine": 178,
+        "endChar": 68
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bdf2e96c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "interfaceInfo dereferenced but may be null according to above null checks. If interfaceInfo is null then we can\u0027t create an entry so check for null once above.",
+      "range": {
+        "startLine": 195,
+        "startChar": 35,
+        "endLine": 195,
+        "endChar": 48
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1dea1575",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Suspicious comparison of Boolean references\" - use equals",
+      "range": {
+        "startLine": 94,
+        "startChar": 37,
+        "endLine": 94,
+        "endChar": 39
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fdec6191",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Suspicious comparison of Boolean references\" - use equals",
+      "range": {
+        "startLine": 92,
+        "startChar": 37,
+        "endLine": 92,
+        "endChar": 39
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5d03ed41",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Repeated conditional test\" - iface is already known to be null at this point",
+      "range": {
+        "startLine": 157,
+        "startChar": 52,
+        "endLine": 157,
+        "endChar": 64
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3dfef938",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Null passed for non-null parameter of isOfTunnel\" - move this inside the ifTunnel null check block above",
+      "range": {
+        "startLine": 150,
+        "startChar": 51,
+        "endLine": 150,
+        "endChar": 59
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1da17547",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigUnbindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of tx value previously dereferenced\" - it can\u0027t be null here so remove check",
+      "range": {
+        "startLine": 52,
+        "startChar": 16,
+        "endLine": 52,
+        "endChar": 18
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3d8559ad",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of transaction value previously dereferenced\" - it can\u0027t be null here so remove check",
+      "range": {
+        "startLine": 74,
+        "startChar": 16,
+        "endLine": 74,
+        "endChar": 27
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bdc029e1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Redundant nullcheck of matches, which is known to be non-null\" - getMatchInfoForTunnelPortAtIngressTable does not return null. Also added @Nonnull to enforce it",
+      "range": {
+        "startLine": 107,
+        "startChar": 16,
+        "endLine": 107,
+        "endChar": 23
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7d8fd1cc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of transaction value previously dereferenced\" - it can\u0027t be null here so remove check",
+      "range": {
+        "startLine": 120,
+        "startChar": 12,
+        "endLine": 120,
+        "endChar": 23
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ddbd1d6a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of transaction value previously dereferenced\" - it can\u0027t be null here so remove check",
+      "range": {
+        "startLine": 138,
+        "startChar": 16,
+        "endLine": 138,
+        "endChar": 27
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1db85575",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of tx value previously dereferenced\" - it can\u0027t be null here so remove check",
+      "range": {
+        "startLine": 66,
+        "startChar": 16,
+        "endLine": 66,
+        "endChar": 18
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fdbaa16c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of tx value previously dereferenced\" - it can\u0027t be null here so remove check",
+      "range": {
+        "startLine": 129,
+        "startChar": 16,
+        "endLine": 129,
+        "endChar": 18
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5db12d8e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "Same here...",
+      "range": {
+        "startLine": 147,
+        "startChar": 16,
+        "endLine": 147,
+        "endChar": 18
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3dac3935",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "...Same here",
+      "range": {
+        "startLine": 165,
+        "startChar": 12,
+        "endLine": 165,
+        "endChar": 14
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9daba51c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Inner class can be static\"",
+      "range": {
+        "startLine": 143,
+        "startChar": 18,
+        "endLine": 143,
+        "endChar": 52
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7da6b154",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Inner class can be static\"",
+      "range": {
+        "startLine": 109,
+        "startChar": 18,
+        "endLine": 109,
+        "endChar": 50
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_dd64fd23",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Inner class can be static\"",
+      "range": {
+        "startLine": 129,
+        "startChar": 18,
+        "endLine": 129,
+        "endChar": 52
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fd7101e1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS is a mutable collection\" - it\u0027s public so make it immutable",
+      "range": {
+        "startLine": 97,
+        "startChar": 37,
+        "endLine": 97,
+        "endChar": 82
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bd4e6994",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Null passed for non-null parameter of IfmUtil.getDpnFromNodeConnectorId(NodeConnectorId)\" - move this line inside the block above and return null here. (There actually aren\u0027t any current callers of this method)",
+      "range": {
+        "startLine": 141,
+        "startChar": 23,
+        "endLine": 141,
+        "endChar": 48
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1d46957c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of instructions at line 182 of value previously dereferenced\" - instructions apparently can be null as it\u0027s checked below but is dereferenced here - check here too",
+      "range": {
+        "startLine": 182,
+        "startChar": 38,
+        "endLine": 182,
+        "endChar": 50
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fd48e188",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Nullcheck of serviceInstructions at line 258 of value previously dereferenced\" - serviceInstructions can be null so check here",
+      "range": {
+        "startLine": 258,
+        "startChar": 30,
+        "endLine": 258,
+        "endChar": 49
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3d5a7950",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Load of known null value, lower and higher, in getHighAndLowPriorityService\" - pass nulls directly to avoid loading null vars",
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_dd323d0f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 640,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-10-31T14:49:04Z",
+      "side": 0,
+      "message": "\"Dead store to actionKey\" - no need for the last post-increment - to avoid this, initialize actionKey to -1 and use pre-increment",
+      "range": {
+        "startLine": 640,
+        "startChar": 57,
+        "endLine": 640,
+        "endChar": 66
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
